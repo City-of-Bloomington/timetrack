@@ -1,0 +1,105 @@
+<%@  include file="header.jsp" %>
+<!--
+ * @copyright Copyright (C) 2014-2015 City of Bloomington, Indiana. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
+ * @author W. Sibo <sibow@bloomington.in.gov>
+ *
+	-->
+<s:if test="hasActionErrors()">
+	<div class="errors">
+    <s:actionerror/>
+	</div>
+</s:if>
+<s:elseif test="hasActionMessages()">
+	<div class="welcome">
+    <s:actionmessage/>
+	</div>
+</s:elseif>
+<b> <s:property value="payPeriod.monthNames" /> <s:property value="payPeriod.startYear" /></b>
+<table width="100%" border="1">
+	<tr>
+		<td width="14%">Mon</td>
+		<td width="14%">Tue</td>
+		<td width="14%">Wed</td>
+		<td width="14%">Thu</td>
+		<td width="14%">Fri</td>
+		<td width="14%">Sat</td>
+		<td>Sun</td>
+	</tr>
+	<tr>
+		<s:iterator value="dailyBlocks" var="block" >
+			<s:set var="blockKey" value="#block.key" />
+			<s:set var="blockList" value="#block.value" />
+			<s:if test="#blockKey == 7">
+	       </tr><tr>
+			</s:if>
+			<td valign="top">
+				<s:iterator value="#blockList" status="row" >
+					<table border="0" width="100%">			
+					<s:if test="#row.first">
+						<tr>
+							<td align="left" valign="top">
+								<a href="<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />">
+									<s:property value="dayInt" /></a>
+							</td>
+						</tr>
+					</s:if>
+					<s:if test="hasData()">
+						<tr>
+							<td align="right">
+								<a href="<s:property value='#application.url' />timeBlock?id=<s:property value='id' />&action=Delete">(X)</a>
+							</td>
+						</tr>
+						<tr>
+							<td align="left">
+								<a href="<s:property value='#application.url' />timeBlock?id=<s:property value='id' />">
+							<s:if test="isHourType()">
+								<s:property value="hours" />
+							</s:if>
+							<s:else>
+								<s:property value="time_in" /> - <s:property value="time_out" /><br />								
+								<s:property value="hours" />
+							</s:else>
+							<s:property value="hour_code" /></a>
+							</td>
+						</tr>
+					</s:if>
+					</table>						
+				</s:iterator>
+			</td>
+		</s:iterator>
+	</tr>
+</table>
+<table width="100%" border="1"><caption>Summary</caption>
+	<tr>
+		<td>Week </td>
+		<td width="10%">Mon</td>
+		<td width="10%">Tue</td>
+		<td width="10%">Wed</td>
+		<td width="10%">Thu</td>
+		<td width="10%">Fri</td>
+		<td width="10%">Sat</td>
+		<td width="10%">Sun</td>
+		<td>Total</td>
+	</tr>
+	<s:iterator value="daily" var="one" >
+		<s:set var="dayKey" value="#one.key" />
+		<s:set var="dayVal" value="#one.value" />
+		<s:if test="#dayKey == 0">
+	    <tr><td>Week 1</td>
+		</s:if>
+		<s:if test="#dayKey == 7">
+			<td><s:property value="week1Total" /></td>
+	    </tr><tr><td>Week 2</td>
+		</s:if>
+		<td><s:property value="dayVal" /></td>
+		<s:if test="#dayKey == 13">
+			<td><s:property value="week2Total" /></td>
+	    </tr>
+		</s:if>
+	</s:iterator>
+</table>
+		
+<%@ include file="footer.jsp" %>
+
+

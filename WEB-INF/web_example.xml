@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+				 xmlns="http://java.sun.com/xml/ns/javaee" 
+				 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+				 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+    <!-- General description of your web application -->
+
+		<!-- before using this file, copy it to web.xml and then
+		 replace the missing stuff such as your server url
+
+     If you are using CAS set the server url in the related fields,
+		 
+		 If not using CAS, then comment out the related entries. You will
+		 need to edit Login.java to use something different for login info
+
+     Ldap info may be needed, so if you have ldap or ldap like server to
+		 retreive some employee info, set the related info in the ldap related
+		 fields
+		 -->
+    <display-name>TimeTracker</display-name>
+    <description>
+      This is version 1. of the application 
+     Written by WS
+    </description>
+
+    <context-param>
+      <param-name>debug</param-name>
+      <param-value>true</param-value>
+      <description> debug flag
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>activeMail</param-name>
+      <param-value>true</param-value>
+      <description> email on/off flag
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>url</param-name>
+      <param-value>http://localhost/timetrack/</param-value>
+      <description> general servlet url
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>server_path</param-name>
+      <param-value>your server path/timetrack/WEB-INF/files/</param-value>
+      <description> uploaded file location on the server
+      </description>
+    </context-param>		
+    <context-param>
+      <param-name>emailStr</param-name>
+      <param-value>your organization website url</param-value>
+      <description> admin userid to be used for email new tickets and closing 
+     </description>
+    </context-param>
+    <context-param>
+      <param-name>cas_url</param-name>
+      <param-value>your cas url/cas/logout</param-value>
+      <description> cas logout url
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>ldap_url</param-name>
+      <param-value>ldap server url</param-value>
+      <description> secured 636, other 389
+      </description>
+    </context-param>
+    <context-param>
+      <param-name>ldap_principle</param-name>
+      <param-value>ldap user</param-value>
+      <description> ldap admin userid
+      </description>
+    </context-param>
+	<context-param>
+      <param-name>ldap_password</param-name>
+      <param-value>ldap pass</param-value>
+      <description> password to connect to ldap
+      </description>
+    </context-param>
+
+    <servlet>
+      <servlet-name>Login</servlet-name>
+      <servlet-class>timer.Login</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>Logout</servlet-name>
+      <servlet-class>timer.Logout</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>EmployeeService</servlet-name>
+      <servlet-class>timer.EmployeeService</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>GroupUserService</servlet-name>
+      <servlet-class>timer.GroupUserService</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>GroupService</servlet-name>
+      <servlet-class>timer.GroupService</servlet-class>
+    </servlet>		
+	<servlet>
+    <servlet-name>log4j-init</servlet-name>
+    <servlet-class>timer.Log4jInit</servlet-class>
+    <init-param>
+			<param-name>log4j-init-file</param-name>
+			<param-value>WEB-INF/classes/log4j.lcf</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+	</servlet>	
+  <servlet-mapping>
+    <servlet-name>Logout</servlet-name>
+    <url-pattern>/Logout</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Login</servlet-name>
+    <url-pattern>/Login</url-pattern>
+  </servlet-mapping>
+	<servlet-mapping>
+    <servlet-name>EmployeeService</servlet-name>
+    <url-pattern>/EmployeeService</url-pattern>
+  </servlet-mapping>
+	<servlet-mapping>
+    <servlet-name>GroupService</servlet-name>
+    <url-pattern>/GroupService</url-pattern>
+  </servlet-mapping>	
+	<servlet-mapping>
+    <servlet-name>GroupUserService</servlet-name>
+    <url-pattern>/GroupUserService</url-pattern>
+  </servlet-mapping>	
+	
+	<filter>
+	  <filter-name>CAS Filter</filter-name>
+	  <filter-class>edu.yale.its.tp.cas.client.filter.CASFilter</filter-class>
+	  <init-param>
+		<param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
+		<param-value>cas server/cas/login</param-value>
+	  </init-param>
+	  <init-param>
+		<param-name>edu.yale.its.tp.cas.client.filter.validateUrl</param-name>
+		<param-value>cas server/cas/serviceValidate</param-value>
+	  </init-param>
+	  <init-param>
+		<param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
+		<param-value>your server url</param-value>
+	  </init-param>
+	  <init-param>
+		<param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name>
+		<param-value>true</param-value>
+	  </init-param>
+	</filter>
+  <filter>
+    <filter-name>struts2</filter-name>
+    <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
+  </filter>	
+  <filter-mapping>
+    <filter-name>struts2</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>		
+	<filter-mapping>
+	  <filter-name>CAS Filter</filter-name>
+	  <url-pattern>/Login</url-pattern>
+	</filter-mapping>
+	
+    <session-config>
+      <session-timeout>120</session-timeout>    
+    </session-config>
+
+</web-app>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  <constant name="struts.devMode" value="true" />
+  <constant name="struts.ui.theme" value="simple" />
+  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupUserService*,/GroupService*" />
+
+  <package name="default" extends="struts-default">
+
+		<!-- this is a global action that makes sure user is logged in -->
+		
+		<global-results>
+      <result name="login" type="redirect">welcome.action</result>
+		</global-results>
+		
+		<action name="home">
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result>/Login</result>
+		</action>
+		<action name="settings">
+			<result>/WEB-INF/jsp/settings.jsp</result>
+		</action>		
+
+		<action name="welcome"
+						class="in.bloomington.timer.WelcomeAction">
+			<result name="success">/WEB-INF/jsp/welcome.jsp</result>
+			<result name="error">/Login</result>			
+			<result name="login">/Login</result>	   
+		</action>
+		<action name="type" 
+						class="in.bloomington.timer.TypeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/type.jsp</result>		
+			<result name="error">/WEB-INF/jsp/type.jsp</result>
+			<result name="success">/WEB-INF/jsp/type.jsp</result>
+		</action>
+		<action name="timeNote" 
+						class="in.bloomington.timer.TimeNoteAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/timeNote.jsp</result>		
+			<result name="error">/WEB-INF/jsp/timeNote.jsp</result>
+			<result name="success">/WEB-INF/jsp/timeNote.jsp</result>
+		</action>
+		<action name="timeIssue" 
+						class="in.bloomington.timer.TimeIssueAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/timeIssue.jsp</result>		
+			<result name="error">/WEB-INF/jsp/timeIssue.jsp</result>
+			<result name="success">/WEB-INF/jsp/timeIssue.jsp</result>
+		</action>
+		<action name="handleIssue" 
+						class="in.bloomington.timer.HandleIssueAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/handleIssue.jsp</result>		
+			<result name="error">/WEB-INF/jsp/handleIssue.jsp</result>
+			<result name="success">/WEB-INF/jsp/handleIssue.jsp</result>
+		</action>		
+		<action name="accrual" 
+						class="in.bloomington.timer.AccrualAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/accrual.jsp</result>		
+			<result name="error">/WEB-INF/jsp/accrual.jsp</result>
+			<result name="success">/WEB-INF/jsp/accrual.jsp</result>
+		</action>		
+		<action name="accrualWarning" 
+						class="in.bloomington.timer.AccrualWarningAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/accrualWarning.jsp</result>		
+			<result name="error">/WEB-INF/jsp/accrualWarning.jsp</result>
+			<result name="success">/WEB-INF/jsp/accrualWarning.jsp</result>
+		</action>		
+		<action name="node" 
+						class="in.bloomington.timer.NodeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/node.jsp</result>		
+			<result name="error">/WEB-INF/jsp/node.jsp</result>
+			<result name="success">/WEB-INF/jsp/node.jsp</result>
+		</action>
+		<action name="payperiod" 
+						class="in.bloomington.timer.PayPeriodAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/payperiods.jsp</result>		
+			<result name="error">/WEB-INF/jsp/payperiods.jsp</result>
+			<result name="success">/WEB-INF/jsp/payperiods.jsp</result>
+		</action>		
+		<action name="dataEntry" 
+						class="in.bloomington.timer.DataEntryAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/dataEntry.jsp</result>		
+			<result name="error">/WEB-INF/jsp/dataEntry.jsp</result>
+			<result name="success">/WEB-INF/jsp/dataEntry.jsp</result>
+		</action>				
+		<action name="approve" 
+						class="in.bloomington.timer.ApproveAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/approve.jsp</result>		
+			<result name="error">/WEB-INF/jsp/approve.jsp</result>
+			<result name="success">/WEB-INF/jsp/approve.jsp</result>
+		</action>		
+		<action name="payrollProcess" 
+						class="in.bloomington.timer.PayrollProcessAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/payrollProcess.jsp</result>		
+			<result name="error">/WEB-INF/jsp/payrollProcess.jsp</result>
+			<result name="success">/WEB-INF/jsp/payrollProcess.jsp</result>
+		</action>				
+		<action name="employee" 
+						class="in.bloomington.timer.EmployeeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/employee.jsp</result>		
+			<result name="error">/WEB-INF/jsp/employee.jsp</result>
+			<result name="success">/WEB-INF/jsp/employee.jsp</result>
+		</action>
+		<action name="switch" 
+						class="in.bloomington.timer.SwitchAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/switch.jsp</result>		
+			<result name="error">/WEB-INF/jsp/switch.jsp</result>
+			<result name="success">/WEB-INF/jsp/switch.jsp</result>
+		</action>
+		<action name="timeClock" 
+						class="in.bloomington.timer.TimeClockAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/timeClock.jsp</result>		
+			<result name="error">/WEB-INF/jsp/timeClock.jsp</result>
+			<result name="success">/WEB-INF/jsp/timeClock.jsp</result>
+		</action>		
+		<action name="empAccrual" 
+						class="in.bloomington.timer.EmployeeAccrualAction" 
+						method="execute">
+			<result name="select">/WEB-INF/jsp/empSelect.jsp</result>
+			<result name="input">/WEB-INF/jsp/empAccrual.jsp</result>					
+			<result name="error">/WEB-INF/jsp/empAccrual.jsp</result>		
+			<result name="success">/WEB-INF/jsp/empAccrual.jsp</result>
+		</action>				
+		<action name="groupEmployee" 
+						class="in.bloomington.timer.GroupEmployeeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/groupEmployee.jsp</result>		
+			<result name="error">/WEB-INF/jsp/groupEmployee.jsp</result>
+			<result name="success">/WEB-INF/jsp/groupEmployee.jsp</result>
+		</action>
+		<action name="salaryGroup" 
+						class="in.bloomington.timer.SalaryGroupAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/salaryGroup.jsp</result>		
+			<result name="error">/WEB-INF/jsp/salaryGroup.jsp</result>
+			<result name="success">/WEB-INF/jsp/salaryGroup.jsp</result>
+		</action>		
+		<action name="departmentEmployee" 
+						class="in.bloomington.timer.DepartmentEmployeeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/departmentEmployee.jsp</result>		
+			<result name="error">/WEB-INF/jsp/departmentEmployee.jsp</result>
+			<result name="success">/WEB-INF/jsp/departmentEmployee.jsp</result>
+		</action>
+		<action name="deptEmpChange" 
+						class="in.bloomington.timer.DepartmentEmployeeChangeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/deptEmpChange.jsp</result>		
+			<result name="error">/WEB-INF/jsp/deptEmpChage.jsp</result>
+			<result name="success">/WEB-INF/jsp/deptEmpChange.jsp</result>
+		</action>
+		<action name="groupEmpChange" 
+						class="in.bloomington.timer.GroupEmployeeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/groupEmpChange.jsp</result>		
+			<result name="error">/WEB-INF/jsp/groupEmpChage.jsp</result>
+			<result name="success">/WEB-INF/jsp/groupEmpChange.jsp</result>
+		</action>		
+		<action name="groupManager" 
+						class="in.bloomington.timer.GroupManagerAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/groupManager.jsp</result>		
+			<result name="error">/WEB-INF/jsp/groupManager.jsp</result>
+			<result name="success">/WEB-INF/jsp/groupManager.jsp</result>
+		</action>		
+		<action name="group" 
+						class="in.bloomington.timer.GroupAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/group.jsp</result>		
+			<result name="error">/WEB-INF/jsp/group.jsp</result>
+			<result name="success">/WEB-INF/jsp/group.jsp</result>
+		</action>
+		<action name="jobTask" 
+						class="in.bloomington.timer.JobTaskAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/jobTask.jsp</result>		
+			<result name="error">/WEB-INF/jsp/jobTask.jsp</result>
+			<result name="success">/WEB-INF/jsp/jobTask.jsp</result>
+		</action>		
+		<action name="timeDetails" 
+						class="in.bloomington.timer.TimeDetailsAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/timeDetails.jsp</result>		
+			<result name="error">/WEB-INF/jsp/timeDetails.jsp</result>
+			<result name="success">/WEB-INF/jsp/timeDetails.jsp</result>
+		</action>
+		<action name="timeAction" 
+						class="in.bloomington.timer.TimeActionAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/timeAction.jsp</result>		
+			<result name="error">/WEB-INF/jsp/timeAction.jsp</result>
+			<result name="success">/WEB-INF/jsp/timeAction.jsp</result>
+			<result name="timeDetails" type="redirectAction">
+				<param name="actionName">timeDetails</param>
+				<param name="document_id">${document_id}</param>
+				<param name="actionMessages">${actionMessages}</param>
+				<param name="actionErrors">${actionErrors}</param>
+			</result>			
+
+		</action>		
+		<action name="timeBlock" 
+						class="in.bloomington.timer.TimeBlockAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/timeBlock.jsp</result>		
+			<result name="error">/WEB-INF/jsp/timeBlock.jsp</result>
+			<result name="success">/WEB-INF/jsp/timeBlock.jsp</result>
+		</action>				
+		<action name="hourcode" 
+						class="in.bloomington.timer.HourCodeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/hourcode.jsp</result>		
+			<result name="error">/WEB-INF/jsp/hourcode.jsp</result>
+			<result name="success">/WEB-INF/jsp/hourcode.jsp</result>
+		</action>		
+		<action name="hourcodeCondition" 
+						class="in.bloomington.timer.HourCodeConditionAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/hourcodeCondition.jsp</result>		
+			<result name="error">/WEB-INF/jsp/hourcodeCondition.jsp</result>
+			<result name="success">/WEB-INF/jsp/hourcodeCondition.jsp</result>
+		</action>		
+  </package>
+
+</struts>

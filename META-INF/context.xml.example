@@ -1,0 +1,12 @@
+<Context reloadable="false" crossContext="true">
+   <Resource name="jdbc/MySQL_timer"
+			 auth="Container"
+			 type="javax.sql.DataSource" 
+			 username="timetrack"
+			 password="your pass"
+			 driverClassName="com.mysql.jdbc.Driver"
+			 url="jdbc:mysql://your db server:3306/timetrack" 
+			removeAbandonedOnBorrow="true"
+			removeAbandonedTimeout="60				"
+			maxTotal="10"  /> 			 
+</Context> 
