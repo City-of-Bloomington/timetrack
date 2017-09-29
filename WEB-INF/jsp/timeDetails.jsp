@@ -55,13 +55,13 @@
 </s:form>
 <table width="100%" border="1">
 	<tr>
-		<td width="14%">Mon</td>
-		<td width="14%">Tue</td>
-		<td width="14%">Wed</td>
-		<td width="14%">Thu</td>
-		<td width="14%">Fri</td>
-		<td width="14%">Sat</td>
-		<td>Sun</td>
+		<td width="14%" class="th_text">Mon</td>
+		<td width="14%" class="th_text">Tue</td>
+		<td width="14%" class="th_text">Wed</td>
+		<td width="14%" class="th_text">Thu</td>
+		<td width="14%" class="th_text">Fri</td>
+		<td width="14%" class="th_text">Sat</td>
+		<td class="th_text">Sun</td>
 	</tr>
 	<tr>
 		<s:iterator value="document.dailyBlocks" var="block" >
@@ -72,20 +72,20 @@
 			</s:if>
 			<s:iterator value="#blockList" status="row" >
 				<s:if test="#row.first">
-					<td valign="top" style="height:100px;text-align:left">						
-						<a href="#" onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />','timeBlock');">
+					<td valign="top" style="height:100px;text-align:left" class="th_text">						
+						<a href="#" onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');">
 							<s:property value="dayInt" />
 						</a>
 				</s:if>
 				<s:if test="hasData()">
 					<table border="0" width="100%">			
 						<tr>
-							<td align="right">
+							<td align="right" class="td_text">
 								<a href="<s:property value='#application.url' />timeBlock?id=<s:property value='id' />&action=Delete">(X)</a>
 							</td>
 						</tr>
 						<tr>
-							<td align="left">
+							<td align="left" class="td_text">
 								<a href="#" onclick="return popwit('<s:property value='#application.url' />timeBlock?id=<s:property value='id' />','timeBlock');">
 									<s:if test="isHourType()">
 										<s:property value="hours" />

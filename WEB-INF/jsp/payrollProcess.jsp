@@ -32,77 +32,77 @@
 	</table>
 	<s:if test="hasDocuments()">
 		<table width="100%">				
-					<s:iterator var="one" value="documents">				
-						<s:if test="hasDaily()">
-							<tr>
-								<td valign="center" width="10%">
-									<s:property value="employee" />
-									<a href="<s:property value='#application.url' />timeDetails.action?document_id=<s:property value='id' />&source=payrollProcess" />Details</a>
-								</td>
-								<td valign="center">
-									<s:set var="daily" value="daily" />
-									<s:set var="week1Total" value="week1Total" />
-									<s:set var="week2Total" value="week2Total" />
-									<s:set var="payPeriodTotal" value="payPeriodTotal" />
-									<%@  include file="dailySummary.jsp" %>
-								</td>
-								<td valign="center" width="10%" align="right">
-									<s:if test="canBeProcessed()">
-										<s:if test="isUserCurrentEmployee()">										
-											<input type="checkbox" name="document_ids" value="<s:property value='id' />">Payroll Process Approve</input>
-										</s:if>
-										<s:else>
-											Ready to Payroll Process
-										</s:else>
-									</s:if>									
-									<s:elseif test="!isApproved()">Not Approved</s:elseif>
-									<s:else>
-										Not Submitted 
-									</s:else>
-								</td>
-							</tr>
-							<s:if test="hasTimeIssues()">
-								<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />	
-								<s:set var="timeIssues" value="timeIssues" />
-								<tr>
-									<td>&nbsp;</td>
-									<td>							
-										<%@  include file="timeIssues.jsp" %>
-									</td>
-									<td>&nbsp;</td>
-								</tr>									
-							</s:if>							
-							<s:if test="isSubmitted() && hasWarnings()">
-								<tr>
-									<td>&nbsp;</td>
-									<td>
-										<s:set var="warnings" value="warnings" />
-										<%@  include file="warnings.jsp" %>
-									</td>
-									<td>&nbsp;</td>
-								</tr>
-							</s:if>
-						</s:if>
-					</s:iterator>
-				</table>
-			</s:if>
-			<s:if test="hasNonDocEmps()">
-				<table width="50%" border="0">
-					<caption>Employee(s) with no time entry for this pay period</caption>
-					<s:iterator var="one" value="nonDocEmps">
+			<s:iterator var="one" value="documents">				
+				<s:if test="hasDaily()">
+					<tr>
+						<td valign="center" width="13%" class="th_text">
+							<s:property value="employee"  /><br />
+							<a href="<s:property value='#application.url' />timeDetails.action?document_id=<s:property value='id' />&source=payrollProcess" />Details</a>
+						</td>
+						<td valign="center">
+							<s:set var="daily" value="daily" />
+							<s:set var="week1Total" value="week1Total" />
+							<s:set var="week2Total" value="week2Total" />
+							<s:set var="payPeriodTotal" value="payPeriodTotal" />
+							<%@  include file="dailySummary.jsp" %>
+						</td>
+						<td valign="center" width="12%" align="right" class="th_text">
+							<s:if test="canBeProcessed()">
+								<s:if test="isUserCurrentEmployee()">										
+									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Payroll Process Approve</input>
+								</s:if>
+								<s:else>
+									Ready to Payroll Process
+								</s:else>
+							</s:if>									
+							<s:elseif test="!isApproved()">Not Approved</s:elseif>
+							<s:else>
+								Not Submitted 
+							</s:else>
+						</td>
+					</tr>
+					<s:if test="hasTimeIssues()">
+						<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />	
+						<s:set var="timeIssues" value="timeIssues" />
 						<tr>
-							<td width="20%">&nbsp;</td>
-							<td><a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve"> <s:property value="user.full_name" /></a></td>
+							<td>&nbsp;</td>
+							<td>							
+								<%@  include file="timeIssues.jsp" %>
+							</td>
+							<td>&nbsp;</td>
+						</tr>									
+					</s:if>							
+					<s:if test="isSubmitted() && hasWarnings()">
+						<tr>
+							<td>&nbsp;</td>
+							<td>
+								<s:set var="warnings" value="warnings" />
+								<%@  include file="warnings.jsp" %>
+							</td>
+							<td>&nbsp;</td>
 						</tr>
-					</s:iterator>
-				</table>
-			</s:if>
-			<s:if test="isUserCurrentEmployee()">
-				<s:submit name="action" type="button" value="Payroll Process Approve" class="fn1-btn"/>
-			</s:if>
-			<s:else> 
-				Only authorized can payroll process
-			</s:else>
+					</s:if>
+				</s:if>
+			</s:iterator>
+		</table>
+	</s:if>
+	<s:if test="hasNonDocEmps()">
+		<table width="50%" border="0">
+			<caption>Employee(s) with no time entry for this pay period</caption>
+			<s:iterator var="one" value="nonDocEmps">
+				<tr>
+					<td width="20%">&nbsp;</td>
+					<td class="td_text"><a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve"> <s:property value="user.full_name" /></a></td>
+				</tr>
+			</s:iterator>
+		</table>
+	</s:if>
+	<s:if test="isUserCurrentEmployee()">
+		<s:submit name="action" type="button" value="Payroll Process Approve" class="fn1-btn"/>
+	</s:if>
+	<s:else> 
+		Only authorized can payroll process
+	</s:else>
 	</s:if>
 </s:form>
 

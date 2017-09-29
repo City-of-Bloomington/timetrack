@@ -9,10 +9,10 @@
 <s:form action="hourcode" id="form_id" method="post">
 	<s:hidden name="action2" id="action2" value="" />
 	<s:if test="hourcode.id == ''">
-		<h3>New Earn Code</h3>
+		<h3>New Hour Code</h3>
 	</s:if>
 	<s:else>
-		<h3>Edit Earn Code: <s:property value="hourcode.name" /></h3>
+		<h3>Edit Hour Code: <s:property value="hourcode.name" /></h3>
 		<s:hidden name="hourcode.id" value="%{hourcode.id}" />
 	</s:else>
   <s:if test="hasActionErrors()">
@@ -33,7 +33,7 @@
 	</s:if>
 	<dl class="fn1-output-field">
 		<dt>Name</dt>
-		<dd><s:textfield name="hourcode.name" value="%{hourcode.name}" required="true" size="15" maxlength="20" /></dd>
+		<dd><s:textfield name="hourcode.name" value="%{hourcode.name}" required="true" size="20" maxlength="20" /></dd>
 	</dl>
 	<dl class="fn1-output-field">
 		<dt>Description</dt>

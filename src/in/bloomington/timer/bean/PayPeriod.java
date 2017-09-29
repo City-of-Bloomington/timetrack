@@ -22,7 +22,7 @@ public class PayPeriod{
 		static Logger logger = Logger.getLogger(PayPeriod.class);
 		String id="", start_date="", end_date="", date="";
 		int startYear =0,startMonth=0,startDay=0;
-		int endYear =0,endMonth=0,endDay=0;
+		int endYear =0,endMonth=0,endDay=0, days=14;
 		public static final String[] allMonths =
 		{"January","February","March","April","May","June",
 		 "July","August","September","October","November","December"};
@@ -46,12 +46,12 @@ public class PayPeriod{
 		}
 		public PayPeriod(String val, String val2, String val3,
 										 int val4, int val5, int val6,
-										 int val7, int val8, int val9){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
+										 int val7, int val8, int val9, int val10){
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10);
 		}
 		void setVals(String val, String val2, String val3,
 								 int val4, int val5, int val6,
-								 int val7, int val8, int val9){
+								 int val7, int val8, int val9, int val10){
 				setId(val);
 				setStart_date(val2);
 				setEnd_date(val3);
@@ -60,7 +60,8 @@ public class PayPeriod{
 				setStartDay(val6);
 				setEndYear(val7);
 				setEndMonth(val8);
-				setEndDay(val9);				
+				setEndDay(val9);
+				setDays(val10);
 		}
 				//
     // getters
@@ -90,7 +91,10 @@ public class PayPeriod{
 		public int[] getEndDateInt(){
 				int[] ret = {endMonth,endDay,endYear};
 				return ret;
-		}	
+		}
+		public int getDays(){
+				return days;
+		}
     //
     // setters
     //
@@ -113,6 +117,7 @@ public class PayPeriod{
 				if(val != null)
 						end_date = val;
     }
+		
     public void setStartYear (int val){
 				startYear = val;
     }
@@ -131,6 +136,10 @@ public class PayPeriod{
     public void setEndDay(int val){
 				endDay = val;
     }
+    public void setDays(int val){
+				if(val > 0)
+						days = val;
+    }		
 		public int getStartYear(){
 				return startYear;
 		}
@@ -158,7 +167,8 @@ public class PayPeriod{
 						"date_format(p.start_date,'%m/%d/%Y'), "+
 						"date_format(p.end_date,'%m/%d/%Y'), "+
 						"year(p.start_date),month(p.start_date),day(p.start_date),"+
-						"year(p.end_date),month(p.end_date),day(p.end_date) "+
+						"year(p.end_date),month(p.end_date),day(p.end_date), "+
+						"datediff(p.end_date,p.start_date "+
 						"from pay_periods p where ";
 				if(!id.equals("")){
 						qq += " p.id=? ";
@@ -191,7 +201,8 @@ public class PayPeriod{
 								setStartDay(rs.getInt(6));
 								setEndYear(rs.getInt(7));
 								setEndMonth(rs.getInt(8));
-								setEndDay(rs.getInt(9));				
+								setEndDay(rs.getInt(9));
+								setDays(rs.getInt(10));
 						}
 						else{
 								msg = "No pay period found";

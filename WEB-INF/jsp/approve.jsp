@@ -39,8 +39,8 @@
 			<s:iterator var="one" value="documents">				
 				<s:if test="hasDaily()">
 					<tr>
-						<td valign="center" width="10%">
-							<s:property value="employee.user" />
+						<td valign="center" width="13%" class="th_text">
+							<s:property value="employee" /><br />
 							<a href="<s:property value='#application.url' />timeDetails.action?document_id=<s:property value='id' />&source=approve" />Details</a>
 						</td>
 						<td valign="center">
@@ -50,7 +50,7 @@
 							<s:set var="payPeriodTotal" value="payPeriodTotal" />
 							<%@  include file="dailySummary.jsp" %>
 						</td>
-						<td valign="center" width="10%" align="right">
+						<td valign="center" width="12%" align="right" class="td_text">
 							<s:if test="canBeApproved()">
 								<s:if test="isUserCurrentEmployee()">										
 									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
@@ -97,7 +97,7 @@
 			<s:iterator var="one" value="nonDocEmps">
 				<tr>
 					<td width="20%">&nbsp;</td>
-					<td><a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve"> <s:property value="user.full_name" /></a></td>
+					<td class="th_text"><a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve"> <s:property value="user.full_name" /></a></td>
 				</tr>
 			</s:iterator>
 		</table>
@@ -106,7 +106,7 @@
 		<s:submit name="action" type="button" value="Approve" class="fn1-btn"/>
 	</s:if>
 	<s:else> 
-		Only authorized can aprove
+		Only authorized can approve
 	</s:else>			
 </s:if>
 </s:form>

@@ -40,7 +40,7 @@ $(document).on('click', 'a', function(e) {
 });
 function popwit(url, name) {
     if(typeof(popupWin) != "object" || popupWin.closed)  { 
-        popupWin =  window.open(url, name, 'top=200,left=200,height=400,width=300,toolbar=0,menubar=0,location=0'); 
+        popupWin =  window.open(url, name, 'top=200,left=200,height=400,width=400,toolbar=0,menubar=0,location=0'); 
     } 
     else{ 
         popupWin.location.href = url; 

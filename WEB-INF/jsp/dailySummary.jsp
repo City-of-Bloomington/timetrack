@@ -6,36 +6,36 @@
 	-->
 <table width="100%" border="1"><caption>Summary</caption>
 	<tr>
-		<td>Week </td>
-		<td width="10%">Mon</td>
-		<td width="10%">Tue</td>
-		<td width="10%">Wed</td>
-		<td width="10%">Thu</td>
-		<td width="10%">Fri</td>
-		<td width="10%">Sat</td>
-		<td width="10%">Sun</td>
-		<td>Total</td>
+		<td class="th_text">Week </td>
+		<td width="10%" class="th_text">Mon</td>
+		<td width="10%" class="th_text">Tue</td>
+		<td width="10%" class="th_text">Wed</td>
+		<td width="10%" class="th_text">Thu</td>
+		<td width="10%" class="th_text">Fri</td>
+		<td width="10%" class="th_text">Sat</td>
+		<td width="10%" class="th_text">Sun</td>
+		<td class="th_text">Total</td>
 	</tr>
 	<s:iterator value="#daily" var="one" >
 		<s:set var="dayKey" value="#one.key" />
 		<s:set var="dayVal" value="#one.value" />
 		<s:if test="#dayKey == 0">
-	    <tr><td>Week 1</td>
+	    <tr><td class="th_text">Week 1</td>
 		</s:if>
 		<s:if test="#dayKey == 7">
-			<td align="right"><s:property value="#week1Total" /></td>
-	    </tr><tr><td>Week 2</td>
+			<td align="right" class="td_text"><s:property value="#week1Total" /></td>
+	    </tr><tr><td class="th_text">Week 2</td>
 		</s:if>
-		<td align="right"><s:property value="dayVal" /></td>
+		<td align="right" class="td_text"><s:property value="dayVal" /></td>
 		<s:if test="#dayKey == 13">
-			<td align="right"><s:property value="#week2Total" /></td>
+			<td align="right" class="td_text"><s:property value="#week2Total" /></td>
 	    </tr>
 		</s:if>
 	</s:iterator>
 	<tr>
-		<td>Pay Period Total</td>
+		<td class="th_text">Pay Period Total</td>
 		<td colspan="7">&nbsp;</td>
-		<td align="right"><s:property value="#payPeriodTotal" /></td>
+		<td align="right" class="td_text"><s:property value="#payPeriodTotal" /></td>
 	</tr>
 </table>
 

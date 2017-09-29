@@ -28,13 +28,6 @@
   </script>
 </head>
 <body class="fn1-body">
-  <header class="fn1-siteHeader">
-    <div class="fn1-siteHeader-container">
-      <div class="fn1-site-title">
-        <h1 id="application_name">Time Track</h1>
-        <div class="fn1-site-location" id="location_name">City of Bloomington, IN</div>
-      </div>
-	</div>
-  </header>
   <main>
     <div class="fn1-main-container">
+			<h4>Time Track</h4>

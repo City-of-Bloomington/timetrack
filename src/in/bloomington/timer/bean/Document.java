@@ -39,6 +39,7 @@ public class Document{
 		JobTask jobTask = null;
 		Map<String, List<Double>> allAccruals = new TreeMap<>();
 		Map<Integer, Double> hourCodeTotals = null;
+		Map<Integer, Double> usedAccrualTotals = null;
 		Map<String, Double> hourCodeWeek1 = null;
 		Map<String, Double> hourCodeWeek2 = null;
 		Map<Integer, List<TimeBlock>> dailyBlocks = null;
@@ -351,6 +352,7 @@ public class Document{
 				return jobTask;
 		}				
 		public List<EmployeeAccrual> getEmpAccruals(){
+
 				if(employeeAccruals == null){
 						EmployeeAccrualList al = new EmployeeAccrualList();						
 						al.setDocument_id(id);
@@ -363,10 +365,22 @@ public class Document{
 						}
 						// now we adjust the totals see below
 						findHourCodeTotals();
+						findUsedAccruals();
 						adjustAccruals();
 						checkForWarnings();
 				}
 				return employeeAccruals;
+		}
+		public void findUsedAccruals(){
+				if(usedAccrualTotals == null){
+						TimeBlockList tl = new TimeBlockList();
+						tl.setActiveOnly();
+						tl.setDocument_id(id);
+						String back = tl.findUsedAccruals();
+						if(back.equals("")){
+								usedAccrualTotals = tl.getUsedAccrualTotals();
+						}
+				}
 		}
 		public void findHourCodeTotals(){
 				if(hourCodeTotals == null){
@@ -378,7 +392,7 @@ public class Document{
 								hourCodeTotals = tl.getHourCodeTotals();
 						}
 				}
-		}		
+		}
 		public boolean hasDailyBlocks(){
 				return dailyBlocks != null;
 		}
@@ -419,7 +433,7 @@ public class Document{
 				return allAccruals;
 		}		
 		public void adjustAccruals(){
-				if(employeeAccruals != null && hourCodeTotals != null){
+				if(employeeAccruals != null && usedAccrualTotals != null){
 						for(EmployeeAccrual one: employeeAccruals){
 								Accrual accrual = one.getAccrual();
 								List<Double> list = new ArrayList<>();
@@ -430,8 +444,8 @@ public class Document{
 										list.add(hrs_total);
 										try{
 												int cd_id = Integer.parseInt(related_id);
-												if(hourCodeTotals.containsKey(cd_id)){
-														double hrs_used = hourCodeTotals.get(cd_id);
+												if(usedAccrualTotals.containsKey(cd_id)){
+														double hrs_used = usedAccrualTotals.get(cd_id);
 														list.add(hrs_used);
 														if(hrs_total > hrs_used){
 																hrs_total = hrs_total - hrs_used;
@@ -446,12 +460,12 @@ public class Document{
 												list.add(hrs_total); // adjusted
 												if(accrual.hasPref_max_leval()){
 														if(hrs_total > accrual.getPref_max_level()){
-																warnings.add(" Accrual balance of "+hrs_total+" greater than "+accrual.getPref_max_level());
+																warnings.add(accrual.getName()+" Accrual balance of "+hrs_total+" greater than "+accrual.getPref_max_level());
 														}
 												}
 												allAccruals.put(accName, list);
 										}catch(Exception ex){
-												System.err.println(" doc "+ex);
+												logger.error(ex);
 										}
 								}
 						}
@@ -476,6 +490,7 @@ public class Document{
 								one.setDocument_id(id);
 								// we need to set the day date
 								//
+								one.setOrder_index(j);								
 								String dt = Helper.getDateAfter(date, j);
 								one.setDate(dt);
 								// we use start date from payperiod and we add j days to it

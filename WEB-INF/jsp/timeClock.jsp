@@ -8,10 +8,10 @@
 <s:form action="timeClock" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:if test="action == ''">
-		<h3>Swipe your ID Card</h3>
+		<h4>Swipe your ID Card</h4>
 	</s:if>
 	<s:else>
-		<h3>Time Clock</h3>
+		<h4>Time Clock</h4>
 	</s:else>
   <s:if test="hasActionErrors()">
 		<div class="errors">

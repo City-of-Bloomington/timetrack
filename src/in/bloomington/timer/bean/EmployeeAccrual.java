@@ -110,6 +110,10 @@ public class EmployeeAccrual extends CommonInc{
 				if(val != null)
 						date = val;
     }
+		public String toString(){
+				String ret = getEmployee_id()+" "+getAccrual_id()+" "+getRelated_hour_code_id()+" "+getHours();
+				return ret;
+		}
 		public Accrual getAccrual(){
 				if(accrual == null && !accrual_id.equals("")){
 						Accrual one = new Accrual(accrual_id);

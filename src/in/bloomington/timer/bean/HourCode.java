@@ -234,7 +234,7 @@ public class HourCode extends Type{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,count_as_regular=?, inactive=?,reg_default=? where id=?";
+				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,count_as_regular_pay=?, inactive=?,reg_default=? where id=?";
 				if(name.equals("")){
 						msg = "Hour code name is required";
 						return msg;

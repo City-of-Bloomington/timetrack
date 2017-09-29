@@ -57,7 +57,8 @@ public class PayPeriodList{
 						"date_format(p.start_date,'%m/%d/%Y'), "+
 						"date_format(p.end_date,'%m/%d/%Y'), "+
 						"year(p.start_date),month(p.start_date),day(p.start_date),"+
-						"year(p.end_date),month(p.end_date),day(p.end_date) "+
+						"year(p.end_date),month(p.end_date),day(p.end_date),"+
+						"datediff(p.end_date,p.start_date) "+
 						"from pay_periods p ";				
 				String qw = "";
 				if(currentOnly){
@@ -100,7 +101,8 @@ public class PayPeriodList{
 																		 rs.getInt(6),
 																		 rs.getInt(7),
 																		 rs.getInt(8),
-																		 rs.getInt(9));
+																		 rs.getInt(9),
+																		 rs.getInt(10));
 								periods.add(one);
 						}
 				}

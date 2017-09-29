@@ -353,6 +353,48 @@ public class Helper{
 						}
 				}
     }
+    public final static void databaseDisconnect(Connection con,
+																								ResultSet rs,
+																								Statement... stmt) {
+				try {
+						if(rs != null) rs.close();
+						rs = null;
+						if(stmt != null){
+								for(Statement one:stmt){
+										if(one != null)
+												one.close();
+										one = null;
+								}
+						}
+						if(con != null) con.close();
+						con = null;
+						logger.debug("Closed Connection "+c_con);
+						c_con--;
+						if(c_con < 0) c_con = 0;
+				}
+				catch (Exception e) {
+						e.printStackTrace();
+				}
+				finally{
+						if (rs != null) {
+								try { rs.close(); } catch (SQLException e) { }
+								rs = null;
+						}
+						if (stmt != null) {
+								try {
+										for(Statement one:stmt){										
+												if(one != null)
+														one.close(); 
+												one = null;
+										}
+								} catch (SQLException e) { }
+						}
+						if (con != null) {
+								try { con.close(); } catch (SQLException e) { }
+								con = null;
+						}
+				}
+    }		
     /**
      * Write the number in bbbb.bb format needed for currency.
      *
@@ -630,8 +672,8 @@ public class Helper{
 				out.println("</html>");
 				out.close();
     }
-		public final static String getDateAfter(String dt, int days){
-				String dt2 = dt;
+		public final static String getDateAfter(final String dt, final int days){
+				String dt2 = "";
 				if(days == 0){
 						return dt;
 				}
@@ -657,7 +699,7 @@ public class Helper{
 						dt2 += dd+"/";
 						dt2 += yy;
 				}catch(Exception ex){
-						System.err.println(ex);
+						System.err.println("helper getDate after "+ex);
 				}
 				return dt2;
 

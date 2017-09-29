@@ -19,16 +19,18 @@ public class TimeBlockAction extends TopAction{
 		static final long serialVersionUID = 4300L;
 		DecimalFormat dFormat = new DecimalFormat("###.00");
 		static Logger logger = Logger.getLogger(TimeBlockAction.class);
+		// final static List<String> hoursList = Arrays.asList("0","1","2","3","4","5","6","7","8","9","10","11","12");
+		// final static List<String> minsList = Arrays.asList("00","05","10","15","20","25","30","35","40","45","50","55");		
 		//
 		TimeBlock timeBlock = null;
 		String timeBlocksTitle = "Time Block Entry";
 		String document_id = "", selected_job_id="";
 		String date = "";
+		int order_index = 0;
 		Employee employee = null;
 		Document document = null;
 		PayPeriod payPeriod = null;
 		List<EmployeeAccrual> employeeAccruals = null;
-		Map<Integer, Double> hourCodeTotals = null;
 		JobTask selectedJob = null;		
 		List<JobTask> jobTasks = null;
 		List<HourCode> hourCodes = null;
@@ -93,6 +95,7 @@ public class TimeBlockAction extends TopAction{
 										addActionError(back);
 								}
 								selected_job_id = timeBlock.getJob_id();
+								document_id = timeBlock.getDocument_id();
 						}
 
 				}
@@ -101,9 +104,13 @@ public class TimeBlockAction extends TopAction{
 		public TimeBlock getTimeBlock(){ 
 				if(timeBlock == null){
 						timeBlock = new TimeBlock();
-						timeBlock.setId(id);
-						timeBlock.setDocument_id(document_id);
-						timeBlock.setDate(date);
+						if(!id.equals(""))
+								timeBlock.setId(id);
+						if(!document_id.equals(""))
+								timeBlock.setDocument_id(document_id);
+						if(!date.equals(""))
+								timeBlock.setDate(date);
+						timeBlock.setOrder_index(order_index);
 				}
 				return timeBlock;
 		}
@@ -119,6 +126,16 @@ public class TimeBlockAction extends TopAction{
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;
+		}
+		public void setOrder_index(int val){
+				if(val > 0)
+						order_index = val;
+		}
+		public int getOrder_index(){
+				if(order_index == 0 && timeBlock != null){
+						order_index = timeBlock.getOrder_index();
+				}
+				return order_index;
 		}
 		//
 		// this is passed through the link
@@ -226,71 +243,26 @@ public class TimeBlockAction extends TopAction{
 		// we know we have document_id, we can use to find
 		// employee accruals (if any)
 		public List<EmployeeAccrual> getEmpAccruals(){
-				if(employeeAccruals == null){
-						EmployeeAccrualList al = new EmployeeAccrualList();						
-						getDocument_id();
-						al.setDocument_id(document_id);
-						String back = al.find();
-						if(back.equals("")){
-								List<EmployeeAccrual> ones = al.getEmployeeAccruals();
-								if(ones != null && ones.size() > 0){
-										employeeAccruals = ones;
-								}
-						}
-						// now we adjust the totals see below
-						findHourCodeTotals();
-						adjustAccruals();
+				if(document == null){
+						getDocument();
 				}
+				if(document.hasAllAccruals()){
+						employeeAccruals = document.getEmpAccruals();
+				}						
 				return employeeAccruals;
 		}
 		public boolean hasEmpAccruals(){
 				getEmpAccruals();
 				return employeeAccruals != null && employeeAccruals.size() > 0;
 		}
-		public void findHourCodeTotals(){
-				if(hourCodeTotals == null){
-						TimeBlockList tl = new TimeBlockList();
-						tl.setActiveOnly();
-						if(document_id.equals("")){
-								getDocument_id();
-						}
-						tl.setDocument_id(document_id);
-						String back = tl.find();
-						if(back.equals("")){
-								hourCodeTotals = tl.getHourCodeTotals();
-						}
-				}
+		/*
+		public List<String> getHoursList(){
+				return hoursList;
 		}
-		//
-		// we need to adjust accruals according to hour code use totals
-		// so that the balance is what will be available to use
-		//
-		public void adjustAccruals(){
-				if(employeeAccruals != null && hourCodeTotals != null){
-						for(EmployeeAccrual one: employeeAccruals){
-								String related_id = one.getRelated_hour_code_id();
-								if(related_id != null && !related_id.equals("")){
-										try{
-												int cd_id = Integer.parseInt(related_id);
-												if(hourCodeTotals.containsKey(cd_id)){
-														double hrs_used = hourCodeTotals.get(cd_id);
-														double hrs_total = one.getHours();
-														// System.err.println(" total used "+hrs_total+" "+hrs_used);
-														if(hrs_total > hrs_used){
-																hrs_total = hrs_total - hrs_used;
-														}
-														else
-																hrs_total = 0.0;
-														one.setHours(hrs_total);
-												}
-										}catch(Exception ex){
-
-										}
-								}
-						}
-				}
+		public List<String> getMinsList(){
+				return minsList;
 		}		
-
+		*/		
 }
 
 

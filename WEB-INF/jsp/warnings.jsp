@@ -7,6 +7,6 @@
 <b>Warnings</b>
 <ul>
 	<s:iterator var="one" value="#warnings">
-		<li><s:property /></li>
+		<li class="th_text"><s:property /></li>
 	</s:iterator>
 </ul>

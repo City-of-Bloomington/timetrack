@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Hashtable;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
@@ -23,7 +26,11 @@ public class TimeBlock extends Block{
 		private String inactive=""; // for deleted stuff;
 		String hour_code = ""; // for showing on jsp
 		String action_by_id="", action_type=""; // for logs
-		int order_index=0;
+		// order_index is day order in the payperiod day list
+		// Mond=0, Tue=1, Wed=2, Thu=3, Fr=4, Sat=5, Sun=6, .. Sat=12, Sun=13
+		final static Set<Integer> weekendSet = new HashSet<>(Arrays.asList(5,6,12,13));
+		int order_index=0, repeat_count=0;
+		boolean include_weekends = false;
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
 		// for clock_in
@@ -91,6 +98,15 @@ public class TimeBlock extends Block{
 		public String getHour_code(){
 				return hour_code;
 		}
+		public String getRepeat_count(){
+				return "";
+		}
+		public boolean getInclude_weekends(){
+				return false;
+		}
+		public int getOrder_index(){
+				return order_index;
+		}
     //
     // setters
     //
@@ -107,12 +123,24 @@ public class TimeBlock extends Block{
 						hour_code = val;
 		}		
 		public void setOrder_index(int val){
-				order_index = val;
+				if(val > 0)
+						order_index = val;
 		}
 		public void setAction_type(String val){
 				if(val != null)
 						action_type = val;
-		}		
+		}
+		public void setRepeat_count(String val){
+				if(val != null && !val.equals("")){
+						try{
+								repeat_count = Integer.parseInt(val);
+						}catch(Exception ex){}
+				}
+		}
+		public void setInclude_weekends(boolean val){
+				if(val) 
+						include_weekends = val;
+		}
 		public void setAccrual_balance(String[] vals){
 				if(vals != null){
 						for(String str: vals){
@@ -131,37 +159,66 @@ public class TimeBlock extends Block{
 				return Helper.getDayInt(date);
 		}
 		public void setTime_in(String val){
-				if(val != null && !val.equals("")){
-						if(val.indexOf(":") > -1){
-								String dd[] = val.split(":");
-								if(dd != null){
-										try{
-												begin_hour = Integer.parseInt(dd[0]);
-												begin_minute = Integer.parseInt(dd[1]);
-										}catch(Exception ex){
-												System.err.println(ex);
-										}
-								}
-						}
-				}
+				splitTimes(val, false);
 		}
 		public void setTime_out(String val){
-				if(val != null && !val.equals("")){
-						if(val.indexOf(":") > -1){
-								String dd[] = val.split(":");
-								if(dd != null){
-										try{
-												end_hour = Integer.parseInt(dd[0]);
-												end_minute = Integer.parseInt(dd[1]);
-										}catch(Exception ex){
-												System.err.println(ex);
+				splitTimes(val, true);
+		}
+		private void splitTimes(String val, boolean isOut){
+				if(val != null){
+						int hrs = 0, mins=0;
+						boolean is_pm = false;				
+						String val2 = val.toLowerCase();
+						if(val2 != null && !val2.equals("")){
+								if(val2.indexOf("a") > -1){
+										val2 = val2.substring(0,val2.indexOf("a"));
+								}
+								else if(val2.indexOf("p") > -1){
+										val2 = val2.substring(0,val2.indexOf("p"));
+										is_pm = true;
+								}
+								// else in standard army format
+								if(val2.indexOf(":") > -1){
+										String dd[] = val2.split(":");
+										if(dd != null){
+												try{
+														hrs = Integer.parseInt(dd[0].trim());
+														mins = Integer.parseInt(dd[1].trim());
+														if(is_pm && hrs < 12){
+																hrs += 12;
+														}
+														if(!is_pm && hrs == 12){ // 12 am case
+																hrs = 0;
+														}
+														if(isOut){
+																end_hour = hrs;
+																end_minute = mins;
+														}
+														else{
+																begin_hour = hrs;
+																begin_minute = mins;
+														}
+												}catch(Exception ex){
+														logger.error(ex);
+												}
 										}
 								}
 						}
 				}
-		}
+		}				
 		public String getTime_in(){
 				String ret = "";
+				String am_pm = "AM";
+				if(begin_hour > 12){
+						begin_hour -= 12;						
+						am_pm = "PM";
+				}
+				else if(begin_hour == 12){
+						am_pm = "PM";
+				}
+				else if(begin_hour == 0){
+						begin_hour = 12;
+				}
 				if(begin_hour < 10){
 						ret = "0";
 				}
@@ -169,11 +226,22 @@ public class TimeBlock extends Block{
 				if(begin_minute < 10){
 						ret += "0";
 				}
-				ret += begin_minute;
+				ret += begin_minute+" "+am_pm;
 				return ret;
 		}
 		public String getTime_out(){
 				String ret = "";
+				String am_pm = "AM";
+				if(end_hour > 12){
+						end_hour -= 12;
+						am_pm = "PM";
+				}
+				else if(end_hour == 12){
+						am_pm = "PM";
+				}
+				else if(end_hour == 0){
+						end_hour = 12; // for 12 am
+				}
 				if(end_hour < 10){
 						ret = "0";
 				}
@@ -181,7 +249,7 @@ public class TimeBlock extends Block{
 				if(end_minute < 10){
 						ret += "0";
 				}
-				ret += end_minute;
+				ret += end_minute+" "+am_pm;;
 				return ret;
 		}
 		public String getTimeInfo(){
@@ -229,8 +297,23 @@ public class TimeBlock extends Block{
 		public boolean checkIfEndTimeChanged(){
 				return (end_hour + end_minute) > 0;
 		}
+		private void adjustAccraulBalance(String code_id, double hrs){
+				if(accrualBalance != null){
+						if(accrualBalance.containsKey(code_id)){
+								String val = accrualBalance.get(code_id);
+								try{
+										double aval = Double.parseDouble(val);
+										aval = aval - hrs;
+										if(aval >= 0){
+												accrualBalance.put(code_id, ""+aval);
+										}
+								}catch(Exception ex){}
+						}
+				}
+
+		}
 		/**
-		 * check if the data entry conflext with existing data on the same
+		 * check if the data entry conflict with existing data on the same
 		 * day for Time entry, we do not check for hours entry,
 		 * we ignore inactive records
 		 select t.id from time_blocks t where t.document_id=2 and t.date = '2017-08-03' and ((13.0 > t.begin_hour+t.begin_minute/60. and 13.0 < t.end_hour+t.end_minute/60.) or (16.0 > t.begin_hour+t.begin_minute/60. and 16.0 < t.end_hour+t.end_minute/60.)) and t.inactive is null;
@@ -242,9 +325,6 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg = "";
-				if(isHourType()){
-						return checkWithAvailableBalance();
-				}
 				double timeIn = begin_hour+begin_minute/60.;
 				double timeOut = end_hour+end_minute/60.;				
 				String qq = " select count(*) from time_blocks t "+
@@ -255,15 +335,18 @@ public class TimeBlock extends Block{
 						qq +=" and ((? > t.begin_hour+t.begin_minute/60. "+ // start in between
 								" and ? < t.end_hour+t.end_minute/60.) or "+
 						" (? > t.begin_hour+t.begin_minute/60. "+ // end in between
-						" and ? < t.end_hour+t.end_minute/60.)) ";
+						" and ? < t.end_hour+t.end_minute/60.) or ";
+						qq +=" (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
+								" and ? <= t.end_hour+t.end_minute/60.)) ";
+						
 						if(timeOut < timeIn){
 								msg = "Time IN is greater than time OUT";
 								return msg;
 						}						
 				}
 				else if(!clock_in.equals("")){				
-						qq +=" and (? > t.begin_hour+t.begin_minute/60. "+ // start in between
-								" and ? < t.end_hour+t.end_minute/60.) ";
+						qq +=" and (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
+								" and ? <= t.end_hour+t.end_minute/60.) ";
 				}
 				// for updates we would have an id to exclude
 				if(!id.equals("")){
@@ -289,6 +372,9 @@ public class TimeBlock extends Block{
 							 || (!clock_in.equals("") && !clock_out.equals(""))){								
 								pstmt.setDouble(jj++, timeOut);
 								pstmt.setDouble(jj++, timeOut);
+								
+								pstmt.setDouble(jj++, timeIn);
+								pstmt.setDouble(jj++, timeOut);
 						}
 						if(!id.equals("")){
 								pstmt.setString(jj++, id);
@@ -297,7 +383,7 @@ public class TimeBlock extends Block{
 						if(rs.next()){
 								int cnt = rs.getInt(1);
 								if(cnt > 0){
-										msg = "Data entry conflict";
+										msg = "Data entry conflict on "+date+" times";
 								}
 						}
 				}
@@ -369,12 +455,10 @@ public class TimeBlock extends Block{
 				if(isHourType()){
 						// to put these in the end when ordered by begin_hour, begin_minute
 						// this for PTO, Holiday, etc
-						if(begin_hour == 0 && begin_minute == 0){
-								begin_hour = 23;
-								begin_minute = 59;
-								end_hour = 23;
-								end_minute = 59;
-						}
+						begin_hour = 23;
+						begin_minute = 59;
+						end_hour = 23;
+						end_minute = 59;
 				}
 				else {
 						hours = (end_hour+end_minute/60.) - (begin_hour+begin_minute/60.);
@@ -385,14 +469,47 @@ public class TimeBlock extends Block{
 				}
 				return msg;
 		}
+		/**
+		 * since repeat count should not exceed days in the payperiod
+		 * if so we adjust it
+		 */ 
+		private void checkRepeatCount(){
+				PayPeriod payPeriod = null;
+				int days = 13; // days in pay period - 2 days (this day excluded);
+				if(document == null){
+						getDocument();
+				}
+				if(document != null){
+						payPeriod = document.getPayPeriod();
+						if(payPeriod != null){
+								days = payPeriod.getDays() - 1;
+						}
+				}
+				if(repeat_count > 0 && !include_weekends){
+						for(int j=0;j<repeat_count+1;j++){
+								int jj=order_index+j;
+								if(weekendSet.contains(jj)){
+										repeat_count++;
+								}
+						}
+				}
+				if(repeat_count+order_index > days){
+						// we need to adjust it
+						repeat_count = days - order_index;
+						if(repeat_count < 0){
+								repeat_count = 0;
+						}
+				}
+		}
 		public String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				if(action_type.equals("")) action_type="Add";
 				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,?,null) ";
+				String qq2 = "select LAST_INSERT_ID()";
 				if((clock_in.equals("") && clock_out.equals(""))
 					 || (!clock_in.equals("") && !clock_out.equals(""))){
 						msg = prepareTimes();
@@ -412,20 +529,49 @@ public class TimeBlock extends Block{
 						msg = " hour code not set ";
 						return msg;
 				}
-				msg = checkForConflicts();
-				if(!msg.equals("")){
+				// repeat_count plus order_index should not pass the last day
+				// of pay period
+				if(repeat_count > 0){
+						checkRepeatCount();
+				}
+				con = Helper.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
 						return msg;
 				}
 				logger.debug(qq);
+				if(date.equals(""))
+						date = Helper.getToday();
 				try{
-						con = Helper.getConnection();
-						if(con != null){
+						// date2 is now the old date 
+						String date2 = date;
+						int old_order_index = order_index;
+						for(int jj=0;jj<repeat_count+1;jj++){
+								id="";
+								order_index = old_order_index+jj;
+								if(!include_weekends){
+										if(weekendSet.contains(order_index)){
+												continue;
+										}
+								}
+								if(jj > 0){
+										date = Helper.getDateAfter(date2, jj);
+								}
+								String mgtext = "";
+								if(isHourType()){
+										mgtext = checkWithAvailableBalance();
+								}
+								else{
+										mgtext = checkForConflicts();
+								}
+								if(!mgtext.equals("")){
+										msg += mgtext;
+										continue;
+								}
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, document_id);
 								pstmt.setString(2, job_id);
 								pstmt.setString(3, hour_code_id);
-								if(date.equals(""))
-										date = Helper.getToday();
 								java.util.Date date_tmp = df.parse(date);
 								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 								pstmt.setInt(5, begin_hour);
@@ -446,12 +592,30 @@ public class TimeBlock extends Block{
 								else
 										pstmt.setString(12, "y");								
 								pstmt.executeUpdate();
-						}
-						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								id = rs.getString(1);
+								pstmt2 = con.prepareStatement(qq2);
+								rs = pstmt2.executeQuery();
+								if(rs.next()){
+										id = rs.getString(1);
+								}
+								if(repeat_count > 0){
+										// if we are using accruals, we need to deduce the
+										// amount we used in this day
+										if(isHourType()){
+												adjustAccraulBalance(hour_code_id, hours);
+										}
+								}
+								TimeBlockLog tbl = new TimeBlockLog(null, document_id,
+																										job_id, hour_code_id,
+																										date,
+																										begin_hour, begin_minute,
+																										end_hour, end_minute,
+																										hours, ovt_pref,
+																										clock_in,clock_out,
+																										id,
+																										action_type,
+																										action_by_id,
+																										null);
+								msg += tbl.doSave();								
 						}
 				}
 				catch(Exception ex){
@@ -459,24 +623,8 @@ public class TimeBlock extends Block{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(con, rs, pstmt, pstmt2);
 				}
-				if(msg.equals("")){
-						TimeBlockLog tbl = new TimeBlockLog(null, document_id,
-																								job_id, hour_code_id,
-																								date,
-																								begin_hour, begin_minute,
-																								end_hour, end_minute,
-																								hours, ovt_pref,
-																								clock_in,clock_out,
-																								id,
-																								action_type,
-																								action_by_id,
-																								null);
-						msg = tbl.doSave();
-																								
-				}
-				// add log here
 				return msg;
 		}
 		//
@@ -514,7 +662,12 @@ public class TimeBlock extends Block{
 						msg = " hour code not set ";
 						return msg;
 				}
-				msg = checkForConflicts();
+				if(isHourType()){
+						msg = checkWithAvailableBalance();
+				}
+				else{
+						msg = checkForConflicts();
+				}				
 				if(!msg.equals("")){
 						return msg;
 				}

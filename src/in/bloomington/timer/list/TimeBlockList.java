@@ -37,6 +37,7 @@ public class TimeBlockList{
 		Map<Integer, Double> daily = new TreeMap<>();
 		Map<String, Double> hourCodeWeek1 = new TreeMap<>();
 		Map<String, Double> hourCodeWeek2 = new TreeMap<>();
+		Map<Integer, Double> usedAccrualTotals = new TreeMap<>();		
     public TimeBlockList(){
     }
     public TimeBlockList(String val){
@@ -109,6 +110,9 @@ public class TimeBlockList{
 		public Map<Integer, Double> getHourCodeTotals(){
 				return hourCodeTotals;
 		}
+		public Map<Integer, Double> getUsedAccrualTotals(){
+				return usedAccrualTotals;
+		}		
 		// total hour codes for week1
 		public Map<String, Double> getHourCodeWeek1(){
 				return hourCodeWeek1;
@@ -278,6 +282,65 @@ public class TimeBlockList{
 				}
 				return msg;
 		}
+		/**
+			 select t.hour_code_id, sum(t.hours)                                             from time_blocks t,time_documents d                                             where t.document_id=d.id and t.inactive is null and                             t.date >= '2017-08-01' and d.employee_id=1                                      and t.date <= (select end_date from pay_periods p,time_documents d              where p.id=d.pay_period_id and d.id=30) and t.hour_code_id in                   (select id from hour_codes where accrual_id is not null)                        group by t.hour_code_id;
+
+		 */
+		public String findUsedAccruals(){
+
+				parepareBlocks();
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", last_date="", // last accrual date
+						emp_id = "";
+				//
+				// we find the last accrual carry over date and employee id
+				// given document id
+				//
+				String qq = " ";
+				qq = " select a.date,a.employee_id from employee_accruals a,                           pay_periods p, time_documents d                                                 where d.employee_id=a.employee_id                                               and p.id = d.pay_period_id and a.date < p.start_date                            and d.id = ? order by a.date desc limit 1 ";
+				//
+				// find total hours used  PTO and other accrual related
+				// hour codes since last accrual carry over date
+				//
+				String qq2 = " select t.hour_code_id, sum(t.hours)                                     from time_blocks t,time_documents d                                             where t.document_id=d.id and t.inactive is null and                             t.date >= ? and d.employee_id=?                                                 and t.date <= (select end_date from pay_periods p,time_documents d              where p.id=d.pay_period_id and d.id=30) and t.hour_code_id in                   (select id from hour_codes where accrual_id is not null)                        group by t.hour_code_id                       ";
+				con = Helper.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, document_id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								last_date = rs.getString(1);
+								emp_id = rs.getString(2);
+						}
+						qq = qq2;
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, last_date);
+						pstmt.setString(2, emp_id);
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								int code_id = rs.getInt(1);
+								double hrs = rs.getDouble(2);
+								usedAccrualTotals.put(code_id, hrs);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}
+				return msg;
+		}		
 		void parepareBlocks(){
 				for(int i=0;i<14;i++){
 						daily.put(i,0.);
