@@ -1,3 +1,6 @@
+ansible/roles/City-of-Bloomington.*
+ansible/*.retry
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
