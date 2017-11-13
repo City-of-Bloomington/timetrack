@@ -1,0 +1,16 @@
+---
+timetrack_install_path: "/srv/webapps/timetrack"
+timetrack_base_uri: "/timetrack"
+timetrack_base_url: "https://{{ ansible_host }}{{ timetrack_base_uri }}"
+
+timetrack_db:
+  name:     "timetrack"
+  username: "timetrack"
+  password: "{{ vault_timetrack_db.password }}"
+
+mysql_conf:
+  - { option: "default_storage_engine",  value: "InnoDB" }
+  - { option: "character_set_server",    value: "utf8"   }
+  - { option: "innodb_file_per_table",   value: "1"      }
+  - { option: "lower_case_table_names",  value: "1"      }
+...

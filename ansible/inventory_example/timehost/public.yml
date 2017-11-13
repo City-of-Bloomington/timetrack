@@ -1,0 +1,7 @@
+---
+ansible_host: somewhere.org
+
+ansible_user: some_username
+ansible_ssh_pass:    "{{ vault_ansible_sudo_pass }}"
+ansible_become_pass: "{{ vault_ansible_sudo_pass }}"
+...

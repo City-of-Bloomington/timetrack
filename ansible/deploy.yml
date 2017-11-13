@@ -1,0 +1,32 @@
+---
+- hosts: timetrack
+  become: yes
+  roles:
+    - City-of-Bloomington.mysql
+    - City-of-Bloomington.tomcat
+  tasks:
+    - name: Create mysql database
+      mysql_db:
+        config_file: "{{ mysql_defaults_extra_file }}"
+        name: "{{ timetrack_db.name }}"
+        state: present
+      no_log: True
+
+    - name: Create mysql user for site
+      mysql_user:
+        name:     "{{ timetrack_db.username }}"
+        password: "{{ timetrack_db.password }}"
+        priv:     "{{ timetrack_db.name }}.*:ALL"
+        state: present
+        config_file: "{{ mysql_defaults_extra_file }}"
+      no_log: True
+
+    - name: Update apache configuration
+      template:
+        src: timetrack.conf
+        dest: /etc/apache2/sites-enabled/conf.d/timetrack.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify: apache_restart
+...
