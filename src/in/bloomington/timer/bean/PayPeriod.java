@@ -155,8 +155,30 @@ public class PayPeriod{
 				}
 				return allMonths[startMonth-1]+"/"+allMonths[endMonth-1];
 		}
+		public boolean hasTwoDifferentYears(){
+				return !(startYear == endYear);
+		}
+		// this is needed for December (31 days) only 
+		public int getDaysToYearEnd(){
+				return 31 - startDay + 1;
+		}
 		public String getDateRange(){
 				return start_date+" - "+end_date;
+		}
+		/*
+		 * for the end of the year, the pay period is divided
+		 * into two ranges from (start_date, to 12/31/first year)
+		 * and (01/01/second year to end_date)
+		*/
+		public String getFirstPayEndDate(){
+				String ret = "";
+				if(hasTwoDifferentYears()){
+						ret = "12/31/"+startYear;
+				}
+				else{
+						ret = end_date;
+				}
+				return ret;
 		}
 		public String find(){
 				Connection con = null;

@@ -28,6 +28,7 @@ public class Block{
 		double hours = 0.0;
 		int begin_hour = 0, begin_minute=0, end_hour=0, end_minute=0;
 		HourCode hourCode = null;
+		CodeRef codeRef = null;
 		JobTask jobTask = null;
 		Document document = null;
 		boolean hourCodeSet = false;
@@ -239,6 +240,29 @@ public class Block{
 				}
 				return hourCode;
 		}
+		public boolean hasCodeRef(){
+				getCodeRef();
+				return codeRef != null;
+		}
+		//
+		// we need this to get the New World reference hour_codes
+		// for export purpose
+		//
+		public CodeRef getCodeRef(){
+				if(codeRef == null && !hour_code_id.equals("")){
+						CodeRefList cdr = new CodeRefList();
+						cdr.setCode_id(hour_code_id);
+						cdr.setIgnoreHash();
+						String back = cdr.find();
+						if(back.equals("")){
+								List<CodeRef> ones = cdr.getCodeRefs();
+								if(ones != null && ones.size() == 1){
+										codeRef = ones.get(0);
+								}
+						}
+				}
+				return codeRef;
+		}		
 		public Document getDocument(){
 				if(!document_id.equals("") && document == null){
 						Document one = new Document(document_id);

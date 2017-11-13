@@ -7,7 +7,7 @@
 	-->
 <s:form action="approve" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
-<h3>Approve Employees' Times</h3>
+<h4>Approve Employees' Times</h4>
 <s:if test="hasActionErrors()">
 	<div class="errors">
     <s:actionerror/>
@@ -20,18 +20,18 @@
 </s:elseif>
 <s:if test="hasGroups()">	
 	<table width="100%" border="0">
-		<tr><td align="left">
+		<tr><td align="left" class="th_text">
 			<b>Pay Period </b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" /> </td>
-			<td align="right"><a href="<s:property value='#application.url' />dataEntry.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a></td>
+			<td align="right" class="td_text"><a href="<s:property value='#application.url' />dataEntry.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a></td>
 		</tr>
 		<tr>
-			<td>
+			<td class="th_text">
 				<s:if test="hasMoreThanOneGroup()">
 					<b>Group: </b>
 					<s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
 				</s:if>
 			</td>
-			<td align="right"><b> Approver: </b><s:property value="employee" /></td>
+			<td align="right" class="td_text"><b> Approver: </b><s:property value="employee" /></td>
 		</tr>
 	</table>
 	<s:if test="hasDocuments()">
@@ -92,12 +92,12 @@
 		</table>
 	</s:if>
 	<s:if test="hasNonDocEmps()">
-		<table width="50%" border="0">
+		<table width="80%" border="0">
 			<caption>Employee(s) with no time entry for this pay period</caption>
 			<s:iterator var="one" value="nonDocEmps">
 				<tr>
-					<td width="20%">&nbsp;</td>
-					<td class="th_text"><a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve"> <s:property value="user.full_name" /></a></td>
+					<td width="20%" class="th_text">&nbsp;</td>
+					<td class="td_text"><a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve"> <s:property value="user.full_name" /></a></td>
 				</tr>
 			</s:iterator>
 		</table>

@@ -18,31 +18,66 @@ public class GroupList{
 		static final long serialVersionUID = 1600L;
 		static Logger logger = Logger.getLogger(GroupList.class);
 		String employee_id = "", department_id="", pay_period_id="";
-		boolean active_only = false;
+		String name="", id="";
+		boolean active_only = false, inactive_only=false;
 		List<Group> groups = null;
     public GroupList(){
     }
     public GroupList(String val){
 				setEmployee_id(val);
+    }
+    public void setId (String val){
+				if(val != null)
+						id = val;
     }		
     public void setEmployee_id (String val){
 				if(val != null)
 						employee_id = val;
     }
+		
     public void setPay_period_id (String val){
 				if(val != null)
 						pay_period_id = val;
     }		
     public void setDepartment_id (String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						department_id = val;
     }
-		
+		public void setName(String val){
+				if(val != null)
+						name = val;
+		}
+    public void setActive_status(String val){
+				if(val != null && !val.equals("-1")){
+						if(val.equals("Active"))
+								active_only = true;
+						else if(val.equals("Inactive"))
+								inactive_only = true;
+				}
+    }		
 		public void setActiveOnly(){
 				active_only = true;
 		}
+		public String getDepartment_id(){
+				if(department_id.equals(""))
+						return "-1";
+				return department_id;
+		}
+		public String getId(){
+				return id;
+		}		
+		public String getName(){
+				return name;
+		}
 		public List<Group> getGroups(){
 				return groups;
+		}
+		public String getActive_status(){
+				if(active_only)
+						return "Active";
+				else if(inactive_only)
+						return "Inactive";
+				return "-1";
 		}
     //
     // getters
@@ -57,6 +92,10 @@ public class GroupList{
 				if(!department_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
 						qw += "g.department_id=? ";
+				}
+				if(!name.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += "g.name like ? ";
 				}				
 				if(!employee_id.equals("") || !pay_period_id.equals("")){
 						qq += ", group_employees gu ";						
@@ -88,11 +127,15 @@ public class GroupList{
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
+						int jj=1;
 						if(!department_id.equals("")){
-								pstmt.setString(1, department_id);
+								pstmt.setString(jj++, department_id);
+						}
+						if(!name.equals("")){
+								pstmt.setString(jj++, "%"+name+"%");
 						}						
 						if(!employee_id.equals("")){
-								pstmt.setString(1, employee_id);
+								pstmt.setString(jj++, employee_id);
 						}
 						rs = pstmt.executeQuery();
 						while(rs.next()){

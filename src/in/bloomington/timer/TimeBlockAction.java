@@ -19,8 +19,6 @@ public class TimeBlockAction extends TopAction{
 		static final long serialVersionUID = 4300L;
 		DecimalFormat dFormat = new DecimalFormat("###.00");
 		static Logger logger = Logger.getLogger(TimeBlockAction.class);
-		// final static List<String> hoursList = Arrays.asList("0","1","2","3","4","5","6","7","8","9","10","11","12");
-		// final static List<String> minsList = Arrays.asList("00","05","10","15","20","25","30","35","40","45","50","55");		
 		//
 		TimeBlock timeBlock = null;
 		String timeBlocksTitle = "Time Block Entry";
@@ -34,7 +32,7 @@ public class TimeBlockAction extends TopAction{
 		JobTask selectedJob = null;		
 		List<JobTask> jobTasks = null;
 		List<HourCode> hourCodes = null;
-		Type department = null;
+		Department department = null;
 		//
 		public String execute(){
 				String ret = SUCCESS;
@@ -97,7 +95,6 @@ public class TimeBlockAction extends TopAction{
 								selected_job_id = timeBlock.getJob_id();
 								document_id = timeBlock.getDocument_id();
 						}
-
 				}
 				return ret;
 		}
@@ -255,14 +252,7 @@ public class TimeBlockAction extends TopAction{
 				getEmpAccruals();
 				return employeeAccruals != null && employeeAccruals.size() > 0;
 		}
-		/*
-		public List<String> getHoursList(){
-				return hoursList;
-		}
-		public List<String> getMinsList(){
-				return minsList;
-		}		
-		*/		
+
 }
 
 

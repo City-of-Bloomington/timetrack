@@ -59,6 +59,7 @@
 		</s:if>
 		<s:else>
 			<s:submit name="action" type="button" value="Save Changes" class="fn1-btn"/>
+			<a href="<s:property value='#application.url'/>type.action?type_name=<s:property value='type_name' />" class="fn1-btn">New <s:property value="type_name" /></a>
 		</s:else>
 	</div>
 </s:form>

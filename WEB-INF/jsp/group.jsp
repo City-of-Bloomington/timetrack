@@ -60,7 +60,8 @@
 		</s:if>
 		<s:else>
 			<s:submit name="action" type="button" value="Save Changes" class="fn1-btn"/>
-			<a href="<s:property value='#application.url' />groupManager.action?group_id=<s:property value='group.id' />" class="fn1-btn">Assign managers to group </a>					
+			<a href="<s:property value='#application.url' />groupManager.action?group_id=<s:property value='group.id' />" class="fn1-btn">Assign managers to group </a>
+			<a href="<s:property value='#application.url'/>group.action" class="fn1-btn">New Employee Group</a></li>			
 		</s:else>
 	</div>
 </s:form>

@@ -24,11 +24,14 @@ public class EmployeeList extends CommonInc{
     String id = "", user_id="", username="", name="",
 				full_name="", group_id="", group_ids="", id_code="", 
 				exclude_group_id="", groupManager_id="", department_id="",
+				dept_ref_id="", // one or more values
+				employee_number="",
 				no_document_for_payperiod_id="";
 		Set<String> group_id_set = new HashSet<>();
-		boolean active_only = false;
+		boolean active_only = false, inactive_only = false, hasEmployeeNumber=false;
 		boolean includeAllDirectors = false;
 		List<Employee> employees = null;
+		List<Group> groups = null;
     //
     // basic constructor
     public EmployeeList(){
@@ -38,13 +41,42 @@ public class EmployeeList extends CommonInc{
 
 				setName(val);
     }
+		public String getId(){
+				return id;
+		}
+		public String getEmployee_number(){
+				return employee_number;
+		}
+		public String getId_code(){
+				return id_code;
+		}
+		public String getActiveStatus(){
+				if(active_only)
+						return "Active";
+				if(inactive_only)
+						return "Inactive";
+				return "-1";
+		}
+		public String getGroup_id(){
+				if(group_id.equals(""))
+						return "-1";
+				return group_id;
+		}
+		public String getDepartment_id(){
+				if(department_id.equals(""))
+						return "-1";
+				return department_id;
+		}
+		public String getName(){
+				return name;
+		}
     //
     // setters
     //
 		public void setId(String val){
 				if(val != null)
 						id = val;
-		}		
+		}
 		public void setName(String val){
 				if(val != null)
 						name = val;
@@ -60,13 +92,21 @@ public class EmployeeList extends CommonInc{
 		public void setId_code(String val){
 				if(val != null)
 						id_code = val;
-		}				
+		}
+		public void setEmployee_number(String val){
+				if(val != null)
+					 employee_number = val;
+		}		
+		public void setDept_ref_id(String val){
+				if(val != null)
+						dept_ref_id = val;
+		}
 		public void setDepartment_id(String val){
 				if(val != null && !val.equals("-1"))
 						department_id = val;
 		}		
 		public void setGroup_id(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.equals("-1")){
 						group_id = val; // for the last
 						if(!group_id_set.contains(val)){
 								group_id_set.add(val);
@@ -91,11 +131,42 @@ public class EmployeeList extends CommonInc{
 		public void setActiveOnly(){
 				active_only = true;
 		}
+		public void setActiveStatus(String val){
+				if(val != null && !val.equals("-1")){
+						if(val.equals("Active"))
+								active_only = true;
+						else if(val.equals("Inactive")){
+								inactive_only = true;
+						}
+				}
+		}
 		public void includeAllDirectors(){
 				includeAllDirectors = true;
 		}
+		public void setHasEmployeeNumber(){
+				hasEmployeeNumber = true;
+		}
 		public List<Employee> getEmployees(){
 				return employees;
+		}
+		public List<Group> getGroups(){
+				if(groups == null && !department_id.equals("")){
+						GroupList tl = new GroupList();
+						tl.setDepartment_id(department_id);
+						tl.setActiveOnly();
+						String back = tl.find();
+						if(back.equals("")){
+								List<Group> ones = tl.getGroups();
+								if(ones != null && ones.size() > 0){
+										groups = ones;
+								}
+						}
+				}
+				return groups;
+		}
+		public boolean hasGroups(){
+				getGroups();
+				return groups != null && groups.size() > 0;
 		}
     public String find(){
 				//
@@ -115,7 +186,7 @@ public class EmployeeList extends CommonInc{
 				else{
 						if(!name.equals("")){
 								if(!qw.equals("")) qw += " and ";
-								qw += " u.last_name like ? ";
+								qw += " (u.last_name like ? or u.first_name like ?)";
 						}
 						if(!username.equals("")){
 								if(!qw.equals("")) qw += " and ";
@@ -134,6 +205,16 @@ public class EmployeeList extends CommonInc{
 								else{
 										qw += " de.department_id = ? ";
 								}
+						}
+						if(!dept_ref_id.equals("")){
+								qq += " join department_employees de on de.employee_id=e.id  ";
+								qq += " join departments dd on de.department_id=dd.id ";
+								if(!qw.equals("")) qw += " and ";
+								qw += " dd.ref_id in (?) ";
+						}
+						if(hasEmployeeNumber){ // related to previous one
+								if(!qw.equals("")) qw += " and ";								
+								qw += " e.employee_number is not null";
 						}
 						if(!group_ids.equals("")){
 								qq += " join group_employees ge on ge.employee_id=e.id  ";
@@ -156,6 +237,10 @@ public class EmployeeList extends CommonInc{
 						if(active_only){
 								if(!qw.equals("")) qw += " and ";
 								qw += " u.inactive is null ";
+						}
+						else if(inactive_only){
+								if(!qw.equals("")) qw += " and ";
+								qw += " u.inactive is not null ";
 						}
 				}
 				if(!qw.equals(""))
@@ -181,6 +266,7 @@ public class EmployeeList extends CommonInc{
 						else{
 								if(!name.equals("")){
 										pstmt.setString(jj++,name+"%");
+										pstmt.setString(jj++,name+"%");										
 								}
 								if(!username.equals("")){ // for auto_complete 
 										pstmt.setString(jj++,username+"%");
@@ -190,7 +276,10 @@ public class EmployeeList extends CommonInc{
 								}
 								if(!department_id.equals("")){
 										pstmt.setString(jj++, department_id);
-								}												
+								}
+								if(!dept_ref_id.equals("")){
+										pstmt.setString(jj++, dept_ref_id);
+								}
 								if(!exclude_group_id.equals("")){
 										pstmt.setString(jj++, exclude_group_id);
 								}

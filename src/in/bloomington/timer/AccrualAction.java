@@ -85,7 +85,6 @@ public class AccrualAction extends TopAction{
 				return accrualsTitle;
 		}
 
-
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;

@@ -22,8 +22,9 @@ public class TimeBlockList{
 		static Logger logger = Logger.getLogger(TimeBlockList.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
 		String employee_id = "", pay_period_id="", job_id="";
-		String date_from="", date_to="", document_id="";
+		String date_from="", date_to="", document_id="", department_id="";
 		String date = "";// specific day
+		String code = "", code2 = ""; // needed for HAND and planning
 		boolean active_only = false, for_today = false, dailyOnly=false,
 				clockInOnly = false, hasClockInAndOut = false;
 		double total_hours = 0.0;
@@ -54,6 +55,10 @@ public class TimeBlockList{
     public void setJob_id (String val){
 				if(val != null)
 						job_id = val;
+    }
+    public void setDepartment_id(String val){
+				if(val != null)
+						department_id = val;
     }		
     public void setPay_period_id (String val){
 				if(val != null)
@@ -70,6 +75,14 @@ public class TimeBlockList{
     public void setDate(String val){
 				if(val != null)
 						date = val;
+    }
+    public void setCode(String val){
+				if(val != null)
+						code = val;
+    }
+    public void setCode2(String val){
+				if(val != null)
+						code2 = val;
     }		
 		public String getEmployee_id(){
 				return employee_id;
@@ -153,13 +166,19 @@ public class TimeBlockList{
 						"t.clock_in,"+
 						"t.clock_out,"+
 						"t.inactive,"+
-						" datediff(t.date,p.start_date), "+
-						" c.name "+
+						" datediff(t.date,p.start_date), "+ // order id start at 0
+						" c.name,c.description,cf.nw_code "+
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
-						" join hour_codes c on t.hour_code_id=c.id ";
+						" join hour_codes c on t.hour_code_id=c.id "+
+						" left join code_cross_ref cf on c.id=cf.code_id ";
 				String qw = "";
+				if(!department_id.equals("")){
+						qq += ", department_employees de ";
+						if(!qw.equals("")) qw += " and ";								
+						qw += "  de.employee_id=d.employee_id and de.department_id=? ";
+				}
 				if(!pay_period_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
 						qw += "d.pay_period_id=? ";
@@ -188,6 +207,14 @@ public class TimeBlockList{
 						if(!qw.equals("")) qw += " and ";
 						qw += "t.date = ? ";
 				}
+				if(!code.equals("") && !code2.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "(c.name like ? or c.name like ?)";
+				}
+				else if(!code.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "c.name like ? ";
+				}
 				if(clockInOnly){
 						if(!qw.equals("")) qw += " and ";
 						qw += " t.clock_in is not null and t.clock_out is null ";
@@ -214,6 +241,9 @@ public class TimeBlockList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
+						if(!department_id.equals("")){
+								pstmt.setString(jj++, department_id);
+						}										
 						if(!pay_period_id.equals("")){
 								pstmt.setString(jj++, pay_period_id);
 						}
@@ -237,13 +267,28 @@ public class TimeBlockList{
 						if(!date.equals("")){
 								java.util.Date date_tmp = df.parse(date);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-						}									
+						}
+						if(!code.equals("") && !code2.equals("")){
+								pstmt.setString(jj++, code);
+								pstmt.setString(jj++, code2);								
+						}
+						else if(!code.equals("")){
+								pstmt.setString(jj++, code);
+						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								double hrs = rs.getDouble(10);
 								int order_id = rs.getInt(15);
 								int hr_code_id = rs.getInt(4);
 								String hr_code = rs.getString(16);
+								if(hr_code != null){
+										if(hr_code.indexOf("ONCALL") > -1){ // oncall35 id=17
+												hrs = 1.0;
+										}
+										else if(hr_code.indexOf("CO") > -1){ // Call Out id=16
+												if(hrs < 3.) hrs = 3;
+										}
+								}								
 								if(!dailyOnly){
 										if(timeBlocks == null)
 												timeBlocks = new ArrayList<>();
@@ -263,7 +308,9 @@ public class TimeBlockList{
 																			rs.getString(13),
 																			rs.getString(14) != null,
 																			rs.getInt(15),
-																			hr_code
+																			hr_code,
+																			rs.getString(17),
+																			rs.getString(18)
 																			);
 										timeBlocks.add(one);
 										addToBlocks(order_id, one);										

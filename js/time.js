@@ -71,7 +71,18 @@ $("#emp_name").autocomplete({
 //						.attr("data-value",item.value)
 //            .appendTo(ul);
 //    };
-
+$("#employee_name").autocomplete({
+    source: APPLICATION_URL + "DbEmployeeService?format=json",
+    minLength: 2,
+		dataType:"json",
+    delay: 100,
+    select: function( event, ui ) {
+        if(ui.item){
+            $("#employee_name").val(ui.item.full_name);
+						$("#employee_id").val(ui.item.id);
+        }
+    }
+		})
 jQuery(function ($) {
     var launcherClick = function(e)  {
             var openMenus   = $('.menuLinks.open'),
@@ -136,13 +147,15 @@ $('#hour_code_select').change(function() {
 				$('#div_time_in').val(0);
 				$('#div_time_out').val(0);			
 				$('#div_time_in').hide();
-				$('#div_time_out').hide();				
+				$('#div_time_out').hide();
+				$('#div_overnight').hide();
 		}
 		else{
 				$('#div_hour_change').val(0);
 				$('#div_hours').hide();
 				$('#div_time_in').show();
-				$('#div_time_out').show();	
+				$('#div_time_out').show();
+				$('#div_overnight').show();
 		}
 });
 /**

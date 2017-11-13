@@ -1,0 +1,645 @@
+package in.bloomington.timer.timewarp;
+/**
+ * @copyright Copyright (C) 2014-2016 City of Bloomington, Indiana. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
+ * @author W. Sibo <sibow@bloomington.in.gov>
+ */
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.*;
+import java.sql.*;
+import java.text.*;
+import in.bloomington.timer.*;
+import in.bloomington.timer.util.*;
+import in.bloomington.timer.bean.*;
+import in.bloomington.timer.list.*;
+import org.apache.log4j.Logger;
+
+
+public class PayPeriodProcess{
+
+		boolean debug = false;
+		static Logger logger = Logger.getLogger(PayPeriodProcess.class);
+		static final long serialVersionUID = 180L;				
+		String regCode="Reg"; // TEMP for temporary work
+		Employee employee = null;
+		Profile profile = null;
+		PayPeriod payPeriod = null;
+		Document document = null;
+		boolean twoDifferentYears = false;
+		boolean weekOneHasSplit = false;
+		static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		static DecimalFormat df = new DecimalFormat("#0.00");
+		static DecimalFormat df4 = new DecimalFormat("#0.0000");
+
+		final static String profHrsCode = "PROF HRS";
+		WeekEntry week1 = null, week2 = null;
+		//
+		// List<Holiday> holys = null;
+		HolidayList holyList = null;
+		int year = 2017, splitDay = 14; // default 14 no split
+		String status = "No data";
+		CodeRefList codeRefList = null;
+		// for HAND only
+		Hashtable<CodeRef, String> handHash = null;
+		//
+		// a flag to distinguish between html or csv
+		boolean csvOutput = false; // default html
+		//
+		// the compt time critical limit that the employee must keep
+		// below that limit by using CU instead of PTO
+		//
+		static double compTimeAccrualLimit = 10f;
+		
+		boolean isHand = false; // HAND dept has special treatment
+		//		
+		// two week entries for display purpose
+		//
+		Map<String, Entry> entries = null;
+		Entry firstEntry=null, lastEntry=null;
+		//
+		public PayPeriodProcess(Employee val,
+														Profile val2,
+														PayPeriod val3,
+														HolidayList val4,
+														boolean val5, // HAND flag
+														boolean val6){ // csv flag
+				setEmployee(val);
+				setProfile(val2);
+				setPayPeriod(val3);
+				setHolidayList(val4);
+				setIsHand(val5);
+				setCsvOutuput(val6);
+				//
+				// prepare the objects
+				//
+				setWeekEntries();
+		}
+		public void setEmployee(Employee val){
+				if(val != null){
+						employee = val;
+				}
+		}
+		public void setProfile(Profile val){
+				if(val != null){
+						profile = val;
+				}
+		}
+		public void setHolidayList(HolidayList val){
+				if(val != null){
+					 holyList = val;
+				}
+		}
+		public void setIsHand(boolean val){
+				isHand = val;
+		}
+		public void setCsvOutuput(boolean val){
+				csvOutput = val;
+		}
+		public Employee getEmployee(){
+				return employee;
+		}
+		public Profile getProfile(){
+				return profile;
+		}
+		private void setWeekEntries(){
+		
+				if(payPeriod.hasTwoDifferentYears()){
+						twoDifferentYears = true;
+						splitDay = payPeriod.getDaysToYearEnd();
+						//
+						if(splitDay < 7){
+								weekOneHasSplit = true;
+								week1 = new WeekEntry(debug, profile, isHand, splitDay);
+								week2 = new WeekEntry(debug, profile, isHand);
+						}
+						else{
+								week1 = new WeekEntry(debug, profile, isHand);
+								week2 = new WeekEntry(debug, profile, isHand, splitDay-7);
+						}
+				}
+				else{
+						week1 = new WeekEntry(debug, profile, isHand);
+						week2 = new WeekEntry(debug, profile, isHand);
+				}
+		}
+    //
+    public void setPayPeriod (PayPeriod val){
+				if(val != null){
+						payPeriod = val;
+						year = payPeriod.getStartYear();
+						//
+						// replace this with document getTimeActions 
+						// findStatus();
+				}
+    }
+
+		//
+		String getStatus(){
+				return status;
+		}
+		public String getRegCode(){
+				return regCode;
+		}
+		double getWeek1Total(){
+				return week1.getTotalHours();
+		}
+		double getWeek2Total(){
+				return week2.getTotalHours();		
+		}
+		double get2WeekTotal(){
+				return getWeek1Total()+getWeek2Total();
+		}
+		double getWeek1Regular(){
+				return week1.getRegularHours();
+		}
+		double getWeek2Regular(){
+				return week2.getRegularHours();		
+		}
+		double getWeek1NetRegular(){
+				return week1.getNetRegular();
+		}
+		double getWeek2NetRegular(){
+				return week2.getNetRegular();
+		}	
+		double get2WeekRegular(){
+				return getWeek1Regular()+getWeek2Regular();
+		}
+		public double get2WeekNetRegular(){
+				return getWeek1NetRegular()+getWeek2NetRegular();
+		}
+		public double getTwoWeekNetRegular(){
+				return getWeek1NetRegular()+getWeek2NetRegular();
+		}
+		public String getProfHrsCode(){
+				return profHrsCode;
+		}
+		boolean hasProfHours(){
+				return week1.getProfHours() + week2.getProfHours() > 0;
+		}
+		boolean hasTwoDifferentYears(){
+				return twoDifferentYears;
+		}
+		boolean weekOneHasSplit(){
+				return weekOneHasSplit;
+		}
+		double getProfHours(){
+				return week1.getProfHours() + week2.getProfHours();
+		}
+		//
+		public void addToHash(String nw_code, double hours, Hashtable<String, Double> hval){
+				if(!nw_code.equals("") && hours > 0){
+						if(hval.containsKey(nw_code)){
+								double hrs = hval.get(nw_code).doubleValue();
+								hrs += hours;
+								hval.put(nw_code, hrs); // adjust total
+						}
+						else{ // add new entry
+								hval.put(nw_code, hours);
+						}
+				}
+		}		
+		public void addToHash(TimeBlock te, Hashtable<String, Double> hval){
+				if(hval.containsKey(te.getNw_code())){
+						double hours = hval.get(te.getNw_code()).doubleValue();
+						hours += te.getHours();
+						hval.put(te.getNw_code(), hours); // adjust total
+				}
+				else{ // add new entry
+						hval.put(te.getNw_code(), te.getHours());
+				}
+		}
+
+		public Hashtable<String, Double> getNonRegularHours(){
+				// return hash;
+				Hashtable<String, Double> reg1 = week1.getNonRegularHours();
+				Hashtable<String, Double> reg2 = week2.getNonRegularHours();
+				mergeTwoHashes(reg2, reg1);
+				return reg1;		
+				
+		}
+
+		public Hashtable<String, Double> getWeek1NonRegularHours(){
+				return week1.getNonRegularHours();
+		}
+		public Hashtable<String, Double> getWeek2NonRegularHours(){
+				return week2.getNonRegularHours();
+		}
+		public Hashtable<String, Double> getWeek1RegHash(){
+				return week1.getRegularHash();
+		}
+		public Hashtable<String, Double> getWeek2RegHash(){
+				return week2.getRegularHash();
+		}
+		/**
+		 * consolication of two weeks regular hours (needed for HAND)
+		 */
+		public Hashtable<String, Double> get2WeekRegularHash(){
+				Hashtable<String, Double> reg1 = week1.getRegularHash();
+				Hashtable<String, Double> reg2 = week2.getRegularHash();
+				mergeTwoHashes(reg2, reg1);
+				return reg1;		
+		}
+		
+		public Hashtable<String, Double> getWeekSplitNonRegularHours(int week_no, int split_no){
+				WeekEntry week = null;		
+				if(week_no == 1)
+						week = week1;
+				else
+						week = week2;
+				if(split_no == 1)
+						return week.splitOne.getNonRegularHours();
+				else
+						return week.splitTwo.getNonRegularHours();
+		}
+		public Hashtable<String, Double> getWeek1All(){
+				return week1.getAll();
+		}
+		public Hashtable<String, Double> getWeek2All(){
+				return week2.getAll();
+		}
+		// two weeks all
+		public Hashtable<String, Double> getAll(){
+				Hashtable<String, Double> all = new Hashtable<String, Double>();
+				all.putAll(week1.getAll());
+				Hashtable<String, Double> w2all = week2.getAll();
+				mergeTwoHashes(w2all, all);
+				return all;
+		}
+		boolean hasWeek1ProfHours(){
+				return week1.getProfHours() > 0;
+		}
+		boolean hasWeek2ProfHours(){
+				return week2.getProfHours() > 0;
+		}
+		public double getWeek1ProfHours(){
+				return week1.getProfHours();
+		}
+		public double getWeek2ProfHours(){
+				return week2.getProfHours();
+		}
+		//
+		public String toString(){
+				return "";
+		}
+	  String findDocument(){
+				String back = "";
+				if(document == null){
+						if(employee == null && payPeriod == null){
+								back = " no employee or/and pay period set";
+								return back;
+						}
+						DocumentList dl = new DocumentList();
+						dl.setEmployee_id(employee.getId());
+						dl.setPay_period_id(payPeriod.getId());
+						back = dl.find();
+						if(back.equals("")){
+								List<Document> ones = dl.getDocuments();
+								if(ones != null && ones.size() > 0){
+										document = ones.get(0);
+								}
+								else{
+										back = "No time entry found";
+								}
+						}
+				}
+				return back;
+		}
+		//
+		public String find(){
+				String msg = "";
+				if(document == null){
+						msg = findDocument();
+				}
+				if(!msg.equals("")){
+						return msg;
+				}
+				// BenefitGroup bGroup = profile.getBenefitGroup();
+				
+				document.getDaily(false); //false: ignore empty blocks
+				List<TimeBlock> blocks = document.getTimeBlocks();
+				if(blocks == null || blocks.size() == 0){
+						msg = "No time entry found";
+						return msg;
+				}
+				try{
+						for(TimeBlock one:blocks){
+								String code = one.getHour_code().toLowerCase();
+								String nw_code = one.getNw_code();
+								String code_desc = one.getCode_desc(); // old cat
+								int day = one.getOrder_index();
+								String date = one.getDate();
+								double hours = one.getHours();
+								//
+								// if not in refrence table we use Kuali earn code
+								if(nw_code.equals("")) nw_code = code; 
+								if(day > 13) continue;
+								if(code.startsWith("reg") ||
+									 code.endsWith("reg") ||
+									 code.startsWith("temp")){
+										if(holyList.isHoliday(date)){
+												HolidayWorkDay hday = new HolidayWorkDay(debug, hours, payPeriod.getEnd_date(), day, employee.getId());
+												if(day < 7){
+														week1.setHolidayWorkDay(hday);
+												}
+												else{
+														week2.setHolidayWorkDay(hday);
+												}
+										}
+								}
+								if(day < 7){
+										week1.add(one);
+								}
+								else{
+										week2.add(one);
+								}
+						}
+						//
+						// these are PTO, CU, HCU, FML, ..
+						//
+						week1.doCalculations();
+						week2.doCalculations();
+						if(week1.hasExessHours()){
+								week1.createEarnRecord();
+						}
+						if(week2.hasExessHours()){
+								week2.createEarnRecord();
+						}
+						// 
+						if(week1.hasProfHours()){
+								week1.createProfRecord();
+						}
+						if(week2.hasProfHours()){
+								week2.createProfRecord();
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg);
+				}
+				return msg;
+		}
+		void mergeTwoHashes(Hashtable<String, Double> tFrom,
+											 Hashtable<String, Double> tTo){
+				if(tFrom != null && tFrom.size() > 0){
+						Enumeration<String> keys = tFrom.keys();
+						while(keys.hasMoreElements()){
+								String key = keys.nextElement();
+								Double val = tFrom.get(key);
+								if(tTo.containsKey(key)){
+										double val2 = tTo.get(key).doubleValue() + val.doubleValue();
+										tTo.put(key, val2);
+								}
+								else{
+										tTo.put(key, val);
+								}
+						}
+				}
+		}
+		/**
+		 * since the regular hours are adjusted they considered net reg
+		 */
+		Hashtable<String, Double> getRegularHashForFirstPay(){
+				Hashtable<String, Double> table = null, table2 = null;				
+				if(weekOneHasSplit){
+						//
+						// we return the first week split one
+						table = week1.splitOne.getRegularHash();
+				}
+				else{
+						// all first week plus firs part of week2
+						//
+						table = week1.getRegularHash();
+						table2 = week2.splitOne.getRegularHash();
+						//
+						// combine them
+						mergeTwoHashes(table2, table);
+				}
+				return table;
+		}
+		Hashtable<String, Double> getRegularHashForSecondPay(){
+				Hashtable<String, Double> table = null, table2 = null;				
+				if(weekOneHasSplit){
+						//
+						// we return the first week split two, plus all week2
+						table = week2.getRegularHash();												
+						table2 = week1.splitTwo.getRegularHash();
+						mergeTwoHashes(table2, table);
+				}
+				else{
+						//
+						// rest of week2
+						//
+						table = week2.splitTwo.getRegularHash();
+				}
+				return table;
+		}		
+		public double getNetRegularHoursForFirstPay(){
+				double ret = 0;
+				if(weekOneHasSplit){
+						double w1one = week1.splitOne.getNetRegular(); // main
+						double w1net = week1.getNetRegular(); // check with
+						if(w1one <= w1net){
+								ret = w1one;
+						}
+						else{
+								ret = w1net;
+						}
+				}
+				else { // add week1 plus part one of week2
+						ret = week1.getNetRegular();
+						double w2one = week2.splitOne.getNetRegular();
+						double w2net = week2.getNetRegular();						
+						if(w2one < w2net)
+								ret += w2one;
+						else
+								ret += w2net;
+				}
+				return ret;
+		}
+		public double getNetRegularHoursForSecondPay(){
+				double ret = 0;
+				if(weekOneHasSplit){
+						// week1 part two plus week2
+						double w1net = week1.getNetRegular();						
+						double w1one = week1.splitOne.getNetRegular(); 
+						double w1two = week1.splitTwo.getNetRegular(); // main
+						if(w1one + w1two <= w1net){
+								ret = w1two;
+						}
+						else if(w1one < w1net){
+								ret = w1net - w1one;
+						}
+						ret += week2.getNetRegular();
+			
+				}
+				else { // the rest of week2
+						double w2net = week2.getNetRegular();
+						double w2one = week2.splitOne.getNetRegular();						
+						double w2two = week2.splitTwo.getNetRegular();
+						if(w2one + w2two <= w2net){
+								ret = w2two;
+						}
+						else if(w2one < w2net){
+								ret = w2net - w2one;
+						}
+				}
+				return ret;
+		}
+		public Map<String, Entry> getEntries(){
+				if(entries == null){
+						String name="", val="";
+						entries = new TreeMap<>();
+						name = "Net "+getRegCode();
+						String w1_val = "", w2_val = "";
+						double ww_val = 0;
+						double week1Total = 0, week2Total = 0, total=0;						
+						if(getWeek1Regular() > 0){
+								w1_val = df.format(getWeek1NetRegular())+" ("+df.format(getWeek1Regular())+")";
+								ww_val = getWeek1NetRegular();
+								if(!isHand)
+										week1Total = getWeek1NetRegular();
+						}
+						if(getWeek2Regular() > 0){
+								w2_val = df.format(getWeek2NetRegular())+" ("+df.format(getWeek2Regular())+")";
+								ww_val += getWeek2NetRegular();
+								if(!isHand)
+										week2Total = getWeek2NetRegular();
+						}
+						val = df.format(ww_val);
+						total += ww_val;
+						// first row (regular hours)
+						Entry entry = new Entry(name, w1_val, w2_val, val);
+						firstEntry = entry;
+						// entries.put(name,entry);
+
+						Hashtable<String, Double> ww_hash = getAll(); // two weeks
+						Hashtable<String, Double> w1_hash = getWeek1All();
+						Hashtable<String, Double> w2_hash = getWeek2All();
+						if(ww_hash != null && ww_hash.size() > 0){
+								Enumeration<String> keys = ww_hash.keys();
+								while(keys.hasMoreElements()){
+										String key = keys.nextElement();
+										//
+										// val is the sum of two weeks
+										// need to be checked 
+										ww_val = ww_hash.get(key);
+										w1_val = "";
+										w2_val = "";
+										if(w1_hash.containsKey(key) || w2_hash.containsKey(key)){
+												if(w1_hash.containsKey(key)){
+														week1Total += w1_hash.get(key).doubleValue();
+														w1_val = df.format(w1_hash.get(key).doubleValue());
+												}
+												if(w2_hash.containsKey(key)){
+														week2Total += w2_hash.get(key).doubleValue();
+														w2_val = df.format(w2_hash.get(key).doubleValue());
+												}
+												entry = new Entry(key, w1_val, w2_val, df.format(ww_val));
+												entries.put(key, entry);
+										}						
+								}
+								if(week1Total > 0 || week2Total > 0){
+										w1_val="";w2_val="";
+										total = week1Total+week2Total;
+										if(week1Total > 0){
+												w1_val= df.format(week1Total);
+										}
+										if(week2Total > 0){
+												w2_val= df.format(week2Total);
+										}										
+										entry = new Entry("Period Total",w1_val,w2_val,df.format(total));
+										lastEntry = entry;
+								}
+						}
+				}
+				return entries;
+		}
+		public boolean hasEntries(){
+				getEntries();
+				return entries != null && entries.size() > 0;
+		}
+		public Entry getFirstEntry(){
+				return firstEntry;
+		}
+		public Entry getLastEntry(){
+				return lastEntry;
+		}
+		public Document getDocument(){
+				return document;
+		}
+		/**
+		 * all prof hrs will get to end pay period
+		 */
+		double getProfHoursForPayPeriod(){
+				double ret = 0f;
+				ret = week1.getProfHours();
+				ret += week2.getProfHours();
+				if(ret < 0.009)
+						ret = 0;
+				return ret;
+		}
+		/**
+		 * this is needed for HAND department only
+		 */
+		public Hashtable<CodeRef, String> getTwoWeekHandHash(){
+				if(handHash == null){
+						handHash = new Hashtable<>();
+						Hashtable<String, Double> handReg = get2WeekRegularHash();
+						codeRefList = new CodeRefList();
+						String back = codeRefList.find();
+						if(back.equals("")){
+								Set<String> keys = handReg.keySet();
+								for(String key:keys){
+										double dd = handReg.get(key).doubleValue();
+										if(codeRefList.hasKey(key)){
+												CodeRef one = codeRefList.getCodeRef(key);
+												if(one != null){
+														handHash.put(one, df.format(dd));
+												}
+												else{
+														System.err.println("No code ref for "+key);
+												}
+										}
+										else{
+												System.err.println("HAND hour code "+key+" not found");
+										}
+								}
+						}
+						Hashtable<String, Double> nonReg = getNonRegularHours();
+						Set<String> keys = nonReg.keySet();
+						for(String key:keys){
+								double dd = nonReg.get(key).doubleValue();
+								if(codeRefList.hasKey(key)){
+										CodeRef one = codeRefList.getCodeRef(key);
+										if(one != null){
+												handHash.put(one, df.format(dd));
+										}
+										else{
+												System.err.println("No code ref for "+key);
+										}
+								}
+								else{
+										System.err.println("HAND hour code "+key+" not found");
+								}
+						}
+				}
+				return handHash;
+		}
+		public boolean hasHandHash(){
+				getTwoWeekHandHash();
+				return handHash != null && handHash.size() > 0;
+		}
+		/**
+		 * this function returns the status of submission for the given pay
+		 * period, either saved, enroute, finalized
+		 * Submitted, approved, finalized (payroll process approve)
+		 * we call this timeActions 
+		 */
+		void findStatus(){
+				// this is in 
+				// document getTimeActions()
+
+		}
+
+}

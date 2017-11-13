@@ -21,8 +21,8 @@ public class TypeAction extends TopAction{
 		static Logger logger = Logger.getLogger(TypeAction.class);
 		//
 		// default department
-		String type_name="department", table_name="departments";
-		String typesTitle = "Departments", title="Department";		
+		String type_name="position", table_name="positions";
+		String typesTitle = "Positions", title="Position";		
 		List<Group> groups = null;
 		Type type = null;
 		List<Type> types = null;
@@ -30,11 +30,9 @@ public class TypeAction extends TopAction{
 		private static final Map<String, String> titles = new HashMap<String, String>();
 		
 		static {
-        tables.put("department", "departments");
 				tables.put("position", "positions");
 				tables.put("node", "workflow_nodes");
 				
-				titles.put("department","Department");
 				titles.put("position","Position");
 				titles.put("node","Workflow Node");				
     }
@@ -138,6 +136,7 @@ public class TypeAction extends TopAction{
 				}
 				return types;
 		}
+		/*
 		public List<Group> getGroups(){
 				if(type_name.equals("department")){
 						if(type == null) getType();
@@ -155,6 +154,7 @@ public class TypeAction extends TopAction{
 				}
 				return groups;
 		}
+		*/
 }
 
 

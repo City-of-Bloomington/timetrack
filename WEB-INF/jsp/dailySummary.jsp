@@ -34,7 +34,7 @@
 	</s:iterator>
 	<tr>
 		<td class="th_text">Pay Period Total</td>
-		<td colspan="7">&nbsp;</td>
+		<td colspan="7" class="td_text">&nbsp;</td>
 		<td align="right" class="td_text"><s:property value="#payPeriodTotal" /></td>
 	</tr>
 </table>

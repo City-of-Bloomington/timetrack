@@ -24,13 +24,13 @@ public class TimeBlock extends Block{
 		static Logger logger = Logger.getLogger(TimeBlock.class);
 		static final long serialVersionUID = 4000L;		
 		private String inactive=""; // for deleted stuff;
-		String hour_code = ""; // for showing on jsp
+		String hour_code = "", code_desc="", nw_code; // for showing on jsp
 		String action_by_id="", action_type=""; // for logs
 		// order_index is day order in the payperiod day list
 		// Mond=0, Tue=1, Wed=2, Thu=3, Fr=4, Sat=5, Sun=6, .. Sat=12, Sun=13
 		final static Set<Integer> weekendSet = new HashSet<>(Arrays.asList(5,6,12,13));
 		int order_index=0, repeat_count=0;
-		boolean include_weekends = false;
+		boolean include_weekends = false, overnight = false;
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
 		// for clock_in
@@ -70,13 +70,17 @@ public class TimeBlock extends Block{
 							 String val13,
 							 boolean val14,
 							 int val15,
-							 String val16
+							 String val16,
+							 String val17,
+							 String val18
 							 ){
 				super(val, val2, val3, val4, val5, val6, val7, val8, val9, val10,
 							val11, val12, val13);
 				setInactive(val14);
 				setOrder_index(val15);
 				setHour_code(val16);
+				setCode_desc(val17);
+				setNw_code(val18);
 		}
     public TimeBlock(String val){
 				super(val);
@@ -98,11 +102,20 @@ public class TimeBlock extends Block{
 		public String getHour_code(){
 				return hour_code;
 		}
+		public String getCode_desc(){
+				return code_desc;
+		}
+		public String getNw_code(){
+				return nw_code;
+		}		
 		public String getRepeat_count(){
 				return "";
 		}
 		public boolean getInclude_weekends(){
 				return false;
+		}
+		public boolean getOvernight(){
+				return overnight;
 		}
 		public int getOrder_index(){
 				return order_index;
@@ -121,6 +134,14 @@ public class TimeBlock extends Block{
 		public void setHour_code(String val){
 				if(val != null)
 						hour_code = val;
+		}
+		public void setNw_code(String val){
+				if(val != null)
+						nw_code = val;
+		}		
+		public void setCode_desc(String val){
+				if(val != null)
+						code_desc = val;
 		}		
 		public void setOrder_index(int val){
 				if(val > 0)
@@ -140,6 +161,10 @@ public class TimeBlock extends Block{
 		public void setInclude_weekends(boolean val){
 				if(val) 
 						include_weekends = val;
+		}
+		public void setOvernight(boolean val){
+				if(val)
+						overnight = true;
 		}
 		public void setAccrual_balance(String[] vals){
 				if(vals != null){
@@ -208,8 +233,18 @@ public class TimeBlock extends Block{
 		}				
 		public String getTime_in(){
 				String ret = "";
+				if(id.equals(""))
+						return ret;
 				String am_pm = "AM";
-				if(begin_hour > 12){
+				if(begin_hour > 24){
+						begin_hour -= 24;
+						overnight = true;
+				}
+				else if(begin_hour == 24){
+						begin_hour = 12;
+						overnight = true;
+				}				
+				else if(begin_hour > 12){
 						begin_hour -= 12;						
 						am_pm = "PM";
 				}
@@ -231,8 +266,18 @@ public class TimeBlock extends Block{
 		}
 		public String getTime_out(){
 				String ret = "";
+				if(id.equals(""))
+						return ret;
 				String am_pm = "AM";
-				if(end_hour > 12){
+				if(end_hour > 24){
+						end_hour -= 24;
+						overnight = true;
+				}
+				else if(end_hour == 24){
+						end_hour = 12;
+						overnight = true;
+				}
+				else if(end_hour > 12){
 						end_hour -= 12;
 						am_pm = "PM";
 				}
@@ -294,7 +339,13 @@ public class TimeBlock extends Block{
 				}
 				return msg;
 		}
+		private void checkForOvernight(){
+				if(overnight){
+						end_hour += 24;
+				}
+		}
 		public boolean checkIfEndTimeChanged(){
+				
 				return (end_hour + end_minute) > 0;
 		}
 		private void adjustAccraulBalance(String code_id, double hrs){
@@ -310,7 +361,6 @@ public class TimeBlock extends Block{
 								}catch(Exception ex){}
 						}
 				}
-
 		}
 		/**
 		 * check if the data entry conflict with existing data on the same
@@ -402,11 +452,12 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select t.id,t.document_id,t.job_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.ovt_pref,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),c.name "+
+				String qq = "select t.id,t.document_id,t.job_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.ovt_pref,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),c.name,c.description,cf.nw_code "+
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
 						" join hour_codes c on t.hour_code_id=c.id "+
+						" left join code_cross_ref cf on c.id=cf.code_id "+
 						" where t.id=? ";
 				logger.debug(qq);
 				try{
@@ -416,6 +467,16 @@ public class TimeBlock extends Block{
 								pstmt.setString(1, id);
 								rs = pstmt.executeQuery();
 								if(rs.next()){
+										String hrCode = rs.getString(16);
+										double hrs = rs.getDouble(10);
+										if(hrCode != null){
+												if(hrCode.indexOf("ONCALL") > -1){
+														hrs = 1.0;
+												}
+												else if(hrCode.indexOf("CO") > -1){ // Call Out
+														if(hrs < 3.) hrs = 3;
+												}
+										}
 										setVals(
 														rs.getString(1),
 														rs.getString(2),
@@ -426,7 +487,7 @@ public class TimeBlock extends Block{
 														rs.getInt(7),
 														rs.getInt(8),
 														rs.getInt(9),
-														rs.getDouble(10),
+														hrs,
 														rs.getString(11),
 														rs.getString(12),
 														rs.getString(13));
@@ -434,6 +495,8 @@ public class TimeBlock extends Block{
 										setInactive(rs.getString(14) != null);
 										setOrder_index(rs.getInt(15));
 										setHour_code(rs.getString(16));
+										setCode_desc(rs.getString(17));
+										setNw_code(rs.getString(18));
 								}
 						}
 				}
@@ -510,6 +573,7 @@ public class TimeBlock extends Block{
 				if(action_type.equals("")) action_type="Add";
 				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,?,null) ";
 				String qq2 = "select LAST_INSERT_ID()";
+				checkForOvernight();
 				if((clock_in.equals("") && clock_out.equals(""))
 					 || (!clock_in.equals("") && !clock_out.equals(""))){
 						msg = prepareTimes();
@@ -636,7 +700,7 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				
+				checkForOvernight();
 				if(isClockIn() && !isClockOut()){
 						if(checkIfEndTimeChanged()){ /// for admins who
 								setClock_out("y");

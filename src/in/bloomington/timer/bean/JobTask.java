@@ -281,7 +281,7 @@ public class JobTask implements Serializable{
 						"g.name,g.description,g.default_regular_id,g.inactive "+
 						" from jobs j "+
 						" left join salary_groups g on g.id=j.salary_group_id "+
-						" where id =? ";
+						" where j.id =? ";
 				logger.debug(qq);
 				try{
 						con = Helper.getConnection();

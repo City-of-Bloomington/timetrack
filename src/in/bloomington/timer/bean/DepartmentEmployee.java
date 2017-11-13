@@ -23,7 +23,7 @@ public class DepartmentEmployee{
 				expire_date="",				
 				new_department_id="", change_date="";// change department
 		boolean active = true;
-		Type department = null;
+		Department department = null;
 		Employee employee = null;
 		public DepartmentEmployee(){
     }
@@ -118,10 +118,9 @@ public class DepartmentEmployee{
 		public void setActive(boolean val){
 				active = val;
 		}
-		public Type getDepartment(){
+		public Department getDepartment(){
 				if(department == null && !department_id.equals("")){
-						Type dd = new Type(department_id);
-						dd.setTable_name("departments");
+						Department dd = new Department(department_id);
 						String back = dd.doSelect();
 						if(back.equals("")){
 								department = dd;

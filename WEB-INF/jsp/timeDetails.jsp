@@ -20,36 +20,36 @@
 </s:elseif>
 <table width="100%" border="0">
 	<tr>
-		<td align="left">
+		<td align="left" class="th_text">
 			<b> <s:property value="payPeriod.monthNames" /> <s:property value="payPeriod.startYear" /></b>
 		</td>
-		<td align="right">
+		<td align="right" class="td_text">
 			<b> Employee: </b><s:property value="document.employee" />
 		</td>
 	</tr>
 	<s:if test="!isUserCurrentEmployee()">
 		<s:if test="source != ''">
 			<tr>
-				<td>&nbsp;</td>
-				<td align="right">
+				<td class="th_text">&nbsp;</td>
+				<td align="right" class="td_text">
 					<a href="<s:property value='#application.url' /><s:property value='source' />.action">Back to Main Page</a>
 				</td>
 			</tr>
 		</s:if>
 		<s:else>
 			<tr>
-				<td>&nbsp;</td>
-				<td align="right">
+				<td class="th_text">&nbsp;</td>
+				<td align="right" class="td_text">
 					<a href="<s:property value='#application.url' />switch.action?employee_id=<s:property value='user.employee_id' />&action=Change">Back to Main User</a>
 				</td>
 			</tr>
 		</s:else>
 	</s:if>
 	<tr>
-		<td align="left"><b>Pay Period</b>
+		<td align="left" class="td_text"><b>Pay Period</b>
 			<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="doRefresh()" />
 		</td>
-		<td align="right"><a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a></td>
+		<td align="right" class="td_text"><a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a></td>
 	</tr>
 </table>
 </s:form>

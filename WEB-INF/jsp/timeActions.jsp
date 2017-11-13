@@ -1,15 +1,9 @@
-<!--
- * @copyright Copyright (C) 2014-2016 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-<table width="100%" border="1">
+<table width="100%" border="0">
 	<caption><s:property value="#timeActionsTitle" /></caption>
 	<tr>
-		<td align="center" class="th_text">Date/time</td>
-		<td align="center" class="th_text">Taken by</td>
-		<td align="center" class="th_text">Action Taken</td>
+		<td align="left" class="th_text">Date/time</td>
+		<td align="left" class="th_text">By</td>
+		<td align="left" class="th_text">Action</td>
 	</tr>
 	<s:iterator var="one" value="#timeActions">
 		<tr>

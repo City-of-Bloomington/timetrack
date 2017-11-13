@@ -21,7 +21,6 @@ public class SwitchAction extends TopAction{
 		static Logger logger = Logger.getLogger(SwitchAction.class);
 		//
 		Employee employee = null;
-		List<Employee> employees = null;
 		String employeesTitle = "Current Employees";
 		public String execute(){
 				String ret = SUCCESS;
@@ -73,6 +72,13 @@ public class SwitchAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						action = val;
 		}
+		public void setEmployee_name(String val){
+				// for auto complete
+		}
+		public String getEmployee_name(){
+				return "";
+		}
+		/*
 		public List<Employee> getEmployees(){
 				if(employees == null){
 						EmployeeList tl = new EmployeeList();
@@ -87,7 +93,7 @@ public class SwitchAction extends TopAction{
 				}
 				return employees;
 		}
-
+		*/
 }
 
 

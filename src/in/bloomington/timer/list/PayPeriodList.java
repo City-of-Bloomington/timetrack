@@ -21,7 +21,8 @@ public class PayPeriodList{
 		static final long serialVersionUID = 3000L;
 		static Logger logger = Logger.getLogger(PayPeriodList.class);
 		String date = "", year="", id="";
-		boolean currentOnly = false, twoPeriodsAheadOnly=false;
+		boolean currentOnly = false, twoPeriodsAheadOnly=false, lastPayPeriod=false;
+		boolean avoidFuturePeriods = false;
 		List<PayPeriod> periods = null;
     public PayPeriodList(){
     }
@@ -45,6 +46,12 @@ public class PayPeriodList{
 		public void setTwoPeriodsAheadOnly(){
 				twoPeriodsAheadOnly = true;
 		}
+		public void setLastPayPeriod(){
+				lastPayPeriod = true;
+		}
+		public void avoidFuturePeriods(){
+				avoidFuturePeriods = true;
+		}
     //
     // getters
     //
@@ -61,11 +68,19 @@ public class PayPeriodList{
 						"datediff(p.end_date,p.start_date) "+
 						"from pay_periods p ";				
 				String qw = "";
+				String qo = "order by id desc ";
 				if(currentOnly){
 						qw = " p.start_date <= now() and p.end_date >= now() ";
 				}
 				else if(twoPeriodsAheadOnly){
 						qw = " p.start_date <= date_add(curdate(), interval 28 day) ";
+				}
+				else if(avoidFuturePeriods){
+						qw = " p.start_date <= now() ";
+				}
+				else if(lastPayPeriod){
+						qw = " p.end_date < now() ";
+						qo += " limit 1 ";
 				}
 				else if(!year.equals("")){
 						qw = " year(p.start_year) = ? ";
@@ -73,7 +88,7 @@ public class PayPeriodList{
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
-				qq += " order by p.id desc ";
+				qq += qo;
 				logger.debug(qq);
 
 				con = Helper.getConnection();

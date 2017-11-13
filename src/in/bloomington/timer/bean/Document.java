@@ -265,12 +265,11 @@ public class Document{
 				getDaily();
 				return daily != null && daily.size() > 0;
 		}
-		public Map<Integer, Double> getDaily(){
+		public Map<Integer, Double> getDaily(boolean includeEmptyBlocks){
 				if(daily == null && !id.equals("")){
 						TimeBlockList tl = new TimeBlockList();
 						tl.setDocument_id(id);
 						tl.setActiveOnly();
-						// tl.setDailyOnly();
 						String back = tl.find();
 						if(back.equals("")){
 								Map<Integer, Double> ones = tl.getDaily();
@@ -286,11 +285,20 @@ public class Document{
 										}
 								}
 						}
-						fillTwoWeekEmptyBlocks();
+						if(includeEmptyBlocks){
+								fillTwoWeekEmptyBlocks();
+						}
 						getEmpAccruals();
 				}
 				return daily;
 		}
+		public Map<Integer, Double> getDaily(){
+				//
+				// include empty blocks as well
+				//
+				return getDaily(true);
+		}
+		
 		public List<TimeBlock> getTimeBlocks(){
 				if(timeBlocks == null){
 						getDaily();
@@ -299,7 +307,6 @@ public class Document{
 						timeBlocks = new ArrayList<>();
 						dailyBlocks = new TreeMap<>();
 				}
-				
 				return timeBlocks;
 		}
 		public double getWeek1TotalDbl(){
@@ -370,6 +377,19 @@ public class Document{
 						checkForWarnings();
 				}
 				return employeeAccruals;
+		}
+		// short description of employee accrual balance as of now
+		public String getEmployeeAccrualsShort(){
+				String ret = "";
+				if(hasAllAccruals()){
+						for(EmployeeAccrual one:employeeAccruals){
+								if(one.getHours() > 0){
+										if(!ret.equals("")) ret += ", ";
+										ret += one.getAccrual().getName()+":"+one.getHours();
+								}
+						}
+				}
+				return ret;
 		}
 		public void findUsedAccruals(){
 				if(usedAccrualTotals == null){
@@ -460,7 +480,9 @@ public class Document{
 												list.add(hrs_total); // adjusted
 												if(accrual.hasPref_max_leval()){
 														if(hrs_total > accrual.getPref_max_level()){
-																warnings.add(accrual.getName()+" Accrual balance of "+hrs_total+" greater than "+accrual.getPref_max_level());
+																String str = accrual.getName()+" Accrual balance of "+hrs_total+" greater than "+accrual.getPref_max_level();
+																if(!warnings.contains(str))
+																		warnings.add(str);
 														}
 												}
 												allAccruals.put(accName, list);
@@ -511,7 +533,9 @@ public class Document{
 				}
 				if(jobTask != null){
 						if(week1Total < jobTask.getWeekly_regular_hours()){
-								warnings.add("Week 1 total hours are less than "+jobTask.getWeekly_regular_hours()+" hrs");
+								String str = "Week 1 total hours are less than "+jobTask.getWeekly_regular_hours()+" hrs";
+								if(!warnings.contains(str))
+										warnings.add(str);
 						}
 				}
 				if(getWeek2TotalDbl() > 0){
@@ -519,7 +543,9 @@ public class Document{
 				}
 				if(jobTask != null){				
 						if(week2Total < jobTask.getWeekly_regular_hours()){
-								warnings.add("Week 2 total hours are less than "+jobTask.getWeekly_regular_hours()+" hrs");
+								String str = "Week 2 total hours are less than "+jobTask.getWeekly_regular_hours()+" hrs";
+								if(!warnings.contains(str))
+										warnings.add(str);
 						}
 				}
 		}
@@ -560,13 +586,17 @@ public class Document{
 												}
 												double dd = dbl_used - d_need; // 8.3 - 6.25
 												if(dd > 0.01){
-														warnings.add(acc_warn.getExcess_warning_text()+" ("+dfn.format(dd)+" hrs)");
+														String str = acc_warn.getExcess_warning_text()+" ("+dfn.format(dd)+" hrs)";
+														if(!warnings.contains(str))
+																warnings.add(str);
 												}
 										}
 								}
 								if(acc_warn.require_step()){
 										if(dbl_used % acc_warn.getStep_hrs() > 0){
-												warnings.add(acc_warn.getStep_warning_text()+" ("+dfn.format(dbl_used)+" hrs)");
+												String str = acc_warn.getStep_warning_text()+" ("+dfn.format(dbl_used)+" hrs)";
+												if(!warnings.contains(str))
+														warnings.add(str);
 										}
 								}
 						}

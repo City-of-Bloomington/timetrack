@@ -189,35 +189,33 @@ public class Helper{
 				}
 				return ret;
     }
+		/*
+		public final static Connection getNwConnection(){
+				Connection con = null;
+				String dbSql =
+						//
+						// production
+						// removed connection string, see web.xml for more info
+				try{
+						Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();					
+						con = DriverManager.getConnection(dbSql);
 
-    /**
-     * Adds another apostrify to the string if there is any next to it
-     *
-     * @param s The passing string
-     * @return string The modified string
-     */
-    public final String doubleApostrify(String s) {
-				StringBuffer apostrophe_safe = new StringBuffer(s);
-				int len = s.length();
-				int c = 0;
-				while (c < len) {
-						if (apostrophe_safe.charAt(c) == '\'') {
-								apostrophe_safe.insert(c, '\'');
-								c += 2;
-								len = apostrophe_safe.length();
-						}
-						else {
-								c++;
-						}
 				}
-				return apostrophe_safe.toString();
-    }
-
-		public final static Connection getConnection(){
-				return getConnectionProd();
+				catch(Exception ex){
+						logger.error(ex);			
+				}
+				return con;
 		}
-
-		final static Connection getConnectionProd(){
+		*/
+    public final static void databaseClean(Statement stmt,
+																					 ResultSet rs) {
+				databaseDisconnect(null, stmt, rs);
+    }			
+    public final static void databaseDisconnect(Statement stmt,
+																								ResultSet rs) {
+				databaseDisconnect(null, stmt, rs);
+    }	
+		public final static Connection getConnection(){
 				Connection con = null;
 				int trials = 0;
 				boolean pass = false;
@@ -313,6 +311,24 @@ public class Helper{
 						}
 				}
     }
+    public final static void databaseDisconnect(Connection con){
+				try {
+						if(con != null) con.close();
+						con = null;
+						logger.debug("Closed Connection "+c_con);
+						c_con--;
+						if(c_con < 0) c_con = 0;
+				}
+				catch (Exception e) {
+						e.printStackTrace();
+				}
+				finally{
+						if (con != null) {
+								try { con.close(); } catch (SQLException e) { ; }
+								con = null;
+						}
+				}
+    }		
 		/**
      * Disconnect the database and related statements and result sets
      *
@@ -476,6 +492,12 @@ public class Helper{
 				day += dd;
 				return month+"/"+day+"/"+year;
     }
+		public final static int getCurrentYear(){
+				int year=2017;
+				GregorianCalendar cal = new GregorianCalendar(tzone, local);
+				year = cal.get(Calendar.YEAR);
+				return year;
+		}
     public final static int[] get_today(Calendar cal) {
 				//
 				// GregorianCalendar cal = new GregorianCalendar(tzone, local);
@@ -704,6 +726,33 @@ public class Helper{
 				return dt2;
 
 		}
+		// original date in mm/dd/yyyy or mm-dd-yyyy format
+		// returns date in yymmdd format
+		public final static String getYymmddDate(final String dt){
+				if(dt == null || dt.equals("")) return dt;
+				String ret = "", yy="", mm="", dd="";
+				String separator="/";
+				if(dt.indexOf("-") > 0){
+						separator="-";
+				}
+				try{
+						yy = dt.substring(dt.lastIndexOf(separator)+3); // last two digits
+						mm = dt.substring(0,dt.indexOf(separator));
+						dd = dt.substring(dt.indexOf(separator)+1,dt.lastIndexOf(separator));
+						if(mm.length() == 1){
+								mm = "0"+mm;
+						}
+						if(dd.length() == 1){
+								dd = "0"+dd;
+						}
+						ret = yy+mm+dd;
+						
+				}catch(Exception ex){
+						System.err.println(ex);
+				}
+				return ret;
+		}
+
 		final static int[] getStartPayPeriod(int dd, int mm, int yy, Calendar cal){
 
 				// int yy = 2014, mm = 3, dd=2;

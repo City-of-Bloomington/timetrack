@@ -6,6 +6,7 @@ package in.bloomington.timer.bean;
  */
 import java.io.Serializable;
 import java.util.Set;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.sql.*;
@@ -22,6 +23,7 @@ public class HourCode extends Type{
 		static Logger logger = Logger.getLogger(HourCode.class);
 
 		Type accrual = null;
+		CodeRef codeRef = null;
     private String 
 				record_method="Time", // time or hours
 				accrual_id ="",
@@ -119,6 +121,49 @@ public class HourCode extends Type{
 				return accrual;
 		}
 		@Override
+		public boolean equals(Object obj){
+				if(obj instanceof HourCode){
+						HourCode one =(HourCode)obj;
+						return id.equals(one.getId());
+				}
+				return false;				
+		}
+		@Override
+		public int hashCode(){
+				int seed = 29;
+				if(!id.equals("")){
+						try{
+								seed += Integer.parseInt(id);
+						}catch(Exception ex){
+						}
+				}
+				return seed;
+		}
+		public boolean hasCodeRef(){
+				getCodeRef();
+				return codeRef != null;
+		}
+		//
+		// we need this to get the New World reference hour_codes
+		// for export purpose
+		//
+		public CodeRef getCodeRef(){
+				if(codeRef == null && !id.equals("")){
+						CodeRefList cdr = new CodeRefList();
+						cdr.setCode_id(id);
+						cdr.setIgnoreHash();
+						String back = cdr.find();
+						if(back.equals("")){
+								List<CodeRef> ones = cdr.getCodeRefs();
+								if(ones != null && ones.size() == 1){
+										codeRef = ones.get(0);
+								}
+						}
+				}
+				return codeRef;
+		}
+		
+		@Override
 		public String doSelect(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -204,7 +249,7 @@ public class HourCode extends Type{
 						if(description.equals(""))
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
-								pstmt.setString(jj++, description);
+								pstmt.setString(jj++, description.toLowerCase());
 						pstmt.setString(jj++, record_method);
 						if(accrual_id.equals(""))
 								pstmt.setNull(jj++, Types.INTEGER);

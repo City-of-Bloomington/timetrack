@@ -23,7 +23,7 @@
 		</s:iterator>
 	</s:if>
 	<s:if test="timeBlock.id == ''">
-		<h4>New Time Block </h4>
+		<h4>Add Time Block(s) </h4>
 	</s:if>
 	<s:else>
 		<h4>Edit Time Block </h4>
@@ -49,34 +49,36 @@
 		</div>
 	</s:elseif>
 	<table width="100%" border="0">
-	<tr><td>Date</td><td><s:property value="timeBlock.date" /></td></tr>
+	<tr><td class="th_text">Date</td><td class="td_text"><s:property value="timeBlock.date" /></td></tr>
 	<s:if test="hasMoreThanOneJob()">
 		<tr>
-			<td>Job</td>
-			<td><s:select name="timeBlock.job_id" value="%{timeBlock.job_id}" list="jobTasks" listKey="id" listValue="jobTask.position" headerKey="-1" headerValue="Pick Job Assignment" />
+			<td class="th_text">Job</td>
+			<td class="td_text"><s:select name="timeBlock.job_id" value="%{timeBlock.job_id}" list="jobTasks" listKey="id" listValue="jobTask.position" headerKey="-1" headerValue="Pick Job Assignment" />
 			</td>
 		</tr>
 	</s:if>
 	<tr>
-		<td>Hour Code</td>
-		<td>
+		<td class="th_text">Hour Code</td>
+		<td class="td_text">
 			<s:if test="hasHourCodes()">
 				<s:select name="timeBlock.hour_code_id" value="%{timeBlock.id_compound}" list="hourCodes" listKey="id_compound" listValue="name" id="hour_code_select" />
 			</s:if>
 		</td>
 	</tr>
 	<s:if test="timeBlock.hourCode.record_method == 'Time'">
-		<tr id="div_time_in"><td>IN</td><td><s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" size="8" maxlength="8" id="time_in" />(hh:mm AM/PM)</td></tr>
-		<tr id="div_time_out"><td>OUT</td><td><s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" size="8" maxlength="8" id="time_out" />(hh:mm AM/PM)</td></tr>
-		<tr id="div_hours" style="display:none"><td>Hours</td><td><s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" size="5" maxlength="5" id="div_hour_change" />(dd.dd)</td></tr>
+		<tr id="div_time_in"><td class="th_text">IN</td><td class="td_text"><s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" size="8" maxlength="8" id="time_in" />(hh:mm AM/PM)</td></tr>
+		<tr id="div_time_out"><td class="th_text">OUT</td><td class="td_text"><s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" size="8" maxlength="8" id="time_out" />(hh:mm AM/PM)</td></tr>
+		<tr id="div_overnight"><td class="th_text">&nbsp;</td><td class="td_text"><s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" /> Overnight Shift </td></tr>					
+		<tr id="div_hours" style="display:none"><td class="th_text">Hours</td><td class="td_text"><s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" size="5" maxlength="5" id="div_hour_change" />(dd.dd)</td></tr>
 	</s:if>
 	<s:else>
-		<tr id="div_time_in" style="display:none"><td>Start Time</td><td><s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" size="8" maxlength="8" id="time_in" />(hh:mm) AM/PM</td></tr>
-		<tr id="div_time_out" style="display:none"><td>End Time</td><td><s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" size="8" maxlength="8" id="time_out" />(hh:mm) AM/PM</td></tr>		
-		<tr id="div_hours"><td>Hours</td><td><s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" size="5" maxlength="5" id="div_hour_change" />(dd.dd)</td></tr>
+		<tr id="div_time_in" style="display:none"><td class="th_text">Start Time</td><td class="td_text"><s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" size="8" maxlength="8" id="time_in" />(hh:mm) AM/PM</td></tr>
+		<tr id="div_time_out" style="display:none"><td class="th_text">End Time</td><td class="td_text"><s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" size="8" maxlength="8" id="time_out" />(hh:mm) AM/PM</td></tr>
+		<tr id="div_overnight" style="display:none"><td class="th_text">&nbsp;</td><td class="td_text"><s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" /> Overnight Shift </td></tr>			
+		<tr id="div_hours"><td class="th_text">Hours</td><td class="td_text"><s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" size="5" maxlength="5" id="div_hour_change" />(dd.dd)</td></tr>
 	</s:else>
-	<tr><td colspan="2">Repeat for the next <s:textfield name="timeBlock.repeat_count" value="%{timeBlock.repeat_count}" size="2" maxlength="2" /> days</td></tr>
-	<tr><td>&nbsp;</td><td><s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}" /> Include Weekend</td></tr>	
+	<tr><td colspan="2" class="td_text">Repeat for the next <s:textfield name="timeBlock.repeat_count" value="%{timeBlock.repeat_count}" size="2" maxlength="2" /> days</td></tr>
+	<tr><td class="th_text">&nbsp;</td><td class="td_text"><s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}" /> Include Weekend</td></tr>	
 </table>
 <s:if test="timeBlock.id == ''">
 	<s:submit name="action" type="button" value="Save" cssClass="popit_btn" />

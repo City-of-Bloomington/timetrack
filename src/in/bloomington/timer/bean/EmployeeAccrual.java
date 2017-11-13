@@ -31,6 +31,16 @@ public class EmployeeAccrual extends CommonInc{
     public EmployeeAccrual(String val){
 				setId(val);
     }
+    public EmployeeAccrual(String val, // accrual_id
+													 String val2, // emp_id
+													 double val3, // hours
+													 String val4){ // date for saving
+				setAccrual_id(val);
+				setEmployee_id(val2);
+				setHours(val3);
+				setDate(val4);
+				
+    }		
     public EmployeeAccrual(String val,
 													 String val2,
 													 String val3,
@@ -179,6 +189,11 @@ public class EmployeeAccrual extends CommonInc{
 				return msg;
 		}
 		public String doSave(){
+				String msg = doSaveOnly();
+				msg += doSelect();
+				return msg;
+		}
+		public String doSaveOnly(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -222,7 +237,6 @@ public class EmployeeAccrual extends CommonInc{
 				finally{
 						Helper.databaseDisconnect(con, pstmt, rs);
 				}
-				doSelect();
 				return msg;
 		}
 		/**

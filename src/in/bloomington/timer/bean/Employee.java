@@ -29,7 +29,7 @@ public class Employee implements Serializable{
 		List<DepartmentEmployee> departmentEmployees = null;
 		List<GroupEmployee> groupEmployees = null;		
 		DepartmentEmployee departmentEmployee = null;
-		Type department = null;
+		Department department = null;
 		GroupEmployee groupEmployee = null;
 		//
 		// for a given selected job and pay_period_id we need to find
@@ -105,7 +105,7 @@ public class Employee implements Serializable{
     public String getId_code(){
 				return id_code;
     }
-    public String getRmployee_number(){
+    public String getEmployee_number(){
 				return employee_number;
     }
 		public boolean isInactive(){
@@ -136,11 +136,11 @@ public class Employee implements Serializable{
 
     public void setId_code (String val){
 				if(val != null)
-						id_code = val;
+						id_code = val.trim();
     }
     public void setEmployee_number(String val){
 				if(val != null)
-						employee_number = val;
+						employee_number = val.trim();
     }
     public void setJob_active_date(String val){
 				if(val != null)
@@ -286,7 +286,7 @@ public class Employee implements Serializable{
 				getDepartment();
 				return department != null;
 		}
-		public Type getDepartment(){
+		public Department getDepartment(){
 				if(department == null && !id.equals("")){
 						DepartmentEmployeeList del = new DepartmentEmployeeList(id);
 						if(!pay_period_id.equals("")){

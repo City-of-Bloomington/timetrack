@@ -23,7 +23,7 @@ public class GroupEmployeeAction extends TopAction{
 		List<Group> groups = null;
 		GroupEmployee groupEmployee = null;
 		List<GroupEmployee> groupEmployees = null;
-		String groupEmployeesTitle = "Group Employees";
+		String groupEmployeesTitle = "Group Members";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();

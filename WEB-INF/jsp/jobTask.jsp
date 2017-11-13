@@ -73,7 +73,7 @@
 		</dl>
 		<dl class="fn1-output-field">
 			<dt>Comp Time Multiple Factor </dt>
-			<dd><s:textfield name="jobTask.comp_time_factor" value="%{jobTask.comp_time_factor}" size="3" maxlength="3" required="true" />(norally 1.5 for non-exempt and 1 for exempt) </dd>
+			<dd><s:textfield name="jobTask.comp_time_factor" value="%{jobTask.comp_time_factor}" size="3" maxlength="3" required="true" />(normally 1.5 for non-exempt and 1 for exempt) </dd>
 		</dl>
 		<dl class="fn1-output-field">
 			<dt>Holiday Comp Multiple Factor </dt>
@@ -92,6 +92,7 @@
 			<s:submit name="action" type="button" value="Save Changes" class="fn1-btn"/>
 			<a href="<s:property value='#application.url' />jobTask.action" class="fn1-btn"> New Job</a>
 		</s:else>
+		<a href="<s:property value='#application.url' />searchJobs.action" class="fn1-btn">Search Jobs</a>		
 	</div>
 </s:form>
 <s:if test="hasJobTasks()">
