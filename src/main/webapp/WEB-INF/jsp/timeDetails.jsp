@@ -105,7 +105,10 @@
 		</s:iterator>
 	</tr>
 </table>
-
+<s:if test="document.isSubmitted() && document.hasWarnings()">
+	<s:set var="warnings" value="document.warnings" />
+	<%@  include file="warnings.jsp" %>
+</s:if>
 <s:set var="daily" value="document.daily" />
 <s:set var="week1Total" value="document.week1Total" />
 <s:set var="week2Total" value="document.week2Total" />
@@ -142,10 +145,6 @@
 <s:if test="document.hasAllAccruals()">
 	<s:set var="allAccruals" value="document.allAccruals" />
 	<%@  include file="accrualSummary.jsp" %>
-</s:if>
-<s:if test="document.isSubmitted() && document.hasWarnings()">
-	<s:set var="warnings" value="document.warnings" />
-	<%@  include file="warnings.jsp" %>
 </s:if>
 <s:if test="document.hasTimeIssues()">
 	<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />	

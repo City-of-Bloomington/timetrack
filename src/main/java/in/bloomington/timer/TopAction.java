@@ -75,10 +75,6 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 						if(val != null && val.equals("true")){
 								activeMail = true;																
 						}
-						val = ctx.getInitParameter("debug");
-						if(val != null && val.equals("true")){
-								debug = true;																
-						}
 						if(sessionMap != null && sessionMap.containsKey("employee_id")){
 								Object obj = sessionMap.get("employee_id");
 								if(obj != null){

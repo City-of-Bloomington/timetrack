@@ -525,6 +525,13 @@ public class Document{
 				}
 		}
 		private void checkForWarnings(){
+				if(isSubmitted())
+						checkForWarningsAfter();
+				else
+						checkForWarningsBefore();
+		}
+		// after submission
+		private void checkForWarningsAfter(){
 				if(jobTask == null){
 						getJobTask();
 				}
@@ -549,6 +556,18 @@ public class Document{
 						}
 				}
 		}
+		// before submission
+		private void checkForWarningsBefore(){
+				if(jobTask == null){
+						getJobTask();
+				}
+				if(getWeek1TotalDbl() > 0){
+						checkWeekWarnings(hourCodeWeek1, week1Total);
+				}
+				if(getWeek2TotalDbl() > 0){
+						checkWeekWarnings(hourCodeWeek2, week2Total);
+				}
+		}		
 		/**
 		 * in this function we check the weekly hour code entry times
 		 * to make sure they comply with the rules set in 'Accrual warnings'
