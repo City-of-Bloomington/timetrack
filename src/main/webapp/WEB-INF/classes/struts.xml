@@ -37,6 +37,13 @@
 			<result name="error">/WEB-INF/jsp/type.jsp</result>
 			<result name="success">/WEB-INF/jsp/type.jsp</result>
 		</action>
+		<action name="ipaddress" 
+						class="in.bloomington.timer.IpAddressAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/ipaddress.jsp</result>		
+			<result name="error">/WEB-INF/jsp/ipaddress.jsp</result>
+			<result name="success">/WEB-INF/jsp/ipaddress.jsp</result>
+		</action>		
 		<action name="department" 
 						class="in.bloomington.timer.DeptAction" 
 						method="execute">

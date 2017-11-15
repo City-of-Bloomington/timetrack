@@ -28,7 +28,7 @@
 					<li><a href="<s:property value='#application.url'/>holiday.action">Holidays</a></li>
 					<li><a href="<s:property value='#application.url'/>benefitGroup.action">Benefit Groups</a></li>
 					<li><a href="<s:property value='#application.url'/>codeRef.action">Hour Code Cross Reference</a></li>
-
+					<li><a href="<s:property value='#application.url'/>ipaddress.action">Allowed IP Addresses</a></li>
 				</ul>
 			</td>
 			<td valign="top">

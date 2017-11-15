@@ -613,7 +613,7 @@ public class TimeBlock extends Block{
 						for(int jj=0;jj<repeat_count+1;jj++){
 								id="";
 								order_index = old_order_index+jj;
-								if(!include_weekends){
+								if(repeat_count > 0 && !include_weekends){
 										if(weekendSet.contains(order_index)){
 												continue;
 										}

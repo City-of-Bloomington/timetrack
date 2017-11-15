@@ -590,17 +590,23 @@ public class Document{
 												warnings.add(acc_warn.getMin_warning_text());
 										}
 										else {
-												double d_dif = week1Total - dbl_used; // 42.22 - 8.3
-												double d_need = 40. - d_dif;   // 40 - 33.9 = 6.1
-												if(acc_warn.require_step()){
-														// 
-														// adjust the need accroding to step
-														// such as 6.1 ==> 6.25
-														d_need = d_need + acc_warn.getStep_hrs() - d_need % acc_warn.getStep_hrs();
-														// if need is less than min (normally 1 hr)
-														// than we changed to min such as 0.50, 0.75
-														if(d_need < acc_warn.getMin_hrs()){
-																d_need = acc_warn.getMin_hrs();
+												double d_dif = weekTotal - dbl_used; // 45.27 - 8.27
+												double d_need = 0;
+												if(d_dif < 40)
+														d_need = 40. - d_dif;   // 40 - 37 = 3
+												if(d_need > 0){
+														if(acc_warn.require_step()){
+																if(d_need % acc_warn.getStep_hrs() > 0.01){
+																		// 
+																		// adjust the need accroding to step
+																		// such as 6.1 ==> 6.25
+																		d_need = d_need + acc_warn.getStep_hrs() - d_need % acc_warn.getStep_hrs();
+																}
+																// if need is less than min (normally 1 hr)
+																// than we changed to min such as 0.50, 0.75
+																if(d_need < acc_warn.getMin_hrs()){
+																		d_need = acc_warn.getMin_hrs();
+																}
 														}
 												}
 												double dd = dbl_used - d_need; // 8.3 - 6.25

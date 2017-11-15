@@ -105,7 +105,7 @@
 		</s:iterator>
 	</tr>
 </table>
-<s:if test="document.isSubmitted() && document.hasWarnings()">
+<s:if test="document.hasWarnings()">
 	<s:set var="warnings" value="document.warnings" />
 	<%@  include file="warnings.jsp" %>
 </s:if>
