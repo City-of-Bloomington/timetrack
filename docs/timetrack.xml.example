@@ -1,0 +1,68 @@
+<Context reloadable="false"
+				 crossContext="true">
+	<Parameter	
+			name="url"
+			value="url of timetrack"
+			override="false" />
+	<Parameter				 
+			name="activeMail"
+			value="true"
+			override="false" />
+	<Parameter				 				 
+			name="emailStr"
+			value="your email string such as yourcompany.com"
+			override="false" />
+	<Parameter				 
+			name="server_path"
+			value="path to uploaded files"
+			override="false" />
+	<Parameter				 
+			name="cas_url"
+			value="your cas logout url"
+		override="false" />
+	<Parameter				 
+			name="ldap_url"
+			value="ldap connection url"
+			override="false" />
+	<Parameter				 
+			name="ldap_principle"
+			value="ldap principle name to connect with"
+			override="false" />
+	<Parameter				 
+			name="ldap_password"
+			value="nw world pass"
+			override="false" />
+	<Parameter				 
+			name="dbUrl"
+			value="jdbc:sqlserver://erpds.bloomington.in.gov"
+			override="false" />
+	<Parameter				 
+			name="dbName"
+			value="LogosDB"
+			override="false" />
+	<Parameter				 
+			name="dbUser"
+			value="nwskuali"
+			override="false" />
+	<Parameter 				 
+			name="dbPass"
+			value="Logos-2050"
+			override="false" />
+	<Resource name="jdbc/MySQL_timer" auth="Container"
+						type="javax.sql.DataSource" 
+						username="timetrack"
+						password="db password"
+						driverClassName="com.mysql.jdbc.Driver"
+						url="jdbc:mysql://your db server:3306/timetrack" 
+						removeAbandonedOnBorrow="true"
+						removeAbandonedTimeout="60"
+						maxWaitMillis="60000"
+						maxIdle="4"
+						maxTotal="10"  />
+		<Resources>
+			<PostResources
+					base="absolute path to your quartz.properties file"
+					className="org.apache.catalina.webresources.DirResourceSet"
+					webAppMount="/WEB-INF/classes"/>
+		</Resources>
+</Context> 

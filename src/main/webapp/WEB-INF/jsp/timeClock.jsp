@@ -25,14 +25,12 @@
   </s:elseif>
 	<div class="tt-row-container">	
 	<s:if test="action == ''">
+		<s:hidden name="timeClock.time" value="%{timeClock.time}" id="time_clock_id2" />
+		<div style="font-size:250%;display:inline-block">Time:<span id="time_clock_id"><s:property value="%{timeClock.time}" /></span></div><br />
 		<dl class="fn1-output-field">
-			<dt>Employee ID Code </dt>
+			<dt>Employee ID: </dt>
 			<dd><s:textfield name="timeClock.id_code" value="" size="10" maxlength="10" requiredLabel="true" required="true" id="emp_id_code" autofocus="autofocus" />* </dd>
 		</dl>
-		<dl class="fn1-output-field">
-			<dt>Time </dt>
-			<dd><s:textfield name="timeClock.time" value="%{timeClock.time}" size="10" maxlength="10" requiredLabel="true" required="true" id="time_clock_id" />* </dd>
-		</dl>		
 		<s:submit name="action" type="button" value="Submit" class="fn1-btn"/></dd>
 	</s:if>
 	<s:else>

@@ -1,0 +1,25 @@
+org.quartz.threadPool.class = org.quartz.simpl.SimpleThreadPool
+org.quartz.threadPool.threadCount = 3
+org.quartz.threadPool.threadPriority = 4
+org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread = true
+
+org.quartz.jobStore.class = org.quartz.impl.jdbcjobstore.JobStoreTX
+
+# Configuring JDBCJobStore with the Table Prefix
+org.quartz.jobStore.tablePrefix = qrtz_
+org.quartz.scheduler.skipUpdateCheck = true
+# Using DriverDelegate
+org.quartz.jobStore.misfireThreshold = 5000
+org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+
+# Using datasource
+org.quartz.jobStore.dataSource = qtimer
+
+# Define the datasource to use and set the password
+org.quartz.dataSource.qtimer.driver = com.mysql.jdbc.Driver
+org.quartz.dataSource.qtimer.URL = jdbc:mysql://db server path:3306/timetrack
+org.quartz.dataSource.qtimer.user = timetrack
+org.quartz.dataSource.qtimer.password = your db password
+org.quartz.dataSource.qtimer.maxConnections = 5
+org.quartz.dataSource.qtimer.validationQuery = select 1+1
+org.quartz.dataSource.qtimer.idleConnectionValidationSeconds = 500

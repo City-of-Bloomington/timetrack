@@ -13,8 +13,13 @@ function setCurTime(id){
     if(m<10){
         m = "0"+m;
     }
+    s = date.getSeconds();
+		if(s<10)
+				s="0"+s;
 		result = ''+h+':'+m;
-    document.getElementById(id).value = result;
+		result2 = ''+h+':'+m+':'+s;
+    document.getElementById(id).innerHTML = result2;
+    document.getElementById(id+"2").value = result;		
     setTimeout('setCurTime("'+id+'");','1000');
     return true;		
 };
