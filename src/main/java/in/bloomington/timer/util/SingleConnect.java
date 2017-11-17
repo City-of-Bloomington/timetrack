@@ -63,8 +63,7 @@ public class SingleConnect implements ServletContextListener{
 				for(int i=0;i<3;i++){
 						try{
 								if(con == null || con.isClosed()){
-										
-										// Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();
+										 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver"); 
 										// Class.forName(dbSql);
 										con = DriverManager.getConnection(dbSql);
 										pass = testCon(con);
