@@ -8,15 +8,15 @@
     - name: "Create database"
       mysql_db:
         config_file: "{{ mysql_defaults_extra_file }}"
-        name: "{{ timetrack_db.name }}"
+        name: "{{ timetrack_db.default.name }}"
         state: present
       no_log: True
 
     - name: "Create database user"
       mysql_user:
-        name:     "{{ timetrack_db.username }}"
-        password: "{{ timetrack_db.password }}"
-        priv:     "{{ timetrack_db.name }}.*:ALL"
+        name:     "{{ timetrack_db.default.user }}"
+        password: "{{ timetrack_db.default.pass }}"
+        priv:     "{{ timetrack_db.default.name }}.*:ALL"
         state: present
         config_file: "{{ mysql_defaults_extra_file }}"
       no_log: True

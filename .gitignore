@@ -4,5 +4,9 @@ ansible/*.retry
 prepare.java
 quartz.properties
 context.xml
-web.xml
 target
+
+# Eclipse Project Files
+.classpath
+.project
+.settings

@@ -4,5 +4,11 @@
 vault_ansible_sudo_pass: "password"
 
 vault_timetrack_db:
-    password: "password"
+  default:
+    pass: "password"
+  hr:
+    pass: "password"
+
+vault_timetrack_ldap:
+  pass: "password"
 ...
