@@ -23,8 +23,18 @@ The application provide a log history about each change that is made by users.
 
 Timetrack uses Maven to build a WAR version.
 
+```bash
+mvn clean package
+```
+
 ## Deployment
 
 We use Ansible to deploy a previously built WAR file.  Ansible looks for the WAR file: `/target/timetrack.war`.  If you are using Ansible to deploy, your inventory will need to set all the variables in `/ansible/group_vars/all.yml`.
 
 If you are deploying manually, you will need to create your own context.xml and quartz.properties files before building with Maven.  Look in `/src/main/webapp/META-INF` for examples to start from.
+
+```bash
+mvn clean package
+cd ansible
+ansible-playbook deploy.yml -i /path/to/inventory
+```
