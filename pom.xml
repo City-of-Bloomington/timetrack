@@ -130,12 +130,12 @@
 				<artifactId>struts2-core        </artifactId>
 				<version>2.5.12   </version>
 			</dependency>
-      <dependency>
-				<groupId>cas                     </groupId>
-				<artifactId>casclient           </artifactId>
-				<version>2.0.11   </version>
-			</dependency>
-    </dependencies>
+      <dependency>			
+				<groupId>org.jasig.cas.client</groupId>
+				<artifactId>cas-client-core</artifactId>
+				<version>3.4.1</version>
+			</dependency>				
+		</dependencies>
     <build>
       <finalName>timetrack</finalName>
       <plugins>

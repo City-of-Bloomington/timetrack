@@ -48,6 +48,10 @@
 			name="dbPass"
 			value="Logos-2050"
 			override="false" />
+	<Parameter 				 	
+      name="serverName"
+      value="server running timetrack or ip address"
+			/>			
 	<Resource name="jdbc/MySQL_timer" auth="Container"
 						type="javax.sql.DataSource" 
 						username="timetrack"

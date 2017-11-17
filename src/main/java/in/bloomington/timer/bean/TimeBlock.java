@@ -189,11 +189,13 @@ public class TimeBlock extends Block{
 		public void setTime_out(String val){
 				splitTimes(val, true);
 		}
-		private void splitTimes(String val, boolean isOut){
+		private String splitTimes(String val, boolean isOut){
+				String msg = "";
 				if(val != null){
 						int hrs = 0, mins=0;
-						boolean is_pm = false;				
-						String val2 = val.toLowerCase();
+						boolean is_pm = false;
+						String dd[] = {"",""};
+						String val2 = val.trim().toLowerCase();
 						if(val2 != null && !val2.equals("")){
 								if(val2.indexOf("a") > -1){
 										val2 = val2.substring(0,val2.indexOf("a"));
@@ -202,9 +204,27 @@ public class TimeBlock extends Block{
 										val2 = val2.substring(0,val2.indexOf("p"));
 										is_pm = true;
 								}
+								val2 = val2.trim();
 								// else in standard army format
 								if(val2.indexOf(":") > -1){
-										String dd[] = val2.split(":");
+										dd = val2.split(":");
+								}
+								else if(val2.length() >= 3){
+										// no colon, time format hmm, or hhmm
+										if(val2.length() == 3){ // 3 digits
+												dd[0] = val2.substring(0,1);
+												dd[1] = val2.substring(1);
+										}
+										else{ // 4 digits
+												dd[0] = val2.substring(0,2);
+												dd[1] = val2.substring(2);
+										}
+								}
+								else{
+										msg = "invalid time format";
+										logger.error(msg);
+								}
+								if(msg.equals("")){
 										if(dd != null){
 												try{
 														hrs = Integer.parseInt(dd[0].trim());
@@ -225,11 +245,13 @@ public class TimeBlock extends Block{
 														}
 												}catch(Exception ex){
 														logger.error(ex);
+														msg += ex;
 												}
 										}
 								}
 						}
 				}
+				return msg;
 		}				
 		public String getTime_in(){
 				String ret = "";

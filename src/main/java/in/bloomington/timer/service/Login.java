@@ -14,6 +14,7 @@ import javax.naming.directory.*;
 import javax.sql.*;
 import java.net.URL;
 import org.apache.log4j.Logger;
+import org.jasig.cas.client.authentication.AttributePrincipal;
 import in.bloomington.timer.bean.*;
 
 public class Login extends HttpServlet{
@@ -36,11 +37,17 @@ public class Login extends HttpServlet{
 				throws ServletException, IOException {
 				String message="", id="";
 				boolean found = false;
-				String name="", value="";
+				String name="", value="", userid="";
+				AttributePrincipal principal = null;				
+				if (req.getUserPrincipal() != null) {
+						principal = (AttributePrincipal) req.getUserPrincipal();
+						userid = principal.getName();
+				}
 				Enumeration<String> values = req.getParameterNames();
 				while (values.hasMoreElements()) {
 						name = values.nextElement().trim();
 						value = (req.getParameter(name)).trim();
+						System.err.println(name+": "+value);
 						if (name.equals("id")) {
 								id = value;
 						}
@@ -59,7 +66,31 @@ public class Login extends HttpServlet{
 						if(str != null && str.equals("true")) debug = true;
 				}
 				HttpSession session = null;
-				String userid = req.getRemoteUser();
+				if(principal != null){
+						final Map attributes = principal.getAttributes();
+						Iterator attributeNames = attributes.keySet().iterator();
+						if (attributeNames.hasNext()) {
+								for (; attributeNames.hasNext(); ) {
+                    String attributeName = (String) attributeNames.next();
+                    System.err.println(" name "+attributeName);
+                    final Object attributeValue = attributes.get(attributeName);
+										if (attributeValue instanceof List) {
+                        final List vals = (List) attributeValue;
+                        System.err.println("Multi-valued attribute: " + vals.size());
+												int jj=1;
+                        for (Object val : vals) {
+                            System.err.println(jj+" "+val);
+														jj++;
+                        }
+                    } else {
+                        System.err.println(" value "+attributeValue);
+                    }
+							 }
+					 }
+				}
+				if(userid== null || userid.equals("")){
+						userid = req.getRemoteUser();
+				}
 				if(userid != null){
 						session = req.getSession();
 						// setCookie(req, res);
