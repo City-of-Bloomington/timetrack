@@ -1,14 +1,19 @@
 [linux]
-timehost
+[linux:children]
+apache
+mysql
 
 [apache]
-timehost
+[apache:children]
+tomcat
 
 [mysql]
-timehost
+[mysql:children]
+timetrack
 
 [tomcat]
-timehost
+[tomcat:children]
+timetrack
 
 [timetrack]
 timehost

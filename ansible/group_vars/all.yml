@@ -1,11 +1,13 @@
 ---
-timetrack_install_path: "/srv/webapps/timetrack"
-timetrack_base_uri: "/timetrack"
+timetrack_webapp_name: "timetrack"
+timetrack_install_path: "/srv/webapps/{{ timetrack_webapp_name }}"
+timetrack_base_uri: "/{{ timetrack_webapp_name }}"
 timetrack_base_url: "https://{{ ansible_host }}{{ timetrack_base_uri }}"
+timetrack_home: "/srv/{{ timetrack_webapp_name }}"
 
 timetrack_db:
-  name:     "timetrack"
-  username: "timetrack"
+  name:     "{{ timetrack_webapp_name }}"
+  username: "{{ timetrack_webapp_name }}"
   password: "{{ vault_timetrack_db.password }}"
 
 mysql_conf:
