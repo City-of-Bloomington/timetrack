@@ -51,6 +51,14 @@
 	<Parameter 				 	
       name="serverName"
       value="server running timetrack or ip address"
+			/>
+	<Parameter
+			name="casServerLoginUrl"
+			value="cas login link"
+			/>
+	<Parameter
+			name="casServerUrlPrefix"
+			value="cas server link without login"
 			/>			
 	<Resource name="jdbc/MySQL_timer" auth="Container"
 						type="javax.sql.DataSource" 
