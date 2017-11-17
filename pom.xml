@@ -134,7 +134,12 @@
 				<groupId>org.jasig.cas.client</groupId>
 				<artifactId>cas-client-core</artifactId>
 				<version>3.4.1</version>
-			</dependency>				
+			</dependency>
+			<dependency>
+				<groupId>com.microsoft.sqlserver</groupId>
+				<artifactId>mssql-jdbc</artifactId>
+				<version>6.2.2.jre8</version>
+			</dependency>
 		</dependencies>
     <build>
       <finalName>timetrack</finalName>

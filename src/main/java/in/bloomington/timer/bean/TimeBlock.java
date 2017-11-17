@@ -224,6 +224,7 @@ public class TimeBlock extends Block{
 										msg = "invalid time format";
 										logger.error(msg);
 								}
+
 								if(msg.equals("")){
 										if(dd != null){
 												try{
