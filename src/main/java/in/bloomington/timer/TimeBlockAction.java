@@ -36,16 +36,9 @@ public class TimeBlockAction extends TopAction{
 		//
 		public String execute(){
 				String ret = SUCCESS;
-				String back = doPrepare();
+				String back = doPrepare("timeBlock.action");
 				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
+						return "login";
 				}
 				if(action.equals("Save")){
 						timeBlock.setAction_by_id(user.getId());

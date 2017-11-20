@@ -67,6 +67,9 @@ public class GroupManagerAction extends TopAction{
 										addActionError(back);
 								}
 						}
+						else{
+								ret=INPUT;
+						}
 				}
 				return ret;
 		}

@@ -7,7 +7,7 @@ log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
 log4j.appender.stdout.layout.ConversionPattern=%d %-5p %c (%L) - %m%n
 
 log4j.appender.R=org.apache.log4j.RollingFileAppender
-log4j.appender.R.File=${catalina.home}/logs/timetrack.log
+log4j.appender.R.File=${catalina.base}/logs/timetrack.log
 log4j.appender.R.MaxFileSize=100KB
 # Keep 5 backup file
 log4j.appender.R.MaxBackupIndex=5

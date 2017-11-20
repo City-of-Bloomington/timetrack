@@ -26,14 +26,7 @@ public class SwitchAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
+						return "error";
 				}
 				if(action.startsWith("Change")){
 						if(!employee_id.equals("")){
@@ -78,22 +71,7 @@ public class SwitchAction extends TopAction{
 		public String getEmployee_name(){
 				return "";
 		}
-		/*
-		public List<Employee> getEmployees(){
-				if(employees == null){
-						EmployeeList tl = new EmployeeList();
-						tl.setActiveOnly();
-						String back = tl.find();
-						if(back.equals("")){
-								List<Employee> ones = tl.getEmployees();
-								if(ones != null && ones.size() > 0){
-										employees = ones;
-								}
-						}
-				}
-				return employees;
-		}
-		*/
+
 }
 
 

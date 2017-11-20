@@ -30,16 +30,9 @@ public class TimeDetailsAction extends TopAction{
 		List<PayPeriod> payPeriods = null;
 		public String execute(){
 				String ret = SUCCESS;
-				String back = doPrepare();
+				String back = doPrepare("timeDetails.action");
 				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
+						return "login";
 				}
 				getDocument_id();
 				return ret;

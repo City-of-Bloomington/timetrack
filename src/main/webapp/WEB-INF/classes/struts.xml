@@ -20,8 +20,11 @@
 			<interceptor-ref name="defaultStack"></interceptor-ref>
 			<result>/Login</result>
 		</action>
-		<action name="settings">
-			<result>/WEB-INF/jsp/settings.jsp</result>
+		<action name="settings"
+						class="in.bloomington.timer.SettingAction">
+			<result name="success">/WEB-INF/jsp/settings.jsp</result>
+			<result name="error">/Login</result>			
+			<result name="login">/Login</result>	 
 		</action>		
 
 		<action name="welcome"
@@ -254,7 +257,14 @@
 			<result name="input">/WEB-INF/jsp/groupManager.jsp</result>		
 			<result name="error">/WEB-INF/jsp/groupManager.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupManager.jsp</result>
-		</action>		
+		</action>
+		<action name="groupManagerAdd" 
+						class="in.bloomington.timer.GroupManagerAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/groupManagerAdd.jsp</result>		
+			<result name="error">/WEB-INF/jsp/groupManagerAdd.jsp</result>
+			<result name="success">/WEB-INF/jsp/groupManager.jsp</result>
+		</action>				
 		<action name="group" 
 						class="in.bloomington.timer.GroupAction" 
 						method="execute">
@@ -296,6 +306,7 @@
 			<result name="input">/WEB-INF/jsp/timeDetails.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timeDetails.jsp</result>
 			<result name="success">/WEB-INF/jsp/timeDetails.jsp</result>
+			<result name="login">/Login</result>			
 		</action>
 		<action name="timeAction" 
 						class="in.bloomington.timer.TimeActionAction" 

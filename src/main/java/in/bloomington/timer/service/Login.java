@@ -37,7 +37,7 @@ public class Login extends HttpServlet{
 				throws ServletException, IOException {
 				String message="", id="";
 				boolean found = false;
-				String name="", value="", userid="";
+				String name="", value="", userid="", source="";
 				AttributePrincipal principal = null;				
 				if (req.getUserPrincipal() != null) {
 						principal = (AttributePrincipal) req.getUserPrincipal();
@@ -47,10 +47,12 @@ public class Login extends HttpServlet{
 				while (values.hasMoreElements()) {
 						name = values.nextElement().trim();
 						value = (req.getParameter(name)).trim();
-						System.err.println(name+": "+value);
 						if (name.equals("id")) {
 								id = value;
 						}
+						if (name.equals("source")) {
+								source = value;
+						}						
 				}
 				res.setContentType("text/html");
 				PrintWriter out = res.getWriter();
@@ -102,9 +104,10 @@ public class Login extends HttpServlet{
 										// if he is an admin, we add to session
 										//
 										session.setAttribute("user",user);
+										if(source.equals(""))
+												source = "timeDetails.action";
 										out.println("<head><title></title><META HTTP-EQUIV="+
-																"\"refresh\" CONTENT=\"0; URL=" + url+
-																"timeDetails.action\"></head>");
+																"\"refresh\" CONTENT=\"0; URL=" + url+source+"\"></head>");
 										out.println("<body>");
 										out.println("</body>");
 										out.println("</html>");

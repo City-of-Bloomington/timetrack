@@ -36,6 +36,7 @@ public class TypeAction extends TopAction{
 				titles.put("position","Position");
 				titles.put("node","Workflow Node");				
     }
+		@Override
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -136,25 +137,7 @@ public class TypeAction extends TopAction{
 				}
 				return types;
 		}
-		/*
-		public List<Group> getGroups(){
-				if(type_name.equals("department")){
-						if(type == null) getType();
-						if(type != null && !type.getId().equals("")){
-								GroupList gl = new GroupList();
-								gl.setDepartment_id(type.getId());
-								String back = gl.find();
-								if(back.equals("")){
-										List<Group> ones = gl.getGroups();
-										if(ones != null && ones.size() > 0){
-												groups = ones;
-										}
-								}
-						}
-				}
-				return groups;
-		}
-		*/
+
 }
 
 

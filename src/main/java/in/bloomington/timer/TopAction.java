@@ -55,14 +55,19 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		}
 		public User getUser(){
 				return user;
-		}		
-		String doPrepare(){
+		}
+		String doPrepare(String source){
 				String back = "", val="";
 				try{
-						user = (User)sessionMap.get("user");
-						if(user == null){
-								back = LOGIN;
+						if(sessionMap == null || sessionMap.get("user") == null){
+								HttpServletResponse res = ServletActionContext.getResponse();
+								String str = url+"Login";								
+								if(source != null)
+										str += "?source="+source;
+								res.sendRedirect(str);
+								return super.execute();
 						}
+						user = (User)sessionMap.get("user");
 						if(url.equals("")){
 								val = ctx.getInitParameter("url");
 								if(val != null)
@@ -82,10 +87,14 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								}
 						}						
 				}catch(Exception ex){
-						System.out.println(ex);
-				}		
+						logger.error(ex);
+				}
 				return back;
 		}
+		String doPrepare(){
+				return doPrepare(null);
+		}
+
 		public void setEmployee_id(String val){
 				if(val != null && !val.equals("")){		
 						employee_id = val;

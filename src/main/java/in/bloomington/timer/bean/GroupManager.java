@@ -20,6 +20,7 @@ public class GroupManager implements Serializable{
 		static final long serialVersionUID = 1700L;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     private String id="", group_id="", employee_id="", wf_node_id="",
+				employee_id2 = "", wf_node_id2="", // for second assignment
 				inactive="",
 				start_date="", expire_date="";
 		List<Employee> employees = null;
@@ -33,7 +34,7 @@ public class GroupManager implements Serializable{
 												String val4,
 												String val5,
 												String val6,
-												String val7,
+												boolean val7,
 												String val8
 									 ){
 				setId(val);
@@ -59,11 +60,25 @@ public class GroupManager implements Serializable{
 				return group_id;
     }
     public String getEmployee_id(){
+				if(employee_id.equals(""))
+						return "-1";
 				return employee_id;
     }
     public String getWf_node_id(){
+				if(wf_node_id.equals(""))
+						return "-1";
 				return wf_node_id;
     }
+    public String getEmployee_id2(){
+				if(employee_id2.equals(""))
+						return "-1";
+				return employee_id2;
+    }
+    public String getWf_node_id2(){
+				if(wf_node_id2.equals(""))
+						return "-1";						
+				return wf_node_id2;
+    }		
     public String getStart_date(){
 				if(id.equals(""))
 						return CommonInc.default_effective_date;
@@ -72,8 +87,8 @@ public class GroupManager implements Serializable{
     public String getExpire_date(){
 				return expire_date;
     }		
-		public String getInactive(){
-				return inactive;
+		public boolean getInactive(){
+				return !inactive.equals("");
     }
 		public String getId(){
 				return id;
@@ -126,14 +141,18 @@ public class GroupManager implements Serializable{
 				if(val != null)
 						id = val;
     }
-    public void setInactive (String val){
-				if(val != null)
-						inactive = val;
+    public void setInactive (boolean val){
+				if(val)
+						inactive="y";
     }
     public void setWf_node_id(String val){
 				if(val != null && !val.equals("-1"))
 						wf_node_id = val;
     }
+    public void setWf_node_id2(String val){
+				if(val != null && !val.equals("-1"))
+						wf_node_id2 = val;
+    }		
     public void setGroup_id(String val){
 				if(val != null)
 						group_id = val;
@@ -142,6 +161,10 @@ public class GroupManager implements Serializable{
 				if(val != null)
 						employee_id = val;
     }
+    public void setEmployee_id2(String val){
+				if(val != null)
+						employee_id2 = val;
+    }		
     public void setStart_date(String val){
 				if(val != null)
 						start_date = val;
@@ -226,7 +249,7 @@ public class GroupManager implements Serializable{
 										setWf_node_id(rs.getString(4));
 										setStart_date(rs.getString(5));
 										setExpire_date(rs.getString(6));
-										setInactive(rs.getString(7));
+										setInactive(rs.getString(7) != null);
 										node = new Node(wf_node_id, rs.getString(8));
 								}
 						}
@@ -266,6 +289,13 @@ public class GroupManager implements Serializable{
 								java.util.Date date_tmp = df.parse(start_date);
 								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 								pstmt.executeUpdate();
+								if(!employee_id2.equals("") && !wf_node_id2.equals("")){
+										pstmt.setString(1, group_id);
+										pstmt.setString(2, employee_id2);
+										pstmt.setString(3, wf_node_id2);
+										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+										pstmt.executeUpdate();
+								}
 						}
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
