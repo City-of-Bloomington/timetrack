@@ -24,9 +24,9 @@ public class SwitchAction extends TopAction{
 		String employeesTitle = "Current Employees";
 		public String execute(){
 				String ret = SUCCESS;
-				String back = doPrepare();
+				String back = doPrepare("switch.action");
 				if(!back.equals("")){
-						return "error";
+						return "login";
 				}
 				if(action.startsWith("Change")){
 						if(!employee_id.equals("")){

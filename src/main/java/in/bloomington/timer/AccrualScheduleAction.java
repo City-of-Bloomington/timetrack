@@ -42,9 +42,17 @@ public class AccrualScheduleAction extends TopAction{
 				prepareSchedular();				
 				if(action.equals("Schedule")){
 						back = doClean();
+						if(!back.equals("")){
+								addActionError(back);
+						}
 						try{
-								schedular.run();
-								addActionMessage("Scheduled Successfully");
+								back = schedular.run();
+								if(!back.equals("")){
+										addActionError(back);
+								}
+								else{
+										addActionMessage("Scheduled Successfully");
+								}
 						}catch(Exception ex){
 								addActionError(""+ex);
 						}

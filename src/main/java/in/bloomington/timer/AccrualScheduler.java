@@ -46,7 +46,8 @@ public class AccrualScheduler {
 				}
 		}
 	
-		public void run() throws Exception {
+		public String run() throws Exception {
+				String msg = "";
 				//
 				//   Logger log = LoggerFactory.getLogger(SponScheduler.class);
 
@@ -117,7 +118,9 @@ public class AccrualScheduler {
 						*/
 				}catch(Exception ex){
 						logger.error(ex);
+						msg += ex;
 				}
+				return msg;
     }
 	
 }

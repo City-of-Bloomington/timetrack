@@ -59,15 +59,6 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		String doPrepare(String source){
 				String back = "", val="";
 				try{
-						if(sessionMap == null || sessionMap.get("user") == null){
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";								
-								if(source != null)
-										str += "?source="+source;
-								res.sendRedirect(str);
-								return super.execute();
-						}
-						user = (User)sessionMap.get("user");
 						if(url.equals("")){
 								val = ctx.getInitParameter("url");
 								if(val != null)
@@ -80,7 +71,16 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 						if(val != null && val.equals("true")){
 								activeMail = true;																
 						}
-						if(sessionMap != null && sessionMap.containsKey("employee_id")){
+						if(sessionMap == null || sessionMap.get("user") == null){
+								HttpServletResponse res = ServletActionContext.getResponse();
+								String str = url+"Login";								
+								if(source != null)
+										str += "?source="+source;
+								res.sendRedirect(str);
+								return super.execute();
+						}
+						user = (User)sessionMap.get("user");
+						if(sessionMap.containsKey("employee_id")){
 								Object obj = sessionMap.get("employee_id");
 								if(obj != null){
 										employee_id = (String) obj;
