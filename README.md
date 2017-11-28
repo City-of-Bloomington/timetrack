@@ -18,6 +18,10 @@ The app handle employee accruals and check the availability of hours for employe
 
 The application provide a log history about each change that is made by users.
 
+## Requirements
+
+Timetracker requires Tomcat version 8.0.47 or above.  If you are using Ubuntu, this version is only provided with Ubuntu 17.10 or above.
+
 
 ## Development
 
