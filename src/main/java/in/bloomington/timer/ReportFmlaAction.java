@@ -10,17 +10,17 @@ import java.io.*;
 import java.text.*;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.timewarp.*;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ReportFmlaAction extends TopAction{
 
 		static final long serialVersionUID = 1850L;	
-		static Logger logger = Logger.getLogger(ReportFmlaAction.class);
+		static Logger logger = LogManager.getLogger(ReportFmlaAction.class);
 		static final int startYear = 2017; // 
 		//
 		List<TimeBlock> timeBlocks = null;

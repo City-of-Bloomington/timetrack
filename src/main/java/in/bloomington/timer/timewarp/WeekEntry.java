@@ -11,14 +11,14 @@ import java.text.*;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WeekEntry{
 
 		boolean debug = false;
 		static final long serialVersionUID = 160L;		
-		static Logger logger = Logger.getLogger(WeekEntry.class);		
+		static Logger logger = LogManager.getLogger(WeekEntry.class);		
 		Profile profile = null;
 		BenefitGroup bGroup = null;
 		

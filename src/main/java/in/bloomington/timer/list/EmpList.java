@@ -10,13 +10,14 @@ import java.io.*;
 import javax.sql.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class EmpList extends CommonInc{
 
-		static Logger logger = Logger.getLogger(EmpList.class);
+		static Logger logger = LogManager.getLogger(EmpList.class);
 		static final long serialVersionUID = 1100L;
 		static EnvBean bean = null;
 		String name = "";

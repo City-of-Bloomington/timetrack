@@ -7,16 +7,17 @@ package in.bloomington.timer.bean;
 import java.sql.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class GroupEmployee extends CommonInc {
 
 		static final long serialVersionUID = 2000L;
-		static Logger logger = Logger.getLogger(GroupEmployee.class);
+		static Logger logger = LogManager.getLogger(GroupEmployee.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     String group_id="", employee_id="", effective_date="", expire_date="",
 				inactive="", id="";

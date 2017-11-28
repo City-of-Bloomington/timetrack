@@ -12,7 +12,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebListener
 public class SingleConnect implements ServletContextListener{
@@ -24,7 +25,7 @@ public class SingleConnect implements ServletContextListener{
 		// able to create connection pools
 		//
 		private static SingleConnect myCon = null;
-		static Logger logger = Logger.getLogger(SingleConnect.class);
+		static Logger logger = LogManager.getLogger(SingleConnect.class);
 		static Connection con = null;
 		/**
      * Create a static method to get instance.

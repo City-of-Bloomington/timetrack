@@ -12,12 +12,13 @@ import java.sql.*;
 import java.text.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TimeEntry{
 
 		boolean debug = false;
-		static Logger logger = Logger.getLogger(TimeEntry.class);
+		static Logger logger = LogManager.getLogger(TimeEntry.class);
 		static final long serialVersionUID = 140L;				
 		String id="", hoursStr="", date = "", earn_code="", earn_code_desc="",
 				nw_code="",

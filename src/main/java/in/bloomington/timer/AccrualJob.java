@@ -14,16 +14,17 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobDataMap;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AccrualJob implements Job{
 
     boolean debug = true;
 		static final long serialVersionUID = 55L;		
-		static Logger logger = Logger.getLogger(AccrualJob.class);
+		static Logger logger = LogManager.getLogger(AccrualJob.class);
 		static List<Department> depts = null;
 		// static Hashtable<String, BenefitGroup> benGroups = null;
 		public AccrualJob(){

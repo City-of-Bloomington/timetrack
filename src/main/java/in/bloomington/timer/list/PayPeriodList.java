@@ -12,14 +12,15 @@ import java.util.Date;
 import java.sql.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class PayPeriodList{
 
 		static final long serialVersionUID = 3000L;
-		static Logger logger = Logger.getLogger(PayPeriodList.class);
+		static Logger logger = LogManager.getLogger(PayPeriodList.class);
 		String date = "", year="", id="";
 		boolean currentOnly = false, twoPeriodsAheadOnly=false, lastPayPeriod=false;
 		boolean avoidFuturePeriods = false;

@@ -17,13 +17,13 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AccrualScheduler {
 
 		static boolean debug = false;
-		static Logger logger = Logger.getLogger(AccrualScheduler.class);
+		static Logger logger = LogManager.getLogger(AccrualScheduler.class);
 		int month = 1, day = 1, year=2017;
 		Date startDate, endDate = null;
 		AccrualScheduler(String date){

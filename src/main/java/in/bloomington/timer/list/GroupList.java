@@ -9,14 +9,15 @@ import java.util.List;
 import java.text.*;
 import java.util.Date;
 import java.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class GroupList{
 
 		static final long serialVersionUID = 1600L;
-		static Logger logger = Logger.getLogger(GroupList.class);
+		static Logger logger = LogManager.getLogger(GroupList.class);
 		String employee_id = "", department_id="", pay_period_id="";
 		String name="", id="";
 		boolean active_only = false, inactive_only=false;

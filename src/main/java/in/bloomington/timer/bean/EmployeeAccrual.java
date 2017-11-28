@@ -10,14 +10,15 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EmployeeAccrual extends CommonInc{
 		
 		static final long serialVersionUID = 100L;
-		static Logger logger = Logger.getLogger(EmployeeAccrual.class);
+		static Logger logger = LogManager.getLogger(EmployeeAccrual.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String id="", accrual_id="",employee_id="", date="",
 				related_hour_code_id="";

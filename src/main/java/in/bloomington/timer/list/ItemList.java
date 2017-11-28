@@ -7,7 +7,8 @@ import java.util.Date;
 import java.sql.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
@@ -20,7 +21,7 @@ public class ItemList extends ArrayList<Item>{
 		boolean debug = false;
 		static final long serialVersionUID = 22L;
 		SimpleDateFormat dateFormat = Helper.dateFormat;
-		static Logger logger = Logger.getLogger(ItemList.class);
+		static Logger logger = LogManager.getLogger(ItemList.class);
 
     public ItemList(boolean deb){
 				debug = deb;

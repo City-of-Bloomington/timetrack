@@ -13,14 +13,15 @@ import javax.naming.*;
 import javax.naming.directory.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class EmployeeList extends CommonInc{
 
 		static final long serialVersionUID = 1160L;
-		static Logger logger = Logger.getLogger(EmployeeList.class);
+		static Logger logger = LogManager.getLogger(EmployeeList.class);
     String id = "", user_id="", username="", name="",
 				full_name="", group_id="", group_ids="", id_code="", 
 				exclude_group_id="", groupManager_id="", department_id="",

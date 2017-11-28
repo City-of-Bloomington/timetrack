@@ -13,14 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import in.bloomington.timer.util.Helper;
 import in.bloomington.timer.bean.Holiday;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HolidayList{
 
     boolean debug;
     String year = "", date_from="", date_to="";
 		static final long serialVersionUID = 54L;
-		static Logger logger = Logger.getLogger(HolidayList.class);
+		static Logger logger = LogManager.getLogger(HolidayList.class);
 		static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		List<Holiday> holidays = null;
 		//

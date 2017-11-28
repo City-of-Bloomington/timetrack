@@ -8,13 +8,14 @@ import java.util.*;
 import java.sql.*;
 import java.io.*;
 import javax.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class TimeIssueList{
 
-		static Logger logger = Logger.getLogger(TimeIssueList.class);
+		static Logger logger = LogManager.getLogger(TimeIssueList.class);
 		static final long serialVersionUID = 3800L;
 		String time_block_id="", document_id="", sortBy="t.date";
 		String status="";

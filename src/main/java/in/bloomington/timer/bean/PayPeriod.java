@@ -11,15 +11,16 @@ import java.sql.*;
 import java.text.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 //
 public class PayPeriod{
 
 		static final long serialVersionUID = 2900L;
-		static Logger logger = Logger.getLogger(PayPeriod.class);
+		static Logger logger = LogManager.getLogger(PayPeriod.class);
 		String id="", start_date="", end_date="", date="";
 		int startYear =0,startMonth=0,startDay=0;
 		int endYear =0,endMonth=0,endDay=0, days=14;

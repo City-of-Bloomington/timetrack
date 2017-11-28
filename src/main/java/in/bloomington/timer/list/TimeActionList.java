@@ -9,14 +9,15 @@ import java.util.List;
 import java.text.*;
 import java.util.Date;
 import java.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class TimeActionList{
 
 		static final long serialVersionUID = 3700L;
-		static Logger logger = Logger.getLogger(TimeActionList.class);
+		static Logger logger = LogManager.getLogger(TimeActionList.class);
 		String document_id = "", id="", sortBy=" a.id desc ";
 		boolean last_action = false;
 		List<TimeAction> timeActions = null;

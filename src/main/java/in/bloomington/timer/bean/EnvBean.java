@@ -4,11 +4,12 @@ package in.bloomington.timer.bean;
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EnvBean {
 
-		static Logger logger = Logger.getLogger(EnvBean.class);
+		static Logger logger = LogManager.getLogger(EnvBean.class);
 		static final long serialVersionUID = 1400L;		
 		String url = "", principle = "", method="", password = "", ctxFactory = "";
 

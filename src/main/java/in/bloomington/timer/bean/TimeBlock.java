@@ -14,14 +14,15 @@ import java.util.Arrays;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
 
 public class TimeBlock extends Block{
 
-		static Logger logger = Logger.getLogger(TimeBlock.class);
+		static Logger logger = LogManager.getLogger(TimeBlock.class);
 		static final long serialVersionUID = 4000L;		
 		private String inactive=""; // for deleted stuff;
 		String hour_code = "", code_desc="", nw_code; // for showing on jsp

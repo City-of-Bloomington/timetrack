@@ -8,16 +8,17 @@ import java.io.Serializable;
 import java.util.List;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DepartmentEmployee{
 
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		static final long serialVersionUID = 500L;		
-		static Logger logger = Logger.getLogger(DepartmentEmployee.class);
+		static Logger logger = LogManager.getLogger(DepartmentEmployee.class);
     private String id="", employee_id="", department_id="",
 				effective_date="",
 				expire_date="",				

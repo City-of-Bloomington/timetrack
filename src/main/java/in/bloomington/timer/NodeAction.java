@@ -10,14 +10,15 @@ import java.io.*;
 import java.text.*;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NodeAction extends TopAction{
 
 		static final long serialVersionUID = 1810L;	
-		static Logger logger = Logger.getLogger(NodeAction.class);
+		static Logger logger = LogManager.getLogger(NodeAction.class);
 		List<Node> nodes = null;
 		//
 		Node node = null;

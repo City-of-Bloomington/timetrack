@@ -10,13 +10,13 @@ import java.util.*;
 import java.sql.*;
 import javax.sql.*;
 import java.text.*;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class QuartzMisc{
 
 		boolean debug = false;
-		static Logger logger = Logger.getLogger(QuartzMisc.class);
+		static Logger logger = LogManager.getLogger(QuartzMisc.class);
 		String prevScheduleDate = "", nextScheduleDate = "";
     public QuartzMisc(boolean deb){
 				debug = deb;

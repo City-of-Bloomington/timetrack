@@ -8,14 +8,15 @@ import java.util.ArrayList;
 import java.util.*;
 import java.sql.*;
 import java.text.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
 
 public class MpoReport{
 
-		static Logger logger = Logger.getLogger(MpoReport.class);
+		static Logger logger = LogManager.getLogger(MpoReport.class);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");		
 		static DecimalFormat df4 = new DecimalFormat("#0.0000");
 		static DecimalFormat df = new DecimalFormat("#0.00");

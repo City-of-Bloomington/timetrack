@@ -13,7 +13,8 @@ import javax.naming.*;
 import javax.naming.directory.*;
 import javax.sql.*;
 import java.net.URL;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import in.bloomington.timer.bean.*;
 
@@ -25,12 +26,9 @@ public class Login extends HttpServlet{
     String url="";
     boolean debug = false;
 		static final long serialVersionUID = 2700L;
-		static Logger logger = Logger.getLogger(Login.class);
+		static Logger logger = LogManager.getLogger(Login.class);
     /**
-     * Generates the login form for all users.
      *
-     * @param req the request
-     * @param res the response
      */
     public void doGet(HttpServletRequest req,
 											HttpServletResponse res)

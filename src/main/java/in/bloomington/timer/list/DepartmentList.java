@@ -8,13 +8,14 @@ import java.util.*;
 import java.sql.*;
 import java.io.*;
 import javax.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class DepartmentList{
 
-		static Logger logger = Logger.getLogger(DepartmentList.class);
+		static Logger logger = LogManager.getLogger(DepartmentList.class);
 		static final long serialVersionUID = 3800L;
 		String condition="", join="", sortBy="t.name"; 
 		String name = ""; // for service

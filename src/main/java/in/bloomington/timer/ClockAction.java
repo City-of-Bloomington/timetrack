@@ -10,14 +10,15 @@ import java.io.*;
 import java.text.*;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClockAction extends TopAction{
 
 		static final long serialVersionUID = 4300L;	
-		static Logger logger = Logger.getLogger(ClockAction.class);
+		static Logger logger = LogManager.getLogger(ClockAction.class);
 		//
 		TimeClock clock = null;
 		String clocksTitle = "Clock-In, Clock-Out times";

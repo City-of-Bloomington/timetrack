@@ -9,14 +9,15 @@ import java.util.List;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HourCodeCondition implements Serializable{
 
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		static Logger logger = Logger.getLogger(HourCodeCondition.class);
+		static Logger logger = LogManager.getLogger(HourCodeCondition.class);
 		static final long serialVersionUID = 800L;
     private String id="", hour_code_id="", department_id="", inactive="",
 				date="", salary_group_id="";

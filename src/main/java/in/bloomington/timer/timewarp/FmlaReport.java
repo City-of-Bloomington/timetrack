@@ -8,14 +8,15 @@ import java.util.ArrayList;
 import java.util.*;
 import java.sql.*;
 import java.text.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
 
 public class FmlaReport extends MpoReport{
 
-		static Logger logger = Logger.getLogger(PlanReport.class);
+		static Logger logger = LogManager.getLogger(PlanReport.class);
 		Department department = null;
     public FmlaReport(){
 				super();

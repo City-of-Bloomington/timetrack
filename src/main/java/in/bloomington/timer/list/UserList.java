@@ -11,14 +11,15 @@ import javax.naming.*;
 import javax.naming.directory.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class UserList extends CommonInc{
 
 		static final long serialVersionUID = 3400L;
-		static Logger logger = Logger.getLogger(UserList.class);
+		static Logger logger = LogManager.getLogger(UserList.class);
     String id = "", username="", last_name="", full_name="";
 
 		boolean active_only = false;

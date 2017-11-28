@@ -12,12 +12,13 @@ import java.text.*;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Entry{
 
 		static final long serialVersionUID = 100L;		
-		static Logger logger = Logger.getLogger(Entry.class);
+		static Logger logger = LogManager.getLogger(Entry.class);
 		static final DecimalFormat df = new DecimalFormat("#0.00");			
 		String name="";
 		//

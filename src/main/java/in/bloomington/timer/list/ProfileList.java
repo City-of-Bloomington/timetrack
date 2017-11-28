@@ -11,7 +11,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
@@ -19,7 +20,7 @@ public class ProfileList{
 
     boolean debug = false;
 		static final long serialVersionUID = 50L;
-		static Logger logger = Logger.getLogger(ProfileList.class);
+		static Logger logger = LogManager.getLogger(ProfileList.class);
 		boolean currentOnly = false;
 		Hashtable<String, BenefitGroup> bgroups = null;
 		PayPeriod payPeriod = null;

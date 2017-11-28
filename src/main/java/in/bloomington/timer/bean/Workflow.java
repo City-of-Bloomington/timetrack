@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
 
 public class Workflow implements Serializable{
 
-		static Logger logger = Logger.getLogger(Workflow.class);
+		static Logger logger = LogManager.getLogger(Workflow.class);
 		static final long serialVersionUID = 3600L;
     private String id="", node_id="", next_node_id="";
 		String next_workflow_id = "";

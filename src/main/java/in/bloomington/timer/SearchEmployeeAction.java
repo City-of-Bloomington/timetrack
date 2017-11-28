@@ -10,14 +10,15 @@ import java.io.*;
 import java.text.*;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SearchEmployeeAction extends TopAction{
 
 		static final long serialVersionUID = 1800L;	
-		static Logger logger = Logger.getLogger(SearchEmployeeAction.class);
+		static Logger logger = LogManager.getLogger(SearchEmployeeAction.class);
 		//
 		EmployeeList emplst = null;
 		String employeesTitle = "Current Employees";

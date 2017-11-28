@@ -11,13 +11,14 @@ import com.opensymphony.xwork2.ModelDriven;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.util.ServletContextAware;
 import org.apache.struts2.interceptor.SessionAware;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WelcomeAction extends ActionSupport implements SessionAware, ServletContextAware{
     private static final long serialVersionUID = 3550L;
-		static Logger logger = Logger.getLogger(WelcomeAction.class);
+		static Logger logger = LogManager.getLogger(WelcomeAction.class);
 		private ServletContext ctx;
 		private Map<String, Object> sessionMap;
 		private User user;

@@ -11,15 +11,17 @@ import java.io.*;
 import java.text.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.Helper;
 import in.bloomington.timer.bean.BenefitGroup;
-import org.apache.log4j.Logger;
+
 
 public class BenefitGroupList{
 
     boolean debug;
 		static final long serialVersionUID = 57L;
-		static Logger logger = Logger.getLogger(BenefitGroupList.class);
+		static Logger logger = LogManager.getLogger(BenefitGroupList.class);
 		List<BenefitGroup> benefitGroups = null;
 		//
     public BenefitGroupList(){

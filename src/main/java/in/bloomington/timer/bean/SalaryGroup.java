@@ -7,15 +7,16 @@ package in.bloomington.timer.bean;
 import java.sql.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SalaryGroup{
 
 		static final long serialVersionUID = 2750L;	
-		static Logger logger = Logger.getLogger(SalaryGroup.class);
+		static Logger logger = LogManager.getLogger(SalaryGroup.class);
     String id="", name="", description="", inactive="", default_regular_id="";
 		HourCode defaultRegularCode = null;
 		//

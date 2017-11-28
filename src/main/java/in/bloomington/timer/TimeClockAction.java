@@ -12,14 +12,15 @@ import java.net.InetAddress;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TimeClockAction extends TopAction{
 
 		static final long serialVersionUID = 4320L;	
-		static Logger logger = Logger.getLogger(TimeClockAction.class);
+		static Logger logger = LogManager.getLogger(TimeClockAction.class);
 		DecimalFormat dFormat = new DecimalFormat("###.00");
 		Set<String> ipSet = null;
 		//

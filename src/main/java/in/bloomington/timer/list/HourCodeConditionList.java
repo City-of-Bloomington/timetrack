@@ -12,14 +12,15 @@ import java.util.Date;
 import java.sql.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class HourCodeConditionList{
 
 		static final long serialVersionUID = 900L;
-		static Logger logger = Logger.getLogger(HourCodeConditionList.class);
+		static Logger logger = LogManager.getLogger(HourCodeConditionList.class);
 		
 		List<HourCodeCondition> conditions = null;
 		boolean active_only = false;

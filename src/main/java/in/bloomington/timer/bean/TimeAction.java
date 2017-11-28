@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
 
 public class TimeAction implements Serializable{
 
-		static Logger logger = Logger.getLogger(TimeAction.class);
+		static Logger logger = LogManager.getLogger(TimeAction.class);
 		static final long serialVersionUID = 3600L;
     private String id="", workflow_id="", document_id="",
 				action_by="", // user id

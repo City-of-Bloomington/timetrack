@@ -11,14 +11,16 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
+// import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AccrualAction extends TopAction{
 
 		static final long serialVersionUID = 3800L;	
-		static Logger logger = Logger.getLogger(AccrualAction.class);
+		static Logger logger = LogManager.getLogger(AccrualAction.class);
 		//
 		String accrualsTitle = "Current Accrual Types";
 		Accrual accrual = null;

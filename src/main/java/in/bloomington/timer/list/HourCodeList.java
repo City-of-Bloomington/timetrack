@@ -11,14 +11,15 @@ import java.util.Date;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class HourCodeList{
 
 		static final long serialVersionUID = 1000L;
-		static Logger logger = Logger.getLogger(HourCodeList.class);
+		static Logger logger = LogManager.getLogger(HourCodeList.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		List<HourCode> hourCodes = null;
 		String department_id = "", salary_group_id="", effective_date_before="";

@@ -9,14 +9,15 @@ import java.util.List;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Block{
 
-		static Logger logger = Logger.getLogger(Block.class);
+		static Logger logger = LogManager.getLogger(Block.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
 		static final long serialVersionUID = 250L;		
     String id="",

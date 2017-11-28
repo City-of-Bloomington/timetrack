@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.sql.*;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Employee implements Serializable{
 
-		static Logger logger = Logger.getLogger(Employee.class);
+		static Logger logger = LogManager.getLogger(Employee.class);
 		static final long serialVersionUID = 1150L;		
     private String id="", inactive="", id_code="", employee_number="",
 				user_id="", department_id="";

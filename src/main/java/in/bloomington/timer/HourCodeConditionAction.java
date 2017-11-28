@@ -11,14 +11,16 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class HourCodeConditionAction extends TopAction{
 
 		static final long serialVersionUID = 850L;	
-		static Logger logger = Logger.getLogger(HourCodeConditionAction.class);
+		static Logger logger = LogManager.getLogger(HourCodeConditionAction.class);
 		//
 		HourCodeCondition hourcodeCondition = null;
 		List<HourCodeCondition> conditions = null;

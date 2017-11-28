@@ -8,15 +8,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.sql.*;
 import javax.sql.*;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Profile extends CommonInc{
 
 		static final long serialVersionUID = 550L;		
-		static Logger logger = Logger.getLogger(Profile.class);
+		static Logger logger = LogManager.getLogger(Profile.class);
 		//
     private String employee_id="";	// from timetrack
 		//

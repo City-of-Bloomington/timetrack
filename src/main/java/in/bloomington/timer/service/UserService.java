@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserService extends HttpServlet{
 
 		static final long serialVersionUID = 3500L;
-		static Logger logger = Logger.getLogger(UserService.class);
+		static Logger logger = LogManager.getLogger(UserService.class);
     String url="";
 
     public void doGet(HttpServletRequest req,

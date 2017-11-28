@@ -13,13 +13,13 @@ import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PayPeriodProcess{
 
 		boolean debug = false;
-		static Logger logger = Logger.getLogger(PayPeriodProcess.class);
+		static Logger logger = LogManager.getLogger(PayPeriodProcess.class);
 		static final long serialVersionUID = 180L;				
 		String regCode="Reg"; // TEMP for temporary work
 		Employee employee = null;

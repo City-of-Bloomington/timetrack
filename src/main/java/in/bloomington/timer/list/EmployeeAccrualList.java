@@ -9,14 +9,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class EmployeeAccrualList{
 
 		static final long serialVersionUID = 200L;
-		static Logger logger = Logger.getLogger(EmployeeAccrualList.class);
+		static Logger logger = LogManager.getLogger(EmployeeAccrualList.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String employee_id ="", pay_period_id="", date_from="", date_to="";
 		String document_id = "";

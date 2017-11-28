@@ -12,14 +12,16 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
-import org.apache.log4j.Logger;
+
 
 public class GroupService extends HttpServlet{
 
 		static final long serialVersionUID = 2210L;
-		static Logger logger = Logger.getLogger(GroupService.class);
+		static Logger logger = LogManager.getLogger(GroupService.class);
     String url="";
     boolean debug = false;
 		static EnvBean envBean = null;

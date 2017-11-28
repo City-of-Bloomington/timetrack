@@ -10,16 +10,18 @@ import java.io.*;
 import java.text.*;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.timewarp.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class PayPeriodProcessAction extends TopAction{
 
 		static final long serialVersionUID = 4320L;	
-		static Logger logger = Logger.getLogger(PayPeriodProcessAction.class);
+		static Logger logger = LogManager.getLogger(PayPeriodProcessAction.class);
 		DecimalFormat df = new DecimalFormat("###.00");
 		//
 		PayPeriod payPeriod = null, currentPayPeriod=null;

@@ -10,16 +10,15 @@ import java.util.Hashtable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.sql.*;
-import javax.naming.*;
-import javax.naming.directory.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class JobTaskList{
 
 		static final long serialVersionUID = 2500L;
-		static Logger logger = Logger.getLogger(JobTaskList.class);
+		static Logger logger = LogManager.getLogger(JobTaskList.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		List<JobTask> jobTasks = null;
 		boolean active_only = false, current_only = false, inactive_only=false;

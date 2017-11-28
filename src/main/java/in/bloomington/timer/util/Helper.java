@@ -12,14 +12,15 @@ import javax.sql.*;
 import javax.naming.*;
 import javax.naming.directory.*;
 import java.security.MessageDigest;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 
 public class Helper{
 
 		static final long serialVersionUID = 2300L;
-		static Logger logger = Logger.getLogger(Helper.class);
+		static Logger logger = LogManager.getLogger(Helper.class);
 		
 		static int c_con = 0;
 		final static String bgcolor = "silver";// #bfbfbf gray

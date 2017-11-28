@@ -9,14 +9,15 @@ import java.util.List;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class GroupManager implements Serializable{
 
-		static Logger logger = Logger.getLogger(GroupManager.class);
+		static Logger logger = LogManager.getLogger(GroupManager.class);
 		static final long serialVersionUID = 1700L;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     private String id="", group_id="", employee_id="", wf_node_id="",

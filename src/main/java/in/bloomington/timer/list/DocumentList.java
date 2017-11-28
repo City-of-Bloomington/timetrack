@@ -12,14 +12,15 @@ import java.text.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class DocumentList{
 
 		static final long serialVersionUID = 1600L;
-		static Logger logger = Logger.getLogger(DocumentList.class);
+		static Logger logger = LogManager.getLogger(DocumentList.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
 		String employee_id = "", department_id="", pay_period_id="",
 				date="";

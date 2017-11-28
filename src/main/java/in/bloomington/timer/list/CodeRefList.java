@@ -8,14 +8,15 @@ import java.util.*;
 import java.sql.*;
 import java.io.*;
 import javax.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class CodeRefList{
 
 		static final long serialVersionUID = 54L;
-		static Logger logger = Logger.getLogger(CodeRefList.class);
+		static Logger logger = LogManager.getLogger(CodeRefList.class);
 		//
 		static Hashtable<String, String> glHash = new Hashtable<>();
 		static Hashtable<String, Integer> ratioHash = new Hashtable<>();

@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TypeAction extends TopAction{
 
 		static final long serialVersionUID = 3800L;	
-		static Logger logger = Logger.getLogger(TypeAction.class);
+		static Logger logger = LogManager.getLogger(TypeAction.class);
 		//
-		// default department
 		String type_name="position", table_name="positions";
 		String typesTitle = "Positions", title="Position";		
 		List<Group> groups = null;

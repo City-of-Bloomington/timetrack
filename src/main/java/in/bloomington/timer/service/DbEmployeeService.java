@@ -15,13 +15,13 @@ import java.util.List;
 import in.bloomington.timer.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DbEmployeeService extends HttpServlet{
 
 		static final long serialVersionUID = 1200L;
-		static Logger logger = Logger.getLogger(DbEmployeeService.class);
+		static Logger logger = LogManager.getLogger(DbEmployeeService.class);
     String url="";
     boolean debug = false;
 		static EnvBean envBean = null;

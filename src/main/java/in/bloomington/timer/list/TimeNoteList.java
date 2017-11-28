@@ -8,13 +8,14 @@ import java.util.*;
 import java.sql.*;
 import java.io.*;
 import javax.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
 public class TimeNoteList{
 
-		static Logger logger = Logger.getLogger(TimeNoteList.class);
+		static Logger logger = LogManager.getLogger(TimeNoteList.class);
 		static final long serialVersionUID = 3800L;
 		String document_id="", sortBy="t.date"; 
 		List<TimeNote> timeNotes = null;

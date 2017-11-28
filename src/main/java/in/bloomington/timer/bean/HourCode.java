@@ -12,15 +12,16 @@ import java.util.Hashtable;
 import java.sql.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HourCode extends Type{
 
 		static final long serialVersionUID = 700L;
-		static Logger logger = Logger.getLogger(HourCode.class);
+		static Logger logger = LogManager.getLogger(HourCode.class);
 
 		Type accrual = null;
 		CodeRef codeRef = null;

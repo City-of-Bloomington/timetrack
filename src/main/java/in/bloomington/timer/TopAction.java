@@ -21,12 +21,13 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.util.ServletContextAware;  
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class TopAction extends ActionSupport implements SessionAware, ServletContextAware{
 
 		static final long serialVersionUID = 3600L;
-		static Logger logger = Logger.getLogger(TopAction.class);		
+		static Logger logger = LogManager.getLogger(TopAction.class);		
 		boolean debug = false, activeMail = false;
 		static String url="", server_path="";		
 		String action="", id="", employee_id="";

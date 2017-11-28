@@ -8,13 +8,14 @@ package in.bloomington.timer.timewarp;
 import java.util.*;
 import java.sql.*;
 import java.text.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HolidayWorkDay{
 
 		boolean debug = false;
 		static final long serialVersionUID = 120L;				
-		static Logger logger = Logger.getLogger(HolidayWorkDay.class);
+		static Logger logger = LogManager.getLogger(HolidayWorkDay.class);
 		//
 		// holiday work day info
 		//

@@ -7,7 +7,8 @@ package in.bloomington.timer.bean;
 import java.sql.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
@@ -15,7 +16,7 @@ import in.bloomington.timer.list.*;
 public class TimeNote{
 
 		static final long serialVersionUID = 3700L;	
-		static Logger logger = Logger.getLogger(TimeNote.class);
+		static Logger logger = LogManager.getLogger(TimeNote.class);
     String id="", document_id="", reported_by="", date="", notes="";
 		Employee reporter = null;
 		//

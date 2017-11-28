@@ -11,14 +11,15 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DataEntryAction extends TopAction{
 
 		static final long serialVersionUID = 1150L;	
-		static Logger logger = Logger.getLogger(DataEntryAction.class);
+		static Logger logger = LogManager.getLogger(DataEntryAction.class);
 		//
 		List<Group> groups = null;
 		List<GroupManager> managers = null;

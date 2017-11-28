@@ -8,14 +8,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.sql.*;
 import javax.sql.*;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Node extends Type{
 
     private String managers_only="",annotation="";
-		static Logger logger = Logger.getLogger(Node.class);
+		static Logger logger = LogManager.getLogger(Node.class);
 		static final long serialVersionUID = 1510L;
     public Node(){
 				setTable_name("workflow_nodes");

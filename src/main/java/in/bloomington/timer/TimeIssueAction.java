@@ -11,14 +11,16 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class TimeIssueAction extends TopAction{
 
 		static final long serialVersionUID = 3800L;	
-		static Logger logger = Logger.getLogger(TimeIssueAction.class);
+		static Logger logger = LogManager.getLogger(TimeIssueAction.class);
 		//
 		String document_id = "", time_block_id="", reported_by="";
 		String timeIssuesTitle = "Time Issues";

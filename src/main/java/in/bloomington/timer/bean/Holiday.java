@@ -10,13 +10,14 @@ import java.util.*;
 import java.sql.*;
 import java.text.*;
 import in.bloomington.timer.util.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Holiday{
 
 		String id="", date = "", description="";
 		boolean debug = false;
-		static Logger logger = Logger.getLogger(Holiday.class);
+		static Logger logger = LogManager.getLogger(Holiday.class);
 		static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");	
     public Holiday(boolean deb){
 				debug = deb;

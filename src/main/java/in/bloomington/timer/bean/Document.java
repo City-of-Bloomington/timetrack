@@ -13,14 +13,15 @@ import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Document{
 
-		static Logger logger = Logger.getLogger(Document.class);
+		static Logger logger = LogManager.getLogger(Document.class);
 		static final long serialVersionUID = 2400L;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		DecimalFormat dfn = new DecimalFormat("###.00");

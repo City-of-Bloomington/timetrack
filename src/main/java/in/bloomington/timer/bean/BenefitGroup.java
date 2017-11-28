@@ -10,10 +10,12 @@ import java.util.*;
 import java.sql.*;
 import java.text.*;
 import in.bloomington.timer.util.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BenefitGroup{
 
+		static Logger logger = LogManager.getLogger(BenefitGroup.class);
 		String id="", name="";
 		boolean debug = false;
 		boolean fullTime = false,
@@ -21,7 +23,7 @@ public class BenefitGroup{
 				temporary = false,
 				unioned = false,
 				afscme = false;
-		static Logger logger = Logger.getLogger(BenefitGroup.class);
+
 		public BenefitGroup(){
 		}		
     public BenefitGroup(

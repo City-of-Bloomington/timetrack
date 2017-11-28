@@ -8,15 +8,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.sql.*;
 import javax.sql.*;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Group extends Type{
 
     private String department_id="";
-		static Logger logger = Logger.getLogger(Group.class);
+		static Logger logger = LogManager.getLogger(Group.class);
 		static final long serialVersionUID = 1500L;
 		Type department = null;
 		List<GroupEmployee> groupEmployees = null;

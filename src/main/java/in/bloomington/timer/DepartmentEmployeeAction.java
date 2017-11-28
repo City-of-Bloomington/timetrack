@@ -9,14 +9,15 @@ import java.io.*;
 import java.text.*;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DepartmentEmployeeAction extends TopAction{
 
 		static final long serialVersionUID = 2100L;	
-		static Logger logger = Logger.getLogger(DepartmentEmployeeAction.class);
+		static Logger logger = LogManager.getLogger(DepartmentEmployeeAction.class);
 		//
 		String department_id="", employee_id="";
 		Employee employee = null;

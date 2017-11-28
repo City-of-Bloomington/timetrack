@@ -9,7 +9,8 @@ import java.util.List;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.*;
@@ -17,7 +18,7 @@ import in.bloomington.timer.*;
 
 public class TimeBlockLog extends Block{
 
-		static Logger logger = Logger.getLogger(TimeBlockLog.class);
+		static Logger logger = LogManager.getLogger(TimeBlockLog.class);
 		static final long serialVersionUID = 4100L;		
 		String time_block_id="", action_type="", action_by_id="", action_time="";;
 		User action_by = null;

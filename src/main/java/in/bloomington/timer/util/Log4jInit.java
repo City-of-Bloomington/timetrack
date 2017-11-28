@@ -16,12 +16,17 @@ public class Log4jInit extends HttpServlet{
 	static final long serialVersionUID = 2600L;
 	public
 		void init() {
+			/*
+				//
+				// not used anymore moved to log4j2
+				//
 		String prefix =  getServletContext().getRealPath("/");
 		String file = getInitParameter("log4j-init-file");
 		// if the log4j-init-file is not set, then no point in trying
 		if(file != null) {
 			PropertyConfigurator.configure(prefix+file);
 		}
+			*/
 	}
 
 	public

@@ -12,12 +12,12 @@ import java.text.*;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WeekSplit{
 
-		static Logger logger = Logger.getLogger(WeekSplit.class);
+		static Logger logger = LogManager.getLogger(WeekSplit.class);
 		static final long serialVersionUID = 180L;				
 		boolean debug = false;
 		Profile profile = null;

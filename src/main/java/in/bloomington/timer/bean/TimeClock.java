@@ -6,7 +6,8 @@ package in.bloomington.timer.bean;
  */
 import java.sql.*;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
@@ -14,7 +15,7 @@ import in.bloomington.timer.list.*;
 public class TimeClock{
 
 		static final long serialVersionUID = 3700L;	
-		static Logger logger = Logger.getLogger(TimeClock.class);
+		static Logger logger = LogManager.getLogger(TimeClock.class);
     String id="", id_code="", time="", document_id="", time_in="", time_out="";
 		Employee employee = null;
 		PayPeriod currentPayPeriod  = null;

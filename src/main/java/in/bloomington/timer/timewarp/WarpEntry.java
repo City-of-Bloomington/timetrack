@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.*;
 import java.sql.*;
 import java.text.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WarpEntry{
 
@@ -21,7 +22,7 @@ public class WarpEntry{
 		final static double AnnualHours = 2080; // number of hours per year
 		DecimalFormat df = new DecimalFormat("#0.00");	
 		boolean debug = false;
-		static Logger logger = Logger.getLogger(WarpEntry.class);
+		static Logger logger = LogManager.getLogger(WarpEntry.class);
 	
     public WarpEntry(){
     }	

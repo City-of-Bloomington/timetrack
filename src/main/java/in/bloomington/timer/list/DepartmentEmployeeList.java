@@ -9,7 +9,8 @@ import java.util.List;
 import java.text.*;
 import java.util.Date;
 import java.sql.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
@@ -17,7 +18,7 @@ public class DepartmentEmployeeList{
 
 		String employee_id = "", department_id="", pay_period_id="";
 		static final long serialVersionUID = 600L;
-		static Logger logger = Logger.getLogger(DepartmentEmployeeList.class);
+		static Logger logger = LogManager.getLogger(DepartmentEmployeeList.class);
 		boolean active_only = false;
 		List<DepartmentEmployee> departmentEmployees = null;
     public DepartmentEmployeeList(){

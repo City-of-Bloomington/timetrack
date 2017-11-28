@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.*;
 import java.sql.*;
 import java.text.*;
-import javax.naming.*;
-import javax.naming.directory.*;
-import org.apache.log4j.Logger;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Item{
 
@@ -17,7 +16,7 @@ public class Item{
 		float value = 0f;
 		boolean debug = false;
 		static final long serialVersionUID = 21L;
-		static Logger logger = Logger.getLogger(Item.class);
+		static Logger logger = LogManager.getLogger(Item.class);
 
     public Item(boolean deb){
 				debug = deb;

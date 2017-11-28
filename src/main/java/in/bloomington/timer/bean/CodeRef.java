@@ -11,13 +11,14 @@ import java.util.*;
 import java.sql.*;
 import java.text.*;
 import in.bloomington.timer.util.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CodeRef{ 
 
 		String code="", code_id="",
 				nw_code="", gl_value = "", pto_ratio = "", id="";
-		static Logger logger = Logger.getLogger(CodeRef.class);
+		static Logger logger = LogManager.getLogger(CodeRef.class);
     public CodeRef(){}
     public CodeRef(String val,
 									 String val2,
