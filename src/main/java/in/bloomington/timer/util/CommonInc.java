@@ -23,8 +23,14 @@ public class CommonInc{
 		public final static String default_effective_date = "07/01/2017";
 		// approve workflow id
 		public final static String default_approve_workflow_id="3";
+		//
 		// payroll process approve workflow id
-		public final static String default_payroll_process_workflow_id="4";		
+		public final static String default_payroll_process_workflow_id="4";
+		//
+		// the following two items are used in notification emails
+		public final static String emailStr = "@bloomington.in.gov";
+		public final static String fromEmailStr = "sibow@bloomington.in.gov";
+		//
    	String message = "";
 		List<String> errors = null;
 		//

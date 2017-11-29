@@ -17,10 +17,15 @@ public class QuartzMisc{
 
 		boolean debug = false;
 		static Logger logger = LogManager.getLogger(QuartzMisc.class);
+		String type = "accrual"; // accrual, notification 
 		String prevScheduleDate = "", nextScheduleDate = "";
     public QuartzMisc(boolean deb){
 				debug = deb;
     }
+    public QuartzMisc(String val){
+				if(val != null && !val.equals(""))
+						type = val;
+    }		
 		public String getPrevScheduleDate(){
 				return prevScheduleDate;
 		}
@@ -37,7 +42,7 @@ public class QuartzMisc{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = " select from_unixtime(prev_fire_time/1000),from_unixtime(next_fire_time/1000) from qrtz_triggers where job_group like 'accrual%'";
+				String qq = " select from_unixtime(prev_fire_time/1000),from_unixtime(next_fire_time/1000) from qrtz_triggers where job_group like '"+type+"'";
 				try{
 						con = Helper.getConnection();
 						if(con == null){
@@ -83,11 +88,13 @@ public class QuartzMisc{
 				// we need to delete the old records from the database
 				// otherwise we get exception and avoid duplication in scheduling
 				//
-				String[] qq = {"delete from qrtz_cron_triggers",
-											 "delete from qrtz_simple_triggers",
-											 "delete from qrtz_fired_triggers",
-											 "delete from qrtz_triggers",
-											 "delete from qrtz_job_details"};
+				String where_trig = " where trigger_group like '"+type+"'";
+				String where_job = " where job_group like '"+type+"'";
+				String[] qq = {"delete from qrtz_cron_triggers "+where_trig,
+											 "delete from qrtz_simple_triggers "+where_trig,
+											 "delete from qrtz_fired_triggers "+where_trig,
+											 "delete from qrtz_triggers "+where_trig,
+											 "delete from qrtz_job_details "+where_job};
 				try{
 						con = Helper.getConnection();
 						if(con == null){

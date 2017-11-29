@@ -20,13 +20,13 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AccrualScheduler {
+public class NotificationScheduler {
 
 		static boolean debug = false;
-		static Logger logger = LogManager.getLogger(AccrualScheduler.class);
-		int month = 1, day = 1, year=2017;
+		static Logger logger = LogManager.getLogger(NotificationScheduler.class);
+		int month = 1, day = 7, year=2017;
 		Date startDate, endDate = null;
-		AccrualScheduler(String date){
+		public NotificationScheduler(String date){
 				try{
 						if(!date.equals("")){
 								// startDate = new Date(date);
@@ -66,9 +66,9 @@ public class AccrualScheduler {
 
         // define the job and tie it to our Job class
 				try{
-						String jobName = "accrual_"+month+"_"+day+"_"+year;
-						String groupName = "accrual";
-						JobDetail job = JobBuilder.newJob(AccrualJob.class)
+						String jobName = "notification_"+month+"_"+day+"_"+year;
+						String groupName = "notification";
+						JobDetail job = JobBuilder.newJob(NotificationJob.class)
 								.withIdentity(jobName, groupName)
 								.build();
 						// 

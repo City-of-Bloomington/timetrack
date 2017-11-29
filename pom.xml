@@ -8,6 +8,11 @@
     <name>Timetrack</name>
     <url>https://github.com/City-of-Bloomington/timetrack</url>
     <dependencies>
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>javax.mail-api</artifactId>
+				<version>1.6.0</version>
+			</dependency>			
       <dependency>
 				<groupId>javax.servlet           </groupId>
 				<artifactId>javax.servlet-api   </artifactId>
