@@ -41,6 +41,18 @@
         dest: "{{ timetrack_home }}/classes"
       notify: "tomcat_restart"
 
+    - name: "Configure Log4J"
+      template:
+        src: "log4j.properties"
+        dest: "{{ timetrack_home }}/classes"
+      notify: "tomcat_restart"
+
+    - name: "Configure Log4J 2"
+      template:
+        src: "log4j2.xml"
+        dest: "{{ timetrack_home }}/classes"
+      notify: "tomcat_restart"
+
     - name: "Install context"
       template:
         src: "context.xml"
