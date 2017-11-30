@@ -20,7 +20,7 @@ public class User implements Serializable{
 
 		static Logger logger = LogManager.getLogger(User.class);
 		static final long serialVersionUID = 3900L;		
-    private String id="", employee_id="",
+    private String id="", employee_id="", email="",
 				username="", full_name="", role="", first_name="", last_name="",
 				inactive="";
 		Employee employee = null; // not every user wil have employee such as admin
@@ -94,6 +94,16 @@ public class User implements Serializable{
     public String getRole(){
 				return role;
     }
+		public String getEmail(){
+				String ret = "";
+				if(email.equals("")){
+						ret = username+CommonInc.emailStr;
+				}
+				else{
+						ret = email;
+				}
+				return ret;
+		}
 		public boolean isInactive(){
 				return !inactive.equals("");
 		}
@@ -135,8 +145,11 @@ public class User implements Serializable{
     public void setLast_name (String val){
 				if(val != null)
 						last_name = val;
+    }
+    public void setEmail(String val){
+				if(val != null)
+						email = val;
     }		
-
     public void setRole (String val){
 				if(val != null && !val.equals("-1"))
 						role = val;
