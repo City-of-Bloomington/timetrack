@@ -10,3 +10,16 @@ target
 .classpath
 .project
 .settings
+
+*.elc
+*~
+*\#
+.*.swp
+._*
+.DS_Store
+*.tar.gz
+*.retry
+docs/_site
+docs/_post
+docs/.sass-cache
+docs/temp
