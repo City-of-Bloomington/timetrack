@@ -27,9 +27,10 @@ public class CommonInc{
 		// payroll process approve workflow id
 		public final static String default_payroll_process_workflow_id="4";
 		//
-		// the following two items are used in notification emails
+		// the following two items are used in bulk notification emails
 		public final static String emailStr = "@bloomington.in.gov";
-		public final static String fromEmailStr = "sibow@bloomington.in.gov";
+		// you need to set the fromEmailStr
+		public final static String fromEmailStr = "admin@bloomington.in.gov";
 		//
    	String message = "";
 		List<String> errors = null;

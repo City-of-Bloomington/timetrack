@@ -53,8 +53,11 @@
 					<li><a href="<s:property value='#application.url'/>reportHand.action">HAND MPO Report</a></li>
 					<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a></li>
 					<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA Report</a></li>					
+				</ul>
+				Schedulars
+				<ul>
 					<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Accrual Schedular</a></li>
-					
+					<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Notification Schedular</a></li>					
 				</ul>
 			</td>
 		</tr>

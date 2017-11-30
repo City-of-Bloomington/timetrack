@@ -88,6 +88,13 @@
 			<result name="input">/WEB-INF/jsp/accrualSchedular.jsp</result>		
 			<result name="error">/WEB-INF/jsp/accrualSchedular.jsp</result>
 			<result name="success">/WEB-INF/jsp/accrualSchedular.jsp</result>
+		</action>
+		<action name="notificationSchedule" 
+						class="in.bloomington.timer.NotificationScheduleAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/notificationSchedular.jsp</result>		
+			<result name="error">/WEB-INF/jsp/notificationSchedular.jsp</result>
+			<result name="success">/WEB-INF/jsp/notificationSchedular.jsp</result>
 		</action>		
 		<action name="accrualWarning" 
 						class="in.bloomington.timer.AccrualWarningAction" 

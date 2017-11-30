@@ -20,20 +20,27 @@ import org.apache.logging.log4j.Logger;
 
 public class HandleNotification{
 
-		boolean debug = false;
+		boolean debug = false, activeMail = false;
 		static final long serialVersionUID = 53L;
 		static Logger logger = LogManager.getLogger(HandleNotification.class);
 		static String host = "localhost"; 
 		String date="", dept_id="", pay_period_id="";
 		List<User> emps = null;
-    public HandleNotification(String val){
+    public HandleNotification(String val, boolean val2){
 				setPay_period_id(val);
+				if(val2)
+						setActiveMail();
     }
-    public HandleNotification(PayPeriod val){
+    public HandleNotification(PayPeriod val, boolean val2){
 				if(val != null){
 						setPay_period_id(val.getId()); 
 				}
-    }	
+				if(val2)
+						setActiveMail();				
+    }
+		void setActiveMail(){
+				activeMail = true;
+		}
     //
     // setters
     //
@@ -116,13 +123,15 @@ public class HandleNotification{
 				}
 				if(emps == null || emps.size() < 1){
 						msg = "No employee to process";
+						System.err.println(" no emps ");
 						return msg;
 				}
 				String bcc_str = "";
 				for(User one:emps){
 						if(!bcc_str.equals("")) bcc_str += ",";
-						bcc_str += one.getUsername()+CommonInc.emailStr;
+						bcc_str += one.getFull_name()+"<"+one.getEmail()+">";
 				}
+				System.err.println(" emp list "+bcc_str);
 				msg = compuseAndSend(bcc_str);
 				
 				return msg;
@@ -133,29 +142,33 @@ public class HandleNotification{
 						" You need to submit for approval your timetrack times for "+
 						" last pay period. \n\n"+
 						" Please do not reply to this message because this is an \n"+
-						" automated email operation and response is expected \n\n"+
+						" automated email operation and the email is not monitored. \n"+
+						" If you have any questions, please contact the ITS Helpdesk at (812) 349-3454 for assistance. \n"+
 						" Thank you for your cooperation \n\n"+
 						" City of Bloomington ITS team \n";
-				if(bcc_str == null || bcc_str.equals("")){
+				if(emps == null || emps.size() < 1){
 						return msg;
 				}
 				Properties props = new Properties();
 				props.put("mail.smtp.host", host);
 				
 				Session session = Session.getDefaultInstance(props, null);
+				List<InternetAddress> addrList = new ArrayList<>();
 				try{
 						Message message = new MimeMessage(session);						
 						message.setSubject("Timetrack email notification");
 						message.setText(body_text);
 						message.setFrom(new InternetAddress(CommonInc.fromEmailStr));
-						if(bcc_str.indexOf(",") > 0){
-								InternetAddress[] adressArray = InternetAddress.parse(bcc_str);
-								message.setRecipients(Message.RecipientType.BCC, adressArray);		
+						InternetAddress[] addrArray = InternetAddress.parse(bcc_str);
+						message.setRecipients(Message.RecipientType.BCC, addrArray);
+						if(activeMail){
+								// ToDo uncomment for production
+								// Transport.send(message);
+								System.err.println(" active mail is on, no email sent");
 						}
 						else{
-								message.setRecipient(Message.RecipientType.BCC, new InternetAddress(bcc_str));	
+								System.err.println(" active mail is off, no email sent");
 						}
-						Transport.send(message);
 						//
 						// Success
 						NotificationLog nlog = new NotificationLog(bcc_str, body_text, "Success",null);

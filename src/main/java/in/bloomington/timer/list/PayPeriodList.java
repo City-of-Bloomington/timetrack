@@ -21,7 +21,7 @@ public class PayPeriodList{
 
 		static final long serialVersionUID = 3000L;
 		static Logger logger = LogManager.getLogger(PayPeriodList.class);
-		String date = "", year="", id="";
+		String date = "", year="", id="", limit="";
 		boolean currentOnly = false, twoPeriodsAheadOnly=false, lastPayPeriod=false;
 		boolean avoidFuturePeriods = false;
 		List<PayPeriod> periods = null;
@@ -52,6 +52,10 @@ public class PayPeriodList{
 		}
 		public void avoidFuturePeriods(){
 				avoidFuturePeriods = true;
+		}
+		public void setLimit(String val){
+				if(val != null)
+						limit = val;
 		}
     //
     // getters
@@ -90,6 +94,9 @@ public class PayPeriodList{
 						qq += " where "+qw;
 				}
 				qq += qo;
+				if(!limit.equals("")){
+						qq += " limit "+limit;
+				}
 				logger.debug(qq);
 
 				con = Helper.getConnection();
