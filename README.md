@@ -19,7 +19,7 @@ The app handle employee accruals and check the availability of hours for employe
 The application provide a log history about each change that is made by users.
 
 Punch clock functionality is designed to work well with a Raspberry Pi, touchscreen, and RFID reader. 
-[See here for documentation for configuration of a Raspberry Pi + Touchscreen](https://city-of-bloomington.github.io/timeclock/)
+[See here for documentation for configuration of a Raspberry Pi + Touchscreen](https://city-of-bloomington.github.io/timetrack/)
 
 ## Requirements
 
