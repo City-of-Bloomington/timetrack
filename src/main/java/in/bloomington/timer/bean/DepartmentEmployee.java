@@ -19,12 +19,16 @@ public class DepartmentEmployee{
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		static final long serialVersionUID = 500L;		
 		static Logger logger = LogManager.getLogger(DepartmentEmployee.class);
-    private String id="", employee_id="", department_id="",
+    private String id="", employee_id="",
+				department_id="",
+				// secondary dept for department directors
+				department2_id="", 
 				effective_date="",
 				expire_date="",				
-				new_department_id="", change_date="";// change department
+				new_department_id="",
+				change_date="";// change department
 		boolean active = true;
-		Department department = null;
+		Department department = null, department2=null;
 		Employee employee = null;
 		public DepartmentEmployee(){
     }
@@ -37,23 +41,26 @@ public class DepartmentEmployee{
 															String val3,
 															String val4,
 															String val5,
-															boolean val6
+															String val6,
+															boolean val7
 															){
-				setVals(val, val2, val3, val4, val5, val6);
+				setVals(val, val2, val3, val4, val5, val6, val7);
     }
     void setVals(String val,
-								String val2,
-								String val3,
-								String val4,
+								 String val2,
+								 String val3,
+								 String val4,
 								 String val5,
-								 boolean val6
+								 String val6,
+								 boolean val7
 								){
 				setId(val);
 				setEmployee_id(val2);
 				setDepartment_id(val3);
-				setEffective_date(val4);
-				setExpire_date(val5);
-				setActive(val6);
+				setDepartment2_id(val4);
+				setEffective_date(val5);
+				setExpire_date(val6);
+				setActive(val7);
     }
     //
     // getters
@@ -67,6 +74,11 @@ public class DepartmentEmployee{
 		public String getDepartment_id(){
 				return department_id;
     }
+		public String getDepartment2_id(){
+				if(department2_id.equals(""))
+						return "-1";
+				return department2_id;
+    }		
 		public String getNew_department_id(){
 				return new_department_id;
     }		
@@ -84,6 +96,9 @@ public class DepartmentEmployee{
 		public boolean isActive(){
 				return active;
 		}
+		public boolean hasSecondaryDept(){
+				return !department2_id.equals("");
+		}
     //
     // setters
     //
@@ -100,10 +115,14 @@ public class DepartmentEmployee{
 				if(val != null && !val.equals("-1"))
 						department_id = val;
     }
+    public void setDepartment2_id (String val){
+				if(val != null && !val.equals("-1"))
+						department2_id = val;
+    }		
     public void setNew_department_id (String val){
 				if(val != null && !val.equals("-1"))
 						new_department_id = val;
-    }		
+    }
     public void setEffective_date (String val){
 				if(val != null)
 						effective_date = val;
@@ -130,6 +149,17 @@ public class DepartmentEmployee{
 				}
 				return department;
 		}
+		public Department getDepartment2(){
+				if(department2 == null && !department2_id.equals("")){
+						Department dd = new Department(department2_id);
+						String back = dd.doSelect();
+						if(back.equals("")){
+								department2 = dd;
+						}
+
+				}
+				return department2;
+		}		
 		public Employee getEmployee(){
 				if(employee == null && !employee_id.equals("")){
 						Employee dd = new Employee(employee_id);
@@ -172,7 +202,7 @@ public class DepartmentEmployee{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,employee_id,department_id,"+
+				String qq = "select id,employee_id,department_id,department2_id,"+
 						" date_format(effective_date,'%m/%d/%Y'),"+
 						" date_format(expire_date,'%m/%d/%Y'), "+
 						" expire_date < now() "+
@@ -184,7 +214,7 @@ public class DepartmentEmployee{
 						qq += " employee_id = ? ";
 				}
 				else if(!department_id.equals("")){
-						qq += " department_id = ? ";
+						qq += " (department_id = ? or department_id2=?)";
 				}
 				else{
 						msg = " no id set ";
@@ -203,6 +233,7 @@ public class DepartmentEmployee{
 								}
 								else{
 										pstmt.setString(1, department_id);
+										pstmt.setString(2, department_id);										
 								}
 								rs = pstmt.executeQuery();
 								//
@@ -212,7 +243,8 @@ public class DepartmentEmployee{
 														rs.getString(3),
 														rs.getString(4),
 														rs.getString(5),
-														rs.getString(6) == null);
+														rs.getString(6),
+														rs.getString(7) == null);
 								}
 								else{
 										msg = "Department Employee not found";
@@ -234,7 +266,7 @@ public class DepartmentEmployee{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into department_employees values(0,?,?,?,?) ";
+				String qq = "insert into department_employees values(0,?,?,?,?,?) ";
 				if(employee_id.equals("")){
 						msg = " employee id not set ";
 						return msg;
@@ -250,15 +282,21 @@ public class DepartmentEmployee{
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, employee_id);
 								pstmt.setString(2, department_id);
+								if(department2_id.equals("")){
+										pstmt.setNull(3, Types.INTEGER);
+								}
+								else{
+										pstmt.setString(3, department2_id);
+								}
 								if(effective_date.equals(""))
 										effective_date = Helper.getToday();
 								java.util.Date date_tmp = df.parse(effective_date);
-								pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 								if(expire_date.equals(""))
-										pstmt.setNull(4, Types.DATE);
+										pstmt.setNull(5, Types.DATE);
 								else{
 										date_tmp = df.parse(expire_date);
-										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+										pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
 								}
 								pstmt.executeUpdate();
 						}
@@ -290,23 +328,29 @@ public class DepartmentEmployee{
 				if(department_id.equals("")){
 						return " department id not set ";
 				}				
-				String qq = "update department_employees set employee_id=?,department_id=?,effective_date=?,expire_date=? where id=? ";
+				String qq = "update department_employees set employee_id=?,department_id=?,department2_id=?,effective_date=?,expire_date=? where id=? ";
 				logger.debug(qq);
 				try{
 						con = Helper.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, employee_id);
-								pstmt.setString(2, department_id);								
+								pstmt.setString(2, department_id);
+								if(department2_id.equals("")){
+										pstmt.setNull(3, Types.INTEGER);
+								}
+								else{
+										pstmt.setString(3, department2_id);
+								}								
 								java.util.Date date_tmp = df.parse(effective_date);
-								pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 								if(expire_date.equals(""))
-										pstmt.setNull(4, Types.DATE);
+										pstmt.setNull(5, Types.DATE);
 								else{
 										date_tmp = df.parse(expire_date);
-										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+										pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
 								}
-								pstmt.setString(5, id);
+								pstmt.setString(6, id);
 								pstmt.executeUpdate();
 						}
 				}

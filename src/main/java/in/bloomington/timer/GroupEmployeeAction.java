@@ -73,6 +73,7 @@ public class GroupEmployeeAction extends TopAction{
 										addActionError(back);
 								}
 								employee_id = groupEmployee.getEmployee_id();
+								group_id = groupEmployee.getGroup_id();
 						}
 				}
 				return ret;
@@ -160,6 +161,7 @@ public class GroupEmployeeAction extends TopAction{
 		public List<GroupEmployee> getGroupEmployees(){
 				if(groupEmployees == null){
 						GroupEmployeeList gel = new GroupEmployeeList();
+						gel.setGroup_id(group_id);
 						String back = gel.find();
 						if(back.equals("")){
 								List<GroupEmployee> ones = gel.getGroupEmployees();

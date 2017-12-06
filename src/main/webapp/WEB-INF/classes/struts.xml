@@ -95,6 +95,13 @@
 			<result name="input">/WEB-INF/jsp/notificationSchedular.jsp</result>		
 			<result name="error">/WEB-INF/jsp/notificationSchedular.jsp</result>
 			<result name="success">/WEB-INF/jsp/notificationSchedular.jsp</result>
+		</action>
+		<action name="batchSchedule" 
+						class="in.bloomington.timer.BatchSubmitScheduleAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/batchSchedular.jsp</result>		
+			<result name="error">/WEB-INF/jsp/batchSchedular.jsp</result>
+			<result name="success">/WEB-INF/jsp/batchSchedular.jsp</result>
 		</action>		
 		<action name="accrualWarning" 
 						class="in.bloomington.timer.AccrualWarningAction" 
@@ -201,6 +208,13 @@
 			<result name="error">/WEB-INF/jsp/employee.jsp</result>
 			<result name="success">/WEB-INF/jsp/employee.jsp</result>
 		</action>
+		<action name="user" 
+						class="in.bloomington.timer.UserAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/user.jsp</result>		
+			<result name="error">/WEB-INF/jsp/user.jsp</result>
+			<result name="success">/WEB-INF/jsp/user.jsp</result>
+		</action>		
 		<action name="switch" 
 						class="in.bloomington.timer.SwitchAction" 
 						method="execute">

@@ -24,7 +24,8 @@ public class HandleNwAccrual{
 		static Logger logger = LogManager.getLogger(HandleNwAccrual.class);
 		static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		static DecimalFormat df = new DecimalFormat("#0.00");
-		String date="", dept_ref_id=""; // dept referance in NW app, one or more values
+		String date="", end_date="", // date of last pay period
+				dept_ref_id=""; // dept referance in NW app, one or more values
 		Hashtable<String, String> empHash = null;
 		//
 		// accrual values from New World (Carry Over)
@@ -32,17 +33,22 @@ public class HandleNwAccrual{
     public HandleNwAccrual(){
     }
     public HandleNwAccrual(String val,
-													 String val2){
+													 String val2,
+													 String val3){
 				setDept_ref_id(val);
 				setDate(val2);
+				setEnd_date(val3);
     }
     public HandleNwAccrual(boolean deb,
-												 String val,
-												 PayPeriod val2){
+													 String val,
+													 PayPeriod val2){
 				debug = deb;
 				setDept_ref_id(val);
 				if(val2 != null){
-						setDate(val2.getEnd_date()); // last day of pay period
+						setEnd_date(val2.getEnd_date()); // last day of pay period
+				}
+				if(date.equals("") && !end_date.equals("")){
+						date = Helper.getDateAfter(end_date, 5);
 				}
     }	
     //
@@ -58,6 +64,11 @@ public class HandleNwAccrual{
 						date = val;
 				}
     }
+    public void setEnd_date(String val){
+				if(val != null){		
+						end_date = val;
+				}
+    }		
 		private String prepareEmployee(){
 				String msg = "";
 				EmployeeList empl = new EmployeeList();
@@ -140,7 +151,7 @@ public class HandleNwAccrual{
 										str = empHash.get(str2); 
 										System.err.println("handleNwAccrual: id,emp_num,accruals "+ str+" "+str2+" "+str3+" "+ptoa+" "+scka+" "+holya+" "+cua);
 										// sick bank
-										EmployeeAccrual empa = new EmployeeAccrual(""+2,str,scka,date);
+										EmployeeAccrual empa = new EmployeeAccrual(""+2,str,scka,end_date);
 										msg = empa.doSaveOnly();
 										//
 										// pto bank

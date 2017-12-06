@@ -9,6 +9,9 @@
 <s:form action="employee" id="form_id" method="post">
 	<s:hidden name="action2" id="action2" value="" />
 	<s:if test="employee.id == ''">
+		<s:if test="employee.hasUserId()">
+			<s:hidden name="employee.user_id" value="%{employee.user_id}" />
+		</s:if>
 		<h3>New Employee</h3>
 	</s:if>
 	<s:else>
@@ -35,7 +38,7 @@
 	</s:if>
 	<dl class="fn1-output-field">
 		<dt>Username</dt>
-		<dd><s:textfield name="employee.user.username" size="10" value="%{employee.user.username}" required="true" /></dd>
+		<dd><s:textfield name="employee.user.username" size="10" value="%{employee.user.username}" required="true" /><s:if test="employee.hasUserId()"><a href="<s:property value='#application.url' />user.action?id=<s:property value='employee.user_id' />" class="fn1-btn"> User Info </a></s:if></dd>
 	</dl>	
 	<dl class="fn1-output-field">
 		<dt>First Name </dt>

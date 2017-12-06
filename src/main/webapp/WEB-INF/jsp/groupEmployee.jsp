@@ -31,7 +31,7 @@
 		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='groupEmployee.employee_id' />" /><s:property value="%{groupEmployee.employee.user}" /></a></dd>
 	</dl>			
 	<dl class="fn1-output-field">
-		<dt>Groups</dt>
+		<dt>Group</dt>
 		<s:if test="groupEmployee.id != ''">
 			<dd><s:property value="groupEmployee.group" />
 		</s:if>

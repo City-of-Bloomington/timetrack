@@ -26,6 +26,7 @@ public class DeptAction extends TopAction{
 		Department department = null;
 		List<Department> departments = null;
 		List<Group> groups = null;
+		List<Employee> employees = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -46,6 +47,7 @@ public class DeptAction extends TopAction{
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								id = department.getId();
 						}
 				}				
 				else if(action.startsWith("Save")){
@@ -54,6 +56,7 @@ public class DeptAction extends TopAction{
 								addActionError(back);
 						}
 						else{
+								id = department.getId();
 								addActionMessage("Saved Successfully");
 						}
 				}
@@ -62,7 +65,7 @@ public class DeptAction extends TopAction{
 						if(!id.equals("")){
 								back = department.doSelect();
 								if(!back.equals("")){
-								addActionError(back);
+										addActionError(back);
 								}
 						}
 				}
@@ -117,8 +120,26 @@ public class DeptAction extends TopAction{
 						}
 				}
 				return groups;
-		}		
-
+		}
+		public List<Employee> getEmployees(){
+				if(employees == null && !id.equals("")){
+						EmployeeList tl = new EmployeeList();
+						tl.setDepartment_id(id);
+						tl.setActiveOnly();
+						String back = tl.find();
+						if(back.equals("")){
+								List<Employee> ones = tl.getEmployees();
+								if(ones != null && ones.size() > 0){
+										employees = ones;
+								}
+						}
+				}
+				return employees;
+		}
+		public boolean hasEmployees(){
+				getEmployees();
+				return employees != null && employees.size() > 0;
+		}
 }
 
 

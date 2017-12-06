@@ -21,9 +21,9 @@ public class UserAction extends TopAction{
 		static final long serialVersionUID = 3950L;	
 		static Logger logger = LogManager.getLogger(UserAction.class);
 		//
-		List<User> employees = null;
-		String employeesTitle = "Current Users";
-
+		List<User> users = null;
+		String usersTitle = "Current Users";
+		User usser = null; // to distinguish from logged in user
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -38,7 +38,7 @@ public class UserAction extends TopAction{
 						}	
 				}
 				if(action.equals("Save")){
-						back = employee.doSave();
+						back = usser.doSave();
 						if(!back.equals("")){
 								addActionError(back);
 						}
@@ -47,40 +47,59 @@ public class UserAction extends TopAction{
 						}
 				}				
 				else if(action.startsWith("Save")){
-						back = employee.doUpdate();
+						back = usser.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
 						}
 						else{
-								addActionMessage("Removed Successfully");
+								addActionMessage("Updated Successfully");
 						}
 				}
 				else{		
-						getEmployee();
+						getUsser();
+						if(!id.equals("")){
+								back = usser.doSelect();
+								if(!back.equals("")){
+										addActionError(back);
+								}								
+						}
 				}
 				return ret;
 		}
-		public String getEmployeesTitle(){
-				return employeesTitle;
+		public String getUsersTitle(){
+				return usersTitle;
 		}
-
+		public User getUsser(){
+				if(usser == null){
+						usser = new User(id);
+				}
+				return usser;
+		}
+		public void setUsser(User val){
+				if(val != null)
+						usser = val;
+		}
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;
 		}
-		public List<User> getEmployees(){
-				if(employees == null){
+		public List<User> getUsers(){
+				if(users == null){
 						UserList tl = new UserList();
 						tl.setActiveOnly();
 						String back = tl.find();
 						if(back.equals("")){
 								List<User> ones = tl.getUsers();
 								if(ones != null && ones.size() > 0){
-										employees = ones;
+										users = ones;
 								}
 						}
 				}
-				return employees;
+				return users;
+		}
+		public boolean hasUsers(){
+				getUsers();
+				return users != null && users.size() > 0;
 		}
 
 }

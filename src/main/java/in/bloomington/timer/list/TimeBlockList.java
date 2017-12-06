@@ -352,7 +352,7 @@ public class TimeBlockList{
 				// find total hours used  PTO and other accrual related
 				// hour codes since last accrual carry over date
 				//
-				String qq2 = " select t.hour_code_id, sum(t.hours)                                     from time_blocks t,time_documents d                                             where t.document_id=d.id and t.inactive is null and                             t.date >= ? and d.employee_id=?                                                 and t.date <= (select end_date from pay_periods p,time_documents d              where p.id=d.pay_period_id and d.id=30) and t.hour_code_id in                   (select id from hour_codes where accrual_id is not null)                        group by t.hour_code_id                       ";
+				String qq2 = " select t.hour_code_id, sum(t.hours)                                     from time_blocks t,time_documents d                                             where t.document_id=d.id and t.inactive is null and                             t.date >= ? and d.employee_id=?                                                 and t.date <= (select p.end_date from pay_periods p,                            time_documents d2 where p.id=d2.pay_period_id and d2.id=d.id)                   and t.hour_code_id in (select id from hour_codes where                          accrual_id is not null) group by t.hour_code_id ";
 				con = Helper.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -365,7 +365,7 @@ public class TimeBlockList{
 						pstmt.setString(1, document_id);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
-								last_date = rs.getString(1);
+								last_date = rs.getString(1); // accrual date
 								emp_id = rs.getString(2);
 						}
 						qq = qq2;
@@ -377,6 +377,7 @@ public class TimeBlockList{
 						while(rs.next()){
 								int code_id = rs.getInt(1);
 								double hrs = rs.getDouble(2);
+								// System.err.println(" code "+code_id+":"+hrs);
 								usedAccrualTotals.put(code_id, hrs);
 						}
 				}

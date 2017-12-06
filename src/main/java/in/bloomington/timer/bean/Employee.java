@@ -123,6 +123,9 @@ public class Employee implements Serializable{
 				getGroups();
 				return groups != null && groups.contains(gg);
 		}
+		public boolean hasUserId(){
+				return !user_id.equals("");
+		}
     //
     // setters
     //

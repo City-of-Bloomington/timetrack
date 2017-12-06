@@ -30,7 +30,7 @@ public class CommonInc{
 		// the following two items are used in bulk notification emails
 		public final static String emailStr = "@bloomington.in.gov";
 		// you need to set the fromEmailStr
-		public final static String fromEmailStr = "admin@bloomington.in.gov";
+		public final static String fromEmailStr = "helpdesk@bloomington.in.gov";
 		//
    	String message = "";
 		List<String> errors = null;

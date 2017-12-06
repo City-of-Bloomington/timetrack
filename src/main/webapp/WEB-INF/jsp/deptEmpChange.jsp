@@ -10,7 +10,7 @@
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="departmentEmployee.id" value="%{departmentEmployee.id}" />
 	<s:hidden name="departmentEmployee.employee_id" value="%{departmentEmployee.employee_id}" />
-	<s:hidden name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" />	
+	<s:hidden name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" />
 	<s:property value="%{departmentEmployee.employee.user}" />
 	<h3>Change Employee Department </h3>
 	Note: If the department is changed, the old department expire date will be the effective change date and the effective date for the new department will be the new effective change date. <br />
@@ -31,11 +31,15 @@
 	</dl>		
 	<dl class="fn1-output-field">
 		<dt>Old Department</dt>
-			<dd><a href="<s:property value='#application.url' />type.action?id=<s:property value='departmentEmployee.department_id' />" /><s:property value="%{departmentEmployee.department}" /></a></dd>
+			<dd><a href="<s:property value='#application.url' />department.action?id=<s:property value='departmentEmployee.department_id' />" /><s:property value="%{departmentEmployee.department}" /></a></dd>
 	</dl>
 	<dl class="fn1-output-field">
 		<dt>New Department</dt>	
 		<dd><s:select name="departmentEmployee.new_department_id" value="%{departmentEmployee.new_department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" /></dd>
+	</dl>
+	<dl class="fn1-output-field">
+		<dt>Secondary Department</dt>	
+		<dd><s:select name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" /></dd>
 	</dl>	
 	<dl class="fn1-output-field">
 		<dt>Change Effective Date</dt>

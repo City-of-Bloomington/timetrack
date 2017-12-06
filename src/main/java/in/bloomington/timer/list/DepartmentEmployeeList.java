@@ -55,6 +55,7 @@ public class DepartmentEmployeeList{
 				ResultSet rs = null;
 				String msg="", qw="";
 				String qq = "select de.id,de.employee_id,de.department_id,"+
+						" de.department2_id,"+
 						" date_format(de.effective_date,'%m/%d/%Y'),"+
 						" date_format(de.expire_date,'%m/%d/%Y'), "+
 						" expire_date < now() "+
@@ -64,7 +65,7 @@ public class DepartmentEmployeeList{
 				}
 				if(!department_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += " de.department_id=? ";
+						qw += " (de.department_id=? or de.department2_id=?)";
 				}
 				if(!pay_period_id.equals("")){
 						qq += ", pay_periods pp ";
@@ -87,11 +88,13 @@ public class DepartmentEmployeeList{
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
+						int jj=1;
 						if(!employee_id.equals("")){
-								pstmt.setString(1, employee_id);
+								pstmt.setString(jj++, employee_id);
 						}
 						if(!department_id.equals("")){
-								pstmt.setString(1, department_id);
+								pstmt.setString(jj++, department_id);
+								pstmt.setString(jj++, department_id);								
 						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
@@ -104,7 +107,8 @@ public class DepartmentEmployeeList{
 																			 rs.getString(3),
 																			 rs.getString(4),
 																			 rs.getString(5),
-																			 rs.getString(6) == null);
+																			 rs.getString(6),
+																			 rs.getString(7) == null);
 								departmentEmployees.add(one);
 						}
 				}

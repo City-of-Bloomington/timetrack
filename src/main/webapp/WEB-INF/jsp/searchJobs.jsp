@@ -58,6 +58,10 @@
 			<dd><s:radio name="joblst.which_date" value="%{joblst.which_date}" list="#{'j.effective_date':'Effective Date','j.expire_date':'Expire Date'}" /> </dd>
 		</dl>
 		<dl class="fn1-output-field">
+			<dt>Required Punch Clock?</dt>
+			<dd><s:radio name="joblst.clock_status" value="%{joblst.clock_status}" list="#{'-1':'All','y':'Yes','n':'No'}" /> </dd>
+		</dl>		
+		<dl class="fn1-output-field">
 			<dt>Active ?</dt>
 			<dd><s:radio name="joblst.active_status" value="%{joblst.active_status}" list="#{'-1':'All','Active':'Yes','Inactive':'No'}" /> </dd>
 		</dl>

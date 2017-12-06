@@ -11,6 +11,9 @@
 	<s:hidden name="departmentEmployee.employee_id" value="%{departmentEmployee.employee_id}" />
 	<s:if test="departmentEmployee.id != ''">
 		<s:hidden name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" />
+		<s:if test="departmentEmployee.hasSecondaryDept()">
+			<s:hidden name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" />
+		</s:if>
 	</s:if>	
 	<s:property value="%{departmentEmployee.employee.user}" />
 	<s:if test="departmentEmployee.id == ''">
@@ -34,16 +37,23 @@
 	<dl class="fn1-output-field">
 		<dt>Employee</dt>
 		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee.user}" /></a></dd>
-	</dl>		
-	<dl class="fn1-output-field">
-		<dt>Department</dt>
-		<s:if test="departmentEmployee.id == ''">		
+	</dl>
+	<s:if test="departmentEmployee.id == ''">			
+		<dl class="fn1-output-field">
+			<dt>Department</dt>
 			<dd><s:select name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" /></dd>
-		</s:if>
-		<s:else>
-			<dd><a href="<s:property value='#application.url' />type.action?id=<s:property value='departmentEmployee.department_id' />" /><s:property value="%{departmentEmployee.department}" /></a></dd>
-		</s:else>
-	</dl>	
+		</dl>
+	</s:if>
+	<s:else>
+		<dl class="fn1-output-field">
+			<dt>Department</dt>		
+			<dd><a href="<s:property value='#application.url' />department.action?id=<s:property value='departmentEmployee.department_id' />" /><s:property value="%{departmentEmployee.department}" /></a></dd>
+		</dl>
+	</s:else>
+	<dl class="fn1-output-field">
+		<dt>Secondary Department</dt>		
+		<dd><s:select name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" />(needed for department directors only)</dd>
+	</dl>			
 	<dl class="fn1-output-field">
 		<dt>Effective Date</dt>
 		<dd><s:textfield name="departmentEmployee.effective_date" value="%{departmentEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" /> </dd>

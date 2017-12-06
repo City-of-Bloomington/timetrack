@@ -11,6 +11,7 @@
 			<th align="center"><b>ID</b></th>
 			<th align="center"><b>Employee</b></th>
 			<th align="center"><b>Department</b></th>
+			<th align="center"><b>Seconday Department</b></th>			
 			<th align="center"><b>Start Date</b></th>
 			<th align="center"><b>Expire Date</b></th>
 			<th align="center"><b>Active</b></th>
@@ -22,6 +23,7 @@
 				<td><a href="<s:property value='#application.url' />departmentEmployee.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
 				<td><s:property value="employee.user" /></td>				
 				<td><s:property value="department" /></td>
+				<td><s:if test="hasSecondaryDept()"><s:property value="department2" /></s:if>&nbsp;</td>
 				<td><s:property value="effective_date" /></td>
 				<td><s:property value="expire_date" /></td>
 				<td><s:if test="active">Yes</s:if><s:else>No</s:else></td>

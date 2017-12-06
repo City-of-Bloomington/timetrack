@@ -20,19 +20,28 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AccrualJob implements Job{
+public class BatchSubmitJob implements Job{
 
     boolean debug = true;
 		static final long serialVersionUID = 55L;		
-		static Logger logger = LogManager.getLogger(AccrualJob.class);
-		static List<Department> depts = null;
-		// static Hashtable<String, BenefitGroup> benGroups = null;
-		public AccrualJob(){
+		static Logger logger = LogManager.getLogger(BatchSubmitJob.class);
+		boolean activeMail = false;
+		PayPeriod lastPayPeriod = null;
+		public BatchSubmitJob(){
 
 		}
 		public void execute(JobExecutionContext context)
         throws JobExecutionException {
 				try{
+						/*
+						JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+						if(dataMap != null){
+								String val = dataMap.getString("activeMail");
+								if(val != null && val.equals("true")){
+										activeMail = true;
+								}
+						}
+						*/
 						doInit();
 						doWork();
 						doDestroy();
@@ -43,31 +52,9 @@ public class AccrualJob implements Job{
 				}
 		}
 		public void doInit(){
-				DepartmentList dl = new DepartmentList();
-				dl.setActiveOnly();
-				dl.hasRefIds();
-				String msg = dl.find();
-				if(!msg.equals("")){
-						logger.error(msg);
-				}
-				else{
-						List<Department> ones = dl.getDepartments();
-						if(ones != null && ones.size() > 0){
-								depts = ones;
-						}
-				}
-		}
-		public void doDestroy() {
-
-		}	    
-
-    public void doWork(){
-    
-				String msg = "";
-				String date = "", end_date="";
 				PayPeriodList ppl = new PayPeriodList();
 				ppl.setLastPayPeriod();
-				msg = ppl.find();
+				String msg = ppl.find();
 				if(!msg.equals("")){
 						logger.error(msg);
 						return;
@@ -75,16 +62,19 @@ public class AccrualJob implements Job{
 				else{
 						List<PayPeriod> ones = ppl.getPeriods();
 						if(ones != null && ones.size() > 0){
-								PayPeriod period = ones.get(0);// last pay period
-								end_date = period.getEnd_date();
-								date = Helper.getDateAfter(end_date, 5); // 5 days after 
+								lastPayPeriod = ones.get(0);
 						}
-				}
-				if(!date.equals("") && depts != null){
-						for(Department dept:depts){
-								HandleNwAccrual handle = new HandleNwAccrual(dept.getRef_id(), date, end_date);
-								msg = handle.process();
-						}
+				}				
+		}
+		public void doDestroy() {
+				lastPayPeriod = null;
+		}	    
+    public void doWork(){
+				if(lastPayPeriod != null){
+						HandleBatchSubmit handle = new HandleBatchSubmit(lastPayPeriod);
+						String msg = handle.process();
+						if(!msg.equals(""))
+								logger.error(msg);
 				}
 		}
 

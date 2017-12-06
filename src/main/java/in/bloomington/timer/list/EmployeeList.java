@@ -201,10 +201,10 @@ public class EmployeeList extends CommonInc{
 								qq += " join department_employees de on de.employee_id=e.id  ";
 								if(!qw.equals("")) qw += " and ";
 								if(includeAllDirectors){
-										qw += " de.department_id in(?,18) ";// all city directors dept=18								
+										qw += " (de.department_id in(?,18) or de.department2_id in (?,18))";// all city directors dept=18								
 								}
 								else{
-										qw += " de.department_id = ? ";
+										qw += " (de.department_id = ? or de.department2_id=?)";
 								}
 						}
 						if(!dept_ref_id.equals("")){
@@ -237,11 +237,11 @@ public class EmployeeList extends CommonInc{
 						}				
 						if(active_only){
 								if(!qw.equals("")) qw += " and ";
-								qw += " u.inactive is null ";
+								qw += " (u.inactive is null and e.inactive is null)";
 						}
 						else if(inactive_only){
 								if(!qw.equals("")) qw += " and ";
-								qw += " u.inactive is not null ";
+								qw += " (u.inactive is not null or e.inactive is not null)";
 						}
 				}
 				if(!qw.equals(""))
@@ -277,6 +277,7 @@ public class EmployeeList extends CommonInc{
 								}
 								if(!department_id.equals("")){
 										pstmt.setString(jj++, department_id);
+										pstmt.setString(jj++, department_id);										
 								}
 								if(!dept_ref_id.equals("")){
 										pstmt.setString(jj++, dept_ref_id);

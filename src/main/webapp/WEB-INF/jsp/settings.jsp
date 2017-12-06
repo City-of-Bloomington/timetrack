@@ -23,6 +23,7 @@
 					<li><a href="<s:property value='#application.url'/>accrualWarning.action">Accrual Warnings </a></li>		
 					<li><a href="<s:property value='#application.url'/>group.action">Groups</a></li>
 					<li><a href="<s:property value='#application.url'/>employee.action">Employees</a></li>
+					<li><a href="<s:property value='#application.url'/>user.action">Users</a></li>					
 					<li><a href="<s:property value='#application.url'/>jobTask.action">Jobs</a></li>
 					<li><a href="<s:property value='#application.url'/>empAccrual.action">Employee Accruals</a></li>
 					<li><a href="<s:property value='#application.url'/>holiday.action">Holidays</a></li>
@@ -57,7 +58,8 @@
 				Schedulars
 				<ul>
 					<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Accrual Schedular</a></li>
-					<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Notification Schedular</a></li>					
+					<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Notification Schedular</a></li>
+					<li><a href="<s:property value='#application.url'/>batchSchedule.action">Batch Submission Schedular</a></li>					
 				</ul>
 			</td>
 		</tr>

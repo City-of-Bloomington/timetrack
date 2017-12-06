@@ -21,12 +21,13 @@ public class JobTaskList{
 		static Logger logger = LogManager.getLogger(JobTaskList.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		List<JobTask> jobTasks = null;
-		boolean active_only = false, current_only = false, inactive_only=false;
+		boolean active_only = false, current_only = false, inactive_only=false,
+				clock_time_required = false, clock_time_not_required=false;
 		String salary_group_id="", employee_id="", pay_period_id="";
 		String id="", effective_date = "", which_date="j.effective_date",
 				date_from="", date_to="", position_id="", employee_name="",
 				department_id="";
-		
+		String clock_status="";
     public JobTaskList(){
     }
     public JobTaskList(String val){
@@ -44,6 +45,9 @@ public class JobTaskList{
 		}		
 		public void setActiveOnly(){
 				active_only = true;
+		}
+		public void setClock_time_required(){
+				clock_time_required = true;
 		}
 		public void setId(String val){
 				if(val != null && !val.equals("-1"))
@@ -99,7 +103,14 @@ public class JobTaskList{
 								inactive_only = true;
 				}
     }		
-
+    public void setClock_status(String val){
+				if(val != null && !val.equals("-1")){
+						if(val.equals("y")) 
+								clock_time_required = true;
+						else if(val.equals("n"))
+								clock_time_not_required = true;
+				}
+    }		
 		public void setCurrentOnly(){
 				active_only = true;
 		}
@@ -142,6 +153,14 @@ public class JobTaskList{
 						return "Inactive";
 				return "-1";
 		}
+		public String getClock_status(){
+				if(clock_time_required)
+						return "y";
+				else if(clock_time_not_required)
+						return "n";
+				return "-1";
+
+		}
     //
 		/*
 				select j.id,j.position_id,j.salary_group_id,j.employee_id,date_format(j.effective_date,'%m/%d/%Y'),date_format(j.expire_date,'%m/%d/%Y'),j.primary_flag,j.weekly_regular_hours,j.comp_time_weekly_hours,j.comp_time_factor,j.holiday_comp_factor,j.inactive,g.name,g.description,g.default_regular_id,g.inactive from jobs j join salary_groups g on g.id=j.salary_group_id join department_employees de on de.employee_id=j.employee_id where de.department_id=1 ;
@@ -156,6 +175,7 @@ public class JobTaskList{
 						"j.comp_time_weekly_hours,"+
 						"j.comp_time_factor,"+
 						"j.holiday_comp_factor,"+
+						"j.clock_time_required,"+
 						"j.inactive,  "+
 						"g.name,g.description,g.default_regular_id,g.inactive "+
 						" from jobs j ";
@@ -168,7 +188,16 @@ public class JobTaskList{
 						qw += " j.inactive is not null ";
 				}
 				if(current_only){
+						if(!qw.equals("")) qw += " and ";
 						qw += " j.effective_date < now() and (j.expire_date > now() or j.exire_date is null) ";
+				}
+				if(clock_time_required){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.clock_time_required is not null ";
+				}
+				else if(clock_time_not_required){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.clock_time_required is null ";
 				}
 				try{
 						if(!salary_group_id.equals("")){
@@ -251,22 +280,24 @@ public class JobTaskList{
 									 jobTasks = new ArrayList<>();
 							 JobTask one =
 									 new JobTask(
-													 rs.getString(1),
-													 rs.getString(2),
-													 rs.getString(3),
-													 rs.getString(4),
-													 rs.getString(5),
-													 rs.getString(6),
-													 rs.getString(7) != null,
-													 rs.getInt(8),
-													 rs.getInt(9),
-													 rs.getDouble(10),
-													 rs.getDouble(11),
-													 rs.getString(12) != null,
-													 rs.getString(13),
-													 rs.getString(14),
-													 rs.getString(15),
-													 rs.getString(16) != null);
+															 rs.getString(1),
+															 rs.getString(2),
+															 rs.getString(3),
+															 rs.getString(4),
+															 rs.getString(5),
+															 rs.getString(6),
+															 rs.getString(7) != null,
+															 rs.getInt(8),
+															 rs.getInt(9),
+															 rs.getDouble(10),
+															 rs.getDouble(11),
+															 rs.getString(12) != null,
+															 rs.getString(13) != null,
+															 rs.getString(14),
+															 rs.getString(15),
+															 rs.getString(16),
+															 rs.getString(17) != null
+															 );
 							 if(!jobTasks.contains(one))
 									 jobTasks.add(one);
 						}

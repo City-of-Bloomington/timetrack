@@ -15,6 +15,7 @@
 			<th align="center"><b>Effective Date</b></th>
 			<th align="center"><b>Expire Date</b></th>
 			<th align="center"><b>Primary Job</b></th>
+			<th align="center"><b>Clock Time Required</b></th>			
 			<th align="center"><b>Weekly Reg Hrs</b></th>
 			<th align="center"><b>Comp Time Weekly Hrs</b></th>
 			<th align="center"><b>Comp Time Muliple Factor</b></th>
@@ -32,6 +33,7 @@
 				<td><s:property value="effective_date" /></td>
 				<td><s:property value="expire_date" /></td>
 				<td><s:if test="primary_flag">Yes</s:if><s:else>No</s:else></td>
+				<td><s:if test="clock_time_required">Yes</s:if><s:else>No</s:else></td>
 				<td><s:property value="weekly_regular_hours" /></td>
 				<td><s:property value="comp_time_weekly_hours" /></td>
 				<td><s:property value="comp_time_factor" /></td>

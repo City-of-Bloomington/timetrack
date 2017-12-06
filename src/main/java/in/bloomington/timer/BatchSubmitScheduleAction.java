@@ -17,16 +17,17 @@ import in.bloomington.timer.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AccrualScheduleAction extends TopAction{
+public class BatchSubmitScheduleAction extends TopAction{
 
 		static final long serialVersionUID = 3850L;	
-		static Logger logger = LogManager.getLogger(AccrualScheduleAction.class);
+		static Logger logger =
+				LogManager.getLogger(BatchSubmitScheduleAction.class);
 		//
-		List<Department> depts = null;
-		String accrualSchedulesTitle = "Accrual Schedules";
+		List<PayPeriod> periods = null;
+		String batchSubmitSchedulesTitle = "Batch Schedules";
 		QuartzMisc quartzMisc = null;
-		AccrualScheduler schedular = null;
-		String date = "", prev_date="", next_date="", dept_ref_id="";
+		BatchSubmitScheduler schedular = null;
+		String prev_date="", next_date="", pay_period_id="", date="";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -52,24 +53,30 @@ public class AccrualScheduleAction extends TopAction{
 										addActionError(back);
 								}
 								else{
+										if(quartzMisc != null){
+												prev_date = quartzMisc.getPrevScheduleDate();
+												if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
+														prev_date = "No Previous date found";
+												next_date = quartzMisc.getNextScheduleDate();
+										}
 										addActionMessage("Scheduled Successfully");
 								}
 						}catch(Exception ex){
 								addActionError(""+ex);
 						}
 				}
-				else if(action.startsWith("Import")){ // import now given the date
-						if(dept_ref_id.equals("") || date.equals("")){
-								addActionError("dept ref and/or date not set");
+				else if(action.startsWith("Submit")){ 
+						if(pay_period_id.equals("")){
+								addActionError("Pay period not selected");
 						}
 						else{
-								HandleNwAccrual handle = new HandleNwAccrual(dept_ref_id, date, date);
+								HandleBatchSubmit handle = new HandleBatchSubmit(pay_period_id);
 								back = handle.process();
 								if(!back.equals("")){
 										addActionError(back);
 								}
 								else{
-										addActionMessage("Imported Successfully");
+										addActionMessage("Batch Submitted Successfully");
 								}
 						}
 				}
@@ -86,14 +93,14 @@ public class AccrualScheduleAction extends TopAction{
 								if(ones != null && ones.size() > 0){
 										PayPeriod one = ones.get(0);
 										String end_date = one.getEnd_date();
-										date = Helper.getDateAfter(end_date, 5);
+										date = Helper.getDateAfter(end_date, 1);
 								}
 						}
 				}
 				if(!date.equals("")){
-						schedular = new AccrualScheduler(date);
+						schedular = new BatchSubmitScheduler(date);
 				}
-				quartzMisc = new QuartzMisc(debug);
+				quartzMisc = new QuartzMisc("batch");
 				msg = quartzMisc.findScheduledDates();
 				if(msg.equals("")){
 						prev_date = quartzMisc.getPrevScheduleDate();
@@ -109,11 +116,10 @@ public class AccrualScheduleAction extends TopAction{
 				}
 				return msg;
 		}
-		public String getAccrualSchedularsTitle(){
+		public String getBatchSubmitSchedularsTitle(){
 				
-				return accrualSchedulesTitle;
+				return batchSubmitSchedulesTitle;
 		}
-
 
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
@@ -123,10 +129,15 @@ public class AccrualScheduleAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						date = val;
 		}
-		public void setDept_ref_id(String val){
+		public void setPay_period_id(String val){
 				if(val != null && !val.equals("-1"))		
-						dept_ref_id = val;
-		}		
+						pay_period_id = val;
+		}
+		public String getPay_period_id(){
+				if(pay_period_id.equals(""))
+						return "-1";
+				return pay_period_id;
+		}
 		// read only 
 		public String getDate(){
 				return date;
@@ -140,28 +151,28 @@ public class AccrualScheduleAction extends TopAction{
 		public boolean hasPrevDates(){
 				return !prev_date.equals("");
 		}
-		public List<Department> getDepts(){
-				if(depts == null){
-						DepartmentList dl = new DepartmentList();
-						dl.setActiveOnly();
-						dl.hasRefIds();
+		public List<PayPeriod> getPeriods(){
+				if(periods == null){
+						PayPeriodList dl = new PayPeriodList();
+						dl.avoidFuturePeriods();
+						dl.setLimit("5");
 						String msg = dl.find();
 						if(!msg.equals("")){
 								logger.error(msg);
 						}
 						else{
-								List<Department> ones = dl.getDepartments();
+								List<PayPeriod> ones = dl.getPeriods();
 								if(ones != null && ones.size() > 0){
-										depts = ones;
+										periods = ones;
 								}
 						}
 				}
-				return depts;
+				return periods;
 		}
-		public boolean hasDepts(){
-				getDepts();
-				return depts != null && depts.size() > 0;
-		}
+		public boolean hasPeriods(){
+				getPeriods();
+				return periods != null && periods.size() > 0;
+		}		
 		
 }
 

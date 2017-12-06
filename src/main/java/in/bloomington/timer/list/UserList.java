@@ -56,8 +56,8 @@ public class UserList extends CommonInc{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				
-				String qq = "select u.id,u.username,u.first_name,u.last_name,u.role,u.inactive "+
-						" from users u ";
+				String qq = "select u.id,u.username,u.first_name,u.last_name,"+
+						" u.role,u.inactive from users u ";
 				String qw = "";
 				if(!username.equals("")){
 						if(!qw.equals("")) qw += " and ";
@@ -73,7 +73,7 @@ public class UserList extends CommonInc{
 				}
 				if(!qw.equals(""))
 						qq += " where "+qw;
-				qq += " order by u.last_name,u.first_name ";
+				qq += " order by u.first_name,u.last_name ";
 				String back = "";
 				try{
 						logger.debug(qq);

@@ -201,9 +201,7 @@ public class User implements Serializable{
 				return employee;
 		}
 		//
-		// not every user is employee such as admin (if used)
-		//
-		public boolean isEmployee(){
+		public boolean hasEmployee(){
 				getEmployee();
 				return employee != null;
 		}
@@ -260,7 +258,7 @@ public class User implements Serializable{
 				}
 				return msg;
 		}
-		String doSave(){
+		public String doSave(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;		
@@ -327,7 +325,7 @@ public class User implements Serializable{
 				}
 				return msg;
 		}
-		String doUpdate(){
+		public String doUpdate(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;

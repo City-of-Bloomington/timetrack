@@ -64,9 +64,14 @@
 			<dd><s:checkbox name="jobTask.primary_flag" value="%{jobTask.primary_flag}" />Yes </dd>
 		</dl>
 		<dl class="fn1-output-field">
+			<dt>Clock Time Required?</dt>
+			<dd><s:checkbox name="jobTask.clock_time_required" value="%{jobTask.clock_time_required}" fieldValue="true" />Yes (Employees who are required to use punch clock)</dd>
+		</dl>		
+		<dl class="fn1-output-field">
 			<dt>Weekly Reg Hours </dt>
 			<dd><s:textfield name="jobTask.weekly_regular_hours" value="%{jobTask.weekly_regular_hours}" size="2" maxlength="2" required="true" />(normally 40) </dd>
 		</dl>
+		
 		<dl class="fn1-output-field">
 			<dt>Comp Time Weekly Hours </dt>
 			<dd><s:textfield name="jobTask.comp_time_weekly_hours" value="%{jobTask.comp_time_weekly_hours}" size="2" maxlength="2" required="true" />(normally 40 for non-exempt and 45 for exempt) </dd>

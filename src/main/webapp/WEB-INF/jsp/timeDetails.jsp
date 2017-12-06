@@ -24,7 +24,9 @@
 			<b> <s:property value="payPeriod.monthNames" /> <s:property value="payPeriod.startYear" /></b>
 		</td>
 		<td align="right" class="td_text">
-			<b> Employee: </b><s:property value="document.employee" />
+			<s:if test="!isUserCurrentEmployee()"><font color="red"><b>Logged as </b></s:if>			
+				<b> Employee: </b><s:property value="document.employee" />
+				<s:if test="!isUserCurrentEmployee()"></font></s:if>							
 		</td>
 	</tr>
 	<s:if test="!isUserCurrentEmployee()">

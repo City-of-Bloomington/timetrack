@@ -10,10 +10,10 @@
 <s:form action="department" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:if test="department.id == ''">
-		<h1>New <s:property value="title" /></h1>
+		<h1>New Department</h1>
 	</s:if>
 	<s:else>
-		<h1>Edit <s:property value="title" /></h1>
+		<h1>Edit <s:property value="%{department.name}" /></h1>
 		<s:hidden name="department.id" value="%{department.id}" />
 	</s:else>
   <s:if test="hasActionErrors()">
@@ -26,7 +26,6 @@
       <s:actionmessage/>
 		</div>
   </s:elseif>
-	
   <p>* Required field <br />
 		<s:if test="id != ''">
 			If you make any change, please hit the 'Save Changes' button <br />
@@ -68,17 +67,25 @@
 	</div>
 </s:form>
 <s:if test="department.id != ''">
+	
 	<s:if test="groups != null">
 		<s:set var="groups" value="groups" />
 		<s:set var="groupsTitle" value="'Groups in this Department'" />
 		<%@  include file="groups.jsp" %>
 	</s:if>
+	<s:if test="hasEmployees()">
+		<s:set var="employees" value="employees" />
+		<s:set var="employeesTitle" value="'Employees in this Department'" />
+		<%@  include file="employees.jsp" %>
+	</s:if>
 </s:if>
-<s:if test="departments != null">
-	<s:set var="departments" value="departments" />
-	<s:set var="departmentsTitle" value="deptsTitle" />
-	<%@  include file="departments.jsp" %>
-</s:if>
+<s:else>
+	<s:if test="departments != null">
+		<s:set var="departments" value="departments" />
+		<s:set var="departmentsTitle" value="deptsTitle" />
+		<%@  include file="departments.jsp" %>
+	</s:if>
+</s:else>
 <%@  include file="footer.jsp" %>
 
 
