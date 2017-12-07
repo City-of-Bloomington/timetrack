@@ -43,11 +43,10 @@
 					<li><a href="<s:property value='#application.url'/>searchGroups.action">Groups</a></li>										
 					<li><a href="<s:property value='#application.url'/>searchJobs.action">Jobs</a></li>
 				</ul>
-				Employee
+				Target Employee
 				<ul>
 					<li><a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a></li>
 				</ul>
-				
 				Timewarp 
 				<ul>
 					<li><a href="<s:property value='#application.url'/>payperiodProcess.action">Pay Period Process</a></li>

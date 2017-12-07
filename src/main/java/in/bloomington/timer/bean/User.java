@@ -205,7 +205,24 @@ public class User implements Serializable{
 				getEmployee();
 				return employee != null;
 		}
-		
+		public String validate(){
+				String msg = "";
+				if(username.equals("")){
+						msg = "username";
+				}
+				if(first_name.equals("")){
+						if(!msg.equals("")) msg += ", ";
+						msg += "first name";
+				}
+				if(last_name.equals("")){
+						if(!msg.equals("")) msg += ", ";
+						msg += "last name";
+				}
+				if(!msg.equals("")){
+						msg += " required but not set";
+				}
+				return msg;
+		}
 		public String doSelect(){
 				//
 				Connection con = null;

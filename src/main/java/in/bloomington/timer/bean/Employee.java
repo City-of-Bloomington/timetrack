@@ -372,6 +372,13 @@ public class Employee implements Serializable{
 		public GroupEmployee getGroupEmployee(){
 				return groupEmployee;
 		}
+		public String validate(){
+				String msg = "";
+				if(user != null){
+						msg = user.validate();
+				}
+				return msg;
+		}
 		public String doSelect(){
 				//
 				Connection con = null;

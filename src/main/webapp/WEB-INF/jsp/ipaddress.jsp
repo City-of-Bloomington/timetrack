@@ -16,6 +16,7 @@
 		<h3>Edit IP Address: <s:property value="%{ipaddress.ip_address}" /> </h3>
 		<s:hidden name="ipaddress.id" value="%{ipaddress.id}" />
 	</s:else>
+	These ip addresses will be needed for employees using punch clock.
   <s:if test="hasActionErrors()">
 		<div class="errors">
       <s:actionerror/>

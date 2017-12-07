@@ -5,6 +5,18 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
+<style>
+.hr_cell{
+	padding:0px 2px;
+	display:block;
+	text-decoration:none;
+}
+.b_cell{
+	border:1px dotted;
+	background-color: wheat;
+	color:red;
+}
+</style>
 <s:form action="timeDetails" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="source" value="source" />
@@ -75,20 +87,20 @@
 			<s:iterator value="#blockList" status="row" >
 				<s:if test="#row.first">
 					<td valign="top" style="height:100px;text-align:left" class="th_text">						
-						<a href="#" onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');">
+						<a href="#" class="hr_cell" onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');">
 							<s:property value="dayInt" />
 						</a>
 				</s:if>
 				<s:if test="hasData()">
 					<table border="0" width="100%">			
 						<tr>
-							<td align="right" class="td_text">
-								<a href="<s:property value='#application.url' />timeBlock?id=<s:property value='id' />&action=Delete">(X)</a>
+							<td align="right" class="td_text b_cell">
+								<a href="<s:property value='#application.url' />timeBlock?id=<s:property value='id' />&action=Delete" class="hr_cell">(X)</a>
 							</td>
 						</tr>
 						<tr>
 							<td align="left" class="td_text">
-								<a href="#" onclick="return popwit('<s:property value='#application.url' />timeBlock?id=<s:property value='id' />','timeBlock');">
+								<a href="#" class="hr_cell" onclick="return popwit('<s:property value='#application.url' />timeBlock?id=<s:property value='id' />','timeBlock');">
 									<s:if test="isHourType()">
 										<s:property value="hours" />
 									</s:if>
