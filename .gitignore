@@ -23,3 +23,16 @@ docs/_site
 docs/_post
 docs/.sass-cache
 docs/temp
+
+# dependencies
+client/node_modules
+
+# logs
+client/npm-debug.log
+
+# Nuxt build
+client/.nuxt
+
+# Nuxt generate
+client/dist
+

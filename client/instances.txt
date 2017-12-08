@@ -1,0 +1,23 @@
+*2017.11.07 14:25:56 code
+/c/bloomington-code/vue/instances.txt
+/c/bloomington-code/vue/launch.sh
+/c/bloomington-code/vue/journal.txt
+/c/bloomington-code/vue/todo.txt
+/c/bloomington-code/vue/vuetifyjs/nuxt/timetracker/pages/README.md
+/c/bloomington-code/vue/vuetifyjs/nuxt/timetracker/pages/inspire.vue
+/c/bloomington-code/vue/vuetifyjs/nuxt/timetracker/layouts/default.vue
+/c/bloomington-code/vue/vuetifyjs/nuxt/timetracker/pages/index.vue
+/c/bloomington-code/vue/vuetifyjs/nuxt/timetracker/components/Clock.vue
+
+*2017.10.27 15:42:10 code
+/c/bloomington-code/vue/instances.txt
+/c/bloomington-code/vue/launch.sh
+
+
+*2017.10.27 15:42:10 todo
+/c/bloomington-code/vue/instances.txt
+/c/bloomington-code/vue/launch.sh
+/c/bloomington-code/vue/journal.txt
+/c/bloomington-code/vue/todo.txt
+
+
