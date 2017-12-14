@@ -20,7 +20,7 @@ public class UserList extends CommonInc{
 
 		static final long serialVersionUID = 3400L;
 		static Logger logger = LogManager.getLogger(UserList.class);
-    String id = "", username="", last_name="", full_name="";
+    String id = "", username="", name="", full_name="", exclude_name="";
 
 		boolean active_only = false;
 		List<User> users = null;
@@ -42,14 +42,23 @@ public class UserList extends CommonInc{
 		}
 		public void setLast_name(String val){
 				if(val != null)
-						last_name = val;
+						name = val;
 		}
+		public void setName(String val){
+				if(val != null)
+						name = val;
+		}		
 		public void setActiveOnly(){
 				active_only = true;
+		}
+		public void setExclude_name(String val){
+				if(val != null)
+						exclude_name = val;
 		}
 		public List<User> getUsers(){
 				return users;
 		}
+		
 		public  String find(){
 				//
 				Connection con = null;
@@ -63,9 +72,13 @@ public class UserList extends CommonInc{
 						if(!qw.equals("")) qw += " and ";
 						qw += " u.username like ? ";
 				}
-				if(!last_name.equals("")){ // for auto_complete service
+				if(!name.equals("")){ // for auto_complete service
 						if(!qw.equals("")) qw += " and ";
-						qw += " u.last_name like ? ";
+						qw += " (u.last_name like ? or u.first_name like ?) ";
+				}
+				else if(!exclude_name.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " not (u.last_name like ? or u.first_name like ?) ";
 				}
 				if(active_only){
 						if(!qw.equals("")) qw += " and ";
@@ -87,9 +100,14 @@ public class UserList extends CommonInc{
 						if(!username.equals("")){
 								pstmt.setString(jj++,username);
 						}
-						if(!last_name.equals("")){ // for auto_complete 
-								pstmt.setString(jj++,last_name+"%");
-						}						
+						if(!name.equals("")){ // for auto_complete 
+								pstmt.setString(jj++,name+"%");
+								pstmt.setString(jj++,name+"%");								
+						}
+						else if(!exclude_name.equals("")){
+								pstmt.setString(jj++,exclude_name);
+								pstmt.setString(jj++,exclude_name);								
+						}
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								if(users == null)

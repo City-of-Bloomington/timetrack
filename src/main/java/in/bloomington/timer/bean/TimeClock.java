@@ -152,7 +152,7 @@ public class TimeClock{
 				// if we could not find, then we create a new one
 				//
 				if(document == null){
-						Document one = new Document(null, employee.getId(), currentPayPeriod.getId(), null, employee.getUser().getId());
+						Document one = new Document(null, employee.getId(), currentPayPeriod.getId(), null, employee.getId());
 						String back = one.doSave();
 						if(back.equals("")){
 								document = one;
@@ -253,7 +253,7 @@ public class TimeClock{
 																				 "y",
 																				 null);
 						timeBlock.setAction_type("ClockIn");
-						timeBlock.setAction_by_id(document.getEmployee().getUser_id());						
+						timeBlock.setAction_by_id(document.getEmployee().getId());
 						msg = timeBlock.doSave();
 				}
 				else{
@@ -276,7 +276,7 @@ public class TimeClock{
 										timeBlock.setEnd_minute(time_min);
 										timeBlock.setClock_out("y");
 										timeBlock.setAction_type("ClockOut");
-										timeBlock.setAction_by_id(document.getEmployee().getUser_id());
+										timeBlock.setAction_by_id(document.getEmployee().getId());
 										msg = timeBlock.doUpdate();
 								}
 								else{ // it is a clock-in
@@ -297,7 +297,7 @@ public class TimeClock{
 																							"y",
 																							null);
 										timeBlock.setAction_type("ClockIn");
-										timeBlock.setAction_by_id(document.getEmployee().getUser_id());
+										timeBlock.setAction_by_id(document.getEmployee().getId());
 										msg = timeBlock.doSave();
 								}
 						}

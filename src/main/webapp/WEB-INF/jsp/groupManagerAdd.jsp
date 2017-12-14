@@ -28,7 +28,7 @@
 	<dl class="fn1-output-field">
 		<dt>1 - Employee: </dt>
 		<s:if test="hasEmployees()">
-			<dd><s:select name="groupManager.employee_id" value="%{groupManager.employee_id}" list="employees" listKey="id" listValue="user.full_name" headerKey="-1" headerValue="Pick Employee" /> Workflow Action: <s:if test="hasNodes()"><s:select name="groupManager.wf_node_id" value="%{groupManager.wf_node_id}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /></s:if>
+			<dd><s:select name="groupManager.employee_id" value="%{groupManager.employee_id}" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="Pick Employee" /> Workflow Action: <s:if test="hasNodes()"><s:select name="groupManager.wf_node_id" value="%{groupManager.wf_node_id}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /></s:if>
 			</dd>
 		</s:if>
 		<s:else>
@@ -38,7 +38,7 @@
 	<dl class="fn1-output-field">
 		<dt>2 - Employee: </dt>
 		<s:if test="hasEmployees()">
-			<dd><s:select name="groupManager.employee_id2" value="%{groupManager.employee_id2}" list="employees" listKey="id" listValue="user.full_name" headerKey="-1" headerValue="Pick Employee" /> Workflow Action: <s:if test="hasNodes()"><s:select name="groupManager.wf_node_id2" value="%{groupManager.wf_node_id2}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /></s:if>
+			<dd><s:select name="groupManager.employee_id2" value="%{groupManager.employee_id2}" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="Pick Employee" /> Workflow Action: <s:if test="hasNodes()"><s:select name="groupManager.wf_node_id2" value="%{groupManager.wf_node_id2}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /></s:if>
 			</dd>
 		</s:if>
 		<s:else>

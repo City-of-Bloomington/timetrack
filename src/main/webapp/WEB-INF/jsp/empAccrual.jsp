@@ -28,7 +28,7 @@
   </s:elseif>
 	<dl class="fn1-output-field">
 		<dt>Employee</dt>
-		<dd><s:property value="empAccrual.employee.user" /></dd>
+		<dd><s:property value="empAccrual.employee" /></dd>
 	</dl>
 	<s:if test="empAccrual.id != ''">
 		<dl class="fn1-output-field">

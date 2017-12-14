@@ -27,7 +27,7 @@
   </s:elseif>
 	<dl class="fn1-output-field">
 		<dt>Employee</dt>
-		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee.user}" /></a></dd>
+		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee}" /></a></dd>
 	</dl>		
 	<dl class="fn1-output-field">
 		<dt>Old Department</dt>

@@ -31,7 +31,7 @@ public class Document{
 		double week1Total = 0, week2Total = 0;
 		PayPeriod payPeriod = null;
 		Employee employee = null;
-		User initiater = null;
+		Employee initiater = null;
 		TimeAction lastTimeAcion = null;
 		Workflow lastWorkflow = null;
 		List<TimeAction> timeActions = null;
@@ -153,9 +153,9 @@ public class Document{
 				}
 				return employee;
 		}
-		public User getInitiater(){
+		public Employee getInitiater(){
 				if(!initiated_by.equals("") && initiater == null){
-						User one = new User(initiated_by);
+						Employee one = new Employee(initiated_by);
 						String back = one.doSelect();
 						if(back.equals("")){
 								initiater = one;

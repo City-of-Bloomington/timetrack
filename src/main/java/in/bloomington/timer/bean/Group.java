@@ -37,6 +37,7 @@ public class Group extends Type{
 								 boolean val5
 								 ){
 				super(val, val2, val3,val5);
+				setDepartment_id(val4);
     }
 		
     public Group(String val,
@@ -47,6 +48,7 @@ public class Group extends Type{
 								 String val6
 								 ){
 				super(val, val2, val3, val5);
+				setDepartment_id(val4);
 				if(val6 != null){
 						department = new Type(department_id, val6);
 				}

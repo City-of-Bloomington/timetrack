@@ -40,7 +40,7 @@ public class HandleIssueAction extends TopAction{
 						}
 				}
 				if(action.startsWith("Close")){
-						timeIssue.setClosed_by(user.getEmployee_id());
+						timeIssue.setClosed_by(user.getId());
 						back = timeIssue.doClose();
 						if(!back.equals("")){
 								addActionError(back);

@@ -54,7 +54,7 @@
 			<tr>
 				<td class="th_text">&nbsp;</td>
 				<td align="right" class="td_text">
-					<a href="<s:property value='#application.url' />switch.action?employee_id=<s:property value='user.employee_id' />&action=Change">Back to Main User</a>
+					<a href="<s:property value='#application.url' />switch.action?employee_id=<s:property value='user.id' />&action=Change">Back to Main User</a>
 				</td>
 			</tr>
 		</s:else>

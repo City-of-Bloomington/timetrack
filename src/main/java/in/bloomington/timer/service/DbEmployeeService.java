@@ -105,7 +105,7 @@ public class DbEmployeeService extends HttpServlet{
 				String json="";
 				for(Employee one:emps){
 						if(!json.equals("")) json += ",";
-						json += "{\"id\":\""+one.getId()+"\",\"value\":\""+one.getUser().getFull_name()+"\",\"full_name\":\""+one.getUser().getFull_name()+"\"}";
+						json += "{\"id\":\""+one.getId()+"\",\"value\":\""+one.getFull_name()+"\",\"full_name\":\""+one.getFull_name()+"\"}";
 				}
 				json = "["+json+"]";
 				// System.err.println("json "+json);

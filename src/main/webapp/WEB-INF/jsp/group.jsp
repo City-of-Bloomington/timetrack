@@ -61,14 +61,14 @@
 		<s:else>
 			<s:submit name="action" type="button" value="Save Changes" class="fn1-btn"/>
 			<a href="<s:property value='#application.url' />groupManagerAdd.action?group_id=<s:property value='group.id' />" class="fn1-btn">Assign managers to group </a>
-			<a href="<s:property value='#application.url'/>group.action" class="fn1-btn">New Employee Group</a></li>			
+			<a href="<s:property value='#application.url'/>group.action" class="fn1-btn">New Group</a></li>			
 		</s:else>
 	</div>
 </s:form>
 <s:if test="group.id != ''">
 	<s:if test="group.hasGroupEmployees()">
 		<s:set var="groupEmployees" value="%{group.groupEmployees}" />
-		<s:set var="groupEmployeesTitle" value="'Group Employees'" />
+		<s:set var="groupEmployeesTitle" value="'Group Members'" />
 		<%@  include file="groupEmployees.jsp" %>	
 	</s:if>
 	<s:if test="hasGroupManagers()">

@@ -21,7 +21,7 @@ public class TimeAction implements Serializable{
 		static Logger logger = LogManager.getLogger(TimeAction.class);
 		static final long serialVersionUID = 3600L;
     private String id="", workflow_id="", document_id="",
-				action_by="", // user id
+				action_by="", // employee id
 				action_time="";
 
 		Type action = null;

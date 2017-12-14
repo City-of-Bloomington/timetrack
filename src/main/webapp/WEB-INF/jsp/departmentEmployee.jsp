@@ -15,7 +15,7 @@
 			<s:hidden name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" />
 		</s:if>
 	</s:if>	
-	<s:property value="%{departmentEmployee.employee.user}" />
+	<s:property value="%{departmentEmployee.employee}" />
 	<s:if test="departmentEmployee.id == ''">
 		<h3>Add Employee to a Department </h3>
 	</s:if>
@@ -36,7 +36,7 @@
   </s:elseif>
 	<dl class="fn1-output-field">
 		<dt>Employee</dt>
-		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee.user}" /></a></dd>
+		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee}" /></a></dd>
 	</dl>
 	<s:if test="departmentEmployee.id == ''">			
 		<dl class="fn1-output-field">

@@ -21,7 +21,6 @@ public class EmployeeAction extends TopAction{
 		static final long serialVersionUID = 1150L;	
 		static Logger logger = LogManager.getLogger(EmployeeAction.class);
 		//
-		String user_id=""; 
 		Employee employee = null;
 		DepartmentEmployee departmentEmployee = null; // for new employee
 		GroupEmployee groupEmployee = null; // for new employee
@@ -108,7 +107,6 @@ public class EmployeeAction extends TopAction{
 				if(employee == null){
 						employee = new Employee();
 						employee.setId(id);
-						employee.setUser_id(user_id);
 				}
 				return employee;
 						
@@ -132,11 +130,6 @@ public class EmployeeAction extends TopAction{
 						employee = val;
 				}
 		}
-		public void setUser_id(String val){ 
-				if(val != null){
-						user_id = val;
-				}
-		}		
 		public void setDepartmentEmployee(DepartmentEmployee val){
 				if(val != null){
 						departmentEmployee = val;

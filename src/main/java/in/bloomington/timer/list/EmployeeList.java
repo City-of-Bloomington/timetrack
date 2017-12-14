@@ -22,11 +22,11 @@ public class EmployeeList extends CommonInc{
 
 		static final long serialVersionUID = 1160L;
 		static Logger logger = LogManager.getLogger(EmployeeList.class);
-    String id = "", user_id="", username="", name="",
+    String id = "", username="", name="",
 				full_name="", group_id="", group_ids="", id_code="", 
 				exclude_group_id="", groupManager_id="", department_id="",
 				dept_ref_id="", // one or more values
-				employee_number="",
+				employee_number="",  exclude_name="",
 				no_document_for_payperiod_id="";
 		Set<String> group_id_set = new HashSet<>();
 		boolean active_only = false, inactive_only = false, hasEmployeeNumber=false;
@@ -85,10 +85,6 @@ public class EmployeeList extends CommonInc{
 		public void setUsername(String val){
 				if(val != null)
 						username = val;
-		}
-		public void setUser_id(String val){
-				if(val != null)
-						user_id = val;
 		}
 		public void setId_code(String val){
 				if(val != null)
@@ -169,12 +165,16 @@ public class EmployeeList extends CommonInc{
 				getGroups();
 				return groups != null && groups.size() > 0;
 		}
+		public void setExclude_name(String val){
+				if(val != null)
+						exclude_name = val;
+		}		
     public String find(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select e.id,e.user_id,e.id_code,e.employee_number,e.inactive,u.id,u.username,u.first_name,u.last_name,u.role,u.inactive from employees e join users u on u.id = e.user_id ";				
+				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.role,e.inactive from employees e ";				
 				String qw = "";
 				if(!id.equals("")){
 						if(!qw.equals("")) qw += " and ";
@@ -187,15 +187,15 @@ public class EmployeeList extends CommonInc{
 				else{
 						if(!name.equals("")){
 								if(!qw.equals("")) qw += " and ";
-								qw += " (u.last_name like ? or u.first_name like ?)";
+								qw += " (e.last_name like ? or e.first_name like ?)";
+						}
+						else if(!exclude_name.equals("")){
+								if(!qw.equals("")) qw += " and ";								
+								qw += " not (e.last_name like ? or e.first_name like ?)";
 						}
 						if(!username.equals("")){
 								if(!qw.equals("")) qw += " and ";
-								qw += " u.username like ? ";
-						}
-						if(!user_id.equals("")){
-								if(!qw.equals("")) qw += " and ";
-						qw += " e.user_id = ? ";
+								qw += " e.username like ? ";
 						}
 						if(!department_id.equals("")){
 								qq += " join department_employees de on de.employee_id=e.id  ";
@@ -237,16 +237,16 @@ public class EmployeeList extends CommonInc{
 						}				
 						if(active_only){
 								if(!qw.equals("")) qw += " and ";
-								qw += " (u.inactive is null and e.inactive is null)";
+								qw += " e.inactive is null";
 						}
 						else if(inactive_only){
 								if(!qw.equals("")) qw += " and ";
-								qw += " (u.inactive is not null or e.inactive is not null)";
+								qw += " e.inactive is not null";
 						}
 				}
 				if(!qw.equals(""))
 						qq += " where "+qw;
-				qq += " order by u.first_name,u.last_name ";
+				qq += " order by e.first_name,e.last_name ";
 				// System.err.println(qq);
 				String back = "";
 				try{
@@ -269,11 +269,12 @@ public class EmployeeList extends CommonInc{
 										pstmt.setString(jj++,name+"%");
 										pstmt.setString(jj++,name+"%");										
 								}
+								else if(!exclude_name.equals("")){
+										pstmt.setString(jj++,exclude_name);
+										pstmt.setString(jj++,exclude_name);	
+								}
 								if(!username.equals("")){ // for auto_complete 
 										pstmt.setString(jj++,username+"%");
-								}
-								if(!user_id.equals("")){
-										pstmt.setString(jj++,user_id);
 								}
 								if(!department_id.equals("")){
 										pstmt.setString(jj++, department_id);
@@ -301,13 +302,11 @@ public class EmployeeList extends CommonInc{
 																 rs.getString(2),
 																 rs.getString(3),
 																 rs.getString(4),
-																 rs.getString(5) != null,
+																 rs.getString(5),
 																 rs.getString(6),
 																 rs.getString(7),
 																 rs.getString(8),
-																 rs.getString(9),
-																 rs.getString(10),
-																 rs.getString(10) != null
+																 rs.getString(9) != null
 																 );
 								if(!employees.contains(employee))
 										employees.add(employee);

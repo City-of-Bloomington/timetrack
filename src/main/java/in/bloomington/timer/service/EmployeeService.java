@@ -22,7 +22,6 @@ public class EmployeeService extends HttpServlet{
 
 		static final long serialVersionUID = 1200L;
 		static Logger logger = LogManager.getLogger(EmployeeService.class);
-    String url="";
     boolean debug = false;
 		static EnvBean envBean = null;
 		
@@ -52,20 +51,14 @@ public class EmployeeService extends HttpServlet{
 				String term ="", type="";
 				boolean success = true;
 				HttpSession session = null;
-				if(url.equals("")){
-						url    = getServletContext().getInitParameter("url");
-						//
-						String str = getServletContext().getInitParameter("debug");
-						if(str.equals("true")) debug = true;
-						if(envBean == null){
-								envBean = new EnvBean();
-								str = getServletContext().getInitParameter("ldap_url");
-								envBean.setUrl(str);
-								str = getServletContext().getInitParameter("ldap_principle");
-								envBean.setPrinciple(str);
-								str = getServletContext().getInitParameter("ldap_password");
-								envBean.setPassword(str);
-						}
+				if(envBean == null){
+						envBean = new EnvBean();
+						String str = getServletContext().getInitParameter("ldap_url");
+						envBean.setUrl(str);
+						str = getServletContext().getInitParameter("ldap_principle");
+						envBean.setPrinciple(str);
+						str = getServletContext().getInitParameter("ldap_password");
+						envBean.setPassword(str);
 				}
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
@@ -87,7 +80,7 @@ public class EmployeeService extends HttpServlet{
 						}
 				}
 				EmpList empList =  null;
-				List<User> emps = null;
+				List<Employee> emps = null;
 				if(term.length() > 1){
 						//
 						empList = new EmpList(envBean);
@@ -98,7 +91,7 @@ public class EmployeeService extends HttpServlet{
 						}
 				}
 				if(emps != null && emps.size() > 0){
-						String json = writeJson(emps, type);
+						String json = writeJson(emps);
 						out.println(json);
 				}
 				out.flush();
@@ -112,14 +105,16 @@ public class EmployeeService extends HttpServlet{
 		 * @param type unused
 		 * @return The json string
 		 */
-		String writeJson(List<User> emps, String type){
+		String writeJson(List<Employee> emps){
 				String json="";
-				for(User one:emps){
+				for(Employee one:emps){
+						System.err.println(one.getFull_name()+" "+one.getLdap_dept());
 						if(!json.equals("")) json += ",";
-						json += "{\"id\":\""+one.getFull_name()+"\",\"value\":\""+one.getFull_name()+"\",\"email\":\"\",\"fullname\":\""+one.getFull_name()+"\",\"phone\":\"\",\"dept\":\"\",\"division\":\"\",\"title\":\"\"}";
+						json += "{\"id\":\""+one.getUsername()+"\",\"value\":\""+one.getFull_name()+"\",\"first_name\":\""+one.getFirst_name()+"\",\"fullname\":\""+one.getFull_name()+"\",\"username\":\""+one.getUsername()+"\",\"last_name\":\""+one.getLast_name()+"\",\"employee_number\":\""+one.getEmployee_number()+"\",\"id_code\":\""+one.getId_code()+"\",\"email\":\""+one.getEmail()+"\",\"department_id\":\""+one.getDepartment_id()+"\",\"group_id\":\""+one.getGroup_id()+"\"}";
 				}
 				json = "["+json+"]";
-				// System.err.println("json "+json);
+				//	System.err.println("json "+json);
 				return json;
 		}
+
 }

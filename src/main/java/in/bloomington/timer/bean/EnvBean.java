@@ -4,14 +4,15 @@ package in.bloomington.timer.bean;
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
+import java.io.Serializable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EnvBean {
+public class EnvBean implements Serializable{
 
 		static Logger logger = LogManager.getLogger(EnvBean.class);
 		static final long serialVersionUID = 1400L;		
-		String url = "", principle = "", method="", password = "", ctxFactory = "";
+		static String url = "", principle = "", method="", password = "", ctxFactory = "";
 
 		public EnvBean(){};
 		/**
@@ -57,7 +58,7 @@ public class EnvBean {
 		}
 		public String toString(){
 				String str = url;
-				str += " "+principle+" "+password;
+				str += url+" "+principle+" "+password;
 				return str;
 		}
 

@@ -8,7 +8,7 @@
 	<s:iterator var="one" value="#timeActions">
 		<tr>
 			<td class="td_text"><s:property value="action_time" /></td>				
-			<td class="td_text"><s:property value="actioner.user" /></td>
+			<td class="td_text"><s:property value="actioner" /></td>
 			<td class="td_text"><s:property value="workflow.node.annotation" /></td>
 		</tr>
 	</s:iterator>

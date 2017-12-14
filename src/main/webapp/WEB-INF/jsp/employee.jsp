@@ -9,16 +9,12 @@
 <s:form action="employee" id="form_id" method="post">
 	<s:hidden name="action2" id="action2" value="" />
 	<s:if test="employee.id == ''">
-		<s:if test="employee.hasUserId()">
-			<s:hidden name="employee.user_id" value="%{employee.user_id}" />
-		</s:if>
 		<h3>New Employee</h3>
+		<s:hidden name="employee.group_id" value="" id="group_id" />
 	</s:if>
 	<s:else>
-		<h3>Employee <s:property value="employee.user" /></h3>
+		<h3>Employee <s:property value="employee.full_name" /></h3>
 		<s:hidden name="employee.id" value="%{employee.id}" />
-		<s:hidden name="employee.user_id" value="%{employee.user_id}" />
-		<s:hidden name="employee.user.id" value="%{employee.user.id}" />
 	</s:else>
   <s:if test="hasActionErrors()">
 		<div class="errors">
@@ -36,38 +32,51 @@
 			<dd><s:property value="%{employee.id}" /></dd>
 		</dl>
 	</s:if>
+	<s:if test="employee.id == ''">
+	<dl class="fn1-output-field">
+		<dt>Full Name</dt>
+		<dd><s:textfield name="employee.full_name" value="" size="30" maxlength="70" id="emp_name" /> Start typing employee last name to pick from the list</dd>
+	</dl>
+	</s:if>
 	<dl class="fn1-output-field">
 		<dt>Username</dt>
-		<dd><s:textfield name="employee.user.username" size="10" value="%{employee.user.username}" required="true" /><s:if test="employee.hasUserId()"><a href="<s:property value='#application.url' />user.action?id=<s:property value='employee.user_id' />" class="fn1-btn"> User Info </a></s:if></dd>
-	</dl>	
+		<dd><s:textfield name="employee.username" size="10" value="%{employee.username}" required="true" id="username_id" /></dd>
+	</dl>
 	<dl class="fn1-output-field">
 		<dt>First Name </dt>
-		<dd><s:textfield name="employee.user.first_name" value="%{employee.user.first_name}" size="30" maxlength="70" required="true" /> </dd>
+		<dd><s:textfield name="employee.first_name" value="%{employee.first_name}" size="30" maxlength="70" required="true" id="first_name_id" /> </dd>
 	</dl>
 	<dl class="fn1-output-field">
 		<dt>Last Name </dt>
-		<dd><s:textfield name="employee.user.last_name" value="%{employee.user.last_name}" size="30" maxlength="70" required="true" /> </dd>
+		<dd><s:textfield name="employee.last_name" value="%{employee.last_name}" size="30" maxlength="70" required="true" id="last_name_id" /> </dd>
 	</dl>	
 	<dl class="fn1-output-field">
 		<dt>ID Code # </dt>
-		<dd><s:textfield name="employee.id_code" value="%{employee.id_code}" size="10" maxlength="10" />(The number on City ID) </dd>
+		<dd><s:textfield name="employee.id_code" value="%{employee.id_code}" size="10" maxlength="10" id="id_code_id" />(The number on City ID) </dd>
 	</dl>
 	<dl class="fn1-output-field">
 		<dt>Employee # </dt>
-		<dd><s:textfield name="employee.employee_number" value="%{employee.employee_number}" size="15" maxlength="15" />(from new world) </dd>
+		<dd><s:textfield name="employee.employee_number" value="%{employee.employee_number}" size="15" maxlength="15" id="employee_number_id" />(from new world) </dd>
 	</dl>
+	<dl class="fn1-output-field">
+		<dt>Email</dt>
+		<dd><s:textfield name="employee.email" size="30" value="%{employee.email}" id="email_id" /></dd>
+	</dl>	
 	<s:if test="employee.id == ''">
 		<dl class="fn1-output-field">
 			<dt>Department</dt>
-			<dd><s:select name="departmentEmployee.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" /></dd>
+			<dd><s:select name="departmentEmployee.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />Group ID: <span id="group_id2">&nbsp;</span>
+			</dd>
 		</dl>
+		<!-- 
 		<dl class="fn1-output-field">
 			<dt>Group</dt>
 			<dd><select name="groupEmployee.group_id" value="" id="group_id_set"  disabled="disabled"/>
 				<option value="-1">Pick a group</option>
 			</select>(To pick a group you need to pick a department first)
 			</dd>
-		</dl>		
+		</dl>
+		-->
 		<dl class="fn1-output-field">
 			<dt>Effective Date</dt>
 			<dd><s:textfield name="departmentEmployee.effective_date" value="%{departmentEmployee.effective_date}" size="10" maxlength="10" cssClass="date" /></dd>
@@ -75,7 +84,7 @@
 	</s:if>
 	<dl class="fn1-output-field">
 		<dt>Role</dt>
-		<dd><s:select name="employee.user.role" value="%{employee.user.role}" list="#{'Employee':'Employee','Admin':'Admin'}" /></dd>
+		<dd><s:select name="employee.role" value="%{employee.role}" list="#{'Employee':'Employee','Admin':'Admin'}" /></dd>
 	</dl>
 	<dl class="fn1-output-field">
 		<dt>Inactive ?</dt>

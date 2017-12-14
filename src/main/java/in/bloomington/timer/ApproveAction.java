@@ -51,7 +51,7 @@ public class ApproveAction extends TopAction{
 										TimeAction one =
 												new TimeAction(CommonInc.default_approve_workflow_id,
 																			 doc_id,
-																			 user.getEmployee_id());
+																			 user.getId());
 										back = one.doSave();
 										if(!back.equals("")){
 												if(!back.equals("")){

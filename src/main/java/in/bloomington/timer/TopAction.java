@@ -29,9 +29,10 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		static final long serialVersionUID = 3600L;
 		static Logger logger = LogManager.getLogger(TopAction.class);		
 		boolean debug = false, activeMail = false;
-		static String url="", server_path="";		
+		static String url="", server_path="";
+		static EnvBean envBean = null;
 		String action="", id="", employee_id="";
-		User user = null;
+		Employee user = null;
 		Employee employee = null;
 	  ServletContext ctx;
 		Map<String, Object> sessionMap;
@@ -54,7 +55,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		public String getId(){
 				return id;
 		}
-		public User getUser(){
+		public Employee getUser(){
 				return user;
 		}
 		String doPrepare(String source){
@@ -68,6 +69,18 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								if(val != null)
 										server_path = val;
 						}
+						if(envBean == null){
+								envBean = new EnvBean();
+								val = ctx.getInitParameter("ldap_url");
+								if(val != null)
+										envBean.setUrl(val);
+								val = ctx.getInitParameter("ldap_principle");
+								if(val != null)
+										envBean.setPrinciple(val);
+								val = ctx.getInitParameter("ldap_password");
+								if(val != null)
+										envBean.setPassword(val);									
+						}
 						val = ctx.getInitParameter("activeMail");
 						if(val != null && val.equals("true")){
 								activeMail = true;																
@@ -80,7 +93,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								res.sendRedirect(str);
 								return super.execute();
 						}
-						user = (User)sessionMap.get("user");
+						user = (Employee)sessionMap.get("user");
 						if(sessionMap.containsKey("employee_id")){
 								Object obj = sessionMap.get("employee_id");
 								if(obj != null){
@@ -113,7 +126,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								}
 						}
 						else {
-								String str = user.getEmployee_id();
+								String str = user.getId();
 								if(str != null && str.length() > 0){
 										setEmployee_id(str);
 								}
@@ -123,8 +136,10 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		}
 		public Employee getEmployee(){
 				if(employee == null){
-						getEmployee_id();
-						if(!employee_id.equals("")){
+						if(user != null){
+								employee = user;
+						}
+						else if(!employee_id.equals("")){
 								Employee one = new Employee(employee_id);
 								String back = one.doSelect();
 								if(back.equals("")){
@@ -140,7 +155,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		}
 		public boolean isUserCurrentEmployee(){
 				if(user != null)
-						return employee_id.equals(user.getEmployee_id());
+						return employee_id.equals(user.getId());
 				return false;
 		}
 		@Override  

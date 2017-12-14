@@ -103,9 +103,8 @@ public class GroupEmployeeService extends HttpServlet{
 		String writeJson(List<Employee> employees){
 				String json="";
 				for(Employee one:employees){
-						User uu = one.getUser();
 						if(!json.equals("")) json += ",";
-						json += "{\"id\":\""+one.getId()+"\",\"fullname\":\""+uu.getFull_name()+"\"}";
+						json += "{\"id\":\""+one.getId()+"\",\"fullname\":\""+one.getFull_name()+"\"}";
 				}
 				json = "["+json+"]";
 				// System.err.println("json "+json);

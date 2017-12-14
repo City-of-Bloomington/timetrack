@@ -20,10 +20,12 @@ public class User implements Serializable{
 
 		static Logger logger = LogManager.getLogger(User.class);
 		static final long serialVersionUID = 3900L;		
-    private String id="", employee_id="", email="",
+    private String id="", employee_id="",
+				email="",
 				username="", full_name="", role="", first_name="", last_name="",
 				inactive="";
-		Employee employee = null; // not every user wil have employee such as admin
+		Employee employee = null;
+		String employee_number = "", id_code=""; // needed for employee data
 		public User(){
     }
 		
@@ -91,6 +93,12 @@ public class User implements Serializable{
 		public String getLast_name(){
 				return last_name;
     }
+		public String getEmployee_number(){
+				return employee_number;
+    }
+		public String getId_code(){
+				return id_code;
+    }		
     public String getRole(){
 				return role;
     }
@@ -158,9 +166,36 @@ public class User implements Serializable{
 				if(val)
 						inactive = "y";
     }
-
+    public void setEmployee_number(String val){
+				if(val != null)
+						employee_number = val;
+    }
+    public void setId_code(String val){
+				if(val != null)
+						id_code = val;
+    }		
 		public String toString(){
 				return getFull_name();
+		}
+		public String getInfo(){
+				String ret="";
+				if(!id.equals("")){
+						ret = "id = "+id+", ";
+				}
+				ret += "username = "+username;
+				if(!first_name.equals("")){
+						ret += ", first name = "+first_name;
+				}
+				if(!last_name.equals("")){
+						ret += ", last name = "+last_name;
+				}
+				if(!employee_number.equals("")){
+						ret += ", emp # = "+employee_number;
+				}
+				if(!id_code.equals("")){
+						ret += ", id code = "+id_code;
+				}
+				return ret;
 		}
 		public boolean equals(Object o) {
 				if (o instanceof User) {
@@ -181,9 +216,10 @@ public class User implements Serializable{
 				}
 				return seed;
 		}
+
 		public String getEmployee_id(){
 				if(employee == null){
-						Employee emp = new Employee(null, id);// user_id
+						Employee emp = new Employee(id);
 						String back = emp.doSelect();
 						if(back.equals("")){
 								employee = emp;
@@ -194,6 +230,7 @@ public class User implements Serializable{
 				}
 				return employee_id;
 		}
+
 		public Employee getEmployee(){
 				if(employee_id.equals("")){
 						getEmployee_id(); // will do both
@@ -307,6 +344,14 @@ public class User implements Serializable{
 										id = rs.getString(1);
 								}
 						}
+						if(!employee_number.equals("")){
+								Employee emp = new Employee();
+								emp.setId_code(id_code);
+								emp.setEmployee_number(employee_number);
+								msg = emp.doSave();
+								if(msg.equals(""))
+										employee = emp;
+						}
 				}
 				catch(Exception ex){
 						msg += " "+ex;
@@ -379,5 +424,36 @@ public class User implements Serializable{
 						Helper.databaseDisconnect(con, pstmt, rs);
 				}
 				return msg;
-		}		
+		}
+		/**
+		 * change the iactive status of the following users to inactive
+		 * this function is used by CurrentEmployeesHandler
+		 */
+		public String updateInactiveStatus(String idSet){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = " update users set inactive='y' where id in ("+idSet+")";
+				if(idSet == null || idSet.equals("")){
+						return msg;
+				}
+				try{
+						con = Helper.getConnection();
+						if(con == null){
+								msg = "Could not connect to DB ";
+								return msg;
+						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}
+				return msg;
+		}				
 }

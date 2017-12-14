@@ -60,22 +60,21 @@ $("#emp_name").autocomplete({
     delay: 100,
     select: function( event, ui ) {
         if(ui.item){
-            $("#emp_name").val(ui.item.id);
-						$("#phone").html(ui.item.phone);
-						$("#dept").html(ui.item.dept);
-						$("#h_phone").val(ui.item.phone);
-						$("#h_email").val(ui.item.email);
-						$("#h_dept").val(ui.item.dept);
-						$("#h_division").val(ui.item.division);
-						$("#h_title").val(ui.item.title);						
+            $("#emp_name").val(ui.item.fullname);
+						$("#last_name_id").val(ui.item.last_name);
+						$("#first_name_id").val(ui.item.first_name);												
+						$("#username_id").val(ui.item.id);						
+						$("#employee_number_id").val(ui.item.employee_number);
+						$("#id_code_id").val(ui.item.id_code);
+						$("#email_id").val(ui.item.email);
+						$("#department_id_change").val(ui.item.department_id);						
+						$("#group_id").val(ui.item.group_id);
+						$("#group_id2").html(ui.item.group_id);						
+						// $("#h_division").val(ui.item.division);
+						// $("#h_title").val(ui.item.title);						
         }
     }
 		})
-//		.data('ui-autocomplete')._renderItem = function (ul, item) {
-//        return $('<li>')
-//						.attr("data-value",item.value)
-//            .appendTo(ul);
-//    };
 $("#employee_name").autocomplete({
     source: APPLICATION_URL + "DbEmployeeService?format=json",
     minLength: 2,

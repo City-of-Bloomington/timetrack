@@ -40,7 +40,7 @@ public class TimeNoteAction extends TopAction{
 						}	
 				}
 				if(action.equals("Save")){
-						timeNote.setReported_by(user.getEmployee_id());
+						timeNote.setReported_by(user.getId());
 						back = timeNote.doSave();
 						if(!back.equals("")){
 								addActionError(back);

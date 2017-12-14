@@ -21,10 +21,13 @@ public class Employee implements Serializable{
 		static Logger logger = LogManager.getLogger(Employee.class);
 		static final long serialVersionUID = 1150L;		
     private String id="", inactive="", id_code="", employee_number="",
-				user_id="", department_id="";
+				department_id="", group_id="",
+				email="", role="",
+				username="", full_name="", first_name="", last_name="",
+				ldap_dept="";
 		// normally this date is pay period start date
 		String job_active_date = "", pay_period_id="", selected_job_id="";
-		User user = null;
+		// User user = null;
 		List<Group> groups = null;
 		List<GroupManager> managers = null;
 		List<DepartmentEmployee> departmentEmployees = null;
@@ -44,62 +47,59 @@ public class Employee implements Serializable{
     }
     public Employee(String val, String val2){
 				setId(val);
-				setUser_id(val2);
-
+				setUsername(val2);
     }
+		// for new record
     public Employee(String val,
 										String val2,
 										String val3,
 										String val4,
-										boolean val5
+										String val5,
+										String val6
 								){
-				setId(val);
-				setUser_id(val2);
-				setId_code(val3);
-				setEmployee_number(val4);
-				setInactive(val5);
+				setUsername(val);
+				setFirst_name(val2);
+				setLast_name(val3);
+				setId_code(val4);
+				setEmployee_number(val5);
+				setEmail(val6);
     }		
     public Employee(String val,
 										String val2,
 										String val3,
 										String val4,
-										boolean val5,
+										String val5,
 										String val6,
 										String val7,
 										String val8,
-										String val9,
-										String val10,
-										boolean val11
+										boolean val9
 								){
 				setVals(val, val2, val3, val4, val5, val6,
-								val7, val8, val9, val10, val11);
+								val7, val8, val9);
     }
     void setVals(String val,
 								 String val2,
 								 String val3,
 								 String val4,
-								 boolean val5,
+								 String val5,
 								 String val6,
 								 String val7,
 								 String val8,
-								 String val9,
-								 String val10,
-								 boolean val11
+								 boolean val9
 								){
 				setId(val);
-				setUser_id(val2);
-				setId_code(val3);
-				setEmployee_number(val4);
-				setInactive(val5);				
-				user = new User(val6, val7, val8, val9, val10, val11);
-
+				setUsername(val2);
+				setFirst_name(val3);
+				setLast_name(val4);
+				setId_code(val5);
+				setEmployee_number(val6);
+				setEmail(val7);
+				setRole(val8);
+				setInactive(val9);				
     }
     //
     // getters
     //
-    public String getUser_id(){
-				return user_id;
-    }
 		public String getId(){
 				return id;
     }
@@ -123,19 +123,41 @@ public class Employee implements Serializable{
 				getGroups();
 				return groups != null && groups.contains(gg);
 		}
-		public boolean hasUserId(){
-				return !user_id.equals("");
+    public String getUsername(){
+				return username;
+    }
+    public String getFull_name(){
+				if(full_name.equals("")){
+						full_name = first_name;
+						if(!full_name.equals("")) full_name += " ";
+						full_name += last_name;
+				}
+				return full_name;
+    }
+		public String getFirst_name(){
+				return first_name;
+    }
+		public String getLast_name(){
+				return last_name;
+    }
+    public String getRole(){
+				return role;
+    }
+		public String getEmail(){
+				if(email.equals("") && !username.equals("")){
+						email = username+CommonInc.emailStr;
+				}
+				return email;
 		}
+    public String getLdap_dept(){
+				return ldap_dept;
+    }		
     //
     // setters
     //
     public void setId (String val){
 				if(val != null)
 						id = val;
-    }
-    public void setUser_id (String val){
-				if(val != null)
-						user_id = val;
     }
 
     public void setId_code (String val){
@@ -146,6 +168,41 @@ public class Employee implements Serializable{
 				if(val != null)
 						employee_number = val.trim();
     }
+    public void setUsername (String val){
+				if(val != null)
+						username = val;
+    }
+
+    public void setFirst_name (String val){
+				if(val != null)
+						first_name = val;
+    }
+    public void setLast_name (String val){
+				if(val != null)
+						last_name = val;
+    }
+    public void setEmail(String val){
+				if(val != null)
+						email = val;
+    }
+    public void setRole (String val){
+				if(val != null && !val.equals("-1"))
+						role = val;
+    }
+		// needed for new employee
+    public void setDepartment_id(String val){
+				if(val != null && !val.equals("-1"))
+						department_id = val;
+    }
+		// needed for new employee
+    public void setGroup_id(String val){
+				if(val != null && !val.equals("-1"))
+						group_id = val;
+    }		
+    public void setLdap_dept(String val){
+				if(val != null && !val.equals("-1"))
+						ldap_dept = val;
+    }				
     public void setJob_active_date(String val){
 				if(val != null)
 					 job_active_date = val;
@@ -158,31 +215,17 @@ public class Employee implements Serializable{
 				if(val != null)
 						selected_job_id = val;
     }
-		public void setUser(User val){
-				if(val != null)
-						user = val;
-		}
-		public User getUser(){
-				if(user == null){
-						if(!user_id.equals("")){
-								User one = new User(user_id);
-								String back = one.doSelect();
-								if(back.equals("")){
-										user = one;
-								}
-						}
-						else{ // needed for new user
-								user = new User();
-						}
-				}
-				return user;
-		}
 		public String getDepartment_id(){
-				getDepartment();
-				if(department != null){
-						return department.getId();
+				if(department_id.equals("")){
+						getDepartment();
+						if(department != null){
+								department_id = department.getId();
+						}
 				}
-				return "";
+				return department_id;
+		}
+		public String getGroup_id(){
+				return group_id;
 		}
     public void setInactive (boolean val){
 				if(val)
@@ -190,11 +233,7 @@ public class Employee implements Serializable{
     }
 
 		public String toString(){
-				getUser();
-				if(user != null){
-						return user.getFull_name();
-				}
-				return id;
+				return getFull_name();
 		}
 		public boolean equals(Object o) {
 				if (o instanceof Employee) {
@@ -214,6 +253,38 @@ public class Employee implements Serializable{
 						}
 				}
 				return seed;
+		}
+		public String getInfo(){
+				String ret="";
+				if(!id.equals("")){
+						ret = "id = "+id+", ";
+				}
+				ret += "username = "+username;
+				if(!first_name.equals("")){
+						ret += ", first name = "+first_name;
+				}
+				if(!last_name.equals("")){
+						ret += ", last name = "+last_name;
+				}
+				if(!employee_number.equals("")){
+						ret += ", emp # = "+employee_number;
+				}
+				if(!id_code.equals("")){
+						ret += ", id code = "+id_code;
+				}
+				return ret;
+		}
+		public boolean hasRole(String val){
+				return role.indexOf(val) > -1;
+		}
+		public boolean hasNoRole(){
+				return role.equals("");
+		}
+		public boolean isEmployee(){
+				return hasRole("Employee");
+		}
+		public boolean isAdmin(){
+				return hasRole("Admin");
 		}		
 		public List<Group> getGroups(){
 				if(groups == null && !id.equals("")){
@@ -246,6 +317,7 @@ public class Employee implements Serializable{
 				}
 				return managers != null && managers.size() > 0;
 		}
+		
 		public boolean canPayrollProcess(){
 				GroupManagerList gml = new GroupManagerList(id);
 				gml.setActiveOnly();
@@ -374,8 +446,15 @@ public class Employee implements Serializable{
 		}
 		public String validate(){
 				String msg = "";
-				if(user != null){
-						msg = user.validate();
+				if(username.equals("")){
+						msg = "username";
+				}
+				if(last_name.equals("")){
+						if(!msg.equals("")) msg += ", ";
+						msg += "last name";
+				}
+				if(!msg.equals("")){
+						msg += " required but not set";
 				}
 				return msg;
 		}
@@ -385,14 +464,14 @@ public class Employee implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select e.id,e.user_id,e.id_code,e.employee_number,e.inactive,u.id,u.username,u.first_name,u.last_name,u.role,u.inactive from employees e join users u on u.id = e.user_id where ";
+				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.role,e.inactive from employees e where ";
 				if(!id.equals("")){
 						qq += " e.id = ? ";
 				}
-				else if(!user_id.equals("")){ // for time clock machines
-						qq += " e.user_id = ? ";		
+				else if(!username.equals("")){ // for login
+						qq += " e.username like ? ";		
 				}				
-				else if(!id_code.equals("")){ // for time clock machines
+				else if(!id_code.equals("")){ // for punch clock machines
 						qq += " e.id_code = ? ";		
 				}
 				else{
@@ -407,8 +486,8 @@ public class Employee implements Serializable{
 								if(!id.equals("")){
 										pstmt.setString(1, id);
 								}
-								else if(!user_id.equals("")){
-										pstmt.setString(1, user_id);
+								else if(!username.equals("")){
+										pstmt.setString(1, username);
 								}
 								else{
 										pstmt.setString(1, id_code);
@@ -420,13 +499,11 @@ public class Employee implements Serializable{
 														rs.getString(2),
 														rs.getString(3),
 														rs.getString(4),
-														rs.getString(5) != null,
+														rs.getString(5),
 														rs.getString(6),
 														rs.getString(7),
 														rs.getString(8),
-														rs.getString(9),
-														rs.getString(10),
-														rs.getString(11) != null);
+														rs.getString(9) != null);
 								}
 								else{
 										msg = "Employee not found";
@@ -452,19 +529,11 @@ public class Employee implements Serializable{
 				ResultSet rs = null;		
 				String msg="", str="";
 				inactive=""; // default
-				if(user_id.equals("")){
-						if(user != null){
-								msg = user.doSave();
-								if(msg.equals("")){
-										user_id = user.getId();
-								}
-						}
-				}
-				String qq = " insert into employees values(0,?,?,?,?)";
-				if(user_id.equals("")){
-						msg = "user id is required";
+				msg = validate();
+				if(!msg.equals("")){
 						return msg;
 				}
+				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,?)";
 				try{
 						con = Helper.getConnection();
 						if(con == null){
@@ -497,7 +566,12 @@ public class Employee implements Serializable{
 				String msg = "";
 				int jj=1;
 				try{
-						pstmt.setString(jj++, user_id);
+						pstmt.setString(jj++, username);
+						if(first_name.equals(""))
+								pstmt.setNull(jj++, Types.VARCHAR);
+						else
+								pstmt.setString(jj++, first_name);
+						pstmt.setString(jj++, last_name);
 						if(id_code.equals(""))
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
@@ -505,7 +579,13 @@ public class Employee implements Serializable{
 						if(employee_number.equals(""))
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
-								pstmt.setString(jj++, employee_number);						
+								pstmt.setString(jj++, employee_number);
+						if(email.equals(""))
+								getEmail();
+						pstmt.setString(jj++, email);
+						if(role.equals(""))
+								role = "Employee";
+						pstmt.setString(jj++, role);
 						if(inactive.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
 						else
@@ -522,15 +602,15 @@ public class Employee implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update employees set user_id=?,id_code=?, employee_number=?, inactive=? where id=?";
+				String qq = " update employees set username=?,first_name=?,last_name=?,id_code=?, employee_number=?, email=?,role=?,inactive=? where id=?";
 				if(id.equals("")){
 						msg = "id is required";
 						return msg;
 				}
-				if(user_id.equals("")){
-						msg = "user id is required";
+				msg = validate();
+				if(!msg.equals("")){
 						return msg;
-				}				
+				}
 				try{
 						con = Helper.getConnection();
 						if(con == null){
@@ -539,7 +619,7 @@ public class Employee implements Serializable{
 						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						pstmt.setString(5, id);
+						pstmt.setString(9, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
@@ -549,10 +629,37 @@ public class Employee implements Serializable{
 				finally{
 						Helper.databaseDisconnect(con, pstmt, rs);
 				}
-				if(user != null){
-						msg = user.doUpdate();
-				}
-				msg = doSelect();
 				return msg;
-		}		
+		}
+		/**
+		 * change the iactive status of the following users to inactive
+		 * this function is used by CurrentEmployeesHandler
+		 */
+		public String updateInactiveStatus(String idSet){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = " update employees set inactive='y' where id in ("+idSet+")";
+				if(idSet == null || idSet.equals("")){
+						return msg;
+				}
+				try{
+						con = Helper.getConnection();
+						if(con == null){
+								msg = "Could not connect to DB ";
+								return msg;
+						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}
+				return msg;
+		}						
 }

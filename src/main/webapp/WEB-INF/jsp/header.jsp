@@ -68,13 +68,13 @@
       <nav class="fn1-nav1-container">
 				<s:if test="#session != null && #session.user != null">
 					<a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
-					<s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.employee.canDataEntry())">								
+					<s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.canDataEntry())">								
 						<a href="<s:property value='#application.url'/>dataEntry.action">Data Entry</a>								
 					</s:if>				
-					<s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.employee.canApprove())">								
+					<s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.canApprove())">								
 					<a href="<s:property value='#application.url'/>approve.action">Approvals</a>								
 					</s:if>
-					<s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.employee.canProcess())">								
+					<s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.canProcess())">								
 					<a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Process</a>								
 					</s:if>
 					<a href="<s:property value='#application.url'/>settings.action">Settings</a>

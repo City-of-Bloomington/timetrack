@@ -173,7 +173,7 @@ public class PayPeriodProcessAction extends TopAction{
 						if(!emp_num.equals("") && profMap.containsKey(emp_num)){
 								profile = profMap.get(emp_num);
 						}
-						System.err.println(" emp "+emp.getUser());						
+						System.err.println(" emp "+emp.getFull_name());						
 						System.err.println(" profile "+profile);
 						PayPeriodProcess one =
 								new PayPeriodProcess(emp,

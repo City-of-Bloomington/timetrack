@@ -21,7 +21,7 @@
   </s:elseif>
 	<dl class="fn1-output-field">
 		<dt>Employee </dt>
-		<dd><s:select name="employee_selected_id" value="%{employee_selected_id}" list="employees" listKey="id" listValue="user.full_name" headerKey="-1" headerValue="Pick Employee" /> </dd>
+		<dd><s:select name="employee_selected_id" value="%{employee_selected_id}" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="Pick Employee" /> </dd>
 	</dl>
 	<s:submit name="action" type="button" value="Next" class="fn1-btn"/>			
 </s:form>

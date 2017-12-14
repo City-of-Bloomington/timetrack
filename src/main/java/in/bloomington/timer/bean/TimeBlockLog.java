@@ -21,7 +21,7 @@ public class TimeBlockLog extends Block{
 		static Logger logger = LogManager.getLogger(TimeBlockLog.class);
 		static final long serialVersionUID = 4100L;		
 		String time_block_id="", action_type="", action_by_id="", action_time="";;
-		User action_by = null;
+		Employee action_by = null;
     public TimeBlockLog(
 							 String val,
 							 String val2,
@@ -88,9 +88,9 @@ public class TimeBlockLog extends Block{
 				if(val != null)
 						action_time = val;
 		}		
-		public User getAction_by(){
+		public Employee getAction_by(){
 				if(action_by == null && !action_by_id.equals("")){
-						User one = new User(action_by_id);
+						Employee one = new Employee(action_by_id);
 						String back = one.doSelect();
 						if(back.equals("")){
 								action_by = one;

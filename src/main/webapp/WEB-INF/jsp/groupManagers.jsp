@@ -22,7 +22,7 @@
 			<tr>
 				<td><a href="<s:property value='#application.url' />groupManager.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
 				<td><s:property value="group" /></td>				
-				<td><s:property value="employee.user" /></td>
+				<td><s:property value="employee" /></td>
 				<td><s:property value="node" /></td>								
 				<td><s:property value="start_date" /></td>
 				<td><s:property value="expire_date" /></td>

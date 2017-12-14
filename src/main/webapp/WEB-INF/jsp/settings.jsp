@@ -56,9 +56,10 @@
 				</ul>
 				Schedulars
 				<ul>
-					<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Accrual Schedular</a></li>
-					<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Notification Schedular</a></li>
-					<li><a href="<s:property value='#application.url'/>batchSchedule.action">Batch Submission Schedular</a></li>					
+					<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Employees' accrual</a></li>
+					<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
+					<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch clock batch submission </a></li>
+					<li><a href="<s:property value='#application.url'/>employeesSchedule.action">Current active employees</a></li>					
 				</ul>
 			</td>
 		</tr>

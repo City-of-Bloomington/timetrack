@@ -24,7 +24,6 @@ public class Login extends HttpServlet{
 		String cookieName = ""; // "cas_session";
 		String cookieValue = ""; // ".bloomington.in.gov";
     String url="";
-    boolean debug = false;
 		static final long serialVersionUID = 2700L;
 		static Logger logger = LogManager.getLogger(Login.class);
     /**
@@ -35,11 +34,11 @@ public class Login extends HttpServlet{
 				throws ServletException, IOException {
 				String message="", id="";
 				boolean found = false;
-				String name="", value="", userid="", source="";
+				String name="", value="", username="", source="";
 				AttributePrincipal principal = null;				
 				if (req.getUserPrincipal() != null) {
 						principal = (AttributePrincipal) req.getUserPrincipal();
-						userid = principal.getName();
+						username = principal.getName();
 				}
 				Enumeration<String> values = req.getParameterNames();
 				while (values.hasMoreElements()) {
@@ -56,14 +55,6 @@ public class Login extends HttpServlet{
 				PrintWriter out = res.getWriter();
 				if(url.equals("")){
 						url  = getServletContext().getInitParameter("url");
-						String str = getServletContext().getInitParameter("cookieName");
-						if(str != null)
-								cookieName = str;
-						str = getServletContext().getInitParameter("cookieValue");
-						if(str != null)
-								cookieValue = str;
-						str = getServletContext().getInitParameter("debug");
-						if(str != null && str.equals("true")) debug = true;
 				}
 				HttpSession session = null;
 				if(principal != null){
@@ -88,13 +79,13 @@ public class Login extends HttpServlet{
 							 }
 					 }
 				}
-				if(userid== null || userid.equals("")){
-						userid = req.getRemoteUser();
+				if(username == null || username.equals("")){
+						username = req.getRemoteUser();
 				}
-				if(userid != null){
+				if(username != null){
 						session = req.getSession();
 						// setCookie(req, res);
-						User user = getUser(userid);
+						Employee user = getUser(username);
 						if(session != null){
 								if(user != null){
 										//
@@ -151,23 +142,24 @@ public class Login extends HttpServlet{
      * @param req
      * @param res
      */
-    User getUser(String username){
+    Employee getUser(String username){
 
 				boolean success = true;
-				User user = null;
+				Employee user = null;
 				String message="";
 				try{
-						user = new User(null, username);
-						String back = user.doSelect();
+						Employee one = new Employee(null, username);
+						String back = one.doSelect();
 						if(!back.equals("")){
 								message += back;
-								user = null;
+								logger.error(message);
+						}
+						else{
+								user = one;
 						}
 				}
 				catch (Exception ex) {
 						logger.error(ex);
-						success = false;
-						message += ex;
 				}
 				return user;
     }
