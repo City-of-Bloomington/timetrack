@@ -54,13 +54,6 @@
 			<result name="error">/WEB-INF/jsp/department.jsp</result>
 			<result name="success">/WEB-INF/jsp/department.jsp</result>
 		</action>
-		<action name="ldapDept" 
-						class="in.bloomington.timer.LdapDeptAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/ldapDept.jsp</result>		
-			<result name="error">/WEB-INF/jsp/ldapDept.jsp</result>
-			<result name="success">/WEB-INF/jsp/ldapDept.jsp</result>
-		</action>		
 		<action name="timeNote" 
 						class="in.bloomington.timer.TimeNoteAction" 
 						method="execute">
