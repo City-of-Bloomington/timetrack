@@ -135,16 +135,20 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				return employee_id;
 		}
 		public Employee getEmployee(){
+				if(employee_id.equals("")){
+						getEmployee_id();
+				}
+				if(!employee_id.equals("")){
+						Employee one = new Employee(employee_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								employee = one;
+						}
+				}				
 				if(employee == null){
 						if(user != null){
 								employee = user;
-						}
-						else if(!employee_id.equals("")){
-								Employee one = new Employee(employee_id);
-								String back = one.doSelect();
-								if(back.equals("")){
-										employee = one;
-								}
+								employee_id = user.getId();
 						}
 				}
 				return employee;

@@ -76,6 +76,7 @@ public class GroupService extends HttpServlet{
 				}
 				GroupList glist =  null;
 				List<Group> groups = null;
+				System.err.println(" dept id "+department_id);
 				if(!department_id.equals("")){
 						//
 						glist = new GroupList();
@@ -107,6 +108,7 @@ public class GroupService extends HttpServlet{
 						json += "{\"id\":\""+one.getId()+"\",\"name\":\""+one.getName()+"\"}";
 				}
 				json = "["+json+"]";
+				System.err.println(json);
 				return json;
 		}
 }

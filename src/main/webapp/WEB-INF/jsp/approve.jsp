@@ -31,7 +31,7 @@
 					<s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
 				</s:if>
 			</td>
-			<td align="right" class="td_text"><b> Approver: </b><s:property value="employee" /></td>
+			<td align="right" class="td_text"><b> Approver: </b><s:property value="employee.full_name" /></td>
 		</tr>
 	</table>
 	<s:if test="hasDocuments()">
@@ -97,7 +97,7 @@
 			<s:iterator var="one" value="nonDocEmps">
 				<tr>
 					<td width="20%" class="th_text">&nbsp;</td>
-					<td class="td_text"><a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve"> <s:property value="user.full_name" /></a></td>
+					<td class="td_text"><a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve"> <s:property value="full_name" /></a></td>
 				</tr>
 			</s:iterator>
 		</table>

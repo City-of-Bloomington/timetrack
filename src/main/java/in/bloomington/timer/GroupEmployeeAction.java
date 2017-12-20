@@ -44,6 +44,8 @@ public class GroupEmployeeAction extends TopAction{
 								addActionError(back);
 						}
 						else{
+								group_id = groupEmployee.getGroup_id();
+								employee_id = groupEmployee.getEmployee_id();
 								addActionMessage("Saved Successfully");
 						}
 				}				
@@ -53,6 +55,8 @@ public class GroupEmployeeAction extends TopAction{
 								addActionError(back);
 						}
 						else{
+								group_id = groupEmployee.getGroup_id();
+								employee_id = groupEmployee.getEmployee_id();
 								addActionMessage("Saved Successfully");
 						}
 				}

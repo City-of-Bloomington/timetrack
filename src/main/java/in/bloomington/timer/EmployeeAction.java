@@ -46,6 +46,7 @@ public class EmployeeAction extends TopAction{
 								addActionError(back);
 								return ret;
 						}
+						/*
 						if(departmentEmployee == null){
 								back = " Employee department not set ";
 								addActionError(back);
@@ -56,12 +57,14 @@ public class EmployeeAction extends TopAction{
 								addActionError(back);
 								return ret;		
 						}
+						*/
 						back = employee.doSave();
 						if(!back.equals("")){
 								addActionError(back);
 						}
 						else{
 								id = employee.getId();
+								/*
 								departmentEmployee.setEmployee_id(id);
 								back = departmentEmployee.doSave();
 								if(!back.equals("")){
@@ -80,6 +83,7 @@ public class EmployeeAction extends TopAction{
 								else{
 										addActionMessage("Saved Successfully");
 								}
+								*/
 						}
 				}				
 				else if(action.startsWith("Save")){

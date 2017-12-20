@@ -65,21 +65,12 @@
 	<s:if test="employee.id == ''">
 		<dl class="fn1-output-field">
 			<dt>Department</dt>
-			<dd><s:select name="departmentEmployee.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />Group ID: <span id="group_id2">&nbsp;</span>
+			<dd><s:select name="employee.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id" />Group ID: <span id="group_id2">&nbsp;</span>
 			</dd>
 		</dl>
-		<!-- 
-		<dl class="fn1-output-field">
-			<dt>Group</dt>
-			<dd><select name="groupEmployee.group_id" value="" id="group_id_set"  disabled="disabled"/>
-				<option value="-1">Pick a group</option>
-			</select>(To pick a group you need to pick a department first)
-			</dd>
-		</dl>
-		-->
 		<dl class="fn1-output-field">
 			<dt>Effective Date</dt>
-			<dd><s:textfield name="departmentEmployee.effective_date" value="%{departmentEmployee.effective_date}" size="10" maxlength="10" cssClass="date" /></dd>
+			<dd><s:textfield name="employee.effective_date" value="" size="10" maxlength="10" cssClass="date" /></dd>
 		</dl>
 	</s:if>
 	<dl class="fn1-output-field">

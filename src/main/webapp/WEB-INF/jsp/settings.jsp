@@ -23,6 +23,7 @@
 					<li><a href="<s:property value='#application.url'/>accrualWarning.action">Accrual Warnings </a></li>		
 					<li><a href="<s:property value='#application.url'/>group.action">Groups</a></li>
 					<li><a href="<s:property value='#application.url'/>employee.action">Employees</a></li>
+					<li><a href="<s:property value='#application.url'/>importEmployees.action">Import AD (ldap) Employees</a></li>
 					<li><a href="<s:property value='#application.url'/>user.action">Users</a></li>					
 					<li><a href="<s:property value='#application.url'/>jobTask.action">Jobs</a></li>
 					<li><a href="<s:property value='#application.url'/>empAccrual.action">Employee Accruals</a></li>

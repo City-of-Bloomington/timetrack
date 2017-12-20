@@ -67,7 +67,7 @@ $("#emp_name").autocomplete({
 						$("#employee_number_id").val(ui.item.employee_number);
 						$("#id_code_id").val(ui.item.id_code);
 						$("#email_id").val(ui.item.email);
-						$("#department_id_change").val(ui.item.department_id);						
+						$("#department_id").val(ui.item.department_id);						
 						$("#group_id").val(ui.item.group_id);
 						$("#group_id2").html(ui.item.group_id);						
 						// $("#h_division").val(ui.item.division);
@@ -125,19 +125,26 @@ $('#hide_info_button').click(function() {
     $('#hide_info').hide();
 		return false;
 });
+// using group ids
 $('#department_id_change').change(function() {
 		var $option = $(this).find('option:selected');
 		var dept_id = $option.val();
-		var $options = $("#group_id_set");
+		var dept_name = $option.text();
+		var $options = $("#group_name_set");
+		$("#dept_name_id").val(dept_name);
 		$options.prop('disabled',false);
 		$options.empty();
 		$options.append(new Option("Pick a group","-1"));
 		$.getJSON(APPLICATION_URL + "GroupService?department_id="+dept_id, function(result) {
 				$.each(result, function(key,item) {
-						$options.append(new Option(item.name,item.id));
+						$options.append(new Option(item.name,item.name));
 				})
-		})
+		}).fail(function(xx, statusText, error){
+				var err = statusText+","+error;
+				// alert(err);
+		})		
 });
+
 /**
  * toggle input of time-in, time-out or hours depending
  * on hour code for example Reg hour code requires time-in, time-out

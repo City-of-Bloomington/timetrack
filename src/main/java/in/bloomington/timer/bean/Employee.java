@@ -21,10 +21,10 @@ public class Employee implements Serializable{
 		static Logger logger = LogManager.getLogger(Employee.class);
 		static final long serialVersionUID = 1150L;		
     private String id="", inactive="", id_code="", employee_number="",
-				department_id="", group_id="",
 				email="", role="",
-				username="", full_name="", first_name="", last_name="",
-				ldap_dept="";
+				username="", full_name="", first_name="", last_name="";
+		// needed for saving
+		String department_id="", group_id="";
 		// normally this date is pay period start date
 		String job_active_date = "", pay_period_id="", selected_job_id="";
 		// User user = null;
@@ -149,9 +149,6 @@ public class Employee implements Serializable{
 				}
 				return email;
 		}
-    public String getLdap_dept(){
-				return ldap_dept;
-    }		
     //
     // setters
     //
@@ -181,6 +178,11 @@ public class Employee implements Serializable{
 				if(val != null)
 						last_name = val;
     }
+		// for auto complete
+		public void setFull_name(String val){
+
+		}
+		
     public void setEmail(String val){
 				if(val != null)
 						email = val;
@@ -191,18 +193,44 @@ public class Employee implements Serializable{
     }
 		// needed for new employee
     public void setDepartment_id(String val){
-				if(val != null && !val.equals("-1"))
+				if(val != null && !val.equals("-1")){
 						department_id = val;
+						if(departmentEmployee == null){
+								departmentEmployee = new DepartmentEmployee();
+						}
+						departmentEmployee.setDepartment_id(val);
+				}
     }
+		public void setEffective_date(String val){
+				if(val != null){
+						if(departmentEmployee == null){
+								departmentEmployee = new DepartmentEmployee();
+						}
+						departmentEmployee.setEffective_date(val);
+						if(groupEmployee == null){
+								groupEmployee = new GroupEmployee();
+						}
+						groupEmployee.setEffective_date(val);
+				}
+		}
+		public void setDepartmentEmployee(DepartmentEmployee val){
+				if(val != null)
+						departmentEmployee = val;
+		}
+		public void setGroupEmployee(GroupEmployee val){
+				if(val != null)
+						groupEmployee = val;
+		}		
 		// needed for new employee
     public void setGroup_id(String val){
-				if(val != null && !val.equals("-1"))
+				if(val != null && !val.equals("-1")){
 						group_id = val;
-    }		
-    public void setLdap_dept(String val){
-				if(val != null && !val.equals("-1"))
-						ldap_dept = val;
-    }				
+						if(groupEmployee == null){
+								groupEmployee = new GroupEmployee();
+						}
+						groupEmployee.setGroup_id(val);
+				}
+    }
     public void setJob_active_date(String val){
 				if(val != null)
 					 job_active_date = val;
@@ -217,14 +245,20 @@ public class Employee implements Serializable{
     }
 		public String getDepartment_id(){
 				if(department_id.equals("")){
-						getDepartment();
-						if(department != null){
-								department_id = department.getId();
+						getDepartmentEmployees();
+						if(departmentEmployee != null){
+								department_id = departmentEmployee.getDepartment_id();
 						}
 				}
 				return department_id;
 		}
 		public String getGroup_id(){
+				if(group_id.equals("")){
+						getGroupEmployee();
+						if(groupEmployee != null){
+								group_id = groupEmployee.getGroup_id();
+						}
+				}
 				return group_id;
 		}
     public void setInactive (boolean val){
@@ -442,6 +476,7 @@ public class Employee implements Serializable{
 				return groupEmployee != null;
 		}
 		public GroupEmployee getGroupEmployee(){
+				getGroupEmployees();
 				return groupEmployee;
 		}
 		public String validate(){
@@ -550,6 +585,14 @@ public class Employee implements Serializable{
 								if(rs.next()){
 										id = rs.getString(1);
 								}
+								if(departmentEmployee != null){
+										departmentEmployee.setEmployee_id(id);
+										msg = departmentEmployee.doSave();
+								}
+								if(groupEmployee != null){
+										groupEmployee.setEmployee_id(id);
+										msg = groupEmployee.doSave();
+								}
 						}
 				}
 				catch(Exception ex){
@@ -559,7 +602,8 @@ public class Employee implements Serializable{
 				finally{
 						Helper.databaseDisconnect(con, pstmt, rs);
 				}
-				msg = doSelect();
+				if(msg.equals(""))
+						msg = doSelect();
 				return msg;
 		}
 		String setParams(PreparedStatement pstmt){

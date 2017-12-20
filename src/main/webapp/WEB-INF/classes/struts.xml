@@ -6,7 +6,7 @@
 <struts>
   <constant name="struts.devMode" value="true" />
   <constant name="struts.ui.theme" value="simple" />
-  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupUserService*,/GroupService*,/DbEmployeeService*" />
+  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*" />
 
   <package name="default" extends="struts-default">
 
@@ -215,12 +215,12 @@
 			<result name="error">/WEB-INF/jsp/employee.jsp</result>
 			<result name="success">/WEB-INF/jsp/employee.jsp</result>
 		</action>
-		<action name="user" 
-						class="in.bloomington.timer.UserAction" 
+		<action name="importEmployees" 
+						class="in.bloomington.timer.ImportEmployeeAction" 
 						method="execute">
-			<result name="input">/WEB-INF/jsp/user.jsp</result>		
-			<result name="error">/WEB-INF/jsp/user.jsp</result>
-			<result name="success">/WEB-INF/jsp/user.jsp</result>
+			<result name="input">/WEB-INF/jsp/importEmployees.jsp</result>		
+			<result name="error">/WEB-INF/jsp/importEmployees.jsp</result>
+			<result name="success">/WEB-INF/jsp/importEmployees.jsp</result>
 		</action>		
 		<action name="switch" 
 						class="in.bloomington.timer.SwitchAction" 

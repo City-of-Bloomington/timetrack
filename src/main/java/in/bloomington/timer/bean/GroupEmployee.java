@@ -140,6 +140,21 @@ public class GroupEmployee extends CommonInc {
 				}
 				return group;				
 		}
+		// needed for changing employee group
+		// if the employee has not started data entry
+		// using this group, then we can change the group
+		// easily without the need to go through two step change
+		public boolean hasTimeData(){
+				if(!employee_id.equals("") && !id.equals("")){					 
+						DocumentList dl = new DocumentList(employee_id);
+						String back = dl.find();
+						if(back.equals("")){
+								List<Document> ones = dl.getDocuments();
+								return (ones != null && ones.size() > 0);
+						}
+				}
+				return false;
+		}
 		// exlude group
 		//
     public String doSave(){

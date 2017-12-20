@@ -20,10 +20,9 @@ public class EmpList extends CommonInc{
 		static Logger logger = LogManager.getLogger(EmpList.class);
 		static final long serialVersionUID = 1100L;
 		static EnvBean bean = null;
-		String name = "";
-		Hashtable<String, String> deptTable = null; // name,id
+		String name = "", dept_name="", group_name="";
+		Hashtable<String, String> deptTable = null; // name, id
 		Hashtable<String, Hashtable<String,String>> grpTable = null; // dept_id, groups
-		
 		List<Employee> emps = null;
 		public EmpList(){
 				super();
@@ -45,6 +44,10 @@ public class EmpList extends CommonInc{
 				if(val != null)
 						name = val;
 		}
+		public void setDept_name(String val){
+				if(val != null)
+						dept_name = val;
+		}
 		public void setEnvBean(EnvBean val){
 				if(val != null)
 						bean = val;
@@ -52,6 +55,17 @@ public class EmpList extends CommonInc{
 		public String getName(){
 				return name;
 		}
+
+		public void setGroup_name(String val){
+				if(val != null){
+						group_name = val;
+				}
+		}		
+
+		/**
+			 deptTable : table <Department name, depart ID>
+			 grpTable : table <Department ID, table <Group Name, Group ID>
+		 */
 		void prepareTables(){
 				DepartmentList dl = new DepartmentList();
 				dl.setActiveOnly();
@@ -142,35 +156,38 @@ public class EmpList extends CommonInc{
 						if(!name.equals("")){
 								filter = "(cn="+name+"*)";
 						}
+						else if (!dept_name.equals("")){
+								/*
+									// we can not use wildcard in AD so we have to do
+									// it ourselves by bringing all users and search for 
+									// dept name and group (if any)
+								if(!group_name.equals("")){
+										filter = "(&(ou="+group_name+")(ou="+dept_name+"))";
+								}
+								else
+										filter = "(distinguishedName=*,ou="+dept_name+",*)";
+								*/
+								filter ="(&(objectCategory=person)(objectClass=user))";
+						}
 						else{ // all
 								filter ="(&(objectCategory=person)(objectClass=user))";
 						}
+						System.err.println(" filter "+filter);
 						NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctls);
 						while(answer.hasMore()){
 								//
 								emp = new Employee();
 								SearchResult sr = answer.next();
 								Attributes atts = sr.getAttributes();
-								//
-								Attribute cn = atts.get("cn");
-								if (cn != null){
-										str = cn.get().toString();
-										emp.setUsername(str);
-								}
-								Attribute givenname = atts.get("givenName");
-								if (givenname != null){
-										str = givenname.get().toString();
-										emp.setFirst_name(str);
-								}
-								Attribute sn = atts.get("sn");
-								if (sn != null){
-										str = sn.get().toString();
-										emp.setLast_name(str);
-								}
 								Attribute dn = atts.get("distinguishedName");
 								if (dn != null){
 										str = dn.get().toString();
-										System.err.println(" dn "+str);
+										// System.err.println(" dn "+str);
+										if(!dept_name.equals("")){
+												if(str.indexOf(dept_name) == -1) continue;
+												if(!group_name.equals(""))
+														if(str.indexOf(group_name) == -1) continue;
+										}
 										String strArr[] = setDn(str);
 										String deptId = "", grpId="";
 										if(!strArr[0].equals("")){
@@ -192,7 +209,23 @@ public class EmpList extends CommonInc{
 										if(!grpId.equals("")){
 												emp.setGroup_id(grpId);
 										}
-										System.err.println(" found dept, grp: "+strArr[0]+" "+strArr[1]+" "+deptId+" "+grpId);
+										// System.err.println(" found dept, grp: "+strArr[0]+" "+strArr[1]+" "+deptId+" "+grpId);
+								}
+								//
+								Attribute cn = atts.get("cn");
+								if (cn != null){
+										str = cn.get().toString();
+										emp.setUsername(str);
+								}
+								Attribute givenname = atts.get("givenName");
+								if (givenname != null){
+										str = givenname.get().toString();
+										emp.setFirst_name(str);
+								}
+								Attribute sn = atts.get("sn");
+								if (sn != null){
+										str = sn.get().toString();
+										emp.setLast_name(str);
 								}
 								Attribute en = atts.get("employeeNumber");
 								if (en != null){
@@ -261,16 +294,8 @@ public class EmpList extends CommonInc{
 						String dept="", grp = "", sub_grp="";
 						try{
 								String val2 = val.substring(val.indexOf("OU"),val.indexOf("DC")-1);
-								// System.err.println(" val2  "+val2);
 								String strArr[] = val2.split(",");
 								if(strArr != null){
-										/*
-										System.err.println(strArr.length);
-										for(String str:strArr){
-												System.err.print(" "+str);
-										}
-										System.err.println("");
-										*/
 										if(strArr.length == 2){
 												dept = strArr[0]; // transit
 										}
@@ -301,16 +326,21 @@ public class EmpList extends CommonInc{
 										}
 										if(!grp.equals("")){
 												grp = grp.substring(grp.indexOf("=")+1);
-												retArr[1] = grp;
+												if(grp.equals("Showers")) grp="Staff";
 										}
+										else{
+												grp = "Staff";
+										}
+										if(!sub_grp.equals("")){
+												sub_grp = sub_grp.substring(sub_grp.indexOf("=")+1);
+												grp = grp+" - "+sub_grp;
+										}
+										retArr[1] = grp;
 								}
 						}catch(Exception ex){
 								System.err.println(ex);
 						}
-						if(!sub_grp.equals("")){
-								grp = grp+" - "+sub_grp;
-						}
-						System.err.println(" group: "+grp+" dept: "+dept);
+						// System.err.println(" dept: "+dept+" group: "+grp);
 				}
 				return retArr;
 		}

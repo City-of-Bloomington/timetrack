@@ -24,7 +24,7 @@
 	<div class="tt-row-container">
 		<dl class="fn1-output-field">
 			<dt class="th_text">Employee </dt>
-			<dd class="td_text"><s:textfield name="employee_name" value="" id="employee_name" size="20" /> ID:<s:textfield name="employee_id" value="" id="employee_id" size="5" /></dd>
+			<dd class="td_text"><s:textfield name="employee_name" value="" id="employee_name" size="20" /> ID:<s:textfield name="new_employee_id" value="" id="employee_id" size="5" /></dd>
 		</dl>
 		<s:submit name="action" type="button" value="Change" class="fn1-btn"/></dd>
 	</div>

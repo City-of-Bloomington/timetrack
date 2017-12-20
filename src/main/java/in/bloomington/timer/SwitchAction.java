@@ -21,7 +21,8 @@ public class SwitchAction extends TopAction{
 		static final long serialVersionUID = 1150L;	
 		static Logger logger = LogManager.getLogger(SwitchAction.class);
 		//
-		Employee employee = null;
+		String new_employee_id = "";
+		// Employee employee = null;
 		String employeesTitle = "Current Employees";
 		public String execute(){
 				String ret = SUCCESS;
@@ -30,10 +31,11 @@ public class SwitchAction extends TopAction{
 						return "login";
 				}
 				if(action.startsWith("Change")){
-						if(!employee_id.equals("")){
+						if(!new_employee_id.equals("")){
+								setEmployee_id(new_employee_id);
 								getEmployee();
-								back = employee.doSelect();
-								if(!back.equals("")){
+								if(employee == null){
+										back = "could not get employee info ";
 										addActionError(back);
 								}
 								else{
@@ -44,19 +46,11 @@ public class SwitchAction extends TopAction{
 												return super.execute();
 										}catch(Exception ex){
 												System.err.println(ex);
-										}	
+										}
 								}
 						}
 				}
 				return ret;
-		}
-		public Employee getEmployee(){
-				if(employee == null){
-						employee = new Employee();
-						employee.setId(employee_id);
-				}
-				return employee;
-						
 		}
 		public String getEmployeesTitle(){
 				return employeesTitle;
@@ -66,9 +60,14 @@ public class SwitchAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						action = val;
 		}
+		public void setNew_employee_id(String val){
+				if(val != null && !val.equals(""))		
+						new_employee_id = val;
+		}		
 		public void setEmployee_name(String val){
 				// for auto complete
 		}
+		
 		public String getEmployee_name(){
 				return "";
 		}

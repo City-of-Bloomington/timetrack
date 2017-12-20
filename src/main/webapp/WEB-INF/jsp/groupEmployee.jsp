@@ -14,7 +14,9 @@
 	<s:else>
 		<h3>Edit Employee Group </h3>
 		<s:hidden id="groupEmployee.id" name="groupEmployee.id" value="%{groupEmployee.id}" />
-		<s:hidden id="groupEmployee.id" name="groupEmployee.group_id" value="%{groupEmployee.group_id}" />		
+		<s:if test="groupEmployee.hasTimeData()">
+			<s:hidden id="groupEmployee.id" name="groupEmployee.group_id" value="%{groupEmployee.group_id}" />
+		</s:if>
 	</s:else>	
   <s:if test="hasActionErrors()">
 		<div class="errors">
@@ -32,7 +34,7 @@
 	</dl>			
 	<dl class="fn1-output-field">
 		<dt>Group</dt>
-		<s:if test="groupEmployee.id != ''">
+		<s:if test="groupEmployee.hasTimeData()">
 			<dd><s:property value="groupEmployee.group" />
 		</s:if>
 		<s:else>
@@ -56,7 +58,9 @@
 	</s:if>
 	<s:else>
 		<s:submit name="action" type="button" value="Save Changes" class="fn1-btn"/>
-		<a href="<s:property value='#application.url' />groupEmpChange.action?id=<s:property value='groupEmployee.id' />" class="fn1-btn"> Change Employee Group</a>				
+		<s:if test="groupEmployee.hasTimeData()">
+			<a href="<s:property value='#application.url' />groupEmpChange.action?id=<s:property value='groupEmployee.id' />" class="fn1-btn"> Change Employee Group</a>
+		</s:if>
 	</s:else>
 </s:form>
 <s:if test="hasGroupEmployees()">
