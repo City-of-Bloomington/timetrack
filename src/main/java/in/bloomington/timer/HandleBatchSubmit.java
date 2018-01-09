@@ -65,20 +65,17 @@ public class HandleBatchSubmit{
 				// find all non clock employees that have documents for the
 				// specified pay_period_id but not submitted
 				//
-				String qq = " select d.id,concat_ws(' ',u.first_name,u.last_name) "+
+				String qq = " select d.id,concat_ws(' ',e.first_name,e.last_name) "+
 						" from time_documents d,"+
 						" employees e,"+
-						" users u,"+
 						" jobs j "+
 						" where e.id=d.employee_id "+
 						" and e.user_id=u.id "+
 						" and e.inactive is null "+
-						" and u.inactive is null "+
-						" and j.employee_id=e.id "+
 						" and j.clock_time_required is not null "+ // punch clock employees
 						" and j.inactive is null "+
 						" and d.pay_period_id = ? "+
-						" and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=? and a.workflow_id=2) "; // initiated but not submitted for approval
+						" and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=? and a.workflow_id=2) ";
 				try{
 						con = Helper.getConnection();
 						if(con == null){

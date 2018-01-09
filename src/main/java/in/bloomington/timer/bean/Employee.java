@@ -49,6 +49,18 @@ public class Employee implements Serializable{
 				setId(val);
 				setUsername(val2);
     }
+    public Employee(String val,
+										String val2,
+										String val3,
+										String val4,
+										String val5
+								){
+				setId(val);
+				setUsername(val2);
+				setFirst_name(val3);
+				setLast_name(val4);
+				setEmail(val5);
+    }				
 		// for new record
     public Employee(String val,
 										String val2,

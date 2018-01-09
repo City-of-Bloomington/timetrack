@@ -25,7 +25,7 @@ public class HandleNotification{
 		static Logger logger = LogManager.getLogger(HandleNotification.class);
 		static String host = "smtp.bloomington.in.gov"; // city relay
 		String date="", dept_id="", pay_period_id="";
-		List<User> emps = null;
+		List<Employee> emps = null;
     public HandleNotification(String val, boolean val2){
 				setPay_period_id(val);
 				if(val2)
@@ -80,15 +80,12 @@ public class HandleNotification{
 				// find all non clock employees that have documents for the
 				// specified pay_period_id but not submitted
 				//
-				String qq = " select u.id,u.username,u.first_name,u.last_name "+
+				String qq = " select e.id,e.username,e.first_name,e.last_name,e.email "+
 						" from time_documents d,"+
 						" employees e,"+
-						" users u,"+
 						" jobs j "+
 						" where e.id=d.employee_id "+
-						" and e.user_id=u.id "+
 						" and e.inactive is null "+
-						" and u.inactive is null "+
 						" and j.employee_id=e.id "+
 						" and j.clock_time_required is null "+
 						" and j.inactive is null "+
@@ -108,10 +105,11 @@ public class HandleNotification{
 						pstmt.setString(2, pay_period_id);
 						rs = pstmt.executeQuery();
 						while(rs.next()){
-								User one = new User(rs.getString(1),
-																		rs.getString(2),
-																		rs.getString(3),
-																		rs.getString(4));
+								Employee one = new Employee(rs.getString(1),
+																						rs.getString(2),
+																						rs.getString(3),
+																						rs.getString(4),
+																						rs.getString(5));
 								if(emps == null){
 										emps = new ArrayList<>();
 								}
@@ -141,7 +139,7 @@ public class HandleNotification{
 				}
 				// String bcc_str = "Walid Sibn<sibow@bloomington.in.gov>,Charles Brandt<brandtc@bloomington.in.gov>,Alan Schertz<schertza@bloomington.in.gov>";
 				String bcc_str = "";
-				for(User one:emps){
+				for(Employee one:emps){
 						if(!bcc_str.equals("")) bcc_str += ",";
 						bcc_str += one.getFull_name()+"<"+one.getEmail()+">";
 				}
