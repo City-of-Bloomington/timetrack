@@ -35,18 +35,11 @@ Memory Card x1:
 Assembly
 --------------------
 
-Start by opening the memory card and transferring the latest Raspbian image to it. Since we will be using a desktop environment, be sure to use "Raspbian Jessie with PIXEL":
+Start by opening the memory card and transferring the latest FullPageOS image to it.
 
-<https://downloads.raspberrypi.org/raspbian_latest>
+<http://unofficialpi.org/Distros/FullPageOS/>
 
-via:
-
-<https://www.raspberrypi.org/downloads/raspbian/>
-
-I needed to use the torrent for the download to complete; the direct download stalled out for me.
-
-TODO:
-transfer this to the local network since it is rather large (1.4GB)
+Source code: <https://github.com/guysoft/FullPageOS>
 
 ![transfer]({{ site.github.url }}/assets/IMG_1013_l_sq.JPG)
 
@@ -54,13 +47,19 @@ Next up is to transfer the downloaded image to the SD memory card. There are man
 
 <https://www.raspberrypi.org/learning/software-guide/>
 
-Since we'll be doing this for multiple cards, it makes sense to skip the NOOBS approach and go with an image burner. Etcher is a nice multi-platform one. Download here:
+Etcher is a nice multi-platform piece of software for easily transferring images.
 
+Download here:
 <https://www.etcher.io/>
 
 ![etcher screenshot]({{ site.github.url }}/assets/etcher.png)
 
-Once the image has been transferred to the SD card, eject that from your system and insert it into the RaspberryPi.
+
+By default, the Ethernet interface will use DHCP and shouldn't have any issues connecting. If you want to adjust the connection method in any way, eject and re-insert your SD card (if it didn't show up right after transferring the image).
+
+Open **fullpageos-network.txt** *with an editor that supports Unix line endings* (not Notepad) if you want to adjust the Wired connection. Ignore any text about the Wi-Fi in here as it has all been deprecated. If you want to adjust Wireless, open **fullpageos-wpa-supplicant.txt**
+
+Once you are finished, eject that from your system and insert it into the RaspberryPi.
 
 ![insert SD card]({{ site.github.url }}/assets/IMG_1015_l.JPG)
 
@@ -100,8 +99,6 @@ Choose United States->English (US)
 
 (Can test the keyboard config with !@#$ keys. That's not an expletive. :) )
 
-Next configure a network connection. Consider the destination location. If it has a wired network connection, we'll want to use that. Otherwise we'll want to use the wireless connection. For wireless, choose one from the networking menu in the top right.
-
 Next, open a terminal and type:
 
     ifconfig
@@ -119,14 +116,6 @@ Restart the Pi to apply any kernel updates.
 Next run:
 
     sudo rpi-update
-
-This fixes an issue with the display where occasionally the backlight will not come back on after it has been asleep.
-
-    sudo vi /boot/cmdline.txt
-
-Replace console=tty1 with console=tty3 to redirect boot messages to the third console.
-
-Hide the logo by adding: logo.nologo
 
 Disable the rainbow splash screen at boot:
 
