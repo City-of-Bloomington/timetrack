@@ -1,38 +1,36 @@
----
-layout: default
----
+TimeTrack Raspberry Pi
+===
 
-At the [City of Bloomington, Indiana](https://bloomington.in.gov), we use a number of different solutions to keep track of hours for employees. We have some employees who utilize a paper based punch clock, but we want to automate the process of digitizing those hours. 
+At the [City of Bloomington, Indiana](https://bloomington.in.gov), we use a number of different solutions to keep track of hours for employees. We have some employees who utilize a paper based punch clock, but we want to automate the process of digitizing those hours.
 
-We're using a Raspberry Pi and touchscreen to serve as a simple kiosk terminal. This is set up to show our web based timeclock application. Employees can use their RFID enabled badge to clock in or clock out of the system. 
+We're using a Raspberry Pi and touchscreen to serve as a simple kiosk terminal. This is set up to show our web based timeclock application. Employees can use their RFID enabled badge to clock in or clock out of the system.
 
 ![prototype]({{ site.github.url }}/assets/IMG_1027_l.JPG)
 
 Parts list
 --------------------
 
-RaspberryPi 1x:
+Raspberry Pi 3 x1:
 
 <https://www.raspberrypi.org/products/raspberry-pi-3-model-b/>
 
-Screen: 1x:
+Screen x1:
 
 <https://www.raspberrypi.org/products/raspberry-pi-touch-display/>
 
-Case: 1x:
+Case x1:
 
 <http://smarticase.com/collections/all/products/smartipi-touch>
 
-RFID Reader:
+RFID Reader x1:
 
 <https://www.rfideas.com/files/downloads/data-sheets/pcProx-Surface_Mount.pdf>
 
-Power Supply 1x:
+Power Supply x1:
 
-Memory Card 1x:
+Memory Card x1:
 
 ![supplies]({{ site.github.url }}/assets/IMG_1008_l_sq.JPG)
-
 
 Assembly
 --------------------
@@ -56,7 +54,7 @@ Next up is to transfer the downloaded image to the SD memory card. There are man
 
 <https://www.raspberrypi.org/learning/software-guide/>
 
-Since we'll be doing this for multiple cards, it makes sense to skip the NOOBS approach and go with an image burner. Etcher is a nice one. Download here:
+Since we'll be doing this for multiple cards, it makes sense to skip the NOOBS approach and go with an image burner. Etcher is a nice multi-platform one. Download here:
 
 <https://www.etcher.io/>
 
@@ -83,7 +81,7 @@ One aspect that was glossed over is how to connect the ribbon cables. Be sure to
 
 Once you've done your first build, it's easier to do subsequent ones.
 
-At this point everything should be assembled and hooked up, including "Y" USB B cable for power. 
+At this point everything should be assembled and hooked up, including "Y" USB B cable for power.
 
 Plug in the usb RFID reader
 
@@ -110,8 +108,7 @@ Next, open a terminal and type:
 
 Note the network interface's MAC address ("HWaddr" in output). If you're using the wired network connection, it will be in the "eth0" section. If you're using the wireless connection it will be in the "wlan0" section.
 
-At the end of this process, send the MAC address and physical location to Mike so that he can configure the right address in our DHCP server. 
-
+At the end of this process, send the MAC address and physical location to the system administrator so that he can configure the right address in our DHCP server.
 
 Update the core system:
 
@@ -127,7 +124,7 @@ This fixes an issue with the display where occasionally the backlight will not c
 
     sudo vi /boot/cmdline.txt
 
-Replace console=tty1 with console=tty3 to redirect boot messages to the third console. 
+Replace console=tty1 with console=tty3 to redirect boot messages to the third console.
 
 Hide the logo by adding: logo.nologo
 
@@ -143,21 +140,17 @@ To hide the mouse cursor, add a nocursor option as follows in the file (/etc/lig
 
     xserver-command = X -nocursor
 
-
 TODO:
 
-  - consider SSH server installation (easier remote configurations)
-  - change default pi password
-  - create a different (un-privileged) user to boot in to automatically
-
+- consider SSH server installation (easier remote configurations)
+- change default pi password
+- create a different (un-privileged) user to boot in to automatically
 
 Configure the browser to launch in kiosk mode:
 
-
     sudo vi ~/.config/autostart/autoChromium.desktop
 
-
-```
+```bash
 [Desktop Entry]
 Type=Application
 Exec=/usr/bin/chromium-browser --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk http://www.website.com
@@ -171,8 +164,6 @@ Comment=Start Chromium when GNOME starts
 Restart the system to make sure the browser boots up automatically.
 
 Alt-F4 on a connected keyboard will exit out of browser
-
-
 
 Thanks
 ----------
@@ -194,5 +185,3 @@ A good overview of the different early boot settings:
 <http://blog.fraggod.net/2015/11/28/raspberry-pi-early-boot-splash-logo-screen.html>
 
 Many thanks!
-
-
