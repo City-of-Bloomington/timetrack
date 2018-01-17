@@ -86,14 +86,19 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								activeMail = true;																
 						}
 						if(sessionMap == null || sessionMap.get("user") == null){
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";								
-								if(source != null)
-										str += "?source="+source;
-								res.sendRedirect(str);
-								return super.execute();
+								// timeblock we do not need login								
+								if(source != null && !source.equals("timeClock")){
+										HttpServletResponse res = ServletActionContext.getResponse();
+										String str = url+"Login";								
+										if(source != null)
+												str += "?source="+source;
+										res.sendRedirect(str);
+										return super.execute();
+								}
 						}
-						user = (Employee)sessionMap.get("user");
+						else{
+								user = (Employee)sessionMap.get("user");
+						}
 						if(sessionMap.containsKey("employee_id")){
 								Object obj = sessionMap.get("employee_id");
 								if(obj != null){
