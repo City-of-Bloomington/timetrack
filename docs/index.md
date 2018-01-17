@@ -1,5 +1,4 @@
-TimeTrack Raspberry Pi
-===
+# TimeTrack Raspberry Pi
 
 At the [City of Bloomington, Indiana](https://bloomington.in.gov), we use a number of different solutions to keep track of hours for employees. We have some employees who utilize a paper based punch clock, but we want to automate the process of digitizing those hours.
 
@@ -7,57 +6,77 @@ We're using a Raspberry Pi and touchscreen to serve as a simple kiosk terminal. 
 
 ![prototype]({{ site.github.url }}/assets/IMG_1027_l.JPG)
 
-Parts list
---------------------
+## Parts list
 
-Raspberry Pi 3 x1:
-
-<https://www.raspberrypi.org/products/raspberry-pi-3-model-b/>
-
-Screen x1:
-
-<https://www.raspberrypi.org/products/raspberry-pi-touch-display/>
-
-Case x1:
-
-<http://smarticase.com/collections/all/products/smartipi-touch>
-
-RFID Reader x1:
-
-<https://www.rfideas.com/files/downloads/data-sheets/pcProx-Surface_Mount.pdf>
-
-Power Supply x1:
-
-Memory Card x1:
+* [Raspberry Pi 3] x1
+* [Screen] x1
+* [Case] x1
+* [RFID Reader] x1
+* Power Supply x1
+* Memory Card x1
 
 ![supplies]({{ site.github.url }}/assets/IMG_1008_l_sq.JPG)
 
-Assembly
---------------------
+## Assembly
 
-Start by opening the memory card and transferring the latest FullPageOS image to it.
+Start by opening the memory card and inserting it into your PC/laptop's reader.
 
-<http://unofficialpi.org/Distros/FullPageOS/>
+We will be using FullPageOS to run our kiosk, so download and extract it.
 
-Source code: <https://github.com/guysoft/FullPageOS>
+*This guide is written as if your intent is to flash this image to many different SD cards, and as a result some of the steps may be more complex than if you were just doing it for a single card.
+The below steps regarding editing the image are unnecessary if you just want to alter the files. (you can just plug in the SD card after flashing and edit)*
+
+[FullPageOS]
+
+[Source code]
+
+## Image Modification
+
+By default, the Ethernet interface will use DHCP and shouldn't have any issues connecting. If you want to adjust the connection method in any way, you can edit the image file before you begin your flashing.
+
+A super easy way to edit the image files on Windows is [OSFMount]. On Linux, you should be able to mount the .img file via your DE's built in image mounting or mounting to a directory via the terminal.
+
+### TODO: add instructions for linux and OSX
+
+### OSFMount (Windows)
+
+For OSFMount, open the application and select the option to mount a new image:
+
+![mount new img]({{ site.github.url }}/assets/OSFMount_mountnew.png)
+
+Browse to the location of your image and select it. When the dialog pops up asking to select a partition, pick the FAT one. This is the partition that shows up when you insert the SD into a computer.
+
+![choose partition]({{ site.github.url }}/assets/OSFMount_partition.png)
+
+After selecting the partition, un-check the **Read-Only Drive** option and check the **Removable Media** option (*this prevents Windows from cluttering up the disk with System Restore folders*).
+
+Your image will now show up as a new disk on your computer.
+
+### Editing the files
+
+Open **fullpageos-network.txt** *with an editor that supports Unix line endings* (not Notepad) if you want to adjust the Wired connection. Ignore any text about the Wi-Fi in here as it has all been deprecated. If you want to adjust Wireless, open **fullpageos-wpa-supplicant.txt**
+
+Change any values to your desired settings and then save them.
+
+To disable the rainbow splash screen at boot, open config.txt and add:
+
+    disable_splash=1
+
+### Saving
+
+When you are done, close out of any editors or file browsers that my be interacting with the image. Go back to OSFMount and dismount the disk.
+
+## Flashing the image
 
 ![transfer]({{ site.github.url }}/assets/IMG_1013_l_sq.JPG)
 
-Next up is to transfer the downloaded image to the SD memory card. There are many good guides on the options here:
-
-<https://www.raspberrypi.org/learning/software-guide/>
+Next up is to transfer the extracted image to the SD memory card.
 
 Etcher is a nice multi-platform piece of software for easily transferring images.
 
-Download here:
-<https://www.etcher.io/>
+Download here: [Etcher.io]
 
 ![etcher screenshot]({{ site.github.url }}/assets/etcher.png)
-
-
-By default, the Ethernet interface will use DHCP and shouldn't have any issues connecting. If you want to adjust the connection method in any way, eject and re-insert your SD card (if it didn't show up right after transferring the image).
-
-Open **fullpageos-network.txt** *with an editor that supports Unix line endings* (not Notepad) if you want to adjust the Wired connection. Ignore any text about the Wi-Fi in here as it has all been deprecated. If you want to adjust Wireless, open **fullpageos-wpa-supplicant.txt**
 
 Once you are finished, eject that from your system and insert it into the RaspberryPi.
 
@@ -65,11 +84,9 @@ Once you are finished, eject that from your system and insert it into the Raspbe
 
 Next, install the Pi in the case and install the touch screen too. This is a good video to follow:
 
-<http://smarticase.com/touchsetup>
+[SmartiCase Video Tutorial]
 
-goes to:
-
-<https://www.youtube.com/watch?v=XKVd5638T_8>
+## Connecting the Ribbon Cable
 
 One aspect that was glossed over is how to connect the ribbon cables. Be sure to pull out the black plastic tab that keeps the cable secure first:
 
@@ -86,20 +103,9 @@ Plug in the usb RFID reader
 
 If all goes well, plug in the power supply to the "Y" cable and the machine should boot up. Woo woo!
 
-Configuration
---------------------
+## Fetching MAC info
 
-At this point it will be helpful to have a USB keyboard available. You may also want a USB mouse, but the touch screen does work as a mouse.
-
-Change the default keyboard layout. Open Start->Preferences->Mouse and Keyboard Settings
-
-Choose the Keyboard tab and click the Keyboard Layout... button.
-
-Choose United States->English (US)
-
-(Can test the keyboard config with !@#$ keys. That's not an expletive. :) )
-
-Next, open a terminal and type:
+Next, open a SSH session to the Pi. The IP address should be displayed onscreen. The username is "pi" and the password is stored in KeePass. Run the following command:
 
     ifconfig
 
@@ -107,55 +113,11 @@ Note the network interface's MAC address ("HWaddr" in output). If you're using t
 
 At the end of this process, send the MAC address and physical location to the system administrator so that he can configure the right address in our DHCP server.
 
-Update the core system:
-
-    sudo apt-get update && sudo apt-get upgrade -y
-
-Restart the Pi to apply any kernel updates.
-
-Next run:
-
-    sudo rpi-update
-
-Disable the rainbow splash screen at boot:
-
-    sudo vi /boot/config.txt
-
-and add:
-
-    disable_splash=1
-
-To hide the mouse cursor, add a nocursor option as follows in the file (/etc/lightdm/lightdm.conf)
-
-    xserver-command = X -nocursor
-
 TODO:
 
-- consider SSH server installation (easier remote configurations)
-- change default pi password
-- create a different (un-privileged) user to boot in to automatically
+* change default pi password
 
-Configure the browser to launch in kiosk mode:
-
-    sudo vi ~/.config/autostart/autoChromium.desktop
-
-```bash
-[Desktop Entry]
-Type=Application
-Exec=/usr/bin/chromium-browser --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk http://www.website.com
-Hidden=false
-X-GNOME-Autostart-enabled=true
-Name[en_US]=AutoChromium
-Name=AutoChromium
-Comment=Start Chromium when GNOME starts
-```
-
-Restart the system to make sure the browser boots up automatically.
-
-Alt-F4 on a connected keyboard will exit out of browser
-
-Thanks
-----------
+## Thanks
 
 This guide was loosely based on the following:
 
@@ -174,3 +136,13 @@ A good overview of the different early boot settings:
 <http://blog.fraggod.net/2015/11/28/raspberry-pi-early-boot-splash-logo-screen.html>
 
 Many thanks!
+
+[FullPageOS]: http://unofficialpi.org/Distros/FullPageOS/
+[OSFMount]: https://www.osforensics.com/tools/mount-disk-images.html
+[Source Code]: https://github.com/guysoft/FullPageOS
+[Raspberry Pi 3]: https://www.raspberrypi.org/products/raspberry-pi-3-model-b/
+[Screen]: https://www.raspberrypi.org/products/raspberry-pi-touch-display/
+[Case]: http://smarticase.com/collections/all/products/smartipi-touch
+[RFID Reader]: https://www.rfideas.com/files/downloads/data-sheets/pcProx-Surface_Mount.pdf
+[Etcher.io]: https://www.etcher.io/
+[SmartiCase Video Tutorial]: http://smarticase.com/touchsetup
