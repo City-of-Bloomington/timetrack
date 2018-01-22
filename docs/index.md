@@ -50,6 +50,8 @@ Browse to the location of your image and select it. When the dialog pops up aski
 
 After selecting the partition, un-check the **Read-Only Drive** option and check the **Removable Media** option (*this prevents Windows from cluttering up the disk with System Restore folders*).
 
+![readonly-removable]({{ site.github.url }}/assets/OSFMount_readonly-removable.png)
+
 Your image will now show up as a new disk on your computer.
 
 ### Editing the files
