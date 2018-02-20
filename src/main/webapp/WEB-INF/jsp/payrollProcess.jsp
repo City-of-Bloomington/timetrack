@@ -5,6 +5,7 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
+<div class="tbl_gray">
 <s:form action="payrollProcess" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<h4>Payroll Process Approval</h4>
@@ -87,8 +88,8 @@
 		</table>
 	</s:if>
 	<s:if test="hasNonDocEmps()">
+		<b>Employee(s) with no time entry for this pay period</b>		
 		<table width="80%" border="0">
-			<caption>Employee(s) with no time entry for this pay period</caption>
 			<s:iterator var="one" value="nonDocEmps">
 				<tr>
 					<td width="20%" class="th_text">&nbsp;</td>
@@ -101,11 +102,11 @@
 		<s:submit name="action" type="button" value="Payroll Process Approve" class="fn1-btn"/>
 	</s:if>
 	<s:else> 
-		Only authorized can payroll process
+		<b>Only authorized can (payroll process) approve</b>
 	</s:else>
 	</s:if>
 </s:form>
-
+</div>
 <%@  include file="footer.jsp" %>
 
 

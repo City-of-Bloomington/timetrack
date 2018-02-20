@@ -28,7 +28,7 @@ public class HourCode extends Type{
     private String 
 				record_method="Time", // time or hours
 				accrual_id ="",
-		// each salary group can have only one reg_default set to 0
+     		// each salary group can have only one reg_default set to 0
 				reg_default="", // 0 for default, 1 for others
 				
 				count_as_regular_pay=""; // char Yes/No flag
@@ -109,7 +109,15 @@ public class HourCode extends Type{
 				if(val)
 						count_as_regular_pay = "y";
     }
-		
+		public String getCodeInfo(){
+				String ret = name;
+				if(!description.equals("")){
+						if(!ret.equals(""))
+								ret += " : ";
+						ret += description;
+				}
+				return ret;
+		}
 		public Type getAccrual(){
 				if(accrual == null && !accrual_id.equals("")){
 						Type one = new Type(accrual_id);
@@ -247,10 +255,16 @@ public class HourCode extends Type{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, name);
-						if(description.equals(""))
+						if(description.equals("")){
 								pstmt.setNull(jj++, Types.VARCHAR);
-						else
-								pstmt.setString(jj++, description.toLowerCase());
+						}
+						else{
+								if(description.length() > 1){
+										description = description.substring(0,1).toUpperCase()+description.substring(1).toLowerCase();
+								}
+								pstmt.setString(jj++, description);
+
+						}
 						pstmt.setString(jj++, record_method);
 						if(accrual_id.equals(""))
 								pstmt.setNull(jj++, Types.INTEGER);

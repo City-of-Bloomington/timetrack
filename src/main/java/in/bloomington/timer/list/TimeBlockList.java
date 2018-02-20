@@ -28,7 +28,7 @@ public class TimeBlockList{
 		String code = "", code2 = ""; // needed for HAND and planning
 		boolean active_only = false, for_today = false, dailyOnly=false,
 				clockInOnly = false, hasClockInAndOut = false;
-		double total_hours = 0.0;
+		double total_hours = 0.0, week1_flsa=0.0, week2_flsa=0.0;
 		List<TimeBlock> timeBlocks = null;
 		Hashtable<Integer, List<TimeBlock>> blocks = new Hashtable<>();
 		//
@@ -141,6 +141,12 @@ public class TimeBlockList{
 		public double getTotal_hours(){
 				return total_hours;
 		}
+		public double getWeek1_flsa(){
+				return week1_flsa;
+		}
+		public double getWeek2_flsa(){
+				return week2_flsa;
+		}
     //
     // getters
     //
@@ -168,7 +174,10 @@ public class TimeBlockList{
 						"t.clock_out,"+
 						"t.inactive,"+
 						" datediff(t.date,p.start_date), "+ // order id start at 0
-						" c.name,c.description,cf.nw_code "+
+						
+						" c.name,"+
+						" c.description,"+
+						" cf.nw_code "+
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
@@ -282,6 +291,8 @@ public class TimeBlockList{
 								int order_id = rs.getInt(15);
 								int hr_code_id = rs.getInt(4);
 								String hr_code = rs.getString(16);
+								String hr_code_desc = rs.getString(17);
+								if(hr_code_desc == null) hr_code_desc = "";
 								if(hr_code != null){
 										if(hr_code.indexOf("ONCALL") > -1){ // oncall35 id=17
 												hrs = 1.0;
@@ -316,6 +327,14 @@ public class TimeBlockList{
 										timeBlocks.add(one);
 										addToBlocks(order_id, one);										
 								}
+								if(hr_code.toLowerCase().indexOf("reg") > -1){
+										if(order_id < 7)
+												week1_flsa += hrs;
+										else
+												week2_flsa += hrs;
+								}
+								// modified hr_code
+								hr_code += ": "+hr_code_desc;
 								addToHourCodeTotals(order_id, hr_code_id, hr_code, hrs);
 								total_hours += hrs;
 								addToDaily(order_id, hrs);

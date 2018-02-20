@@ -1,10 +1,5 @@
-<!--
- * @copyright Copyright (C) 2014-2015 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-<table width="100%" border="1"><caption>Accruals Summary</caption>
+<table width="100%" border="1">
+	<caption class="cap_left">Accruals Summary</caption>	
 	<tr>
 		<td width="25%" class="th_text">Accrual Category</td>
 		<td width="25%" class="th_text">Carry Over Balance</td>

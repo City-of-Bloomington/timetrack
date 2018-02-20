@@ -155,8 +155,12 @@ $('#hour_code_select').change(function() {
 		var val = $option.val();
 		if(val.indexOf('Hours') > -1){
 				$('#div_hours').show();
-				$('#div_time_in').val(0);
-				$('#div_time_out').val(0);			
+				$('#hour_change').attr('tabindex',5);
+				$('#time_in').val("23:59"); // 0
+				$('#time_out').val("23:59");
+				$('#time_in').attr('tabindex',-1);
+				$('#time_out').attr('tabindex',-1);
+				$('#time_overnight').attr('tabindex',-1);				
 				$('#div_time_in').hide();
 				$('#div_time_out').hide();
 				$('#div_overnight').hide();
@@ -167,6 +171,10 @@ $('#hour_code_select').change(function() {
 				$('#div_time_in').show();
 				$('#div_time_out').show();
 				$('#div_overnight').show();
+				$('#hour_change').attr('tabindex',-1);				
+				$('#time_in').attr('tabindex',2);
+				$('#time_out').attr('tabindex',3);
+				$('#time_overnight').attr('tabindex',4);						
 		}
 });
 /**
@@ -177,12 +185,22 @@ $('#div_hour_change').change(function() {
 		var val = $(this).val();
 		var $option = $('#hour_code_select').find('option:selected');
 		var code = $option.val();// 2_Hours id format
-		// alert(" selected "+code);
 		var $obj = $('#'+code);
 		if($obj.length > 0){ 
 				var aval = $obj.val();
 				if(+val > +aval){ // +x will convert to a number
 						alert("Entered value "+val+" greated than available balance "+aval);
+						$(this).val(0);
+				}
+		}
+		if(code == "2_Hours"){ // PTO can not be less than 1
+				                   //and must be multiple of0.25
+				if(+val < 1.0){
+						alert("Entered value "+val+" can not be less than 1 hour ");
+						$(this).val(0);
+				}
+				else if((+val) % 0.25 > 0){
+						alert("Entered value "+val+" must be a multiple of 0.25 hour ");
 						$(this).val(0);
 				}
 		}

@@ -18,7 +18,7 @@ public class Logout extends HttpServlet{
 
 		static final long serialVersionUID = 2800L;
 		static Logger logger = LogManager.getLogger(Logout.class);
-    String url = "", cas_url="";
+    String url = "", cas_url_prefix="";
 		
     public void doGet(HttpServletRequest req,
 					  HttpServletResponse res)
@@ -29,17 +29,17 @@ public class Logout extends HttpServlet{
 		String name= "";
 		String value = "";
 		HttpSession session = req.getSession();
-		User user = null;
+		Employee user = null;
 		if(session != null){
-			user = (User)session.getAttribute("user");
+			user = (Employee)session.getAttribute("user");
 			session.removeAttribute("user");
 			session.invalidate();
 		}
 		if(url.equals("")){
 			url    = getServletContext().getInitParameter("url");
-			cas_url = getServletContext().getInitParameter("cas_url");
+			cas_url_prefix = getServletContext().getInitParameter("casServerUrlPrefix");
 		}
-		String str = cas_url+"?url="+url;
+		String str = cas_url_prefix+"/logout?url="+url;
 		res.sendRedirect(str);
 		return;
 

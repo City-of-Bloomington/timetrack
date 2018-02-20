@@ -24,7 +24,7 @@
 					<li><a href="<s:property value='#application.url'/>group.action">Groups</a></li>
 					<li><a href="<s:property value='#application.url'/>employee.action">Employees</a></li>
 					<li><a href="<s:property value='#application.url'/>importEmployees.action">Import AD (ldap) Employees</a></li>
-					<li><a href="<s:property value='#application.url'/>user.action">Users</a></li>					
+					
 					<li><a href="<s:property value='#application.url'/>jobTask.action">Jobs</a></li>
 					<li><a href="<s:property value='#application.url'/>empAccrual.action">Employee Accruals</a></li>
 					<li><a href="<s:property value='#application.url'/>holiday.action">Holidays</a></li>
@@ -60,7 +60,7 @@
 					<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Employees' accrual</a></li>
 					<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
 					<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch clock batch submission </a></li>
-					<li><a href="<s:property value='#application.url'/>employeesSchedule.action">Current active employees</a></li>					
+					<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Update Employees (including active status)</a></li>
 				</ul>
 			</td>
 		</tr>

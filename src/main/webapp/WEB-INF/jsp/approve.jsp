@@ -5,9 +5,10 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
+<div class="tbl_gray">
 <s:form action="approve" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
-<h4>Approve Employees' Times</h4>
+<h4>Approve Timesheets</h4>
 <s:if test="hasActionErrors()">
 	<div class="errors">
     <s:actionerror/>
@@ -92,8 +93,8 @@
 		</table>
 	</s:if>
 	<s:if test="hasNonDocEmps()">
+		<b>Employee(s) with no time entry for this pay period</b>		
 		<table width="80%" border="0">
-			<caption>Employee(s) with no time entry for this pay period</caption>
 			<s:iterator var="one" value="nonDocEmps">
 				<tr>
 					<td width="20%" class="th_text">&nbsp;</td>
@@ -106,11 +107,11 @@
 		<s:submit name="action" type="button" value="Approve" class="fn1-btn"/>
 	</s:if>
 	<s:else> 
-		Only authorized can approve
+		<b>Only authorized can approve</b>
 	</s:else>			
 </s:if>
 </s:form>
-
+</div>
 <%@  include file="footer.jsp" %>
 
 

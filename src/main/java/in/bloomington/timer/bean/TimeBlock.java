@@ -35,6 +35,7 @@ public class TimeBlock extends Block{
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
 		// for clock_in
+		String errors = "";
 		public TimeBlock(
 										 String val,
 										 String val2,
@@ -185,7 +186,7 @@ public class TimeBlock extends Block{
 				return Helper.getDayInt(date);
 		}
 		public void setTime_in(String val){
-				splitTimes(val, false);
+			  splitTimes(val, false);
 		}
 		public void setTime_out(String val){
 				splitTimes(val, true);
@@ -194,19 +195,20 @@ public class TimeBlock extends Block{
 				String msg = "";
 				if(val != null){
 						int hrs = 0, mins=0;
-						boolean is_pm = false;
+						boolean is_pm = false, is_am=false;
 						String dd[] = {"",""};
 						String val2 = val.trim().toLowerCase();
 						if(val2 != null && !val2.equals("")){
 								if(val2.indexOf("a") > -1){
 										val2 = val2.substring(0,val2.indexOf("a"));
+										is_am = true;
 								}
 								else if(val2.indexOf("p") > -1){
 										val2 = val2.substring(0,val2.indexOf("p"));
 										is_pm = true;
 								}
 								val2 = val2.trim();
-								// else in standard army format
+								// in standard army format
 								if(val2.indexOf(":") > -1){
 										dd = val2.split(":");
 								}
@@ -222,19 +224,29 @@ public class TimeBlock extends Block{
 										}
 								}
 								else{
-										msg = "invalid time format";
+										msg = "invalid time format "+val;
 										logger.error(msg);
+										errors += msg;
 								}
-
 								if(msg.equals("")){
 										if(dd != null){
 												try{
 														hrs = Integer.parseInt(dd[0].trim());
 														mins = Integer.parseInt(dd[1].trim());
+														if(hrs < 0){
+																msg = "hours can be negative: "+hrs;
+																errors += msg;
+																return msg;
+														}
+														if(hrs > 36){
+																msg = "invalid hour: "+hrs;
+																errors += msg;
+																return msg;
+														}
 														if(is_pm && hrs < 12){
 																hrs += 12;
 														}
-														if(!is_pm && hrs == 12){ // 12 am case
+														if(is_am && hrs == 12){ // 12 am case
 																hrs = 0;
 														}
 														if(isOut){
@@ -248,6 +260,7 @@ public class TimeBlock extends Block{
 												}catch(Exception ex){
 														logger.error(ex);
 														msg += ex;
+														errors += ex;
 												}
 										}
 								}
@@ -322,13 +335,33 @@ public class TimeBlock extends Block{
 				return ret;
 		}
 		public String getTimeInfo(){
-				
-				String ret = getTime_in();
-				if(isClockOut()){
-						ret += " - "+getTime_out();
-						ret += " ("+getHours()+" hrs)";
+				String ret = "";
+				if(isHourType()){
+						ret += getHours()+" "+getHour_code();
+				}
+				else{
+						ret = getTime_in();
+						if(isClockInOnly()){
+								ret += " "+getHour_code();
+								ret = "Clock IN "+ret;
+						}
+						else{
+								ret += " - "+getTime_out();
+						}
 				}
 				return ret;
+		}
+		public String getTimeInfoNextLine(){
+				String ret = "";
+				if(!isHourType()){
+						if(!isClockInOnly()){
+								ret += " "+getHours()+" "+getHour_code();
+						}
+				}
+				return ret;
+		}
+		public boolean hasNextLine(){
+				return !isHourType() && !isClockInOnly();
 		}
 		
 		public boolean isHourType(){
@@ -399,6 +432,8 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg = "";
+				// System.err.println(" begin "+begin_hour+" "+begin_minute);
+				// System.err.println(" end "+end_hour+" "+end_minute);				
 				double timeIn = begin_hour+begin_minute/60.;
 				double timeOut = end_hour+end_minute/60.;				
 				String qq = " select count(*) from time_blocks t "+
@@ -412,7 +447,6 @@ public class TimeBlock extends Block{
 						" and ? < t.end_hour+t.end_minute/60.) or ";
 						qq +=" (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
 								" and ? <= t.end_hour+t.end_minute/60.)) ";
-						
 						if(timeOut < timeIn){
 								msg = "Time IN is greater than time OUT";
 								return msg;
@@ -458,6 +492,7 @@ public class TimeBlock extends Block{
 								int cnt = rs.getInt(1);
 								if(cnt > 0){
 										msg = "Data entry conflict on "+date+" times";
+										errors += msg;
 								}
 						}
 				}
@@ -548,10 +583,14 @@ public class TimeBlock extends Block{
 						end_minute = 59;
 				}
 				else {
+						
 						hours = (end_hour+end_minute/60.) - (begin_hour+begin_minute/60.);
+						// System.err.println(" begin "+begin_hour+": "+begin_minute);
+						// System.err.println(" end "+end_hour+": "+end_minute);
 						if(hours < 0){
 								hours = 0.0;
 								msg = "Time in is greater than time out";
+								errors += msg;
 						}
 				}
 				return msg;
@@ -594,6 +633,9 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
+				if(!errors.equals("")){
+						return errors;
+				}
 				if(action_type.equals("")) action_type="Add";
 				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,?,null) ";
 				String qq2 = "select LAST_INSERT_ID()";
@@ -738,6 +780,9 @@ public class TimeBlock extends Block{
 				}
 				if(!msg.equals("")){
 						return msg;
+				}
+				if(!errors.equals("")){
+						return errors;
 				}
 				if(id.equals("")){
 						return " id not set ";

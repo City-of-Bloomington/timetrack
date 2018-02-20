@@ -20,9 +20,11 @@ public class Employee implements Serializable{
 
 		static Logger logger = LogManager.getLogger(Employee.class);
 		static final long serialVersionUID = 1150L;		
-    private String id="", inactive="", id_code="", employee_number="",
+    private String id="", inactive="",
+				id_code="", employee_number="", // both are unique
 				email="", role="",
-				username="", full_name="", first_name="", last_name="";
+				username="", // unique
+				full_name="", first_name="", last_name="";
 		// needed for saving
 		String department_id="", group_id="";
 		// normally this date is pay period start date
@@ -61,7 +63,7 @@ public class Employee implements Serializable{
 				setLast_name(val4);
 				setEmail(val5);
     }				
-		// for new record
+		// for new record (ldap)
     public Employee(String val,
 										String val2,
 										String val3,
@@ -126,7 +128,10 @@ public class Employee implements Serializable{
 		}
 		public boolean isActive(){
 				return inactive.equals("");
-		}		
+		}
+		public boolean hasNoEmployeeNumber(){
+				return employee_number.equals("");
+		}
 		public boolean hasGroup(){
 				getGroups();
 				return groups != null && groups.size() > 0;
@@ -179,16 +184,15 @@ public class Employee implements Serializable{
     }
     public void setUsername (String val){
 				if(val != null)
-						username = val;
+						username = val.trim();
     }
-
     public void setFirst_name (String val){
 				if(val != null)
-						first_name = val;
+						first_name = val.trim();
     }
     public void setLast_name (String val){
 				if(val != null)
-						last_name = val;
+						last_name = val.trim();
     }
 		// for auto complete
 		public void setFull_name(String val){
@@ -197,7 +201,7 @@ public class Employee implements Serializable{
 		
     public void setEmail(String val){
 				if(val != null)
-						email = val;
+						email = val.trim();
     }
     public void setRole (String val){
 				if(val != null && !val.equals("-1"))
@@ -318,6 +322,8 @@ public class Employee implements Serializable{
 				if(!id_code.equals("")){
 						ret += ", id code = "+id_code;
 				}
+				if(!email.equals(""))
+						ret += ", email ="+email;
 				return ret;
 		}
 		public boolean hasRole(String val){
@@ -505,6 +511,14 @@ public class Employee implements Serializable{
 				}
 				return msg;
 		}
+		
+		public boolean isSameEntity(Employee one){
+				return one.getUsername().equals(username) && 
+						one.getLast_name().equals(last_name) &&
+						one.getFirst_name().equals(first_name) &&
+						one.getId_code().equals(id_code) &&
+						one.getEmployee_number().equals(employee_number);
+		}
 		public String doSelect(){
 				//
 				Connection con = null;
@@ -642,6 +656,7 @@ public class Employee implements Serializable{
 						if(role.equals(""))
 								role = "Employee";
 						pstmt.setString(jj++, role);
+						if(id.equals("")) inactive = ""; // new record
 						if(inactive.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
 						else
@@ -687,6 +702,68 @@ public class Employee implements Serializable{
 				}
 				return msg;
 		}
+		public String doUpdateFromLdap(Employee ldapEmp){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = " update employees set username=?,first_name=?,last_name=?,id_code=?, email=?, employee_number=? where id=? ";
+				if(id.equals("")){
+						msg = "id is required";
+						return msg;
+				}
+				if(ldapEmp == null){
+						msg = "ldap employee info not provided";
+						return msg;
+				}
+				try{
+						// System.err.println("Old emp info "+getInfo()); // old data
+						// System.err.println("New emp inof "+ldapEmp.getInfo());
+						setUsername(ldapEmp.getUsername());
+						setFirst_name(ldapEmp.getFirst_name());
+						setLast_name(ldapEmp.getLast_name());
+						// in case not in ldap yet and entered mannually
+						// we ignore ldap code if not set yet
+						if(!ldapEmp.getId_code().equals("")) 
+								setId_code(ldapEmp.getId_code());
+						// same apply for employee number
+						if(!ldapEmp.getEmployee_number().equals(""))						
+								setEmployee_number(ldapEmp.getEmployee_number());
+						setEmail(ldapEmp.getEmail());
+						
+						con = Helper.getConnection();
+						if(con == null){
+								msg = "Could not connect to DB ";
+								return msg;
+						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, username);
+						if(first_name.equals(""))
+								pstmt.setNull(2, Types.VARCHAR);
+						else
+								pstmt.setString(2, first_name);
+						pstmt.setString(3, last_name);
+						if(id_code.equals(""))
+								pstmt.setNull(4, Types.VARCHAR);
+						else
+								pstmt.setString(4, id_code);
+						if(email.equals(""))
+								getEmail();
+						pstmt.setString(5, email);						
+
+						pstmt.setString(6, employee_number);
+						pstmt.setString(7, id);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}
+				return msg;
+		}		
 		/**
 		 * change the iactive status of the following users to inactive
 		 * this function is used by CurrentEmployeesHandler

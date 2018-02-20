@@ -181,6 +181,11 @@ public class TimeDetailsAction extends TopAction{
 				}
 				return currentPayPeriod;
 		}
+		public boolean isCurrentPayPeriod(){
+				getCurrentPayPeriod();
+				getPay_period_id();
+				return pay_period_id.equals(currentPayPeriod.getId());
+		}
 		public JobTask getJobTask(){
 				if(jobTask == null){
 						JobTaskList jl = new JobTaskList(getEmployee_id());

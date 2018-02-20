@@ -279,5 +279,8 @@ public class Block{
 		}
 		public boolean isClockOut(){
 				return !clock_out.equals("");
-		}		
+		}
+		public boolean isClockInOnly(){
+				return isClockIn() && !isClockOut();
+		}
 }

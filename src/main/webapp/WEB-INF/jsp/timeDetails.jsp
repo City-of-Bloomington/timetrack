@@ -5,18 +5,6 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
-<style>
-.hr_cell{
-	padding:0px 2px;
-	display:block;
-	text-decoration:none;
-}
-.b_cell{
-	border:1px dotted;
-	background-color: wheat;
-	color:red;
-}
-</style>
 <s:form action="timeDetails" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="source" value="source" />
@@ -30,15 +18,16 @@
     <s:actionmessage/>
 	</div>
 </s:elseif>
+<s:if test="!isUserCurrentEmployee()">
+	<h4>You are viewing/Entity <s:property value="document.employee" /></h4>
+</s:if>
 <table width="100%" border="0">
 	<tr>
 		<td align="left" class="th_text">
 			<b> <s:property value="payPeriod.monthNames" /> <s:property value="payPeriod.startYear" /></b>
 		</td>
 		<td align="right" class="td_text">
-			<s:if test="!isUserCurrentEmployee()"><font color="red"><b>Logged as </b></s:if>			
-				<b> Employee: </b><s:property value="document.employee" />
-				<s:if test="!isUserCurrentEmployee()"></font></s:if>							
+			<b> Employee: </b><s:property value="document.employee" />
 		</td>
 	</tr>
 	<s:if test="!isUserCurrentEmployee()">
@@ -54,7 +43,7 @@
 			<tr>
 				<td class="th_text">&nbsp;</td>
 				<td align="right" class="td_text">
-					<a href="<s:property value='#application.url' />switch.action?employee_id=<s:property value='user.id' />&action=Change">Back to Main User</a>
+					<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='user.id' />&action=Change">Back to Main User</a>
 				</td>
 			</tr>
 		</s:else>
@@ -63,19 +52,23 @@
 		<td align="left" class="td_text"><b>Pay Period</b>
 			<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="doRefresh()" />
 		</td>
-		<td align="right" class="td_text"><a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a></td>
+		<td align="right" class="td_text">
+			<s:if test="!isCurrentPayPeriod()">
+				<a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a>
+			</s:if>
+		</td>
 	</tr>
 </table>
 </s:form>
-<table width="100%" border="1">
+<table width="100%" border="1" class="tbl_wheat">
 	<tr>
 		<td width="14%" class="th_text">Mon</td>
 		<td width="14%" class="th_text">Tue</td>
 		<td width="14%" class="th_text">Wed</td>
 		<td width="14%" class="th_text">Thu</td>
 		<td width="14%" class="th_text">Fri</td>
-		<td width="14%" class="th_text">Sat</td>
-		<td class="th_text">Sun</td>
+		<td width="14%" class="th_text tbl_weekend">Sat</td>
+		<td class="th_text tbl_weekend">Sun</td>
 	</tr>
 	<tr>
 		<s:iterator value="document.dailyBlocks" var="block" >
@@ -86,8 +79,13 @@
 			</s:if>
 			<s:iterator value="#blockList" status="row" >
 				<s:if test="#row.first">
-					<td valign="top" style="height:100px;text-align:left" class="th_text">						
-						<a href="#" class="hr_cell" onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');">
+					<s:if test="#blockKey==5 || #blockKey==6 || #blockKey==12 || #blockKey==13">
+						<td valign="top" style="height:100px;text-align:left" class="th_text tbl_weekend">
+					</s:if>
+					<s:else>
+						<td valign="top" style="height:100px;text-align:left" class="th_text">
+					</s:else>
+					<a href="#" class="hr_cell" onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');">
 							<s:property value="dayInt" />
 						</a>
 				</s:if>
@@ -95,20 +93,16 @@
 					<table border="0" width="100%">			
 						<tr>
 							<td align="right" class="td_text b_cell">
-								<a href="<s:property value='#application.url' />timeBlock?id=<s:property value='id' />&action=Delete" class="hr_cell">(X)</a>
+								<a href="<s:property value='#application.url' />timeBlock?id=<s:property value='id' />&action=Delete" class="hr_cell"><img src="<s:property value='#application.url' />js/images/delete_img.png" /></a>
 							</td>
 						</tr>
 						<tr>
 							<td align="left" class="td_text">
 								<a href="#" class="hr_cell" onclick="return popwit('<s:property value='#application.url' />timeBlock?id=<s:property value='id' />','timeBlock');">
-									<s:if test="isHourType()">
-										<s:property value="hours" />
+									<s:property value="timeInfo" />									
+									<s:if test="hasNextLine()">
+										<br /><s:property value="timeInfoNextLine" />
 									</s:if>
-									<s:else>
-										<s:property value="time_in" /> - <s:property value="time_out" /><br />								
-										<s:property value="hours" />
-									</s:else>
-									<s:property value="hour_code" />
 								</a>
 							</td>
 						</tr>
@@ -126,6 +120,14 @@
 <s:set var="daily" value="document.daily" />
 <s:set var="week1Total" value="document.week1Total" />
 <s:set var="week2Total" value="document.week2Total" />
+<s:if test="document.isUnionned()">
+	<s:set var="unionned" value="'true'" />
+	<s:set var="week1Flsa" value="document.week1_flsa" />
+	<s:set var="week2Flsa" value="document.week2_flsa" />	
+</s:if>
+<s:else>
+	<s:set var="unionned" value="'false'" />
+</s:else>
 <s:set var="payPeriodTotal" value="document.payPeriodTotal" />
 <%@  include file="dailySummary.jsp" %>
 
@@ -147,14 +149,14 @@
 			<input type="hidden" name="source" value="timeDetails" />			
 			<s:hidden name="document_id" value="%{document.id}" />
 			<s:hidden name="workflow_id" value="%{document.lastWorkflow.next_workflow_id}" />
-			<p style="text-align:center">
-				<s:submit name="action" type="button" value="Submit for Approval" />
+			<p style="text-align:left">
+				<s:submit name="action" type="button" value="Submit for Approval" cssClass="button_link" />
 			</p>
 		</s:form>
 	</s:if>
 </s:if>
 <s:if test="!document.isSubmitted()">
-	<a href="#" onclick="return popwit('<s:property value='#application.url' />timeNote?document_id=<s:property value='%{document.id}' />','Notes');">Add Notes</a>
+	<a href="#" onclick="return popwit('<s:property value='#application.url' />timeNote?document_id=<s:property value='%{document.id}' />','Notes');"><b>Add Notes</b></a>
 </s:if>
 <s:if test="document.hasAllAccruals()">
 	<s:set var="allAccruals" value="document.allAccruals" />
@@ -172,7 +174,7 @@
 </s:if>
 <s:if test="document.hasTimeActions()">
 	<s:set var="timeActions" value="document.timeActions" />
-	<s:set var="timeActionsTitle" value="'Time Action History'" />
+	<s:set var="timeActionsTitle" value="'Action History'" />
 	<%@  include file="timeActions.jsp" %>
 </s:if>
 <s:if test="document.hasLastWorkflow()">
@@ -180,6 +182,7 @@
 		<%@  include file="nextTimeAction.jsp" %>
 	</s:if>
 </s:if>
+
 <%@ include file="footer.jsp" %>
 
 

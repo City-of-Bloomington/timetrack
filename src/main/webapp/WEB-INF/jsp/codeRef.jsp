@@ -34,36 +34,34 @@
 			You must hit 'Save' button to save data.
 		</s:else>
 	</p>
-	<div class="tt-row-container">
-		<s:if test="codeRef.id != ''">
-			<dl class="fn1-output-field">
-				<dt>ID </dt>
-				<dd><s:property value="codeRef.id" /> </dd>
-			</dl>
-		</s:if>		
-		<dl class="fn1-output-field">
-			<dt>Code </dt>
-			<dd><s:select name="codeRef.code_id" value="%{codeRef.code_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Hour Code" /> </dd>
+	<s:if test="codeRef.id != ''">
+		<dl>
+			<dt>ID </dt>
+			<dd><s:property value="codeRef.id" /> </dd>
 		</dl>
-		<dl class="fn1-output-field">
-			<dt>NW Code </dt>
-			<dd><s:textfield name="codeRef.nw_code" value="%{codeRef.nw_code}" size="20" maxlength="20" requiredLabel="true" required="true" />* </dd>
-		</dl>		
-		<dl class="fn1-output-field">
-			<dt>GL String </dt>
-			<dd><s:textfield name="codeRef.gl_value" value="%{codeRef.gl_value}" size="20" maxlength="20" /> </dd>
-		</dl>
-		<dl class="fn1-output-field">
-			<dt>PTO Ratio </dt>
-			<dd><s:textfield name="codeRef.pto_ratio" value="%{codeRef.pto_ratio}" size="20" maxlength="20" />(for HAND Dept) </dd>
-		</dl>
-		<s:if test="codeRef.id == ''">
-			<s:submit name="action" codeRef="button" value="Save" class="fn1-btn"/></dd>
-		</s:if>
-		<s:else>
-			<s:submit name="action" codeRef="button" value="Save Changes" class="fn1-btn"/>
-		</s:else>
-	</div>
+	</s:if>		
+	<dl>
+		<dt>Code </dt>
+		<dd><s:select name="codeRef.code_id" value="%{codeRef.code_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Hour Code" /> </dd>
+	</dl>
+	<dl>
+		<dt>NW Code </dt>
+		<dd><s:textfield name="codeRef.nw_code" value="%{codeRef.nw_code}" size="20" maxlength="20" requiredLabel="true" required="true" />* </dd>
+	</dl>		
+	<dl>
+		<dt>GL String </dt>
+		<dd><s:textfield name="codeRef.gl_value" value="%{codeRef.gl_value}" size="20" maxlength="20" /> </dd>
+	</dl>
+	<dl>
+		<dt>PTO Ratio </dt>
+		<dd><s:textfield name="codeRef.pto_ratio" value="%{codeRef.pto_ratio}" size="20" maxlength="20" />(for HAND Dept) </dd>
+	</dl>
+	<s:if test="codeRef.id == ''">
+		<s:submit name="action" codeRef="button" value="Save" class="fn1-btn"/></dd>
+	</s:if>
+	<s:else>
+		<s:submit name="action" codeRef="button" value="Save Changes" class="fn1-btn"/>
+	</s:else>
 </s:form>
 <s:if test="codeRefs != null">
 	<s:set var="codeRefs" value="codeRefs" />

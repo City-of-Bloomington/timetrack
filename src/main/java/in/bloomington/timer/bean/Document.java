@@ -28,7 +28,7 @@ public class Document{
 		DecimalFormat dfn = new DecimalFormat("###.00");
     private String id="", employee_id="", pay_period_id="",
 				initiated="",initiated_by="", selected_job_id="";
-		double week1Total = 0, week2Total = 0;
+		double week1Total = 0, week2Total = 0, week1_flsa=0, week2_flsa=0;
 		PayPeriod payPeriod = null;
 		Employee employee = null;
 		Employee initiater = null;
@@ -39,6 +39,7 @@ public class Document{
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
 		JobTask jobTask = null;
+		SalaryGroup salaryGroup = null;
 		Map<String, List<Double>> allAccruals = new TreeMap<>();
 		Map<Integer, Double> hourCodeTotals = null;
 		Map<Integer, Double> usedAccrualTotals = null;
@@ -262,7 +263,12 @@ public class Document{
 		public boolean canBeProcessed(){
 				return isApproved() && !isProcessed();
 		}
-				
+		public String getWeek1_flsa(){
+				return ""+dfn.format(week1_flsa);
+		}
+		public String getWeek2_flsa(){
+				return ""+dfn.format(week2_flsa);
+		}						
 		public boolean hasDaily(){
 				getDaily();
 				return daily != null && daily.size() > 0;
@@ -285,6 +291,8 @@ public class Document{
 										if(ones2 != null && ones2.size() > 0){
 												timeBlocks = ones2;
 										}
+										week1_flsa = tl.getWeek1_flsa();
+										week2_flsa = tl.getWeek2_flsa();										
 								}
 						}
 						if(includeEmptyBlocks){
@@ -359,7 +367,40 @@ public class Document{
 						}
 				}
 				return jobTask;
-		}				
+		}
+		public SalaryGroup getSalaryGroup(){
+				if(salaryGroup == null){
+						getJobTask();
+						if(jobTask != null){
+								salaryGroup = jobTask.getSalaryGroup();
+						}
+				}
+				return salaryGroup;
+		}
+		public boolean isExempt(){
+				if(salaryGroup == null)
+						getSalaryGroup();
+				if(salaryGroup != null){
+						return salaryGroup.isExempt();
+				}
+				return false;
+		}
+		public boolean isTemporary(){
+				if(salaryGroup == null)
+						getSalaryGroup();
+				if(salaryGroup != null){
+						return salaryGroup.isTemporary();
+				}
+				return false;
+		}
+		public boolean isUnionned(){
+				if(salaryGroup == null)
+						getSalaryGroup();
+				if(salaryGroup != null){
+						return salaryGroup.isUnionned();
+				}
+				return false;
+		}		
 		public List<EmployeeAccrual> getEmpAccruals(){
 
 				if(employeeAccruals == null){

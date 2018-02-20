@@ -4,7 +4,7 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
-<table class="fn1-table">
+<table width="95%" border="1">
 	<caption><s:property value="#hourcodesTitle" /></caption>
 	<thead>
 		<tr>

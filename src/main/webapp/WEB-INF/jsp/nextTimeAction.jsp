@@ -4,5 +4,5 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
-<p>Next waiting action: <s:property value="document.LastWorkflow.nextNode" /></p>
+<p><b>Next waiting action:</b> <s:property value="document.LastWorkflow.nextNode" /></p>
 

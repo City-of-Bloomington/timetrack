@@ -44,17 +44,6 @@
       <servlet-name>GroupService</servlet-name>
       <servlet-class>in.bloomington.timer.service.GroupService</servlet-class>
     </servlet>
-		<!--
-	<servlet>
-    <servlet-name>log4j-init</servlet-name>
-    <servlet-class>in.bloomington.timer.util.Log4jInit</servlet-class>
-    <init-param>
-			<param-name>log4j-init-file</param-name>
-			<param-value>WEB-INF/classes/log4j.lcf</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-	</servlet>
-		-->
   <servlet-mapping>
     <servlet-name>Logout</servlet-name>
     <url-pattern>/Logout</url-pattern>
@@ -78,32 +67,10 @@
 	<filter>
     <filter-name>CAS Authentication Filter</filter-name>
     <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
-		<!--
-				This is now part of timetrack.xml file				
-    <init-param>
-      <param-name>casServerLoginUrl</param-name>
-			<param-value>cas login link</param-value>
-    </init-param>
-    <init-param>
-      <param-name>serverName</param-name>
-      <param-value>your server or ip address</param-value>  
-    </init-param>
-		-->
   </filter>
   <filter>
     <filter-name>CAS Validation Filter</filter-name>
     <filter-class>org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class>
-		<!--
-				this is now part of timetrack.xml file
-    <init-param>
-      <param-name>casServerUrlPrefix</param-name>
-			<param-value>cas link</param-value>
-    </init-param>
-    <init-param>
-      <param-name>serverName</param-name>
-      <param-value>your server or ip address</param-value> 
-    </init-param>
-		-->
     <init-param>
       <param-name>artifactParameterName</param-name>
       <param-value>ticket</param-value>
@@ -136,7 +103,34 @@
   <filter-mapping> 
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name> 
     <url-pattern>/Login</url-pattern> 
-  </filter-mapping>	
+  </filter-mapping>
+	<listener>
+    <listener-class>
+      org.quartz.ee.servlet.QuartzInitializerListener
+    </listener-class>
+  </listener>
+	<!--
+  <listener>
+    <listener-class>
+			in.bloomington.timer.NotificationScheduler
+    </listener-class>
+  </listener>
+  <listener>
+    <listener-class>
+			in.bloomington.timer.BatchSubmitScheduler
+    </listener-class>
+  </listener>
+  <listener>
+    <listener-class>
+			in.bloomington.timer.AccrualScheduler
+    </listener-class>
+  </listener>
+  <listener>
+    <listener-class>
+			in.bloomington.timer.EmployeesUpdateScheduler
+    </listener-class>
+  </listener>
+	-->
 	<session-config>
 		<!-- added to get rid of adding jsessionid by CAS -->
     <tracking-mode>COOKIE</tracking-mode>

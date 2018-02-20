@@ -95,7 +95,14 @@
 			<result name="input">/WEB-INF/jsp/employeesSchedular.jsp</result>		
 			<result name="error">/WEB-INF/jsp/employeesSchedular.jsp</result>
 			<result name="success">/WEB-INF/jsp/employeesSchedular.jsp</result>
-		</action>		
+		</action>
+		<action name="empsUpdateSchedule" 
+						class="in.bloomington.timer.EmployeesUpdateScheduleAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>		
+			<result name="error">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
+			<result name="success">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
+		</action>				
 		<action name="notificationSchedule" 
 						class="in.bloomington.timer.NotificationScheduleAction" 
 						method="execute">

@@ -15,21 +15,68 @@
   <link rel="SHORTCUT ICON" href="https://apps.bloomington.in.gov/favicon.ico" />
   <link rel="stylesheet" href="<s:property value='#application.url' />js/jquery-ui.min-1.12.1.css" type="text/css" media="all" />
   <link rel="stylesheet" href="<s:property value='#application.url' />js/jquery-ui.theme-1.12.1.css" type="text/css" media="all" />	
+	<!--
   <link rel="stylesheet" href="<s:property value='#application.url' />css/open-sans/open-sans.css" type="text/css" />
-  <link rel="stylesheet" href="//bloomington.in.gov/static/fn1-releases/dev/css/default.css" type="text/css" />
+  <link rel="stylesheet" href="<s:property value='#application.url' />css/default.css" type="text/css" />
+	-->	
+  <link rel="stylesheet" href="//bloomington.in.gov/static/fn1-releases/dev/css/default.css" type="text/css" />	
   <link rel="stylesheet" href="//bloomington.in.gov/static/fn1-releases/dev/css/kirkwood.css" type="text/css" />
+	<!-- 
+  <link rel="stylesheet" href="<s:property value='#application.url' />css/kirkwood.css" type="text/css" />
   <link rel="stylesheet" href="<s:property value='#application.url' />css/screen.css" type="text/css" />
   <link rel="stylesheet" href="<s:property value='#application.url' />css/ol.css" type="text/css" />
   <link rel="stylesheet" href="<s:property value='#application.url' />css/ol3-popup.css" type="text/css" />	
-
+	-->
 	<style>
+	.tbl_wheat{
+		background-color:#FFFFF0;
+		color:black;
+	}
+	.tbl_weekend{
+		background-color:lightgray;
+		color:black;
+	}	
+	.tbl_gray{
+		background-color:#E9E9E9;
+		color:black;
+	}	
 	.td_text {
 		font-size: x-small;
+		padding: 1px 5px 1px 5px;
 		}
 	.th_text {
 		font-size: small;
 		font-weight: bold;
+		padding: 1px 5px 1px 5px;
 		}
+	.th_text2 {
+		display: block;
+		height: 100%;		
+		width: 100%;
+		}
+	.cap_left {
+		text-align:left;
+		font-weight:bold;
+		}
+	.hr_cell{
+		padding:1px 5px 1px 5px;
+		display:block;
+		text-decoration:none;
+	}
+	.b_cell{
+		border:1px dotted;
+		background-color: brown;
+		color:white;
+	}
+	.button_link{
+		background-color: brown;
+		color:white;
+	}
+	.tbl_wide{
+		width:95%;
+		border:1px solid blue;
+	}
+	
 	</style>
   <title>Time Track</title>
   <script type="text/javascript">
@@ -72,10 +119,10 @@
 						<a href="<s:property value='#application.url'/>dataEntry.action">Data Entry</a>								
 					</s:if>				
 					<s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.canApprove())">								
-					<a href="<s:property value='#application.url'/>approve.action">Approvals</a>								
+					<a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>								
 					</s:if>
 					<s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.canProcess())">								
-					<a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Process</a>								
+					<a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>								
 					</s:if>
 					<a href="<s:property value='#application.url'/>settings.action">Settings</a>
 				</s:if>
@@ -83,4 +130,4 @@
     </div>
   </header>
   <main>
-    <div class="fn1-main-container">
+    <div class="fn1-main-container tbl_gray">

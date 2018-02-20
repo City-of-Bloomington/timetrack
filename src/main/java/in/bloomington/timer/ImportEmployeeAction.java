@@ -24,7 +24,8 @@ public class ImportEmployeeAction extends TopAction{
 		List<Employee> employees = null;
 		String department_id = "", dept_name="", group_name="", effective_date="";
 		String importEmployeesTitle = "Most recent imports";
-		List<Type> departments = null;
+		Department department = null;
+		List<Department> departments = null;
 		List<Group> groups = null;
 		public String execute(){
 				String ret = SUCCESS;
@@ -40,13 +41,17 @@ public class ImportEmployeeAction extends TopAction{
 						}	
 				}
 				if(action.equals("Import")){
-						// do something here
-						if(dept_name.equals("")){
-								back = "Department name is required";
+						if(department_id.equals("") && dept_name.equals("")){
+								back = "Department is required";
 						}
 						else{
+								getDepartment();								
 								EmpList el = new EmpList(envBean);
-								el.setDept_name(dept_name);
+								if(department != null){
+										el.setDept_name(department.getLdap_name());
+								}
+								else
+										el.setDept_name(dept_name);
 								if(!group_name.equals("")){
 										el.setGroup_name(group_name);
 								}
@@ -59,11 +64,13 @@ public class ImportEmployeeAction extends TopAction{
 								}
 								if(employees != null){
 										for(Employee one:employees){
+												/*
 												String str = one.doSave();
 												if(!str.equals("")){
 														System.err.println(" error "+str);
 														back += str;
 												}
+												*/
 										}
 										if(back.equals("")){
 												addActionMessage("Imported successfully");
@@ -74,16 +81,7 @@ public class ImportEmployeeAction extends TopAction{
 								addActionError(back);
 								return ret;
 						}
-						if(!back.equals("")){
-								addActionError(back);
-						}
-						else{
-
-						}
 				}				
-				else{		
-
-				}
 				return ret;
 		}
 
@@ -106,6 +104,16 @@ public class ImportEmployeeAction extends TopAction{
 		public void setDept_name(String val){
 				if(val != null && !val.equals(""))		
 						dept_name = val;
+		}
+		public Department getDepartment(){
+				if(department == null && !department_id.equals("")){
+						Department dp = new Department(department_id);
+						String back = dp.doSelect();
+						if(back.equals("")){
+								department = dp;
+						}
+				}
+				return department;
 		}
 		public String getDepartment_id(){
 				return department_id;
@@ -133,14 +141,16 @@ public class ImportEmployeeAction extends TopAction{
 				getGroups();
 				return groups != null && groups.size() > 0;
 		}
-		public List<Type> getDepartments(){
-				TypeList tl = new TypeList("departments");
-				tl.setActiveOnly();
-				String back = tl.find();
-				if(back.equals("")){
-						List<Type> ones = tl.getTypes();
-						if(ones != null && ones.size() > 0){
+		public List<Department> getDepartments(){
+				if(departments == null){
+						DepartmentList tl = new DepartmentList();
+						tl.setActiveOnly();
+						String back = tl.find();
+						if(back.equals("")){
+								List<Department> ones = tl.getDepartments();
+								if(ones != null && ones.size() > 0){
 								departments = ones;
+								}
 						}
 				}
 				return departments;

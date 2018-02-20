@@ -1,11 +1,5 @@
-<!--
- * @copyright Copyright (C) 2014-2015 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-<table width="60%" border="1">
-	<caption><s:property value="#weeklyTitle" /></caption>
+<table width="60%" border="1" class="tbl_gray">
+	<caption class="cap_left"><s:property value="#weeklyTitle" /></caption>
 	<tr>
 		<td class="th_text">Hour Code </td>
 		<td class="th_text">Total</td>

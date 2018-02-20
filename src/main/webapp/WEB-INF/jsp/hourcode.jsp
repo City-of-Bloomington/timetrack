@@ -25,40 +25,41 @@
       <s:actionmessage/>
 		</div>
   </s:elseif>
-	<s:if test="hourcode.id != ''">
-		<dl class="fn1-output-field">
-			<dt>ID</dt>
-			<dd><s:property value="%{hourcode.id}" /></dd>
-		</dl>
-	</s:if>
-	<dl class="fn1-output-field">
+	<div class="tt-row-container">
+		<s:if test="hourcode.id != ''">
+			<dl class="fn1-output-field">	
+				<dt>ID</dt>
+				<dd><s:property value="%{hourcode.id}" /></dd>
+			</dl>
+		</s:if>
+		<dl class="fn1-output-field">	
 		<dt>Name</dt>
 		<dd><s:textfield name="hourcode.name" value="%{hourcode.name}" required="true" size="20" maxlength="20" /></dd>
 	</dl>
-	<dl class="fn1-output-field">
+	<dl class="fn1-output-field">		
 		<dt>Description</dt>
 		<dd><s:textfield name="hourcode.description" value="%{hourcode.description}" size="30" maxlength="80" /></dd>
 	</dl>	
-	<dl class="fn1-output-field">
+	<dl class="fn1-output-field">		
 		<dt>Recording Method </dt>
 		<dd><s:radio name="hourcode.record_method" value="%{hourcode.record_method}" list="#{'Time':'Time','Hours':'Hours'}" /> </dd>
 	</dl>
-	<dl class="fn1-output-field">
+	<dl class="fn1-output-field">		
 		<dt>Related Accrual </dt>
 		<dd><s:select name="hourcode.accrual_id" value="%{hourcode.accrual_id}" list="accruals" listKey="id" listValue="name" headerKey="-1" headerValue="Pick related accrual" /> </dd>
 	</dl>
-	<dl class="fn1-output-field">
+	<dl class="fn1-output-field">		
 		<dt>Count as regular pay?</dt>
 		<dd><s:checkbox name="hourcode.count_as_regular_pay" value="%{hourcode.count_as_regular_pay}" /> Yes
 		</dd>
 	</dl>
-	<dl class="fn1-output-field">
+	<dl class="fn1-output-field">		
 		<dt>Default Regular?</dt>
 		<dd><s:radio name="hourcode.reg_default" value="%{hourcode.reg_default}" list="#{'0':'Yes','1':'No'}"/> (each salary group need only one default regular)
 		</dd>
 	</dl>	
 	<s:if test="hourcode.id != ''">
-		<dl class="fn1-output-field">
+		<dl class="fn1-output-field">		
 			<dt>Inactive ?</dt>
 			<dd><s:checkbox name="hourcode.inactive" value="%{hourcode.inactive}" /> Yes (check to dissable)
 			</dd>

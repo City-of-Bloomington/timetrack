@@ -92,8 +92,9 @@ public class Type implements java.io.Serializable{
 						name = val.trim();
     }
     public void setDescription(String val){
-				if(val != null)
+				if(val != null){
 						description = val.trim();
+				}
     }		
     public void setInactive(boolean val){
 				if(val)

@@ -5,7 +5,7 @@
  *
 	-->
 <table class="fn1-table">
-	<caption><s:property value="#accrualWarningsTitle" /></caption>
+	<caption class="cap_left"><s:property value="#accrualWarningsTitle" /></caption>
 	<thead>
 		<tr>
 			<th align="center"><b>ID</b></th>

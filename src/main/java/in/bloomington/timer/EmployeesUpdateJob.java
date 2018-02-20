@@ -20,15 +20,13 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// not needed anymore
-
-public class CurrentEmployeesJob implements Job{
+public class EmployeesUpdateJob implements Job{
 
     boolean debug = true;
 		static final long serialVersionUID = 55L;		
-		static Logger logger = LogManager.getLogger(CurrentEmployeesJob.class);
+		static Logger logger = LogManager.getLogger(EmployeesUpdateJob.class);
 		EnvBean envBean = null;
-		public CurrentEmployeesJob(){
+		public EmployeesUpdateJob(){
 
 		}
 		public void execute(JobExecutionContext context)
@@ -56,7 +54,7 @@ public class CurrentEmployeesJob implements Job{
 		public void doDestroy() {
 		}	    
     public void doWork(){
-				HandleCurrentEmployees handle = new HandleCurrentEmployees(envBean);
+				HandleEmployeesUpdate handle = new HandleEmployeesUpdate(envBean);
 				String msg = handle.process();
 				if(!msg.equals(""))
 						logger.error(msg);

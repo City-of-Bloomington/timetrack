@@ -4,7 +4,7 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
-<table class="fn1-table">
+<table class="tbl_gray">
 	<caption><s:property value="#empAccrualsTitle" /></caption>
 	<thead>
 		<tr>

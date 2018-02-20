@@ -5,7 +5,7 @@
  *
 	-->
 <table class="fn1-table">
-	<caption><s:property value="#timeNotesTitle" /></caption>
+	<caption class="cap_left"><s:property value="#timeNotesTitle" /></caption>
 	<thead>
 		<tr>
 			<th align="center"><b>Reported By</b></th>			

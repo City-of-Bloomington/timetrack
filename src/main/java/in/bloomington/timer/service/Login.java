@@ -63,7 +63,7 @@ public class Login extends HttpServlet{
 						if (attributeNames.hasNext()) {
 								for (; attributeNames.hasNext(); ) {
                     String attributeName = (String) attributeNames.next();
-                    System.err.println(" name "+attributeName);
+                    // System.err.println(" name "+attributeName);
                     final Object attributeValue = attributes.get(attributeName);
 										if (attributeValue instanceof List) {
                         final List vals = (List) attributeValue;

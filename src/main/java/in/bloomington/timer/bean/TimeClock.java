@@ -32,8 +32,6 @@ public class TimeClock{
 		}
 		public TimeClock(String val, String val2){
 				//
-				// initialize
-				//
 				setId_code(val);
 				setTime(val2);
     }
@@ -224,7 +222,6 @@ public class TimeClock{
 				//
 				// we need the employee job
 				getJobTasks();
-				System.err.println(" job "+selectedJob.getId());
 				//				
 				if(defaultRegularCode != null){
 						hour_code_id = defaultRegularCode.getId();
@@ -265,6 +262,7 @@ public class TimeClock{
 						tbl.setJob_id(selectedJob.getId());
 						tbl.hasClockInOnly();
 						tbl.setActiveOnly();
+						tbl.setDate(date); // for today only
 						msg = tbl.find();
 						if(msg.equals("")){
 								List<TimeBlock> tbs = tbl.getTimeBlocks();

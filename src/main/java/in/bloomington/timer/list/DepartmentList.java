@@ -94,7 +94,7 @@ public class DepartmentList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				Connection con = Helper.getConnection();
-				String qq = "select t.id,t.name,t.description,t.ref_id,t.inactive from departments t ";
+				String qq = "select t.id,t.name,t.description,t.ref_id,t.ldap_name,t.inactive from departments t ";
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -107,7 +107,7 @@ public class DepartmentList{
 				try{
 						if(!name.equals("")){
 								if(!qw.equals("")) qw += " and ";
-								qw += " t.name like ? ";
+								qw += " (t.name like ? or t.ldap_name like ?)";
 						}
 						if(active_only){
 								if(!qw.equals("")) qw += " and ";
@@ -127,6 +127,7 @@ public class DepartmentList{
 						pstmt = con.prepareStatement(qq);
 						if(!name.equals("")){
 								pstmt.setString(1,"%"+name+"%");
+								pstmt.setString(2,"%"+name+"%");								
 						}						
 						rs = pstmt.executeQuery();
 						if(departments == null)
@@ -137,7 +138,8 @@ public class DepartmentList{
 																	 rs.getString(2),
 																	 rs.getString(3),
 																	 rs.getString(4),
-																	 rs.getString(5)!=null);
+																	 rs.getString(5),
+																	 rs.getString(6)!=null);
 								if(!departments.contains(one))
 										departments.add(one);
 						}

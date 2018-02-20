@@ -18,10 +18,15 @@
   <link rel="stylesheet" href="<s:property value='#application.url' />css/open-sans/open-sans.css" type="text/css" />
   <link rel="stylesheet" href="//bloomington.in.gov/static/fn1-releases/dev/css/default.css" type="text/css" />
   <link rel="stylesheet" href="//bloomington.in.gov/static/fn1-releases/dev/css/kirkwood.css" type="text/css" />
-  <link rel="stylesheet" href="<s:property value='#application.url' />css/screen.css" type="text/css" />
-  <link rel="stylesheet" href="<s:property value='#application.url' />css/ol.css" type="text/css" />
-  <link rel="stylesheet" href="<s:property value='#application.url' />css/ol3-popup.css" type="text/css" />	
 	<style>
+	.tbl_wheat{
+		background-color:#fffff0;
+		color:black;
+	}
+	.tbl_gray{
+		background-color:#E9E9E9;
+		color:black;
+	}		
 	.td_text {
 		font-size: x-small;
 	}
@@ -29,13 +34,16 @@
 		font-size: small;
 		font-weight: bold;
 	}
+	.button_link{
+		background-color: brown;
+		color:white;
+	}		
 	</style>
   <title>Time Track</title>
   <script type="text/javascript">
     var APPLICATION_URL = '<s:property value='#application.url' />';
   </script>
 </head>
-<body class="fn1-body">
+<body class="tbl_gray">
   <main>
-    <div class="fn1-main-container">
-			<b>Time Track</b><br />
+

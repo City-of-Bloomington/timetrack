@@ -33,7 +33,8 @@
 		<s:else>
 			You must hit 'Save' button to save data.<br />
 		</s:else>
-		Note: Reference ID is New World app id for the specified department
+		Note: Reference ID is New World app ID for the specified department <br />
+		Ldap/AD name is the department name in ldap, needed for data import. <br />
 	</p>
 	<div class="tt-row-container">
 		<s:if test="department.id != ''">
@@ -47,12 +48,16 @@
 			<dd><s:textfield name="department.name" value="%{department.name}" size="30" maxlength="70" requiredLabel="true" required="true" />* </dd>
 		</dl>
 		<dl class="fn1-output-field">
+			<dt>Ldap/AD Name </dt>
+			<dd><s:textfield name="department.ldap_name" value="%{department.ldap_name}" size="30" maxlength="70" requiredLabel="true" required="true" />* </dd>
+		</dl>		
+		<dl class="fn1-output-field">
 			<dt>Description </dt>
 			<dd><s:textarea name="department.description" value="%{department.description}" rows="5" maxlength="50" /> </dd>
 		</dl>
 		<dl class="fn1-output-field">
 			<dt>Referance ID(s) </dt>
-			<dd><s:textfield name="department.ref_id" value="%{department.ref_id}" size="30" maxlength="30" />(for multiple ID's, use comma in between) </dd>
+			<dd><s:textfield name="department.ref_id" value="%{department.ref_id}" size="6" maxlength="10" />(for multiple ID's, use comma in between) </dd>
 		</dl>		
 		<dl class="fn1-output-field">
 			<dt>Inactive?</dt>
@@ -63,6 +68,7 @@
 		</s:if>
 		<s:else>
 			<s:submit name="action" type="button" value="Save Changes" class="fn1-btn"/>
+			<a href="<s:property value='#application.url'/>department.action" class="fn1-btn">New Department</a></li>				
 		</s:else>
 	</div>
 </s:form>

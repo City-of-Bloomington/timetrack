@@ -1,5 +1,6 @@
-<table width="100%" border="0">
-	<caption><s:property value="#timeActionsTitle" /></caption>
+
+<table width="100%" border="0" class="tbl_gray">
+	<caption class="cap_left"><s:property value="#timeActionsTitle" /></caption>	
 	<tr>
 		<td align="left" class="th_text">Date/time</td>
 		<td align="left" class="th_text">By</td>

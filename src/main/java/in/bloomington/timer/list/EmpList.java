@@ -182,12 +182,17 @@ public class EmpList extends CommonInc{
 								Attribute dn = atts.get("distinguishedName");
 								if (dn != null){
 										str = dn.get().toString();
-										// System.err.println(" dn "+str);
+										/*
+										if(str.indexOf("Util") > -1){
+										    System.err.println("dn "+str);
+										}
+										*/
 										if(!dept_name.equals("")){
 												if(str.indexOf(dept_name) == -1) continue;
 												if(!group_name.equals(""))
 														if(str.indexOf(group_name) == -1) continue;
 										}
+										// System.err.println("dn "+str);										
 										String strArr[] = setDn(str);
 										String deptId = "", grpId="";
 										if(!strArr[0].equals("")){
@@ -281,6 +286,7 @@ public class EmpList extends CommonInc{
 								if(!emp.getUsername().startsWith("*")){
 										emps.add(emp);
 								}
+								System.err.println(" emp "+emp.getInfo());
 						}
 				}
 				catch(Exception ex){
@@ -303,9 +309,10 @@ public class EmpList extends CommonInc{
 												if(val2.indexOf("City Hall") > 0){
 														dept = strArr[0];
 												}
-												else{
-														grp = strArr[0];
-														dept = strArr[1];														
+												else if(val2.indexOf("Utilities") > 0){
+														dept = strArr[0];
+														// strArr[1]; // utilities
+														// strArr[2] // Departments
 												}
 										}
 										else if(strArr.length == 4){
@@ -315,9 +322,24 @@ public class EmpList extends CommonInc{
 												}
 												else{
 														// example maintenance,Dillman Plant,Utilities
-														sub_grp = strArr[0];
-														grp = strArr[1];
-														dept = strArr[2];
+														if(strArr[3].indexOf("Utilities")>-1){
+																sub_grp = strArr[0];
+																grp = strArr[1];
+																dept = strArr[2]; // ignore Uitilities
+														}
+														else if(strArr[2].indexOf("Utilities")>-1){
+																grp = strArr[0];
+																dept = strArr[1];
+																// dept = strArr[2]; // ignore Uitilities
+														}
+														else if(strArr[1].indexOf("Utilities")> -1){
+																dept = strArr[0];
+														}
+														else{
+																sub_grp = strArr[0];
+																grp = strArr[1];
+																dept = strArr[2];
+														}
 												}
 										}
 										if(!dept.equals("")){
@@ -340,7 +362,7 @@ public class EmpList extends CommonInc{
 						}catch(Exception ex){
 								System.err.println(ex);
 						}
-						// System.err.println(" dept: "+dept+" group: "+grp);
+						System.err.println(" dept: "+dept+" group: "+grp);
 				}
 				return retArr;
 		}

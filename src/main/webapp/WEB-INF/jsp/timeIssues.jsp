@@ -4,8 +4,8 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
-<table class="fn1-table">
-	<caption><s:property value="#timeIssuesTitle" /></caption>
+<table class="fn1-table tbl_gray">
+	<caption class="cap_left"><s:property value="#timeIssuesTitle" /></caption>
 	<thead>
 		<tr>
 			<th align="center"><b>ID</b></th>

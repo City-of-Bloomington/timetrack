@@ -27,26 +27,27 @@ public class TimeClockAction extends TopAction{
 		TimeClock timeClock = null;
 		String timeClocksTitle = "Time Clock Data";
 		String document_id="", date="";
+		String ip="";		
 		List<TimeBlock> timeBlocks = null;
 		//
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
 				prepareIps();
-				if(!action.equals("")){
-						String ip="";
-						try{
-								HttpServletRequest req = ServletActionContext.getRequest();
-								ip = req.getRemoteAddr();
-								if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
-										InetAddress inetAddress = InetAddress.getLocalHost();
-										String ipAddress = inetAddress.getHostAddress();
-										ip = ipAddress;
-								}
-								// System.err.println(" ip "+ip);
-						}catch(Exception ex){
-								System.err.println(ex);
+
+				try{
+						HttpServletRequest req = ServletActionContext.getRequest();
+						ip = req.getRemoteAddr();
+						if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+								InetAddress inetAddress = InetAddress.getLocalHost();
+								String ipAddress = inetAddress.getHostAddress();
+								ip = ipAddress;
 						}
+						// System.err.println(" ip "+ip);
+				}catch(Exception ex){
+						System.err.println(ex);
+				}
+				if(!action.equals("")){
 						if(ipSet != null){
 								if(ipSet.contains(ip)){
 										back = timeClock.process();
@@ -134,7 +135,15 @@ public class TimeClockAction extends TopAction{
 						}
 				}
 		}
-		//
+		public String getIpaddr(){
+				return ip;
+		}
+		public boolean isAccepted(){
+				if(ipSet != null){
+						return ipSet.contains(ip);
+				}
+				return false;
+		}
 
 }
 

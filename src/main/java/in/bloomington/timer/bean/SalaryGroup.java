@@ -82,6 +82,18 @@ public class SalaryGroup{
 		}
 		public boolean isActive(){
 				return inactive.equals("");
+		}
+		public boolean isExempt(){
+				return name.equals("Exempt");
+		}
+		public boolean isNonExempt(){
+				return name.equals("Non-Exempt");
+		}		
+		public boolean isTemporary(){
+				return name.equals("Temp");
+		}
+		public boolean isUnionned(){
+				return name.equals("Union");
 		}		
     //
     // setters
