@@ -44,9 +44,23 @@ public class SearchEmployeeAction extends TopAction{
 						}
 						else{
 								List<Employee> ones = emplst.getEmployees();
-								if(ones != null && ones.size() > 0){
-										employees = ones;
-										addActionMessage("Found "+employees.size()+" employees");
+								
+								if(ones != null){
+										if(ones.size() > 1){
+												employees = ones;
+												addActionMessage("Found "+employees.size()+" employees");
+										}
+										else if(ones.size() == 1){
+												String emp_id = ones.get(0).getId();
+												try{
+														HttpServletResponse res = ServletActionContext.getResponse();
+														String str = url+"employee.action?id="+emp_id;
+														res.sendRedirect(str);
+														return super.execute();
+												}catch(Exception ex){
+														System.err.println(ex);
+												}	
+										}
 								}
 								else{
 										addActionMessage("No match found");

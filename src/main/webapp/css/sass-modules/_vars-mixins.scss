@@ -1,0 +1,27 @@
+$header-background-url: "header-bg-2.jpg";
+
+//$body-background-url: "images/showers-blurred.jpg";
+$accent-color-1: #1e59ae;
+
+$font-link-color: #1e59ae;
+$font-body-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
+
+$city-logo-url: "Simple_City_Logo.svg"; //URL relative to location of screen.css
+$header-text-color: #1e59ae;
+
+$nav1-link-color: #1e59ae;
+$link-color: #1e59ae;
+
+$semibold: 600;
+
+$window-med: 46em;
+$window-lg: 70em;
+$window-notTall: 40rem;
+
+@mixin clearfix {
+    &:after {
+        clear: both;
+        content: '';
+        display: table;
+    }
+}

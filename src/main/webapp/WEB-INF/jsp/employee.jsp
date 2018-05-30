@@ -93,7 +93,10 @@
 		</s:if>
 		<s:if test="!employee.hasActiveGroup()">
 			<a href="<s:property value='#application.url' />groupEmployee.action?employee_id=<s:property value='employee.id' />&department_id=<s:property value='employee.department_id' />" class="fn1-btn"> Add Employee to a Group</a>
-		</s:if>			
+		</s:if>
+		<s:if test="employee.hasNoJob()">
+			<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='employee.id' />" class="fn1-btn"> Add A Job</a>
+		</s:if>		
 	</s:else>
 </s:form>
 <s:if test="employee.id == ''">
@@ -113,7 +116,13 @@
 			<s:set var="groupEmployeesTitle" value="'Employee Group'" />
 			<%@  include file="groupEmployees.jsp" %>
 		</s:if>
+		<s:if test="employee.hasJobs()">
+			<s:set var="jobTasks" value="%{employee.jobs}" />
+			<s:set var="jobTasksTitle" value="'Employee Jobs'" />
+			<%@  include file="jobTasks.jsp" %>
+		</s:if>
 	</s:if>
+	
 </s:else>
 <%@  include file="footer.jsp" %>
 

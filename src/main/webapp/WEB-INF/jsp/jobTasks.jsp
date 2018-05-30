@@ -29,7 +29,7 @@
 				<td><a href="<s:property value='#application.url' />jobTask.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
 				<td><s:property value="position" /></td>				
 				<td><s:property value="salaryGroup" /></td>
-				<td><s:property value="employee.user" /></td>
+				<td><s:property value="employee" /></td>
 				<td><s:property value="effective_date" /></td>
 				<td><s:property value="expire_date" /></td>
 				<td><s:if test="primary_flag">Yes</s:if><s:else>No</s:else></td>

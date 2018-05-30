@@ -14,6 +14,9 @@
 		<h3>Edit Job: <s:property value="%{jobTask.name}" /></h3>
 		<s:hidden id="jobTask.id" name="jobTask.id" value="%{jobTask.id}" />
 	</s:else>
+	<s:if test="jobTask.employee_id != ''">
+		<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />
+	</s:if>
   <s:if test="hasActionErrors()">
 		<div class="errors">
       <s:actionerror/>
@@ -46,11 +49,16 @@
 		<dl class="fn1-output-field">
 			<dt>Salary Group </dt>
 			<dd><s:select name="jobTask.salary_group_id" value="%{jobTask.salary_group_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Salary Group" required="true" />* </dd>
-		</dl>		
+		</dl>
 		<dl class="fn1-output-field">
 			<dt>Employee </dt>
-			<dd><s:select name="jobTask.employee_id" value="%{jobTask.employee_id}" list="employees" listKey="id" listValue="user.full_name" headerKey="-1" headerValue="Pick Employee" required="true" />* </dd>
-		</dl>				
+			<s:if test="jobTask.employee_id == ''">			
+				<dd><s:textfield name="jobTask.name" value="" size="30" id="employee_name" />Employee ID <s:textfield name="jobTask.employee_id" value="%{jobTask.employee_id}" size="10" id="employee_id" /> </dd>
+			</s:if>
+			<s:else>
+				<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='%{jobTask.employee_id}' />"> <s:property value="%{jobTask.employee}" /></a></dd>
+			</s:else>
+		</dl>
 		<dl class="fn1-output-field">
 			<dt>Effective Date </dt>
 			<dd><s:textfield name="jobTask.effective_date" value="%{jobTask.effective_date}" size="10" cssClass="date" /> </dd>

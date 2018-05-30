@@ -1,0 +1,71 @@
+.site {
+    &-title {
+        float: left;
+        padding: 0;
+
+        > h1 {
+            font-size: (16rem/16);
+            font-weight: normal;
+            margin: 0 0 0 0;
+            text-transform: capitalize;
+
+            > a {
+                color: $header-text-color;
+            }
+        }
+    }
+    &-location {
+        margin: -.4rem 0 0 0;
+
+        > a {
+            color: $header-text-color;
+            font-size: (11rem/16);
+        }
+    }
+    &-utilityBar {
+        float: right;
+        margin: 0 0 0 1em;
+        position: relative;
+        z-index: 7;
+
+        > .ext-launcher {
+            cursor: pointer;
+            display: block;
+        }
+        > .ext-links {
+            background: #fff;
+            border: 1px solid #f3f3f3;
+            box-shadow: 0 0 1em 0 rgba(0, 0, 0, .5);
+            opacity: 0;
+            padding: .5em 0;
+            position: absolute;
+                top: 1.5em;
+                right: 0;
+                left: inherit;
+            transition: opacity .25s;
+            display:inline-table;
+            white-space:nowrap;
+
+            &.open {
+                opacity: 1;
+            }
+
+            &.closed {
+                top: -10000px;
+                left: -10000px;
+            }
+
+            a {
+                display: block;
+                padding: .5em 1em;
+                transition: background .25s, color .25s;
+
+                &:hover {
+                    background: $header-text-color;
+                    color: #fff;
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+}

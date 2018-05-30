@@ -1,0 +1,67 @@
+.nav1 {
+    @media screen and (min-width: $window-med) {
+        position: relative;
+
+        &:after {
+            background: url($header-background-url);
+            background-size: 100% auto;
+            content: '';
+            display: block;
+            height: 18.75em;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
+        }
+
+        > .container {
+            box-sizing: border-box;
+            margin: 0 auto;
+            padding: 2.7rem 0 0 0;
+            position: relative;
+            width: 46em;
+            z-index: 3;
+            @include clearfix();
+        }
+
+        &-link {
+            background: rgba(255, 255, 255, .5);
+            color: $nav1-link-color;
+            display: block;
+            float: left;
+            margin: 0 .5em .4em 0;
+            padding: .5em .75em;
+            transition: background-color .25s ease-in-out;
+
+            &:hover {
+                background: rgba(255,255,255, .8);
+                text-decoration: none;
+            }
+        }
+        &-searchForm {
+            float: right;
+            > fieldset {
+                > input {
+                    font-size: 1em;
+                    padding: .25em;
+                }
+            }
+        }
+    }
+
+    @media screen and (min-width: $window-lg) {
+        > .container {
+            width: 60em;
+        }
+        &-link {
+            padding-left: 1.5em;
+            padding-right: 1.5em;
+        }
+    }
+    @media screen and (max-height: $window-notTall) {
+        > .container {
+            padding-top: .5rem;
+        }
+    }
+}

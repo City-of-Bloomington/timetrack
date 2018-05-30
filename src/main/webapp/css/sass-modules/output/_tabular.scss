@@ -1,0 +1,78 @@
+.output-tabular {
+    overflow: hidden;
+    width: 100%;
+
+    @mixin data-cell() {
+        padding: .75em 1.5em .75em .5em;
+    }
+    $first-cell-padding-left: 1.5em;
+    > thead {
+        > tr {
+            > th {
+                background: #204984;
+                color: #EDF0F5;
+                font-size: .85em;
+                font-weight: normal;
+                height: 2em;
+                vertical-align: bottom;
+                @include data-cell();
+
+                &:first-child {
+                    padding-left: $first-cell-padding-left;
+                }
+                > a {
+                    color: #fff;
+                }
+            }
+            &.column-status {
+                text-align: right;
+            }
+        }
+    }
+    > tbody {
+        > tr {
+            > th, td {
+                background: #EDF0F5;
+                border-top: 1px solid #c0c0c0;
+                transition: background-color .2s linear;
+                vertical-align: top;
+                @include data-cell();
+
+                &:first-child {
+                    padding-left: $first-cell-padding-left;
+                }
+                &.ext-number {
+                    text-align: right;
+                    white-space: nowrap;
+                }
+            }
+        }
+        > tr.total {
+            td {
+                border-top:2px solid #000;
+            }
+        }
+        > tr:hover {
+            th, td {
+                background: #fff;
+            }
+        }
+    }
+
+    @media print {
+        @mixin data-cell() {
+            padding: .75em 1.5em .75em .5em;
+        }
+
+        > thead,
+        > tbody {
+            > tr {
+                th, td {
+                    background: none;
+                    border: none;
+                    padding: .05em 1em .05em .05em;
+                }
+            }
+        }
+    }
+}

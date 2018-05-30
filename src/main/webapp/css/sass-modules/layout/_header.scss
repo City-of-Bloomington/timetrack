@@ -1,0 +1,47 @@
+body > header {
+    border-top: .4em solid #1e59ae;
+
+    > .container {
+        margin: 0 auto 0;
+        color: $header-text-color;
+        padding: .5em 0;
+        position: relative;
+        @include clearfix();
+
+        @if($city-logo-url != '') {
+            &:before {
+                background: url($city-logo-url);
+                background-size: 100% 100%;
+                content: '';
+                display: block;
+                float: left;
+                height: 2.25rem;
+                margin: 0 .5rem 0 .5rem;
+                width: 2.25rem;
+            }
+        }
+    }
+
+    @media screen and (min-width: $window-med) {
+        position: relative;
+
+        > .container {
+            box-sizing: border-box;
+            margin: 0 auto;
+            width: 46em;
+
+            &:before {
+                //margin-top: 1.25em;
+            }
+        }
+    }
+
+    @media screen and (min-width: $window-lg) {
+        > .container {
+            width: 60em;
+        }
+    }
+    @media screen and (max-height: $window-notTall) {
+        border-top: 0;
+    }
+}

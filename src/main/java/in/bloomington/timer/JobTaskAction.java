@@ -21,6 +21,7 @@ public class JobTaskAction extends TopAction{
 		static final long serialVersionUID = 1800L;	
 		static Logger logger = LogManager.getLogger(JobTaskAction.class);
 		//
+		String add_employee_id = "";
 		JobTask jobTask = null;
 		List<JobTask> jobTasks = null;
 		String jobTasksTitle = "Current jobs";
@@ -73,7 +74,10 @@ public class JobTaskAction extends TopAction{
 				if(jobTask == null){
 						jobTask = new JobTask();
 						jobTask.setId(id);
-				}		
+				}
+				if(!add_employee_id.equals("")){
+						jobTask.setEmployee_id(add_employee_id);
+				}
 				return jobTask;
 		}
 
@@ -90,6 +94,10 @@ public class JobTaskAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						action = val;
 		}
+		public void setAdd_employee_id(String val){
+				if(val != null && !val.equals(""))		
+						add_employee_id = val;
+		}		
 		// todo
 		public List<JobTask> getJobTasks(){
 				JobTaskList tl = new JobTaskList();

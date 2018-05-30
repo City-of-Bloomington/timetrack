@@ -30,6 +30,7 @@ public class Employee implements Serializable{
 		// normally this date is pay period start date
 		String job_active_date = "", pay_period_id="", selected_job_id="";
 		// User user = null;
+		List<JobTask> jobs = null;
 		List<Group> groups = null;
 		List<GroupManager> managers = null;
 		List<DepartmentEmployee> departmentEmployees = null;
@@ -511,7 +512,28 @@ public class Employee implements Serializable{
 				}
 				return msg;
 		}
-		
+		public List<JobTask> getJobs(){
+				if(!id.equals("") && jobs == null){
+						JobTaskList del = new JobTaskList();
+						del.setEmployee_id(id);
+						String back = del.find();
+						if(back.equals("")){
+								List<JobTask> des = del.getJobs();
+								if(des != null && des.size() > 0){
+										jobs = des;
+								}
+						}
+				}
+				return jobs;
+		}
+		public boolean hasJobs(){
+				getJobs();
+				return jobs != null && jobs.size() > 0;
+		}
+		public boolean hasNoJob(){
+				getJobs();
+				return jobs == null || jobs.size() == 0;
+		}
 		public boolean isSameEntity(Employee one){
 				return one.getUsername().equals(username) && 
 						one.getLast_name().equals(last_name) &&

@@ -47,9 +47,22 @@ public class SearchJobAction extends TopAction{
 						}
 						else{
 								List<JobTask> ones = joblst.getJobs();
-								if(ones != null && ones.size() > 0){
-										jobs = ones;
-										addActionMessage("Found "+jobs.size()+" Jobs");
+								if(ones != null){
+										if(ones.size() > 1){
+												jobs = ones;
+												addActionMessage("Found "+jobs.size()+" Jobs");
+										}
+										else if(ones.size() == 1){
+												String job_id = ones.get(0).getId();
+												try{
+														HttpServletResponse res = ServletActionContext.getResponse();
+														String str = url+"jobTask.action?id="+job_id;
+														res.sendRedirect(str);
+														return super.execute();
+												}catch(Exception ex){
+														System.err.println(ex);
+												}	
+										}
 								}
 								else{
 										addActionMessage("No match found");

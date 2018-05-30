@@ -5,9 +5,6 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
-<s:form action="timeDetails" id="form_id" method="post" >
-	<s:hidden name="action2" id="action2" value="" />
-	<s:hidden name="source" value="source" />
 <s:if test="hasActionErrors()">
 	<div class="errors">
     <s:actionerror/>
@@ -18,9 +15,13 @@
     <s:actionmessage/>
 	</div>
 </s:elseif>
-<s:if test="!isUserCurrentEmployee()">
-	<h4>You are viewing/Entity <s:property value="document.employee" /></h4>
-</s:if>
+<s:if test="!hasActionErrors()">
+<s:form action="timeDetails" id="form_id" method="post" >
+	<s:hidden name="action2" id="action2" value="" />
+	<s:hidden name="source" value="source" />
+	<s:if test="!isUserCurrentEmployee()">
+		<h4>You are viewing/Entity <s:property value="document.employee" /></h4>
+	</s:if>
 <table width="100%" border="0">
 	<tr>
 		<td align="left" class="th_text">
@@ -182,7 +183,8 @@
 		<%@  include file="nextTimeAction.jsp" %>
 	</s:if>
 </s:if>
-
+<!-- end of if no errors -->
+</s:if>
 <%@ include file="footer.jsp" %>
 
 

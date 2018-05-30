@@ -92,7 +92,7 @@ public class TimeClock{
     }
     public void setTime(String val){
 				if(val != null){
-						time = val;
+						time = Helper.getCurrentTime();
 						splitTime(time);
 				}
     }
@@ -203,7 +203,7 @@ public class TimeClock{
 				}
 				if(employee == null){
 						msg += " No matching employee found for ID "+id_code;
-						System.err.println(msg);
+						logger.error(msg);
 						return msg;
 				}
 				//
@@ -222,7 +222,12 @@ public class TimeClock{
 				//
 				// we need the employee job
 				getJobTasks();
-				//				
+				//
+				if(selectedJob == null){
+						msg = "Could not find related job ";
+						logger.error(msg);
+						return msg;						
+				}
 				if(defaultRegularCode != null){
 						hour_code_id = defaultRegularCode.getId();
 						// System.err.println(" hr code id "+hour_code_id);
@@ -230,78 +235,81 @@ public class TimeClock{
 				//
 				// find if there is a clock-in, if not this a clock-in
 				//         else it is a clock-out
-				if(new_docuemnt){
-						System.err.println(" new docment, now save ");
-						// if this is a new document ,this means this first entry
-						// in this pay period, so will consider as clock_in
-						timeBlock = new TimeBlock(null,
-																				 document.getId(),
-																				 selectedJob.getId(),
-																				 hour_code_id,
-																				 date,
-																				 
-																				 time_hr,
-																				 time_min,
-																				 0,
-																				 0,
-																				 0, // hours
-																				 
-																				 null,
-																				 "y",
-																				 null);
-						timeBlock.setAction_type("ClockIn");
-						timeBlock.setAction_by_id(document.getEmployee().getId());
-						msg = timeBlock.doSave();
-				}
-				else{
-						//
-						// check if we have clockIn, if so then this is clockOut
-						//
-						TimeBlockList tbl = new TimeBlockList();
-						tbl.setDocument_id(document.getId());
-						tbl.setJob_id(selectedJob.getId());
-						tbl.hasClockInOnly();
-						tbl.setActiveOnly();
-						tbl.setDate(date); // for today only
-						msg = tbl.find();
-						if(msg.equals("")){
-								List<TimeBlock> tbs = tbl.getTimeBlocks();
-								if(tbs != null && tbs.size() > 0){
-										timeBlock = tbs.get(0);
-										// it is a clock-out
-										System.err.println("it is clock-out ");										
-										timeBlock.setEnd_hour(time_hr);
-										timeBlock.setEnd_minute(time_min);
-										timeBlock.setClock_out("y");
-										timeBlock.setAction_type("ClockOut");
-										timeBlock.setAction_by_id(document.getEmployee().getId());
-										msg = timeBlock.doUpdate();
-								}
-								else{ // it is a clock-in
-										System.err.println("it is clock-in ");
-										timeBlock = new TimeBlock(null,
-																							document.getId(),
-																							selectedJob.getId(),
-																							hour_code_id,
-																							date,
-																							
-																							time_hr,
-																							time_min,
-																							0,
-																							0,
-																							0, // hours
-																							
-																							null,
-																							"y",
-																							null);
-										timeBlock.setAction_type("ClockIn");
-										timeBlock.setAction_by_id(document.getEmployee().getId());
-										msg = timeBlock.doSave();
+				try{
+						if(new_docuemnt){
+								// System.err.println(" new docment, now save ");
+								// if this is a new document ,this means this first entry
+								// in this pay period, so will consider as clock_in
+								timeBlock = new TimeBlock(null,
+																					document.getId(),
+																					selectedJob.getId(),
+																					hour_code_id,
+																					date,
+																					
+																					time_hr,
+																					time_min,
+																					0,
+																					0,
+																					0, // hours
+																					
+																					null,
+																					"y",
+																					null);
+								timeBlock.setAction_type("ClockIn");
+								timeBlock.setAction_by_id(document.getEmployee().getId());
+								msg = timeBlock.doSave();
+						}
+						else{
+								//
+								// check if we have clockIn, if so then this is clockOut
+								//
+								TimeBlockList tbl = new TimeBlockList();
+								tbl.setDocument_id(document.getId());
+								tbl.setJob_id(selectedJob.getId());
+								tbl.hasClockInOnly();
+								tbl.setActiveOnly();
+								tbl.setDate(date); // for today only
+								msg = tbl.find();
+								if(msg.equals("")){
+										List<TimeBlock> tbs = tbl.getTimeBlocks();
+										if(tbs != null && tbs.size() > 0){
+												timeBlock = tbs.get(0);
+												// it is a clock-out
+												System.err.println("it is clock-out ");										
+												timeBlock.setEnd_hour(time_hr);
+												timeBlock.setEnd_minute(time_min);
+												timeBlock.setClock_out("y");
+												timeBlock.setAction_type("ClockOut");
+												timeBlock.setAction_by_id(document.getEmployee().getId());
+												msg = timeBlock.doUpdate();
+										}
+										else{ // it is a clock-in
+												timeBlock = new TimeBlock(null,
+																									document.getId(),
+																									selectedJob.getId(),
+																									hour_code_id,
+																									date,
+																									
+																									time_hr,
+																									time_min,
+																									0,
+																									0,
+																									0, // hours
+																									
+																									null,
+																									"y",
+																									null);
+												timeBlock.setAction_type("ClockIn");
+												timeBlock.setAction_by_id(document.getEmployee().getId());
+												msg = timeBlock.doSave();
+										}
 								}
 						}
+				}catch(Exception ex){
+						msg += ex;						
+						logger.error(msg);
 				}
 				return msg;
 		}
-
 
 }

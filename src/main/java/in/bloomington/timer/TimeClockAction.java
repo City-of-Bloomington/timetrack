@@ -43,21 +43,26 @@ public class TimeClockAction extends TopAction{
 								String ipAddress = inetAddress.getHostAddress();
 								ip = ipAddress;
 						}
-						// System.err.println(" ip "+ip);
 				}catch(Exception ex){
-						System.err.println(ex);
+						logger.error(ex);
 				}
+				// System.err.println(" ip "+ip);
 				if(!action.equals("")){
 						if(ipSet != null){
 								if(ipSet.contains(ip)){
-										back = timeClock.process();
-										if(!back.equals("")){
-												addActionError(back);
+										try{
+												back = timeClock.process();
+												if(!back.equals("")){
+														addActionError(back);
+												}
+												else{
+														document_id = timeClock.getTimeBlock().getDocument_id();
+														date = timeClock.getTimeBlock().getDate();
+														addActionMessage("Received Successfully");
+												}
 										}
-										else{
-												document_id = timeClock.getTimeBlock().getDocument_id();
-												date = timeClock.getTimeBlock().getDate();
-												addActionMessage("Received Successfully");
+										catch(Exception ex){
+												logger.error(ex);
 										}
 								}
 								else{

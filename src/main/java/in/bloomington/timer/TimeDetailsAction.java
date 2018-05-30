@@ -36,6 +36,9 @@ public class TimeDetailsAction extends TopAction{
 						return "login";
 				}
 				getDocument_id();
+				if(hasNoJob()){
+						addActionError("No job found for employee ");						
+				}
 				return ret;
 		}
 		public String getTimeBlocksTitle(){
@@ -201,7 +204,11 @@ public class TimeDetailsAction extends TopAction{
 						}
 				}
 				return jobTask;
-		}		
+		}
+		public boolean hasNoJob(){
+				getJobTask();
+				return jobTask == null;
+		}
 
 }
 

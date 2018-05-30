@@ -223,7 +223,11 @@ public class TimeBlock extends Block{
 												dd[1] = val2.substring(2);
 										}
 								}
-								else{
+								else if(val2.length() > 0){ // such as 5 pm 10 pm
+										dd[0] = val2;
+										dd[1] = "0";
+								}
+								else {
 										msg = "invalid time format "+val;
 										logger.error(msg);
 										errors += msg;

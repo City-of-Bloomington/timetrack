@@ -177,6 +177,9 @@ public class JobTask implements Serializable{
 				if(val != null)
 						employee_id = val;
     }
+    public void setName(String val){
+				// needed for auto_complete
+    }		
     public void setSalary_group_id(String val){
 				if(val != null)
 						salary_group_id = val;

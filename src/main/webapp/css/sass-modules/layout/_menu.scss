@@ -1,0 +1,40 @@
+/**
+ * CSS to make the Menu Launchers function
+ *
+ * @copyright 2015 City of Bloomington, Indiana
+ * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE.txt
+ * @author Cliff Ingham <inghamn@bloomington.in.gov>
+ */
+.menuLauncher {
+    cursor: pointer; display: inline-table;
+}
+.menuLinks {
+    position:absolute;
+    display:inline-table;
+    opacity: 0;
+    white-space:nowrap;
+    transition: opacity .2s;
+    z-index:7;
+
+    &.open   { opacity: 1; }
+    &.closed { top: -10000px; left: -10000px; }
+
+    a { display: block; }
+}
+
+.site-utilityBar .menuLinks {
+    background: #fff;
+    border: 1px solid #f3f3f3;
+    box-shadow: 0 0 1em 0 rgba(0, 0, 0, .5);
+
+    a {
+        padding: .5em 1em;
+        transition: background .25s, color .25s;
+
+        &:hover {
+            background: $header-text-color;
+            color: #fff;
+            text-decoration: none;
+        }
+    }
+}
