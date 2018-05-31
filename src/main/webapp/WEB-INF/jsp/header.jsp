@@ -68,7 +68,6 @@
     width:95%;
     border:1px solid blue;
   }
-
   </style>
   <title>Time Track</title>
   <script type="text/javascript">
