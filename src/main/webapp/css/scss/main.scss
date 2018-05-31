@@ -1,0 +1,33 @@
+/*!
+  * Time Track styles v1.0 (https://timetrack.bloomington.in.gov)
+  * @copyright Copyright (C) 2014-2018 City of Bloomington, Indiana. All rights reserved.
+  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
+  * @author Adam Butcher <butcherad@bloomington.in.gov>
+*/
+/*! Note: this is a cherry-picked tweak of FN1, specifically for Time Track */
+
+/* Import Components */
+@import 'normalize';
+@import 'colors';
+@import 'vars-mixins';
+@import 'buttons';
+@import 'header';
+@import 'dropdown';
+
+/* Global */
+.timetrack {
+  * { box-sizing: border-box; }
+
+  main {
+    background: $gainsboro;
+    margin-top: 20px;
+  }
+
+  .container {
+    @include clearfix;
+    width: 100%;
+    max-width: $viewport-large;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

@@ -1,0 +1,56 @@
+.dropdown {
+    display: inline-block;
+    margin: 0;
+    position: relative;
+
+    .launcher {
+        color: $dark-slate;
+        border: none;
+        border-radius: $size-gutter;
+        outline: none;
+        background-repeat: no-repeat;
+        background-position: right center;
+        background-size: ($size-gutter * 1.5) ($size-gutter * 1.5);
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%234a4a4a' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/></svg>");
+        padding-right: 1.2em;
+
+        &:hover,
+        &[aria-expanded="true"] {
+            color: $cob-blue;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%231e59ae' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/></svg>");
+        }
+
+        &[aria-expanded="true"] + .links {
+            display: block;
+        }
+
+        &[aria-expanded="false"] + .links {
+            display: none;
+        }
+    }
+
+    .links {
+        border: 1px solid $gainsboro;
+        border-radius: 5px;
+        background: $color-content-background;
+        box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+        min-width: 10rem;
+        padding: $size-gutter 0;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        text-align: left; // In case a menu gets embedded in a parent that is right-aligned
+        transition: opacity .125s ease-in-out;
+        z-index: 20;
+    }
+
+    a {
+        display: block;
+        padding: ($size-gutter/2) $size-gutter;
+
+        &:hover {
+            background-color: $cob-blue;
+            color: white;
+        }
+    }
+}

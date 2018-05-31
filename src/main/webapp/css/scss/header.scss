@@ -1,0 +1,51 @@
+header {
+    backgbackgroundround-color: $color-content-background;
+    border-top: 0.4em solid $cob-blue;
+    padding: $size-gutter 0;
+
+    a {
+        color: $cob-blue;
+        font-family: $font-family-nav;
+    }
+
+    .brand {
+        min-width: 200px;
+        display: inline-block;
+
+        a { text-decoration: none; }
+
+        img {
+            width: 35px;
+            height: 35px;
+            float: left;
+            margin: 0 .5rem 0 0;
+        }
+
+        h1,
+        h2 {
+            margin: 0;
+            padding: 0;
+            vertical-align: top;
+            color: $cob-blue;
+            font-weight: 500;
+        }
+
+        h1 {
+            font-size: 1rem;
+            margin: .15rem 0 0 0;
+        }
+
+        h2 {
+            font-size: 0.6875rem;
+        }
+    }
+
+    .dropdown-wrapper {
+        float: right;
+        height: 35px; // the height of it's container
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-content: flex-end;
+    }
+}
