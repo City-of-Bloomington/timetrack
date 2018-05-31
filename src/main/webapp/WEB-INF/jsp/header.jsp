@@ -28,6 +28,10 @@
 		background-color:lightgray;
 		color:black;
 	}
+  .tbl_holiday {
+    background-color: rgb(224, 235, 225);
+    color: black;
+  }
 	.tbl_gray{
 		background-color:#E9E9E9;
 		color:black;
