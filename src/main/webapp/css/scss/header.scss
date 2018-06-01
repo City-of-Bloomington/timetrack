@@ -1,6 +1,5 @@
 header {
-    // background-color: $color-content-background;
-    background: purple;
+    background-color: $color-content-background;
     border-top: 0.4em solid $cob-blue;
     padding: $size-gutter 0;
 
@@ -9,21 +8,15 @@ header {
         font-family: $font-family-nav;
     }
 
-    .container {
-        display: flex;
-    }
+    .container { display: flex; }
 
     .brand {
-        min-width: 200px;
-        display: inline-block;
-        background: blanchedalmond;
-
         a { text-decoration: none; }
 
         img {
+            float: left; //to-do: get this item to not use float
             width: $size-gutter * 8;
             height: $size-gutter * 8;
-            float: left;
             margin: 0 .75rem 0 0;
         }
 
@@ -37,19 +30,14 @@ header {
         }
 
         h1 {
-            background: aqua;
             font-size: 1.5rem;
             font-weight: normal;
         }
 
-        h2 {
-            font-size: 1em;
-            background: grey;
-        }
+        h2 { font-size: 1em; }
 
         .site-title {
             height: 100%;
-            background: red;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
@@ -58,8 +46,6 @@ header {
     }
 
     .dropdown-wrapper {
-        float: right;
-        background: teal;
         display: flex;
         align-items: center;
         margin-left: auto; // this brings the element right
