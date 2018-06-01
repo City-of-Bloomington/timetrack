@@ -1,24 +1,30 @@
 header {
-    background-color: $color-content-background;
+    // background-color: $color-content-background;
+    background: purple;
     border-top: 0.4em solid $cob-blue;
     padding: $size-gutter 0;
 
     a {
-        color: $cob-blue;
+        color: $biscay;
         font-family: $font-family-nav;
+    }
+
+    .container {
+        display: flex;
     }
 
     .brand {
         min-width: 200px;
         display: inline-block;
+        background: blanchedalmond;
 
         a { text-decoration: none; }
 
         img {
-            width: 35px;
-            height: 35px;
+            width: $size-gutter * 8;
+            height: $size-gutter * 8;
             float: left;
-            margin: 0 .5rem 0 0;
+            margin: 0 .75rem 0 0;
         }
 
         h1,
@@ -26,26 +32,36 @@ header {
             margin: 0;
             padding: 0;
             vertical-align: top;
-            color: $cob-blue;
+            color: $biscay;
             font-weight: 500;
         }
 
         h1 {
-            font-size: 1rem;
-            margin: .15rem 0 0 0;
+            background: aqua;
+            font-size: 1.5rem;
+            font-weight: normal;
         }
 
         h2 {
-            font-size: 0.6875rem;
+            font-size: 1em;
+            background: grey;
+        }
+
+        .site-title {
+            height: 100%;
+            background: red;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            align-content: center;
         }
     }
 
     .dropdown-wrapper {
         float: right;
-        height: 35px; // the height of it's container
+        background: teal;
         display: flex;
         align-items: center;
-        justify-content: center;
-        justify-content: flex-end;
+        margin-left: auto; // this brings the element right
     }
 }
