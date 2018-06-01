@@ -91,7 +91,7 @@
 						</a>
 				</s:if>
 				<s:if test="hasData()">
-					<table border="0" width="100%">			
+					<table border="0" width="100%">
 						<tr>
 							<td align="right" class="td_text b_cell">
 								<a href="<s:property value='#application.url' />timeBlock?id=<s:property value='id' />&action=Delete" class="hr_cell"><img src="<s:property value='#application.url' />js/images/delete_img.png" /></a>
@@ -100,14 +100,14 @@
 						<tr>
 							<td align="left" class="td_text">
 								<a href="#" class="hr_cell" onclick="return popwit('<s:property value='#application.url' />timeBlock?id=<s:property value='id' />','timeBlock');">
-									<s:property value="timeInfo" />									
+									<s:property value="timeInfo" />
 									<s:if test="hasNextLine()">
 										<br /><s:property value="timeInfoNextLine" />
 									</s:if>
 								</a>
 							</td>
 						</tr>
-					</table>												
+					</table>
 				</s:if>
 			</s:iterator>
 					</td>
@@ -124,7 +124,7 @@
 <s:if test="document.isUnionned()">
 	<s:set var="unionned" value="'true'" />
 	<s:set var="week1Flsa" value="document.week1_flsa" />
-	<s:set var="week2Flsa" value="document.week2_flsa" />	
+	<s:set var="week2Flsa" value="document.week2_flsa" />
 </s:if>
 <s:else>
 	<s:set var="unionned" value="'false'" />
@@ -147,7 +147,7 @@
 <s:if test="document.hasLastWorkflow()" >
 	<s:if test="document.lastWorkflow.canSubmit()">
 		<s:form action="timeAction" id="form_id" method="post" >
-			<input type="hidden" name="source" value="timeDetails" />			
+			<input type="hidden" name="source" value="timeDetails" />
 			<s:hidden name="document_id" value="%{document.id}" />
 			<s:hidden name="workflow_id" value="%{document.lastWorkflow.next_workflow_id}" />
 			<p style="text-align:left">
@@ -164,12 +164,12 @@
 	<%@  include file="accrualSummary.jsp" %>
 </s:if>
 <s:if test="document.hasTimeIssues()">
-	<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />	
+	<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />
 	<s:set var="timeIssues" value="document.timeIssues" />
 	<%@  include file="timeIssues.jsp" %>
 </s:if>
 <s:if test="document.hasTimeNotes()">
-	<s:set var="timeNotesTitle" value="'Pay Period Notes'" />	
+	<s:set var="timeNotesTitle" value="'Pay Period Notes'" />
 	<s:set var="timeNotes" value="document.timeNotes" />
 	<%@  include file="timeNotes.jsp" %>
 </s:if>

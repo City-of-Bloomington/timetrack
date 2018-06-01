@@ -14,6 +14,7 @@
 @import 'header';
 @import 'dropdown';
 @import 'tabs';
+@import 'calendar';
 
 /* Global */
 .timetrack {
@@ -35,6 +36,7 @@
     margin-right: auto;
   }
 
+  // Prior style helpers from Walid
   .tbl_wheat{
     background-color:#FFFFF0;
     color:black;
