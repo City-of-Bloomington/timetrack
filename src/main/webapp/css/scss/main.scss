@@ -13,6 +13,7 @@
 @import 'buttons';
 @import 'header';
 @import 'dropdown';
+@import 'tabs';
 
 /* Global */
 .timetrack {
@@ -22,7 +23,8 @@
 
   main {
     background: $gainsboro;
-    margin-top: 20px;
+    border-top: $size-gutter solid $cob-blue;
+    padding: 20px 0 0 0;
   }
 
   .container {

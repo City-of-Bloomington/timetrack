@@ -1,0 +1,19 @@
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 20px 0;
+
+  a {
+    text-decoration: none;
+    text-align: center;
+    background: $cob-blue;
+    padding: 8px 15px;
+    color: white;
+    margin: 0 10px 0 0;
+
+    &:hover,
+    &.active {
+      background: darken($cob-blue, 15%);
+    }
+  }
+}
