@@ -23,7 +23,7 @@
 
   main {
     background: $gainsboro;
-    border-top: $size-gutter solid $cob-blue;
+    border-top: .4em solid $cob-blue;
     padding: 20px 0 0 0;
   }
 
@@ -33,5 +33,69 @@
     max-width: $viewport-large;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .tbl_wheat{
+    background-color:#FFFFF0;
+    color:black;
+  }
+
+  .tbl_weekend{
+    background-color:lightgray;
+    color:black;
+  }
+
+  .tbl_holiday {
+    background-color: rgb(224, 235, 225);
+    color: black;
+  }
+
+  .tbl_gray{
+    background-color:#E9E9E9;
+    color:black;
+  }
+
+  .td_text {
+    font-size: x-small;
+    padding: 1px 5px 1px 5px;
+  }
+
+  .th_text {
+    font-size: small;
+    font-weight: bold;
+    padding: 1px 5px 1px 5px;
+  }
+
+  .th_text2 {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+
+  .cap_left {
+    text-align:left;
+    font-weight:bold;
+  }
+
+  .hr_cell{
+    padding:1px 5px 1px 5px;
+    display:block;
+    text-decoration:none;
+  }
+
+  .b_cell{
+    border:1px dotted;
+    background-color: brown;
+    color:white;
+  }
+
+  .button_link{
+    background-color: brown;
+    color:white;
+  }
+
+  .tbl_wide{
+    width:95%;
+    border:1px solid blue;
   }
 }
