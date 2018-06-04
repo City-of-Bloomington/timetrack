@@ -1,6 +1,6 @@
 <%@  include file="header.jsp" %>
 <!--
- * @copyright Copyright (C) 2014-2015 City of Bloomington, Indiana. All rights reserved.
+ * @copyright Copyright (C) 2014-2018 City of Bloomington, Indiana. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
@@ -10,110 +10,62 @@
     <s:actionerror/>
 	</div>
 </s:if>
+
 <s:elseif test="hasActionMessages()">
 	<div class="welcome">
     <s:actionmessage/>
 	</div>
 </s:elseif>
+
 <s:if test="!hasActionErrors()">
-<s:form action="timeDetails" id="form_id" method="post" >
-	<s:hidden name="action2" id="action2" value="" />
-	<s:hidden name="source" value="source" />
-	<s:if test="!isUserCurrentEmployee()">
-		<h4>You are viewing/Entity <s:property value="document.employee" /></h4>
-	</s:if>
-<table width="100%" border="0">
-	<tr>
-		<td align="left" class="th_text">
-			<b> <s:property value="payPeriod.monthNames" /> <s:property value="payPeriod.startYear" /></b>
-		</td>
-		<td align="right" class="td_text">
-			<b> Employee: </b><s:property value="document.employee" />
-		</td>
-	</tr>
-	<s:if test="!isUserCurrentEmployee()">
-		<s:if test="source != ''">
-			<tr>
-				<td class="th_text">&nbsp;</td>
-				<td align="right" class="td_text">
-					<a href="<s:property value='#application.url' /><s:property value='source' />.action">Back to Main Page</a>
-				</td>
-			</tr>
+	<s:form action="timeDetails" id="form_id" method="post" >
+		<s:hidden name="action2" id="action2" value="" />
+		<s:hidden name="source" value="source" />
+		<s:if test="!isUserCurrentEmployee()">
+			<h4>You are viewing/Entity <s:property value="document.employee" /></h4>
 		</s:if>
-		<s:else>
-			<tr>
-				<td class="th_text">&nbsp;</td>
-				<td align="right" class="td_text">
-					<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='user.id' />&action=Change">Back to Main User</a>
-				</td>
-			</tr>
-		</s:else>
-	</s:if>
-	<tr>
-		<td align="left" class="td_text"><b>Pay Period</b>
-			<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="doRefresh()" />
-		</td>
-		<td align="right" class="td_text">
-			<s:if test="!isCurrentPayPeriod()">
-				<a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a>
-			</s:if>
-		</td>
-	</tr>
-</table>
-</s:form>
-<table width="100%" border="1" class="tbl_wheat">
-	<tr>
-		<td width="14%" class="th_text">Mon</td>
-		<td width="14%" class="th_text">Tue</td>
-		<td width="14%" class="th_text">Wed</td>
-		<td width="14%" class="th_text">Thu</td>
-		<td width="14%" class="th_text">Fri</td>
-		<td width="14%" class="th_text tbl_weekend">Sat</td>
-		<td class="th_text tbl_weekend">Sun</td>
-	</tr>
-	<tr>
-		<s:iterator value="document.dailyBlocks" var="block" >
-			<s:set var="blockKey" value="#block.key" />
-			<s:set var="blockList" value="#block.value" />
-			<s:if test="#blockKey == 7">
-	       </tr><tr>
-			</s:if>
-			<s:iterator value="#blockList" status="row" >
-				<s:if test="#row.first">
-					<s:if test="#blockKey==5 || #blockKey==6 || #blockKey==12 || #blockKey==13">
-						<td valign="top" style="height:100px;text-align:left" class="th_text tbl_weekend">
-					</s:if>
-					<s:else>
-						<td valign="top" style="height:100px;text-align:left" class="th_text">
-					</s:else>
-					<a href="#" class="hr_cell" onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');">
-							<s:property value="dayInt" />
-						</a>
-				</s:if>
-				<s:if test="hasData()">
-					<table border="0" width="100%">
-						<tr>
-							<td align="right" class="td_text b_cell">
-								<a href="<s:property value='#application.url' />timeBlock?id=<s:property value='id' />&action=Delete" class="hr_cell"><img src="<s:property value='#application.url' />js/images/delete_img.png" /></a>
-							</td>
-						</tr>
-						<tr>
-							<td align="left" class="td_text">
-								<a href="#" class="hr_cell" onclick="return popwit('<s:property value='#application.url' />timeBlock?id=<s:property value='id' />','timeBlock');">
-									<s:property value="timeInfo" />
-									<s:if test="hasNextLine()">
-										<br /><s:property value="timeInfoNextLine" />
-									</s:if>
-								</a>
-							</td>
-						</tr>
-					</table>
-				</s:if>
-			</s:iterator>
+	<table width="100%" border="0">
+		<tr>
+			<td align="left" class="th_text">
+				<b> <s:property value="payPeriod.monthNames" /> <s:property value="payPeriod.startYear" /></b>
+			</td>
+			<td align="right" class="td_text">
+				<b> Employee: </b><s:property value="document.employee" />
+			</td>
+		</tr>
+		<s:if test="!isUserCurrentEmployee()">
+			<s:if test="source != ''">
+				<tr>
+					<td class="th_text">&nbsp;</td>
+					<td align="right" class="td_text">
+						<a href="<s:property value='#application.url' /><s:property value='source' />.action">Back to Main Page</a>
 					</td>
-		</s:iterator>
-	</tr>
-</table>
+				</tr>
+			</s:if>
+			<s:else>
+				<tr>
+					<td class="th_text">&nbsp;</td>
+					<td align="right" class="td_text">
+						<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='user.id' />&action=Change">Back to Main User</a>
+					</td>
+				</tr>
+			</s:else>
+		</s:if>
+		<tr>
+			<td align="left" class="td_text"><b>Pay Period</b>
+				<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="doRefresh()" />
+			</td>
+			<td align="right" class="td_text">
+				<s:if test="!isCurrentPayPeriod()">
+					<a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a>
+				</s:if>
+			</td>
+		</tr>
+	</table>
+</s:form>
+
+<%@ include file="calendarFullNew.jsp" %>
+
 <s:if test="document.hasWarnings()">
 	<s:set var="warnings" value="document.warnings" />
 	<%@  include file="warnings.jsp" %>

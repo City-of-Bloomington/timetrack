@@ -1,15 +1,16 @@
 .calendar {
-  width: 100%;
-  min-width: 100%;
+  margin: 0 auto;
+  width: calc(100% - 4px);
+  min-width: calc(100% - 4px);
   height: 100%;
 
   .daily-header {
     display: flex;
 
     > div {
-      background-color: rgba(255,255,255,0.8);
-      color: $dark-slate;
-      padding: 10px 0 10px 5px;
+      background-color: $silver-chalice;
+      color: white;
+      padding: 5px 0 5px 5px;
       margin: 2px;
       flex: 1 1 0;
 
@@ -24,20 +25,14 @@
 
     > div {
       position: relative;
-      background-color: rgba(255,255,255,0.8);
+      background-color: rgba(255,255,255,0.75);
       color: $silver-chalice;
       min-height: 125px;
       padding: 5px;
       margin: 2px;
       flex: 1 1 0;
 
-      &:hover {
-        background-color: $gainsboro;
-        color: white;
-      }
-
       .day-of-month {
-        background-color: green;
         height: 100%;
         width: 100%;
         display: block;
@@ -51,41 +46,61 @@
         &:hover {
           background-color: $cob-blue;
           color: white;
+
+          ~ .data-cell {
+            background-color: $vista-white;
+          }
         }
       }
 
       &.weekend {
-        background-color: blue;
+        background-color: rgba(255,255,255,0.45);
       }
     }
 
     .data-cell {
       position: relative;
       background-color: $gainsboro;
-      margin: 15px 0 0 0;
-      padding: 5px 0;
-      color: white;
+      margin: 5px 0 0 0;
+      padding: 5px;
+      text-align: left;
+      color: black;
+      text-decoration: none;
+      font-size: 12px;
 
       &:hover {
         background-color: darken($gainsboro, 15%);
       }
 
+      &:first-of-type {
+        margin: 25px 0 0 0;
+      }
+
       span {
         display: block;
         margin: 0 0 5px 0;
+
+        &:last-of-type {
+          margin: 0;
+        }
+      }
+
+      b {
+        color: $dark-slate;
       }
 
       a {
-        text-align: center;
-        // color: $silver-chalice;
-        color: black;
+        text-align: left;
+        color: $dark-slate;
         text-decoration: none;
         display: block;
         font-size: 12px;
 
         svg {
           &#remove-icon {
-            float: right;
+            position: absolute;
+            top: 5px;
+            right: 5px;
             display: block;
             width: 15px;
             height: 15px;
@@ -93,8 +108,14 @@
             path {
               fill: $silver-chalice;
             }
+
+            &:hover {
+              path {
+                fill: $mine-shaft;
+              }
+            }
           }
-      }
+        }
       }
     }
   }
