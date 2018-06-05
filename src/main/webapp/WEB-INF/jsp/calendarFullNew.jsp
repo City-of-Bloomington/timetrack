@@ -23,6 +23,14 @@
           <s:if test="#blockKey==5 || #blockKey==6 || #blockKey==12 || #blockKey==13">
             <!-- this is for the weekend -->
             <div class="day weekend">
+
+              <!-- Adam Butcher (butcherad/adabutch): 06/05/18 -->
+              <!-- this is a static holiday example placeholder -->
+              <!-- usage: give the 'day' class an additional 'holiday' class -->
+              <!-- wrap the holiday in a <span> -->
+              <!-- see below -->
+              <!-- <div class="day holiday">
+              <span>Christmas Day</span> -->
           </s:if>
 
           <s:else>

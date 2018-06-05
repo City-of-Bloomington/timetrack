@@ -25,7 +25,7 @@
 
     > div {
       position: relative;
-      background-color: rgba(255,255,255,0.75);
+      background-color: rgba(255,255,255,0.9);
       color: $silver-chalice;
       min-height: 125px;
       padding: 5px;
@@ -44,7 +44,8 @@
         color: $silver-chalice;
 
         &:hover {
-          background-color: $cob-blue;
+          background-color: lighten($cob-blue, 20%);
+          // background-color: $gainsboro;
           color: white;
 
           ~ .data-cell {
@@ -55,6 +56,29 @@
 
       &.weekend {
         background-color: rgba(255,255,255,0.45);
+      }
+
+      &.holiday {
+        background-color: rgba(255,255,255,0.45);
+
+        > span {
+          z-index: 1;
+          position: absolute;
+          top: 30px;
+          right: 5px;
+          left: 5px;
+          font-size: 13px;
+          color: white;
+          background: $san-marino;
+          border-radius: 2px;
+          padding: 2px 5px;
+        }
+
+        .data-cell {
+          &:first-of-type {
+            margin: 47px 0 0 0;
+          }
+        }
       }
     }
 
