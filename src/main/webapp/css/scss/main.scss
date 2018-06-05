@@ -36,6 +36,35 @@
     margin-right: auto;
   }
 
+  .calendar-header-controls {
+    display: flex;
+    margin: 20px 0;
+    padding: 0 5px;
+    color: $dark-slate;
+
+    .month-year {
+      margin-left: auto;
+      font-weight: 600;
+      font-size: 20px;
+    }
+
+    .button.today {
+      background: #f8f8f8;
+      margin-right: auto;
+      display: inline-flex;
+      align-items: center;
+
+      &:hover {
+        border-color: $cob-blue;
+        color: $cob-blue;
+      }
+    }
+
+    .pay-period {
+      margin-left: auto;
+    }
+  }
+
   // Prior style helpers from Walid
   .tbl_wheat{
     background-color:#FFFFF0;

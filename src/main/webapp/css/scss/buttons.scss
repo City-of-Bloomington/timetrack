@@ -1,14 +1,17 @@
 button,
 .button {
+    text-decoration: none;
     font-family: $font-family-nav;
-    // background: $color-action;
-    // border: 1px solid $color-border-input;
-    // border-radius: $size-gutter;
-    // color: $color-content-background;
+    // background: $cob-blue;
+    border: 1px solid $color-border-input;
+    border-radius: ($size-gutter/2);
+    color: $dark-slate;
     display:inline-block;
     line-height: 1.2em;
     // margin-right: $size-gutter;
     // padding: $size-gutter ($size-gutter*2);
+    margin: 0;
+    padding: 0 ($size-gutter*2);
     font-size: $font-size-small;
     font-weight:normal;
     vertical-align: middle;
@@ -16,10 +19,15 @@ button,
     background-position: $size-gutter center;
     background-size: ($size-gutter*2) ($size-gutter*2);
 
+
     &:hover {
         // background-color: $color-action-hover;
         cursor: pointer;
         text-decoration: none;
+    }
+
+    a {
+        color: $dark-slate;
     }
 }
 
@@ -35,9 +43,16 @@ button,
     background-size: ($size-gutter*2) ($size-gutter*2);
 }
 
-button, .button, .icon {
-    // $imageSpace: $font-size-small * 2;
-    // &.add      { background-image:url('../img/fa-svg/gray/svg/plus.svg'      ); padding-left:$imageSpace; }
+button,
+.button,
+.icon {
+    $imageSpace: $font-size-small * 2;
+
+    // &.add {
+    //     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'><path fill='red' d='M256 144V32c0-17.673 14.327-32 32-32s32 14.327 32 32v112h-64zm112 16H16c-8.837 0-16 7.163-16 16v32c0 8.837 7.163 16 16 16h16v32c0 77.406 54.969 141.971 128 156.796V512h64v-99.204c73.031-14.825 128-79.39 128-156.796v-32h16c8.837 0 16-7.163 16-16v-32c0-8.837-7.163-16-16-16zm-240-16V32c0-17.673-14.327-32-32-32S64 14.327 64 32v112h64z'/></svg>");
+    //     padding-left: $imageSpace;
+    // }
+
     // &.edit     { background-image:url('../img/fa-svg/gray/svg/pencil.svg'    ); padding-left:$imageSpace; }
     // &.delete   { background-image:url('../img/fa-svg/gray/svg/times.svg'     ); padding-left:$imageSpace; }
     // &.submit   { background-image:url('../img/fa-svg/gray/svg/check.svg'     ); padding-left:$imageSpace; }

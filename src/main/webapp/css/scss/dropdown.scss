@@ -27,6 +27,15 @@
         &[aria-expanded="false"] + .links {
             display: none;
         }
+
+        svg {
+            &.user-proxy-icon {
+                width: 15px;
+                height: 15px;
+                vertical-align: top;
+                fill: $dark-slate;
+            }
+        }
     }
 
     .links {
@@ -42,6 +51,15 @@
         text-align: left; // In case a menu gets embedded in a parent that is right-aligned
         transition: opacity .125s ease-in-out;
         z-index: 20;
+
+        .user-proxy {
+            color: $dark-slate;
+            padding: .25em .5em;
+
+            > a {
+                padding: 0;
+            }
+        }
     }
 
     a {
