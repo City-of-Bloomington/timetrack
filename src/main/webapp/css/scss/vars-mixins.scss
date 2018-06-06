@@ -62,6 +62,10 @@ $viewport-large:                      (1080px);
 
 $size-gutter:                         .5em;
 
+// Buttons
+$btn-border-width:                    1px;
+$btn-border-radius:                   ($size-gutter / 2);
+
 // Breakpoint mixins
 @mixin smallViewport {
     @media all and (min-width: #{$viewport-small}) {

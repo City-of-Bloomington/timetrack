@@ -1,27 +1,23 @@
 button,
 .button {
-    text-decoration: none;
-    font-family: $font-family-nav;
-    // background: $cob-blue;
-    border: 1px solid $color-border-input;
-    border-radius: ($size-gutter/2);
-    color: $dark-slate;
-    display:inline-block;
-    line-height: 1.2em;
-    // margin-right: $size-gutter;
-    // padding: $size-gutter ($size-gutter*2);
-    margin: 0;
-    padding: 0 ($size-gutter*2);
-    font-size: $font-size-small;
-    font-weight:normal;
-    vertical-align: middle;
+    display: inline-block;
     background-repeat: no-repeat;
     background-position: $size-gutter center;
-    background-size: ($size-gutter*2) ($size-gutter*2);
+    background-size: ($size-gutter * 2) ($size-gutter * 2);
+    vertical-align: middle;
+    margin: 0;
+    padding: 0 ($size-gutter * 2);
+    border: $btn-border-width solid $color-border-input;
+    border-radius: $btn-border-radius;
+    text-decoration: none;
+    font-family: $font-family-nav;
+    color: $dark-slate;
+    line-height: 1.2em;
+    font-size: $font-size-small;
+    font-weight: normal;
 
 
     &:hover {
-        // background-color: $color-action-hover;
         cursor: pointer;
         text-decoration: none;
     }
@@ -30,45 +26,6 @@ button,
         color: $dark-slate;
     }
 }
-
-.icon {
-    cursor: pointer;
-    display: inline-block;
-    width: 0;
-    height: 1em;
-    overflow: hidden;
-    text-indent: -1000em;
-    background-repeat:no-repeat;
-    background-position: center center;
-    background-size: ($size-gutter*2) ($size-gutter*2);
-}
-
-button,
-.button,
-.icon {
-    $imageSpace: $font-size-small * 2;
-
-    // &.add {
-    //     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'><path fill='red' d='M256 144V32c0-17.673 14.327-32 32-32s32 14.327 32 32v112h-64zm112 16H16c-8.837 0-16 7.163-16 16v32c0 8.837 7.163 16 16 16h16v32c0 77.406 54.969 141.971 128 156.796V512h64v-99.204c73.031-14.825 128-79.39 128-156.796v-32h16c8.837 0 16-7.163 16-16v-32c0-8.837-7.163-16-16-16zm-240-16V32c0-17.673-14.327-32-32-32S64 14.327 64 32v112h64z'/></svg>");
-    //     padding-left: $imageSpace;
-    // }
-
-    // &.edit     { background-image:url('../img/fa-svg/gray/svg/pencil.svg'    ); padding-left:$imageSpace; }
-    // &.delete   { background-image:url('../img/fa-svg/gray/svg/times.svg'     ); padding-left:$imageSpace; }
-    // &.submit   { background-image:url('../img/fa-svg/gray/svg/check.svg'     ); padding-left:$imageSpace; }
-    // &.save     { background-image:url('../img/fa-svg/gray/svg/floppy-o.svg'  ); padding-left:$imageSpace; }
-    // &.search   { background-image:url('../img/fa-svg/gray/svg/search.svg'    ); padding-left:$imageSpace; }
-    // &.calendar { background-image:url('../img/fa-svg/gray/svg/calendar.svg'  ); padding-left:$imageSpace; }
-    // &.location { background-image:url('../img/fa-svg/gray/svg/map-marker.svg'); padding-left:$imageSpace; }
-    // &.map      { background-image:url('../img/fa-svg/gray/svg/globe.svg'     ); padding-left:$imageSpace; }
-    // &.list     { background-image:url('../img/fa-svg/gray/svg/list-ul.svg'   ); padding-left:$imageSpace; }
-    // &.print    { background-image:url('../img/fa-svg/gray/svg/print.svg'     ); padding-left:$imageSpace; }
-    // &.reorder  { background-image:url('../img/fa-svg/gray/svg/reorder.svg'   ); padding-left:$imageSpace; }
-    // &.user     { background-image:url('../img/fa-svg/gray/svg/user.svg'      ); padding-left:$imageSpace; }
-    // &.upload   { background-image:url('../img/fa-svg/gray/svg/upload.svg'    ); padding-left:$imageSpace; }
-    // &.download { background-image:url('../img/fa-svg/gray/svg/download.svg'  ); padding-left:$imageSpace; }
-}
-
 
 .button-group {
     position: relative;
@@ -81,26 +38,26 @@ button,
         border-radius: 0;
 
         &:first-of-type {
-            -webkit-border-top-left-radius: ($size-gutter/2);
-            -webkit-border-bottom-left-radius: ($size-gutter/2);
-            -moz-border-radius-topleft: ($size-gutter/2);
-            -moz-border-radius-bottomleft: ($size-gutter/2);
-            border-top-left-radius: ($size-gutter/2);
-            border-bottom-left-radius: ($size-gutter/2);
+            -webkit-border-top-left-radius: $btn-border-radius;
+            -webkit-border-bottom-left-radius: $btn-border-radius;
+            -moz-border-radius-topleft: $btn-border-radius;
+            -moz-border-radius-bottomleft: $btn-border-radius;
+            border-top-left-radius: $btn-border-radius;
+            border-bottom-left-radius: $btn-border-radius;
         }
 
         &:last-of-type {
-            -webkit-border-top-right-radius: ($size-gutter/2);
-            -webkit-border-bottom-right-radius: ($size-gutter/2);
-            -moz-border-radius-topright: ($size-gutter/2);
-            -moz-border-radius-bottomright: ($size-gutter/2);
-            border-top-right-radius: ($size-gutter/2);
-            border-bottom-right-radius: ($size-gutter/2);
+            -webkit-border-top-right-radius: $btn-border-radius;
+            -webkit-border-bottom-right-radius: $btn-border-radius;
+            -moz-border-radius-topright: $btn-border-radius;
+            -moz-border-radius-bottomright: $btn-border-radius;
+            border-top-right-radius: $btn-border-radius;
+            border-bottom-right-radius: $btn-border-radius$btn-border-radius;
         }
 
         &:last-of-type,
         &:not(:first-child) {
-            margin-left: -1px;
+            margin-left: -$btn-border-width;
         }
 
         &:hover,
