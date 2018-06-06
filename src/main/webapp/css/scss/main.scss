@@ -48,15 +48,16 @@
       font-size: 20px;
     }
 
-    .button.today {
+    .button {
       background: #f8f8f8;
-      margin-right: auto;
-      display: inline-flex;
-      align-items: center;
 
       &:hover {
         border-color: $cob-blue;
         color: $cob-blue;
+
+        svg {
+          fill: $cob-blue;
+        }
       }
     }
 
