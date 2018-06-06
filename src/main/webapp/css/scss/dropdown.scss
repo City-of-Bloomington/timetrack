@@ -4,6 +4,7 @@
     position: relative;
 
     .launcher {
+        display: inline-block;
         color: $dark-slate;
         border: none;
         border-radius: $size-gutter;

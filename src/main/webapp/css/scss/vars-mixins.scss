@@ -73,11 +73,13 @@ $btn-border-radius:                   ($size-gutter / 2);
         @content;
     }
 }
+
 @mixin mediumViewport {
     @media all and (min-width: $viewport-medium) {
         @content;
     }
 }
+
 @mixin largeViewport {
     @media all and (min-width: $viewport-large) {
         @content;
