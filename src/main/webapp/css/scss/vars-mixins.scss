@@ -63,6 +63,7 @@ $viewport-large:                      (1080px);
 $size-gutter:                         .5em;
 
 // Buttons
+$imageSpace:                          ($font-size-small * 2);
 $btn-border-width:                    1px;
 $btn-border-radius:                   ($size-gutter / 2);
 
@@ -100,4 +101,9 @@ $btn-border-radius:                   ($size-gutter / 2);
         content: '';
         display: table;
     }
+}
+
+@mixin buttonHasIcon {
+    padding-left: $imageSpace;
+    background-size: 10px 10px;
 }
