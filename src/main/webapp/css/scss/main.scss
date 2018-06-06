@@ -11,6 +11,7 @@
 @import 'colors';
 @import 'vars-mixins';
 @import 'buttons';
+@import 'icons';
 @import 'header';
 @import 'dropdown';
 @import 'tabs';
@@ -44,20 +45,21 @@
 
     .month-year {
       margin-left: auto;
-      font-weight: 600;
+      font-weight: $font-weight-heading;
       font-size: 20px;
     }
 
     .button {
-      background-color: #f8f8f8;
+      background-color: $alabaster;
 
       &:hover {
         border-color: $cob-blue;
         color: $cob-blue;
+      }
 
-        svg {
-          fill: $cob-blue;
-        }
+      &.chevron-left,
+      &.chevron-right {
+        @include buttonHasIcon;
       }
     }
 
