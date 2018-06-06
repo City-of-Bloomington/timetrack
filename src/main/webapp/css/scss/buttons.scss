@@ -68,3 +68,46 @@ button,
     // &.upload   { background-image:url('../img/fa-svg/gray/svg/upload.svg'    ); padding-left:$imageSpace; }
     // &.download { background-image:url('../img/fa-svg/gray/svg/download.svg'  ); padding-left:$imageSpace; }
 }
+
+
+.button-group {
+    position: relative;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    vertical-align: middle;
+
+    button,
+    .button {
+        border-radius: 0;
+
+        &:first-of-type {
+            -webkit-border-top-left-radius: ($size-gutter/2);
+            -webkit-border-bottom-left-radius: ($size-gutter/2);
+            -moz-border-radius-topleft: ($size-gutter/2);
+            -moz-border-radius-bottomleft: ($size-gutter/2);
+            border-top-left-radius: ($size-gutter/2);
+            border-bottom-left-radius: ($size-gutter/2);
+        }
+
+        &:last-of-type {
+            -webkit-border-top-right-radius: ($size-gutter/2);
+            -webkit-border-bottom-right-radius: ($size-gutter/2);
+            -moz-border-radius-topright: ($size-gutter/2);
+            -moz-border-radius-bottomright: ($size-gutter/2);
+            border-top-right-radius: ($size-gutter/2);
+            border-bottom-right-radius: ($size-gutter/2);
+        }
+
+        &:last-of-type,
+        &:not(:first-child) {
+            margin-left: -1px;
+        }
+
+        &:hover,
+        &:focus,
+        &:active,
+        &.active {
+          z-index: 1;
+        }
+    }
+}
