@@ -1,23 +1,24 @@
-<table width="100%" border="1">
-	<caption class="cap_left">Accruals Summary</caption>	
-	<tr>
-		<td width="25%" class="th_text">Accrual Category</td>
-		<td width="25%" class="th_text">Carry Over Balance</td>
-		<td width="25%" class="th_text">Usage</td>
-		<td class="th_text">Available Balance</td>
-	</tr>
-	<s:iterator value="#allAccruals" var="one" >
-		<s:set var="key" value="#one.key" />
-		<s:set var="list" value="#one.value" />
+<s:if test="document.hasAllAccruals()">
+	<s:set var="allAccruals" value="document.allAccruals" />
+	<s:set var="accrualsTitle" value="'Accruals Summary'" />
+
+	<h1><s:property value="#accrualsTitle" /></h1>
+	<table class="accruals-summary width-full">
 		<tr>
-			<td class="th_text"><s:property value="#key" /></td>
-				<s:iterator value="#list">
-					<td align="right" class="td_text"><s:property /></td>
-				</s:iterator>
+			<th width="25%">Accrual Category</th>
+			<th width="25%">Carry Over Balance</th>
+			<th width="25%">Usage</th>
+			<th>Available Balance</th>
 		</tr>
-	</s:iterator>
-</table>
-
-
-
-
+		<s:iterator value="#allAccruals" var="one" >
+			<s:set var="key" value="#one.key" />
+			<s:set var="list" value="#one.value" />
+			<tr>
+				<td><s:property value="#key" /></td>
+					<s:iterator value="#list">
+						<td><s:property /></td>
+					</s:iterator>
+			</tr>
+		</s:iterator>
+	</table>
+</s:if>

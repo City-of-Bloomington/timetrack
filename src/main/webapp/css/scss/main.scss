@@ -15,6 +15,7 @@
 @import 'header';
 @import 'dropdown';
 @import 'tabs';
+@import 'tables';
 @import 'calendar';
 
 /* Global */
@@ -26,7 +27,19 @@
   main {
     background: $gainsboro;
     border-top: .4em solid $cob-blue;
+    padding: 0 0 20px 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 10px 0;
     padding: 0;
+  }
+
+  h1 {
+    font-weight: $font-weight-heading;
+    font-size: $font-size-big;
+    line-height: $font-size-big;
+    color: $dark-slate;
   }
 
   .container {
@@ -37,6 +50,14 @@
     margin-right: auto;
   }
 
+  .container-with-padding {
+    @include clearfix;
+    width: 100%;
+    margin: 0 auto;
+    width: calc(100% - 8px);
+    min-width: calc(100% - 8px);
+  }
+
   .calendar-header-controls {
     display: flex;
     margin: 20px 0;
@@ -45,8 +66,6 @@
 
     .month-year {
       margin-left: auto;
-      font-weight: $font-weight-heading;
-      font-size: 20px;
     }
 
     .button {
@@ -66,5 +85,33 @@
     .pay-period {
       margin-left: auto;
     }
+  }
+
+  .float-left {
+    float: left;
+  }
+
+  .float-right {
+    float: right;
+  }
+
+  .f-float-left {
+    margin-right: auto;
+  }
+
+  .f-float-right {
+    margin-left: auto;
+  }
+
+  .d-flex {
+    display: flex;
+  }
+
+  .width-full {
+    width: 100%;
+  }
+
+  .width-one-half {
+    width: 50%;
   }
 }

@@ -14,9 +14,9 @@
     </a>
   </div>
 
-  <div class="month-year">
+  <h1 class="month-year">
     <s:property value="payPeriod.monthNames" /> <s:property value="payPeriod.startYear" />
-  </div>
+  </h1>
 
   <div class="pay-period">
     <b>Pay Period:</b>

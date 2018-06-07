@@ -1,16 +1,20 @@
+<s:if test="document.hasTimeActions()">
+	<s:set var="timeActions" value="document.timeActions" />
+	<s:set var="timeActionsTitle" value="'Action History'" />
 
-<table width="100%" border="0" class="tbl_gray">
-	<caption class="cap_left"><s:property value="#timeActionsTitle" /></caption>	
-	<tr>
-		<td align="left" class="th_text">Date/time</td>
-		<td align="left" class="th_text">By</td>
-		<td align="left" class="th_text">Action</td>
-	</tr>
-	<s:iterator var="one" value="#timeActions">
+	<h1><s:property value="#timeActionsTitle" /></h1>
+	<table class="width-full action-history">
 		<tr>
-			<td class="td_text"><s:property value="action_time" /></td>				
-			<td class="td_text"><s:property value="actioner" /></td>
-			<td class="td_text"><s:property value="workflow.node.annotation" /></td>
+			<th width="200">By</th>
+			<th width="200">Date/time</th>
+			<th>Action</th>
 		</tr>
-	</s:iterator>
-</table>
+		<s:iterator var="one" value="#timeActions">
+			<tr>
+				<td><s:property value="actioner" /></td>
+				<td><s:property value="action_time" /></td>
+				<td><s:property value="workflow.node.annotation" /></td>
+			</tr>
+		</s:iterator>
+	</table>
+</s:if>

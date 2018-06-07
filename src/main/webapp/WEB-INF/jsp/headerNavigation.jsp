@@ -10,9 +10,8 @@
       </a>
     </div>
 
-
-    <s:if test="#session != null && #session.user != null">
-      <div class="dropdown-wrapper">
+    <div class="dropdown-wrapper">
+      <s:if test="#session != null && #session.user != null">
         <nav class="dropdown">
           <button id="genericMenuLauncher"
                   class="launcher"
@@ -50,7 +49,7 @@
             <a href="<s:property value='#application.url'/>Logout">Logout</a>
           </div>
         </nav>
-      </div>
-    </s:if>
+      </s:if>
+    </div>
   </div>
 </header>
