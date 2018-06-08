@@ -22,6 +22,8 @@
 	<%@ include file="calendarFullNew.jsp" %>
 
 	<div class="container-with-padding">
+		<%@ include file="warnings.jsp" %>
+
 		<div class="button-group">
 			<s:if test="!document.isSubmitted()">
 			  <a href="#" class="button" onclick="return popwit('<s:property value='#application.url' />timeNote?document_id=<s:property value='%{document.id}' />','Notes');">Add Notes</a>
@@ -38,10 +40,6 @@
 			  </s:if>
 			</s:if>
 		</div>
-
-		<hr />
-
-	  <%@ include file="warnings.jsp" %>
 
 		<s:set var="daily" value="document.daily" />
 		<s:set var="week1Total" value="document.week1Total" />

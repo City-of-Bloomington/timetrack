@@ -65,7 +65,8 @@ $size-gutter:                         .5em;
 // Buttons
 $imageSpace:                          ($font-size-small * 2);
 $btn-border-width:                    1px;
-$btn-border-radius:                   ($size-gutter / 2);
+
+$border-radius:                       ($size-gutter / 2);
 
 // Breakpoint mixins
 @mixin smallViewport {

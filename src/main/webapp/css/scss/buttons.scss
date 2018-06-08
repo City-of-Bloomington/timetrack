@@ -12,7 +12,7 @@ button,
     margin: 0;
     padding: 0 ($size-gutter * 2);
     border: $btn-border-width solid $color-border-input;
-    border-radius: $btn-border-radius;
+    border-radius: $border-radius;
     text-decoration: none;
     font-family: $font-family-nav;
     color: $dark-slate;
@@ -52,21 +52,21 @@ button,
         border-radius: 0;
 
         &:first-child {
-            -webkit-border-top-left-radius: $btn-border-radius;
-            -webkit-border-bottom-left-radius: $btn-border-radius;
-            -moz-border-radius-topleft: $btn-border-radius;
-            -moz-border-radius-bottomleft: $btn-border-radius;
-            border-top-left-radius: $btn-border-radius;
-            border-bottom-left-radius: $btn-border-radius;
+            -webkit-border-top-left-radius: $border-radius;
+            -webkit-border-bottom-left-radius: $border-radius;
+            -moz-border-radius-topleft: $border-radius;
+            -moz-border-radius-bottomleft: $border-radius;
+            border-top-left-radius: $border-radius;
+            border-bottom-left-radius: $border-radius;
         }
 
         &:last-child {
-            -webkit-border-top-right-radius: $btn-border-radius;
-            -webkit-border-bottom-right-radius: $btn-border-radius;
-            -moz-border-radius-topright: $btn-border-radius;
-            -moz-border-radius-bottomright: $btn-border-radius;
-            border-top-right-radius: $btn-border-radius;
-            border-bottom-right-radius: $btn-border-radius$btn-border-radius;
+            -webkit-border-top-right-radius: $border-radius;
+            -webkit-border-bottom-right-radius: $border-radius;
+            -moz-border-radius-topright: $border-radius;
+            -moz-border-radius-bottomright: $border-radius;
+            border-top-right-radius: $border-radius;
+            border-bottom-right-radius: $border-radius$border-radius;
         }
 
         &:last-of-type,

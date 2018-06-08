@@ -1,3 +1,28 @@
 .alert {
-  background: red;
+  display: flex;
+  position: relative;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border: 1px solid transparent;
+  background: $red;
+  border-radius: $border-radius;
+  color: white;
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .close {
+    margin-left: auto;
+    padding: 0;
+    color: white;
+    border: none;
+    border-radius: 0;
+    font-size: 19px;
+
+    &:hover {
+      color: lighten(white, 10%);
+    }
+  }
 }
