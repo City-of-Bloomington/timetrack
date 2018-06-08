@@ -1,6 +1,6 @@
 <div class="width-one-half">
 	<h1><s:property value="#weeklyTitle" /></h1>
-	<table class="code-hours-summary-total {#weekTotal}">
+	<table class="code-hours-summary-total ${whichWeek}">
 		<tr>
 			<th>Hour Code</th>
 			<th>Total</th>

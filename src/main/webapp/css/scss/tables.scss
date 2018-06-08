@@ -4,6 +4,14 @@ table {
   color: $dark-slate;
   margin: 0 0 40px 0;
 
+  &:last-of-type {
+    margin: 0;
+  }
+
+  a {
+    color: $cob-blue;
+  }
+
   tr {
     border-top: 1px solid $silver;
 
@@ -34,9 +42,9 @@ table {
 
   th {
     font-weight: 400;
-    background-color: $silver-chalice;
+    background-color: $dark-slate;
     color: white;
-    border-right: 1px solid white;
+    border-right: 1px solid $silver;
 
     &:nth-of-type(1),
     &:last-of-type {
@@ -56,7 +64,6 @@ table {
   &.pay-period-summary-total,
   &.code-hours-summary-total,
   &.accruals-summary {
-
     th,
     td {
       &:nth-of-type(1) {
@@ -70,15 +77,24 @@ table {
   }
 
   &.code-hours-summary-total {
-    width: calc(100% - 10px);
+    width: calc(100% - 4px);
+
+    &.week-one {
+      margin-right: auto;
+    }
+
+    &.week-two {
+      margin-left: auto;
+    }
   }
 
   &.pay-period-notes,
-  &.action-history {
+  &.action-history,
+  &.time-issues {
     th,
     td {
       &:nth-of-type(1),
-      &:nth-of-type(3) {
+      &:nth-of-type(n + 3) {
         text-align: left;
       }
 

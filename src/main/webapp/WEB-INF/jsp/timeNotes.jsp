@@ -3,7 +3,7 @@
 	<s:set var="timeNotes" value="document.timeNotes" />
 
 	<h1><s:property value="#timeNotesTitle" /></h1>
-	<table class="pay-period-notes full-width">
+	<table class="pay-period-notes width-full">
 		<tr>
 			<th width="200">By</th>
 			<th width="200">Date &amp; Time</th>

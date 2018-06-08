@@ -8,6 +8,8 @@
 
 /* Import Components */
 @import 'normalize';
+@import 'alerts';
+@import 'helpers';
 @import 'colors';
 @import 'vars-mixins';
 @import 'buttons';
@@ -21,13 +23,14 @@
 /* Global */
 .timetrack {
   font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
+  // background: $gainsboro;
 
   * { box-sizing: border-box; }
 
   main {
     background: $gainsboro;
     border-top: .4em solid $cob-blue;
-    padding: 0 0 20px 0;
+    padding: 0;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -56,6 +59,7 @@
     margin: 0 auto;
     width: calc(100% - 8px);
     min-width: calc(100% - 8px);
+    padding: 0 0 4px 0;
   }
 
   .calendar-header-controls {
@@ -85,33 +89,5 @@
     .pay-period {
       margin-left: auto;
     }
-  }
-
-  .float-left {
-    float: left;
-  }
-
-  .float-right {
-    float: right;
-  }
-
-  .f-float-left {
-    margin-right: auto;
-  }
-
-  .f-float-right {
-    margin-left: auto;
-  }
-
-  .d-flex {
-    display: flex;
-  }
-
-  .width-full {
-    width: 100%;
-  }
-
-  .width-one-half {
-    width: 50%;
   }
 }

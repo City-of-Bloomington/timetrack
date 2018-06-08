@@ -4,6 +4,7 @@ button,
     justify-content: center;
     flex-direction: column;
     text-align: center;
+    background-color: transparent;
     background-repeat: no-repeat;
     background-position: $size-gutter center;
     background-size: ($size-gutter * 2) ($size-gutter * 2);
@@ -50,7 +51,7 @@ button,
     .button {
         border-radius: 0;
 
-        &:first-of-type {
+        &:first-child {
             -webkit-border-top-left-radius: $btn-border-radius;
             -webkit-border-bottom-left-radius: $btn-border-radius;
             -moz-border-radius-topleft: $btn-border-radius;
@@ -59,7 +60,7 @@ button,
             border-bottom-left-radius: $btn-border-radius;
         }
 
-        &:last-of-type {
+        &:last-child {
             -webkit-border-top-right-radius: $btn-border-radius;
             -webkit-border-bottom-right-radius: $btn-border-radius;
             -moz-border-radius-topright: $btn-border-radius;
