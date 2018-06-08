@@ -10,7 +10,7 @@ button,
     background-size: ($size-gutter * 2) ($size-gutter * 2);
     vertical-align: middle;
     margin: 0;
-    padding: 0 ($size-gutter * 2);
+    padding: ($size-gutter / 2) ($size-gutter * 2);
     border: $btn-border-width solid $color-border-input;
     border-radius: $border-radius;
     text-decoration: none;
@@ -28,6 +28,11 @@ button,
 
     a {
         color: $dark-slate;
+    }
+
+    &.has-icon {
+        padding-left: $imageSpace;
+        background-size: 10px 10px;
     }
 
     &.hide-text {

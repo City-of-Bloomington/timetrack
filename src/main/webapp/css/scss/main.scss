@@ -23,13 +23,18 @@
 /* Global */
 .timetrack {
   font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
-  // background: $gainsboro;
+  background: $gainsboro;
 
   * { box-sizing: border-box; }
 
   main {
-    background: $gainsboro;
+    // background: $gainsboro;
     border-top: .4em solid $cob-blue;
+    padding: 0;
+  }
+
+  hr {
+    margin: 0;
     padding: 0;
   }
 
@@ -42,6 +47,10 @@
     font-weight: $font-weight-heading;
     font-size: $font-size-big;
     line-height: $font-size-big;
+    color: $dark-slate;
+  }
+
+  p {
     color: $dark-slate;
   }
 
@@ -79,15 +88,40 @@
         border-color: $cob-blue;
         color: $cob-blue;
       }
-
-      &.chevron-left,
-      &.chevron-right {
-        @include buttonHasIcon;
-      }
     }
 
     .pay-period {
       margin-left: auto;
+    }
+  }
+
+  .calendar-summary-controls {
+    display: flex;
+    color: $dark-slate;
+
+    .button {
+      background-color: $alabaster;
+
+      &[type=submit] {
+        color: $cob-blue;
+      }
+
+      &:hover {
+        border-color: $cob-blue;
+        color: $cob-blue;
+      }
+
+      &.plus {
+        @mixin icon-color($color) {
+          background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512' fill='#{$color}'><path d='M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z'/></svg>");
+        }
+        @include icon-color($dark-slate);
+
+        &:hover,
+        &:focus {
+          @include icon-color($cob-blue);
+        }
+      }
     }
   }
 }

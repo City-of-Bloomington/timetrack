@@ -1,8 +1,10 @@
-<s:if test="document.hasTimeActions()">
+
 	<s:set var="timeActions" value="document.timeActions" />
 	<s:set var="timeActionsTitle" value="'Action History'" />
 
 	<h1><s:property value="#timeActionsTitle" /></h1>
+	<%@ include file="nextTimeAction.jsp" %>
+<s:if test="document.hasTimeActions()">
 	<table class="width-full action-history">
 		<tr>
 			<th width="200">By</th>

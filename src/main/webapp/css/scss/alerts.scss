@@ -6,9 +6,9 @@
   border: 1px solid transparent;
   background: $red;
   border-radius: $border-radius;
-  color: white;
 
   p {
+    color: white !important;
     margin: 0;
     padding: 0;
   }

@@ -105,8 +105,3 @@ $border-radius:                       ($size-gutter / 2);
         display: table;
     }
 }
-
-@mixin buttonHasIcon {
-    padding-left: $imageSpace;
-    background-size: 10px 10px;
-}
