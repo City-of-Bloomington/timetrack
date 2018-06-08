@@ -19,16 +19,17 @@
 @import 'tabs';
 @import 'tables';
 @import 'calendar';
+@import 'internal-pages';
 
 /* Global */
 .timetrack {
   font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
-  background: $gainsboro;
+  // background: $gainsboro;
 
   * { box-sizing: border-box; }
 
   main {
-    // background: $gainsboro;
+    background: $gainsboro;
     border-top: .4em solid $cob-blue;
     padding: 0;
   }
@@ -47,6 +48,13 @@
     font-weight: $font-weight-heading;
     font-size: $font-size-big;
     line-height: $font-size-big;
+    color: $dark-slate;
+  }
+
+  h2 {
+    font-weight: $font-weight-heading;
+    font-size: $font-size-normal;
+    line-height: $font-size-normal;
     color: $dark-slate;
   }
 

@@ -1,0 +1,35 @@
+.internal-page {
+  // background-color: red;
+  padding: 20px;
+
+  h1 {
+    display: block;
+    border-bottom: 1px solid $silver-chalice;
+    padding: 0 0 10px 0 !important;
+    margin: 0 0 20px 0 !important;
+  }
+
+  a {
+    color: $cob-blue;
+
+    &:hover,
+    &:focus,
+    &.active {
+      color: $mine-shaft;
+    }
+  }
+
+  ul {
+    margin: 0 0 20px 0;
+    padding: 0 0 0 10px;
+    list-style-position: inside;
+
+    &:last-of-type {
+      margin: 0;
+    }
+
+    li {
+      margin: 0 0 5px 0;
+    }
+  }
+}
