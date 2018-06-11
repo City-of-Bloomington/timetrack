@@ -43,6 +43,7 @@
 
 		<hr class="m-b-40" />
 
+		<s:set var="payPeriodTotal" value="document.payPeriodTotal" />
 		<s:set var="daily" value="document.daily" />
 		<s:set var="week1Total" value="document.week1Total" />
 		<s:set var="week2Total" value="document.week2Total" />
@@ -55,6 +56,7 @@
 		  <s:set var="unionned" value="'false'" />
 		</s:else>
 
+		<h1>Pay Period Summary</h1>
 		<%@ include file="dailySummary.jsp" %>
 
 		<div class="d-flex">

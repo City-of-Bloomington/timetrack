@@ -1,5 +1,3 @@
-<s:set var="payPeriodTotal" value="document.payPeriodTotal" />
-<h1>Pay Period Summary</h1>
 <table class="pay-period-summary-total width-full">
 	<tr>
 		<th>Week</th>

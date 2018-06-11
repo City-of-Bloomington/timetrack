@@ -85,6 +85,14 @@
     padding: 0 5px;
     color: $dark-slate;
 
+    select {
+      margin: 0 20px 0 0;
+
+      &:last-of-type {
+        margin: 0;
+      }
+    }
+
     .month-year {
       margin-left: auto;
     }

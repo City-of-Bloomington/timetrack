@@ -1,12 +1,75 @@
 .internal-page {
   // background-color: red;
   padding: 20px;
+  color: $dark-slate;
+
+  .calendar-header-controls {
+    padding: 0 !important;
+  }
+
+  .m-b-40,
+  table {
+    &:last-of-type {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  .approval-wrapper {
+    border-bottom: 1px solid $silver-chalice;
+    margin: 30px 0 20px 0;
+    padding: 0 0 20px 0;
+
+    &:last-of-type {
+      margin: 30px 0 0 0;
+      padding: 0;
+      border-bottom: none;
+    }
+  }
 
   h1 {
-    display: block;
+    display: flex;
     border-bottom: 1px solid $silver-chalice;
     padding: 0 0 10px 0 !important;
     margin: 0 0 20px 0 !important;
+
+    small {
+      font-weight: 400;
+      margin-left: auto;
+    }
+  }
+
+  h2 {
+    display: flex;
+    padding: 0 0 10px 0;
+    margin: 0 0 10px 0;
+
+    small {
+      font-weight: 400;
+      margin-left: auto;
+
+      &.status-tag {
+        border-radius: .25em;
+        padding: 0 5px;
+        color: white;
+        font-size: 14px;
+
+        &.processed {
+          background: $roman-coffee;
+        }
+
+        &.approved {
+          background: $fern;
+        }
+
+        &.approval-ready {
+          background: $cob-blue;
+        }
+
+        &.not-submitted {
+          background: $california;
+        }
+      }
+    }
   }
 
   a {
