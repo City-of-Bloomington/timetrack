@@ -5,20 +5,9 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
-<s:if test="hasActionErrors()">
-	<div class="errors">
-    <s:actionerror/>
-	</div>
-</s:if>
-
-<s:elseif test="hasActionMessages()">
-	<div class="welcome">
-    <s:actionmessage/>
-	</div>
-</s:elseif>
-
 <s:if test="!hasActionErrors()">
 	<%@ include file="calendarTopDetails.jsp" %>
+	<%@ include file="strutMessages.jsp" %>
 	<%@ include file="calendarFullNew.jsp" %>
 
 	<div class="container-with-padding">

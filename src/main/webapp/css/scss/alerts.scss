@@ -1,14 +1,14 @@
 .alert {
   display: flex;
   position: relative;
-  padding: 10px 15px;
-  margin-bottom: 10px;
+  padding: 5px 10px;
+  margin-bottom: 5px;
   border: 1px solid transparent;
-  background: $red;
+  background: $barley;
   border-radius: $border-radius;
 
   p {
-    color: white !important;
+    color: darken($barley, 65%) !important;
     margin: 0;
     padding: 0;
   }
@@ -23,6 +23,36 @@
 
     &:hover {
       color: lighten(white, 10%);
+    }
+  }
+
+  &.strut-action {
+    padding: 0;
+    margin: 0 0 20px 0;
+    border: none;
+    background: transparent;
+    border-radius: 0;
+
+    ul {
+      width: 100%;
+      margin: 0 auto;
+      width: calc(100% - 8px);
+      min-width: calc(100% - 8px);
+      padding: 0;
+      border: none;
+      background: transparent;
+      border-radius: 0;
+
+      li {
+        display: flex;
+        position: relative;
+        padding: 5px 10px;
+        margin-bottom: 5px;
+        border: 1px solid transparent;
+        background: $barley;
+        border-radius: $border-radius;
+        color: darken($barley, 65%) !important;
+      }
     }
   }
 }

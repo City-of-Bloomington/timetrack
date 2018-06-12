@@ -90,7 +90,8 @@ table {
 
   &.pay-period-notes,
   &.action-history,
-  &.time-issues {
+  &.time-issues,
+  &.hour-codes {
     th,
     td {
       &:nth-of-type(1),
