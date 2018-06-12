@@ -68,8 +68,26 @@
         &.not-submitted {
           background: $california;
         }
+
+        &.not-approved {
+          background: $california;
+        }
       }
     }
+
+    label {
+      font-size: 14px;
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      margin: 0 10px 0 0;
+
+      input {
+        margin: 4px 5px 0 0;
+      }
+    }
+
+
   }
 
   a {
