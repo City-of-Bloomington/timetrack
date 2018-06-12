@@ -1,27 +1,26 @@
 .form-group {
   margin: 0 0 10px 0;
 
-  label {
-    background: green;
+  label:not([type=radio]):not([type=checkbox]) {
     display: inline-block;
-    margin: 0 0 5px 0;
-  }
+    margin: 0 0 5px 5px;
 
-  input {
-    background: purple;
+    &.title {
+      margin: 0 0 5px 0;
+      font-weight: 600;
+    }
   }
 
   input:not([type=radio]):not([type=checkbox]) {
     display: block;
     width: 100%;
-    padding: .375rem .75rem;
-    font-size: 1rem;
+    padding: .25em .75em;
     line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
+    color: $dark-slate;
+    background-color: white;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
+    border: 1px solid $silver-chalice;
+    border-radius: .25em;
     transition: border-color .15s ease-in-out,
     box-shadow .15s ease-in-out;
   }
