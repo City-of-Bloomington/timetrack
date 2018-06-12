@@ -85,6 +85,11 @@
 							</s:else>
 						</h2>
 
+						<s:if test="isSubmitted() && hasWarnings()">
+							<s:set var="warnings" value="warnings" />
+							<%@ include file="warnings.jsp" %>
+						</s:if>
+
 						<s:set var="daily" value="daily" />
 						<s:set var="week1Total" value="week1Total" />
 						<s:set var="week2Total" value="week2Total" />
@@ -95,11 +100,6 @@
 							<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />
 							<s:set var="timeIssues" value="timeIssues" />
 							<%@ include file="timeIssues.jsp" %>
-						</s:if>
-
-						<s:if test="isSubmitted() && hasWarnings()">
-							<s:set var="warnings" value="warnings" />
-							<%@ include file="warnings.jsp" %>
 						</s:if>
 					</div>
 				</s:if>
