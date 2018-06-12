@@ -10,17 +10,7 @@
 			<s:hidden name="hourcode.id" value="%{hourcode.id}" />
 		</s:else>
 
-	  <s:if test="hasActionErrors()">
-			<div class="errors">
-	      <s:actionerror/>
-			</div>
-	  </s:if>
-
-	  <s:elseif test="hasActionMessages()">
-			<div class="welcome">
-	      <s:actionmessage/>
-			</div>
-	  </s:elseif>
+	  <%@ include file="strutMessages.jsp" %>
 
 		<div class="width-one-half">
 			<s:if test="hourcode.id != ''">
