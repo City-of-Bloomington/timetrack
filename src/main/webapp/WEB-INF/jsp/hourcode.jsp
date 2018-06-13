@@ -15,44 +15,44 @@
 		<div class="width-one-half">
 			<s:if test="hourcode.id != ''">
 				<div class="form-group">
-					<label class="title">ID:</label>
+					<label>ID:</label>
 					<s:property value="%{hourcode.id}" />
 				</div>
 			</s:if>
 
 			<div class="form-group">
-				<label class="title">Name:</label>
+				<label>Name:</label>
 				<s:textfield name="hourcode.name" value="%{hourcode.name}" required="true" size="20" maxlength="20" />
 			</div>
 
 			<div class="form-group">
-				<label class="title">Description:</label>
+				<label>Description:</label>
 				<s:textfield name="hourcode.description" value="%{hourcode.description}" size="30" maxlength="80" />
 			</div>
 
 			<div class="form-group">
-				<label class="d-block title">Recording Method:</label>
+				<label>Recording Method:</label>
 				<s:radio name="hourcode.record_method" value="%{hourcode.record_method}" list="#{'Time':'Time','Hours':'Hours'}" />
 			</div>
 
 			<div class="form-group">
-				<label class="d-block title">Related Accrual:</label>
+				<label>Related Accrual:</label>
 				<s:select name="hourcode.accrual_id" value="%{hourcode.accrual_id}" list="accruals" listKey="id" listValue="name" headerKey="-1" headerValue="Pick related accrual" />
 			</div>
 
 			<div class="form-group">
-				<label class="d-block title">Count as regular pay?:</label>
+				<label>Count as regular pay?:</label>
 				<s:checkbox name="hourcode.count_as_regular_pay" value="%{hourcode.count_as_regular_pay}" /> Yes
 			</div>
 
 			<div class="form-group">
-				<label class="d-block title">Default Regular?:</label>
+				<label>Default Regular?:</label>
 				<s:radio name="hourcode.reg_default" value="%{hourcode.reg_default}" list="#{'0':'Yes','1':'No'}"/> (each salary group need only one default regular)
 			</div>
 
 			<s:if test="hourcode.id != ''">
-				<div class="form-group title">
-					<label class="d-block">Inactive?:</label>
+				<div class="form-group">
+					<label>Inactive?:</label>
 					<s:checkbox name="hourcode.inactive" value="%{hourcode.inactive}" /> Yes (check to dissable)
 				</div>
 			</s:if>

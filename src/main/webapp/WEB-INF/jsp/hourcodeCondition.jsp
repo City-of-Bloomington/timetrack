@@ -15,30 +15,30 @@
 
 		<s:if test="hourcodeCondition.id != ''">
 			<div class="form-group">
-				<label class="title d-block">ID</label>
+				<label>ID</label>
 				<s:property value="%{hourcodeCondition.id}" />
 			</div>
 		</s:if>
 
 		<div class="form-group">
-			<label class="title d-block">Hour Code</label>
+			<label>Hour Code</label>
 			<s:select name="hourcodeCondition.hour_code_id" value="%{hourcodeCondition.hour_code_id}" required="true" list="hourcodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Hour Code" />
 		</div>
 
 		<div class="form-group">
-			<label class="title d-block">Department </label>
+			<label>Department</label>
 			<s:select name="hourcodeCondition.department_id" value="%{hourcodeCondition.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
 		</div>
 
 		<div class="form-group">
-			<label class="title d-block">Salary Group </label>
+			<label>Salary Group</label>
 			<s:select name="hourcodeCondition.salary_group_id" value="%{hourcodeCondition.salary_group_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick salary group" required="true" />
 		</div>
 
 
 		<s:if test="hourcodeCondition.id != ''">
 			<div class="form-group">
-				<label class="title d-block">Inactive ?</label>
+				<label>Inactive ?</label>
 				<s:checkbox name="hourcodeCondition.inactive" value="%{hourcodeCondition.inactive}" /> Yes (check to dissable)
 			</div>
 		</s:if>

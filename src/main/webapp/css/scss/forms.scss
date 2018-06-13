@@ -1,13 +1,18 @@
 .form-group {
   margin: 0 0 10px 0;
 
-  label:not([type=radio]):not([type=checkbox]) {
-    display: inline-block;
-    margin: 0 0 5px 5px;
-
-    &.title {
+  label {
+    &:first-child {
+      color: red;
+      display: block;
       margin: 0 0 5px 0;
       font-weight: 600;
+    }
+
+    &:nth-child(n+2) {
+      background: blue;
+      display: inline-block;
+      margin: 0 0 5px 5px;
     }
   }
 
