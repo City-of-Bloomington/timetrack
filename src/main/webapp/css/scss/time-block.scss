@@ -1,0 +1,10 @@
+.timetrack.time-block {
+  main {
+    background: green;
+  }
+
+  form {
+    @extend .container-with-padding;
+    background: yellow;
+  }
+}
