@@ -15,7 +15,7 @@
 
 	  <%@ include file="strutMessages.jsp" %>
 
-
+	  <div class="width-one-half">
 			<s:if test="type.id != ''">
 				<div class="form-group">
 					<label>ID</label>
@@ -43,9 +43,12 @@
 			</s:if>
 
 			<s:else>
-				<s:submit name="action" type="button" value="Save Changes" class="button"/>
-				<a href="<s:property value='#application.url'/>type.action?type_name=<s:property value='type_name' />" class="button">New <s:property value="type_name" /></a>
+				<div class="button-group">
+					<a href="<s:property value='#application.url'/>type.action?type_name=<s:property value='type_name' />" class="button">New <s:property value="type_name" /></a>
+					<s:submit name="action" type="button" value="Save Changes" class="button"/>
+				</div>
 			</s:else>
+		</div>
 	</s:form>
 
 	<s:if test="type.id != ''">

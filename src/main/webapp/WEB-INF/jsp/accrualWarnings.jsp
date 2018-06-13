@@ -1,28 +1,22 @@
-<!--
- * @copyright Copyright (C) 2014-2016 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-<table class="fn1-table">
-	<caption class="cap_left"><s:property value="#accrualWarningsTitle" /></caption>
+<h1 class="cap_left"><s:property value="#accrualWarningsTitle" /></h1>
+<table class="width-full">
 	<thead>
 		<tr>
-			<th align="center"><b>ID</b></th>
-			<th align="center"><b>Hour Code</b></th>
-			<th align="center"><b>Min Hours</b></th>
-			<th align="center"><b>Step Hour</b></th>
-			<th align="center"><b>Related Accrual Max Level</b></th>
-			<th align="center"><b>Step Warning</b></th>
-			<th align="center"><b>Min Warning</b></th>
-			<th align="center"><b>Excess Warning</b></th>
+			<th>ID</th>
+			<th>Hour Code</th>
+			<th>Min Hours</th>
+			<th>Step Hour</th>
+			<th>Related Accrual Max Level</th>
+			<th>Step Warning</th>
+			<th>Min Warning</th>
+			<th>Excess Warning</th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator var="one" value="#accrualWarnings">
 			<tr>
 				<td><a href="<s:property value='#application.url' />accrualWarning.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
-				<td><s:property value="hourCode" /></td>				
+				<td><s:property value="hourCode" /></td>
 				<td><s:property value="min_hrs" /></td>
 				<td><s:property value="step_hrs" /></td>
 				<td><s:property value="related_accrual_max_level" /></td>

@@ -1,26 +1,20 @@
-<!--
- * @copyright Copyright (C) 2014-2016 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-<table class="tbl_gray">
-	<caption><s:property value="#empAccrualsTitle" /></caption>
+<h1><s:property value="#empAccrualsTitle" /></h1>
+<table class="width-full">
 	<thead>
 		<tr>
-			<th align="center"><b>ID</b></th>
-			<th align="center"><b>Accrual</b></th>
-			<th align="center"><b>Related Hour Code</b></th>
-			<th align="center"><b>Employee</b></th>
-			<th align="center"><b>Hours</b></th>
-			<th align="center"><b>Date</b></th>
+			<th>ID</th>
+			<th>Accrual</th>
+			<th>Related Hour Code</th>
+			<th>Employee</th>
+			<th>Hours</th>
+			<th>Date</th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator var="one" value="#empAccruals">
 			<tr>
 				<td><a href="<s:property value='#application.url' />empAccrual.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
-				<td><s:property value="accrual" /></td>				
+				<td><s:property value="accrual" /></td>
 				<td><s:property value="hourCode" /></td>
 				<td><s:property value="employee" /></td>
 				<td><s:property value="hours" /></td>

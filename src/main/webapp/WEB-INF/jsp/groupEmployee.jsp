@@ -1,73 +1,72 @@
-<%@  include file="header.jsp" %>
-<!--
- * @copyright Copyright (C) 2014-2016 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-<s:form action="groupEmployee" id="form_id" method="post">
-	<s:hidden name="action2" id="action2" value="" />
-	<s:hidden name="groupEmployee.employee_id" value="%{groupEmployee.employee_id}" />
-	<s:if test="groupEmployee.id == ''">
-		<h3>Add Employee to a Group</h3>
-	</s:if>
-	<s:else>
-		<h3>Edit Employee Group </h3>
-		<s:hidden id="groupEmployee.id" name="groupEmployee.id" value="%{groupEmployee.id}" />
-		<s:if test="groupEmployee.hasTimeData()">
-			<s:hidden id="groupEmployee.id" name="groupEmployee.group_id" value="%{groupEmployee.group_id}" />
-		</s:if>
-	</s:else>	
-  <s:if test="hasActionErrors()">
-		<div class="errors">
-      <s:actionerror/>
-	</div>
-  </s:if>
-  <s:elseif test="hasActionMessages()">
-		<div class="welcome">
-      <s:actionmessage/>
-		</div>
-  </s:elseif>
-	<dl class="fn1-output-field">
-		<dt>Employee</dt>
-		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='groupEmployee.employee_id' />" /><s:property value="%{groupEmployee.employee}" /></a></dd>
-	</dl>			
-	<dl class="fn1-output-field">
-		<dt>Group</dt>
-		<s:if test="groupEmployee.hasTimeData()">
-			<dd><s:property value="groupEmployee.group" />
+<%@ include file="header.jsp" %>
+<div class="internal-page">
+	<s:form action="groupEmployee" id="form_id" method="post">
+		<s:hidden name="action2" id="action2" value="" />
+		<s:hidden name="groupEmployee.employee_id" value="%{groupEmployee.employee_id}" />
+		<s:if test="groupEmployee.id == ''">
+			<h1>Add Employee to a Group</h1>
 		</s:if>
 		<s:else>
-			<dd><s:select name="groupEmployee.group_id" value="%{groupEmployee.group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Group" /></dd>
+			<h1>Edit Employee Group </h1>
+			<s:hidden id="groupEmployee.id" name="groupEmployee.id" value="%{groupEmployee.id}" />
+			<s:if test="groupEmployee.hasTimeData()">
+				<s:hidden id="groupEmployee.id" name="groupEmployee.group_id" value="%{groupEmployee.group_id}" />
+			</s:if>
 		</s:else>
-	</dl>
-	<dl class="fn1-output-field">
-		<dt>Effective Date</dt>
-		<dd><s:textfield name="groupEmployee.effective_date" value="%{groupEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" /> </dd>
-	</dl>
-	<dl class="fn1-output-field">
-		<dt>Expire Date</dt>
-		<dd><s:textfield name="groupEmployee.expire_date" value="%{groupEmployee.expire_date}" size="10" maxlength="10" cssClass="date" /> </dd>
-	</dl>
-	<dl class="fn1-output-field">
-		<dt>Inactive</dt>
-		<dd><s:checkbox name="groupEmployee.inactive" value="%{groupEmployee.inactive}" /> Yes (check to dissable)</dd>
-	</dl>	
-	<s:if test="groupEmployee.id == ''">	
-		<s:submit name="action" type="button" value="Save" class="fn1-btn"/>		
+
+	  <%@ include file="strutMessages.jsp" %>
+
+	  <div class="width-one-half">
+			<div class="form-group">
+				<label>Employee</label>
+				<a href="<s:property value='#application.url' />employee.action?id=<s:property value='groupEmployee.employee_id' />" /><s:property value="%{groupEmployee.employee}" /></a>
+			</div>
+
+			<div class="form-group">
+				<label>Group</label>
+				<s:if test="groupEmployee.hasTimeData()">
+					<s:property value="groupEmployee.group" />
+				</s:if>
+
+				<s:else>
+					<s:select name="groupEmployee.group_id" value="%{groupEmployee.group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Group" />
+				</s:else>
+			</div>
+
+			<div class="form-group">
+				<label>Effective Date</label>
+				<s:textfield name="groupEmployee.effective_date" value="%{groupEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" />
+			</div>
+
+			<div class="form-group">
+				<label>Expire Date</label>
+				<s:textfield name="groupEmployee.expire_date" value="%{groupEmployee.expire_date}" size="10" maxlength="10" cssClass="date" />
+			</div>
+
+			<div class="form-group">
+				<label>Inactive</label>
+				<s:checkbox name="groupEmployee.inactive" value="%{groupEmployee.inactive}" /> Yes (check to dissable)
+			</div>
+
+			<s:if test="groupEmployee.id == ''">
+				<s:submit name="action" type="button" value="Save" class="button"/>
+			</s:if>
+
+			<s:else>
+				<div class="button-group">
+					<s:if test="groupEmployee.hasTimeData()">
+						<a href="<s:property value='#application.url' />groupEmpChange.action?id=<s:property value='groupEmployee.id' />" class="button"> Change Employee Group</a>
+					</s:if>
+					<s:submit name="action" type="button" value="Save Changes" class="button"/>
+				</div>
+			</s:else>
+		</div>
+	</s:form>
+
+	<s:if test="hasGroupEmployees()">
+		<s:set var="groupEmployees" value="%{groupEmployees}" />
+		<s:set var="groupEmployeesTitle" value="%{groupEmployeesTitle}" />
+		<%@ include file="groupEmployees.jsp" %>
 	</s:if>
-	<s:else>
-		<s:submit name="action" type="button" value="Save Changes" class="fn1-btn"/>
-		<s:if test="groupEmployee.hasTimeData()">
-			<a href="<s:property value='#application.url' />groupEmpChange.action?id=<s:property value='groupEmployee.id' />" class="fn1-btn"> Change Employee Group</a>
-		</s:if>
-	</s:else>
-</s:form>
-<s:if test="hasGroupEmployees()">
-	<s:set var="groupEmployees" value="%{groupEmployees}" />
-	<s:set var="groupEmployeesTitle" value="%{groupEmployeesTitle}" />
-	<%@  include file="groupEmployees.jsp" %>
-</s:if>
-<%@  include file="footer.jsp" %>
-
-
+</div>
+<%@ include file="footer.jsp" %>

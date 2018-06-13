@@ -1,16 +1,10 @@
-<!--
- * @copyright Copyright (C) 2014-2015 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-<table class="fn1-table">
-	<caption><s:property value="#ipaddressesTitle" /></caption>
+<h1><s:property value="#ipaddressesTitle" /></h1>
+<table class="width-full">
 	<thead>
 		<tr>
-			<th align="center"><b>ID</b></th>
-			<th align="center"><b>IP</b></th>
-			<th align="center"><b>Description</b></th>
+			<th>ID</th>
+			<th>IP</th>
+			<th>Description</th>
 		</tr>
 	</thead>
 	<tbody>

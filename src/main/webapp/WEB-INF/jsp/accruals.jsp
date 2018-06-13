@@ -1,18 +1,12 @@
-<!--
- * @copyright Copyright (C) 2014-2015 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-<table class="fn1-table">
-	<caption><s:property value="#accrualsTitle" /></caption>
+<h1><s:property value="#accrualsTitle" /></h1>
+<table class="width-full">
 	<thead>
 		<tr>
-			<th align="center"><b>ID</b></th>
-			<th align="center"><b>Name</b></th>
-			<th align="center"><b>Description</b></th>
-			<th align="center"><b>Pref Max Level</b></th>
-			<th align="center"><b>Inactive?</b></th>						
+			<th>ID</th>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Pref Max Level</th>
+			<th>Inactive?</th>
 		</tr>
 	</thead>
 	<tbody>

@@ -1,18 +1,12 @@
-<!--
- * @copyright Copyright (C) 2014-2015 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-<table width="100%" border="1">
-	<caption><s:property value="#codeRefsTitle" /></caption>
+<h1><s:property value="#codeRefsTitle" /></h1>
+<table class="width-full">
 	<tr>
-		<th align="center"><b>ID</b></th>
-		<th align="center"><b>Code ID</b></th>
-		<th align="center"><b>Code</b></th>
-		<th align="center"><b>NW Code</b></th>
-		<th align="center"><b>GL String</b></th>
-		<th align="center"><b>PTO Ratio</b></th>
+		<th>ID</th>
+		<th>Code ID</th>
+		<th>Code</th>
+		<th>NW Code</th>
+		<th>GL String</th>
+		<th>PTO Ratio</th>
 	</tr>
 	<s:iterator var="one" value="#codeRefs">
 		<tr>

@@ -45,6 +45,7 @@ table {
     background-color: $dark-slate;
     color: white;
     border-right: 1px solid $silver;
+    text-align: left;
 
     &:nth-of-type(1),
     &:last-of-type {
@@ -91,7 +92,9 @@ table {
   &.pay-period-notes,
   &.action-history,
   &.time-issues,
-  &.hour-codes {
+  &.hour-codes,
+  &.departments,
+  &.employees {
     th,
     td {
       &:nth-of-type(1),
