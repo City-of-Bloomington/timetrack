@@ -94,7 +94,8 @@ table {
   &.time-issues,
   &.hour-codes,
   &.departments,
-  &.employees {
+  &.employees,
+  &.groups {
     th,
     td {
       &:nth-of-type(1),

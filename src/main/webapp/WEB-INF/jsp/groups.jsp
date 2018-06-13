@@ -1,5 +1,5 @@
 <h1><s:property value="#groupsTitle" /></h1>
-<table class="width-full">
+<table class="groups width-full">
 	<thead>
 		<tr>
 			<th>ID</th>
