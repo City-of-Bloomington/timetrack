@@ -1,10 +1,91 @@
 .timetrack.time-block {
+  background: white;
+  background: $gainsboro;
+
+  .alert {
+    &.strut-action {
+      margin: 10px 0 0 0;
+    }
+  }
+
   main {
-    background: green;
+    border-top: none;
+    padding: 0;
   }
 
   form {
-    @extend .container-with-padding;
-    background: yellow;
+    .form-group {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      padding: 10px;
+      margin: 0;
+      border-bottom: 1px solid $silver-chalice;
+
+      &:last-of-type {
+        background: red;
+        border-bottom: none;
+        padding: 10px 10px 0 10px;
+      }
+
+      &:hover,
+      &:focus-within {
+        //note: focus-within -- via https://caniuse.com/#feat=css-focus-within
+        label {
+          &:first-child {
+            color: $cob-blue;
+          }
+        }
+      }
+    }
+
+    label {
+      &:first-child {
+        min-width: 150px;
+      }
+    }
+
+    select {
+      width: 100%;
+      text-overflow: ellipsis;
+    }
+
+    input,
+    textarea,
+    select,
+    label {
+      &:nth-child(n+2) {}
+    }
+  }
+
+  table {
+    margin: 0 0 10px 0;
+  }
+
+  h1 {
+    display: flex;
+    border-bottom: 1px solid $silver-chalice;
+    background-color: $azure;
+    color: white;
+    padding: 10px;
+    margin: 0;
+
+    small {
+      font-weight: 400;
+      margin-left: auto;
+    }
+  }
+
+  .button-group {
+    // background: red;
+    padding: 10px;
+
+    input {
+      &[type=submit] {
+        background: $fern;
+        color: white;
+      }
+    }
   }
 }
