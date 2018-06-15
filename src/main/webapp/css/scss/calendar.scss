@@ -119,6 +119,20 @@
         display: block;
         font-size: 12px;
 
+        &.delete-time-confirm {
+          background: red;
+
+          &:focus {
+            svg {
+              outline: 5px auto -webkit-focus-ring-color;
+
+              path {
+                fill: $mine-shaft;
+              }
+            }
+          }
+        }
+
         svg {
           &#remove-icon {
             position: absolute;
