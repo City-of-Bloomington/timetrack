@@ -277,7 +277,6 @@ $(".delete-time-confirm").click(function() {
         $.ajax({
            type : 'POST',
            url  : APPLICATION_URL + 'timeBlock?id=' + block_id +'&action=Delete',
-           data : {timeblock: "main_id"},
            success : function(data){
               console.log("time block remove suceess for: " + block_id);
               setTimeout(function(){
@@ -298,5 +297,44 @@ $(".delete-time-confirm").click(function() {
 
   removeDialog.dialog("open");
   console.log(block_id);
+  return false;
+});
+
+$(".data-cell-time").click(function() {
+  var block_id        = $(this).attr('time-id');
+  var editURL         = APPLICATION_URL + 'timeBlock?id=' + block_id;
+  var queryString     = $(".time-block-form").serialize();
+
+  $.ajax({
+    type : 'GET',
+    url  : editURL,
+    data : queryString,
+    success: function (data) {
+      $('#modal-edit').html(data);
+      console.log("success");
+      console.log(block_id);
+    },
+    error: function (data) {
+      console.log("error");
+    }
+  });
+
+  editDialog = $('#modal-edit').dialog({
+    autoOpen:  false,
+    title:     'Edit Time Block',
+    modal:     true,
+    draggable: false,
+    buttons: {
+      Confirm: function() {
+        editDialog.dialog("destroy");
+      },
+      Cancel: function() {
+        editDialog.dialog("destroy");
+      }
+    }
+  });
+
+  $(".data-cell-time").unbind( "click" );
+  editDialog.dialog("open");
   return false;
 });
