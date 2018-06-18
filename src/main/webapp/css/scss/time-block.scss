@@ -88,32 +88,3 @@
     }
   }
 }
-
-.ui-widget-content {
-  background: $gainsboro;
-  padding: 0;
-}
-
-.ui-dialog {
-  .ui-dialog-titlebar {
-    background-color: $azure;
-    color: white;
-    padding: 10px;
-    margin: 0;
-    border: none;
-    border-radius: 0;
-
-    .ui-dialog-title {
-      margin: 0;
-      width: 100%;
-    }
-  }
-
-  .ui-dialog-titlebar-close {
-    display: none;
-  }
-
-  .ui-dialog-content {
-    padding: 0 10px;
-  }
-}

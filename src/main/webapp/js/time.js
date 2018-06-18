@@ -19,9 +19,9 @@ function setCurTime(id){
 		result = ''+h+':'+m;
 		result2 = ''+h+':'+m+':'+s;
     document.getElementById(id).innerHTML = result2;
-    document.getElementById(id+"2").value = result;		
+    document.getElementById(id+"2").value = result;
     setTimeout('setCurTime("'+id+'");','1000');
-    return true;		
+    return true;
 };
 $(".date").datepicker({
     nextText: "Next",
@@ -44,11 +44,11 @@ $(document).on('click', 'a', function(e) {
     }
 });
 function popwit(url, name) {
-    if(typeof(popupWin) != "object" || popupWin.closed)  { 
-        popupWin =  window.open(url, name, 'top=200,left=200,height=400,width=400,toolbar=0,menubar=0,location=0'); 
-    } 
-    else{ 
-        popupWin.location.href = url; 
+    if(typeof(popupWin) != "object" || popupWin.closed)  {
+        popupWin =  window.open(url, name, 'top=200,left=200,height=400,width=400,toolbar=0,menubar=0,location=0');
+    }
+    else{
+        popupWin.location.href = url;
     }
 		if (window.focus) {popupWin.focus()}
 		return false;
@@ -62,16 +62,16 @@ $("#emp_name").autocomplete({
         if(ui.item){
             $("#emp_name").val(ui.item.fullname);
 						$("#last_name_id").val(ui.item.last_name);
-						$("#first_name_id").val(ui.item.first_name);												
-						$("#username_id").val(ui.item.id);						
+						$("#first_name_id").val(ui.item.first_name);
+						$("#username_id").val(ui.item.id);
 						$("#employee_number_id").val(ui.item.employee_number);
 						$("#id_code_id").val(ui.item.id_code);
 						$("#email_id").val(ui.item.email);
-						$("#department_id").val(ui.item.department_id);						
+						$("#department_id").val(ui.item.department_id);
 						$("#group_id").val(ui.item.group_id);
-						$("#group_id2").html(ui.item.group_id);						
+						$("#group_id2").html(ui.item.group_id);
 						// $("#h_division").val(ui.item.division);
-						// $("#h_title").val(ui.item.title);						
+						// $("#h_title").val(ui.item.title);
         }
     }
 		})
@@ -112,8 +112,8 @@ $(document).on("click","button", function (event) {
 });
 
 function doRefresh(){
-		document.getElementById("action2").value="Refresh";		
-		document.getElementById("form_id").submit();				
+		document.getElementById("action2").value="Refresh";
+		document.getElementById("form_id").submit();
 }
 $('#show_info_button').click(function() {
     $('#show_info').hide();
@@ -142,7 +142,7 @@ $('#department_id_change').change(function() {
 		}).fail(function(xx, statusText, error){
 				var err = statusText+","+error;
 				// alert(err);
-		})		
+		})
 });
 
 /**
@@ -160,7 +160,7 @@ $('#hour_code_select').change(function() {
 				$('#time_out').val("23:59");
 				$('#time_in').attr('tabindex',-1);
 				$('#time_out').attr('tabindex',-1);
-				$('#time_overnight').attr('tabindex',-1);				
+				$('#time_overnight').attr('tabindex',-1);
 				$('#div_time_in').hide();
 				$('#div_time_out').hide();
 				$('#div_overnight').hide();
@@ -171,10 +171,10 @@ $('#hour_code_select').change(function() {
 				$('#div_time_in').show();
 				$('#div_time_out').show();
 				$('#div_overnight').show();
-				$('#hour_change').attr('tabindex',-1);				
+				$('#hour_change').attr('tabindex',-1);
 				$('#time_in').attr('tabindex',2);
 				$('#time_out').attr('tabindex',3);
-				$('#time_overnight').attr('tabindex',4);						
+				$('#time_overnight').attr('tabindex',4);
 		}
 });
 /**
@@ -186,7 +186,7 @@ $('#div_hour_change').change(function() {
 		var $option = $('#hour_code_select').find('option:selected');
 		var code = $option.val();// 2_Hours id format
 		var $obj = $('#'+code);
-		if($obj.length > 0){ 
+		if($obj.length > 0){
 				var aval = $obj.val();
 				if(+val > +aval){ // +x will convert to a number
 						alert("Entered value "+val+" greated than available balance "+aval);
@@ -207,11 +207,11 @@ $('#div_hour_change').change(function() {
 });
 
 function windowOpener(url, name, args) {
-    if(typeof(popupWin) != "object" || popupWin.closed)  { 
-        popupWin =  window.open(url, name, args); 
-    } 
-    else{ 
-        popupWin.location.href = url; 
+    if(typeof(popupWin) != "object" || popupWin.closed)  {
+        popupWin =  window.open(url, name, args);
+    }
+    else{
+        popupWin.location.href = url;
     }
 		setTimeout(function(){popupWin.focus();},1000);
  }
@@ -221,7 +221,7 @@ function changeGroupUsers(obj, sct_id){
 		if(group_id == '-1'){
 				var sct = document.getElementById(sct_id);
 				sct.options.length = 0;
-				sct.options[0] = new Option ('Pick a User', ''); 
+				sct.options[0] = new Option ('Pick a User', '');
 				sct.options[0].selected="true";
 				return;
 		}
@@ -235,13 +235,13 @@ function changeGroupUsers(obj, sct_id){
 						// remove old options
 						sct.options.length = 0;  // reset
 						// start with empty option
-						sct.options[0] = new Option ('Pick a User', ''); 
+						sct.options[0] = new Option ('Pick a User', '');
 						sct.options[0].selected="true";
 						for(var key in data){ // it is an array
 								var obj2 = data[key];
 								opt = document.createElement('option');
-								opt.value=obj2.id; 
-								opt.text=obj2.fullname; 
+								opt.value=obj2.id;
+								opt.text=obj2.fullname;
 								sct.appendChild(opt);
 						}
 				})
@@ -256,3 +256,47 @@ function verifyCancel() {
 		}
 		return x;
  }
+
+$(".delete-time-confirm").click(function() {
+  var block_id        = $(this).attr('time-id');
+  var dialogBtnGroup  = $(".ui-dialog-buttonset");
+  var dialogBtns      = $(".ui-button");
+
+  removeDialog = $('#modal-remove').dialog({
+    autoOpen:  false,
+    title:     'Confirm Delete',
+    modal:     true,
+    draggable: false,
+    open : function () {
+      // note: this is not assigning the classes
+      dialogBtnGroup.addClass("button-group");
+      dialogBtns.addClass("button");
+    },
+    buttons: {
+      Confirm: function() {
+        $.ajax({
+           type : 'POST',
+           url  : APPLICATION_URL + 'timeBlock?id=' + block_id +'&action=Delete',
+           data : {timeblock: "main_id"},
+           success : function(data){
+              console.log("time block remove suceess for: " + block_id);
+              setTimeout(function(){
+                window.location.reload();
+              });
+            },
+            error: function (request, status, error) {
+              console.log(request.responseText);
+            }
+        });
+        removeDialog.dialog("close");
+      },
+      Cancel: function() {
+        removeDialog.dialog("close");
+      }
+    }
+  });
+
+  removeDialog.dialog("open");
+  console.log(block_id);
+  return false;
+});
