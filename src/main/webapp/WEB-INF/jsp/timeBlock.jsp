@@ -1,5 +1,5 @@
 <%@ include file="headerMin.jsp" %>
-	<s:form action="timeBlock" id="form_id" method="post">
+	<s:form action="timeBlock" id="form_id" class="time-block-form" method="post">
 		<s:hidden name="action2" id="action2" value="" />
 
 		<s:if test="action != ''" >

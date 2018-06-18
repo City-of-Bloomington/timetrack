@@ -121,6 +121,7 @@
 
         &.delete-time-confirm {
           background: red;
+          cursor: pointer;
 
           &:focus {
             svg {
