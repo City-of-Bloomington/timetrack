@@ -38,9 +38,11 @@
             <div class="day">
           </s:else>
 
-          <a href="#"
+          <!-- <a href="#"
              class="day-of-month"
-             onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');">
+             onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');"> -->
+          <a href="#"
+             class="day-of-month">
              <s:property value="dayInt" />
           </a>
         </s:if>
@@ -73,4 +75,8 @@
 
 <!-- jQuery Dialog Modal: Time Block Edit -->
 <div id="modal-edit" style="display: none;">
+</div>
+
+<!-- jQuery Dialog Modal: Time Block Edit -->
+<div id="modal-add" style="display: none;">
 </div>

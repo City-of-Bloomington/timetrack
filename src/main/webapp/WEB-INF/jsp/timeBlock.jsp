@@ -74,6 +74,7 @@
 			<s:if test="timeBlock.id == ''">
 				Add Time Block
 			</s:if>
+
 			<s:else>
 				Edit Time Block
 				<s:hidden id="timeBlock_id" name="timeBlock.id" value="%{timeBlock.id}" />
@@ -153,12 +154,12 @@
 
 		<div class="button-group">
 			<s:if test="timeBlock.id == ''">
-				<s:submit name="action" type="submit" value="Save" class="button" tabindex="8" />
+				<s:submit name="action" type="submit" value="Save" class="button" id="time-block-submit" tabindex="8" />
 			</s:if>
 			<s:else>
-				<s:submit name="action" type="submit" value="Save Changes" class="button" tabindex="9" />
+				<s:submit name="action" type="submit" value="Save Changes" class="button" id="time-block-submit" tabindex="9" />
 			</s:else>
-			<a class="button" href="#" onclick="javascript:window.close()" tabindex="10">Cancel</a>
+			<a class="button" href="#" onclick="javascript:window.close('', '_blank', '')" tabindex="10">Cancel</a>
 		</div>
 	</s:form>
 <%@ include file="footer.jsp" %>

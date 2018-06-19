@@ -287,10 +287,10 @@ $(".delete-time-confirm").click(function() {
               console.log(request.responseText);
             }
         });
-        removeDialog.dialog("close");
+        removeDialog.dialog("destroy");
       },
       Cancel: function() {
-        removeDialog.dialog("close");
+        removeDialog.dialog("destroy");
       }
     }
   });
@@ -305,32 +305,93 @@ $(".data-cell-time").click(function() {
   var editURL         = APPLICATION_URL + 'timeBlock?id=' + block_id;
   var queryString     = $(".time-block-form").serialize();
 
-  $.ajax({
+  var xhrGet = $.ajax({
     type : 'GET',
     url  : editURL,
     data : queryString,
     success: function (data) {
       $('#modal-edit').html(data);
-      console.log("success");
-      console.log(block_id);
+      console.log("get success for: " + block_id);
     },
-    error: function (data) {
-      console.log("error");
-    }
+    error: function (data, status) {
+      console.log("get error");
+    },
   });
+
+  console.log("xhr get: ", xhrGet);
 
   editDialog = $('#modal-edit').dialog({
     autoOpen:  false,
     title:     'Edit Time Block',
     modal:     true,
     draggable: false,
+    cache:     false,
     buttons: {
       Confirm: function() {
+        alert("lets submit via this button!!");
+        var queryString     = $(".time-block-form").serialize();
+        var submitURL        = APPLICATION_URL + 'timeBlock.action';
+
+        // var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
+        // var documentId      = $('[name="timeBlock.document_id"]').val();
+        // var clockIn         = $('[name="timeBlock.clock_in"]').val();
+        // var clockOut        = $('[name="timeBlock.clock_out"]').val();
+        // var date            = $('[name="timeBlock.date"]').val();
+        // var orderIndex      = $('[name="timeBlock.order_index"]').val();
+        // var jobId           = $('[name="timeBlock.job_id"]').val();
+        // var Id              = $('[name="timeBlock.id"]').val();
+        // var hourCodeId      = $('[name="timeBlock.hour_code_id"]').val();
+        // var timeIn          = $('[name="timeBlock.time_in"]').val();
+        // var timeOut         = $('[name="timeBlock.time_out"]').val();
+        // var hours           = $('[name="timeBlock.hours"]').val();
+        // var repeatCount     = $('[name="timeBlock.repeat_count"]').val();
+        // var overNight       = $('[name="timeBlock.overnight"]').val();
+        // var weekends        = $('[name="timeBlock.include_weekends"]').val();
+
+        // var formValues       = {};
+        // var formValues = {
+        //   accrual_balance:  accrualBalance,
+        //   document_id:      documentId,
+        //   clock_in:         clockIn,
+        //   clock_out:        clockOut,
+        //   date:             date,
+        //   order_index:      orderIndex,
+        //   job_id:           jobId,
+        //   id:               Id,
+        //   hour_code_id:     hourCodeId,
+        //   time_in:          timeIn,
+        //   time_out:         timeOut,
+        //   hours:            hours,
+        //   repeat_count:     repeatCount,
+        //   overnight:        overNight,
+        //   include_weekends: weekends
+        // };
+
+        var xhrPost = $.ajax({
+          type : 'POST',
+          url  : submitURL,
+          data : queryString,
+          success: function (data) {
+            console.log(queryString);
+
+            console.log("post success --- SUBMIT THE FORM NOW");
+          },
+          error: function (data, status) {
+            console.log("post error status: " + status);
+          }
+        });
+
+        // $('.time-block-form').submit();
+        console.log("xhr post: ", xhrPost);
         editDialog.dialog("destroy");
       },
       Cancel: function() {
         editDialog.dialog("destroy");
+        $(this).empty();
       }
+    },
+    Close : function() {
+      $('#modal-edit').empty();
     }
   });
 
