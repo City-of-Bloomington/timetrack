@@ -24,5 +24,5 @@
     var APPLICATION_URL = '<s:property value='#application.url' />';
   </script>
 </head>
-<body class="fn1 timetrack time-block">
-  <main>
+<body class="fn1 timetrack">
+  <main class="time-block">

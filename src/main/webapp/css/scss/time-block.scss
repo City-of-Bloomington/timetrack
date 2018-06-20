@@ -1,89 +1,90 @@
-.timetrack.time-block {
-  background: $gainsboro;
-
-  .alert {
-    &.strut-action {
-      margin: 10px 0 0 0;
-    }
-  }
-
+.timetrack {
   main {
-    border-top: none;
-    padding: 0;
-  }
+    &.time-block {
+      // background: $gainsboro;
+      border-top: none !important;
+      padding: 0;
 
-  form {
-    .form-group {
-      display: flex;
-      align-items: flex-start;
-      flex-wrap: nowrap;
-      flex-direction: row;
-      padding: 10px;
-      margin: 0;
-      border-bottom: 1px solid $silver-chalice;
-
-      &:last-of-type {
-        background: red;
-        border-bottom: none;
-        padding: 10px 10px 0 10px;
-      }
-
-      &:hover,
-      &:focus-within {
-        //note: focus-within -- via https://caniuse.com/#feat=css-focus-within
-        label {
-          &:first-child {
-            color: $cob-blue;
-          }
+      .alert {
+        &.strut-action {
+          margin: 10px 0 0 0;
         }
       }
-    }
 
-    label {
-      &:first-child {
-        min-width: 150px;
+      form {
+        .form-group {
+          display: flex;
+          align-items: flex-start;
+          flex-wrap: nowrap;
+          flex-direction: row;
+          padding: 10px;
+          margin: 0;
+          border-bottom: 1px solid $silver-chalice;
+
+          &:last-of-type {
+            background: red;
+            border-bottom: none;
+            padding: 10px 10px 0 10px;
+          }
+
+          &:hover,
+          &:focus-within {
+            //note: focus-within -- via https://caniuse.com/#feat=css-focus-within
+            label {
+              &:first-child {
+                color: $cob-blue;
+              }
+            }
+          }
+        }
+
+        label {
+          &:first-child {
+            min-width: 150px;
+          }
+        }
+
+        select {
+          width: 100%;
+          text-overflow: ellipsis;
+        }
+
+        input,
+        textarea,
+        select,
+        label {
+          &:nth-child(n+2) {}
+        }
       }
-    }
 
-    select {
-      width: 100%;
-      text-overflow: ellipsis;
-    }
+      table {
+        margin: 0 0 10px 0;
+      }
 
-    input,
-    textarea,
-    select,
-    label {
-      &:nth-child(n+2) {}
-    }
-  }
-
-  table {
-    margin: 0 0 10px 0;
-  }
-
-  h1 {
-    display: flex;
-    border-bottom: 1px solid $silver-chalice;
-    background-color: $azure;
-    color: white;
-    padding: 10px;
-    margin: 0;
-
-    small {
-      font-weight: 400;
-      margin-left: auto;
-    }
-  }
-
-  .button-group {
-    // background: red;
-    padding: 10px;
-
-    input {
-      &[type=submit] {
-        background: $fern;
+      h1 {
+        display: flex;
+        border-bottom: 1px solid $silver-chalice;
+        background-color: $azure;
         color: white;
+        padding: 10px;
+        margin: 0;
+
+        small {
+          font-weight: 400;
+          margin-left: auto;
+        }
+      }
+
+      .button-group {
+        // background: red;
+        padding: 10px;
+
+        input {
+          &[type=submit] {
+            background: $fern;
+            color: white;
+          }
+        }
       }
     }
   }

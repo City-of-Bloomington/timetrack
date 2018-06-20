@@ -1,5 +1,7 @@
 <%@ include file="headerMin.jsp" %>
 	<s:form action="timeBlock" id="form_id" class="time-block-form" method="post">
+		<s:if test="timeBlock.id == ''"><input type="hidden" name="action" value="Save"></s:if>
+		<s:else><input type="hidden" name="action" value="Save Changes"></s:else>
 		<s:hidden name="action2" id="action2" value="" />
 
 		<s:if test="action != ''" >
@@ -152,14 +154,16 @@
 			<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}" tabindex="7" />
 		</div>
 
-		<div class="button-group">
+		<!-- <div class="button-group">
 			<s:if test="timeBlock.id == ''">
 				<s:submit name="action" type="submit" value="Save" class="button" id="time-block-submit" tabindex="8" />
 			</s:if>
 			<s:else>
 				<s:submit name="action" type="submit" value="Save Changes" class="button" id="time-block-submit" tabindex="9" />
+
+				<button type="submit">Save New</button>
 			</s:else>
 			<a class="button" href="#" onclick="javascript:window.close('', '_blank', '')" tabindex="10">Cancel</a>
-		</div>
+		</div> -->
 	</s:form>
 <%@ include file="footer.jsp" %>

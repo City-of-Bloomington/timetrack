@@ -38,25 +38,33 @@
             <div class="day">
           </s:else>
 
-          <!-- <a href="#"
+          <a href="#"
+             class="day-of-month"
+             data-doc-id="<s:property value='document_id' />"
+             data-date="<s:property value='date' />"
+             data-order-index="<s:property value='#blockKey' />">
+
+            <!-- <a href="#"
              class="day-of-month"
              onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');"> -->
-          <a href="#"
-             class="day-of-month">
+
+
              <s:property value="dayInt" />
           </a>
         </s:if>
 
         <s:if test="hasData()">
           <div class="data-cell">
-            <a href="#" class="data-cell-time" time-id="<s:property value='id' />">
+            <a href="#" class="data-cell-time" data-block-id="<s:property value='id' />" data-date="<s:property value='date' />">
+            <!-- <a href="#" class="" onclick="return popwit('<s:property value='#application.url' />timeBlock?id=<s:property value='id' />','timeBlock');"> -->
+
 
               <s:if test="hasNextLine()">
                 <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>
               </s:if>
               <span><b><s:property value="timeInfo" /></b></span>
 
-              <a class="delete-time-confirm" time-id="<s:property value='id' />">
+              <a class="delete-time-confirm" data-block-id="<s:property value='id' />">
                 <svg id="remove-icon" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 352 512'><path fill="" d='M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z'/></svg>
               </a>
             </a>
@@ -73,10 +81,5 @@
   <p>Are you sure you'd like to remove this time block?</p>
 </div>
 
-<!-- jQuery Dialog Modal: Time Block Edit -->
-<div id="modal-edit" style="display: none;">
-</div>
-
-<!-- jQuery Dialog Modal: Time Block Edit -->
-<div id="modal-add" style="display: none;">
-</div>
+<!-- jQuery Dialog Modal: Time Block Add/Edit -->
+<div id="modal-add-edit" style="display: none;"></div>
