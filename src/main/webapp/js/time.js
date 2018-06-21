@@ -258,7 +258,7 @@ function verifyCancel() {
  }
 
 $(".delete-time-confirm").click(function() {
-  var block_id        = $(this).attr('time-id');
+  var block_id        = $(this).attr('data-block-id');
   var dialogBtnGroup  = $(".ui-dialog-buttonset");
   var dialogBtns      = $(".ui-button");
 
@@ -267,24 +267,17 @@ $(".delete-time-confirm").click(function() {
     title:     'Confirm Delete',
     modal:     true,
     draggable: false,
-    open : function () {
-      // note: this is not assigning the classes
-      dialogBtnGroup.addClass("button-group");
-      dialogBtns.addClass("button");
-    },
     buttons: {
       Confirm: function() {
         $.ajax({
            type : 'POST',
            url  : APPLICATION_URL + 'timeBlock?id=' + block_id +'&action=Delete',
            success : function(data){
-              console.log("time block remove suceess for: " + block_id);
               setTimeout(function(){
                 window.location.reload();
               });
             },
             error: function (request, status, error) {
-              console.log(request.responseText);
             }
         });
         removeDialog.dialog("destroy");
@@ -294,14 +287,13 @@ $(".delete-time-confirm").click(function() {
       }
     }
   });
-
   removeDialog.dialog("open");
-  console.log(block_id);
   return false;
 });
 
 $(".data-cell-time").click(function() {
-  var block_id        = $(this).attr('time-id');
+  var block_id        = $(this).attr('data-block-id');
+  var timeBlockDate   = $(this).attr('data-date');
   var editURL         = APPLICATION_URL + 'timeBlock?id=' + block_id;
   var queryString     = $(".time-block-form").serialize();
 
@@ -310,80 +302,78 @@ $(".data-cell-time").click(function() {
     url  : editURL,
     data : queryString,
     success: function (data) {
-      $('#modal-edit').html(data);
-      console.log("get success for: " + block_id);
+      $('#modal-add-edit').html(data);
     },
     error: function (data, status) {
-      console.log("get error");
     },
   });
 
-  console.log("xhr get: ", xhrGet);
-
-  editDialog = $('#modal-edit').dialog({
+  editDialog = $('#modal-add-edit').dialog({
     autoOpen:  false,
-    title:     'Edit Time Block',
+    title:     'Edit Time Block' + timeBlockDate,
     modal:     true,
     draggable: false,
     cache:     false,
+    width:     500,
+    open: function (event, ui) {
+      $(".ui-dialog-titlebar").remove();
+    },
     buttons: {
-      Confirm: function() {
-        alert("lets submit via this button!!");
+      Confirm: function(e) {
+        e.preventDefault;
+
+        var submitURL       = APPLICATION_URL + 'timeBlock.action';
         var queryString     = $(".time-block-form").serialize();
-        var submitURL        = APPLICATION_URL + 'timeBlock.action';
 
-        // var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
-        // var documentId      = $('[name="timeBlock.document_id"]').val();
-        // var clockIn         = $('[name="timeBlock.clock_in"]').val();
-        // var clockOut        = $('[name="timeBlock.clock_out"]').val();
-        // var date            = $('[name="timeBlock.date"]').val();
-        // var orderIndex      = $('[name="timeBlock.order_index"]').val();
-        // var jobId           = $('[name="timeBlock.job_id"]').val();
-        // var Id              = $('[name="timeBlock.id"]').val();
-        // var hourCodeId      = $('[name="timeBlock.hour_code_id"]').val();
-        // var timeIn          = $('[name="timeBlock.time_in"]').val();
-        // var timeOut         = $('[name="timeBlock.time_out"]').val();
-        // var hours           = $('[name="timeBlock.hours"]').val();
-        // var repeatCount     = $('[name="timeBlock.repeat_count"]').val();
-        // var overNight       = $('[name="timeBlock.overnight"]').val();
-        // var weekends        = $('[name="timeBlock.include_weekends"]').val();
+        var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
+        var documentId      = $('[name="timeBlock.document_id"]').val();
+        var clockIn         = $('[name="timeBlock.clock_in"]').val();
+        var clockOut        = $('[name="timeBlock.clock_out"]').val();
+        var date            = $('[name="timeBlock.date"]').val();
+        var orderIndex      = $('[name="timeBlock.order_index"]').val();
+        var jobId           = $('[name="timeBlock.job_id"]').val();
+        var Id              = $('[name="timeBlock.id"]').val();
+        var hourCodeId      = $('[name="timeBlock.hour_code_id"]').val();
+        var timeIn          = $('[name="timeBlock.time_in"]').val();
+        var timeOut         = $('[name="timeBlock.time_out"]').val();
+        var hours           = $('[name="timeBlock.hours"]').val();
+        var repeatCount     = $('[name="timeBlock.repeat_count"]').val();
+        var overNight       = $('[name="timeBlock.overnight"]').val();
+        var weekends        = $('[name="timeBlock.include_weekends"]').val();
 
-        // var formValues       = {};
-        // var formValues = {
-        //   accrual_balance:  accrualBalance,
-        //   document_id:      documentId,
-        //   clock_in:         clockIn,
-        //   clock_out:        clockOut,
-        //   date:             date,
-        //   order_index:      orderIndex,
-        //   job_id:           jobId,
-        //   id:               Id,
-        //   hour_code_id:     hourCodeId,
-        //   time_in:          timeIn,
-        //   time_out:         timeOut,
-        //   hours:            hours,
-        //   repeat_count:     repeatCount,
-        //   overnight:        overNight,
-        //   include_weekends: weekends
-        // };
+        var formValues = {
+          accrual_balance:  accrualBalance,
+          document_id:      documentId,
+          clock_in:         clockIn,
+          clock_out:        clockOut,
+          date:             date,
+          order_index:      orderIndex,
+          job_id:           jobId,
+          id:               Id,
+          hour_code_id:     hourCodeId,
+          time_in:          timeIn,
+          time_out:         timeOut,
+          hours:            hours,
+          repeat_count:     repeatCount,
+          overnight:        overNight,
+          include_weekends: weekends
+        };
 
         var xhrPost = $.ajax({
           type : 'POST',
-          url  : submitURL,
-          data : queryString,
+          url  :  submitURL,
+          data :  JSON.stringify(formValues),
           success: function (data) {
-            console.log(queryString);
-
-            console.log("post success --- SUBMIT THE FORM NOW");
+            $('.time-block-form').submit();
+            setTimeout(function(){
+              window.location.reload();
+            });
           },
           error: function (data, status) {
-            console.log("post error status: " + status);
           }
         });
-
-        // $('.time-block-form').submit();
-        console.log("xhr post: ", xhrPost);
         editDialog.dialog("destroy");
+        return false;
       },
       Cancel: function() {
         editDialog.dialog("destroy");
@@ -391,11 +381,115 @@ $(".data-cell-time").click(function() {
       }
     },
     Close : function() {
-      $('#modal-edit').empty();
+      $('#modal-add-edit').empty();
     }
   });
 
   $(".data-cell-time").unbind( "click" );
   editDialog.dialog("open");
+  return false;
+});
+
+$(".day-of-month").click(function() {
+  var docId               = $(this).attr('data-doc-id');
+  var timeBlockDate       = $(this).attr('data-date');
+  var timeBlockOrderIndex = $(this).attr('data-order-index');
+  var addURL              = APPLICATION_URL + 'timeBlock?document_id=' + docId + '&date=' + timeBlockDate + '&order_index=' + timeBlockOrderIndex;
+  var queryString         = $(".time-block-form").serialize();
+
+  var xhrGet = $.ajax({
+    type : 'GET',
+    url  : addURL,
+    data : queryString,
+    success: function (data) {
+      $('#modal-add-edit').html(data);
+      console.log("get success for: " + docId);
+    },
+    error: function (data, status) {
+      console.log("get error");
+    },
+  });
+
+  console.log("ADD Time Block: xhr get: ", xhrGet);
+
+  addDialog = $('#modal-add-edit').dialog({
+    autoOpen:  false,
+    title:     'Add Time Block' + timeBlockDate,
+    modal:     true,
+    draggable: false,
+    cache:     false,
+    width:     500,
+    open: function (event, ui) {
+      $(".ui-dialog-titlebar").remove();
+    },
+    buttons: {
+      Confirm: function(e) {
+        e.preventDefault;
+
+        var submitURL       = APPLICATION_URL + 'timeBlock.action';
+        var queryString     = $(".time-block-form").serialize();
+
+        var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
+        var documentId      = $('[name="timeBlock.document_id"]').val();
+        var clockIn         = $('[name="timeBlock.clock_in"]').val();
+        var clockOut        = $('[name="timeBlock.clock_out"]').val();
+        var date            = $('[name="timeBlock.date"]').val();
+        var orderIndex      = $('[name="timeBlock.order_index"]').val();
+        var jobId           = $('[name="timeBlock.job_id"]').val();
+        var Id              = $('[name="timeBlock.id"]').val();
+        var hourCodeId      = $('[name="timeBlock.hour_code_id"]').val();
+        var timeIn          = $('[name="timeBlock.time_in"]').val();
+        var timeOut         = $('[name="timeBlock.time_out"]').val();
+        var hours           = $('[name="timeBlock.hours"]').val();
+        var repeatCount     = $('[name="timeBlock.repeat_count"]').val();
+        var overNight       = $('[name="timeBlock.overnight"]').val();
+        var weekends        = $('[name="timeBlock.include_weekends"]').val();
+
+        var formValues = {
+          accrual_balance:  accrualBalance,
+          document_id:      documentId,
+          clock_in:         clockIn,
+          clock_out:        clockOut,
+          date:             date,
+          order_index:      orderIndex,
+          job_id:           jobId,
+          id:               Id,
+          hour_code_id:     hourCodeId,
+          time_in:          timeIn,
+          time_out:         timeOut,
+          hours:            hours,
+          repeat_count:     repeatCount,
+          overnight:        overNight,
+          include_weekends: weekends
+        };
+
+        var xhrPost = $.ajax({
+          type : 'POST',
+          url  :  submitURL,
+          data :  JSON.stringify(formValues),
+          success: function (data) {
+            $('.time-block-form').submit();
+            setTimeout(function(){
+              window.location.reload();
+            });
+          },
+          error: function (data, status) {
+          }
+        });
+        addDialog.dialog("destroy");
+        return false;
+      },
+      Cancel: function() {
+        addDialog.dialog("destroy");
+        $(this).empty();
+      }
+    },
+    Close : function() {
+      $('#modal-add-edit').empty();
+    }
+  });
+
+  $(".day-of-month").unbind( "click" );
+  addDialog.dialog("open");
   return false;
 });
