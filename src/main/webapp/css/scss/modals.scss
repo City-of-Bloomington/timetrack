@@ -1,7 +1,14 @@
 #modal-remove {
-  padding: 10px;
-
   p {
     margin: 0;
+    padding: 20px 10px 0 10px;
+
+    &.details {
+      font-weight: 500;
+    }
+
+    &:nth-of-type(n+2) {
+      padding: 10px 10px 0 10px;
+    }
   }
 }
