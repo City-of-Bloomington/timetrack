@@ -267,6 +267,10 @@ $(".delete-time-confirm").click(function() {
     title:     'Confirm Delete',
     modal:     true,
     draggable: false,
+    position: { my: "top center",
+                at: "top center",
+                of: ".tabs"
+    },
     buttons: {
       Confirm: function() {
         $.ajax({
@@ -290,6 +294,8 @@ $(".delete-time-confirm").click(function() {
   removeDialog.dialog("open");
   return false;
 });
+
+
 
 $(".data-cell-time").click(function() {
   var block_id        = $(this).attr('data-block-id');
@@ -315,8 +321,29 @@ $(".data-cell-time").click(function() {
     draggable: false,
     cache:     false,
     width:     500,
+    position: { my: "top center",
+                at: "top center",
+                of: ".tabs"
+    },
     open: function (event, ui) {
       $(".ui-dialog-titlebar").remove();
+
+      setTimeout(function(){
+        var hourCodeIdVal    = $('[name="timeBlock.hour_code_id"]').val();
+        var hourCodeId    = $('[name="timeBlock.hour_code_id"]');
+        var hourCodeHour  = $('[name="timeBlock.hours"]');
+        var timeIn        = $('[name="timeBlock.time_in"]');
+
+        if(hourCodeIdVal === '1_Time') {
+          timeIn.focus();
+        } else { hourCodeHour.focus(); }
+
+        hourCodeId.on('change', function(){
+          if(hourCodeIdVal === '1_Time') {
+            timeIn.focus();
+          } else { hourCodeHour.focus(); }
+        })
+      }, 500);
     },
     buttons: {
       Confirm: function(e) {
@@ -392,6 +419,7 @@ $(".data-cell-time").click(function() {
 
 $(".day-of-month").click(function() {
   var docId               = $(this).attr('data-doc-id');
+  var blockId             = $(this).attr('data-block-id');
   var timeBlockDate       = $(this).attr('data-date');
   var timeBlockOrderIndex = $(this).attr('data-order-index');
   var addURL              = APPLICATION_URL + 'timeBlock?document_id=' + docId + '&date=' + timeBlockDate + '&order_index=' + timeBlockOrderIndex;
@@ -403,7 +431,7 @@ $(".day-of-month").click(function() {
     data : queryString,
     success: function (data) {
       $('#modal-add-edit').html(data);
-      console.log("get success for: " + docId);
+      console.log("get success for: " + blockId);
     },
     error: function (data, status) {
       console.log("get error");
@@ -419,8 +447,32 @@ $(".day-of-month").click(function() {
     draggable: false,
     cache:     false,
     width:     500,
+    position: { my: "top center",
+                at: "top center",
+                of: ".tabs"
+    },
     open: function (event, ui) {
       $(".ui-dialog-titlebar").remove();
+
+      setTimeout(function(){
+        var hourCodeIdVal = $('[name="timeBlock.hour_code_id"]').val();
+        var hourCodeId    = $('[name="timeBlock.hour_code_id"]');
+        var hourCodeHour  = $('[name="timeBlock.hours"]');
+        var timeIn        = $('[name="timeBlock.time_in"]');
+
+        if(hourCodeIdVal === '1_Time') {
+          timeIn.focus();
+        } else { hourCodeHour.focus();}
+
+        hourCodeId.on('change', function(){
+          if(hourCodeIdVal === '1_Time') {
+            timeIn.focus();
+          } else { hourCodeHour.focus(); }
+        })
+      }, 500);
+
+
+
     },
     buttons: {
       Confirm: function(e) {
@@ -428,6 +480,7 @@ $(".day-of-month").click(function() {
 
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
         var queryString     = $(".time-block-form").serialize();
+        var alertElm        = $('.alert').length;
 
         var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
         var documentId      = $('[name="timeBlock.document_id"]').val();
@@ -468,14 +521,21 @@ $(".day-of-month").click(function() {
           url  :  submitURL,
           data :  JSON.stringify(formValues),
           success: function (data) {
+            console.log("xhr.status :: ", xhrPost.status);
+            console.log("xhr.message :: ", xhrPost.message);
+            console.log("xhr.response :: ", xhrPost.response);
+            console.log("xhr.statusText :: ", xhrPost.statusText);
+
             $('.time-block-form').submit();
             setTimeout(function(){
               window.location.reload();
             });
           },
-          error: function (data, status) {
+          error: function (data) {
+
           }
         });
+        console.log("ADD Time Block: xhr 'post': ", xhrPost);
         addDialog.dialog("destroy");
         return false;
       },

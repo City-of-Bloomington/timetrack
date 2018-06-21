@@ -40,15 +40,10 @@
 
           <a href="#"
              class="day-of-month"
+             data-block-id="<s:property value='id' />"
              data-doc-id="<s:property value='document_id' />"
              data-date="<s:property value='date' />"
              data-order-index="<s:property value='#blockKey' />">
-
-            <!-- <a href="#"
-             class="day-of-month"
-             onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');"> -->
-
-
              <s:property value="dayInt" />
           </a>
         </s:if>
@@ -56,8 +51,6 @@
         <s:if test="hasData()">
           <div class="data-cell">
             <a href="#" class="data-cell-time" data-block-id="<s:property value='id' />" data-date="<s:property value='date' />">
-            <!-- <a href="#" class="" onclick="return popwit('<s:property value='#application.url' />timeBlock?id=<s:property value='id' />','timeBlock');"> -->
-
 
               <s:if test="hasNextLine()">
                 <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>

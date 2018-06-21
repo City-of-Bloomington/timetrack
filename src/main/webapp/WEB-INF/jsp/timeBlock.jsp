@@ -6,55 +6,13 @@
 
 		<s:if test="action != ''" >
 			<s:if test="hasActionErrors()">
-				<script>
-					window.onunload = refreshParent;
-					function refreshParent() {
-						window.opener.location.reload();
-						window.close();
-					}
-				</script>
+				<p>ERROR</p>
 			</s:if>
 
 			<s:else>
-				<script>
-					window.onload = refreshParent;
-					function refreshParent() {
-						window.opener.location.reload();
-						window.close();
-					}
-				</script>
+				<p>GOOD</p>
 			</s:else>
 		</s:if>
-
-		<s:elseif test="timeBlock.hourCode.record_method == 'Time'">
-			<script>
-				window.onload = setInputFocus;
-				function setInputFocus() {
-					var inputElement = document.getElementById("time_in");
-					inputElement.focus();
-					inputElement.addEventListener("blur", function(event){
-						if(inputElement.value.length == 0)
-							inputElement.focus();
-					});
-					console.log("Time In: " + inputElement.value);
-				}
-			</script>
-		</s:elseif>
-
-		<s:else>
-			<script>
-				window.onload = setInputFocus;
-				function setInputFocus() {
-					var inputElement = document.getElementById("hour_change");
-					inputElement.focus();
-					inputElement.addEventListener("blur", function(event){
-						if(inputElement.value == 0.0)
-							inputElement.focus();
-					});
-					console.log("Hour Change: " + inputElement.value);
-				}
-			</script>
-		</s:else>
 
 		<s:if test="hasEmpAccruals()">
 			<s:iterator var="one" value="empAccruals">
@@ -125,22 +83,22 @@
 		<s:else>
 			<div id="div_time_in" style="display:none" class="form-group">
 				<label>Start Time</label>
-				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" tabindex="-1" />(hh:mm) AM/PM
+				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" tabindex="-1" placeholder="(hh:mm) AM/PM" />
 			</div>
 
 			<div id="div_time_out" style="display:none" class="form-group">
 				<label>End Time</label>
-				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" tabindex="-1" />(hh:mm) AM/PM
+				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" tabindex="-1" placeholder="(hh:mm) AM/PM" />
 			</div>
 
 			<div id="div_overnight" style="display:none" class="form-group">
 				<label>Overnight Shift</label>
-				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" tabindex="4" id="time_overnight" />yes
+				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" tabindex="4" id="time_overnight" />
 			</div>
 
 			<div id="div_hours" class="form-group">
 				<label>Hours</label>
-				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" tabindex="5" />(dd.dd)
+				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" tabindex="5" placeholder="(dd.dd)" />
 			</div>
 		</s:else>
 
