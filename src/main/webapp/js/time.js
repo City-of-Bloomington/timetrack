@@ -259,6 +259,9 @@ function verifyCancel() {
 
 $(".delete-time-confirm").click(function() {
   var block_id        = $(this).attr('data-block-id');
+  var dataDate        = $(this).attr('data-date');
+  var dateInfo        = $(this).attr('data-info');
+
   var dialogBtnGroup  = $(".ui-dialog-buttonset");
   var dialogBtns      = $(".ui-button");
 
@@ -267,9 +270,15 @@ $(".delete-time-confirm").click(function() {
     title:     'Confirm Delete',
     modal:     true,
     draggable: false,
+    width:     500,
     position: { my: "top center",
                 at: "top center",
                 of: ".tabs"
+    },
+    open: function (event, ui) {
+      $(".ui-dialog-titlebar").remove();
+      $('h1 small').html(dataDate);
+      $('.details').html(dateInfo);
     },
     buttons: {
       Confirm: function() {
@@ -294,8 +303,6 @@ $(".delete-time-confirm").click(function() {
   removeDialog.dialog("open");
   return false;
 });
-
-
 
 $(".data-cell-time").click(function() {
   var block_id        = $(this).attr('data-block-id');
@@ -386,6 +393,7 @@ $(".data-cell-time").click(function() {
           include_weekends: weekends
         };
 
+
         var xhrPost = $.ajax({
           type : 'POST',
           url  :  submitURL,
@@ -470,17 +478,17 @@ $(".day-of-month").click(function() {
           } else { hourCodeHour.focus(); }
         })
       }, 500);
-
-
-
     },
     buttons: {
       Confirm: function(e) {
         e.preventDefault;
 
+        var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
         var queryString     = $(".time-block-form").serialize();
         var alertElm        = $('.alert').length;
+        var timeInElm       = $('[name="timeBlock.time_in"]');
+        var timeOutElm      = $('[name="timeBlock.time_out"]');
 
         var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
         var documentId      = $('[name="timeBlock.document_id"]').val();
@@ -516,25 +524,37 @@ $(".day-of-month").click(function() {
           include_weekends: weekends
         };
 
-        var xhrPost = $.ajax({
-          type : 'POST',
-          url  :  submitURL,
-          data :  JSON.stringify(formValues),
-          success: function (data) {
-            console.log("xhr.status :: ", xhrPost.status);
-            console.log("xhr.message :: ", xhrPost.message);
-            console.log("xhr.response :: ", xhrPost.response);
-            console.log("xhr.statusText :: ", xhrPost.statusText);
+        if(hourCodeIdVal === '1_Time' && timeIn === '' || timeIn === 0.0) {
+          // alert("time in cannot be empty");
+          $('.alert').addClass('active').find('p').html("Time In cannot be empty.");
+          timeInElm.focus();
+        } else if (hourCodeIdVal === '1_Time' && timeOut === '' || timeOut === 0.0) {
+          $('.alert').addClass('active').find('p').html("Time Out cannot be empty.");
+          timeOutElm.focus();
+        } else {
+          var xhrPost = $.ajax({
+            type : 'POST',
+            url  :  submitURL,
+            data :  JSON.stringify(formValues),
+            success: function (data) {
 
-            $('.time-block-form').submit();
-            setTimeout(function(){
-              window.location.reload();
-            });
-          },
-          error: function (data) {
+              $('.time-block-form').submit();
+              setTimeout(function(){
+                window.location.reload();
+              });
+            },
+            error: function (data) {
 
-          }
-        });
+            }
+          });
+        }
+
+
+        console.log("xhr.status :: ", xhrPost.status);
+        console.log("xhr.message :: ", xhrPost.message);
+        console.log("xhr.response :: ", xhrPost.response);
+        console.log("xhr.statusText :: ", xhrPost.statusText);
+
         console.log("ADD Time Block: xhr 'post': ", xhrPost);
         addDialog.dialog("destroy");
         return false;

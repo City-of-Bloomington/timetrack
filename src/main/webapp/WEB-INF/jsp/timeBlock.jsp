@@ -4,16 +4,6 @@
 		<s:else><input type="hidden" name="action" value="Save Changes"></s:else>
 		<s:hidden name="action2" id="action2" value="" />
 
-		<s:if test="action != ''" >
-			<s:if test="hasActionErrors()">
-				<p>ERROR</p>
-			</s:if>
-
-			<s:else>
-				<p>GOOD</p>
-			</s:else>
-		</s:if>
-
 		<s:if test="hasEmpAccruals()">
 			<s:iterator var="one" value="empAccruals">
 				<input type="hidden" id="<s:property value='related_hour_code_id' />_Hours" value="<s:property value='hours' />" />
@@ -43,6 +33,18 @@
 		</h1>
 
 		<%@ include file="strutMessages.jsp" %>
+
+		<s:if test="action != ''" >
+			<s:if test="hasActionErrors()">
+				<p>ERROR</p>
+			</s:if>
+
+			<s:else>
+				<p>GOOD</p>
+			</s:else>
+		</s:if>
+
+		<div class="alert"><p></p></div>
 
 		<s:if test="hasMoreThanOneJob()">
 			<div class="form-group">

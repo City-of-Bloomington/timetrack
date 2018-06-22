@@ -56,3 +56,14 @@
     }
   }
 }
+
+.time-block {
+  .alert {
+    margin: 10px;
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+}
