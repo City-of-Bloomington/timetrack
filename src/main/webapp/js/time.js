@@ -490,6 +490,7 @@ $(".day-of-month").click(function() {
         var timeInElm       = $('[name="timeBlock.time_in"]');
         var timeOutElm      = $('[name="timeBlock.time_out"]');
         var hoursElm        = $('[name="timeBlock.hours"]');
+        var alertElm        = $('.alert').addClass('active').find('p');
 
         var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
         var documentId      = $('[name="timeBlock.document_id"]').val();
@@ -525,14 +526,18 @@ $(".day-of-month").click(function() {
           include_weekends: weekends
         };
 
-        if(hourCodeIdVal === '1_Time' && timeIn === '' || timeIn === 0.0) {
-          $('.alert').addClass('active').find('p').html("Time In cannot be empty.");
+        var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeIn);
+        var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeOut);
+        var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].includes(hours);
+
+        if(timeInError){
+          alertElm.html("Time In cannot be empty.");
           timeInElm.focus();
-        } else if (hourCodeIdVal === '1_Time' && timeOut === '' || timeOut === 0.0) {
-          $('.alert').addClass('active').find('p').html("Time Out cannot be empty.");
+        } else if (timeOutError) {
+          alertElm.html("Time Out cannot be empty.");
           timeOutElm.focus();
-        } else if (hourCodeIdVal != '1_Time' && hours === '0.0' || hours === 0.0) {
-          $('.alert').addClass('active').find('p').html("Hours cannot be 0.0.");
+        } else if (hoursError) {
+          alertElm.html("Hours cannot be 0.0.");
           hoursElm.focus();
         } else {
           var xhrPost = $.ajax({
@@ -540,7 +545,6 @@ $(".day-of-month").click(function() {
             url  :  submitURL,
             data :  JSON.stringify(formValues),
             success: function (data) {
-
               $('.time-block-form').submit();
               setTimeout(function(){
                 window.location.reload();
@@ -552,12 +556,10 @@ $(".day-of-month").click(function() {
           });
         }
 
-
         console.log("xhr.status :: ", xhrPost.status);
         console.log("xhr.message :: ", xhrPost.message);
         console.log("xhr.response :: ", xhrPost.response);
         console.log("xhr.statusText :: ", xhrPost.statusText);
-
         console.log("ADD Time Block: xhr 'post': ", xhrPost);
         addDialog.dialog("destroy");
         return false;
