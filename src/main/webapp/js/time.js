@@ -489,6 +489,7 @@ $(".day-of-month").click(function() {
         var alertElm        = $('.alert').length;
         var timeInElm       = $('[name="timeBlock.time_in"]');
         var timeOutElm      = $('[name="timeBlock.time_out"]');
+        var hoursElm        = $('[name="timeBlock.hours"]');
 
         var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
         var documentId      = $('[name="timeBlock.document_id"]').val();
@@ -525,12 +526,14 @@ $(".day-of-month").click(function() {
         };
 
         if(hourCodeIdVal === '1_Time' && timeIn === '' || timeIn === 0.0) {
-          // alert("time in cannot be empty");
           $('.alert').addClass('active').find('p').html("Time In cannot be empty.");
           timeInElm.focus();
         } else if (hourCodeIdVal === '1_Time' && timeOut === '' || timeOut === 0.0) {
           $('.alert').addClass('active').find('p').html("Time Out cannot be empty.");
           timeOutElm.focus();
+        } else if (hourCodeIdVal != '1_Time' && hours === '0.0' || hours === 0.0) {
+          $('.alert').addClass('active').find('p').html("Hours cannot be 0.0.");
+          hoursElm.focus();
         } else {
           var xhrPost = $.ajax({
             type : 'POST',
