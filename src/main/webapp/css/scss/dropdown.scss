@@ -1,79 +1,73 @@
 .dropdown {
+  display: inline-block;
+  margin: 0;
+  position: relative;
+
+  .launcher {
     display: inline-block;
-    margin: 0;
-    position: relative;
+    outline: none;
+    color: $dropdown-launcher-text-color;
+    border: $dropdown-launcher-border;
+    border-radius: $dropdown-launcher-border-radius;
+    background-repeat: $dropdown-launcher-background-repeat;
+    background-position: $dropdown-launcher-background-position;
+    background-size: $dropdown-launcher-background-size;
+    background-image: $dropdown-launcher-background-image;
+    padding: $dropdown-launcher-padding;
 
-    .launcher {
-        display: inline-block;
-        color: $dark-slate;
-        border: none;
-        border-radius: $size-gutter;
-        outline: none;
-        background-repeat: no-repeat;
-        background-position: right center;
-        background-size: ($size-gutter * 1.5) ($size-gutter * 1.5);
-        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%234a4a4a' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/></svg>");
-        padding-right: 1.2em;
-
-        &:focus {
-            outline: 5px auto -webkit-focus-ring-color;
-        }
-
-        &:hover,
-        &[aria-expanded="true"] {
-            color: $cob-blue;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%231e59ae' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/></svg>");
-        }
-
-        &[aria-expanded="true"] + .links {
-            display: block;
-        }
-
-        &[aria-expanded="false"] + .links {
-            display: none;
-        }
-
-        svg {
-            &.user-proxy-icon {
-                width: 15px;
-                height: 15px;
-                vertical-align: top;
-                fill: $dark-slate;
-            }
-        }
+    &:focus {
+      outline: $focus-outline-state;
     }
 
-    .links {
-        border: 1px solid $gainsboro;
-        border-radius: 5px;
-        background: $color-content-background;
-        box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
-        min-width: 10rem;
-        padding: $size-gutter 0;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        text-align: left; // In case a menu gets embedded in a parent that is right-aligned
-        transition: opacity .125s ease-in-out;
-        z-index: 20;
-
-        .user-proxy {
-            color: $dark-slate;
-            padding: .25em .5em;
-
-            > a {
-                padding: 0;
-            }
-        }
+    &:hover,
+    &[aria-expanded="true"] {
+      color: $dropdown-launcher-hover-text-color;
+      background-image: $dropdown-launcher-hover-background-image;
     }
+
+    &[aria-expanded="true"] + .links { display: block; }
+
+    &[aria-expanded="false"] + .links { display: none; }
+
+    svg {
+      &.user-proxy-icon {
+        width: 15px;
+        height: 15px;
+        vertical-align: top;
+        fill: $dark-slate;
+      }
+    }
+  }
+
+  .links {
+    z-index: 20;
+    position: absolute;
+    right: $dropdown-launcher-links-position-right;
+    border: $dropdown-launcher-links-border;
+    border-radius: $dropdown-launcher-links-border-radius;
+    background: $dropdown-launcher-links-background-color;
+    box-shadow: $dropdown-launcher-links-box-shaddow;
+    min-width: $dropdown-launcher-links-min-width;
+    padding: $dropdown-launcher-links-padding;
+    text-align: $dropdown-launcher-links-text-align;
 
     a {
-        display: block;
-        padding: ($size-gutter/2) $size-gutter;
+      display: block;
+      padding: $dropdown-launcher-links-a-padding;
 
-        &:hover {
-            background-color: $cob-blue;
-            color: white;
-        }
+      &:hover {
+        background-color: $dropdown-launcher-links-a-hover-background-color;
+        color: $dropdown-launcher-links-a-hover-text-color;
+      }
     }
+
+    .user-proxy {
+      color: $dropdown-launcher-links-user-proxy-text-color;
+      padding: $dropdown-launcher-links-user-proxy-padding;
+
+      > a {
+        padding: 0;
+      }
+    }
+  }
 }

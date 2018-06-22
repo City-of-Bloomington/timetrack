@@ -1,89 +1,87 @@
 button,
 .button {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: $size-gutter center;
-    background-size: ($size-gutter * 2) ($size-gutter * 2);
-    vertical-align: middle;
-    margin: 0;
-    padding: ($size-gutter / 2) ($size-gutter * 2);
-    border: $btn-border-width solid $color-border-input;
-    border-radius: $border-radius;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  background-color: $btn-background-color;
+  background-repeat: no-repeat;
+  background-position: $btn-background-position;
+  background-size: $btn-background-size;
+  vertical-align: middle;
+  margin: 0;
+  padding: $btn-padding;
+  border: $btn-border;
+  border-radius: $border-radius;
+  text-decoration: none;
+  color: $btn-text-color;
+  font-size: $btn-font-size;
+  font-weight: $btn-font-weight;
+  line-height: $btn-line-height;
+
+  &:hover {
+    cursor: pointer;
     text-decoration: none;
-    font-family: $font-family-nav;
+  }
+
+  a {
     color: $dark-slate;
-    line-height: 1.2em;
-    font-size: $font-size-small;
-    font-weight: normal;
+  }
 
+  &.has-icon {
+    padding-left: $btn-has-icon-padding;
+    background-size: $btn-has-icon-background-size;
+  }
 
-    &:hover {
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    a {
-        color: $dark-slate;
+  &.hide-text {
+    span {
+      @include visuallyHidden;
     }
 
     &.has-icon {
-        padding-left: $imageSpace;
-        background-size: 10px 10px;
+     background-position: center;
     }
-
-    &.hide-text {
-        span {
-            @include visuallyHidden;
-        }
-
-        &.has-icon {
-           background-position: center;
-        }
-    }
+  }
 }
 
 .button-group {
-    position: relative;
-    display: -ms-inline-flexbox;
-    display: inline-flex;
-    vertical-align: middle;
+  position: relative;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: middle;
 
-    button,
-    .button {
-        border-radius: 0;
+  button,
+  .button {
+    border-radius: 0;
 
-        &:first-child {
-            -webkit-border-top-left-radius: $border-radius;
-            -webkit-border-bottom-left-radius: $border-radius;
-            -moz-border-radius-topleft: $border-radius;
-            -moz-border-radius-bottomleft: $border-radius;
-            border-top-left-radius: $border-radius;
-            border-bottom-left-radius: $border-radius;
-        }
-
-        &:last-child {
-            -webkit-border-top-right-radius: $border-radius;
-            -webkit-border-bottom-right-radius: $border-radius;
-            -moz-border-radius-topright: $border-radius;
-            -moz-border-radius-bottomright: $border-radius;
-            border-top-right-radius: $border-radius;
-            border-bottom-right-radius: $border-radius$border-radius;
-        }
-
-        &:last-of-type,
-        &:not(:first-child) {
-            margin-left: -$btn-border-width;
-        }
-
-        &:hover,
-        &:focus,
-        &:active,
-        &.active {
-          z-index: 1;
-        }
+    &:first-child {
+      -webkit-border-top-left-radius: $border-radius;
+      -webkit-border-bottom-left-radius: $border-radius;
+      -moz-border-radius-topleft: $border-radius;
+      -moz-border-radius-bottomleft: $border-radius;
+      border-top-left-radius: $border-radius;
+      border-bottom-left-radius: $border-radius;
     }
+
+    &:last-child {
+      -webkit-border-top-right-radius: $border-radius;
+      -webkit-border-bottom-right-radius: $border-radius;
+      -moz-border-radius-topright: $border-radius;
+      -moz-border-radius-bottomright: $border-radius;
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+
+    &:last-of-type,
+    &:not(:first-child) {
+      margin-left: -1px;
+    }
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+    z-index: 1;
+    }
+  }
 }

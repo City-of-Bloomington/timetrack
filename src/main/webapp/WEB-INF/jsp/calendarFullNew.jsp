@@ -35,34 +35,30 @@
 
           <s:else>
             <!-- this is for each day -->
-            <div class="day">
+            <div class="day"
+                 data-block-id="<s:property value='id' />"
+                 data-doc-id="<s:property value='document_id' />"
+                 data-date="<s:property value='date' />"
+                 data-order-index="<s:property value='#blockKey' />">
           </s:else>
-
-          <a href="#"
-             class="day-of-month"
-             data-block-id="<s:property value='id' />"
-             data-doc-id="<s:property value='document_id' />"
-             data-date="<s:property value='date' />"
-             data-order-index="<s:property value='#blockKey' />">
-             <s:property value="dayInt" />
-          </a>
+          <s:property value="dayInt" />
         </s:if>
 
         <s:if test="hasData()">
-          <div class="data-cell">
-            <a href="#" class="data-cell-time" data-block-id="<s:property value='id' />" data-date="<s:property value='date' />">
+          <div class="data"
+               data-block-id="<s:property value='id' />"
+               data-date="<s:property value='date' />">
 
-              <s:if test="hasNextLine()">
-                <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>
-              </s:if>
-              <span><b><s:property value="timeInfo" /></b></span>
+            <s:if test="hasNextLine()">
+              <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>
+            </s:if>
+            <span><b><s:property value="timeInfo" /></b></span>
 
-              <a class="delete-time-confirm"
-                  data-info="<s:property value='timeInfo' />"
-                  data-date="<s:property value='date' />"
-                  data-block-id="<s:property value='id' />">
-                <svg id="remove-icon" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 352 512'><path fill="" d='M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z'/></svg>
-              </a>
+            <a class="delete-time-confirm"
+                data-info="<s:property value='timeInfo' />"
+                data-date="<s:property value='date' />"
+                data-block-id="<s:property value='id' />">
+              <svg id="remove-icon" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 352 512'><path fill="" d='M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z'/></svg>
             </a>
           </div>
         </s:if>
@@ -73,7 +69,7 @@
 </div><!-- /.calendar -->
 
 <!-- jQuery Dialog Modal: Time Block Removal -->
-<div id="modal-remove" class="timetrack" style="display: none;">
+<div class="modal remove" class="timetrack" style="display: none;">
   <main class="time-block">
     <h1>Delete Time Block<small></small></h1>
     <p>Are you sure you'd like to remove this time block?</p>
@@ -82,4 +78,4 @@
 </div>
 
 <!-- jQuery Dialog Modal: Time Block Add/Edit -->
-<div id="modal-add-edit" style="display: none;"></div>
+<div class="modal add-edit" style="display: none;"></div>

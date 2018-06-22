@@ -1,107 +1,227 @@
-$url-logo:                             "";
-$url-header-background:                "";
+// Type
+$font-base:                                                 "Open Sans", "Helvetica Neue", Arial, sans-serif;
 
-//Typefaces
-@import                               'https://fonts.googleapis.com/css?family=Lora';
-@import                               'https://fonts.googleapis.com/css?family=Roboto';
-$serif:                               "Lora", serif;
-$sans:                                "Roboto", sans-serif;
+// Type: Weights
+$font-weight-400:                                           400;
+$font-weight-500:                                           500;
+$font-weight-600:                                           600;
+$font-weight-700:                                           700;
 
-$font-family-default:                 $sans;
-$font-family-heading:                 $serif;
-$font-family-nav:                     $sans;
-$font-weight-heading:                 700;
+// Type: Sizes
+$font-size-small:                                           12px;
+$font-size-regular:                                         16px;
+$font-size-medium:                                          20px;
+$font-size-large:                                           24px;
+$font-size-x-large:                                         28px;
+$font-size-xx-large:                                        30px;
+$font-size-xxx-large:                                       32px;
 
-//Font Sizes
-$font-size-huge:                      2.8125rem;
-$font-size-biggest:                   1.6667rem;
-$font-size-bigger:                    1.4000rem;
-$font-size-big:                       1.2500rem;
-$font-size-normal:                    1.1250rem;
-$font-size-small:                     1.0000rem;
-$font-size-smaller:                   0.8750rem;
+// Focus State
+$focus-outline-state:                                       5px auto -webkit-focus-ring-color;
 
-// Foreground colors
-$color-text-default:                  $mine-shaft;
-$color-text-secondary:                $silver-chalice;
-$color-link:                          $biscay;
-$color-heading:                       $mine-shaft;
-$color-divider:                       $silver;
+// Forms
+$input-border-color:                                        $silver-chalice;
 
-// Background colors
-$color-content-background:            $white;
-$color-selected-background:           $havelock-blue;
+// Spacing
+$size-gutter:                                               8px;
 
-$color-nav1:                          $biscay;
-$color-header:                        $biscay;
-$color-header-border:                 $azure;
-$color-footer:                        $dark-slate;
-$color-error:                         $sunglo;
-$color-alert:                         $california;
-$color-action:                        $fern;
-$color-action-hover:                  $deyork;
-$color-accent:                        $red;
+// Borders
+$border-radius:                                             4px;
 
-// Special widget colors
-$color-background-field:              $sail;
-$color-background-field-highlight:    $gin-fizz;
-$color-border-input:                  $silver-chalice;
-$color-border-input-highlight:        $mine-shaft;
-$color-border-table:                  $wafer;
+// Breakpoints
+$viewport-small:                                            350px;
+$viewport-medium:                                           640px;
+$viewport-large:                                            1080px;
 
-$color-table-background:              $gainsboro;
-$color-table-background-alt:          $silver;
-$color-table-header-background:       $biscay;
-
-$color-shadow:                        rgba(0, 0, 0, 0.5);
-
-
-$viewport-small:                      (350px);
-$viewport-medium:                     (640px);
-$viewport-large:                      (1080px);
-
-$size-gutter:                         .5em;
+// Alerts
+$alert-padding:                                             5px 10px;
+$alert-margin:                                              0 0 5px 0;
+$alert-border:                                              1px solid transparent;
+$alert-background-color:                                    $barley;
+$alert-border-radius:                                       $border-radius;
+$alert-text-color:                                          darken($barley, 65%) !important;
 
 // Buttons
-$imageSpace:                          ($font-size-small * 2);
-$btn-border-width:                    1px;
+$btn-background-color:                                      transparent;
+$btn-background-position:                                   8px center;
+$btn-background-size:                                       16px 16px;
+$btn-padding:                                               4px 16px;
+$btn-border:                                                1px solid $input-border-color;
+$btn-text-color:                                            $dark-slate;
+$btn-font-size:                                             $font-size-regular;
+$btn-font-weight:                                           $font-weight-400;
+$btn-line-height:                                           $font-size-medium;
+$btn-has-icon-padding:                                      0 0 0 16px;
+$btn-has-icon-background-size:                              10px 10px;
 
-$border-radius:                       ($size-gutter / 2);
+// Calendar
+$calendar-margin:                                           0 auto 40px auto;
+$calendar-height:                                           100%;
+$calendar-width:                                            calc(100% - 4px);
+$calendar-min-width:                                        calc(100% - 4px);
+
+$calendar-daily-header-background-color:                    $azure;
+$calendar-daily-header-text-color:                          white;
+$calendar-daily-header-margin:                              2px;
+$calendar-daily-header-padding:                             5px 0 5px 5px;
+
+$calendar-day-flex:                                         1 1 0;
+$calendar-day-background-color:                             rgba(255,255,255,0.9);
+$calendar-day-hover-background-color:                       $havelock-blue;
+$calendar-day-hover-text-color:                             white;
+$calendar-day-text-color:                                   $silver-chalice;
+$calendar-day-min-height:                                   125px;
+$calendar-day-margin:                                       2px;
+$calendar-day-padding:                                      5px;
+
+$calendar-weekend-background-color:                         rgba(255,255,255,0.45);
+
+$calendar-holiday-background-color:                         rgba(255,255,255,0.45);
+$calendar-holiday-span-position-top:                        30px;
+$calendar-holiday-span-position-right:                      5px;
+$calendar-holiday-span-position-left:                       5px;
+$calendar-holiday-span-font-size:                           $font-size-small;
+$calendar-holiday-span-text-color:                          white;
+$calendar-holiday-span-background-color:                    $san-marino;
+$calendar-holiday-span-border-radius:                       $border-radius / 2;
+$calendar-holiday-span-padding:                             2px 5px;
+
+$calendar-day-data-background-color:                        $gainsboro;
+$calendar-day-data-hover-background-color:                  darken($gainsboro, 15%);
+$calendar-day-data-margin:                                  5px 0 0 0;
+$calendar-day-data-padding:                                 5px;
+$calendar-day-data-text-align:                              left;
+$calendar-day-data-text-color:                              black;
+$calendar-day-data-font-size:                               $font-size-small;
+
+$calendar-day-data-a-font-size:                             $font-size-small;
+$calendar-day-data-a-text-align:                            left;
+$calendar-day-data-a-text-color:                            $dark-slate;
+
+$calendar-day-data-delete-svg-fill:                         $silver-chalice;
+$calendar-day-data-delete-active-svg-fill:                  $mine-shaft;
+$calendar-day-data-delete-svg-position-top:                 5px;
+$calendar-day-data-delete-svg-position-right:               5px;
+$calendar-day-data-delete-svg-width-height:                 15px;
+
+// Dropdown
+$dropdown-launcher-text-color:                              $dark-slate;
+$dropdown-launcher-hover-text-color:                        $cob-blue;
+$dropdown-launcher-padding:                                 0 20px 0 0;
+$dropdown-launcher-border:                                  none;
+$dropdown-launcher-border-radius:                           $border-radius;
+$dropdown-launcher-background-repeat:                       no-repeat;
+$dropdown-launcher-background-position:                     right center;
+$dropdown-launcher-background-size:                         12px 12px;
+$dropdown-launcher-background-image:                        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%234a4a4a' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/></svg>");
+$dropdown-launcher-hover-background-image:                  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%231e59ae' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/></svg>");
+
+$dropdown-launcher-links-a-padding:                         4px 8px;
+$dropdown-launcher-links-a-hover-background-color:          $cob-blue;
+$dropdown-launcher-links-a-hover-text-color:                white;
+$dropdown-launcher-links-border:                            1px solid $gainsboro;
+$dropdown-launcher-links-border-radius:                     5px;
+$dropdown-launcher-links-background-color:                  white;
+$dropdown-launcher-links-box-shaddow:                       0 0 1em 0 rgba(0, 0, 0, 0.2);
+$dropdown-launcher-links-min-width:                         160px;
+$dropdown-launcher-links-padding:                           8px 0;
+$dropdown-launcher-links-text-align:                        left;
+$dropdown-launcher-links-position-right:                    0;
+
+$dropdown-launcher-links-user-proxy-text-color:             $dark-slate;
+$dropdown-launcher-links-user-proxy-padding:                .25em .5em; // to-do: convert these
+
+// Forms
+$form-margin:                                               0 0 10px 0;
+$form-label-text-color:                                     $dark-slate;
+$form-label-first-child-margin:                             0 0 5px 0;
+$form-label-first-child-font-weight:                        $font-weight-600;
+$form-label-nth-n2-child-margin:                            0 0 5px 5px;
+
+$form-input-width:                                          100%;
+$form-input-padding:                                        .25em .75em; // to-do: convert these
+$form-input-text-color:                                     $dark-slate;
+$form-input-background-color:                               white;
+$form-input-background-clip:                                padding-box;
+$form-input-border:                                         1px solid $silver-chalice;
+$form-input-border-radius:                                  .25em; // to-do: convert these
+
+$form-input-checkbox-margin:                                0 5px 0 0;
+
+// Header
+$header-background-color:                                   white;
+$header-border-top:                                         6px solid $cob-blue;
+$header-padding:                                            8px 0;
+$header-a-text-color:                                       $biscay;
+$header-brand-img-float:                                    left;
+$header-brand-img-width:                                    64px;
+$header-brand-img-height:                                   64px;
+$header-brand-img-margin:                                   0 12px 0 0;
+
+$header-brand-heading-margin:                               0;
+$header-brand-heading-padding:                              0;
+$header-brand-heading-text-color:                           $biscay;
+$header-brand-heading-font-weight:                          $font-weight-400;
+
+$header-brand-h1-font-size:                                 $font-size-large;
+$header-brand-h2-font-size:                                 $font-size-regular;
+
+// Internal Pages
+$internal-page-padding:                                     20px;
+$internal-page-text-color:                                  $dark-slate;
+
+$internal-page-a-text-color:                                $cob-blue;
+$internal-page-a-active-state-text-color:                   $mine-shaft;
+
+$internal-page-h1-border-bottom:                            1px solid $silver-chalice;
+$internal-page-h1-margin:                                   0 0 20px 0 !important;
+$internal-page-h1-padding:                                  0 0 10px 0 !important;
+$internal-page-h1-small-font-weight:                        $font-weight-400;
+
+$internal-page-h2-margin:                                   0 0 10px 0;
+$internal-page-h2-padding:                                  0 0 10px 0;
+$internal-page-h2-small-font-weight:                        $font-weight-400;
+
+$internal-page-h2-label-font-size:                          $font-size-regular;
+$internal-page-h2-label-flex:                               1;
+$internal-page-h2-label-margin:                             0 10px 0 0;
+$internal-page-h2-label-input-margin:                       4px 5px 0 0;
+
+$internal-page-ul-margin:                                   0 0 20px 0;
+$internal-page-ul-padding:                                  0 0 0 10px;
+$internal-page-ul-list-style-position:                      inside;
+$internal-page-ul-li-margin:                                0 0 5px 0;
+
+
 
 // Breakpoint mixins
 @mixin smallViewport {
-    @media all and (min-width: #{$viewport-small}) {
-        @content;
-    }
+  @media all and (max-width: $viewport-small) { @content; }
 }
 
 @mixin mediumViewport {
-    @media all and (min-width: $viewport-medium) {
-        @content;
-    }
+  @media all and (max-width: $viewport-medium) { @content; }
 }
 
 @mixin largeViewport {
-    @media all and (min-width: $viewport-large) {
-        @content;
-    }
+  @media all and (max-width: $viewport-large) { @content; }
 }
 
 @mixin visuallyHidden() {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
 
 @mixin clearfix {
-    &:after {
-        clear: both;
-        content: '';
-        display: table;
-    }
+  &:after {
+    clear: both;
+    content: '';
+    display: table;
+  }
 }

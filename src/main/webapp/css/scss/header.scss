@@ -1,53 +1,48 @@
 header {
-    background-color: $color-content-background;
-    border-top: 0.4em solid $cob-blue;
-    padding: $size-gutter 0;
+  background-color: $header-background-color;
+  border-top: $header-border-top;
+  padding:$header-padding;
 
-    a {
-        color: $biscay;
-        font-family: $font-family-nav;
+  a {
+    color: $header-a-text-color;
+  }
+
+  .container { display: flex; }
+
+  .brand {
+    a { text-decoration: none; }
+
+    img {
+      float: $header-brand-img-float;
+      width: $header-brand-img-width;
+      height: $header-brand-img-height;
+      margin: $header-brand-img-margin;
     }
 
-    .container { display: flex; }
-
-    .brand {
-        a { text-decoration: none; }
-
-        img {
-            float: left; //to-do: get this item to not use float
-            width: $size-gutter * 8;
-            height: $size-gutter * 8;
-            margin: 0 .75rem 0 0;
-        }
-
-        h1,
-        h2 {
-            margin: 0;
-            padding: 0;
-            vertical-align: top;
-            color: $biscay;
-            font-weight: 500;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: normal;
-        }
-
-        h2 { font-size: 1em; }
-
-        .site-title {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            align-content: center;
-        }
+    h1,
+    h2 {
+      vertical-align: top;
+      margin: $header-brand-heading-margin;
+      padding: $header-brand-heading-padding;
+      color: $header-brand-heading-text-color;
+      font-weight: $header-brand-heading-font-weight;
     }
 
-    .dropdown-wrapper {
-        display: flex;
-        align-items: center;
-        margin-left: auto; // this brings the element right
+    h1 { font-size: $header-brand-h1-font-size; }
+    h2 { font-size: $header-brand-h2-font-size; }
+
+    .site-title {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      align-content: center;
     }
+  }
+
+  .dropdown-wrapper {
+    display: flex;
+    align-items: center;
+    margin-left: auto; // this brings the element right
+  }
 }

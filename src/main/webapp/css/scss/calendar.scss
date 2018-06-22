@@ -1,155 +1,128 @@
 .calendar {
-  margin: 0 auto 40px auto;
-  width: calc(100% - 4px);
-  min-width: calc(100% - 4px);
-  height: 100%;
+  margin: $calendar-margin;
+  width: $calendar-width;
+  min-width: $calendar-width;
+  height: $calendar-height;
 
+  // These are the days of the week top row.
   .daily-header {
     display: flex;
 
     > div {
-      background-color: $azure;
-      color: white;
-      padding: 5px 0 5px 5px;
-      margin: 2px;
-      flex: 1 1 0;
-
-      &.weekend {
-        background-color: blue;
-      }
+      background-color: $calendar-daily-header-background-color;
+      color: $calendar-daily-header-text-color;
+      padding: $calendar-daily-header-padding;
+      margin: $calendar-daily-header-margin;
+      flex: $calendar-day-flex;
     }
   }
 
   .week {
     display: flex;
 
-    > div {
+    .day {
+      cursor: pointer;
       position: relative;
-      background-color: rgba(255,255,255,0.9);
-      color: $silver-chalice;
-      min-height: 125px;
-      padding: 5px;
-      margin: 2px;
-      flex: 1 1 0;
-
-      .day-of-month {
-        height: 100%;
-        width: 100%;
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        padding: 5px 0 0 5px;
-        text-decoration: none;
-        color: $silver-chalice;
-
-        &:hover {
-          background-color: $havelock-blue;
-          color: white;
-
-          ~ .data-cell {
-            background-color: $vista-white;
-          }
-        }
-      }
+      background-color: $calendar-day-background-color;
+      color: $calendar-day-text-color;
+      min-height: $calendar-day-min-height;
+      margin: $calendar-day-margin;
+      padding: $calendar-day-padding;
+      flex: $calendar-day-flex;
 
       &.weekend {
-        background-color: rgba(255,255,255,0.45);
+        background-color: $calendar-weekend-background-color;
+      }
+
+      &:hover {
+        background-color: $calendar-day-hover-background-color;
+        color: $calendar-day-hover-text-color;
       }
 
       &.holiday {
-        background-color: rgba(255,255,255,0.45);
+        background-color: $calendar-holiday-background-color;
 
         > span {
           z-index: 1;
           position: absolute;
-          top: 30px;
-          right: 5px;
-          left: 5px;
-          font-size: 13px;
-          color: white;
-          background: $san-marino;
-          border-radius: 2px;
-          padding: 2px 5px;
+          top: $calendar-holiday-span-position-top;
+          right: $calendar-holiday-span-position-right;
+          left: $calendar-holiday-span-position-left;
+          font-size: $calendar-holiday-span-font-size;
+          color: $calendar-holiday-span-text-color;
+          background-color: $calendar-holiday-span-background-color;
+          border-radius: $calendar-holiday-span-border-radius;
+          padding: $calendar-holiday-span-padding;
         }
 
-        .data-cell {
+        .has-data {
           &:first-of-type {
             margin: 47px 0 0 0;
           }
         }
       }
-    }
 
-    .data-cell {
-      position: relative;
-      background-color: $gainsboro;
-      margin: 5px 0 0 0;
-      padding: 5px;
-      text-align: left;
-      color: black;
-      text-decoration: none;
-      font-size: 12px;
-
-      &:hover {
-        background-color: darken($gainsboro, 15%);
-      }
-
-      &:first-of-type {
-        margin: 25px 0 0 0;
-      }
-
-      span {
-        display: block;
-        margin: 0 0 5px 0;
-
-        &:last-of-type {
-          margin: 0;
-        }
-      }
-
-      b {
-        color: $dark-slate;
-      }
-
-      a {
-        text-align: left;
-        color: $dark-slate;
+      .data {
+        position: relative;
+        background-color: $calendar-day-data-background-color;
+        margin: $calendar-day-data-margin;
+        padding: $calendar-day-data-padding;
+        text-align: $calendar-day-data-text-align;
+        color: $calendar-day-data-text-color;
+        font-size: $font-size-small;
         text-decoration: none;
-        display: block;
-        font-size: 12px;
 
-        &.delete-time-confirm {
-          background: red;
-          cursor: pointer;
+        &:hover {
+          background-color: $calendar-day-data-hover-background-color;
+        }
 
-          &:focus {
-            svg {
-              outline: 5px auto -webkit-focus-ring-color;
+        span {
+          display: block;
+          margin: 0 0 5px 0;
 
-              path {
-                fill: $mine-shaft;
+          &:last-of-type { margin: 0; }
+        }
+
+        b { color: $dark-slate; }
+
+        a {
+          display: block;
+          text-decoration: none;
+          text-align: $calendar-day-data-a-text-align;
+          color: $calendar-day-data-a-text-color;
+          font-size: $calendar-day-data-a-font-size;
+
+          &.delete-time-confirm {
+            cursor: pointer;
+
+            &:focus {
+              svg {
+                outline: $focus-outline-state
+
+                path {
+                  fill: $calendar-day-data-delete-active-svg-fill;
+                }
               }
             }
           }
-        }
 
-        svg {
-          &#remove-icon {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            display: block;
-            width: 15px;
-            height: 15px;
+          svg {
+            &#remove-icon {
+              position: absolute;
+              display: block;
+              top: $calendar-day-data-delete-svg-position-top;
+              right: $calendar-day-data-delete-svg-position-right;
+              width: $calendar-day-data-delete-svg-width-height;
+              height: $calendar-day-data-delete-svg-width-height;
 
-            path {
-              fill: $silver-chalice;
-            }
-
-            &:hover {
               path {
-                fill: $mine-shaft;
+                fill: $calendar-day-data-delete-svg-fill;
+              }
+
+              &:hover {
+                path {
+                  fill: $calendar-day-data-delete-active-svg-fill;
+                }
               }
             }
           }

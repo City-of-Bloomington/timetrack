@@ -69,13 +69,12 @@
         margin: 0;
 
         small {
-          font-weight: 400;
+          font-weight: $font-weight-400;
           margin-left: auto;
         }
       }
 
       .button-group {
-        // background: red;
         padding: 10px;
 
         input {

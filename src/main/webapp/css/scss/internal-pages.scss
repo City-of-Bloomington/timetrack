@@ -1,57 +1,34 @@
 .internal-page {
-  // background-color: red;
-  padding: 20px;
-  color: $dark-slate;
-
-  .calendar-header-controls {
-    padding: 0 !important;
-  }
-
-  .m-b-40,
-  table {
-    &:last-of-type {
-      margin-bottom: 0 !important;
-    }
-  }
-
-  .approval-wrapper {
-    border-bottom: 1px solid $silver-chalice;
-    margin: 30px 0 20px 0;
-    padding: 0 0 20px 0;
-
-    &:last-of-type {
-      margin: 30px 0 0 0;
-      padding: 0;
-      border-bottom: none;
-    }
-  }
+  padding: $internal-page-padding;
+  color: $internal-page-text-color;
 
   h1 {
     display: flex;
-    border-bottom: 1px solid $silver-chalice;
-    padding: 0 0 10px 0 !important;
-    margin: 0 0 20px 0 !important;
+    border-bottom: $internal-page-h1-border-bottom;
+    margin: $internal-page-h1-margin;
+    padding: $internal-page-h1-padding;
 
     small {
-      font-weight: 400;
+      font-weight: $internal-page-h1-small-font-weight;
       margin-left: auto;
     }
   }
 
   h2 {
     display: flex;
-    padding: 0 0 10px 0;
-    margin: 0 0 10px 0;
+    margin: $internal-page-h2-margin;
+    padding: $internal-page-h2-padding;
 
     small {
-      font-weight: 400;
+      font-weight: $internal-page-h2-small-font-weight;
       margin-left: auto;
 
+      // to-do: lets think about moving these out onto their own
       &.status-tag {
         border-radius: .25em;
         padding: 0 5px;
         color: white;
-        font-size: 14px;
+        font-size: $font-size-small;
 
         &.processed {
           background: $roman-coffee;
@@ -76,41 +53,63 @@
     }
 
     label {
-      font-size: 14px;
       display: flex;
-      flex: 1;
       justify-content: flex-end;
-      margin: 0 10px 0 0;
+      flex: $internal-page-h2-label-flex;
+      font-size: $internal-page-h2-label-font-size;
+      margin: $internal-page-h2-label-margin;
 
       input {
-        margin: 4px 5px 0 0;
+        margin: $internal-page-h2-label-input-margin;
       }
     }
-
-
   }
 
   a {
-    color: $cob-blue;
+    color: $internal-page-a-text-color;
 
     &:hover,
     &:focus,
     &.active {
-      color: $mine-shaft;
+      color: $internal-page-a-active-state-text-color;
     }
   }
 
   ul {
-    margin: 0 0 20px 0;
+    margin: $internal-page-ul-margin;
     padding: 0 0 0 10px;
-    list-style-position: inside;
+    list-style-position: $internal-page-ul-list-style-position;
 
     &:last-of-type {
       margin: 0;
     }
 
     li {
-      margin: 0 0 5px 0;
+      margin: $internal-page-ul-li-margin;
+    }
+  }
+
+  .calendar-header-controls {
+    padding: 0 !important;
+  }
+
+  // to-do: rethink everythnig below
+  .m-b-40,
+  table {
+    &:last-of-type {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  .approval-wrapper {
+    border-bottom: 1px solid $silver-chalice;
+    margin: 30px 0 20px 0;
+    padding: 0 0 20px 0;
+
+    &:last-of-type {
+      margin: 30px 0 0 0;
+      padding: 0;
+      border-bottom: none;
     }
   }
 }

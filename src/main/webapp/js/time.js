@@ -265,7 +265,7 @@ $(".delete-time-confirm").click(function() {
   var dialogBtnGroup  = $(".ui-dialog-buttonset");
   var dialogBtns      = $(".ui-button");
 
-  removeDialog = $('#modal-remove').dialog({
+  removeDialog = $('.modal.remove').dialog({
     autoOpen:  false,
     title:     'Confirm Delete',
     modal:     true,
@@ -304,7 +304,7 @@ $(".delete-time-confirm").click(function() {
   return false;
 });
 
-$(".data-cell-time").click(function() {
+$(".data").click(function() {
   var block_id        = $(this).attr('data-block-id');
   var timeBlockDate   = $(this).attr('data-date');
   var editURL         = APPLICATION_URL + 'timeBlock?id=' + block_id;
@@ -315,13 +315,13 @@ $(".data-cell-time").click(function() {
     url  : editURL,
     data : queryString,
     success: function (data) {
-      $('#modal-add-edit').html(data);
+      $('.modal.add-edit').html(data);
     },
     error: function (data, status) {
     },
   });
 
-  editDialog = $('#modal-add-edit').dialog({
+  editDialog = $('.modal.add-edit').dialog({
     autoOpen:  false,
     title:     'Edit Time Block' + timeBlockDate,
     modal:     true,
@@ -416,16 +416,16 @@ $(".data-cell-time").click(function() {
       }
     },
     Close : function() {
-      $('#modal-add-edit').empty();
+      $('.modal.add-edit').empty();
     }
   });
 
-  $(".data-cell-time").unbind( "click" );
+  $(".data").unbind( "click" );
   editDialog.dialog("open");
   return false;
 });
 
-$(".day-of-month").click(function() {
+$(".day").click(function() {
   var docId               = $(this).attr('data-doc-id');
   var blockId             = $(this).attr('data-block-id');
   var timeBlockDate       = $(this).attr('data-date');
@@ -438,7 +438,7 @@ $(".day-of-month").click(function() {
     url  : addURL,
     data : queryString,
     success: function (data) {
-      $('#modal-add-edit').html(data);
+      $('.modal.add-edit').html(data);
       console.log("get success for: " + blockId);
     },
     error: function (data, status) {
@@ -448,7 +448,7 @@ $(".day-of-month").click(function() {
 
   console.log("ADD Time Block: xhr get: ", xhrGet);
 
-  addDialog = $('#modal-add-edit').dialog({
+  addDialog = $('.modal.add-edit').dialog({
     autoOpen:  false,
     title:     'Add Time Block' + timeBlockDate,
     modal:     true,
@@ -570,11 +570,11 @@ $(".day-of-month").click(function() {
       }
     },
     Close : function() {
-      $('#modal-add-edit').empty();
+      $('.modal.add-edit').empty();
     }
   });
 
-  $(".day-of-month").unbind( "click" );
+  $(".day").unbind( "click" );
   addDialog.dialog("open");
   return false;
 });

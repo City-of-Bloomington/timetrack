@@ -27,8 +27,7 @@
 
 /* Global */
 .timetrack {
-  font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
-  // background: $gainsboro;
+  font-family: $font-base;
 
   * { box-sizing: border-box; }
 
@@ -49,16 +48,16 @@
   }
 
   h1 {
-    font-weight: $font-weight-heading;
-    font-size: $font-size-big;
-    line-height: $font-size-big;
+    font-weight: $font-weight-700;
+    font-size: $font-size-medium;
+    line-height: $font-size-medium;
     color: $dark-slate;
   }
 
   h2 {
-    font-weight: $font-weight-heading;
-    font-size: $font-size-normal;
-    line-height: $font-size-normal;
+    font-weight: $font-weight-700;
+    font-size: $font-size-regular;
+    line-height: $font-size-regular;
     color: $dark-slate;
   }
 

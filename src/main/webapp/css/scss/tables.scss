@@ -28,7 +28,7 @@ table {
 
         &:last-of-type {
           strong {
-            font-size: 20px;
+            font-size: $font-size-medium;
           }
         }
       }
@@ -41,7 +41,7 @@ table {
   }
 
   th {
-    font-weight: 400;
+    font-weight: $font-weight-400;
     background-color: $dark-slate;
     color: white;
     border-right: 1px solid $silver;
