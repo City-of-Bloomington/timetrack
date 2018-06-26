@@ -1,87 +1,85 @@
 .timetrack {
-  main {
-    &.time-block {
-      // background: $gainsboro;
-      border-top: none !important;
-      padding: 0;
+  .time-block {
+    // background: $gainsboro;
+    border-top: none !important;
+    padding: 0;
 
-      .alert {
-        &.strut-action {
-          margin: 10px 0 0 0;
-        }
+    .alert {
+      &.strut-action {
+        margin: 10px 0 0 0;
       }
+    }
 
-      form {
-        .form-group {
-          display: flex;
-          align-items: flex-start;
-          flex-wrap: nowrap;
-          flex-direction: row;
-          padding: 10px;
-          margin: 0;
-          border-bottom: 1px solid $silver-chalice;
+    form {
+      .form-group {
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        padding: 10px;
+        margin: 0;
+        border-bottom: 1px solid $silver-chalice;
 
-          &:last-of-type {
-            border-bottom: none;
-            padding: 10px 10px 0 10px;
-          }
+        &:last-of-type {
+          border-bottom: none;
+          padding: 10px 10px 0 10px;
+        }
 
-          &:hover,
-          &:focus-within {
-            //note: focus-within -- via https://caniuse.com/#feat=css-focus-within
-            label {
-              &:first-child {
-                color: $cob-blue;
-              }
+        &:hover,
+        &:focus-within {
+          //note: focus-within -- via https://caniuse.com/#feat=css-focus-within
+          label {
+            &:first-child {
+              color: $cob-blue;
             }
           }
         }
+      }
 
-        label {
-          &:first-child {
-            min-width: 150px;
-          }
-        }
-
-        select {
-          width: 100%;
-          text-overflow: ellipsis;
-        }
-
-        input,
-        textarea,
-        select,
-        label {
-          &:nth-child(n+2) {}
+      label {
+        &:first-child {
+          min-width: 150px;
         }
       }
 
-      table {
-        margin: 0 0 10px 0;
+      select {
+        width: 100%;
+        text-overflow: ellipsis;
       }
 
-      h1 {
-        display: flex;
-        border-bottom: 1px solid $silver-chalice;
-        background-color: $azure;
-        color: white;
-        padding: 10px;
-        margin: 0;
-
-        small {
-          font-weight: $font-weight-400;
-          margin-left: auto;
-        }
+      input,
+      textarea,
+      select,
+      label {
+        &:nth-child(n+2) {}
       }
+    }
 
-      .button-group {
-        padding: 10px;
+    table {
+      margin: 0 0 10px 0;
+    }
 
-        input {
-          &[type=submit] {
-            background: $fern;
-            color: white;
-          }
+    h1 {
+      display: flex;
+      border-bottom: 1px solid $silver-chalice;
+      background-color: $azure;
+      color: white;
+      padding: 10px;
+      margin: 0;
+
+      small {
+        font-weight: $font-weight-400;
+        margin-left: auto;
+      }
+    }
+
+    .button-group {
+      padding: 10px;
+
+      input {
+        &[type=submit] {
+          background: $fern;
+          color: white;
         }
       }
     }

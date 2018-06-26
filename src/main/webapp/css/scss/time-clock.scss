@@ -1,0 +1,165 @@
+.time-clock {
+  background-color: darken($cob-blue, 10%);
+  padding: 50px;
+  height: 100vh; // vh?! ...extends height 100%
+  display: flex;
+  flex-direction: column;
+
+  .alert {
+    span {
+      font-size: 30px;
+      line-height: 30px;
+    }
+
+    p {
+      color: inherit;
+    }
+  }
+
+  img {
+    width: 100px;
+    height: 100px;
+  }
+
+  h1 {
+    font-size: 30px !important;
+    line-height: 30px !important;
+
+    small {
+      &.meta {
+        float: right;
+        font-size: 24px;
+        color: rgba(255,255,255,0.7) !important;
+      }
+    }
+  }
+
+  h2 {
+    font-size: 24px !important;
+    line-height: 24px !important;
+  }
+
+  h3 {
+    font-size:  22px !important;
+    line-height: 22px !important;
+    color: rgba(255,255,255,0.7) !important;
+  }
+
+  h1, h2, h4, h5, h6, p {
+    color: white !important;
+  }
+
+  .clock-wrapper {
+    // display: flex;
+    // height: 100%;
+    // background: green;
+    margin: 40px auto 60px auto;
+
+    .actions {
+      width: 275px;
+      float: left;
+      margin: 0 50px 0 0;
+      // margin-right: auto;
+      // display: flex;
+      // justify-content: center;
+      // flex-direction: column;
+
+      .in,
+      .out {
+        background-color: darken($cob-blue, 20%);
+        border-radius: 4px;
+        padding: 10px;
+        text-align: center;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.5);
+        font-size: 25px;
+        font-weight: 600;
+
+        &.active {
+          background: white;
+          color: $cob-blue;
+        }
+
+        &.in {
+          margin: 0 0 10px 0;
+        }
+
+        &.out {
+        }
+      }
+    }
+
+    .log-info {
+      // background: purple;
+      position: relative;
+      float: right;
+    }
+
+    .current-time,
+    #current-time {
+      // display: flex;
+      // flex-direction: column;
+      // justify-content: center;
+      position: relative;
+      float: right;
+
+      // margin-left: auto;
+      padding: 0 60px 0 0;
+      color: white;
+      // background: red;
+      // height: 100%;
+      text-align: right;
+      font-size: 140px;
+      line-height: 105px;
+
+      .am,
+      .pm {
+        position: absolute;
+        right: 0;
+        font-size: 30px;
+      }
+
+      .am {
+        top: -50px;
+      }
+
+      .pm {
+        bottom: -50px;
+      }
+    }
+  }
+
+  input {
+    background-color: darken($cob-blue, 20%);
+    border: none;
+    border-radius: 4px;
+    display: block;
+    width: 250px;
+    margin: 0 auto;
+    padding: 10px;
+    color: white;
+    font-size: 30px;
+    letter-spacing: 1px;
+    outline: none;
+
+    &::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+  }
+
+  button[type=submit] {
+    visibility: hidden;
+  }
+
+  .alert-full {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  p {
+    &.ip {
+      margin-top: auto !important;
+      text-align: center;
+    }
+  }
+}

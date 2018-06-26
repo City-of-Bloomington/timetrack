@@ -25,4 +25,4 @@
   </script>
 </head>
 <body class="fn1 timetrack">
-  <main class="time-block">
+  <main>
