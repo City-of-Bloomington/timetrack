@@ -2,7 +2,7 @@
 
 <div class="time-clock">
 
-	<h1>Time Clock <!-- <small class="meta">Tuesday - 06/25/2018</small> --></h1>
+	<h1>Time Clock <small id="meta"></small></h1>
 	<h2>Swipe your ID Card</h2>
 
 	<%@ include file="strutMessages.jsp" %>
@@ -34,9 +34,9 @@
 			<s:if test="action == ''">
 				<script>
 					// hack window refresh for updated time value
-					// setInterval(function() {
-					//   window.location.reload();
-					// }, 6000); // 60 seconds || every minute for new minute update
+					setInterval(function() {
+					  window.location.reload();
+					}, 6000); // 60 seconds || every minute for new minute update
 				</script>
 				<div id="current-time"></div>
 			</s:if>
@@ -92,14 +92,11 @@
 
 <%@ include file="footer.jsp" %>
 <script type="text/javascript">
-	var headingMetaElm = $('.testing').html();
-	var headingMeta = "super awesome";
-	headingMetaElm.html;
 
 	function displayTime() {
-		var displayTime =  document.getElementById('time_clock_id2').value;
+		var displayTime = document.getElementById('time_clock_id2').value;
 
-		displayTime = displayTime.split(':'); // convert to array
+		displayTime = displayTime.split(':');
 
 		var displayHours = Number(displayTime[0]);
 		var displayMinutes = Number(displayTime[1]);
@@ -121,4 +118,10 @@
 		paintTime.innerHTML = displayTimeValue;
 	}
 	displayTime();
+
+	var headingMetaElm = document.getElementById('meta');
+	var dayMoment = moment().format('dddd');
+	var dateMoment = moment().format('MMMM Do YYYY');
+	var newHeadingMetaElm = dayMoment + "  -  " + dateMoment;
+	headingMetaElm.innerHTML = newHeadingMetaElm;
 </script>

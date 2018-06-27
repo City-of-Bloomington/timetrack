@@ -6,6 +6,8 @@
   flex-direction: column;
 
   .alert {
+    margin: 10px 0 0 0;
+
     span {
       font-size: 30px;
       line-height: 30px;
@@ -26,7 +28,7 @@
     line-height: 30px !important;
 
     small {
-      &.meta {
+      &#meta {
         float: right;
         font-size: 24px;
         color: rgba(255,255,255,0.7) !important;
@@ -50,19 +52,13 @@
   }
 
   .clock-wrapper {
-    // display: flex;
-    // height: 100%;
-    // background: green;
+    width: 100%;
     margin: 40px auto 60px auto;
 
     .actions {
-      width: 275px;
+      width: 250px;
       float: left;
       margin: 0 50px 0 0;
-      // margin-right: auto;
-      // display: flex;
-      // justify-content: center;
-      // flex-direction: column;
 
       .in,
       .out {
@@ -90,26 +86,17 @@
     }
 
     .log-info {
-      // background: purple;
       position: relative;
       float: right;
     }
 
-    .current-time,
     #current-time {
-      // display: flex;
-      // flex-direction: column;
-      // justify-content: center;
       position: relative;
       float: right;
-
-      // margin-left: auto;
       padding: 0 60px 0 0;
       color: white;
-      // background: red;
-      // height: 100%;
       text-align: right;
-      font-size: 140px;
+      font-size: 130px;
       line-height: 105px;
 
       .am,
