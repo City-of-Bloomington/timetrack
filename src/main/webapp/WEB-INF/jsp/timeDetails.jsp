@@ -13,9 +13,9 @@
 	<div class="container-with-padding">
 		<%@ include file="warnings.jsp" %>
 
-		<div class="button-group calendar-summary-controls m-b-40">
+		<div class="calendar-summary-controls m-b-40">
 			<s:if test="!document.isSubmitted()">
-			  <a href="#" class="button has-icon plus" onclick="return popwit('<s:property value='#application.url' />timeNote?document_id=<s:property value='%{document.id}' />','Notes');">Add Notes</a>
+			  <a href="#" class="button" onclick="return popwit('<s:property value='#application.url' />timeNote?document_id=<s:property value='%{document.id}' />','Notes');">Add Notes</a>
 			</s:if>
 
 			<s:if test="document.hasLastWorkflow()" >

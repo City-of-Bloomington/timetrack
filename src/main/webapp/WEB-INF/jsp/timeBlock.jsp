@@ -1,9 +1,12 @@
 <%@ include file="headerMin.jsp" %>
 <div class="time-block">
 	<s:form action="timeBlock" id="form_id" class="time-block-form" method="post">
-		<s:if test="timeBlock.id == ''"><input type="hidden" name="action" value="Save"></s:if>
-		<s:else><input type="hidden" name="action" value="Save Changes"></s:else>
-		<s:hidden name="action2" id="action2" value="" />
+		<s:if test="timeBlock.id == ''">
+			<input type="hidden" name="action" value="Save">
+		</s:if>
+		<s:else>
+			<input type="hidden" name="action" value="Save Changes">
+		</s:else>
 
 		<s:if test="hasEmpAccruals()">
 			<s:iterator var="one" value="empAccruals">

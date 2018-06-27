@@ -359,8 +359,7 @@ $(".data").click(function() {
       }, 500);
     },
     buttons: {
-      Confirm: function(e) {
-        e.preventDefault;
+      Confirm: function() {
 
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
         var queryString     = $(".time-block-form").serialize();
@@ -400,21 +399,23 @@ $(".data").click(function() {
         };
 
 
-        var xhrPost = $.ajax({
-          type : 'POST',
-          url  :  submitURL,
-          data :  JSON.stringify(formValues),
-          success: function (data) {
-            $('.time-block-form').submit();
-            setTimeout(function(){
-              window.location.reload();
-            });
-          },
-          error: function (data, status) {
-          }
-        });
+        // var xhrPost = $.ajax({
+        //   type : 'POST',
+        //   url  :  submitURL,
+        //   async:     false,
+        //   data :  JSON.stringify(formValues),
+        //   success: function (data) {
+        //   },
+        //   error: function (data, status) {
+        //   }
+        // });
+        $('.time-block-form').submit();
         editDialog.dialog("destroy");
-        return false;
+        setTimeout(function(){
+          location.reload();
+          window.location.reload();
+        });
+        // return false;
       },
       Cancel: function() {
         editDialog.dialog("destroy");
@@ -486,8 +487,7 @@ $(".day").click(function() {
       }, 500);
     },
     buttons: {
-      Confirm: function(e) {
-        e.preventDefault;
+      Confirm: function() {
 
         var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
@@ -546,29 +546,34 @@ $(".day").click(function() {
           alertElm.html("Hours cannot be 0.0.");
           hoursElm.focus();
         } else {
-          var xhrPost = $.ajax({
-            type : 'POST',
-            url  :  submitURL,
-            data :  JSON.stringify(formValues),
-            success: function (data) {
-              $('.time-block-form').submit();
-              setTimeout(function(){
-                window.location.reload();
-              });
-            },
-            error: function (data) {
+          // var xhrPost = $.ajax({
+          //   type : 'POST',
+          //   url  :  submitURL,
+          //   async:     false,
+          //   data :  JSON.stringify(formValues),
+          //   success: function (data) {
+          //   },
+          //   error: function (data) {
 
-            }
-          });
+          //   }
+          // });
         }
 
-        console.log("xhr.status :: ", xhrPost.status);
-        console.log("xhr.message :: ", xhrPost.message);
-        console.log("xhr.response :: ", xhrPost.response);
-        console.log("xhr.statusText :: ", xhrPost.statusText);
-        console.log("ADD Time Block: xhr 'post': ", xhrPost);
+        // console.log("xhr.status :: ", xhrPost.status);
+        // console.log("xhr.message :: ", xhrPost.message);
+        // console.log("xhr.response :: ", xhrPost.response);
+        // console.log("xhr.statusText :: ", xhrPost.statusText);
+        // console.log("ADD Time Block: xhr 'post': ", xhrPost);
+
+
+        $('.time-block-form').submit();
+
         addDialog.dialog("destroy");
-        return false;
+        setTimeout(function(){
+          location.reload();
+          window.location.reload();
+        });
+        // return false;
       },
       Cancel: function() {
         addDialog.dialog("destroy");

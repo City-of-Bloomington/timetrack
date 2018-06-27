@@ -93,6 +93,19 @@
 <%@ include file="footer.jsp" %>
 <script type="text/javascript">
 
+	// (function getServerTime() {
+	//   var xhr = $.ajax({
+	//     url: APPLICATION_URL + 'timeClock.action',
+	//     success: function(data, status) {
+	//     	var testingTime = document.querySelector('.testing');
+	// 			testingTime.innerHTML = new Date(xhr.getResponseHeader('Date'));
+	//     },
+	//     complete: function() {
+	//       setTimeout(getServerTime, 10000);
+	//     }
+	//   });
+	// })();
+
 	function displayTime() {
 		var displayTime = document.getElementById('time_clock_id2').value;
 
