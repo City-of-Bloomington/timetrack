@@ -11,8 +11,10 @@
 	<%@ include file="calendarFullNew.jsp" %>
 
 	<div class="container-with-padding">
-		<%@ include file="warnings.jsp" %>
-
+		<s:if test="document.hasWarnings()">
+			<s:set var="warnings" value="document.warnings" />
+			<%@ include file="warnings.jsp" %>
+		</s:if>
 		<div class="calendar-summary-controls m-b-40">
 			<s:if test="!document.isSubmitted()">
 			  <a href="#" class="button" onclick="return popwit('<s:property value='#application.url' />timeNote?document_id=<s:property value='%{document.id}' />','Notes');">Add Notes</a>

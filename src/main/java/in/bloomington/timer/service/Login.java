@@ -115,27 +115,6 @@ public class Login extends HttpServlet{
 				out.flush();
     }
 
-		void setCookie(HttpServletRequest req,
-									 HttpServletResponse res){
-				Cookie cookie = null;
-				boolean found = false;
-				Cookie[] cookies = req.getCookies();
-				if(cookies != null){
-						for(int i=0;i<cookies.length;i++){
-								String name = cookies[i].getName();
-								if(name.equals(cookieName)){
-										found = true;
-								}
-						}
-				}
-				//
-				// if not found create one with 0 time to live;
-				//
-				if(!found){
-						cookie = new Cookie(cookieName, cookieValue);
-						res.addCookie(cookie);
-				}
-		}
     /**
      * Procesesses the login and check for authontication.
      * Uses ldap for authentication.

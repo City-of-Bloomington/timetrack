@@ -254,6 +254,8 @@ public class TimeClock{
 																					
 																					null,
 																					"y",
+																					null,
+																					false,
 																					null);
 								timeBlock.setAction_type("ClockIn");
 								timeBlock.setAction_by_id(document.getEmployee().getId());
@@ -298,6 +300,8 @@ public class TimeClock{
 																									
 																									null,
 																									"y",
+																									null,
+																									false,
 																									null);
 												timeBlock.setAction_type("ClockIn");
 												timeBlock.setAction_by_id(document.getEmployee().getId());

@@ -19,6 +19,7 @@ import in.bloomington.timer.bean.*;
 
 public class TimeBlockList{
 
+		boolean debug = false;
 		static final long serialVersionUID = 4200L;
 		static Logger logger = LogManager.getLogger(TimeBlockList.class);
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
@@ -39,7 +40,9 @@ public class TimeBlockList{
 		Map<Integer, Double> daily = new TreeMap<>();
 		Map<String, Double> hourCodeWeek1 = new TreeMap<>();
 		Map<String, Double> hourCodeWeek2 = new TreeMap<>();
-		Map<Integer, Double> usedAccrualTotals = new TreeMap<>();		
+		Map<Integer, Double> usedAccrualTotals = new TreeMap<>();
+		HolidayList holidays = null;
+		
     public TimeBlockList(){
     }
     public TimeBlockList(String val){
@@ -147,12 +150,25 @@ public class TimeBlockList{
 		public double getWeek2_flsa(){
 				return week2_flsa;
 		}
+		public boolean isHoliday(String date){
+				if(holidays != null){
+						return holidays.isHoliday(date);
+				}
+				return false;
+		}
+		public String getHolidayName(String date){
+				if(holidays != null){
+						return holidays.getHolidayName(date);
+				}
+				return "";
+		}
     //
     // getters
     //
 		public String find(){
 
-				parepareBlocks();
+				prepareBlocks();
+				prepareHolidays();
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -292,6 +308,12 @@ public class TimeBlockList{
 								int hr_code_id = rs.getInt(4);
 								String hr_code = rs.getString(16);
 								String hr_code_desc = rs.getString(17);
+								String date = rs.getString(5);
+								boolean isHoliday = isHoliday(date);
+								String holidayName = "";
+								if(isHoliday){
+										holidayName = getHolidayName(date);
+								}
 								if(hr_code_desc == null) hr_code_desc = "";
 								if(hr_code != null){
 										if(hr_code.indexOf("ONCALL") > -1){ // oncall35 id=17
@@ -318,6 +340,8 @@ public class TimeBlockList{
 																			rs.getString(11),
 																			rs.getString(12),
 																			rs.getString(13),
+																			isHoliday,
+																			holidayName,
 																			rs.getString(14) != null,
 																			rs.getInt(15),
 																			hr_code,
@@ -355,7 +379,7 @@ public class TimeBlockList{
 		 */
 		public String findUsedAccruals(){
 
-				parepareBlocks();
+				prepareBlocks();
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -409,9 +433,25 @@ public class TimeBlockList{
 				}
 				return msg;
 		}		
-		void parepareBlocks(){
+		void prepareBlocks(){
 				for(int i=0;i<14;i++){
 						daily.put(i,0.);
+				}
+		}
+		void prepareHolidays(){
+				HolidayList hl = new HolidayList(debug);
+				if(!pay_period_id.equals("")){
+						hl.setPay_period_id(pay_period_id);
+				}
+				else{
+						if(!date_from.equals(""))
+								hl.setDate_from(date_from);
+						if(!date_to.equals(""))
+								hl.setDate_to(date_to);
+				}
+				String back = hl.find();
+				if(back.equals("")){
+						holidays = hl;
 				}
 		}
 		void addToDaily(int order_id, double hrs){

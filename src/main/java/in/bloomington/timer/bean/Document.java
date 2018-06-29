@@ -211,7 +211,12 @@ public class Document{
 						List<AccrualWarning> ones = tl.getAccrualWarnings();
 						if(ones != null && ones.size() > 0){
 								for(AccrualWarning one:ones){
-										warningMap.put(one.getHourCode().getName(), one);
+										String str = one.getHourCode().getName();
+										String str2 = one.getHourCode().getDescription();
+										if(str == null) continue;
+										if(str2 == null) str2 = "";
+										str += ": "+str2;
+										warningMap.put(str, one);
 								}
 						}
 				}
@@ -615,7 +620,7 @@ public class Document{
 		 * in this function we check the weekly hour code entry times
 		 * to make sure they comply with the rules set in 'Accrual warnings'
 		 * db rules
-		 * 1-if certain hour code has a min such as PTO can be less than 1
+		 * 1-if certain hour code has a min such as PTO can not be less than 1
 		 * 2-if hour code hours used should be in certain increments
 		 *   such 0.25 (quarter hour increments)
 		 * 3-Check if excess hours were used, such as using 7 hours PTO when it is
@@ -632,33 +637,6 @@ public class Document{
 										if(dbl_used < acc_warn.getMin_hrs()){
 												warnings.add(acc_warn.getMin_warning_text());
 										}
-										else {
-												double d_dif = weekTotal - dbl_used; // 45.27 - 8.27
-												double d_need = 0;
-												if(d_dif < 40)
-														d_need = 40. - d_dif;   // 40 - 37 = 3
-												if(d_need > 0){
-														if(acc_warn.require_step()){
-																if(d_need % acc_warn.getStep_hrs() > 0.01){
-																		// 
-																		// adjust the need accroding to step
-																		// such as 6.1 ==> 6.25
-																		d_need = d_need + acc_warn.getStep_hrs() - d_need % acc_warn.getStep_hrs();
-																}
-																// if need is less than min (normally 1 hr)
-																// than we changed to min such as 0.50, 0.75
-																if(d_need < acc_warn.getMin_hrs()){
-																		d_need = acc_warn.getMin_hrs();
-																}
-														}
-												}
-												double dd = dbl_used - d_need; // 8.3 - 6.25
-												if(dd > 0.01){
-														String str = acc_warn.getExcess_warning_text()+" ("+dfn.format(dd)+" hrs)";
-														if(!warnings.contains(str))
-																warnings.add(str);
-												}
-										}
 								}
 								if(acc_warn.require_step()){
 										if(dbl_used % acc_warn.getStep_hrs() > 0){
@@ -666,6 +644,31 @@ public class Document{
 												if(!warnings.contains(str))
 														warnings.add(str);
 										}
+								}
+								double d_dif = weekTotal - dbl_used; // 45.27 - 8.27
+								double d_need = 0;
+								if(d_dif < 40)
+										d_need = 40. - d_dif;   // 40 - 37 = 3
+								if(d_need > 0){
+										if(acc_warn.require_step()){
+												if(d_need % acc_warn.getStep_hrs() > 0.01){
+														// 
+														// adjust the need accroding to step
+														// such as 6.1 ==> 6.25
+														d_need = d_need + acc_warn.getStep_hrs() - d_need % acc_warn.getStep_hrs();
+												}
+												// if need is less than min (normally 1 hr)
+												// than we changed to min such as 0.50, 0.75
+												if(d_need < acc_warn.getMin_hrs()){
+														d_need = acc_warn.getMin_hrs();
+												}
+										}
+								}
+								double dd = dbl_used - d_need; // 8.3 - 6.25
+								if(dd > 0.01){
+										String str = acc_warn.getExcess_warning_text()+" ("+dfn.format(dd)+" hrs)";
+										if(!warnings.contains(str))
+												warnings.add(str);
 								}
 						}
 				}

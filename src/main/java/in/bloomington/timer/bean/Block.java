@@ -24,7 +24,7 @@ public class Block{
 				document_id="",
 				job_id="",
 				hour_code_id="",
-				ovt_pref="", clock_in="", clock_out="";
+				ovt_pref="", clock_in="", clock_out="", holidayName="";
 		String date = ""; // the user pick date, needed for PTO, Holiday etc
 		double hours = 0.0;
 		int begin_hour = 0, begin_minute=0, end_hour=0, end_minute=0;
@@ -32,7 +32,7 @@ public class Block{
 		CodeRef codeRef = null;
 		JobTask jobTask = null;
 		Document document = null;
-		boolean hourCodeSet = false;
+		boolean hourCodeSet = false, isHoliday=false;
     public Block(
 								 String val,
 								 String val2,
@@ -49,6 +49,25 @@ public class Block{
 								 String val13
 							 ){
 				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13);
+		}
+    public Block(
+								 String val,
+								 String val2,
+								 String val3,
+								 String val4,
+								 String val5,
+								 int val6,
+								 int val7,
+								 int val8,
+								 int val9,
+								 double val10,
+								 String val11,
+								 String val12,
+								 String val13,
+								 boolean val14,
+								 String val15
+							 ){
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15);
 		}
 		void setVals(
 								 String val,
@@ -79,6 +98,39 @@ public class Block{
 				setClock_in(val12);
 				setClock_out(val13);
     }
+		void setVals(
+								 String val,
+								 String val2,
+								 String val3,
+								 String val4,
+								 String val5,
+								 int val6,
+								 int val7,
+								 int val8,
+								 int val9,
+								 double val10,
+								 String val11,
+								 String val12,
+								 String val13,
+								 boolean val14,
+								 String val15
+							 ){								
+				setId(val);
+				setDocument_id(val2);
+				setJob_id(val3);
+				setHour_code_id(val4);
+				setDate(val5);
+				setBegin_hour(val6);
+				setBegin_minute(val7);
+				setEnd_hour(val8);
+				setEnd_minute(val9);				
+				setHours(val10);
+				setOvt_pref(val11);
+				setClock_in(val12);
+				setClock_out(val13);
+				setIsHoliday(val14);
+				setHolidayName(val15);
+    }		
     public Block(String val){
 				setId(val);
     }
@@ -130,7 +182,13 @@ public class Block{
     }
 		public String getClock_out(){
 				return clock_out;
-    }		
+    }
+		public String getHolidayName(){
+				return holidayName;
+		}
+		public boolean isHoliday(){
+				return isHoliday;
+		}
     //
     // setters
     //
@@ -159,6 +217,14 @@ public class Block{
 						}
 				}
     }
+		public void setHolidayName(String val){
+				if(val != null)
+						holidayName = val;
+    }
+		public void setIsHoliday(boolean val){
+				if(val)
+						isHoliday = val;
+		}
 		//
 		// set by user when click on calendar block
 		// needed for hour code that uses hours instead of

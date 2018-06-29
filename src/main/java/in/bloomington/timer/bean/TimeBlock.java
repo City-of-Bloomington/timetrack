@@ -34,6 +34,7 @@ public class TimeBlock extends Block{
 		boolean include_weekends = false, overnight = false;
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
+		String timeInfo = "";
 		// for clock_in
 		String errors = "";
 		public TimeBlock(
@@ -51,10 +52,12 @@ public class TimeBlock extends Block{
 										 
 										 String val11,
 										 String val12,
-										 String val13
+										 String val13,
+										 boolean val14,
+										 String val15
 							 ){
 				super(val, val2, val3, val4, val5, val6, val7, val8, val9, val10,
-							val11, val12, val13);
+							val11, val12, val13, val14, val15);
 		}
     public TimeBlock(
 							 String val,
@@ -71,18 +74,20 @@ public class TimeBlock extends Block{
 							 String val12,
 							 String val13,
 							 boolean val14,
-							 int val15,
-							 String val16,
-							 String val17,
-							 String val18
+							 String val15,
+							 boolean val16,
+							 int val17,
+							 String val18,
+							 String val19,
+							 String val20
 							 ){
 				super(val, val2, val3, val4, val5, val6, val7, val8, val9, val10,
-							val11, val12, val13);
-				setInactive(val14);
-				setOrder_index(val15);
-				setHour_code(val16);
-				setCode_desc(val17);
-				setNw_code(val18);
+							val11, val12, val13, val14, val15);
+				setInactive(val16);
+				setOrder_index(val17);
+				setHour_code(val18);
+				setCode_desc(val19);
+				setNw_code(val20);
 		}
     public TimeBlock(String val){
 				super(val);
@@ -339,21 +344,24 @@ public class TimeBlock extends Block{
 				return ret;
 		}
 		public String getTimeInfo(){
-				String ret = "";
-				if(isHourType()){
-						ret += getHours()+" "+getHour_code();
-				}
-				else{
-						ret = getTime_in();
-						if(isClockInOnly()){
-								ret += " "+getHour_code();
-								ret = "Clock IN "+ret;
+				if(timeInfo.equals("")){
+						String ret = "";
+						if(isHourType()){
+								ret += getHours()+" "+getHour_code();
 						}
 						else{
-								ret += " - "+getTime_out();
+								ret = getTime_in();
+								if(isClockInOnly()){
+										ret += " "+getHour_code();
+										ret = "Clock IN "+ret;
+								}
+								else{
+										ret += " - "+getTime_out();
+								}
 						}
+						timeInfo = ret;
 				}
-				return ret;
+				return timeInfo;
 		}
 		public String getTimeInfoNextLine(){
 				String ret = "";
@@ -553,7 +561,10 @@ public class TimeBlock extends Block{
 														hrs,
 														rs.getString(11),
 														rs.getString(12),
-														rs.getString(13));
+														rs.getString(13),
+														false, // isHoliday
+														null // holiday
+														);
 										
 										setInactive(rs.getString(14) != null);
 										setOrder_index(rs.getInt(15));

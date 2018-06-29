@@ -63,6 +63,12 @@ public class TimeBlockAction extends TopAction{
 				}
 				else if(action.equals("Delete")){
 						getTimeBlock();
+						back = timeBlock.doSelect();
+						//
+						// we need document_id so that when we delete the timeblock
+						// we stay on the same payperiod
+						//
+						document_id = timeBlock.getDocument_id();
 						timeBlock.setAction_by_id(user.getId());
 						back = timeBlock.doDelete();
 						if(!back.equals("")){
@@ -71,7 +77,7 @@ public class TimeBlockAction extends TopAction{
 						else{
 								try{
 										HttpServletResponse res = ServletActionContext.getResponse();
-										String str = url+"timeDetails.action";
+										String str = url+"timeDetails.action?document_id"+document_id;
 										res.sendRedirect(str);
 										return super.execute();
 								}catch(Exception ex){
