@@ -12,48 +12,47 @@
 		</s:else>
 
 	  <%@ include file="strutMessages.jsp" %>
-
-		<div class="form-group">
-			<label>Employee</label>
-			<s:property value="empAccrual.employee" />
-		</div>
-
-		<s:if test="empAccrual.id != ''">
+	  <div class="width-one-half">
 			<div class="form-group">
-				<label>ID</label>
-				<s:property value="%{empAccrual.id}" />
+				<label>Employee</label>
+				<s:property value="empAccrual.employee" />
 			</div>
-		</s:if>
+			<s:if test="empAccrual.id != ''">
+				<div class="form-group">
+					<label>ID</label>
+					<s:property value="%{empAccrual.id}" />
+				</div>
+			</s:if>
+			
+			<s:if test="hasAccruals()">
+				<div class="form-group">
+					<label>Accrual</label>
+					<s:select name="empAccrual.accrual_id" value="%{empAccrual.accrual_id}" list="accruals" listKey="id" listValue="name" headerKey="-1" headerValue="Pick accrual" />*
+				</div>
+			</s:if>
 
-		<s:if test="hasAccruals()">
 			<div class="form-group">
-				<label>Accrual</label>
-				<s:select name="empAccrual.accrual_id" value="%{empAccrual.accrual_id}" list="accruals" listKey="id" listValue="name" headerKey="-1" headerValue="Pick accrual" />*
+				<label>Total Hours</label>
+				<s:textfield name="empAccrual.hours" value="%{empAccrual.hours}" size="5" maxlength="5" />
 			</div>
-		</s:if>
 
-		<div class="form-group">
-			<label>Total Hours</label>
-			<s:textfield name="empAccrual.hours" value="%{empAccrual.hours}" size="5" maxlength="5" />
-		</div>
-
-		<div class="form-group">
-			<label>Date</label>
-			<s:textfield name="empAccrual.date" value="%{empAccrual.date}" size="10" maxlength="10" cssClass="date" />
-		</div>
-
-		<s:if test="empAccrual.id == ''">
-			<s:submit name="action" type="button" value="Save" class="button"/>
-		</s:if>
-
-		<s:else>
-			<div class="button-group">
-				<a href="<s:property value='#application.url' />empAccrual.action?employee_selected_id=<s:property value='employee_selected_id' />" class="button">New Employee Accrual</a>
-				<s:submit name="action" type="button" value="Save Changes" class="button"/>
+			<div class="form-group">
+				<label>Date</label>
+				<s:textfield name="empAccrual.date" value="%{empAccrual.date}" size="10" maxlength="10" cssClass="date" />
 			</div>
-		</s:else>
+			
+			<s:if test="empAccrual.id == ''">
+				<s:submit name="action" type="button" value="Save" class="button"/>
+			</s:if>
+
+			<s:else>
+				<div class="button-group">
+					<a href="<s:property value='#application.url' />empAccrual.action?employee_selected_id=<s:property value='employee_selected_id' />" class="button">New Employee Accrual</a>
+					<s:submit name="action" type="button" value="Save Changes" class="button"/>
+				</div>
+			</s:else>
+		</div>
 	</s:form>
-
 	<s:if test="hasAccruals()">
 		<s:set var="empAccruals" value="%{empAccruals}" />
 		<s:set var="empAccrualsTitle" value="empAccrualsTitle" />

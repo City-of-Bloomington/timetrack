@@ -37,6 +37,7 @@ public class TimeDetailsAction extends TopAction{
 				}
 				getDocument_id();
 				if(hasNoJob()){
+						errors = "No job found for employee ";
 						addActionError("No job found for employee ");						
 				}
 				return ret;
@@ -53,10 +54,12 @@ public class TimeDetailsAction extends TopAction{
 						source = val;
 		}
 		//
+		// This is the first thing that will be called on timedetails page		
 		// check if we have document_id, if not we assume
 		// it is a new pay period and we will create one
 		//
 		public String getDocument_id(){
+				//
 				if(document_id.equals("")){
 						DocumentList dl = new DocumentList();
 						if(employee_id.equals("")){

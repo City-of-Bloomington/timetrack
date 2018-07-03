@@ -45,9 +45,11 @@ public class TimeBlockAction extends TopAction{
 						timeBlock.setAction_by_id(user.getId());
 						back = timeBlock.doSave();
 						if(!back.equals("")){
+								errors += back;
 								addActionError(back);
 						}
 						else{
+								messages += "Added Successfully";
 								addActionMessage("Added Successfully");
 						}
 				}				
@@ -55,9 +57,11 @@ public class TimeBlockAction extends TopAction{
 						timeBlock.setAction_by_id(user.getId());
 						back = timeBlock.doUpdate();
 						if(!back.equals("")){
+								errors += back;								
 								addActionError(back);
 						}
 						else{
+								messages += "Updated Successfully";								
 								addActionMessage("Updated Successfully");
 						}
 				}
@@ -73,6 +77,7 @@ public class TimeBlockAction extends TopAction{
 						back = timeBlock.doDelete();
 						if(!back.equals("")){
 								addActionError(back);
+								errors += back;										
 						}
 						else{
 								try{

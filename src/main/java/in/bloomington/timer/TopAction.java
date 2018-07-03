@@ -32,6 +32,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		static String url="", server_path="";
 		static EnvBean envBean = null;
 		String action="", id="", employee_id="";
+		String errors = "", messages="";
 		Employee user = null;
 		Employee employee = null;
 	  ServletContext ctx;
@@ -174,7 +175,20 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		@Override  	
 		public void setServletContext(ServletContext ctx) {  
         this.ctx = ctx;  
-    }  	
+    }
+		public boolean hasErrors(){
+				return !errors.equals("");
+		}
+		public String getErrors(){
+				return errors;
+		}
+		public boolean hasMessages(){
+				return !messages.equals("");
+		}		
+		public String getMessages(){
+				return messages;
+		}		
+		
 }
 
 

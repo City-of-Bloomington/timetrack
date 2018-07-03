@@ -49,7 +49,7 @@
 
 		<s:else>
 			<div class="button-group">
-				<a href="<s:property value='#application.url' />hourcodeCondition.action?" class="button">New Hour Code Restiction</a>
+				<a href="<s:property value='#application.url' />hourcodeCondition.action?" class="button">New Hour Code Restriction</a>
 				<s:submit name="action" type="button" value="Save Changes" />
 			</div>
 		</s:else>

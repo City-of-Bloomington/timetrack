@@ -50,23 +50,26 @@
 		<h1>Pay Period Summary</h1>
 		<%@ include file="dailySummary.jsp" %>
 
-		<div class="d-flex">
-			<s:if test="document.hasHourCodeWeek1()">
-			  <s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
-			  <s:set var="weekTotal" value="document.week1Total" />
-			  <s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
-			  <s:set var="whichWeek" value="'week-one'" />
-			  <%@ include file="weeklySummary.jsp" %>
-			</s:if>
-
-			<s:if test="document.hasHourCodeWeek2()">
-			  <s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
-			  <s:set var="weekTotal" value="document.week2Total" />
-			  <s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
-			  <s:set var="whichWeek" value="'week-two'" />
-			  <%@ include file="weeklySummary.jsp" %>
-			</s:if>
+		<details>
+			<summary>Weekly Summary</summary>		
+			<div class="d-flex">
+				<s:if test="document.hasHourCodeWeek1()">
+					<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
+					<s:set var="weekTotal" value="document.week1Total" />
+					<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
+					<s:set var="whichWeek" value="'week-one'" />
+					<%@ include file="weeklySummary.jsp" %>
+				</s:if>
+				
+				<s:if test="document.hasHourCodeWeek2()">
+					<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
+					<s:set var="weekTotal" value="document.week2Total" />
+					<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
+					<s:set var="whichWeek" value="'week-two'" />
+					<%@ include file="weeklySummary.jsp" %>
+				</s:if>
 		</div>
+		</details>
 
 		<%@ include file="accrualSummary.jsp" %>
 		<%@ include file="timeIssues.jsp" %>

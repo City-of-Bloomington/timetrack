@@ -105,7 +105,7 @@ public class HolidayList{
 				if(!pay_period_id.equals("")){
 						qq += ", pay_periods p ";
 						if(!qw.equals("")) qw += " and ";				
-						qw += " h.date >= p.start_date and h.date <= p.end_date ";
+						qw += " p.id = ? and h.date >= p.start_date and h.date <= p.end_date ";
 				}
 				else {
 						if(!date_from.equals("")){

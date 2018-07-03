@@ -12,7 +12,7 @@
 
 	  <%@ include file="strutMessages.jsp" %>
 
-		<div class="wilabelh-one-half">
+	  <div class="width-one-half">			
 			<s:if test="benefitGroup.id != ''">
 				<div class="form-group">
 					<label>ID</label>

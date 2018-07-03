@@ -1,11 +1,10 @@
-<s:if test="hasActionErrors()">
+<s:if test="hasErrors()">
   <div class="alert strut-action">
-    <s:actionerror/>
+    <s:property value="errors" />
   </div>
 </s:if>
-
-<s:elseif test="hasActionMessages()">
+<s:elseif test="hasMessages()">
   <div class="alert strut-action">
-    <s:actionmessage/>
+    <s:property value="messages" />
   </div>
 </s:elseif>

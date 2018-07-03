@@ -65,6 +65,7 @@ public class HolidayAction extends TopAction{
 						else{
 								addActionMessage("Deleted Successfully");
 								id="";
+								holiday = new Holiday(debug);
 						}
 				}				
 				else{		

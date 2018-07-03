@@ -38,16 +38,6 @@
 
 		<%@ include file="strutMessages.jsp" %>
 
-		<s:if test="action != ''" >
-			<s:if test="hasActionErrors()">
-				<p>ERROR</p>
-			</s:if>
-
-			<s:else>
-				<p>GOOD</p>
-			</s:else>
-		</s:if>
-
 		<div class="alert"><p></p></div>
 
 		<s:if test="hasMoreThanOneJob()">

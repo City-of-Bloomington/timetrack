@@ -57,7 +57,6 @@
           </s:else>
           <s:property value="dayInt" />
         </s:if>
-
         <s:if test="hasData()">
           <div class="data"
                data-block-id="<s:property value='id' />"

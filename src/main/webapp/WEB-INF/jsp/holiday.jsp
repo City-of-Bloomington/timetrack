@@ -12,8 +12,7 @@
 		</s:else>
 
 	  <%@ include file="strutMessages.jsp" %>
-
-		<div class="tt-row-container">
+	  <div class="width-one-half">
 			<div class="form-group">
 				<label>Pick A Year</label>
 				<s:select name="year" value="%{year}" list="years" onchange="doRefresh()"/>
@@ -44,6 +43,7 @@
 				<div class="button-group">
 					<s:submit name="action" holiday="button" value="Delete" class="button"/>
 					<s:submit name="action" holiday="button" value="Save Changes" class="button"/>
+					<a href="<s:property value='#application.url'/>holiday.action" class="button" >New Hokiday</a>					
 				</div>
 			</s:else>
 		</div>

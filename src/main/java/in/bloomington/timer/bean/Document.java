@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Document{
 
+		boolean debug = false;
 		static Logger logger = LogManager.getLogger(Document.class);
 		static final long serialVersionUID = 2400L;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -49,7 +50,8 @@ public class Document{
 		List<EmployeeAccrual> employeeAccruals = null;
 		List<TimeNote> timeNotes = null;
 		List<TimeIssue> timeIssues = null;		
-		Map<String, AccrualWarning> warningMap = new TreeMap<>();		
+		Map<String, AccrualWarning> warningMap = new TreeMap<>();
+		HolidayList holidays = null;
     public Document(String val,
 										String val2,
 										String val3,
@@ -541,12 +543,35 @@ public class Document{
 						}
 				}
 		}
+		void prepareHolidays(){
+				HolidayList hl = new HolidayList(debug);
+				if(!pay_period_id.equals("")){
+						hl.setPay_period_id(pay_period_id);
+				}
+				String back = hl.find();
+				if(back.equals("")){
+						holidays = hl;
+				}
+		}
+		public boolean isHoliday(String date){
+				if(holidays != null){
+						return holidays.isHoliday(date);
+				}
+				return false;
+		}
+		public String getHolidayName(String date){
+				if(holidays != null){
+						return holidays.getHolidayName(date);
+				}
+				return "";
+		}		
 		// since not everyday we have timeblock, we need to fill
 		// the empty ones, needed for display and related links
 		void fillTwoWeekEmptyBlocks(){
+				prepareHolidays();
 				if(payPeriod == null){
 						getPayPeriod();
-				}
+				}				
 				String date = payPeriod.getStart_date();
 				for(int j=13;j >=0;j--){
 						if(!dailyBlocks.containsKey(j)){
@@ -563,6 +588,10 @@ public class Document{
 								one.setOrder_index(j);								
 								String dt = Helper.getDateAfter(date, j);
 								one.setDate(dt);
+								if(holidays.isHoliday(dt)){
+										one.setIsHoliday(true);
+										one.setHolidayName(holidays.getHolidayName(dt));
+								}
 								// we use start date from payperiod and we add j days to it
 								//
 								List<TimeBlock> lone = new ArrayList<>();
