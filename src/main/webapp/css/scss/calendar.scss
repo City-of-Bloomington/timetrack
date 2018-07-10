@@ -40,7 +40,7 @@
       }
 
       &.holiday {
-        background-color: $calendar-holiday-background-color;
+        // background-color: $calendar-holiday-background-color;
 
         > span {
           z-index: 1;
@@ -55,9 +55,9 @@
           padding: $calendar-holiday-span-padding;
         }
 
-        .has-data {
+        .data {
           &:first-of-type {
-            margin: 47px 0 0 0;
+            margin: 30px 0 0 0;
           }
         }
       }
@@ -65,6 +65,7 @@
       .data {
         position: relative;
         background-color: $calendar-day-data-background-color;
+        border-radius: $calendar-day-data-border-radius;
         margin: $calendar-day-data-margin;
         padding: $calendar-day-data-padding;
         text-align: $calendar-day-data-text-align;

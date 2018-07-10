@@ -27,14 +27,6 @@
                  data-doc-id="<s:property value='document_id' />"
                  data-date="<s:property value='date' />"
                  data-order-index="<s:property value='#blockKey' />">
-
-              <!-- Adam Butcher (butcherad/adabutch): 06/05/18 -->
-              <!-- this is a static holiday example placeholder -->
-              <!-- usage: give the 'day' class an additional 'holiday' class -->
-              <!-- wrap the holiday in a <span> -->
-              <!-- see below -->
-              <!-- <div class="day holiday">
-              <span>Christmas Day</span> -->
           </s:if>
 
           <s:else>
