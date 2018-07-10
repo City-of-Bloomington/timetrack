@@ -495,6 +495,7 @@ $(".day").click(function() {
           if($('option:selected', this).val() === '1_Time') {
             timeIn.focus();
           } else {
+            var alertElm = $('.alert').removeClass('active');
             hourCodeHour.focus();
           }
         })
@@ -550,28 +551,7 @@ $(".day").click(function() {
         var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeOut);
         var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].includes(hours);
 
-        if(timeInError){
-          alertElm.html("Time In cannot be empty.");
-          timeInElm.focus();
-        } else if (timeOutError) {
-          alertElm.html("Time Out cannot be empty.");
-          timeOutElm.focus();
-        } else if (hoursError) {
-          alertElm.html("Hours cannot be 0.0.");
-          hoursElm.focus();
-        } else {
-          // var xhrPost = $.ajax({
-          //   type : 'POST',
-          //   url  :  submitURL,
-          //   async:     false,
-          //   data :  JSON.stringify(formValues),
-          //   success: function (data) {
-          //   },
-          //   error: function (data) {
 
-          //   }
-          // });
-        }
 
         // console.log("xhr.status :: ", xhrPost.status);
         // console.log("xhr.message :: ", xhrPost.message);
@@ -580,14 +560,26 @@ $(".day").click(function() {
         // console.log("ADD Time Block: xhr 'post': ", xhrPost);
 
 
-        $('.time-block-form').submit();
-
-        addDialog.dialog("destroy");
-        setTimeout(function(){
-          location.reload();
-          window.location.reload();
-        });
-        // return false;
+        if(timeInError){
+          alertElm.html("Time In cannot be empty.");
+          timeInElm.focus();
+          return false;
+        } else if (timeOutError) {
+          alertElm.html("Time Out cannot be empty.");
+          timeOutElm.focus();
+          return false;
+        } else if (hoursError) {
+          alertElm.html("Hours cannot be 0.0");
+          hoursElm.focus();
+          return false;
+        } else {
+          $('.time-block-form').submit();
+          addDialog.dialog("destroy");
+          setTimeout(function(){
+            location.reload();
+            window.location.reload();
+          });
+        }
       },
       Cancel: function() {
         addDialog.dialog("destroy");
