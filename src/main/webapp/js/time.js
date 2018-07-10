@@ -366,46 +366,17 @@ $(".data").click(function() {
       Confirm: function() {
         var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
-        var queryString     = $(".time-block-form").serialize();
+        var formData        = $(".time-block-form").serialize();
+
         var timeInElm       = $('[name="timeBlock.time_in"]');
         var timeOutElm      = $('[name="timeBlock.time_out"]');
         var hoursElm        = $('[name="timeBlock.hours"]');
         var alertElmP       = $('.alert').addClass('active').find('p');
         var alertElm        = $('.alert');
 
-        var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
-        var documentId      = $('[name="timeBlock.document_id"]').val();
-        var clockIn         = $('[name="timeBlock.clock_in"]').val();
-        var clockOut        = $('[name="timeBlock.clock_out"]').val();
-        var date            = $('[name="timeBlock.date"]').val();
-        var orderIndex      = $('[name="timeBlock.order_index"]').val();
-        var jobId           = $('[name="timeBlock.job_id"]').val();
-        var Id              = $('[name="timeBlock.id"]').val();
-        var hourCodeId      = $('[name="timeBlock.hour_code_id"]').val();
         var timeIn          = $('[name="timeBlock.time_in"]').val();
         var timeOut         = $('[name="timeBlock.time_out"]').val();
         var hours           = $('[name="timeBlock.hours"]').val();
-        var repeatCount     = $('[name="timeBlock.repeat_count"]').val();
-        var overNight       = $('[name="timeBlock.overnight"]').val();
-        var weekends        = $('[name="timeBlock.include_weekends"]').val();
-
-        var formValues = {
-          accrual_balance:  accrualBalance,
-          document_id:      documentId,
-          clock_in:         clockIn,
-          clock_out:        clockOut,
-          date:             date,
-          order_index:      orderIndex,
-          job_id:           jobId,
-          id:               Id,
-          hour_code_id:     hourCodeId,
-          time_in:          timeIn,
-          time_out:         timeOut,
-          hours:            hours,
-          repeat_count:     repeatCount,
-          overnight:        overNight,
-          include_weekends: weekends
-        };
 
         var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeIn);
         var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeOut);
@@ -425,12 +396,17 @@ $(".data").click(function() {
           return false;
         } else {
           alertElm.remove();
+          $.ajax({
+            type: "POST",
+            url: submitURL,
+            data: formData,
+            success: function() {
+            }
+          });
           setTimeout(function(){
             location.reload();
             window.location.reload();
           });
-          $('.time-block-form').submit();
-          addDialog.dialog("destroy");
         }
       },
       Cancel: function() {
@@ -512,60 +488,21 @@ $(".day").click(function() {
 
         var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
-        var queryString     = $(".time-block-form").serialize();
-        // var alertElm        = $('.alert').length;
+        var formData        = $(".time-block-form").serialize();
+
         var timeInElm       = $('[name="timeBlock.time_in"]');
         var timeOutElm      = $('[name="timeBlock.time_out"]');
         var hoursElm        = $('[name="timeBlock.hours"]');
         var alertElmP       = $('.alert').addClass('active').find('p');
         var alertElm        = $('.alert');
 
-        var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
-        var documentId      = $('[name="timeBlock.document_id"]').val();
-        var clockIn         = $('[name="timeBlock.clock_in"]').val();
-        var clockOut        = $('[name="timeBlock.clock_out"]').val();
-        var date            = $('[name="timeBlock.date"]').val();
-        var orderIndex      = $('[name="timeBlock.order_index"]').val();
-        var jobId           = $('[name="timeBlock.job_id"]').val();
-        var Id              = $('[name="timeBlock.id"]').val();
-        var hourCodeId      = $('[name="timeBlock.hour_code_id"]').val();
         var timeIn          = $('[name="timeBlock.time_in"]').val();
         var timeOut         = $('[name="timeBlock.time_out"]').val();
         var hours           = $('[name="timeBlock.hours"]').val();
-        var repeatCount     = $('[name="timeBlock.repeat_count"]').val();
-        var overNight       = $('[name="timeBlock.overnight"]').val();
-        var weekends        = $('[name="timeBlock.include_weekends"]').val();
-
-        var formValues = {
-          accrual_balance:  accrualBalance,
-          document_id:      documentId,
-          clock_in:         clockIn,
-          clock_out:        clockOut,
-          date:             date,
-          order_index:      orderIndex,
-          job_id:           jobId,
-          id:               Id,
-          hour_code_id:     hourCodeId,
-          time_in:          timeIn,
-          time_out:         timeOut,
-          hours:            hours,
-          repeat_count:     repeatCount,
-          overnight:        overNight,
-          include_weekends: weekends
-        };
 
         var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeIn);
         var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeOut);
         var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].includes(hours);
-
-
-
-        // console.log("xhr.status :: ", xhrPost.status);
-        // console.log("xhr.message :: ", xhrPost.message);
-        // console.log("xhr.response :: ", xhrPost.response);
-        // console.log("xhr.statusText :: ", xhrPost.statusText);
-        // console.log("ADD Time Block: xhr 'post': ", xhrPost);
-
 
         if(timeInError){
           alertElmP.html("Time In cannot be empty.");
@@ -581,12 +518,17 @@ $(".day").click(function() {
           return false;
         } else {
           alertElm.remove();
+          $.ajax({
+            type: "POST",
+            url: submitURL,
+            data: formData,
+            success: function() {
+            }
+          });
           setTimeout(function(){
             location.reload();
             window.location.reload();
           });
-          $('.time-block-form').submit();
-          addDialog.dialog("destroy");
         }
       },
       Cancel: function() {
