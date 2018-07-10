@@ -342,19 +342,29 @@ $(".data").click(function() {
       $(".ui-dialog-titlebar").remove();
 
       setTimeout(function(){
-        var hourCodeIdVal    = $('[name="timeBlock.hour_code_id"]').val();
+        var hourCodeIdVal = $('[name="timeBlock.hour_code_id"]').val();
         var hourCodeId    = $('[name="timeBlock.hour_code_id"]');
         var hourCodeHour  = $('[name="timeBlock.hours"]');
         var timeIn        = $('[name="timeBlock.time_in"]');
 
+        // alert(hourCodeIdVal);
+
+        // $(hourCodeId).change(function() {
+        //   alert( $('option:selected', this).val() );
+        // });
+
         if(hourCodeIdVal === '1_Time') {
           timeIn.focus();
-        } else { hourCodeHour.focus(); }
+        } else {
+          hourCodeHour.focus();
+        }
 
-        hourCodeId.on('change', function(){
-          if(hourCodeIdVal === '1_Time') {
+        hourCodeId.change(function(){
+          if($('option:selected', this).val() === '1_Time') {
             timeIn.focus();
-          } else { hourCodeHour.focus(); }
+          } else {
+            hourCodeHour.focus();
+          }
         })
       }, 500);
     },
@@ -477,12 +487,16 @@ $(".day").click(function() {
 
         if(hourCodeIdVal === '1_Time') {
           timeIn.focus();
-        } else { hourCodeHour.focus();}
+        } else {
+          hourCodeHour.focus();
+        }
 
-        hourCodeId.on('change', function(){
-          if(hourCodeIdVal === '1_Time') {
+        hourCodeId.change(function(){
+          if($('option:selected', this).val() === '1_Time') {
             timeIn.focus();
-          } else { hourCodeHour.focus(); }
+          } else {
+            hourCodeHour.focus();
+          }
         })
       }, 500);
     },
