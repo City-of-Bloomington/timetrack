@@ -347,12 +347,6 @@ $(".data").click(function() {
         var hourCodeHour  = $('[name="timeBlock.hours"]');
         var timeIn        = $('[name="timeBlock.time_in"]');
 
-        // alert(hourCodeIdVal);
-
-        // $(hourCodeId).change(function() {
-        //   alert( $('option:selected', this).val() );
-        // });
-
         if(hourCodeIdVal === '1_Time') {
           timeIn.focus();
         } else {
@@ -370,9 +364,14 @@ $(".data").click(function() {
     },
     buttons: {
       Confirm: function() {
-
+        var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
         var queryString     = $(".time-block-form").serialize();
+        var timeInElm       = $('[name="timeBlock.time_in"]');
+        var timeOutElm      = $('[name="timeBlock.time_out"]');
+        var hoursElm        = $('[name="timeBlock.hours"]');
+        var alertElmP       = $('.alert').addClass('active').find('p');
+        var alertElm        = $('.alert');
 
         var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
         var documentId      = $('[name="timeBlock.document_id"]').val();
@@ -408,24 +407,31 @@ $(".data").click(function() {
           include_weekends: weekends
         };
 
+        var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeIn);
+        var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeOut);
+        var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].includes(hours);
 
-        // var xhrPost = $.ajax({
-        //   type : 'POST',
-        //   url  :  submitURL,
-        //   async:     false,
-        //   data :  JSON.stringify(formValues),
-        //   success: function (data) {
-        //   },
-        //   error: function (data, status) {
-        //   }
-        // });
-        $('.time-block-form').submit();
-        editDialog.dialog("destroy");
-        setTimeout(function(){
-          location.reload();
-          window.location.reload();
-        });
-        // return false;
+        if(timeInError){
+          alertElmP.html("Time In cannot be empty.");
+          timeInElm.focus();
+          return false;
+        } else if (timeOutError) {
+          alertElmP.html("Time Out cannot be empty.");
+          timeOutElm.focus();
+          return false;
+        } else if (hoursError) {
+          alertElmP.html("Hours cannot be 0.0");
+          hoursElm.focus();
+          return false;
+        } else {
+          alertElm.remove();
+          setTimeout(function(){
+            location.reload();
+            window.location.reload();
+          });
+          $('.time-block-form').submit();
+          addDialog.dialog("destroy");
+        }
       },
       Cancel: function() {
         editDialog.dialog("destroy");
@@ -507,11 +513,12 @@ $(".day").click(function() {
         var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
         var queryString     = $(".time-block-form").serialize();
-        var alertElm        = $('.alert').length;
+        // var alertElm        = $('.alert').length;
         var timeInElm       = $('[name="timeBlock.time_in"]');
         var timeOutElm      = $('[name="timeBlock.time_out"]');
         var hoursElm        = $('[name="timeBlock.hours"]');
-        var alertElm        = $('.alert').addClass('active').find('p');
+        var alertElmP       = $('.alert').addClass('active').find('p');
+        var alertElm        = $('.alert');
 
         var accrualBalance  = $('[name="timeBlock.accrual_balance"]').val();
         var documentId      = $('[name="timeBlock.document_id"]').val();
@@ -561,24 +568,25 @@ $(".day").click(function() {
 
 
         if(timeInError){
-          alertElm.html("Time In cannot be empty.");
+          alertElmP.html("Time In cannot be empty.");
           timeInElm.focus();
           return false;
         } else if (timeOutError) {
-          alertElm.html("Time Out cannot be empty.");
+          alertElmP.html("Time Out cannot be empty.");
           timeOutElm.focus();
           return false;
         } else if (hoursError) {
-          alertElm.html("Hours cannot be 0.0");
+          alertElmP.html("Hours cannot be 0.0");
           hoursElm.focus();
           return false;
         } else {
-          $('.time-block-form').submit();
-          addDialog.dialog("destroy");
+          alertElm.remove();
           setTimeout(function(){
             location.reload();
             window.location.reload();
           });
+          $('.time-block-form').submit();
+          addDialog.dialog("destroy");
         }
       },
       Cancel: function() {
