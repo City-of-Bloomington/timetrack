@@ -268,9 +268,6 @@ $(".delete-time-confirm").click(function() {
   var dataDate        = $(this).attr('data-date');
   var dateInfo        = $(this).attr('data-info');
 
-  var dialogBtnGroup  = $(".ui-dialog-buttonset");
-  var dialogBtns      = $(".ui-button");
-
   removeDialog = $('.modal.remove').dialog({
     autoOpen:  false,
     title:     'Confirm Delete',
@@ -288,8 +285,7 @@ $(".delete-time-confirm").click(function() {
     },
     buttons: {
       Confirm: function() {
-        $.ajax({
-           type : 'POST',
+        $.post({
            url  : APPLICATION_URL + 'timeBlock?id=' + block_id +'&action=Delete',
            success : function(data){
               setTimeout(function(){
@@ -316,8 +312,7 @@ $(".data").click(function() {
   var editURL         = APPLICATION_URL + 'timeBlock?id=' + block_id;
   var queryString     = $(".time-block-form").serialize();
 
-  var xhrGet = $.ajax({
-    type : 'GET',
+  var xhrGet = $.get({
     url  : editURL,
     data : queryString,
     success: function (data) {
@@ -396,8 +391,7 @@ $(".data").click(function() {
           return false;
         } else {
           alertElm.remove();
-          $.ajax({
-            type: "POST",
+          $.post({
             url: submitURL,
             data: formData,
             success: function() {
@@ -434,20 +428,14 @@ $(".day").click(function() {
   var addURL              = APPLICATION_URL + 'timeBlock?document_id=' + docId + '&date=' + timeBlockDate + '&order_index=' + timeBlockOrderIndex;
   var queryString         = $(".time-block-form").serialize();
 
-  var xhrGet = $.ajax({
-    type : 'GET',
+  var xhrGet = $.get({
     url  : addURL,
     data : queryString,
     success: function (data) {
       $('.modal.add-edit').html(data);
-      console.log("get success for: " + blockId);
     },
-    error: function (data, status) {
-      console.log("get error");
-    },
+    error: function (data, status) { },
   });
-
-  console.log("ADD Time Block: xhr get: ", xhrGet);
 
   addDialog = $('.modal.add-edit').dialog({
     autoOpen:  false,
@@ -487,7 +475,6 @@ $(".day").click(function() {
     },
     buttons: {
       Confirm: function() {
-
         var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
         var formData        = $(".time-block-form").serialize();
@@ -520,8 +507,7 @@ $(".day").click(function() {
           return false;
         } else {
           alertElm.remove();
-          $.ajax({
-            type: "POST",
+          $.post({
             url: submitURL,
             data: formData,
             success: function() {
