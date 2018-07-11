@@ -1,36 +1,36 @@
 // jQuery UI Dialog Modal
 // additional modal styles are in: modals.scss
 .ui-widget-content {
-  border: none !important;
-  background: $gainsboro;
-  padding: 0;
+  border: $ui-widget-content-border;
+  background: $ui-widget-content-background;
+  padding: $ui-widget-content-padding;
 }
 
 .ui-widget-overlay {
-  opacity: 1;
-  background: rgba(0,0,0,0.75);
+  opacity: $ui-widget-overlay-opacity;
+  background: $ui-widget-overlay-background;
 }
 
 .ui-dialog {
   .ui-dialog-titlebar {
-    background-color: $azure;
-    color: white;
-    padding: 10px;
-    margin: 0;
-    border: none;
-    border-radius: 0;
+    background-color: $ui-dialog-titlebar-background-color;
+    color: $ui-dialog-titlebar-color;
+    padding: $ui-dialog-titlebar-padding;
+    margin: $ui-dialog-titlebar-margin;
+    border: $ui-dialog-titlebar-border;
+    border-radius: $ui-dialog-titlebar-border-radius;
 
     .ui-dialog-title {
-      margin: 0;
-      width: 100%;
+      margin: $ui-dialog-title-margin;
+      width: $ui-dialog-title-width;
     }
   }
 
   .ui-dialog-titlebar-close {
-    display: none;
+    display: $ui-dialog-titlebar-close-display;
   }
 
   .ui-dialog-content {
-    padding: 0;
+    padding: $ui-dialog-content-padding;
   }
 }

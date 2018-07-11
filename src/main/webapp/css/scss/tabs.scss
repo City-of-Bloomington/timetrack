@@ -1,19 +1,19 @@
 .tabs {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 20px 0;
+  display: $tabs-display;
+  flex-wrap: $tabs-flex-wrap;
+  margin: $tabs-margin;
 
   a {
-    text-decoration: none;
-    text-align: center;
-    background: $cob-blue;
-    padding: 8px 15px;
-    color: white;
-    margin: 0 10px 0 0;
+    text-decoration: $tabs-a-text-decoration;
+    text-align: $tabs-a-text-align;
+    color: $tabs-a-color;
+    background: $tabs-a-background;
+    padding: $tabs-a-padding;
+    margin: $tabs-a-margin;
 
     &:hover,
     &.active {
-      background: darken($cob-blue, 15%);
+      background: $tabs-active-hover-background;
     }
   }
 }

@@ -2,15 +2,15 @@
 .modal {
   &.remove {
     p {
-      margin: 0;
-      padding: 20px 10px 0 10px;
+      margin: $modal-remove-p-margin;
+      padding: $modal-remove-p-padding;
 
       &.details {
-        font-weight: $font-weight-500;
+        font-weight: $modal-remove-p-details-font-weight;
       }
 
       &:nth-of-type(n+2) {
-        padding: 10px 10px 0 10px;
+        padding: $modal-remove-p-after-first-padding;
       }
     }
   }

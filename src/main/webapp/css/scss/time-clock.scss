@@ -1,152 +1,149 @@
 .time-clock {
-  background-color: darken($cob-blue, 10%);
-  padding: 50px;
-  height: 100vh; // vh?! ...extends height 100%
-  display: flex;
-  flex-direction: column;
+  display: $tc-display;
+  flex-direction: $tc-flex-direction;
+  background-color: $tc-background-color;
+  padding: $tc-padding;
+  height: $tc-height;
 
   .alert {
-    margin: 10px 0 20px 0;
+    margin: $tc-alert-margin;
 
     span {
-      font-size: 30px;
-      line-height: 30px;
+      font-size: $tc-alert-span-font-size;
+      line-height: $tc-alert-span-line-height;
     }
 
     p {
-      color: inherit;
+      color: $tc-alert-p-color;
     }
   }
 
   img {
-    width: 100px;
-    height: 100px;
+    width: $tc-img-width;
+    height: $tc-img-height;
   }
 
   h1 {
-    font-size: 30px !important;
-    line-height: 30px !important;
+    font-size: $tc-h1-font-size;
+    line-height: $tc-h1-line-height;
 
     small {
       &#meta {
-        float: right;
-        font-size: 24px;
-        color: rgba(255,255,255,0.7) !important;
+        float: $tc-h1-small-meta-float;
+        font-size: $tc-h1-small-meta-font-size;
+        color: $tc-h1-small-meta-color;
       }
     }
   }
 
   h2 {
-    font-size: 24px !important;
-    line-height: 24px !important;
+    font-size: $tc-h2-font-size;
+    line-height: $tc-h2-line-height;
   }
 
   h3 {
-    font-size:  22px !important;
-    line-height: 22px !important;
-    color: rgba(255,255,255,0.7) !important;
+    font-size: $tc-h3-font-size;
+    line-height: $tc-h3-line-height;
+    color: $tc-h3-color;
   }
 
   h1, h2, h4, h5, h6, p {
-    color: white !important;
+    color: $tc-h1-h2-h4-h5-h6-p-color;
   }
 
   .clock-wrapper {
-    width: 100%;
-    margin: 40px auto 60px auto;
+    width: $tc-clock-wrapper-width;
+    margin: $tc-clock-wrapper-margin;
 
     .actions {
-      width: 250px;
-      float: left;
-      margin: 0 50px 0 0;
+      width: $tc-clock-wrapper-actions-width;
+      float: $tc-clock-wrapper-actions-float;
+      margin: $tc-clock-wrapper-actions-margin;
 
       .in,
       .out {
-        background-color: darken($cob-blue, 20%);
-        border-radius: 4px;
-        padding: 10px;
-        text-align: center;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.5);
-        font-size: 25px;
-        font-weight: 600;
+        background-color: $tc-clock-wrapper-actions-in-out-bg-color;
+        border-radius: $tc-clock-wrapper-actions-in-out-border-radius;
+        padding: $tc-clock-wrapper-actions-in-out-padding;
+        text-align: $tc-clock-wrapper-actions-in-out-text-align;
+        text-transform: $tc-clock-wrapper-actions-in-out-text-transform;
+        color: $tc-clock-wrapper-actions-in-out-color;
+        font-size: $tc-clock-wrapper-actions-in-out-font-size;
+        font-weight: $tc-clock-wrapper-actions-in-out-font-weight;
 
         &.active {
-          background: white;
-          color: $cob-blue;
+          background: $tc-clock-wrapper-actions-in-out-active-bg-color;
+          color: $tc-clock-wrapper-actions-in-out-active-color;
         }
 
         &.in {
-          margin: 0 0 10px 0;
-        }
-
-        &.out {
+          margin: $tc-clock-wrapper-actions-in-margin;
         }
       }
     }
 
     .log-info {
-      position: relative;
-      float: right;
+      position: $tc-clock-wrapper-log-info-position;
+      float: $tc-clock-wrapper-log-info-float;
     }
 
     #current-time {
-      position: relative;
-      float: right;
-      padding: 0 60px 0 0;
-      color: white;
-      text-align: right;
-      font-size: 130px;
-      line-height: 105px;
+      position: $tc-clock-wrapper-current-time-position;
+      float: $tc-clock-wrapper-current-time-float;
+      padding: $tc-clock-wrapper-current-time-padding;
+      color: $tc-clock-wrapper-current-time-color;
+      text-align: $tc-clock-wrapper-current-time-text-align;
+      font-size: $tc-clock-wrapper-current-time-font-size;
+      line-height: $tc-clock-wrapper-current-time-line-height;
 
       .am,
       .pm {
-        position: absolute;
-        right: 0;
-        font-size: 30px;
+        position: $tc-clock-wrapper-current-time-am-pm-position;
+        right: $tc-clock-wrapper-current-time-am-pm-right;
+        font-size: $tc-clock-wrapper-current-time-am-pm-font-size;
       }
 
       .am {
-        top: -50px;
+        top: $tc-clock-wrapper-current-time-am-top;
       }
 
       .pm {
-        bottom: -50px;
+        bottom: $tc-clock-wrapper-current-time-pm-bottom;
       }
     }
   }
 
   input {
-    background-color: darken($cob-blue, 20%);
-    border: none;
-    border-radius: 4px;
-    display: block;
-    width: 250px;
-    margin: 0 auto;
-    padding: 10px;
-    color: white;
-    font-size: 30px;
-    letter-spacing: 1px;
-    outline: none;
+    background-color: $tc-input-background-color;
+    border: $tc-input-border;
+    border-radius: $tc-input-border-radius;
+    display: $tc-input-display;
+    width: $tc-input-width;
+    margin: $tc-input-margin;
+    padding: $tc-input-padding;
+    color: $tc-input-color;
+    font-size: $tc-input-font-size;
+    letter-spacing: $tc-input-letter-spacing;
+    outline: $tc-input-outline;
 
     &::placeholder {
-      color: rgba(255,255,255,0.5);
+      color: $tc-input-placeholder-color;
     }
   }
 
   button[type=submit] {
-    visibility: hidden;
+    visibility: $tc-button-submit-visibility;
   }
 
   .alert-full {
-    text-align: center;
-    margin-top: 50px;
+    text-align: $tc-alert-text-align;
+    margin-top: $tc-alert-margin-top;
   }
 
   p {
     &.ip {
-      margin-top: auto !important;
-      text-align: center;
+      margin-top: $tc-p-ip-margin-top;
+      text-align: $tc-p-ip-text-align;
     }
   }
 }

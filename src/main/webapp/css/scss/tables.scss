@@ -1,34 +1,30 @@
 table {
-  background: white;
-  border-collapse: collapse;
-  color: $dark-slate;
-  margin: 0 0 40px 0;
-
-  // &:last-of-type {
-  //   margin: 0;
-  // }
+  background: $table-background;
+  border-collapse: $table-border-collapse;
+  color: $table-color;
+  margin: $table-margin;
 
   a {
-    color: $cob-blue;
+    color: $table-a-color;
   }
 
   tr {
-    border-top: 1px solid $silver;
+    border-top: $table-tr-border-top;
 
     &:nth-of-type(1) {
-      border-top: none;
+      border-top: $table-tr-first-type-border-top;
     }
 
     &.totals-row {
-      background: $gainsboro;
-      border: none;
+      background: $table-tr-totals-row-background;
+      border: $table-tr-totals-row-border;
 
       td {
-        border: none;
+        border: $table-tr-totals-td-border;
 
         &:last-of-type {
           strong {
-            font-size: $font-size-medium;
+            font-size: $table-tr-totals-td-last-type-strong;
           }
         }
       }
@@ -37,58 +33,61 @@ table {
 
   th,
   td {
-    padding: 8px;
+    padding: $table-th-td-padding;
   }
 
   th {
-    font-weight: $font-weight-400;
-    background-color: $dark-slate;
-    color: white;
-    border-right: 1px solid $silver;
-    text-align: left;
+    font-weight: $table-th-font-weight;
+    background-color: $table-th-background-color;
+    color: $table-th-color;
+    border-right: $table-th-border-right;
+    text-align: $table-th-text-align;
 
     &:nth-of-type(1),
     &:last-of-type {
-      border-right: none;
+      border-right: $table-th-first-last-type-border-right;
     }
   }
 
   td {
-    border-right: 1px solid $silver;
+    border-right: $table-td-border-right;
 
     &:nth-of-type(1),
     &:last-of-type {
-      border-right: none;
+      border-right: $table-td-first-last-type-border-right;
     }
   }
 
+  // Tables Group One
   &.pay-period-summary-total,
   &.code-hours-summary-total,
   &.accruals-summary {
     th,
     td {
       &:nth-of-type(1) {
-        text-align: left;
+        text-align: $tables-group-one-th-td-first-type-text-align;
       }
 
-      &:nth-of-type(n + 2) {
-        text-align: right;
+      &:nth-of-type(n+2) {
+        text-align: $tables-group-one-th-td-after-first-text-align;
       }
     }
   }
 
+  // Tables Group Two
   &.code-hours-summary-total {
-    width: calc(100% - 4px);
+    width: $tables-group-two-width;
 
     &.week-one {
-      margin-right: auto;
+      margin-right: $tables-group-two-week-one-margin-right;
     }
 
     &.week-two {
-      margin-left: auto;
+      margin-left: $tables-group-two-week-two-margin-left;
     }
   }
 
+  // Tables Group Three
   &.pay-period-notes,
   &.action-history,
   &.time-issues,
@@ -99,12 +98,12 @@ table {
     th,
     td {
       &:nth-of-type(1),
-      &:nth-of-type(n + 3) {
-        text-align: left;
+      &:nth-of-type(n+3) {
+        text-align: $tables-group-three-th-td-first-and-after-second-text-align;
       }
 
       &:nth-of-type(2) {
-        text-align: right;
+        text-align: $tables-group-three-th-td-second-type-text-align;
       }
     }
   }

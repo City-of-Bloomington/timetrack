@@ -1,28 +1,27 @@
 .timetrack {
   .time-block {
-    // background: $gainsboro;
-    border-top: none !important;
-    padding: 0;
+    border-top: $tb-border-top;
+    padding: $tb-padding;
 
     .alert {
       &.strut-action {
-        margin: 10px 0 0 0;
+        margin: $tb-alert-strut-margin;
       }
     }
 
     form {
       .form-group {
-        display: flex;
-        align-items: flex-start;
-        flex-wrap: nowrap;
-        flex-direction: row;
-        padding: 10px;
-        margin: 0;
-        border-bottom: 1px solid $silver-chalice;
+        display: $tb-form-form-group-display;
+        align-items: $tb-form-form-group-align-items;
+        flex-wrap: $tb-form-form-group-flex-wrap;
+        flex-direction: $tb-form-form-group-flex-direction;
+        padding: $tb-form-form-group-padding;
+        margin: $tb-form-form-group-margin;
+        border-bottom: $tb-form-form-group-border-bottom;
 
         &:last-of-type {
-          border-bottom: none;
-          padding: 10px 10px 0 10px;
+          border-bottom: $tb-form-form-group-last-type-border-bottom;
+          padding: $tb-form-form-group-last-type-padding;
         }
 
         &:hover,
@@ -30,7 +29,7 @@
           //note: focus-within -- via https://caniuse.com/#feat=css-focus-within
           label {
             &:first-child {
-              color: $cob-blue;
+              color: $tb-form-form-group-hover-focus-label-first-child-color
             }
           }
         }
@@ -38,48 +37,41 @@
 
       label {
         &:first-child {
-          min-width: 150px;
+          min-width: $tb-form-form-group-label-first-child-min-width;
         }
       }
 
       select {
-        width: 100%;
-        text-overflow: ellipsis;
-      }
-
-      input,
-      textarea,
-      select,
-      label {
-        &:nth-child(n+2) {}
+        width: $tb-form-form-group-select-width;
+        text-overflow: $tb-form-form-group-select-text-overflow;
       }
     }
 
     table {
-      margin: 0 0 10px 0;
+      margin: $tb-form-form-group-table-margin;
     }
 
     h1 {
-      display: flex;
-      border-bottom: 1px solid $silver-chalice;
-      background-color: $azure;
-      color: white;
-      padding: 10px;
-      margin: 0;
+      display: $tb-form-form-group-h1-display;
+      border-bottom: $tb-form-form-group-h1-border-bottom;
+      background-color: $tb-form-form-group-h1-background-color;
+      color: $tb-form-form-group-h1-color;
+      padding: $tb-form-form-group-h1-padding;
+      margin: $tb-form-form-group-h1-margin;
 
       small {
-        font-weight: $font-weight-400;
-        margin-left: auto;
+        font-weight: $tb-form-form-group-h1-small-font-weight;
+        margin-left: $tb-form-form-group-h1-small-margin-left;
       }
     }
 
     .button-group {
-      padding: 10px;
+      padding: $tb-button-group-padding;
 
       input {
         &[type=submit] {
-          background: $fern;
-          color: white;
+          background: $tb-button-group-input-submit-background;
+          color: $tb-button-group-input-submit-color;
         }
       }
     }
