@@ -401,12 +401,14 @@ $(".data").click(function() {
             url: submitURL,
             data: formData,
             success: function() {
+            },
+            complete: function () {
+              setTimeout(function(){
+                location.reload();
+                window.location.reload();
+              }, 5);
             }
           });
-          setTimeout(function(){
-            location.reload();
-            window.location.reload();
-          }, 5);
         }
       },
       Cancel: function() {
@@ -523,12 +525,14 @@ $(".day").click(function() {
             url: submitURL,
             data: formData,
             success: function() {
+            },
+            complete: function () {
+              setTimeout(function(){
+                location.reload();
+                window.location.reload();
+              }, 5);
             }
           });
-          setTimeout(function(){
-            location.reload();
-            window.location.reload();
-          }, 5);
         }
       },
       Cancel: function() {
