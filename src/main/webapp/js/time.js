@@ -406,7 +406,7 @@ $(".data").click(function() {
           setTimeout(function(){
             location.reload();
             window.location.reload();
-          });
+          }, 5);
         }
       },
       Cancel: function() {
@@ -528,7 +528,7 @@ $(".day").click(function() {
           setTimeout(function(){
             location.reload();
             window.location.reload();
-          });
+          }, 5);
         }
       },
       Cancel: function() {
