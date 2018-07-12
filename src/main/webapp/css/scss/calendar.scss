@@ -78,7 +78,12 @@
         }
 
         &.incomplete-time {
-          background: $calendar-day-data-incomplete-background;
+          border: $calendar-day-data-incomplete-border;
+          background-color: $calendar-day-data-incomplete-background;
+
+          b {
+            color: $calendar-day-data-incomplete-b-color;
+          }
         }
 
         span {
