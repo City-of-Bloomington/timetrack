@@ -99,6 +99,8 @@ $calendar-day-data-a-font-size:                             $font-size-small;
 $calendar-day-data-a-text-align:                            left;
 $calendar-day-data-a-text-color:                            $dark-slate;
 
+$calendar-day-data-incomplete-background:                   lighten($golden-tainoi, 20%);
+
 $calendar-day-data-delete-svg-fill:                         $silver-chalice;
 $calendar-day-data-delete-active-svg-fill:                  $mine-shaft;
 $calendar-day-data-delete-svg-position-top:                 5px;

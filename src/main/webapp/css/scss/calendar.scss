@@ -77,6 +77,10 @@
           background-color: $calendar-day-data-hover-background-color;
         }
 
+        &.incomplete-time {
+          background: $calendar-day-data-incomplete-background;
+        }
+
         span {
           display: block;
           margin: 0 0 5px 0;
