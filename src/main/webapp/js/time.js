@@ -162,8 +162,6 @@ $('#hour_code_select').change(function() {
     if(val.indexOf('Hours') > -1){
         $('#div_hours').show();
         $('#hour_change').attr('tabindex',5);
-        $('#time_in').val("23:59"); // 0
-        $('#time_out').val("23:59");
         $('#time_in').attr('tabindex',-1);
         $('#time_out').attr('tabindex',-1);
         $('#time_overnight').attr('tabindex',-1);
