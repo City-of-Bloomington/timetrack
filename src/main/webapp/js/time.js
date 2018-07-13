@@ -278,7 +278,7 @@ $(".delete-time-confirm").click(function() {
     modal:     true,
     draggable: false,
     width:     500,
-    position: { my: "top center",
+    position: { my: "top",
                 at: "top center",
                 of: ".tabs"
     },
@@ -335,7 +335,7 @@ $(".data").click(function() {
     draggable: false,
     cache:     false,
     width:     500,
-    position: { my: "top center",
+    position: { my: "top",
                 at: "top center",
                 of: ".tabs"
     },
@@ -468,7 +468,7 @@ $(".day").click(function() {
     draggable: false,
     cache:     false,
     width:     500,
-    position: { my: "top center",
+    position: { my: "top",
                 at: "top center",
                 of: ".tabs"
     },
@@ -586,4 +586,94 @@ $(".day").click(function() {
 $('.data').each(function() {
   if($(this).attr('data-time-out') == "" || $(this).attr('data-time-out') == "12:00 AM")
     $(this).addClass("incomplete-time");
+});
+
+/* Pay Period Notes:
+ * Add notes to a pay period
+ * file: /jsp/timeDetails.jsp
+ */
+$(".pay-notes").click(function() {
+  // Selectors
+  var docId               = $(this).attr('data-doc-id');
+  var addURL              = APPLICATION_URL + 'timeNote?document_id=' + docId;
+  var queryString         = $(".pay-notes-form").serialize();
+
+  // Fire Edit jQuery Dialog
+  payNotesDialog = $('.modal.pay-notes').dialog({
+    autoOpen:  false,
+    title:     'Add Pay Period Notes',
+    modal:     true,
+    draggable: false,
+    cache:     false,
+    width:     500,
+    position: { my: "top",
+                at: "top center",
+                of: ".tabs",
+                collision: "none"
+    },
+    open: function (event, ui) {
+
+      $(".ui-dialog-titlebar").remove();
+      $(event.target).parent().css('position', 'fixed');
+
+       // Focus Input Helper
+      setTimeout(function(){
+        var textAreaElm     = $("#form_id_timeNote_notes");
+        textAreaElm.focus();
+      }, 500);
+
+      // Get data to fill Dialog Modal
+      var xhrGet = $.get({
+        url  : addURL,
+        data : queryString,
+        success: function (data) {
+          $('.modal.pay-notes').html(data);
+        },
+        error: function () {},
+      });
+    },
+    buttons: {
+      Submit: function() {
+        var submitURL       = APPLICATION_URL + 'timeNote.action';
+        var formData        = $(".pay-notes-form").serialize();
+
+        var textAreaVal     = $("#form_id_timeNote_notes").val();
+        var alertElmP       = $('.alert').addClass('active').find('p');
+        var alertElm        = $('.alert');
+
+        if(textAreaVal == "") {
+          alertElmP.html("Sorry, a note is required for submit.");
+        } else {
+          alertElm.remove();
+          // Post the Added Calendar Time Block
+          $.post({
+            url: submitURL,
+            data: formData,
+            success: function() {},
+            complete: function () {
+              setTimeout(function(){
+                location.reload();
+                window.location.reload();
+              }, 5);
+            }
+          });
+        }
+
+      },
+      Cancel: function() {
+        // On cancel button click, destroy the Dialog Modal
+        payNotesDialog.dialog("destroy");
+        $(this).empty();
+      }
+    },
+    Close : function() {
+      $('.modal.pay-notes').empty();
+    }
+  });
+
+  // Opens the Add Dialog (payNotesDialog) Modal
+  payNotesDialog.dialog("open");
+
+  // Prevent default click clash
+  return false;
 });

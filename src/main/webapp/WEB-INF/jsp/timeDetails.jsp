@@ -11,22 +11,29 @@
 	<%@ include file="calendarFullNew.jsp" %>
 
 	<div class="container-with-padding">
-		<s:if test="document.hasWarnings()">
-			<s:set var="warnings" value="document.warnings" />
-			<%@ include file="warnings.jsp" %>
-		</s:if>
+
 		<div class="calendar-summary-controls m-b-40">
+
 			<s:if test="!document.isSubmitted()">
-			  <a href="#" class="button" onclick="return popwit('<s:property value='#application.url' />timeNote?document_id=<s:property value='%{document.id}' />','Notes');">Add Notes</a>
+			  <a class="button pay-notes" data-doc-id="<s:property value='%{document.id}' />">Add Pay Period Note</a>
 			</s:if>
 
 			<s:if test="document.hasLastWorkflow()" >
 			  <s:if test="document.lastWorkflow.canSubmit()">
-			    <s:form action="timeAction" id="form_id" method="post" >
+					<!-- To-Do:
+						The submit button should be disabled unless the
+						amount of hours for each week are suitable for submit. -->
+					<s:form action="timeAction" id="form_id" class="timesheet-submit" method="post" >
 			      <input type="hidden" name="source" value="timeDetails" />
 			      <s:hidden name="document_id" value="%{document.id}" />
 			      <s:hidden name="workflow_id" value="%{document.lastWorkflow.next_workflow_id}" />
-			      <s:submit name="action" type="submit" class="button" value="Submit for Approval" />
+			      <s:submit
+			      	 name="action"
+			      	 type="submit"
+			      	 class="button"
+			      	 value="Submit for Approval"
+			      	 data-week-one-total="%{document.week1Total}"
+			      	 data-week-two-total="%{document.week2Total}" />
 			    </s:form>
 			  </s:if>
 			</s:if>
@@ -48,10 +55,13 @@
 		</s:else>
 
 		<h1>Pay Period Summary</h1>
+		<s:if test="document.hasWarnings()">
+			<s:set var="warnings" value="document.warnings" />
+			<%@ include file="warnings.jsp" %>
+		</s:if>
 		<%@ include file="dailySummary.jsp" %>
 
-		<details>
-			<summary>Weekly Summary</summary>		
+
 			<div class="d-flex">
 				<s:if test="document.hasHourCodeWeek1()">
 					<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
@@ -60,7 +70,7 @@
 					<s:set var="whichWeek" value="'week-one'" />
 					<%@ include file="weeklySummary.jsp" %>
 				</s:if>
-				
+
 				<s:if test="document.hasHourCodeWeek2()">
 					<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
 					<s:set var="weekTotal" value="document.week2Total" />
@@ -69,7 +79,6 @@
 					<%@ include file="weeklySummary.jsp" %>
 				</s:if>
 		</div>
-		</details>
 
 		<%@ include file="accrualSummary.jsp" %>
 		<%@ include file="timeIssues.jsp" %>
@@ -78,4 +87,8 @@
 		<%@ include file="timeNotes.jsp" %>
 	</div>
 </s:if>
+
+<!-- jQuery Dialog Modal: Add Pay Period Note -->
+<div class="modal pay-notes" class="timetrack" style="display: none;"></div>
+
 <%@ include file="footer.jsp" %>

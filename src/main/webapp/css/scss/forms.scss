@@ -28,6 +28,10 @@
     border-radius: $form-input-border-radius;
   }
 
+  textarea {
+    min-height: 50px;
+  }
+
   input {
     &[type=checkbox] {
       cursor: pointer;
