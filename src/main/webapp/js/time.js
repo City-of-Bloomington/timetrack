@@ -598,7 +598,7 @@ $(".pay-notes").click(function() {
   var addURL              = APPLICATION_URL + 'timeNote?document_id=' + docId;
   var queryString         = $(".pay-notes-form").serialize();
 
-  // Fire Edit jQuery Dialog
+  // Fire Pay Notes jQuery Dialog
   payNotesDialog = $('.modal.pay-notes').dialog({
     autoOpen:  false,
     title:     'Add Pay Period Notes',
@@ -616,7 +616,7 @@ $(".pay-notes").click(function() {
       $(".ui-dialog-titlebar").remove();
       $(event.target).parent().css('position', 'fixed');
 
-       // Focus Input Helper
+      // Focus Input Helper
       setTimeout(function(){
         var textAreaElm     = $("#form_id_timeNote_notes");
         textAreaElm.focus();
@@ -677,3 +677,18 @@ $(".pay-notes").click(function() {
   // Prevent default click clash
   return false;
 });
+
+submitTimesheetObserver();
+function submitTimesheetObserver(){
+  // Selectors
+  var submitFormBtn   = $('.timesheet-submit input[type=submit]')
+  var weekOneTotalVal = submitFormBtn.attr('data-week-one-total');
+  var weekTwoTotalVal = submitFormBtn.attr('data-week-two-total');
+
+  // Disabled Attribute Toggle
+  if (weekOneTotalVal >= 40 && weekTwoTotalVal >= 40) {
+    submitFormBtn.attr('disabled', false);
+  } else {
+    submitFormBtn.attr('disabled', true);
+  }
+}

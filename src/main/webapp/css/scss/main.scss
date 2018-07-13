@@ -121,7 +121,16 @@
       background-color: $alabaster;
 
       &[type=submit] {
-        color: $cob-blue;
+        margin: 0 0 0 20px;
+        background-color: $fern;
+        color: white;
+
+        &:hover,
+        &:focus {
+          background-color: darken($fern, 5%);
+          color: white;
+          border: $btn-border;
+        }
       }
 
       &:hover {

@@ -24,6 +24,18 @@ button,
     text-decoration: none;
   }
 
+  &[disabled] {
+    // pointer-events: none;
+    cursor: not-allowed;
+    background-color: darken($alabaster, 10%) !important;
+    color: $dark-slate !important;
+
+    &:hover {
+      color: $dark-slate !important;
+      border: $btn-border !important;
+    }
+  }
+
   a {
     color: $dark-slate;
   }

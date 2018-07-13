@@ -28,6 +28,7 @@
 			      <s:hidden name="document_id" value="%{document.id}" />
 			      <s:hidden name="workflow_id" value="%{document.lastWorkflow.next_workflow_id}" />
 			      <s:submit
+			      	 disabled="true"
 			      	 name="action"
 			      	 type="submit"
 			      	 class="button"
