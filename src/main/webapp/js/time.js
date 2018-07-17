@@ -297,7 +297,7 @@ $(".delete-time-confirm").click(function() {
           complete: function () {
             setTimeout(function(){
               // location.reload();
-              window.location.reload(true);
+              window.location = window.location;
               // this.location.reload();
             }, 5);
           },
@@ -325,6 +325,7 @@ var dialogCancelBtn = $(".ui-dialog-buttonpane .ui-dialog-buttonset button:nth-o
 dialogConfirmBtn.attr("tabindex", "19");
 dialogCancelBtn.attr("tabindex", "20");
 
+// Confirm/Submit - Time Block Dialog Enter click to submit
 function submitDialogOnEnter(){
   $('.ui-dialog').on('keyup', function(event) {
     if (event.keyCode === $.ui.keyCode.ENTER) {
@@ -371,8 +372,6 @@ $(".data").click(function() {
         },
         error: function () {}
       });
-
-
 
       // Focus Input Helper
       setTimeout(function(){
@@ -444,9 +443,7 @@ $(".data").click(function() {
             success: function() {},
             complete: function () {
               setTimeout(function(){
-                // location.reload();
-                window.location.reload(true);
-                // this.location.reload();
+                window.location = window.location;
               }, 5);
             }
           });
@@ -578,12 +575,12 @@ $(".day").click(function() {
           $.post({
             url: submitURL,
             data: formData,
-            success: function() {},
+            success: function() {
+
+            },
             complete: function () {
               setTimeout(function(){
-                // location.reload();
-                window.location.reload(true);
-                // this.location.reload();
+                window.location = window.location;
               }, 5);
             }
           });
@@ -678,9 +675,7 @@ $(".pay-notes").click(function() {
             success: function() {},
             complete: function () {
               setTimeout(function(){
-                // location.reload();
-                window.location.reload(true);
-                // this.location.reload();
+                window.location = window.location;
               }, 5);
             }
           });
