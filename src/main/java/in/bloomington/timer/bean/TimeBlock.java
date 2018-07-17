@@ -240,6 +240,9 @@ public class TimeBlock extends Block{
 								if(msg.equals("")){
 										if(dd != null){
 												try{
+														if(dd[0].startsWith("0")){
+																dd[0] = dd[0].substring(1);
+														}
 														hrs = Integer.parseInt(dd[0].trim());
 														mins = Integer.parseInt(dd[1].trim());
 														if(hrs < 0){
@@ -314,6 +317,9 @@ public class TimeBlock extends Block{
 				String ret = "";
 				if(id.equals(""))
 						return ret;
+				if(isClockInOnly()){
+						return ret;
+				}
 				String am_pm = "AM";
 				if(end_hour > 24){
 						end_hour -= 24;

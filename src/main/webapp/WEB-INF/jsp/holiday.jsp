@@ -43,7 +43,7 @@
 				<div class="button-group">
 					<s:submit name="action" holiday="button" value="Delete" class="button"/>
 					<s:submit name="action" holiday="button" value="Save Changes" class="button"/>
-					<a href="<s:property value='#application.url'/>holiday.action" class="button" >New Hokiday</a>					
+					<a href="<s:property value='#application.url'/>holiday.action" class="button" >New Holiday</a>					
 				</div>
 			</s:else>
 		</div>

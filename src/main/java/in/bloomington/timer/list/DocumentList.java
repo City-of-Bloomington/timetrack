@@ -69,8 +69,8 @@ public class DocumentList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select d.id,d.employee_id,d.pay_period_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d ";
-				String qw = "";
+				String qq = "select d.id,d.employee_id,d.pay_period_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e ";
+				String qw = "d.employee_id=e.id ";
 				if(!employee_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
 						qw += "d.employee_id=? ";
@@ -99,6 +99,7 @@ public class DocumentList{
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
+				qq += " order by e.first_name,e.last_name ";
 				con = Helper.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -123,11 +124,6 @@ public class DocumentList{
 						if(!department_id.equals("")){
 								pstmt.setString(jj++, department_id);
 						}
-						/*
-						if(!group_id.equals("")){
-								pstmt.setString(jj++, group_id);
-						}
-						*/
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								if(documents == null)
