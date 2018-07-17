@@ -131,6 +131,7 @@ public class TimeDetailsAction extends TopAction{
 						getPayPeriod(); // so that we can initialize the list
 						PayPeriodList tl = new PayPeriodList();
 						tl.setTwoPeriodsAheadOnly();
+						tl.setEmployee_id(employee_id);
 						String back = tl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = tl.getPeriods();
@@ -213,6 +214,7 @@ public class TimeDetailsAction extends TopAction{
 				return jobTask == null;
 		}
 
+				
 }
 
 

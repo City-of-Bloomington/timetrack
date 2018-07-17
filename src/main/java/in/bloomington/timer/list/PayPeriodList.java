@@ -21,7 +21,7 @@ public class PayPeriodList{
 
 		static final long serialVersionUID = 3000L;
 		static Logger logger = LogManager.getLogger(PayPeriodList.class);
-		String date = "", year="", id="", limit="";
+		String date = "", year="", id="", employee_id="", limit="";
 		boolean currentOnly = false, twoPeriodsAheadOnly=false, lastPayPeriod=false;
 		boolean avoidFuturePeriods = false;
 		List<PayPeriod> periods = null;
@@ -38,6 +38,10 @@ public class PayPeriodList{
 				if(val != null)
 					 year = val;
     }
+    public void setEmployee_id(String val){
+				if(val != null)
+					 employee_id = val;
+    }		
 		public List<PayPeriod> getPeriods(){
 				return periods;
 		}
@@ -60,6 +64,9 @@ public class PayPeriodList{
     //
     // getters
     //
+		/*
+			select p2.id,date_format(p2.start_date,'%m/%d/%Y'), date_format(p2.end_date,'%m/%d/%Y'), year(p2.start_date),month(p2.start_date),day(p2.start_date),year(p2.end_date),month(p2.end_date),day(p2.end_date) from pay_periods p2, time_documents d where d.pay_period_id=p2.id and d.employee_id=116 and p2.start_date > date_sub(curdate(), interval 90 day) and p2.start_date < curdate();
+		 */
 		public String find(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -71,14 +78,26 @@ public class PayPeriodList{
 						"year(p.start_date),month(p.start_date),day(p.start_date),"+
 						"year(p.end_date),month(p.end_date),day(p.end_date),"+
 						"datediff(p.end_date,p.start_date) "+
-						"from pay_periods p ";				
+						"from pay_periods p ";
+				String qq2 = "select p2.id,"+
+						"date_format(p2.start_date,'%m/%d/%Y'), "+
+						"date_format(p2.end_date,'%m/%d/%Y'), "+
+						"year(p2.start_date),month(p2.start_date),day(p2.start_date),"+
+						"year(p2.end_date),month(p2.end_date),day(p2.end_date),"+
+						"datediff(p2.end_date,p2.start_date) "+
+						"from pay_periods p2 ";
 				String qw = "";
-				String qo = "order by id desc ";
+				String qo = " order by id desc ";
 				if(currentOnly){
 						qw = " p.start_date <= now() and p.end_date >= now() ";
 				}
 				else if(twoPeriodsAheadOnly){
 						qw = " p.start_date <= date_add(curdate(), interval 28 day) ";
+						if(!employee_id.equals("")){
+								qq2 += ", time_documents d  "+
+										" where d.pay_period_id=p2.id and d.employee_id=? "+
+										" and p2.start_date > date_sub(curdate(), interval 90 day) ";
+						}
 				}
 				else if(avoidFuturePeriods){
 						qw = " p.start_date <= now() ";
@@ -93,12 +112,12 @@ public class PayPeriodList{
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
-				qq += qo;
-				if(!limit.equals("")){
-						qq += " limit "+limit;
+				if(twoPeriodsAheadOnly && !employee_id.equals("")){
+						qq += " union "+qq2;
+						
 				}
+				qq += qo;
 				logger.debug(qq);
-
 				con = Helper.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -111,6 +130,9 @@ public class PayPeriodList{
 						if(!currentOnly && !year.equals("")){
 								pstmt.setString(1, year);
 						}
+						if(twoPeriodsAheadOnly && !employee_id.equals("")){
+								pstmt.setString(1, employee_id);
+						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								if(periods == null)
