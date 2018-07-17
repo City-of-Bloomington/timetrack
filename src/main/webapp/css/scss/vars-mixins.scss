@@ -17,7 +17,7 @@ $font-size-xx-large:                                        30px;
 $font-size-xxx-large:                                       32px;
 
 // Focus State
-$focus-outline-state:                                       5px auto -webkit-focus-ring-color;
+$focus-outline-state:                                       3px solid rgba(77, 144, 254, 0.6); // webkit default color
 
 // Forms
 $input-border-color:                                        $silver-chalice;

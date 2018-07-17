@@ -70,24 +70,24 @@
 				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" tabindex="4" id="time_overnight" />
 			</div>
 
-			<div id="div_hours" style="display:none" class="form-group">
+			<div id="div_hours" style="display:none;" class="form-group">
 				<label>Hours</label>
 				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" tabindex="-1" placeholder="(dd.dd)" />
 			</div>
 		</s:if>
 
 		<s:else>
-			<div id="div_time_in" style="display:none" class="form-group">
+			<div id="div_time_in" style="display:none;" class="form-group">
 				<label>Start Time</label>
 				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" tabindex="-1" placeholder="(hh:mm) AM/PM" />
 			</div>
 
-			<div id="div_time_out" style="display:none" class="form-group">
+			<div id="div_time_out" style="display:none;" class="form-group">
 				<label>End Time</label>
 				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" tabindex="-1" placeholder="(hh:mm) AM/PM" />
 			</div>
 
-			<div id="div_overnight" style="display:none" class="form-group">
+			<div id="div_overnight" style="display:none;" class="form-group">
 				<label>Overnight Shift</label>
 				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" tabindex="4" id="time_overnight" />
 			</div>

@@ -37,5 +37,9 @@
       cursor: pointer;
       margin: $form-input-checkbox-margin;
     }
+
+    &:focus {
+      outline: $focus-outline-state;
+    }
   }
 }

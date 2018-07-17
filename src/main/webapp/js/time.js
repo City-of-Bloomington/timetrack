@@ -296,8 +296,9 @@ $(".delete-time-confirm").click(function() {
           success : function(data){},
           complete: function () {
             setTimeout(function(){
-              location.reload();
-              window.location.reload();
+              // location.reload();
+              window.location.reload(true);
+              // this.location.reload();
             }, 5);
           },
           error: function () {}
@@ -315,6 +316,22 @@ $(".delete-time-confirm").click(function() {
   // Prevent click from 'normal' behavior of a href
   return false;
 });
+
+/* Sets the tabindex attribute value for confirm/cancel modal
+ * dialog actions. Note: this value needs to be higher than
+ * any value set on form elements. */
+var dialogConfirmBtn = $(".ui-dialog-buttonpane .ui-dialog-buttonset button:nth-of-type(1)");
+var dialogCancelBtn = $(".ui-dialog-buttonpane .ui-dialog-buttonset button:nth-of-type(2)");
+dialogConfirmBtn.attr("tabindex", "19");
+dialogCancelBtn.attr("tabindex", "20");
+
+function submitDialogOnEnter(){
+  $('.ui-dialog').on('keyup', function(event) {
+    if (event.keyCode === $.ui.keyCode.ENTER) {
+      $('.ui-dialog-buttonpane button:first', $(this)).click();
+    }
+  });
+}
 
 /* Calendar Time Block:
  * Edits single data entry
@@ -343,6 +360,8 @@ $(".data").click(function() {
       // Remove provided Titlebar
       $(".ui-dialog-titlebar").remove();
 
+      submitDialogOnEnter();
+
       // Get data to fill Dialog Modal
       var xhrGet = $.get({
         url  : editURL,
@@ -352,6 +371,8 @@ $(".data").click(function() {
         },
         error: function () {}
       });
+
+
 
       // Focus Input Helper
       setTimeout(function(){
@@ -423,8 +444,9 @@ $(".data").click(function() {
             success: function() {},
             complete: function () {
               setTimeout(function(){
-                location.reload();
-                window.location.reload();
+                // location.reload();
+                window.location.reload(true);
+                // this.location.reload();
               }, 5);
             }
           });
@@ -475,6 +497,8 @@ $(".day").click(function() {
     open: function (event, ui) {
       $(".ui-dialog-titlebar").remove();
 
+      submitDialogOnEnter();
+
       // Get data to fill Dialog Modal
       var xhrGet = $.get({
         url  : addURL,
@@ -512,7 +536,7 @@ $(".day").click(function() {
       }, 500);
     },
     buttons: {
-      Confirm: function() {
+      Confirm: function(e) {
         // Selectors
         var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
         var submitURL       = APPLICATION_URL + 'timeBlock.action';
@@ -547,6 +571,7 @@ $(".day").click(function() {
           hoursElm.focus();
           return false;
         } else {
+          e.preventDefault();
           // Remove any alert
           alertElm.remove();
           // Post the Added Calendar Time Block
@@ -556,8 +581,9 @@ $(".day").click(function() {
             success: function() {},
             complete: function () {
               setTimeout(function(){
-                location.reload();
-                window.location.reload();
+                // location.reload();
+                window.location.reload(true);
+                // this.location.reload();
               }, 5);
             }
           });
@@ -652,8 +678,9 @@ $(".pay-notes").click(function() {
             success: function() {},
             complete: function () {
               setTimeout(function(){
-                location.reload();
-                window.location.reload();
+                // location.reload();
+                window.location.reload(true);
+                // this.location.reload();
               }, 5);
             }
           });
