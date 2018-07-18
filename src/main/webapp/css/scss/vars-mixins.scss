@@ -65,7 +65,7 @@ $calendar-daily-header-text-color:                          white;
 $calendar-daily-header-margin:                              2px;
 $calendar-daily-header-padding:                             5px 0 5px 5px;
 
-$calendar-day-flex:                                         1 1 0;
+$calendar-day-flex:                                         1 1 0%;
 $calendar-day-background-color:                             rgba(255,255,255,0.9);
 $calendar-day-hover-background-color:                       $havelock-blue;
 $calendar-day-hover-text-color:                             white;
@@ -118,8 +118,8 @@ $dropdown-launcher-border-radius:                           $border-radius;
 $dropdown-launcher-background-repeat:                       no-repeat;
 $dropdown-launcher-background-position:                     right center;
 $dropdown-launcher-background-size:                         12px 12px;
-$dropdown-launcher-background-image:                        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%234a4a4a' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/></svg>");
-$dropdown-launcher-hover-background-image:                  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%231e59ae' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/></svg>");
+$dropdown-launcher-background-image:                        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%25234a4a4a' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/%3E%3C/svg%3E");
+$dropdown-launcher-hover-background-image:                  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%25231e59ae' d='M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z'/%3E%3C/svg%3E");
 
 $dropdown-launcher-links-a-padding:                         4px 8px;
 $dropdown-launcher-links-a-hover-background-color:          $cob-blue;

@@ -413,9 +413,18 @@ $(".data").click(function() {
         var timeIn          = $('[name="timeBlock.time_in"]').val();
         var timeOut         = $('[name="timeBlock.time_out"]').val();
         var hours           = $('[name="timeBlock.hours"]').val();
-        var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeIn);
-        var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeOut);
-        var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].includes(hours);
+
+        // Not supported in IE 11 & below
+        // var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeIn);
+        // var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeOut);
+        // var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].includes(hours);
+
+
+        var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeIn) != -1;
+        var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
+        var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
+
+
 
         // Check values before Posting
         if(timeInError){
@@ -547,9 +556,13 @@ $(".day").click(function() {
         var timeOut         = $('[name="timeBlock.time_out"]').val();
         var hours           = $('[name="timeBlock.hours"]').val();
 
-        var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeIn);
-        var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeOut);
-        var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].includes(hours);
+        // var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeIn);
+        // var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].includes(timeOut);
+        // var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].includes(hours);
+
+        var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeIn) != -1;
+        var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
+        var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
 
          // Check values before Posting
         if(timeInError){
