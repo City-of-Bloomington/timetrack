@@ -1,21 +1,20 @@
 ---
-timetrack_webapp_name: "timetrack"
+timetrack_webapp_name:  "timetrack"
 timetrack_install_path: "/srv/webapps/{{ timetrack_webapp_name }}"
-timetrack_base_uri: "/{{ timetrack_webapp_name }}"
-timetrack_base_url: "https://{{ ansible_host }}{{ timetrack_base_uri }}"
-timetrack_home: "/srv/{{ timetrack_webapp_name }}"
+timetrack_backup_path:  "/srv/backups/{{ timetrack_webapp_name }}"
+timetrack_home:         "/srv/data/{{ timetrack_webapp_name }}"
 
 timetrack_domain: "{{ ansible_host }}"
+timetrack_base_uri: "/{{ timetrack_webapp_name }}"
+timetrack_base_url: "https://{{ ansible_host }}{{ timetrack_base_uri }}"
 
 timetrack_cas:
   url:    "https://{{ ansible_host }}/cas"
-  login:  "https://{{ ansible_host }}/cas/login"
-  logout: "https://{{ ansible_host }}/cas/logout"
 
 timetrack_ldap:
   url:      "ldaps://localhost:636/OU=people"
-  username: "{{ timetrack_webapp_name }}"
-  password: "{{ vault_timetrack_ldap.pass }}"
+  user: "{{ timetrack_webapp_name }}"
+  pass: "{{ vault_timetrack_ldap.pass }}"
 
 timetrack_db:
   default:
