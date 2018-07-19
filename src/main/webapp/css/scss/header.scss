@@ -12,7 +12,7 @@ header {
   .brand {
     a { text-decoration: none; }
 
-    img {
+    svg {
       float: $header-brand-img-float;
       width: $header-brand-img-width;
       height: $header-brand-img-height;
@@ -44,5 +44,18 @@ header {
     display: flex;
     align-items: center;
     margin-left: auto; // this brings the element right
+  }
+}
+
+@media all and (-ms-high-contrast:none) {
+  /* IE11 */
+  *::-ms-backdrop, .site-title {
+    margin-top: 20px;
+    display: block !important;
+  }
+
+  *::-ms-backdrop, header .brand svg {
+    max-width: 64px !important;
+    max-height: 64px !important;
   }
 }
