@@ -40,10 +40,12 @@ public class EmployeeAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = employee.validate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 								return ret;
 						}
 						/*
@@ -61,6 +63,7 @@ public class EmployeeAction extends TopAction{
 						back = employee.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								id = employee.getId();
@@ -89,10 +92,12 @@ public class EmployeeAction extends TopAction{
 				else if(action.startsWith("Save")){
 						back = employee.doUpdate();
 						if(!back.equals("")){
+								addError(back);
 								addActionError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}
 				else{		
@@ -100,6 +105,7 @@ public class EmployeeAction extends TopAction{
 						if(!id.equals("")){
 								back = employee.doSelect();
 								if(!back.equals("")){
+										addError(back);
 										addActionError(back);
 								}								
 						}

@@ -10,7 +10,6 @@
 	    <s:actionerror/>
 		</div>
 	</s:if>
-
 	<s:elseif test="hasActionMessages()">
 		<div class="welcome">
 	    <s:actionmessage/>

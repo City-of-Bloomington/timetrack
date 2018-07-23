@@ -50,14 +50,17 @@ public class TypeAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						type.setTable_name(table_name);
 						back = type.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
@@ -65,9 +68,11 @@ public class TypeAction extends TopAction{
 						back = type.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}
 				else{		
@@ -75,7 +80,8 @@ public class TypeAction extends TopAction{
 						if(!id.equals("")){
 								back = type.doSelect();
 								if(!back.equals("")){
-								addActionError(back);
+										addActionError(back);
+										addError(back);
 								}
 						}
 				}

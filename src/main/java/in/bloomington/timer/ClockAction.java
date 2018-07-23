@@ -36,12 +36,15 @@ public class ClockAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(!action.equals("")){ // action name not important
 						back = ""; // clock.process();
 						if(!back.equals("")){
+								addError(back);
 								addActionError(back);
 						}
 						else{
+								addMessage("Added Successfully");
 								addActionMessage("Added Successfully");
 						}
 				}				

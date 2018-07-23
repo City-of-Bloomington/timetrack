@@ -37,12 +37,15 @@ public class DepartmentEmployeeChangeAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.startsWith("Change")){ 
 						back = departmentEmployee.doChange();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
+								addMessage("changed Successfully");
 								addActionMessage("Changed Successfully");
 						}
 				}
@@ -51,6 +54,7 @@ public class DepartmentEmployeeChangeAction extends TopAction{
 						if(!id.equals("")){
 								back = departmentEmployee.doSelect();
 								if(!back.equals("")){
+										addError(back);
 										addActionError(back);
 								}								
 						}

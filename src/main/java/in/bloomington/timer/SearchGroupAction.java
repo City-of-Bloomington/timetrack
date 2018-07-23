@@ -37,10 +37,12 @@ public class SearchGroupAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(!action.equals("")){
 						back = grplst.find();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								List<Group> ones = grplst.getGroups();
@@ -48,8 +50,10 @@ public class SearchGroupAction extends TopAction{
 										groups = ones;
 										groupsTitle = " Found "+groups.size()+" groups";
 										addActionMessage("Found "+groups.size()+" groups");
+										addMessage("Found "+groups.size()+" groups");
 								}
 								else{
+										addMessage("No match found");
 										groupsTitle = "No match found";
 										addActionMessage("No match found");
 								}

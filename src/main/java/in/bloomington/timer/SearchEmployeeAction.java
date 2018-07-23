@@ -37,10 +37,12 @@ public class SearchEmployeeAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(!action.equals("")){
 						back = emplst.find();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								List<Employee> ones = emplst.getEmployees();
@@ -59,11 +61,13 @@ public class SearchEmployeeAction extends TopAction{
 														return super.execute();
 												}catch(Exception ex){
 														System.err.println(ex);
+														
 												}	
 										}
 								}
 								else{
 										addActionMessage("No match found");
+										addMessage("No match found");
 								}
 						}
 				}

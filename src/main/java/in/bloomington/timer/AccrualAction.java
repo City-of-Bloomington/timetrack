@@ -39,21 +39,26 @@ public class AccrualAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = accrual.doSave();
 						if(!back.equals("")){
+								addError(back);
 								addActionError(back);
 						}
 						else{
+								addMessage("Saved Successfully");
 								addActionMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = accrual.doUpdate();
 						if(!back.equals("")){
+								addError(back);
 								addActionError(back);
 						}
 						else{
+								addMessage("Saved Successfully");
 								addActionMessage("Saved Successfully");
 						}
 				}
@@ -62,6 +67,7 @@ public class AccrualAction extends TopAction{
 						if(!id.equals("")){
 								back = accrual.doSelect();
 								if(!back.equals("")){
+										addError(back);
 										addActionError(back);
 								}
 						}

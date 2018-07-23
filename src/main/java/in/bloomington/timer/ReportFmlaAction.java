@@ -42,10 +42,12 @@ public class ReportFmlaAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(!action.equals("")){
 						back = report.findHoursByNameCode();						
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								if(true){
@@ -53,12 +55,14 @@ public class ReportFmlaAction extends TopAction{
 										if(ones != null && ones.size() > 0){
 												entries = ones;
 												addActionMessage("Found "+ones.size()+" entries");
+												addMessage("Found "+ones.size()+" entries");
 										}
 								}
 								if(true){
 										back = report.find();
 										if(!back.equals("")){
 												addActionError(back);
+												addError(back);
 										}
 										else{
 												List<TimeBlock> ones = report.getTimeBlocks();
@@ -67,6 +71,7 @@ public class ReportFmlaAction extends TopAction{
 												}
 												else{
 														addActionMessage("No match found");
+														addMessage("No match found");
 												}
 										}
 								}

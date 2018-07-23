@@ -41,12 +41,15 @@ public class JobTaskAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = jobTask.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
+								addMessage("Added Successfully");
 								addActionMessage("Added Successfully");
 						}
 				}				
@@ -54,9 +57,11 @@ public class JobTaskAction extends TopAction{
 						back = jobTask.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
-								addActionMessage("Updated Successfully");
+								addMessage("Saved Successfully");
+								addActionMessage("Saved Successfully");
 						}
 				}
 				else{		
@@ -64,6 +69,7 @@ public class JobTaskAction extends TopAction{
 						if(!id.equals("")){
 								back = jobTask.doSelect();
 								if(!back.equals("")){
+										addError(back);
 										addActionError(back);
 								}								
 						}

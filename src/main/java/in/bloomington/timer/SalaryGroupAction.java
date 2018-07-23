@@ -37,22 +37,27 @@ public class SalaryGroupAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = salaryGroup.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = salaryGroup.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}
 				else{		
@@ -61,6 +66,7 @@ public class SalaryGroupAction extends TopAction{
 								back = salaryGroup.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 						}
 				}

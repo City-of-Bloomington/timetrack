@@ -39,31 +39,41 @@ public class HolidayAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = holiday.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
+																
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = holiday.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
+																
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");								
 						}
 				}
 				else if(action.startsWith("Delete")){
 						back = holiday.doDelete();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
+																
 						}
 						else{
 								addActionMessage("Deleted Successfully");
+								addMessage("Deleted Successfully");
 								id="";
 								holiday = new Holiday(debug);
 						}
@@ -73,7 +83,8 @@ public class HolidayAction extends TopAction{
 						if(!id.equals("")){
 								back = holiday.doSelect();
 								if(!back.equals("")){
-								addActionError(back);
+										addActionError(back);
+										addError(back);
 								}
 						}
 				}

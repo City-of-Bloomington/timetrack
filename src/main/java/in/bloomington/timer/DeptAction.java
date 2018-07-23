@@ -40,13 +40,16 @@ public class DeptAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = department.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 								id = department.getId();
 						}
 				}				
@@ -54,10 +57,12 @@ public class DeptAction extends TopAction{
 						back = department.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								id = department.getId();
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}
 				else{		
@@ -66,6 +71,7 @@ public class DeptAction extends TopAction{
 								back = department.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 						}
 				}

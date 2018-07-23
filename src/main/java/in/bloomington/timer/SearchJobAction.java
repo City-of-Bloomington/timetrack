@@ -40,10 +40,12 @@ public class SearchJobAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(!action.equals("")){
 						back = joblst.find();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								List<JobTask> ones = joblst.getJobs();
@@ -51,6 +53,7 @@ public class SearchJobAction extends TopAction{
 										if(ones.size() > 1){
 												jobs = ones;
 												addActionMessage("Found "+jobs.size()+" Jobs");
+												addMessage("Found "+jobs.size()+" Jobs");
 										}
 										else if(ones.size() == 1){
 												String job_id = ones.get(0).getId();
@@ -66,6 +69,7 @@ public class SearchJobAction extends TopAction{
 								}
 								else{
 										addActionMessage("No match found");
+										addMessage("No match found");
 								}
 						}
 				}

@@ -38,35 +38,42 @@ public class GroupEmployeeAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = groupEmployee.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								group_id = groupEmployee.getGroup_id();
 								employee_id = groupEmployee.getEmployee_id();
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");								
 						}
 				}				
 				else if(action.startsWith("Save")){ 
 						back = groupEmployee.doUpdate();
 						if(!back.equals("")){
+								addError(back);
 								addActionError(back);
 						}
 						else{
 								group_id = groupEmployee.getGroup_id();
 								employee_id = groupEmployee.getEmployee_id();
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");			
 						}
 				}
 				else if(action.startsWith("Change")){ 
 						back = groupEmployee.doChange();
 						if(!back.equals("")){
+								addError(back);
 								addActionError(back);
 						}
 						else{
 								addActionMessage("Changed Successfully");
+								addMessage("Changed Successfully");			
 						}
 				}				
 				else{		
@@ -75,6 +82,7 @@ public class GroupEmployeeAction extends TopAction{
 								back = groupEmployee.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 								employee_id = groupEmployee.getEmployee_id();
 								group_id = groupEmployee.getGroup_id();

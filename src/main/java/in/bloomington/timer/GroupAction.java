@@ -39,22 +39,27 @@ public class GroupAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = group.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Added Successfully");
+								addMessage("Added Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = group.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);								
 						}
 						else{
 								addActionMessage("Updated Successfully");
+								addMessage("Added Successfully");
 						}
 				}
 				else{		
@@ -63,6 +68,7 @@ public class GroupAction extends TopAction{
 								back = group.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}								
 						}
 				}

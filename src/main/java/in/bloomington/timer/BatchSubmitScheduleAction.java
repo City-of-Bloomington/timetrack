@@ -41,16 +41,19 @@ public class BatchSubmitScheduleAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				prepareSchedular();				
 				if(action.equals("Schedule")){
 						back = doClean();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						try{
 								back = schedular.run();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 								else{
 										if(quartzMisc != null){
@@ -60,6 +63,7 @@ public class BatchSubmitScheduleAction extends TopAction{
 												next_date = quartzMisc.getNextScheduleDate();
 										}
 										addActionMessage("Scheduled Successfully");
+										addMessage("Scheduled Successfully");
 								}
 						}catch(Exception ex){
 								addActionError(""+ex);
@@ -68,6 +72,7 @@ public class BatchSubmitScheduleAction extends TopAction{
 				else if(action.startsWith("Submit")){ 
 						if(pay_period_id.equals("")){
 								addActionError("Pay period not selected");
+								addError("Pay period not selected");
 						}
 						else{
 								HandleBatchSubmit handle = new HandleBatchSubmit(pay_period_id);
@@ -77,6 +82,7 @@ public class BatchSubmitScheduleAction extends TopAction{
 								}
 								else{
 										addActionMessage("Batch Submitted Successfully");
+										addMessage("Batch Submitted Successfully");
 								}
 						}
 				}
@@ -158,6 +164,7 @@ public class BatchSubmitScheduleAction extends TopAction{
 						dl.setLimit("5");
 						String msg = dl.find();
 						if(!msg.equals("")){
+								addError(msg);
 								logger.error(msg);
 						}
 						else{

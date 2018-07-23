@@ -39,14 +39,17 @@ public class TimeNoteAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						timeNote.setReported_by(user.getId());
 						back = timeNote.doSave();
 						if(!back.equals("")){
+								addError(back);
 								addActionError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");								
 						}
 				}				
 				else{		
@@ -54,6 +57,7 @@ public class TimeNoteAction extends TopAction{
 						if(!id.equals("")){
 								back = timeNote.doSelect();
 								if(!back.equals("")){
+										addError(back);
 										addActionError(back);
 								}
 						}

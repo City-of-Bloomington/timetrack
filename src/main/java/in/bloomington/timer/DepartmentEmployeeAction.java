@@ -38,12 +38,15 @@ public class DepartmentEmployeeAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = departmentEmployee.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
+								addMessage("Saved Successfully");
 								addActionMessage("Saved Successfully");
 						}
 				}				
@@ -51,8 +54,10 @@ public class DepartmentEmployeeAction extends TopAction{
 						back = departmentEmployee.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
+								addMessage("Saved Successfully");								
 								addActionMessage("Saved Successfully");
 						}
 				}
@@ -61,6 +66,7 @@ public class DepartmentEmployeeAction extends TopAction{
 						if(!id.equals("")){
 								back = departmentEmployee.doSelect();
 								if(!back.equals("")){
+										addError(back);
 										addActionError(back);
 								}								
 						}

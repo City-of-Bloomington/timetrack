@@ -40,6 +40,7 @@ public class ImportEmployeeAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Import")){
 						if(department_id.equals("") && dept_name.equals("")){
 								back = "Department is required";
@@ -74,10 +75,12 @@ public class ImportEmployeeAction extends TopAction{
 										}
 										if(back.equals("")){
 												addActionMessage("Imported successfully");
+												addMessage("Imported successfully");
 										}
 								}
 						}
 						if(!back.equals("")){
+								addError(back);
 								addActionError(back);
 								return ret;
 						}

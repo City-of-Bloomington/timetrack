@@ -42,16 +42,19 @@ public class NotificationScheduleAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				prepareSchedular();				
 				if(action.equals("Schedule")){
 						back = doClean();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						try{
 								back = schedular.run();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 								else{
 										if(quartzMisc != null){
@@ -61,23 +64,28 @@ public class NotificationScheduleAction extends TopAction{
 												next_date = quartzMisc.getNextScheduleDate();
 										}
 										addActionMessage("Scheduled Successfully");
+										addMessage("Scheduled Successfully");										
 								}
 						}catch(Exception ex){
 								addActionError(""+ex);
+								addError(""+ex);
 						}
 				}
 				else if(action.startsWith("Notify")){ 
 						if(pay_period_id.equals("")){
 								addActionError("Pay period not selected");
+								addError("Pay period not selected");
 						}
 						else{
 								HandleNotification handle = new HandleNotification(pay_period_id, activeMail);
 								back = handle.process();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 								else{
 										addActionMessage("Notifications Processed Successfully");
+										addMessage("Notifications Processed Successfully");
 								}
 						}
 				}

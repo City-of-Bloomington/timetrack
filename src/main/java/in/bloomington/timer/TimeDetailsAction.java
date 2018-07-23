@@ -36,9 +36,10 @@ public class TimeDetailsAction extends TopAction{
 				if(!back.equals("")){
 						return "login";
 				}
+				clearAll();
 				getDocument_id();
 				if(hasNoJob()){
-						errors = "No job found for employee ";
+						addError("No job found for employee ");
 						addActionError("No job found for employee ");						
 				}
 				return ret;

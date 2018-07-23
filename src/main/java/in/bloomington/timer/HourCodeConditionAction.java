@@ -41,13 +41,16 @@ public class HourCodeConditionAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = hourcodeCondition.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Added Successfully");
+								addMessage("Added Successfully");
 								id = hourcodeCondition.getId();
 						}
 				}				
@@ -55,9 +58,11 @@ public class HourCodeConditionAction extends TopAction{
 						back = hourcodeCondition.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
-								addActionMessage("Removed Successfully");
+								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}
 				else{		
@@ -65,6 +70,7 @@ public class HourCodeConditionAction extends TopAction{
 						if(!id.equals("")){
 								back = hourcodeCondition.doSelect();
 								if(!back.equals("")){
+										addError(back);
 										addActionError(back);
 								}								
 						}

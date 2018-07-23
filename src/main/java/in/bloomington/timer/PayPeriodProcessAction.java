@@ -52,10 +52,12 @@ public class PayPeriodProcessAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(!action.equals("")){
 						back = doProcess();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								if(csvOutput){

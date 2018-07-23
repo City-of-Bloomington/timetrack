@@ -38,12 +38,15 @@ public class CodeRefAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = codeRef.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
+								addMessage("Saved Successfully");
 								addActionMessage("Saved Successfully");
 						}
 				}				
@@ -51,8 +54,10 @@ public class CodeRefAction extends TopAction{
 						back = codeRef.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
+								addMessage("Saved Successfully");
 								addActionMessage("Saved Successfully");
 						}
 				}
@@ -62,6 +67,7 @@ public class CodeRefAction extends TopAction{
 								back = codeRef.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 						}
 				}

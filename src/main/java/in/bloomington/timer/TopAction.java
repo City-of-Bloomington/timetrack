@@ -32,7 +32,8 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		static String url="", server_path="";
 		static EnvBean envBean = null;
 		String action="", id="", employee_id="";
-		String errors = "", messages="";
+		List<String> errors = new ArrayList<>(),
+				messages = new ArrayList<>();
 		Employee user = null;
 		Employee employee = null;
 	  ServletContext ctx;
@@ -176,16 +177,34 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		public void setServletContext(ServletContext ctx) {  
         this.ctx = ctx;  
     }
-		public boolean hasErrors(){
-				return !errors.equals("");
+		void addError(String str){
+				if(errors == null)
+						errors = new ArrayList<>();
+				if(str != null)
+						errors.add(str);
 		}
-		public String getErrors(){
+		void addMessage(String str){
+				if(messages == null)
+						messages = new ArrayList<>();
+				if(str != null)
+						messages.add(str);
+		}
+		void clearAll(){
+				if(errors.size() > 0)
+						errors = new ArrayList<>();
+				if(messages.size() > 0)
+						messages = new ArrayList<>();
+		}
+		public boolean hasErrors(){
+				return errors != null && errors.size() > 0;
+		}
+		public List<String> getErrors(){
 				return errors;
 		}
 		public boolean hasMessages(){
-				return !messages.equals("");
+				return messages != null && messages.size() > 0;
 		}		
-		public String getMessages(){
+		public List<String> getMessages(){
 				return messages;
 		}		
 		

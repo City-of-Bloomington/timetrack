@@ -28,14 +28,13 @@ public class TimeClockAction extends TopAction{
 		String timeClocksTitle = "Time Clock Data";
 		String document_id="", date="";
 		String ip="";
-		String errors = "", messages="";
 		List<TimeBlock> timeBlocks = null;
 		//
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
 				prepareIps();
-
+				clearAll();
 				try{
 						HttpServletRequest req = ServletActionContext.getRequest();
 						ip = req.getRemoteAddr();
@@ -48,20 +47,21 @@ public class TimeClockAction extends TopAction{
 						logger.error(ex);
 				}
 				// System.err.println(" ip "+ip);
+				clearAll();
 				if(!action.equals("")){
 						if(ipSet != null){
 								if(ipSet.contains(ip)){
 										try{
 												back = timeClock.process();
 												if(!back.equals("")){
-														errors += back;
+														addError(back);
 														addActionError(back);
 												}
 												else{
 														document_id = timeClock.getTimeBlock().getDocument_id();
 														date = timeClock.getTimeBlock().getDate();
 														addActionMessage("Received Successfully");
-														messages += "Received Successfully";
+														addMessage("Received Successfully");
 												}
 										}
 										catch(Exception ex){
@@ -70,7 +70,7 @@ public class TimeClockAction extends TopAction{
 								}
 								else{
 										back = "Unrecognized location, check with ITS";
-										errors += back;
+										addError(back);
 										addActionError(back);
 								}
 						}
@@ -153,18 +153,6 @@ public class TimeClockAction extends TopAction{
 						return ipSet.contains(ip);
 				}
 				return false;
-		}
-		public boolean hasErrors(){
-				return !errors.equals("");
-		}
-		public String getErrors(){
-				return errors;
-		}
-		public boolean hasMessages(){
-				return !messages.equals("");
-		}				
-		public String getMessages(){
-				return messages;
 		}
 
 }

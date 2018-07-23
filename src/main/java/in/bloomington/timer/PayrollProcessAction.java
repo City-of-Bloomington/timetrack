@@ -48,6 +48,7 @@ public class PayrollProcessAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.startsWith("Payroll")){
 						if(document_ids != null){
 								for(String doc_id:document_ids){
@@ -58,9 +59,13 @@ public class PayrollProcessAction extends TopAction{
 										back = one.doSave();
 										if(!back.equals("")){
 												if(!back.equals("")){
+														addError(back);
 														addActionError(back);
 												}
 										}
+								}
+								if(!hasErrors()){
+										addMessage("Payroll Process Approved Successfully");
 								}
 						}
 				}

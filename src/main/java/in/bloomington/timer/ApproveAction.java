@@ -47,6 +47,7 @@ public class ApproveAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.startsWith("Approve")){
 						if(document_ids != null){
 								for(String doc_id:document_ids){
@@ -58,8 +59,12 @@ public class ApproveAction extends TopAction{
 										if(!back.equals("")){
 												if(!back.equals("")){
 														addActionError(back);
+														addError(back);
 												}
 										}
+								}
+								if(!hasErrors()){
+										addMessage("Approved successfully");
 								}
 						}
 				}

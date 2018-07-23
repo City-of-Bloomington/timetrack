@@ -38,12 +38,15 @@ public class IpAddressAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = ipaddress.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
+								addMessage("Saved Successfully");
 								addActionMessage("Saved Successfully");
 						}
 				}				
@@ -51,8 +54,10 @@ public class IpAddressAction extends TopAction{
 						back = ipaddress.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
+								addMessage("Saved Successfully");
 								addActionMessage("Saved Successfully");
 						}
 				}
@@ -62,6 +67,7 @@ public class IpAddressAction extends TopAction{
 								back = ipaddress.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 						}
 				}

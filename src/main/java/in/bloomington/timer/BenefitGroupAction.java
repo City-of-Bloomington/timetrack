@@ -38,6 +38,7 @@ public class BenefitGroupAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = benefitGroup.doSave();
 						if(!back.equals("")){
@@ -51,9 +52,11 @@ public class BenefitGroupAction extends TopAction{
 						back = benefitGroup.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}
 				else if(action.startsWith("Delete")){
@@ -63,6 +66,7 @@ public class BenefitGroupAction extends TopAction{
 						}
 						else{
 								addActionMessage("Deleted Successfully");
+								addMessage("Deleted Successfully");
 								id="";
 								benefitGroup = new BenefitGroup(debug);
 						}
@@ -73,6 +77,7 @@ public class BenefitGroupAction extends TopAction{
 								back = benefitGroup.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 						}
 				}

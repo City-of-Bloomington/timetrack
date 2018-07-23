@@ -31,14 +31,17 @@ public class TimeIssueAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				// for this login is not required
+				clearAll();
 				if(action.equals("Save")){
 						// timeIssue.setReported_by(user.getEmployee_id());
 						back = timeIssue.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}
 				if(action.startsWith("Close")){
@@ -46,9 +49,11 @@ public class TimeIssueAction extends TopAction{
 						back = timeIssue.doClose();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Closed Successfully");
+								addMessage("Closed Successfully");								
 						}
 				}				
 				else{		
@@ -57,6 +62,7 @@ public class TimeIssueAction extends TopAction{
 								back = timeIssue.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 						}
 				}

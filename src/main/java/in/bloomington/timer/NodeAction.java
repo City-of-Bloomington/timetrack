@@ -37,22 +37,29 @@ public class NodeAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = node.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
+
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = node.doUpdate();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
 								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
+
 						}
 				}
 				else{		
@@ -60,6 +67,7 @@ public class NodeAction extends TopAction{
 						if(!id.equals("")){
 								back = node.doSelect();
 								if(!back.equals("")){
+										addError(back);
 										addActionError(back);
 								}
 						}

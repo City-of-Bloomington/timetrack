@@ -39,21 +39,26 @@ public class AccrualWarningAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.equals("Save")){
 						back = accrualWarning.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{
+								addMessage("Saved Successfully");
 								addActionMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = accrualWarning.doUpdate();
 						if(!back.equals("")){
+								addError(back);
 								addActionError(back);
 						}
 						else{
+								addMessage("Saved Successfully");
 								addActionMessage("Saved Successfully");
 						}
 				}
@@ -62,6 +67,7 @@ public class AccrualWarningAction extends TopAction{
 						if(!id.equals("")){
 								back = accrualWarning.doSelect();
 								if(!back.equals("")){
+										addError(back);
 										addActionError(back);
 								}
 						}

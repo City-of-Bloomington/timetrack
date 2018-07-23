@@ -41,15 +41,16 @@ public class TimeBlockAction extends TopAction{
 				if(!back.equals("")){
 						return "login";
 				}
+				clearAll();
 				if(action.equals("Save")){
 						timeBlock.setAction_by_id(user.getId());
 						back = timeBlock.doSave();
 						if(!back.equals("")){
-								errors += back;
+								addError(back);
 								addActionError(back);
 						}
 						else{
-								messages += "Added Successfully";
+								addMessage("Added Successfully");
 								addActionMessage("Added Successfully");
 						}
 				}				
@@ -57,11 +58,11 @@ public class TimeBlockAction extends TopAction{
 						timeBlock.setAction_by_id(user.getId());
 						back = timeBlock.doUpdate();
 						if(!back.equals("")){
-								errors += back;								
+								addError(back);								
 								addActionError(back);
 						}
 						else{
-								messages += "Updated Successfully";								
+								addMessage("Updated Successfully");								
 								addActionMessage("Updated Successfully");
 						}
 				}
@@ -77,7 +78,7 @@ public class TimeBlockAction extends TopAction{
 						back = timeBlock.doDelete();
 						if(!back.equals("")){
 								addActionError(back);
-								errors += back;										
+								addError(back);
 						}
 						else{
 								try{
@@ -96,6 +97,7 @@ public class TimeBlockAction extends TopAction{
 								back = timeBlock.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 								selected_job_id = timeBlock.getJob_id();
 								document_id = timeBlock.getDocument_id();

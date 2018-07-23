@@ -30,6 +30,7 @@ public class SwitchAction extends TopAction{
 				if(!back.equals("")){
 						return "login";
 				}
+				clearAll();
 				if(action.startsWith("Change")){
 						if(!new_employee_id.equals("")){
 								setEmployee_id(new_employee_id);
@@ -37,6 +38,7 @@ public class SwitchAction extends TopAction{
 								if(employee == null){
 										back = "could not get employee info ";
 										addActionError(back);
+										addError(back);
 								}
 								else{
 										try{

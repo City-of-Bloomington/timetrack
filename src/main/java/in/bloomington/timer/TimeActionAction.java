@@ -38,27 +38,18 @@ public class TimeActionAction extends TopAction{
 								System.err.println(ex);
 						}	
 				}
+				clearAll();
 				if(action.startsWith("Submit")){
 						getTimeAction();
 						timeAction.setAction_by(user.getId());
 						back = timeAction.doSave();
 						if(!back.equals("")){
 								addActionError(back);
+								addError(back);
 						}
 						else{ // normally we return to TimeDetails
-								addActionMessage("Submitted Successfully");
-								/*
-								if(source.equals("timeDetails")){
-										String str = url+"timeDetails.action?document_id="+document_id;
-										try{
-												HttpServletResponse res = ServletActionContext.getResponse();
-												res.sendRedirect(str);
-												return super.execute();
-										}catch(Exception ex){
-												System.err.println(ex);
-										}											
-								}
-								*/
+								addActionMessage("Saved Successfully");
+								addMessage("Saved Successfully");
 						}
 				}				
 				else{		
@@ -67,6 +58,7 @@ public class TimeActionAction extends TopAction{
 								back = timeAction.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
+										addError(back);
 								}
 								else{
 										document_id = timeAction.getDocument_id();
