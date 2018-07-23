@@ -1,56 +1,60 @@
 ---
-- hosts: timetrack
-  become: yes
+- hosts: "timetrack"
+  become: "yes"
   roles:
-    - City-of-Bloomington.mysql
-    - City-of-Bloomington.tomcat
+    - "City-of-Bloomington.mysql"
+    - "City-of-Bloomington.tomcat"
   tasks:
     - name: "Create database"
       mysql_db:
         config_file: "{{ mysql_defaults_extra_file }}"
         name: "{{ timetrack_db.default.name }}"
-        state: present
-      no_log: True
+        state: "present"
+      no_log: "True"
 
     - name: "Create database user"
       mysql_user:
         name:     "{{ timetrack_db.default.user }}"
         password: "{{ timetrack_db.default.pass }}"
         priv:     "{{ timetrack_db.default.name }}.*:ALL"
-        state: present
+        state: "present"
         config_file: "{{ mysql_defaults_extra_file }}"
-      no_log: True
+      no_log: "True"
 
     - name: "Update apache configuration"
       template:
-        src: timetrack.conf
-        dest: /etc/apache2/sites-enabled/conf.d/timetrack.conf
-        owner: root
-        group: root
-        mode: 0644
-      notify: apache_restart
+        src: "apache.conf"
+        dest: "/etc/apache2/sites-enabled/conf.d/timetrack.conf"
+      notify: "apache_restart"
 
-    - name: "Create home directory"
+    - name: "Create timetrack directories"
       file:
-        path: "{{ timetrack_home }}/classes"
+        path: "{{ item }}"
         state: "directory"
+        owner: "tomcat8"
+        group: "staff"
+        mode: "u=rwx,g=rwxs"
+      with_items:
+        - "{{ timetrack_backup_path  }}"
+        - "{{ timetrack_home         }}/conf"
+        - "/var/log/cron"
 
     - name: "Configure Quartz"
       template:
         src: "quartz.properties"
-        dest: "{{ timetrack_home }}/classes"
+        dest: "{{ timetrack_home }}/conf"
       notify: "tomcat_restart"
 
     - name: "Configure Log4J"
       template:
         src: "log4j.properties"
-        dest: "{{ timetrack_home }}/classes"
+        dest: "{{ timetrack_home }}/conf"
       notify: "tomcat_restart"
 
     - name: "Configure Log4J 2"
       template:
         src: "log4j2.xml"
-        dest: "{{ timetrack_home }}/classes"
+        dest: "{{ timetrack_home }}/conf"
       notify: "tomcat_restart"
 
     - name: "Install context"

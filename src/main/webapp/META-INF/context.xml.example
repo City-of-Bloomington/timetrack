@@ -1,80 +1,49 @@
-<Context reloadable="false"
-				 crossContext="true">
-	<Parameter
-			name="url"
-			value="url of timetrack"
-			override="false" />
-	<Parameter
-			name="activeMail"
-			value="true"
-			override="false" />
-	<Parameter
-			name="emailStr"
-			value="your email string such as yourcompany.com"
-			override="false" />
-	<Parameter
-			name="server_path"
-			value="path to uploaded files"
-			override="false" />
-	<Parameter
-			name="cas_url"
-			value="your cas logout url"
-		override="false" />
-	<Parameter
-			name="ldap_url"
-			value="ldap connection url"
-			override="false" />
-	<Parameter
-			name="ldap_principle"
-			value="ldap principle name to connect with"
-			override="false" />
-	<Parameter
-			name="ldap_password"
-			value="nw world pass"
-			override="false" />
-	<Parameter
-			name="dbUrl"
-			value="jdbc:sqlserver://erpds.bloomington.in.gov"
-			override="false" />
-	<Parameter
-			name="dbName"
-			value="LogosDB"
-			override="false" />
-	<Parameter
-			name="dbUser"
-			value="nwskuali"
-			override="false" />
-	<Parameter
-			name="dbPass"
-			value="Logos-2050"
-			override="false" />
-	<Parameter
-      name="serverName"
-      value="server running timetrack or ip address"
-			/>
-	<Parameter
-			name="casServerLoginUrl"
-			value="cas login link"
-			/>
-	<Parameter
-			name="casServerUrlPrefix"
-			value="cas server link without login"
-			/>
-	<Resource name="jdbc/MySQL_timer" auth="Container"
-						type="javax.sql.DataSource"
-						username="timetrack"
-						password="db password"
-						driverClassName="com.mysql.jdbc.Driver"
-						url="jdbc:mysql://your db server:3306/timetrack"
-						removeAbandonedOnBorrow="true"
-						removeAbandonedTimeout="60"
-						maxWaitMillis="60000"
-						maxIdle="4"
-						maxTotal="10"  />
-		<Resources>
-			<PostResources
-					base="absolute path to your quartz.properties file"
-					className="org.apache.catalina.webresources.DirResourceSet"
-					webAppMount="/WEB-INF/classes"/>
-		</Resources>
+<Context reloadable="false" crossContext="true">
+
+<Parameter name="serverName"  value="localhost" />
+<!-- The timetrack base url must always include the trailing slash -->
+<Parameter name="url"         value="https://localhost/timetrack/" override="false" />
+<!-- Path to save uploaded files -->
+<Parameter name="server_path" value="/srv/data/timetrack/files"    override="false" />
+
+<!-- Configure the email addresses for your company -->
+<Parameter name="activeMail" value="true"                override="false" />
+<Parameter name="emailStr"   value="email.somewhere.org" override="false" />
+
+<Parameter name="casServerUrlPrefix" value="https://localhost/cas" />
+<Parameter name="casServerLoginUrl"  value="https://localhost/cas/login" />
+
+<Parameter name="ldap_url"       value="ldaps://ldap.company.org:636/DC=company,DC=org" override="false" />
+<Parameter name="ldap_principle" value="admin@company.org" override="false" />
+<Parameter name="ldap_password"  value="secret password"   override="false" />
+
+<Parameter name="dbUrl"  value="jdbc:sqlserver://newworld.company.org" override="false" />
+<Parameter name="dbName" value="LogosDB"                               override="false" />
+<Parameter name="dbUser" value="timetrack"                             override="false" />
+<Parameter name="dbPass" value="secret password"                       override="false" />
+
+
+<Resource  name="jdbc/MySQL_timer" auth="Container"
+           url="jdbc:mysql://localhost/timetrack?useSSL=false"
+           username="timetrack"
+           password="secret password"
+           type="javax.sql.DataSource"
+           driverClassName="com.mysql.jdbc.Driver"
+           removeAbandonedOnBorrow="true"
+           removeAbandonedTimeout="60"
+           maxWaitMillis="60000"
+           maxIdle="2"
+           maxTotal="20"  />
+<Resources>
+    <!--
+        Path to configuration files for Quartz and Log4J
+
+        It's best to store these outside of the WAR file, that way, you can
+        deploy new WAR files without losing your site configuration.
+    -->
+    <PostResources
+           base="/srv/data/timetrack/conf"
+           className="org.apache.catalina.webresources.DirResourceSet"
+           webAppMount="/WEB-INF/classes"/>
+</Resources>
 </Context>
