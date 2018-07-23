@@ -12,7 +12,8 @@ header {
   .brand {
     a { text-decoration: none; }
 
-    svg {
+    svg,
+    img {
       float: $header-brand-img-float;
       width: $header-brand-img-width;
       height: $header-brand-img-height;
