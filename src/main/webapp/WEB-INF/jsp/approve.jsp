@@ -20,18 +20,9 @@
 	<s:if test="hasGroups()">
 		<div class="calendar-header-controls">
 			<div class="button-group">
-		    <a href="" class="button hide-text has-icon chevron-left">
-		      <span>Backwards</span>
-		    </a>
-
-		    <!-- Adam Butcher / adabutch / butcherad -->
-		    <!-- I expect this to not leave the screen (goes to Data Entry),
-		    		 but instead take me to 'today' on this screen (approval) -->
-		    <a href="<s:property value='#application.url' />dataEntry.action?pay_period_id=<s:property value='currentPayPeriod.id' />" class="button today"><span>Today</span></a>
-
-		    <a href="" class="button hide-text has-icon chevron-right">
-		      <span>Forwards</span>
-		    </a>
+		    <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='previousPayPeriod.id' />" class="button hide-text has-icon chevron-left"><span>Backwards</span></a>
+		    <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='currentPayPeriod.id' />" class="button today"><span>Today</span></a>
+		    <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
 		  </div>
 
 		  <div class="pay-period">
@@ -80,7 +71,7 @@
 							</s:else>
 						</h2>
 
-						<s:if test="isSubmitted() && hasWarnings()">
+						<s:if test="hasWarnings()">
 							<s:set var="warnings" value="warnings" />
 							<%@ include file="warnings.jsp" %>
 						</s:if>

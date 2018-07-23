@@ -21,7 +21,8 @@ public class TimeDetailsAction extends TopAction{
 		static Logger logger = LogManager.getLogger(TimeDetailsAction.class);
 		DecimalFormat df = new DecimalFormat("###.00");
 		//
-		PayPeriod payPeriod = null, currentPayPeriod=null;
+		PayPeriod payPeriod = null, currentPayPeriod=null,
+				previousPayPeriod=null, nextPayPeriod=null;
 		String timeBlocksTitle = "Time Details";
 		String pay_period_id = "";
 		String document_id = "";
@@ -188,6 +189,36 @@ public class TimeDetailsAction extends TopAction{
 				}
 				return currentPayPeriod;
 		}
+		public PayPeriod getPreviousPayPeriod(){
+				//
+				if(previousPayPeriod == null){
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.setPreviousOnly();
+						String back = ppl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = ppl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										previousPayPeriod = ones.get(0);
+								}
+						}
+				}
+				return previousPayPeriod;
+		}
+		public PayPeriod getNextPayPeriod(){
+				//
+				if(nextPayPeriod == null){
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.setNextOnly();
+						String back = ppl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = ppl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										nextPayPeriod = ones.get(0);
+								}
+						}
+				}
+				return nextPayPeriod;
+		}				
 		public boolean isCurrentPayPeriod(){
 				getCurrentPayPeriod();
 				getPay_period_id();

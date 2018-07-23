@@ -22,7 +22,9 @@ public class PayPeriodList{
 		static final long serialVersionUID = 3000L;
 		static Logger logger = LogManager.getLogger(PayPeriodList.class);
 		String date = "", year="", id="", employee_id="", limit="";
-		boolean currentOnly = false, twoPeriodsAheadOnly=false, lastPayPeriod=false;
+		boolean currentOnly = false,
+				twoPeriodsAheadOnly=false,
+				lastPayPeriod=false, previousOnly=false, nextOnly=false;
 		boolean avoidFuturePeriods = false;
 		List<PayPeriod> periods = null;
     public PayPeriodList(){
@@ -48,6 +50,12 @@ public class PayPeriodList{
 		public void currentOnly(){
 				currentOnly = true;
 		}
+		public void setNextOnly(){
+				nextOnly = true;
+		}
+		public void setPreviousOnly(){
+				previousOnly = true;
+		}		
 		public void setTwoPeriodsAheadOnly(){
 				twoPeriodsAheadOnly = true;
 		}
@@ -91,6 +99,12 @@ public class PayPeriodList{
 				if(currentOnly){
 						qw = " p.start_date <= now() and p.end_date >= now() ";
 				}
+				else if(nextOnly){
+						qw = " p.start_date <= date_add(curdate(), interval 14 day) and p.end_date >= date_add(curdate(), interval 14 day) ";
+				}
+				else if(previousOnly){
+						qw = " p.start_date <= date_sub(curdate(), interval 14 day) and p.end_date >= date_sub(curdate(), interval 14 day) ";
+				}				
 				else if(twoPeriodsAheadOnly){
 						qw = " p.start_date <= date_add(curdate(), interval 28 day) ";
 						if(!employee_id.equals("")){

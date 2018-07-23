@@ -315,38 +315,40 @@ public class TimeBlock extends Block{
 		}
 		public String getTime_out(){
 				String ret = "";
+				int e_hour=end_hour;
+				int e_minute=end_minute;
 				if(id.equals(""))
 						return ret;
 				if(isClockInOnly()){
 						return ret;
 				}
 				String am_pm = "AM";
-				if(end_hour > 24){
-						end_hour -= 24;
+				if(e_hour > 24){
+						e_hour -= 24;
 						overnight = true;
 				}
-				else if(end_hour == 24){
-						end_hour = 12;
+				else if(e_hour == 24){
+						e_hour = 12;
 						overnight = true;
 				}
-				else if(end_hour > 12){
-						end_hour -= 12;
+				else if(e_hour > 12){
+						e_hour -= 12;
 						am_pm = "PM";
 				}
-				else if(end_hour == 12){
+				else if(e_hour == 12){
 						am_pm = "PM";
 				}
-				else if(end_hour == 0){
-						end_hour = 12; // for 12 am
+				else if(e_hour == 0){
+						e_hour = 12; // for 12 am
 				}
-				if(end_hour < 10){
+				if(e_hour < 10){
 						ret = "0";
 				}
-				ret += end_hour+":";
-				if(end_minute < 10){
+				ret += e_hour+":";
+				if(e_minute < 10){
 						ret += "0";
 				}
-				ret += end_minute+" "+am_pm;;
+				ret += e_minute+" "+am_pm;;
 				return ret;
 		}
 		public String getTimeInfo(){

@@ -352,6 +352,7 @@ public class PayPeriodProcessAction extends TopAction{
 				}
 				return currentPayPeriod;
 		}
+
 		public HolidayList getHolidayList(){
 				if(holys == null){
 						getPayPeriod();

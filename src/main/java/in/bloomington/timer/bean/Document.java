@@ -602,10 +602,10 @@ public class Document{
 				}
 		}
 		private void checkForWarnings(){
-				if(isSubmitted())
-						checkForWarningsAfter();
-				else
-						checkForWarningsBefore();
+				// if(isSubmitted())
+				checkForWarningsAfter();
+				// else
+				checkForWarningsBefore();
 		}
 		// after submission
 		private void checkForWarningsAfter(){

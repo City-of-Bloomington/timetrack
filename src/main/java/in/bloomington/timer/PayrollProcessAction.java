@@ -28,7 +28,9 @@ public class PayrollProcessAction extends TopAction{
 		String groupsTitle = "Manage Group(s)";
 		String pay_period_id="", group_id="";
 		String workflow_id = ""; 
-		PayPeriod currentPayPeriod=null;
+		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
+				nextPayPeriod = null;
+		
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
@@ -231,7 +233,36 @@ public class PayrollProcessAction extends TopAction{
 				getNonDocEmps();
 				return nonDocEmps != null && nonDocEmps.size() > 0; 
 		}
-
+		public PayPeriod getPreviousPayPeriod(){
+				//
+				if(previousPayPeriod == null){
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.setPreviousOnly();
+						String back = ppl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = ppl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										previousPayPeriod = ones.get(0);
+								}
+						}
+				}
+				return previousPayPeriod;
+		}
+		public PayPeriod getNextPayPeriod(){
+				//
+				if(nextPayPeriod == null){
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.setNextOnly();
+						String back = ppl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = ppl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										nextPayPeriod = ones.get(0);
+								}
+						}
+				}
+				return nextPayPeriod;
+		}					
 }
 
 
