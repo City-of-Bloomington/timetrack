@@ -186,7 +186,7 @@ public class ApproveAction extends TopAction{
 		public String getPay_period_id(){
 				if(pay_period_id.equals("")){
 						PayPeriodList ppl = new PayPeriodList();
-						ppl.currentOnly();
+						ppl.setLastPayPeriod();
 						String back = ppl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = ppl.getPeriods();
@@ -271,7 +271,9 @@ public class ApproveAction extends TopAction{
 				getNonDocEmps();
 				return nonDocEmps != null && nonDocEmps.size() > 0; 
 		}
-
+		public void setCheck_all(boolean val){
+				// will do nothing
+		}
 }
 
 

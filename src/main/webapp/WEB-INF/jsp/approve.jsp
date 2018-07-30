@@ -43,21 +43,24 @@
 		</s:if>
 
 		<s:if test="hasDocuments()">
+			<div class="checkbox-select-all">
+				<h2>
+					<small class="status-tag approved">
+						<input type="checkbox" name="check_all" value="y" id="approve_select_all"/><b>Select All</b></small>
+				</h2>
+			</div>
 			<s:iterator var="one" value="documents">
 				<s:if test="hasDaily()">
 					<div class="approval-wrapper">
 						<h2>
-							<a href="<s:property value='#application.url' />timeDetails.action?document_id=<s:property value='id' />&source=approve" />
+							<a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" />
 								<s:property value="employee" />
 							</a>
-
+							<!-- this is comment out for testing purpose, we need to change in prod, get back from approve.jsp.old
+							-->
 							<s:if test="canBeApproved()">
-								<s:if test="isUserCurrentEmployee()">
-									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
-								</s:if>
-								<s:else>
-									<small class="status-tag approval-ready">Ready for Approval</small>
-								</s:else>
+								<small class="status-tag approved">
+									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input></small>
 							</s:if>
 							<s:elseif test="isApproved()">
 								<small class="status-tag approved">Approved</small>
@@ -90,10 +93,12 @@
 				</s:if>
 			</s:iterator>
 		</s:if>
-
+		<!-- for testing we comment out this, we need to remove in prod
 		<s:if test="isUserCurrentEmployee()">
 			<s:submit name="action" type="button" value="Approve" class="fn1-btn"/>
 		</s:if>
+		-->
+		<s:submit name="action" type="button" value="Approve" class="fn1-btn"/>		
 	</s:if>
 </s:form>
 

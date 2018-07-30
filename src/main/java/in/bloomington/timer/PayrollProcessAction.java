@@ -153,7 +153,7 @@ public class PayrollProcessAction extends TopAction{
 		public String getPay_period_id(){
 				if(pay_period_id.equals("")){
 						PayPeriodList ppl = new PayPeriodList();
-						ppl.currentOnly();
+						ppl.setLastPayPeriod();
 						String back = ppl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = ppl.getPeriods();

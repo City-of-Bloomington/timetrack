@@ -21,7 +21,7 @@ public class SwitchAction extends TopAction{
 		static final long serialVersionUID = 1150L;	
 		static Logger logger = LogManager.getLogger(SwitchAction.class);
 		//
-		String new_employee_id = "";
+		String new_employee_id = "", document_id="", source="";
 		// Employee employee = null;
 		String employeesTitle = "Current Employees";
 		public String execute(){
@@ -31,7 +31,7 @@ public class SwitchAction extends TopAction{
 						return "login";
 				}
 				clearAll();
-				if(action.startsWith("Change")){
+				if(!action.equals("")){ // normally 'Change'
 						if(!new_employee_id.equals("")){
 								setEmployee_id(new_employee_id);
 								getEmployee();
@@ -43,7 +43,13 @@ public class SwitchAction extends TopAction{
 								else{
 										try{
 												HttpServletResponse res = ServletActionContext.getResponse();
-												String str = url+"timeDetails.action";
+												String str = url+"timeDetails.action?";
+												if(!document_id.equals("")){
+														str += "document_id="+document_id;
+												}
+												if(!source.equals("")){
+														str += "&source="+source;
+												}												
 												res.sendRedirect(str);
 												return super.execute();
 										}catch(Exception ex){
@@ -65,11 +71,19 @@ public class SwitchAction extends TopAction{
 		public void setNew_employee_id(String val){
 				if(val != null && !val.equals(""))		
 						new_employee_id = val;
-		}		
+		}
+		
 		public void setEmployee_name(String val){
 				// for auto complete
 		}
-		
+		public void setDocument_id(String val){
+				if(val != null && !val.equals(""))		
+						document_id = val;
+		}
+		public void setSource(String val){
+				if(val != null && !val.equals(""))		
+					 source = val;
+		}		
 		public String getEmployee_name(){
 				return "";
 		}

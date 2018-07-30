@@ -10,13 +10,11 @@
       <s:actionerror/>
 		</div>
   </s:if>
-
   <s:elseif test="hasActionMessages()">
 		<div class="welcome">
       <s:actionmessage/>
 		</div>
   </s:elseif>
-
 	<s:if test="hasGroups()">
 		<div class="calendar-header-controls">
 			<div class="button-group">
@@ -43,6 +41,12 @@
 		</s:if>
 
 		<s:if test="hasDocuments()">
+			<div class="checkbox-select-all">
+				<h2>
+					<small class="status-tag approved">
+						<input type="checkbox" name="check_all" value="y" id="approve_select_all"/><b>Select All</b></small>
+				</h2>
+			</div>			
 			<s:iterator var="one" value="documents">
 				<s:if test="hasDaily()">
 					<div class="approval-wrapper">
@@ -50,16 +54,10 @@
 							<a href="<s:property value='#application.url' />timeDetails.action?document_id=<s:property value='id' />&source=approve" />
 								<s:property value="employee" />
 							</a>
-
 							<s:if test="canBeProcessed()">
-								<s:if test="isUserCurrentEmployee()">
-									<label><input type="checkbox" name="document_ids" value="<s:property value='id' />">Payroll Process Approve</input></label>
-								</s:if>
-								<s:else>
-									<small class="status-tag approval-ready">Ready to Payroll Proces</small>
-								</s:else>
+								<small class="status-tag approved">								
+									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Payroll Process Approve</input></small>
 							</s:if>
-
 							<s:elseif test="isApproved()">
 								<small class="status-tag approved">Approved</small>
 							</s:elseif>
