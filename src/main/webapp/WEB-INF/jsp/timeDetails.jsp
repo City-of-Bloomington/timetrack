@@ -8,8 +8,12 @@
 <s:if test="!hasActionErrors()">
 	<%@ include file="calendarTopDetails.jsp" %>
 	<%@ include file="strutMessages.jsp" %>
-	<%@ include file="calendarFullNew.jsp" %>
-
+	<s:if test="document.isApproved()">	
+		<%@ include file="calendarFullView.jsp" %>
+	</s:if>
+	<s:else>
+		<%@ include file="calendarFullNew.jsp" %>
+	</s:else>
 	<div class="container-with-padding">
 
 		<div class="calendar-summary-controls m-b-40">
