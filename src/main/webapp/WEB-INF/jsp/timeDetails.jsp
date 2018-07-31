@@ -8,7 +8,7 @@
 <s:if test="!hasActionErrors()">
 	<%@ include file="calendarTopDetails.jsp" %>
 	<%@ include file="strutMessages.jsp" %>
-	<s:if test="document.isApproved()">	
+	<s:if test="document.isProcessed()">	
 		<%@ include file="calendarFullView.jsp" %>
 	</s:if>
 	<s:else>
