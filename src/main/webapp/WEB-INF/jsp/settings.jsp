@@ -57,6 +57,10 @@
 				<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a></li>
 				<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA Report</a></li>
 			</ul>
+			<h2>Data Import</h2>
+			<ul>
+				<li><a href="<s:property value='#application.url'/>empImport.action">Employees Data Import (CSV file)</a></li>
+			</ul>			
 			<h2>Schedulars</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Employees' accrual</a></li>
@@ -64,6 +68,7 @@
 				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch clock batch submission </a></li>
 				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Update Employees (including active status)</a></li>
 			</ul>
+
 		</div>
 	</s:if>
 </div>

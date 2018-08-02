@@ -151,6 +151,13 @@
 			<result name="input">/WEB-INF/jsp/holiday.jsp</result>		
 			<result name="error">/WEB-INF/jsp/holiday.jsp</result>
 			<result name="success">/WEB-INF/jsp/holiday.jsp</result>
+		</action>
+		<action name="empImport" 
+						class="in.bloomington.timer.EmployeesImportAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/empImport.jsp</result>		
+			<result name="error">/WEB-INF/jsp/empImport.jsp</result>
+			<result name="success">/WEB-INF/jsp/empImport.jsp</result>
 		</action>		
 		<action name="payperiod" 
 						class="in.bloomington.timer.PayPeriodAction" 

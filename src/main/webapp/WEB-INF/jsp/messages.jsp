@@ -1,5 +1,5 @@
-<s:iterator var="one" value="#messages">
-	<ul class="message">
-    <li><strong>Message: </strong> <s:property /></li>
-    </ul>
-</s:iterator>
+<ul class="message">
+	<s:iterator var="one" value="#messages">
+    <li> <s:property /></li>
+	</s:iterator>
+</ul>
