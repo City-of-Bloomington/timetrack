@@ -726,4 +726,4 @@ $('#approve_select_all').change(function() {
     $('.status-tag :checkbox').attr('checked', false);
   }
 });
-		
+
