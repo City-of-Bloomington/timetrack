@@ -719,11 +719,7 @@ function submitTimesheetObserver(){
  * a toggle on approve and payroll process page to select all
  * checkboxes when select all is checked
  */
-$('#approve_select_all').change(function() {
-  if(this.checked) {
-    $('.status-tag :checkbox').attr('checked', true);
-  } else {
-    $('.status-tag :checkbox').attr('checked', false);
-  }
+$('#approve_select_all').click(function() {
+  $('.status-tag :checkbox').prop('checked', this.checked);
 });
 
