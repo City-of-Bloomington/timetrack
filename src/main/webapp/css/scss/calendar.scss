@@ -30,6 +30,10 @@
       padding: $calendar-day-padding;
       flex: $calendar-day-flex;
 
+      &:focus {
+        outline: $focus-outline-state;
+      }
+
       &.weekend {
         background-color: $calendar-weekend-background-color;
       }
@@ -72,6 +76,10 @@
         color: $calendar-day-data-text-color;
         font-size: $font-size-small;
         text-decoration: none;
+
+        &:focus {
+          outline: $focus-outline-state;
+        }
 
         &:hover {
           background-color: $calendar-day-data-hover-background-color;
