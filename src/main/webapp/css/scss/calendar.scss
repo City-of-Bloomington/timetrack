@@ -105,9 +105,16 @@
           &.delete-time-confirm {
             cursor: pointer;
 
+            &:hover {
+              svg {
+                path {
+                  fill: $calendar-day-data-delete-active-svg-fill;
+                }
+              }
+            }
             &:focus {
               svg {
-                outline: $focus-outline-state
+                outline: $focus-outline-state;
 
                 path {
                   fill: $calendar-day-data-delete-active-svg-fill;
@@ -129,7 +136,8 @@
                 fill: $calendar-day-data-delete-svg-fill;
               }
 
-              &:hover {
+              &:hover,
+              &:focus {
                 path {
                   fill: $calendar-day-data-delete-active-svg-fill;
                 }

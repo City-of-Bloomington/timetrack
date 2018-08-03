@@ -265,56 +265,59 @@ function verifyCancel() {
  * Deletes single data entry
  * file: /jsp/calendarFullNew.jsp
  */
-$(".delete-time-confirm").click(function() {
-  // Selectors
-  var block_id        = $(this).attr('data-block-id');
-  var dataDate        = $(this).attr('data-date');
-  var dateInfo        = $(this).attr('data-info');
+$(".delete-time-confirm").on("keyup click", function(e) {
+  e.stopPropagation();
+  if (e.type == "click" || e.keyCode === 13) {
+    // Selectors
+    var block_id        = $(this).attr('data-block-id');
+    var dataDate        = $(this).attr('data-date');
+    var dateInfo        = $(this).attr('data-info');
 
-  // Fire Remove jQuery Dialog
-  removeDialog = $('.modal.remove').dialog({
-    autoOpen:  false,
-    title:     'Confirm Delete',
-    modal:     true,
-    draggable: false,
-    width:     500,
-    position: { my: "top",
-                at: "top center",
-                of: ".tabs"
-    },
-    open: function (event, ui) {
-      // Remove provided Titlebar, fill empty markup with values
-      $(".ui-dialog-titlebar").remove();
-      $('h1 small').html(dataDate);
-      $('.details').html(dateInfo);
-    },
-    buttons: {
-      Confirm: function() {
-        // On confirm button click, POST, then reload the page
-        $.post({
-          url  : APPLICATION_URL + 'timeBlock?id=' + block_id +'&action=Delete',
-          success : function(data){},
-          complete: function () {
-            setTimeout(function(){
-              // location.reload();
-              window.location = window.location;
-              // this.location.reload();
-            }, 5);
-          },
-          error: function () {}
-        });
+    // Fire Remove jQuery Dialog
+    removeDialog = $('.modal.remove').dialog({
+      autoOpen:  false,
+      title:     'Confirm Delete',
+      modal:     true,
+      draggable: false,
+      width:     500,
+      position: { my: "top",
+                  at: "top center",
+                  of: ".tabs"
       },
-      Cancel: function() {
-        // On cancel button click, destroy the Dialog Modal
-        removeDialog.dialog("destroy");
+      open: function (event, ui) {
+        // Remove provided Titlebar, fill empty markup with values
+        $(".ui-dialog-titlebar").remove();
+        $('h1 small').html(dataDate);
+        $('.details').html(dateInfo);
+      },
+      buttons: {
+        Confirm: function() {
+          // On confirm button click, POST, then reload the page
+          $.post({
+            url  : APPLICATION_URL + 'timeBlock?id=' + block_id +'&action=Delete',
+            success : function(data){},
+            complete: function () {
+              setTimeout(function(){
+                // location.reload();
+                window.location = window.location;
+                // this.location.reload();
+              }, 5);
+            },
+            error: function () {}
+          });
+        },
+        Cancel: function() {
+          // On cancel button click, destroy the Dialog Modal
+          removeDialog.dialog("destroy");
+        }
       }
-    }
-  });
-  // Opens the Remove Dialog (removeDialog) Modal
-  removeDialog.dialog("open");
+    });
+    // Opens the Remove Dialog (removeDialog) Modal
+    removeDialog.dialog("open");
 
-  // Prevent click from 'normal' behavior of a href
-  return false;
+    // Prevent click from 'normal' behavior of a href
+    return false;
+  }
 });
 
 /* Sets the tabindex attribute value for confirm/cancel modal
@@ -338,271 +341,277 @@ function submitDialogOnEnter(){
  * Edits single data entry
  * file: /jsp/calendarFullNew.jsp
  */
-$(".data").click(function() {
-  // Selectors
-  var block_id        = $(this).attr('data-block-id');
-  var timeBlockDate   = $(this).attr('data-date');
-  var editURL         = APPLICATION_URL + 'timeBlock?id=' + block_id;
-  var queryString     = $(".time-block-form").serialize();
+$(".data").on("keyup click", function(e) {
+  e.stopPropagation();
+  if (e.type == "click" || e.keyCode === 13) {
+    // Selectors
+    var block_id        = $(this).attr('data-block-id');
+    var timeBlockDate   = $(this).attr('data-date');
+    var editURL         = APPLICATION_URL + 'timeBlock?id=' + block_id;
+    var queryString     = $(".time-block-form").serialize();
 
-  // Fire Edit jQuery Dialog
-  editDialog = $('.modal.add-edit').dialog({
-    autoOpen:  false,
-    title:     'Edit Time Block' + timeBlockDate,
-    modal:     true,
-    draggable: false,
-    cache:     false,
-    width:     500,
-    position: { my: "top",
-                at: "top center",
-                of: ".tabs"
-    },
-    open: function (event, ui) {
-      // Remove provided Titlebar
-      $(".ui-dialog-titlebar").remove();
+    // Fire Edit jQuery Dialog
+    editDialog = $('.modal.add-edit').dialog({
+      autoOpen:  false,
+      title:     'Edit Time Block' + timeBlockDate,
+      modal:     true,
+      draggable: false,
+      cache:     false,
+      width:     500,
+      position: { my: "top",
+                  at: "top center",
+                  of: ".tabs"
+      },
+      open: function (event, ui) {
+        // Remove provided Titlebar
+        $(".ui-dialog-titlebar").remove();
 
-      submitDialogOnEnter();
+        submitDialogOnEnter();
 
-      // Get data to fill Dialog Modal
-      var xhrGet = $.get({
-        url  : editURL,
-        data : queryString,
-        success: function (data) {
-          $('.modal.add-edit').html(data);
-        },
-        error: function () {}
-      });
+        // Get data to fill Dialog Modal
+        var xhrGet = $.get({
+          url  : editURL,
+          data : queryString,
+          success: function (data) {
+            $('.modal.add-edit').html(data);
+          },
+          error: function () {}
+        });
 
-      // Focus Input Helper
-      setTimeout(function(){
-        // Selectors
-        var hourCodeIdVal = $('[name="timeBlock.hour_code_id"]').val();
-        var hourCodeId    = $('[name="timeBlock.hour_code_id"]');
-        var hourCodeHour  = $('[name="timeBlock.hours"]');
-        var timeIn        = $('[name="timeBlock.time_in"]');
+        // Focus Input Helper
+        setTimeout(function(){
+          // Selectors
+          var hourCodeIdVal = $('[name="timeBlock.hour_code_id"]').val();
+          var hourCodeId    = $('[name="timeBlock.hour_code_id"]');
+          var hourCodeHour  = $('[name="timeBlock.hours"]');
+          var timeIn        = $('[name="timeBlock.time_in"]');
 
-        if(hourCodeIdVal === '1_Time') {
-          // If opening a REG time, focus the time in
-          timeIn.focus();
-        } else {
-          // focus the hours input for not REG hours
-          hourCodeHour.focus();
-        }
-
-        // If selection changes, refocus input
-        hourCodeId.change(function(){
-          if($('option:selected', this).val() === '1_Time') {
+          if(hourCodeIdVal === '1_Time') {
+            // If opening a REG time, focus the time in
             timeIn.focus();
           } else {
+            // focus the hours input for not REG hours
             hourCodeHour.focus();
           }
-        })
-      }, 500);
-    },
-    buttons: {
-      Confirm: function() {
-        // Selectors
-        var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
-        var submitURL       = APPLICATION_URL + 'timeBlock.action';
-        var formData        = $(".time-block-form").serialize();
-        var timeInElm       = $('[name="timeBlock.time_in"]');
-        var timeOutElm      = $('[name="timeBlock.time_out"]');
-        var hoursElm        = $('[name="timeBlock.hours"]');
-        var alertElmP       = $('.alert').addClass('active').find('p');
-        var alertElm        = $('.alert');
-        var timeIn          = $('[name="timeBlock.time_in"]').val();
-        var timeOut         = $('[name="timeBlock.time_out"]').val();
-        var hours           = $('[name="timeBlock.hours"]').val();
 
-        var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeIn) != -1;
-        var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
-        var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
-
-        // Check values before Posting
-        if(timeInError){
-          // Time In cannot be emtpy
-          alertElmP.html("Time In cannot be empty.");
-          timeInElm.focus();
-          return false;
-        } else if (timeOutError) {
-          // Time Out cannot be emtpy
-          alertElmP.html("Time Out cannot be empty.");
-          timeOutElm.focus();
-          return false;
-        } else if (hoursError) {
-          // Non-REG Hours cannot be emtpy
-          alertElmP.html("Hours cannot be 0.0");
-          hoursElm.focus();
-          return false;
-        } else {
-          // Remove any alert
-          alertElm.remove();
-          // Post the Edited Calendar Time Block
-          $.post({
-            url: submitURL,
-            data: formData,
-            success: function() {},
-            complete: function () {
-              setTimeout(function(){
-                window.location = window.location;
-              }, 5);
+          // If selection changes, refocus input
+          hourCodeId.change(function(){
+            if($('option:selected', this).val() === '1_Time') {
+              timeIn.focus();
+            } else {
+              hourCodeHour.focus();
             }
-          });
+          })
+        }, 500);
+      },
+      buttons: {
+        Confirm: function() {
+          // Selectors
+          var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
+          var submitURL       = APPLICATION_URL + 'timeBlock.action';
+          var formData        = $(".time-block-form").serialize();
+          var timeInElm       = $('[name="timeBlock.time_in"]');
+          var timeOutElm      = $('[name="timeBlock.time_out"]');
+          var hoursElm        = $('[name="timeBlock.hours"]');
+          var alertElmP       = $('.alert').addClass('active').find('p');
+          var alertElm        = $('.alert');
+          var timeIn          = $('[name="timeBlock.time_in"]').val();
+          var timeOut         = $('[name="timeBlock.time_out"]').val();
+          var hours           = $('[name="timeBlock.hours"]').val();
+
+          var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeIn) != -1;
+          var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
+          var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
+
+          // Check values before Posting
+          if(timeInError){
+            // Time In cannot be emtpy
+            alertElmP.html("Time In cannot be empty.");
+            timeInElm.focus();
+            return false;
+          } else if (timeOutError) {
+            // Time Out cannot be emtpy
+            alertElmP.html("Time Out cannot be empty.");
+            timeOutElm.focus();
+            return false;
+          } else if (hoursError) {
+            // Non-REG Hours cannot be emtpy
+            alertElmP.html("Hours cannot be 0.0");
+            hoursElm.focus();
+            return false;
+          } else {
+            // Remove any alert
+            alertElm.remove();
+            // Post the Edited Calendar Time Block
+            $.post({
+              url: submitURL,
+              data: formData,
+              success: function() {},
+              complete: function () {
+                setTimeout(function(){
+                  window.location = window.location;
+                }, 5);
+              }
+            });
+          }
+        },
+        Cancel: function() {
+          // On cancel button click, destroy the Dialog Modal
+          editDialog.dialog("destroy");
+          $(this).empty();
         }
       },
-      Cancel: function() {
-        // On cancel button click, destroy the Dialog Modal
-        editDialog.dialog("destroy");
-        $(this).empty();
+      Close : function() {
+        $('.modal.add-edit').empty();
       }
-    },
-    Close : function() {
-      $('.modal.add-edit').empty();
-    }
-  });
+    });
 
-  // Opens the Edit Dialog (editDialog) Modal
-  editDialog.dialog("open");
+    // Opens the Edit Dialog (editDialog) Modal
+    editDialog.dialog("open");
 
-  // Prevent default click clash
-  return false;
+    // Prevent default click clash
+    return false;
+  }
 });
 
 /* Calendar Time Block:
  * Adds single data entry
  * file: /jsp/calendarFullNew.jsp
  */
-$(".day").click(function() {
-  // Selectors
-  var docId               = $(this).attr('data-doc-id');
-  var timeBlockDate       = $(this).attr('data-date');
-  var timeBlockOrderIndex = $(this).attr('data-order-index');
-  var addURL              = APPLICATION_URL + 'timeBlock?document_id=' + docId + '&date=' + timeBlockDate + '&order_index=' + timeBlockOrderIndex;
-  var queryString         = $(".time-block-form").serialize();
+$(".day").on("keyup click", function(e) {
+  e.stopPropagation();
+  if (e.type == "click" || e.keyCode === 13) {
+    // Selectors
+    var docId               = $(this).attr('data-doc-id');
+    var timeBlockDate       = $(this).attr('data-date');
+    var timeBlockOrderIndex = $(this).attr('data-order-index');
+    var addURL              = APPLICATION_URL + 'timeBlock?document_id=' + docId + '&date=' + timeBlockDate + '&order_index=' + timeBlockOrderIndex;
+    var queryString         = $(".time-block-form").serialize();
 
-  // Fire Edit jQuery Dialog
-  addDialog = $('.modal.add-edit').dialog({
-    autoOpen:  false,
-    title:     'Add Time Block' + timeBlockDate,
-    modal:     true,
-    draggable: false,
-    cache:     false,
-    width:     500,
-    position: { my: "top",
-                at: "top center",
-                of: ".tabs"
-    },
-    open: function (event, ui) {
-      $(".ui-dialog-titlebar").remove();
+    // Fire Edit jQuery Dialog
+    addDialog = $('.modal.add-edit').dialog({
+      autoOpen:  false,
+      title:     'Add Time Block' + timeBlockDate,
+      modal:     true,
+      draggable: false,
+      cache:     false,
+      width:     500,
+      position: { my: "top",
+                  at: "top center",
+                  of: ".tabs"
+      },
+      open: function (event, ui) {
+        $(".ui-dialog-titlebar").remove();
 
-      submitDialogOnEnter();
+        submitDialogOnEnter();
 
-      // Get data to fill Dialog Modal
-      var xhrGet = $.get({
-        url  : addURL,
-        data : queryString,
-        success: function (data) {
-          $('.modal.add-edit').html(data);
-        },
-        error: function () {},
-      });
+        // Get data to fill Dialog Modal
+        var xhrGet = $.get({
+          url  : addURL,
+          data : queryString,
+          success: function (data) {
+            $('.modal.add-edit').html(data);
+          },
+          error: function () {},
+        });
 
-      // Focus Input Helper
-      setTimeout(function(){
-        // Selectors
-        var hourCodeIdVal = $('[name="timeBlock.hour_code_id"]').val();
-        var hourCodeId    = $('[name="timeBlock.hour_code_id"]');
-        var hourCodeHour  = $('[name="timeBlock.hours"]');
-        var timeIn        = $('[name="timeBlock.time_in"]');
+        // Focus Input Helper
+        setTimeout(function(){
+          // Selectors
+          var hourCodeIdVal = $('[name="timeBlock.hour_code_id"]').val();
+          var hourCodeId    = $('[name="timeBlock.hour_code_id"]');
+          var hourCodeHour  = $('[name="timeBlock.hours"]');
+          var timeIn        = $('[name="timeBlock.time_in"]');
 
-        if(hourCodeIdVal === '1_Time') {
-          // If opening a REG time, focus the time in
-          timeIn.focus();
-        } else {
-          // focus the hours input for not REG hours
-          hourCodeHour.focus();
-        }
-
-        // If selection changes, refocus input
-        hourCodeId.change(function(){
-          if($('option:selected', this).val() === '1_Time') {
+          if(hourCodeIdVal === '1_Time') {
+            // If opening a REG time, focus the time in
             timeIn.focus();
           } else {
+            // focus the hours input for not REG hours
             hourCodeHour.focus();
           }
-        })
-      }, 500);
-    },
-    buttons: {
-      Confirm: function(e) {
-        // Selectors
-        var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
-        var submitURL       = APPLICATION_URL + 'timeBlock.action';
-        var formData        = $(".time-block-form").serialize();
-        var timeInElm       = $('[name="timeBlock.time_in"]');
-        var timeOutElm      = $('[name="timeBlock.time_out"]');
-        var hoursElm        = $('[name="timeBlock.hours"]');
-        var alertElmP       = $('.alert').addClass('active').find('p');
-        var alertElm        = $('.alert');
-        var timeIn          = $('[name="timeBlock.time_in"]').val();
-        var timeOut         = $('[name="timeBlock.time_out"]').val();
-        var hours           = $('[name="timeBlock.hours"]').val();
 
-        var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeIn) != -1;
-        var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
-        var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
-
-         // Check values before Posting
-        if(timeInError){
-          // Time In cannot be emtpy
-          alertElmP.html("Time In cannot be empty.");
-          timeInElm.focus();
-          return false;
-        } else if (timeOutError) {
-          // Time Out cannot be emtpy
-          alertElmP.html("Time Out cannot be empty.");
-          timeOutElm.focus();
-          return false;
-        } else if (hoursError) {
-          // Non-REG Hours cannot be emtpy
-          alertElmP.html("Hours cannot be 0.0");
-          hoursElm.focus();
-          return false;
-        } else {
-          e.preventDefault();
-          // Remove any alert
-          alertElm.remove();
-          // Post the Added Calendar Time Block
-          $.post({
-            url: submitURL,
-            data: formData,
-            success: function() {
-
-            },
-            complete: function () {
-              setTimeout(function(){
-                window.location = window.location;
-              }, 5);
+          // If selection changes, refocus input
+          hourCodeId.change(function(){
+            if($('option:selected', this).val() === '1_Time') {
+              timeIn.focus();
+            } else {
+              hourCodeHour.focus();
             }
-          });
+          })
+        }, 500);
+      },
+      buttons: {
+        Confirm: function(e) {
+          // Selectors
+          var hourCodeIdVal   = $('[name="timeBlock.hour_code_id"]').val();
+          var submitURL       = APPLICATION_URL + 'timeBlock.action';
+          var formData        = $(".time-block-form").serialize();
+          var timeInElm       = $('[name="timeBlock.time_in"]');
+          var timeOutElm      = $('[name="timeBlock.time_out"]');
+          var hoursElm        = $('[name="timeBlock.hours"]');
+          var alertElmP       = $('.alert').addClass('active').find('p');
+          var alertElm        = $('.alert');
+          var timeIn          = $('[name="timeBlock.time_in"]').val();
+          var timeOut         = $('[name="timeBlock.time_out"]').val();
+          var hours           = $('[name="timeBlock.hours"]').val();
+
+          var timeInError     = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeIn) != -1;
+          var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
+          var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
+
+           // Check values before Posting
+          if(timeInError){
+            // Time In cannot be emtpy
+            alertElmP.html("Time In cannot be empty.");
+            timeInElm.focus();
+            return false;
+          } else if (timeOutError) {
+            // Time Out cannot be emtpy
+            alertElmP.html("Time Out cannot be empty.");
+            timeOutElm.focus();
+            return false;
+          } else if (hoursError) {
+            // Non-REG Hours cannot be emtpy
+            alertElmP.html("Hours cannot be 0.0");
+            hoursElm.focus();
+            return false;
+          } else {
+            e.preventDefault();
+            // Remove any alert
+            alertElm.remove();
+            // Post the Added Calendar Time Block
+            $.post({
+              url: submitURL,
+              data: formData,
+              success: function() {
+
+              },
+              complete: function () {
+                setTimeout(function(){
+                  window.location = window.location;
+                }, 5);
+              }
+            });
+          }
+        },
+        Cancel: function() {
+          // On cancel button click, destroy the Dialog Modal
+          addDialog.dialog("destroy");
+          $(this).empty();
         }
       },
-      Cancel: function() {
-        // On cancel button click, destroy the Dialog Modal
-        addDialog.dialog("destroy");
-        $(this).empty();
+      Close : function() {
+        $('.modal.add-edit').empty();
       }
-    },
-    Close : function() {
-      $('.modal.add-edit').empty();
-    }
-  });
+    });
 
-  // Opens the Add Dialog (addDialog) Modal
-  addDialog.dialog("open");
+    // Opens the Add Dialog (addDialog) Modal
+    addDialog.dialog("open");
 
-  // Prevent default click clash
-  return false;
+    // Prevent default click clash
+    return false;
+  }
 });
 
 /* If a Time Block day data entry has no time out,
@@ -722,4 +731,3 @@ function submitTimesheetObserver(){
 $('#approve_select_all').click(function() {
   $('.status-tag :checkbox').prop('checked', this.checked);
 });
-
