@@ -294,17 +294,23 @@ $(".delete-time-confirm").on("keyup click", function(e) {
         Confirm: function() {
           // On confirm button click, POST, then reload the page
           $.post({
-            url  : APPLICATION_URL + 'timeBlock?id=' + block_id +'&action=Delete',
-            success : function(data){},
-            complete: function () {
-              setTimeout(function(){
-                // location.reload();
-                window.location = window.location;
-                // this.location.reload();
-              }, 5);
-            },
-            error: function () {}
+            url  : APPLICATION_URL + 'timeBlock?id=' + block_id +'&action=Delete'
+          })
+          .done(function(data) {
+            setTimeout(function(){
+              // location.reload();
+              window.location = window.location;
+              // this.location.reload();
+            }, 5);
+          })
+          .fail(function(xhrGet, status, error) {
+            var err = JSON.parse(xhr.responseText);
+            alert(err.error);
+          })
+          .always(function() {
+            // alert( "finished" );
           });
+
         },
         Cancel: function() {
           // On cancel button click, destroy the Dialog Modal
@@ -372,11 +378,18 @@ $(".data").on("keyup click", function(e) {
         var xhrGet = $.get({
           url  : editURL,
           data : queryString,
-          success: function (data) {
-            $('.modal.add-edit').html(data);
-          },
-          error: function () {}
+        })
+        .done(function(data) {
+          $('.modal.add-edit').html(data);
+        })
+        .fail(function(xhrGet, status, error) {
+          var err = JSON.parse(xhr.responseText);
+          alert(err.error);
+        })
+        .always(function() {
+          // alert( "finished" );
         });
+
 
         // Focus Input Helper
         setTimeout(function(){
@@ -446,12 +459,18 @@ $(".data").on("keyup click", function(e) {
             $.post({
               url: submitURL,
               data: formData,
-              success: function() {},
-              complete: function () {
-                setTimeout(function(){
-                  window.location = window.location;
-                }, 5);
-              }
+            })
+            .done(function(data) {
+              setTimeout(function(){
+                window.location = window.location;
+              }, 5);
+            })
+            .fail(function(xhrGet, status, error) {
+              var err = JSON.parse(xhr.responseText);
+              alert(err.error);
+            })
+            .always(function() {
+              // alert( "finished" );
             });
           }
         },
@@ -488,7 +507,7 @@ $(".day").on("keyup click", function(e) {
     var addURL              = APPLICATION_URL + 'timeBlock?document_id=' + docId + '&date=' + timeBlockDate + '&order_index=' + timeBlockOrderIndex;
     var queryString         = $(".time-block-form").serialize();
 
-    // Fire Edit jQuery Dialog
+    // Fire Add jQuery Dialog
     addDialog = $('.modal.add-edit').dialog({
       autoOpen:  false,
       title:     'Add Time Block' + timeBlockDate,
@@ -508,11 +527,18 @@ $(".day").on("keyup click", function(e) {
         // Get data to fill Dialog Modal
         var xhrGet = $.get({
           url  : addURL,
-          data : queryString,
-          success: function (data) {
-            $('.modal.add-edit').html(data);
-          },
-          error: function () {},
+          data : queryString
+        })
+        .done(function(data) {
+          $('.modal.add-edit').html(data);
+          // alert(data);
+        })
+        .fail(function(xhrGet, status, error) {
+          var err = JSON.parse(xhr.responseText);
+          alert(err.error);
+        })
+        .always(function() {
+          // alert( "finished" );
         });
 
         // Focus Input Helper
@@ -583,15 +609,19 @@ $(".day").on("keyup click", function(e) {
             // Post the Added Calendar Time Block
             $.post({
               url: submitURL,
-              data: formData,
-              success: function() {
-
-              },
-              complete: function () {
-                setTimeout(function(){
-                  window.location = window.location;
-                }, 5);
-              }
+              data: formData
+            })
+            .done(function(data) {
+              setTimeout(function(){
+                window.location = window.location;
+              }, 5);
+            })
+            .fail(function(xhrGet, status, error) {
+              var err = JSON.parse(xhr.responseText);
+              alert(err.error);
+            })
+            .always(function() {
+              // alert( "finished" );
             });
           }
         },
@@ -658,11 +688,17 @@ $(".pay-notes").click(function() {
       // Get data to fill Dialog Modal
       var xhrGet = $.get({
         url  : addURL,
-        data : queryString,
-        success: function (data) {
-          $('.modal.pay-notes').html(data);
-        },
-        error: function () {},
+        data : queryString
+      })
+      .done(function(data) {
+        $('.modal.pay-notes').html(data);
+      })
+      .fail(function(xhrGet, status, error) {
+        var err = JSON.parse(xhr.responseText);
+        alert(err.error);
+      })
+      .always(function() {
+        // alert( "finished" );
       });
     },
     buttons: {
@@ -682,15 +718,20 @@ $(".pay-notes").click(function() {
           $.post({
             url: submitURL,
             data: formData,
-            success: function() {},
-            complete: function () {
-              setTimeout(function(){
-                window.location = window.location;
-              }, 5);
-            }
+          })
+          .done(function(data) {
+            setTimeout(function(){
+              window.location = window.location;
+            }, 5);
+          })
+          .fail(function(xhrGet, status, error) {
+            var err = JSON.parse(xhr.responseText);
+            alert(err.error);
+          })
+          .always(function() {
+            // alert( "finished" );
           });
         }
-
       },
       Cancel: function() {
         // On cancel button click, destroy the Dialog Modal
