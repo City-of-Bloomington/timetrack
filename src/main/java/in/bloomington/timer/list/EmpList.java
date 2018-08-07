@@ -36,6 +36,11 @@ public class EmpList extends CommonInc{
 				setName(val2);
 				prepareTables();
 		}
+		// we do not tables here
+		public EmpList(EnvBean val, String val2, boolean simple){
+				setEnvBean(val);
+				setName(val2);
+		}		
 		
 		public List<Employee> getEmps(){
 				return emps;
@@ -247,38 +252,6 @@ public class EmpList extends CommonInc{
 										str = email.get().toString();
 										emp.setEmail(str);
 								}
-								/*
-								Attribute department = 
-										(Attribute)(atts.get("department"));
-								if (department != null){
-										str = department.get().toString();
-										emp.setLdap_dept(str);
-								}
-								*/
-								/*
-								emp.setFullname(fullName);				
-								Attribute department = 
-										(Attribute)(atts.get("department"));
-								if (department != null){
-										String dept = department.get().toString();
-										emp.setDept(dept);
-								}
-								Attribute tele = (Attribute)(atts.get("telephoneNumber"));
-								if (tele != null){
-										String phone = tele.get().toString();
-										emp.setPhone(phone);
-								}
-								Attribute cat = (Attribute)(atts.get("businessCategory"));
-								if (cat != null){
-										String busCat = cat.get().toString();
-										emp.setDivision(busCat);
-								}
-								Attribute title = (Attribute)(atts.get("title"));
-								if (title != null){
-										String post = title.get().toString();
-										emp.setJobTitle(post);
-								}
-								*/								
 								if(emps == null){
 										emps = new ArrayList<>();
 								}
@@ -294,6 +267,107 @@ public class EmpList extends CommonInc{
 				}
 				return back;
 		}
+		public String simpleFind(){
+				Hashtable<String, String> env = new Hashtable<String, String>(11);
+				String back = "", fullName="", str="";
+				Employee emp = null;
+				if (!connectToServer(env)){
+						System.err.println("Unable to connect to ldap");
+						return null;
+				}
+				try{
+						//
+						DirContext ctx = new InitialDirContext(env);
+						SearchControls ctls = new SearchControls();
+						String[] attrIDs = {"givenName",
+																"department", // not accurate use dn instead
+																"telephoneNumber",
+																"mail",
+																"cn",
+																"sn",
+																"distinguishedName",
+																"dn",
+																"businessCategory",
+																"employeeNumber",
+																"employeeId", // id_code
+																"title"};
+						//
+						ctls.setReturningAttributes(attrIDs);
+						ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+						String filter = "";
+						if(!name.equals("")){
+								filter = "(cn="+name+"*)";
+						}
+						else if (!dept_name.equals("")){
+								/*
+									// we can not use wildcard in AD so we have to do
+									// it ourselves by bringing all users and search for 
+									// dept name and group (if any)
+								if(!group_name.equals("")){
+										filter = "(&(ou="+group_name+")(ou="+dept_name+"))";
+								}
+								else
+										filter = "(distinguishedName=*,ou="+dept_name+",*)";
+								*/
+								filter ="(&(objectCategory=person)(objectClass=user))";
+						}
+						else{ // all
+								filter ="(&(objectCategory=person)(objectClass=user))";
+						}
+						System.err.println(" filter "+filter);
+						NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctls);
+						while(answer.hasMore()){
+								//
+								emp = new Employee();
+								SearchResult sr = answer.next();
+								Attributes atts = sr.getAttributes();
+								Attribute dn = atts.get("distinguishedName");
+
+								Attribute cn = atts.get("cn");
+								if (cn != null){
+										str = cn.get().toString();
+										emp.setUsername(str);
+								}
+								Attribute givenname = atts.get("givenName");
+								if (givenname != null){
+										str = givenname.get().toString();
+										emp.setFirst_name(str);
+								}
+								Attribute sn = atts.get("sn");
+								if (sn != null){
+										str = sn.get().toString();
+										emp.setLast_name(str);
+								}
+								Attribute en = atts.get("employeeNumber");
+								if (en != null){
+										str = en.get().toString();
+										emp.setEmployee_number(str);
+								}
+								Attribute ei = atts.get("employeeId");
+								if (ei != null){
+										str = ei.get().toString();
+										emp.setId_code(str);
+								}
+								Attribute email = (Attribute)(atts.get("mail"));
+								if (email != null){
+										str = email.get().toString();
+										emp.setEmail(str);
+								}
+								if(emps == null){
+										emps = new ArrayList<>();
+								}
+								// try to avoid made up names like "*parks-user";
+								if(!emp.getUsername().startsWith("*")){
+										emps.add(emp);
+								}
+								System.err.println(" emp "+emp.getInfo());
+						}
+				}
+				catch(Exception ex){
+						logger.error(ex);
+				}
+				return back;
+		}		
 		String[] setDn(String val){
 				String retArr[] = {"",""};
 				if(val != null){
