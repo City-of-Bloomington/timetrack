@@ -659,6 +659,7 @@ public class Document{
 																// if both are holidays or both are UA, then we
 																// check with next
 																if(day_hr_code.equals(next_hr_code)){
+																		// skip
 																		day = order_index;
 																		day_hr_code = str;
 																		next_day = -1;

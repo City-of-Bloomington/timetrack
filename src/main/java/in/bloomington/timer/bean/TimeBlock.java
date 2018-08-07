@@ -461,12 +461,18 @@ public class TimeBlock extends Block{
 				
 				if((clock_in.equals("") && clock_out.equals(""))
 					 || (!clock_in.equals("") && !clock_out.equals(""))){				
-						qq +=" and ((? > t.begin_hour+t.begin_minute/60. "+ // start in between
+						qq +=" and (((? > t.begin_hour+t.begin_minute/60. "+ // start in between
 								" and ? < t.end_hour+t.end_minute/60.) or "+
-						" (? > t.begin_hour+t.begin_minute/60. "+ // end in between
-						" and ? < t.end_hour+t.end_minute/60.) or ";
+								" (? > t.begin_hour+t.begin_minute/60. "+ // end in between
+								" and ? < t.end_hour+t.end_minute/60.) or ";
+								//
 						qq +=" (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
-								" and ? <= t.end_hour+t.end_minute/60.)) ";
+								" and ? <= t.end_hour+t.end_minute/60.)) or ";
+						
+						// start and end in between
+						qq +=" ((? <= t.begin_hour+t.begin_minute/60. "+ 
+								" and ? >= t.end_hour+t.end_minute/60.))) ";
+						
 						if(timeOut < timeIn){
 								msg = "Time IN is greater than time OUT";
 								return msg;
@@ -494,6 +500,7 @@ public class TimeBlock extends Block{
 								date = Helper.getToday();
 						java.util.Date date_tmp = df.parse(date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						//
 						pstmt.setDouble(jj++, timeIn);
 						pstmt.setDouble(jj++, timeIn);
 						if((clock_in.equals("") && clock_out.equals(""))
@@ -503,6 +510,10 @@ public class TimeBlock extends Block{
 								
 								pstmt.setDouble(jj++, timeIn);
 								pstmt.setDouble(jj++, timeOut);
+								//
+								// between start and end between two
+								pstmt.setDouble(jj++, timeIn);
+								pstmt.setDouble(jj++, timeOut);								
 						}
 						if(!id.equals("")){
 								pstmt.setString(jj++, id);

@@ -28,16 +28,20 @@
 			<s:if test="timeBlock.id == ''">
 				Add Time Block
 			</s:if>
-
 			<s:else>
 				Edit Time Block
 				<s:hidden id="timeBlock_id" name="timeBlock.id" value="%{timeBlock.id}" />
 			</s:else>
 			<small><s:property value="timeBlock.date" /></small>
 		</h1>
-
-		<%@ include file="strutMessages.jsp" %>
-
+		<s:if test="hasErrors()">
+			<s:set var="errors" value="errors" />
+			<%@ include file="errors.jsp" %>
+		</s:if>
+		<s:elseif test="hasMessages()">
+			<s:set var="messages" value="messages" />
+			<%@ include file="messages.jsp" %>
+		</s:elseif>
 		<div class="alert"><p></p></div>
 
 		<s:if test="hasMoreThanOneJob()">
@@ -72,7 +76,7 @@
 
 			<div id="div_hours" style="display:none;" class="form-group">
 				<label>Hours</label>
-				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" tabindex="-1" placeholder="(dd.dd)" />
+				<s:textfield name="timeBlock.hours" value="%{timeBlock.hoursStr}" maxlength="5" id="hour_change" tabindex="-1" placeholder="(dd.dd)" />
 			</div>
 		</s:if>
 

@@ -174,6 +174,12 @@ public class Block{
     public double getHours(){
 				return hours;
     }
+    public String getHoursStr(){
+				if(hours == 0.0){
+						return "";
+				}
+				return ""+hours;
+    }		
 		public String getOvt_pref(){
 				return ovt_pref;
     }
