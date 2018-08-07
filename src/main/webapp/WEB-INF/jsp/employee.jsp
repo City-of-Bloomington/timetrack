@@ -10,9 +10,14 @@
 			<h1>Employee <s:property value="employee.full_name" /></h1>
 			<s:hidden name="employee.id" value="%{employee.id}" />
 		</s:else>
-
-	  <%@ include file="strutMessages.jsp" %>
-
+		<s:if test="hasMessages()">
+			<s:set var="messages" value="%{messages}" />
+			<%@ include file="messages.jsp" %>
+		</s:if>
+		<s:if test="hasErrors()">
+			<s:set var="errors" value="%{errors}" />
+			<%@ include file="errors.jsp" %>
+		</s:if>		
 	  <div class="width-one-half">
 			<s:if test="employee.id != ''">
 				<div class="form-group">
@@ -110,7 +115,6 @@
 			<%@ include file="employees.jsp" %>
 		</s:if>
 	</s:if>
-
 	<s:else>
 		<s:if test="employee.hasDepartment()">
 			<s:set var="departmentEmployees" value="%{employee.departmentEmployees}" />

@@ -44,70 +44,44 @@ public class EmployeeAction extends TopAction{
 				if(action.equals("Save")){
 						back = employee.validate();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 								return ret;
 						}
-						/*
-						if(departmentEmployee == null){
-								back = " Employee department not set ";
-								addActionError(back);
-								return ret;								
-						}
-						if(groupEmployee == null){
-								back = " Employee group not set ";
-								addActionError(back);
-								return ret;		
-						}
-						*/
 						back = employee.doSave();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
 								id = employee.getId();
-								/*
-								departmentEmployee.setEmployee_id(id);
-								back = departmentEmployee.doSave();
-								if(!back.equals("")){
-										back = "Employee info saved without department or group info";
-										addActionError(back);
-										return ret;
-								}
-								//
-								groupEmployee.setEmployee_id(id);
-								groupEmployee.setEffective_date(departmentEmployee.getEffective_date());
-								back += groupEmployee.doSave();
-								if(!back.equals("")){
-										back = "Employee info saved without group info";
-										addActionError(back);
-								}
-								else{
-										addActionMessage("Saved Successfully");
-								}
-								*/
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = employee.doUpdate();
 						if(!back.equals("")){
 								addError(back);
-								addActionError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
 						}
 				}
+				else if(action.startsWith("Edit")){
+						getEmployee();
+						back = employee.doSelect();
+						if(!back.equals("")){
+								addError(back);
+						}
+						getDepartmentEmployee();
+				}				
 				else{		
 						getEmployee();
 						if(!id.equals("")){
 								back = employee.doSelect();
 								if(!back.equals("")){
 										addError(back);
-										addActionError(back);
-								}								
+								}
+								else{
+										ret="view";
+								}
 						}
 						getDepartmentEmployee();
 				}
