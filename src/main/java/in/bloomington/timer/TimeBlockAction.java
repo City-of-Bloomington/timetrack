@@ -141,6 +141,9 @@ public class TimeBlockAction extends TopAction{
 				}
 				return order_index;
 		}
+		public void setErrors(String val){
+				// do nothing
+		}
 		//
 		// this is passed through the link
 		public String getDocument_id(){
@@ -258,6 +261,16 @@ public class TimeBlockAction extends TopAction{
 		public boolean hasEmpAccruals(){
 				getEmpAccruals();
 				return employeeAccruals != null && employeeAccruals.size() > 0;
+		}
+		public String getErrorsAll(){
+				String ret = "";
+				if(hasErrors()){
+						for(String str:errors){
+								if(!ret.equals("")) ret += ", ";
+								ret += str;
+						}
+				}
+				return ret;
 		}
 
 }
