@@ -108,12 +108,6 @@
 				<artifactId>mysql-connector-java</artifactId>
 				<version>5.1.44    </version>
 			</dependency>
-			<!-- added the following to prevent memory leak on reload -->
-			<dependency>
-				<groupId>se.jiderhamn</groupId>
-				<artifactId>classloader-leak-prevention</artifactId>
-				<version>1.15.2</version>
-			</dependency>			
       <dependency>
 				<groupId>ognl                    </groupId>
 				<artifactId>ognl                </artifactId>

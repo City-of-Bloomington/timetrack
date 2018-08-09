@@ -83,7 +83,7 @@ public class TimeBlockAction extends TopAction{
 						else{
 								try{
 										HttpServletResponse res = ServletActionContext.getResponse();
-										String str = url+"timeDetails.action?document_id"+document_id;
+										String str = url+"timeDetails.action?document_id="+document_id;
 										res.sendRedirect(str);
 										return super.execute();
 								}catch(Exception ex){
