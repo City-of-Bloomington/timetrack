@@ -30,10 +30,9 @@ public class HourCode extends Type{
 				accrual_id ="",
      		// each salary group can have only one reg_default set to 0
 				reg_default="", // 0 for default, 1 for others
-				
 				count_as_regular_pay=""; // char Yes/No flag
 
-
+		private String timeUsed="", timeEarned="", unpaid="";
 
     public HourCode(){
     }

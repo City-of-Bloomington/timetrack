@@ -109,6 +109,9 @@
       org.quartz.ee.servlet.QuartzInitializerListener
     </listener-class>
   </listener>
+	<listener>
+		<listener-class>se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventor</listener-class>
+</listener>
 	<!--
   <listener>
     <listener-class>

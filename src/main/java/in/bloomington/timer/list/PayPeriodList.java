@@ -22,6 +22,7 @@ public class PayPeriodList{
 		static final long serialVersionUID = 3000L;
 		static Logger logger = LogManager.getLogger(PayPeriodList.class);
 		String date = "", year="", id="", employee_id="", limit="";
+		String next_to_id = "", previous_to_id="";
 		boolean currentOnly = false,
 				twoPeriodsAheadOnly=false,
 				lastPayPeriod=false, previousOnly=false, nextOnly=false;
@@ -55,6 +56,14 @@ public class PayPeriodList{
 		}
 		public void setPreviousOnly(){
 				previousOnly = true;
+		}
+		public void setNextTo(String val){
+				if(val != null && !val.equals(""))				
+						next_to_id = val;
+		}
+		public void setPreviousTo(String val){
+				if(val != null && !val.equals(""))
+						previous_to_id = val;
 		}		
 		public void setTwoPeriodsAheadOnly(){
 				twoPeriodsAheadOnly = true;
@@ -104,7 +113,7 @@ public class PayPeriodList{
 				}
 				else if(previousOnly){
 						qw = " p.start_date <= date_sub(curdate(), interval 14 day) and p.end_date >= date_sub(curdate(), interval 14 day) ";
-				}				
+				}
 				else if(twoPeriodsAheadOnly){
 						qw = " p.start_date <= date_add(curdate(), interval 28 day) ";
 						if(!employee_id.equals("")){
@@ -123,6 +132,15 @@ public class PayPeriodList{
 				else if(!year.equals("")){
 						qw = " year(p.start_year) = ? ";
 				}
+				else if(!previous_to_id.equals("")){
+						qw = " p.id < ? ";
+						qo += " limit 1 ";
+				}
+				else if(!next_to_id.equals("")){
+						qw = " p.id > ? ";
+						qo = " order by id asc ";
+						qo += " limit 1 ";
+				}				
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
@@ -146,7 +164,13 @@ public class PayPeriodList{
 						}
 						if(twoPeriodsAheadOnly && !employee_id.equals("")){
 								pstmt.setString(1, employee_id);
-						}						
+						}
+						else if(!previous_to_id.equals("")){
+								pstmt.setString(1, previous_to_id);								
+						}
+						else if(!next_to_id.equals("")){
+								pstmt.setString(1, next_to_id);			
+						}								
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								if(periods == null)

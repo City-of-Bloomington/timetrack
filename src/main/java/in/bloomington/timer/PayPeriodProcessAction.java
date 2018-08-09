@@ -289,7 +289,9 @@ public class PayPeriodProcessAction extends TopAction{
 								isHand = department.getName().equals("HAND");
 								EmployeeList el = new EmployeeList();
 								el.setDepartment_id(department.getId());
+								el.setPay_period_id(pay_period_id);
 								el.setHasEmployeeNumber();
+								// el.setActiveOnly();
 								String back = el.find();
 								if(back.equals("")){
 										List<Employee> ones = el.getEmployees();

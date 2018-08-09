@@ -193,8 +193,10 @@ public class TimeDetailsAction extends TopAction{
 		public PayPeriod getPreviousPayPeriod(){
 				//
 				if(previousPayPeriod == null){
+						if(pay_period_id.equals(""))
+								getPayPeriod();
 						PayPeriodList ppl = new PayPeriodList();
-						ppl.setPreviousOnly();
+						ppl.setPreviousTo(pay_period_id); // relative to currently used
 						String back = ppl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = ppl.getPeriods();
@@ -208,8 +210,10 @@ public class TimeDetailsAction extends TopAction{
 		public PayPeriod getNextPayPeriod(){
 				//
 				if(nextPayPeriod == null){
+						if(pay_period_id.equals(""))
+								getPayPeriod();
 						PayPeriodList ppl = new PayPeriodList();
-						ppl.setNextOnly();
+						ppl.setNextTo(pay_period_id); // relative to this currently used 
 						String back = ppl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = ppl.getPeriods();

@@ -93,7 +93,7 @@ public class Block{
 				setBegin_minute(val7);
 				setEnd_hour(val8);
 				setEnd_minute(val9);				
-				setHours(val10);
+				setHours(""+val10);
 				setOvt_pref(val11);
 				setClock_in(val12);
 				setClock_out(val13);
@@ -124,7 +124,7 @@ public class Block{
 				setBegin_minute(val7);
 				setEnd_hour(val8);
 				setEnd_minute(val9);				
-				setHours(val10);
+				setHours(""+val10);
 				setOvt_pref(val11);
 				setClock_in(val12);
 				setClock_out(val13);
@@ -252,8 +252,14 @@ public class Block{
     public void setEnd_minute(int val){
 				end_minute = val;
     }		
-    public void setHours(double val){
-				hours = val;
+    public void setHours(String val){
+				if(val != null && !val.equals("")){
+						try{
+								hours = Double.parseDouble(val);
+						}catch(Exception ex){
+
+						}
+				}
     }
     public void setOvt_pref(String val){
 				if(val != null)

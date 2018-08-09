@@ -26,8 +26,7 @@ public class WeekSplit{
 				non_reg_hrs = 0, earn_time_used = 0,
 				earned_time = 0,
 				earned_time15 = 0f, earned_time20 =0, // for union
-				over_time15 = 0,
-				over_time20 = 0,
+				over_time15 = 0, over_time20 = 0,
 				unpaid_hrs = 0,
 				over_time25 = 0;		
 		double st_weekly_hrs = 0;
@@ -43,9 +42,6 @@ public class WeekSplit{
 		//
 		Hashtable<String, Double> hash = new Hashtable<String, Double>();
 		//
-		// anything that is earned, such as Holiday earned, or comp time earned
-		//
-		// Hashtable<String, Double> earnedHash = new Hashtable<String, Double>();
 
     public WeekSplit(boolean deb, Profile val){
 				debug = deb;
@@ -88,10 +84,10 @@ public class WeekSplit{
 										addToHash(regHash, code, hours); 
 								}
 								else{ 
-										if(te.getCode_desc().indexOf("used") > -1){
+										if(te.getCode_desc().toLowerCase().indexOf("used") > -1){
 												earn_time_used += hours;
 										}
-										else if(te.getCode_desc().indexOf("unpaid") > -1){
+										else if(te.getCode_desc().toLowerCase().indexOf("unpaid") > -1){
 												unpaid_hrs += hours;
 										}
 										else{
@@ -105,35 +101,27 @@ public class WeekSplit{
 		//
 		// for unioned emps only
 		//
-		void computeDailyComptNOverTime(){
+		void computeDailyUnionEarnedTime(){
 				for(int jj=0;jj<7;jj++){
 						double reg_hrs = 0, reg_2_hrs = 0, hours = 0, dif_hrs = 0;
-						double ovt_pct = 0, cte_pct = 0;
 						Hashtable<String, Double> daily = dailyArr.get(jj);
 						Set<String> codes = daily.keySet();
 						if(codes  != null && codes.size() > 0){
 								for(String code:codes){
-										double hrs = daily.get(code).doubleValue();										
-										if(code.equals("REG")){
+										double hrs = daily.get(code).doubleValue();
+										if(code.equals("Reg")){
 												reg_hrs += hrs;
-												hours += hrs;
-										}
-										else if(code.startsWith("REG_TO")){ // need fix
-												reg_2_hrs += hrs;
 												hours += hrs;
 										}
 								}
 								if(hours > 8.009){
 										dif_hrs = hours - 8;
-										ovt_pct = (reg_hrs)/hours;
-										cte_pct = (reg_2_hrs)/hours;
+										if(dif_hrs > 0.009)
 										if(jj == 6){
-												over_time20 += dif_hrs*ovt_pct;
-												earned_time20 += dif_hrs*cte_pct;												
+												earned_time20 += dif_hrs;												
 										}
 										else{
-												over_time15 += dif_hrs*ovt_pct;
-												earned_time15 += dif_hrs*cte_pct;
+												earned_time15 += dif_hrs;
 										}
 								}
 						}
@@ -146,6 +134,8 @@ public class WeekSplit{
 				//
 				int jj = te.getDaySeq() % 7;
 				String code = te.getEarn_code(); // only here we
+				String code_desc = te.getEarn_code_desc().toLowerCase();
+				
 				double hours = te.getHours();
 				double prev_hours = 0, dif_hrs = 0;
 				Hashtable<String, Double> daily = dailyArr.get(jj);
@@ -174,8 +164,7 @@ public class WeekSplit{
 										hours +=  daily.get(code);
 								}								
 						}
-						else if(te.getEarn_code_desc().indexOf("Used") > -1 ||
-										te.getEarn_code_desc().indexOf("used") > -1){
+						else if(code_desc.indexOf("used") > -1){
 								earn_time_used += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
@@ -197,10 +186,12 @@ public class WeekSplit{
 				//
 				int jj = te.getOrder_index() % 7;
 				String code = te.getHour_code(); // only here we need our hour_code
+				String code2 = code.toLowerCase();
+				String code_desc = te.getCode_desc().toLowerCase();
 				double hours = te.getHours();
 				double prev_hours = 0, dif_hrs = 0;
 				Hashtable<String, Double> daily = dailyArr.get(jj);
-				if(code.indexOf("Reg") > -1 || code.indexOf("REG") > -1){
+				if(code2.indexOf("reg") > -1){
 						regular_hrs += hours;
 						if(daily.containsKey(code)){
 								prev_hours = daily.get(code).doubleValue();
@@ -216,7 +207,7 @@ public class WeekSplit{
 										hours +=  daily.get(code);
 								}
 						}
-						else if(te.getCode_desc().indexOf("used") > -1){
+						else if(code_desc.indexOf("used") > -1){
 								earn_time_used += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
@@ -234,7 +225,6 @@ public class WeekSplit{
 				dailyArr.set(jj, daily);
 				//
 		}		
-		
 		//
 		public Hashtable<String, Double> getNonRegularHours(){
 				return hash;
@@ -261,8 +251,7 @@ public class WeekSplit{
 		public void doCalculations(){
 				if(bGroup != null){
 						if(bGroup.isUnioned()){
-								
-								computeDailyComptNOverTime();
+								computeDailyUnionEarnedTime();
 						}
 				}
 				consolidateDaily();
@@ -289,7 +278,7 @@ public class WeekSplit{
 								return;
 						}
 						else if(bGroup.isUnioned()){
-								net_reg_hrs = regular_hrs - earned_time;// - unpaid_hrs
+								net_reg_hrs = regular_hrs - earned_time;
 								if(net_reg_hrs < 0.009){
 										net_reg_hrs = 0;
 								}
@@ -306,16 +295,15 @@ public class WeekSplit{
 				
 		}
 		/**
-		 * in the split we can find the over time earned only
-		 * as we do not have any idea what the total for week is
-		 * therefore earned time calculation continue in the weekly
-		 * so here we are concerned by groups that earn OT1 OT1.5 OT2
+		 * we try to find earned time for union employee if they choose
+		 * not to pick themselves, the default is earned time
 		 */
 		void consolidateDaily(){
 				
 				if(consolidated || (bGroup != null && !bGroup.isUnioned())) return;
 				//
-				// we need to add earn_time,overtime hours if any for union people
+				// we need to add earn_time hours if any for union people
+				// who did not choose to select overtime or earned time
 				//
 				for(int j=0;j<7;j++){
 						Hashtable<String, Double> daily = dailyArr.get(j);
@@ -330,16 +318,6 @@ public class WeekSplit{
 										addToHash(hash, key, hours);
 								}
 						}
-				}
-				if(over_time15 > 0.009){
-						String code = "OT1.5";
-						addToHash(hash, code, over_time15);
-						earned_time += over_time15;
-				}
-				if(over_time20 > 0.009){
-						String code = "OT2.0";
-						addToHash(hash, code, over_time20);
-						earned_time += over_time20;
 				}
 				if(earned_time15 > 0.009){
 						String code = "CE1.5";

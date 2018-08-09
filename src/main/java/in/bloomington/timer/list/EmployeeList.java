@@ -27,6 +27,7 @@ public class EmployeeList extends CommonInc{
 				exclude_group_id="", groupManager_id="", department_id="",
 				dept_ref_id="", // one or more values
 				employee_number="",  exclude_name="",
+				pay_period_id="",
 				no_document_for_payperiod_id="";
 		Set<String> group_id_set = new HashSet<>();
 		boolean active_only = false, inactive_only = false, hasEmployeeNumber=false;
@@ -125,6 +126,10 @@ public class EmployeeList extends CommonInc{
 				if(val != null)
 						no_document_for_payperiod_id = val;
 		}
+		public void setPay_period_id(String val){
+				if(val != null)
+						pay_period_id = val;
+		}
 		public void setActiveOnly(){
 				active_only = true;
 		}
@@ -198,13 +203,19 @@ public class EmployeeList extends CommonInc{
 								qw += " e.username like ? ";
 						}
 						if(!department_id.equals("")){
-								qq += " join department_employees de on de.employee_id=e.id  ";
+								qq += ", department_employees de ";
 								if(!qw.equals("")) qw += " and ";
+								qw += " de.employee_id=e.id and ";
 								if(includeAllDirectors){
 										qw += " (de.department_id in(?,18) or de.department2_id in (?,18))";// all city directors dept=18								
 								}
 								else{
 										qw += " (de.department_id = ? or de.department2_id=?)";
+								}
+								if(!pay_period_id.equals("")){
+										qq += ", pay_periods pd ";
+										qw += " and pd.id=? and de.effective_date <= pd.start_date ";
+										qw += " and (de.expire_date is null or de.expire_date >= pd.end_date )";
 								}
 						}
 						if(!dept_ref_id.equals("")){
@@ -278,7 +289,10 @@ public class EmployeeList extends CommonInc{
 								}
 								if(!department_id.equals("")){
 										pstmt.setString(jj++, department_id);
-										pstmt.setString(jj++, department_id);										
+										pstmt.setString(jj++, department_id);
+										if(!pay_period_id.equals("")){
+												pstmt.setString(jj++, pay_period_id);
+										}
 								}
 								if(!dept_ref_id.equals("")){
 										pstmt.setString(jj++, dept_ref_id);

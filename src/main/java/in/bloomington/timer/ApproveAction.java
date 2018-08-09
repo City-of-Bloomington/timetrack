@@ -147,8 +147,10 @@ public class ApproveAction extends TopAction{
 		public PayPeriod getPreviousPayPeriod(){
 				//
 				if(previousPayPeriod == null){
+						if(pay_period_id.equals(""))
+								getPay_period_id();
 						PayPeriodList ppl = new PayPeriodList();
-						ppl.setPreviousOnly();
+						ppl.setPreviousTo(pay_period_id); // relative to currently used
 						String back = ppl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = ppl.getPeriods();
@@ -162,8 +164,10 @@ public class ApproveAction extends TopAction{
 		public PayPeriod getNextPayPeriod(){
 				//
 				if(nextPayPeriod == null){
+						if(pay_period_id.equals(""))
+								getPay_period_id();						
 						PayPeriodList ppl = new PayPeriodList();
-						ppl.setNextOnly();
+						ppl.setNextTo(pay_period_id); 						
 						String back = ppl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = ppl.getPeriods();

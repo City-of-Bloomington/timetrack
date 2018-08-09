@@ -56,7 +56,7 @@ public class PayPeriodProcess{
 		// two week entries for display purpose
 		//
 		Map<String, Entry> entries = null;
-		Entry firstEntry=null, lastEntry=null;
+		Entry firstEntry = null, lastEntry = null;
 		//
 		public PayPeriodProcess(Employee val,
 														Profile val2,
@@ -214,7 +214,8 @@ public class PayPeriodProcess{
 				// return hash;
 				Hashtable<String, Double> reg1 = week1.getNonRegularHours();
 				Hashtable<String, Double> reg2 = week2.getNonRegularHours();
-				mergeTwoHashes(reg2, reg1);
+				if(!reg2.isEmpty())
+						mergeTwoHashes(reg2, reg1);
 				return reg1;		
 				
 		}
@@ -237,10 +238,10 @@ public class PayPeriodProcess{
 		public Hashtable<String, Double> get2WeekRegularHash(){
 				Hashtable<String, Double> reg1 = week1.getRegularHash();
 				Hashtable<String, Double> reg2 = week2.getRegularHash();
-				mergeTwoHashes(reg2, reg1);
+				if(!reg2.isEmpty())
+						mergeTwoHashes(reg2, reg1);
 				return reg1;		
 		}
-		
 		public Hashtable<String, Double> getWeekSplitNonRegularHours(int week_no, int split_no){
 				WeekEntry week = null;		
 				if(week_no == 1)
@@ -261,9 +262,12 @@ public class PayPeriodProcess{
 		// two weeks all
 		public Hashtable<String, Double> getAll(){
 				Hashtable<String, Double> all = new Hashtable<String, Double>();
-				all.putAll(week1.getAll());
+				Hashtable<String, Double> w1all = week1.getAll();
+				if(!w1all.isEmpty())
+						mergeTwoHashes(w1all, all);
 				Hashtable<String, Double> w2all = week2.getAll();
-				mergeTwoHashes(w2all, all);
+				if(!w2all.isEmpty())
+						mergeTwoHashes(w2all, all);
 				return all;
 		}
 		boolean hasWeek1ProfHours(){
@@ -314,8 +318,6 @@ public class PayPeriodProcess{
 				if(!msg.equals("")){
 						return msg;
 				}
-				// BenefitGroup bGroup = profile.getBenefitGroup();
-				
 				document.getDaily(false); //false: ignore empty blocks
 				List<TimeBlock> blocks = document.getTimeBlocks();
 				if(blocks == null || blocks.size() == 0){
@@ -324,7 +326,8 @@ public class PayPeriodProcess{
 				}
 				try{
 						for(TimeBlock one:blocks){
-								String code = one.getHour_code().toLowerCase();
+								String code2 = one.getHour_code();
+								String code = code2.toLowerCase();
 								String nw_code = one.getNw_code();
 								String code_desc = one.getCode_desc(); // old cat
 								int day = one.getOrder_index();
@@ -332,7 +335,7 @@ public class PayPeriodProcess{
 								double hours = one.getHours();
 								//
 								// if not in refrence table we use Kuali earn code
-								if(nw_code.equals("")) nw_code = code; 
+								if(nw_code.equals("")) nw_code = code2;
 								if(day > 13) continue;
 								if(code.startsWith("reg") ||
 									 code.endsWith("reg") ||
@@ -413,7 +416,8 @@ public class PayPeriodProcess{
 						table2 = week2.splitOne.getRegularHash();
 						//
 						// combine them
-						mergeTwoHashes(table2, table);
+						if(!table2.isEmpty())
+								mergeTwoHashes(table2, table);
 				}
 				return table;
 		}
@@ -424,7 +428,8 @@ public class PayPeriodProcess{
 						// we return the first week split two, plus all week2
 						table = week2.getRegularHash();												
 						table2 = week1.splitTwo.getRegularHash();
-						mergeTwoHashes(table2, table);
+						if(!table2.isEmpty())
+								mergeTwoHashes(table2, table);
 				}
 				else{
 						//
@@ -487,6 +492,7 @@ public class PayPeriodProcess{
 				return ret;
 		}
 		public Map<String, Entry> getEntries(){
+				
 				if(entries == null){
 						String name="", val="";
 						entries = new TreeMap<>();
@@ -508,15 +514,14 @@ public class PayPeriodProcess{
 						}
 						val = df.format(ww_val);
 						total += ww_val;
+						//
 						// first row (regular hours)
-						Entry entry = new Entry(name, w1_val, w2_val, val);
-						firstEntry = entry;
-						// entries.put(name,entry);
-
+						firstEntry = new Entry(name, w1_val, w2_val, val);
+						//
 						Hashtable<String, Double> ww_hash = getAll(); // two weeks
 						Hashtable<String, Double> w1_hash = getWeek1All();
 						Hashtable<String, Double> w2_hash = getWeek2All();
-						if(ww_hash != null && ww_hash.size() > 0){
+						if(ww_hash != null && !ww_hash.isEmpty()){
 								Enumeration<String> keys = ww_hash.keys();
 								while(keys.hasMoreElements()){
 										String key = keys.nextElement();
@@ -535,22 +540,21 @@ public class PayPeriodProcess{
 														week2Total += w2_hash.get(key).doubleValue();
 														w2_val = df.format(w2_hash.get(key).doubleValue());
 												}
-												entry = new Entry(key, w1_val, w2_val, df.format(ww_val));
+												Entry entry = new Entry(key, w1_val, w2_val, df.format(ww_val));
 												entries.put(key, entry);
 										}						
 								}
-								if(week1Total > 0 || week2Total > 0){
-										w1_val="";w2_val="";
-										total = week1Total+week2Total;
-										if(week1Total > 0){
-												w1_val= df.format(week1Total);
-										}
-										if(week2Total > 0){
-												w2_val= df.format(week2Total);
-										}										
-										entry = new Entry("Period Total",w1_val,w2_val,df.format(total));
-										lastEntry = entry;
+						}
+						total = week1Total+week2Total;								
+						if(total > 0){
+								w1_val="";w2_val="";
+								if(week1Total > 0){
+										w1_val= df.format(week1Total);
 								}
+								if(week2Total > 0){
+										w2_val= df.format(week2Total);
+								}										
+								lastEntry = new Entry("Period Total",w1_val,w2_val,df.format(total));
 						}
 				}
 				return entries;
@@ -560,9 +564,13 @@ public class PayPeriodProcess{
 				return entries != null && entries.size() > 0;
 		}
 		public Entry getFirstEntry(){
+				if(firstEntry == null)
+						getEntries(); // to start the process
 				return firstEntry;
 		}
 		public Entry getLastEntry(){
+				if(lastEntry == null)
+						getEntries();
 				return lastEntry;
 		}
 		public Document getDocument(){
