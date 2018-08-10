@@ -15,7 +15,8 @@
 			<tr>
 				<td><a href="<s:property value='#application.url' />groupEmployee.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
 				<td><s:property value="group" /></td>
-				<td><s:property value="employee" /></td>
+				<td><a href="<s:property value='#application.url' />employee.action?id=<s:property value='employee.id' />"> <s:property value="employee" /></a>
+				</td>
 				<td><s:property value="effective_date" /></td>
 				<td><s:property value="expire_date" /></td>
 				<td><s:if  test="inactive">No</s:if><s:else>Yes</s:else></td>

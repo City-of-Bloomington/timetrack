@@ -153,8 +153,10 @@ public class WeekEntry{
 		}		
 		public Hashtable<String, Double> getAll(){
 				Hashtable<String, Double> all = new Hashtable<String, Double>();
-				all.putAll(hash);
-				all.putAll(earnedHash);
+				if(!hash.isEmpty())
+						all.putAll(hash);
+				if(!earnedHash.isEmpty())
+						all.putAll(earnedHash);
 				if(handSpecial){
 						all.putAll(regHash);
 				}
@@ -199,18 +201,23 @@ public class WeekEntry{
 				// non regular hours
 				Hashtable<String, Double> table = splitOne.getNonRegularHours();
 				Hashtable<String, Double> table2 = splitTwo.getNonRegularHours();
-				mergeWithHash(table, hash);
-				mergeWithHash(table2, hash);
+				if(!table.isEmpty())
+						mergeWithHash(table, hash);
+				if(!table2.isEmpty())
+						mergeWithHash(table2, hash);
 		}
 		// reg
 		void mergeRegHashtablesFromSplits(){
 				//
 				Hashtable<String, Double> table = splitOne.getRegularHash();
 				Hashtable<String, Double> table2 = splitTwo.getRegularHash();
-				mergeWithHash(table, regHash);
-				mergeWithHash(table2, regHash);
+				if(!table.isEmpty())				
+						mergeWithHash(table, regHash);
+				if(!table2.isEmpty())
+						mergeWithHash(table2, regHash);
 				// to all
-				mergeWithHash(regHash, hash);				
+				if(!hash.isEmpty())
+						mergeWithHash(regHash, hash);				
 		}		
 		//
 		void mergeWithHash(Hashtable<String, Double> tFrom,

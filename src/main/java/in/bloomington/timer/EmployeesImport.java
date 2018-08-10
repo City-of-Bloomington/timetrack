@@ -7,6 +7,7 @@ package in.bloomington.timer;
  */
 
 import java.sql.*;
+import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,9 +29,11 @@ import in.bloomington.timer.bean.Employee;
 import in.bloomington.timer.bean.Department;
 import in.bloomington.timer.bean.SalaryGroup;
 import in.bloomington.timer.bean.GroupManager;
+import in.bloomington.timer.bean.EnvBean;
 import in.bloomington.timer.list.TypeList;
 import in.bloomington.timer.list.GroupList;
 import in.bloomington.timer.list.NodeList;
+import in.bloomington.timer.list.EmpList;
 import in.bloomington.timer.list.DepartmentList;
 import in.bloomington.timer.list.SalaryGroupList;
 
@@ -40,7 +43,8 @@ public class EmployeesImport{
 
 		boolean debug = true;
 		static Logger logger = Logger.getLogger(EmployeesImport.class);
-		static final long serialVersionUID = 220L;			
+		static final long serialVersionUID = 220L;
+		static EnvBean bean = null;		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		Map<String, String> emps = new HashMap<>(); // username, id
 		Map<String, String> depts = new HashMap<>(); // name, id
@@ -52,40 +56,34 @@ public class EmployeesImport{
 		EmployeesImport(){
 
 		}
-		public String doImport(String fileName){
+		EmployeesImport(EnvBean val){
+				if(val != null)
+						bean = val;
+		}		
+		public String doImport(File myFile){
 				//
 				// clean up
 				/**
+					delete from group_employees where id > 104;delete from department_employees where id > 103;delete from group_managers where id > 47;delete from jobs where id > 46;delete from employees where id > 116;delete from groups where id > 72;delete from positions where id > 49;
+
+					// on timetrack server
 					delete from group_employees where id > 104;
 					delete from department_employees where id > 103;
 					delete from group_managers where id > 47;
 					delete from jobs where id > 46;
-					delete from employees where id > 116;
 					delete from groups where id > 72;
 					delete from positions where id > 49;
+					delete from employees where id > 116;
+					delete from time_actions where document_id in (select id from time_documents where employee_id > 116);
+					delete from time_documents where employee_id > 116;
 					
 				 */
 				
 				prepareMaps();
-				String qq = "insert into employees "+
-						" (id,"+
-						" username,"+
-						" first_name,"+
-						" last_name,"+
-						" employee_number,"+
-						
-						" email,"+
-						" role) "+
-						" values(0,?,?,?,?, ?,?,'Employee') ";
-				String qq2 = "insert into departments (id,name,description) values(0,?,?)";
-				String qq3 = "insert into groups (id, name, description, department_id) values(0,?,?,?)";
-				String qq4 = "insert into department_employees (id,employee_id,department_id,effective_date) values(0,?,?,'2017-07-01')";
-				String qq5 = "insert into group_employees (id,group_id,employee_id,effective_date) values(0,?,?,'2017-07-01')";
-				String qq6 = "insert into group_managers (id,group_id,employee_id,wf_node_id,start_date) values(0,?,?,?,?)"; 				
-				// if we do not have it
-				String qq7 = "insert into positions (id,name) values(0,?) ";
-				String qq8 = "insert into jobs (id,position_id,salary_group_id,employee_id,effective_date,primary_flag,weekly_regular_hours,comp_time_weekly_hours,comp_time_factor,holiday_comp_factor) values(0,?,?,?,'2017-07-01', 'y',?,?,?,?)";
-
+				// BufferedReader in = new BufferedReader(new FileReader(myFile));
+				// String strLine = null;
+				// while ((strLine = in.readLine()) != null){
+				
 				/*
 					clean up for reimport
 					delete from department_employees where id >
@@ -113,17 +111,19 @@ public class EmployeesImport{
 
 				*/
 				String back = "";
-				Reader in = null;
+				// Reader in = null;
 				int jj=1; 
 				try{
-						in = new FileReader(fileName);
+						// in = new FileReader(fileName);
 						//
 						// if you want to define the header 
 						// Iterable<CSVRecord> records = CSVFormat.RFC4180.withHeader("ID", "Last Name", "First Name").parse(in);
 						//
 						// header auto detection
 						// Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
-						Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+						// File myFile = new File("/srv/data/timetrack/facilities.csv");
+						FileReader fr = new FileReader(myFile);
+						Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(fr);
 						//
 						String str="", str2="", str3="";						
 						for (CSVRecord record : records) {
@@ -157,6 +157,7 @@ public class EmployeesImport{
 														String dept_id = depts.get(str2);
 														Group gg = new Group();
 														gg.setName(str);
+														gg.setDescription(str);
 														gg.setDepartment_id(dept_id);
 														str = gg.doSave();
 														if(str.equals("")){
@@ -200,6 +201,19 @@ public class EmployeesImport{
 												str = record.get(3); // username
 												if(str != null && !str.equals("")){
 														emp.setUsername(str);
+														EmpList empl = new EmpList(bean, str, true);
+														str = empl.simpleFind();
+														if(!str.equals("")){
+																errors += str;
+														}
+														else{
+																List<Employee> ldapEmps = empl.getEmps();
+																if(ldapEmps != null && ldapEmps.size() > 0){
+																		Employee ldapEmp = ldapEmps.get(0);
+																		// emp.setEmployee_number(ldapEmp.getEmployee_number());
+																		emp.setId_code(ldapEmp.getId_code());
+																}
+														}
 												}
 												str = record.get(4); // dept
 												if(str != null && !str.equals("")){
@@ -222,6 +236,7 @@ public class EmployeesImport{
 														else{
 																Type position = new Type();
 																position.setName(str);
+																position.setDescription(str);
 																position.setTable_name("positions");
 																str = position.doSave();
 																if(str.equals("")){
@@ -387,6 +402,9 @@ public class EmployeesImport{
 						}
 				}				
 		}
-		
+		void prepareRollBack(){
+				
+
+		}
 
 }

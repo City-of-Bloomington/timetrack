@@ -3,12 +3,12 @@
 <div class="internal-page container clearfix">
 	<h1>Admin Menu</h1>
 
-	<s:if test="hasActionErrors()">
+	<s:if test="hasErrors()">
 	  <div class="errors">
-	    <s:actionerror/>
+			<s:set var="errors" value="errors" />
+			<%@ include file="errors.jsp" %>
 	  </div>
 	</s:if>
-
 	<s:if test="#session != null && #session.user.isAdmin()">
 		<div class="width-one-half float-left">
 			<h2>Settings</h2>

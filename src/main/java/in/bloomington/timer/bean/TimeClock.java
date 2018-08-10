@@ -276,8 +276,6 @@ public class TimeClock{
 										List<TimeBlock> tbs = tbl.getTimeBlocks();
 										if(tbs != null && tbs.size() > 0){
 												timeBlock = tbs.get(0);
-												// it is a clock-out
-												System.err.println("it is clock-out ");										
 												timeBlock.setEnd_hour(time_hr);
 												timeBlock.setEnd_minute(time_min);
 												timeBlock.setClock_out("y");

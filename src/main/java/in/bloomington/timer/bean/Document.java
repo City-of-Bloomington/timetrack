@@ -602,9 +602,7 @@ public class Document{
 				}
 		}
 		private void checkForWarnings(){
-				// if(isSubmitted())
 				checkForWarningsAfter();
-				// else
 				checkForWarningsBefore();
 		}
 		// after submission
@@ -630,6 +628,57 @@ public class Document{
 								String str = "Week 2 total hours are less than "+jobTask.getWeekly_regular_hours()+" hrs";
 								if(!warnings.contains(str))
 										warnings.add(str);
+						}
+				}
+				checkForUnauthorizedHoliday();
+		}
+		/**
+		 * check if the employee is eligible for holiday
+		 * if the day before holiday or day after is authorized unpaid leave
+		 * the employee is not eligible
+		 */
+		private void checkForUnauthorizedHoliday(){
+				int day = -1, next_day = -1;
+				String day_hr_code="", next_hr_code = "";
+				if(timeBlocks != null){
+						for(TimeBlock one:timeBlocks){
+								String str = one.getHour_code();
+								int order_index = one.getOrder_index();
+								if(str != null && !str.equals("")){
+										if(str.startsWith("H1.0") || str.startsWith("UA")){
+												if(day < 0){
+														day = order_index;
+														day_hr_code = str;
+												}
+												else{
+														// make sure they are next to each other
+														if(order_index == day + 1){
+																next_day = order_index;
+																next_hr_code = str;
+																// 
+																// if both are holidays or both are UA, then we
+																// check with next
+																if(day_hr_code.equals(next_hr_code)){
+																		// skip
+																		day = order_index;
+																		day_hr_code = str;
+																		next_day = -1;
+																		next_hr_code = "";
+																}
+																else{
+																		warnings.add(" Possible Uneligible for Holiday day used adjacent to Unpaid Authorized leave ");
+																		break;
+																}
+														}
+														else {
+																day = order_index;
+																day_hr_code = str;
+																next_day = -1;
+																next_hr_code = "";
+														}
+												}
+										}
+								}
 						}
 				}
 		}

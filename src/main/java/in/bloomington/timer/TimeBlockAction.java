@@ -83,7 +83,7 @@ public class TimeBlockAction extends TopAction{
 						else{
 								try{
 										HttpServletResponse res = ServletActionContext.getResponse();
-										String str = url+"timeDetails.action?document_id"+document_id;
+										String str = url+"timeDetails.action?document_id="+document_id;
 										res.sendRedirect(str);
 										return super.execute();
 								}catch(Exception ex){
@@ -140,6 +140,9 @@ public class TimeBlockAction extends TopAction{
 						order_index = timeBlock.getOrder_index();
 				}
 				return order_index;
+		}
+		public void setErrors(String val){
+				// do nothing
 		}
 		//
 		// this is passed through the link
@@ -258,6 +261,16 @@ public class TimeBlockAction extends TopAction{
 		public boolean hasEmpAccruals(){
 				getEmpAccruals();
 				return employeeAccruals != null && employeeAccruals.size() > 0;
+		}
+		public String getErrorsAll(){
+				String ret = "";
+				if(hasErrors()){
+						for(String str:errors){
+								if(!ret.equals("")) ret += ", ";
+								ret += str;
+						}
+				}
+				return ret;
 		}
 
 }

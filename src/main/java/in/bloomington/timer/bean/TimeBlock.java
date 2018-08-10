@@ -25,7 +25,7 @@ public class TimeBlock extends Block{
 		static Logger logger = LogManager.getLogger(TimeBlock.class);
 		static final long serialVersionUID = 4000L;		
 		private String inactive=""; // for deleted stuff;
-		String hour_code = "", code_desc="", nw_code; // for showing on jsp
+		String hour_code = "", code_desc="", nw_code=""; // for showing on jsp
 		String action_by_id="", action_type=""; // for logs
 		// order_index is day order in the payperiod day list
 		// Mond=0, Tue=1, Wed=2, Thu=3, Fr=4, Sat=5, Sun=6, .. Sat=12, Sun=13
@@ -452,8 +452,6 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg = "";
-				// System.err.println(" begin "+begin_hour+" "+begin_minute);
-				// System.err.println(" end "+end_hour+" "+end_minute);				
 				double timeIn = begin_hour+begin_minute/60.;
 				double timeOut = end_hour+end_minute/60.;				
 				String qq = " select count(*) from time_blocks t "+
@@ -461,12 +459,18 @@ public class TimeBlock extends Block{
 				
 				if((clock_in.equals("") && clock_out.equals(""))
 					 || (!clock_in.equals("") && !clock_out.equals(""))){				
-						qq +=" and ((? > t.begin_hour+t.begin_minute/60. "+ // start in between
+						qq +=" and (((? > t.begin_hour+t.begin_minute/60. "+ // start in between
 								" and ? < t.end_hour+t.end_minute/60.) or "+
-						" (? > t.begin_hour+t.begin_minute/60. "+ // end in between
-						" and ? < t.end_hour+t.end_minute/60.) or ";
+								" (? > t.begin_hour+t.begin_minute/60. "+ // end in between
+								" and ? < t.end_hour+t.end_minute/60.) or ";
+								//
 						qq +=" (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
-								" and ? <= t.end_hour+t.end_minute/60.)) ";
+								" and ? <= t.end_hour+t.end_minute/60.)) or ";
+						
+						// start and end in between
+						qq +=" ((? <= t.begin_hour+t.begin_minute/60. "+ 
+								" and ? >= t.end_hour+t.end_minute/60.))) ";
+						
 						if(timeOut < timeIn){
 								msg = "Time IN is greater than time OUT";
 								return msg;
@@ -494,6 +498,7 @@ public class TimeBlock extends Block{
 								date = Helper.getToday();
 						java.util.Date date_tmp = df.parse(date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						//
 						pstmt.setDouble(jj++, timeIn);
 						pstmt.setDouble(jj++, timeIn);
 						if((clock_in.equals("") && clock_out.equals(""))
@@ -503,6 +508,10 @@ public class TimeBlock extends Block{
 								
 								pstmt.setDouble(jj++, timeIn);
 								pstmt.setDouble(jj++, timeOut);
+								//
+								// between start and end between two
+								pstmt.setDouble(jj++, timeIn);
+								pstmt.setDouble(jj++, timeOut);								
 						}
 						if(!id.equals("")){
 								pstmt.setString(jj++, id);
@@ -613,6 +622,11 @@ public class TimeBlock extends Block{
 						if(hours < 0){
 								hours = 0.0;
 								msg = "Time in is greater than time out";
+								errors += msg;
+						}
+						else if(hours < 0.05){
+								msg = "Time entry is less than 3 minutes: "+hours;
+								hours = 0.0;
 								errors += msg;
 						}
 				}

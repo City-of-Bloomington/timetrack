@@ -23,21 +23,19 @@
 		<s:if test="hasOneJobOnly()">
 			<s:hidden name="timeBlock.job_id" value="%{selected_job_id}" />
 		</s:if>
-
+		<s:if test="hasErrors()">
+			<s:hidden name="errors" value="<s:property value='errorsAll' />"  id="id_errors "/>
+		</s:if>
 		<h1>
 			<s:if test="timeBlock.id == ''">
 				Add Time Block
 			</s:if>
-
 			<s:else>
 				Edit Time Block
 				<s:hidden id="timeBlock_id" name="timeBlock.id" value="%{timeBlock.id}" />
 			</s:else>
 			<small><s:property value="timeBlock.date" /></small>
 		</h1>
-
-		<%@ include file="strutMessages.jsp" %>
-
 		<div class="alert"><p></p></div>
 
 		<s:if test="hasMoreThanOneJob()">
@@ -72,7 +70,7 @@
 
 			<div id="div_hours" style="display:none;" class="form-group">
 				<label>Hours</label>
-				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" tabindex="-1" placeholder="(dd.dd)" />
+				<s:textfield name="timeBlock.hours" value="%{timeBlock.hoursStr}" maxlength="5" id="hour_change" tabindex="-1" placeholder="(dd.dd)" />
 			</div>
 		</s:if>
 
@@ -113,7 +111,7 @@
 				<s:submit name="action" type="submit" value="Save" class="button" id="time-block-submit" tabindex="8" />
 			</s:if>
 			<s:else>
-				<s:submit name="action" type="submit" value="Save Changes" class="button" id="time-block-submit" tabindex="9" />
+				<s:submit name="action" type="submit" value="Save Changes" class="button" id="time-block-submit" tabindex="8" />
 
 				<button type="submit">Save New</button>
 			</s:else>
