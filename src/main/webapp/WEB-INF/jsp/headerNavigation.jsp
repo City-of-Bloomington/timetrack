@@ -1,4 +1,9 @@
-<header>
+<s:if test="!isUserCurrentEmployee()">
+  <header class="proxy">
+</s:if>
+<s:else>
+  <header>
+</s:else>
   <div class="container">
     <div class="brand" tabindex="0">
       <a href="<s:property value='#application.url'/>" tabindex="1">

@@ -3,6 +3,11 @@ header {
   border-top: $header-border-top;
   padding:$header-padding;
 
+  &.proxy {
+    background-color: $gin-fizz;
+    border-bottom: 1px solid darken($gin-fizz, 15%);
+  }
+
   a {
     color: $header-a-text-color;
   }
