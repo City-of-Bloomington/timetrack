@@ -18,10 +18,10 @@
 	<s:if test="hasGroups()">
 		<div class="calendar-header-controls">
 			<div class="button-group">
-		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='previousPayPeriod.id' />" class="button hide-text has-icon chevron-left"><span>Backwards</span></a>				
-				
+		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='previousPayPeriod.id' />" class="button hide-text has-icon chevron-left"><span>Backwards</span></a>
+
 		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='currentPayPeriod.id' />" class="button today"><span>Today</span></a>
-		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>				
+		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
 
 		  </div>
 		  <div class="pay-period">
@@ -31,22 +31,21 @@
 			</div>
 		</div>
 
+		<small class="status-tag approved">
+			<input type="checkbox" name="check_all" value="y" id="approve_select_all"/><b>Select All (Approvals)</b>
+		</small>
+
 		<s:if test="hasNonDocEmps()">
-			<strong>Employee(s) with no time entry for this pay period:</strong><br />
+		<div class="emp-no-time-wrapper">
+			<strong>Employee(s) with no time entry for this pay period:</strong>
 			<s:iterator var="one" value="nonDocEmps">
 				<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve">
-					<s:property value="full_name" />,
-				</a>&nbsp;
+					<s:property value="full_name" />,</a>&nbsp;
 			</s:iterator>
+		</div>
 		</s:if>
 
 		<s:if test="hasDocuments()">
-			<div class="checkbox-select-all">
-				<h2>
-					<small class="status-tag approved">
-						<input type="checkbox" name="check_all" value="y" id="approve_select_all"/><b>Select All</b></small>
-				</h2>
-			</div>			
 			<s:iterator var="one" value="documents">
 				<s:if test="hasDaily()">
 					<div class="approval-wrapper">
@@ -55,7 +54,7 @@
 								<s:property value="employee" />
 							</a>
 							<s:if test="canBeProcessed()">
-								<small class="status-tag approved">								
+								<small class="status-tag approved">
 									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Payroll Process Approve</input></small>
 							</s:if>
 							<s:elseif test="isApproved()">
