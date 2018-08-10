@@ -155,7 +155,9 @@ $form-input-checkbox-margin:                                0 5px 0 0;
 
 // Header
 $header-background-color:                                   white;
+$header-proxy-background-color:                             $gin-fizz;
 $header-border-top:                                         6px solid $cob-blue;
+$header-proxy-border-bottom:                                1px solid darken($gin-fizz, 15%);
 $header-padding:                                            8px 0;
 $header-a-text-color:                                       $biscay;
 $header-brand-img-float:                                    left;
