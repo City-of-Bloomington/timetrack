@@ -41,6 +41,10 @@ $alert-background-color:                                    $barley;
 $alert-border-radius:                                       $border-radius;
 $alert-text-color:                                          darken($barley, 65%) !important;
 
+// jQuery Auto Complete
+$ui-autocomplete-background-color:                          white;
+$ui-autocomplete-border:                                    1px solid $silver-chalice !important;
+
 // Buttons
 $btn-background-color:                                      transparent;
 $btn-background-position:                                   8px center;
