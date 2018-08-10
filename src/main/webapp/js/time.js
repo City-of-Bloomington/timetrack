@@ -772,3 +772,13 @@ function submitTimesheetObserver(){
 $('#approve_select_all').click(function() {
   $('.status-tag :checkbox').prop('checked', this.checked);
 });
+
+/**
+ * Add active class to navigation tabs
+ */
+var FULL_URL = window.location.href;
+$(".tabs a").each(function() {
+  if (this.href == FULL_URL) {
+    $(this).addClass("active");
+  }
+})
