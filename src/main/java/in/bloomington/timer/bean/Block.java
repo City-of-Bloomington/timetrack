@@ -33,6 +33,7 @@ public class Block{
 		JobTask jobTask = null;
 		Document document = null;
 		boolean hourCodeSet = false, isHoliday=false;
+		String today = Helper.getToday();
     public Block(
 								 String val,
 								 String val2,
@@ -361,4 +362,8 @@ public class Block{
 		public boolean isClockInOnly(){
 				return isClockIn() && !isClockOut();
 		}
+		public boolean isToday(){
+				return date != null && date.equals(today);
+		}
+
 }
