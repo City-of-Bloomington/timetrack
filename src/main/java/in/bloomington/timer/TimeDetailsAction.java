@@ -114,6 +114,11 @@ public class TimeDetailsAction extends TopAction{
 						date = val;
 		}
 		public String getPay_period_id(){
+				if(pay_period_id.equals("") && !document_id.equals("")){
+						getDocument();
+						if(document != null)
+								pay_period_id = document.getPay_period_id();
+				}
 				return pay_period_id;
 		}
 		public String getSource(){
@@ -151,14 +156,23 @@ public class TimeDetailsAction extends TopAction{
 				//
 				if(payPeriod == null){
 						if(pay_period_id.equals("")){
-								PayPeriodList ppl = new PayPeriodList();
-								ppl.currentOnly();
-								String back = ppl.find();
-								if(back.equals("")){
-										List<PayPeriod> ones = ppl.getPeriods();
-										if(ones != null && ones.size() > 0){
-												payPeriod = ones.get(0);
-												pay_period_id = payPeriod.getId();
+								if(document_id.equals("")){
+										PayPeriodList ppl = new PayPeriodList();
+										ppl.currentOnly();
+										String back = ppl.find();
+										if(back.equals("")){
+												List<PayPeriod> ones = ppl.getPeriods();
+												if(ones != null && ones.size() > 0){
+														payPeriod = ones.get(0);
+														pay_period_id = payPeriod.getId();
+												}
+										}
+								}
+								else{
+										getDocument();
+										if(document != null){
+												payPeriod = document.getPayPeriod();
+												pay_period_id = document.getPay_period_id();
 										}
 								}
 						}
