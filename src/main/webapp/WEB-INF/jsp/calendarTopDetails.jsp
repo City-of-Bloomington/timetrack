@@ -14,7 +14,7 @@
 
   <div class="pay-period">
     <b>Pay Period:</b>
-    <s:select name="pay_period_id" id="pay_period_dropdown_select" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="this.form.submit()" />
+    <s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="this.form.submit()" />
   </div>
   <button type="submit">Submit</button>
 </s:form>
