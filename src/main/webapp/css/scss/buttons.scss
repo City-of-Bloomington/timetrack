@@ -36,6 +36,11 @@ button,
     }
   }
 
+  &[type=submit] {
+    background-color: $fern;
+    color: white;
+  }
+
   a {
     color: $dark-slate;
   }

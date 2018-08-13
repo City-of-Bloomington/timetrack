@@ -3,6 +3,11 @@ header {
   border-top: $header-border-top;
   padding:$header-padding;
 
+  &.proxy {
+    background-color: $header-proxy-background-color;
+    border-bottom: $header-proxy-border-bottom;
+  }
+
   a {
     color: $header-a-text-color;
   }

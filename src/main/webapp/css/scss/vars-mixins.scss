@@ -41,6 +41,10 @@ $alert-background-color:                                    $barley;
 $alert-border-radius:                                       $border-radius;
 $alert-text-color:                                          darken($barley, 65%) !important;
 
+// jQuery Auto Complete
+$ui-autocomplete-background-color:                          white;
+$ui-autocomplete-border:                                    1px solid $silver-chalice !important;
+
 // Buttons
 $btn-background-color:                                      transparent;
 $btn-background-position:                                   8px center;
@@ -155,7 +159,9 @@ $form-input-checkbox-margin:                                0 5px 0 0;
 
 // Header
 $header-background-color:                                   white;
+$header-proxy-background-color:                             $gin-fizz;
 $header-border-top:                                         6px solid $cob-blue;
+$header-proxy-border-bottom:                                1px solid darken($gin-fizz, 15%);
 $header-padding:                                            8px 0;
 $header-a-text-color:                                       $biscay;
 $header-brand-img-float:                                    left;

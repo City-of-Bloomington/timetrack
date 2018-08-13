@@ -34,3 +34,11 @@
     padding: $ui-dialog-content-padding;
   }
 }
+
+// jQuery Auto Complete
+.ui-autocomplete {
+  background-color: $ui-autocomplete-background-color;
+  border-left: $ui-autocomplete-border;
+  border-bottom: $ui-autocomplete-border;
+  border-right: $ui-autocomplete-border;
+}

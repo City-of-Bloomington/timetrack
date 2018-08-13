@@ -33,22 +33,21 @@
 			</div>
 		</div>
 
+		<small class="status-tag approved">
+			<input type="checkbox" name="check_all" value="y" id="approve_select_all"/><b>Select All (Approvals)</b>
+		</small>
+
 		<s:if test="hasNonDocEmps()">
-			<strong>Employee(s) with no time entry for this pay period:</strong><br />
+		<div class="emp-no-time-wrapper">
+			<strong>Employee(s) with no time entry for this pay period:</strong>
 			<s:iterator var="one" value="nonDocEmps">
 				<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve">
-					<s:property value="full_name" />,
-				</a>&nbsp;
+					<s:property value="full_name" />,</a>&nbsp;
 			</s:iterator>
+		</div>
 		</s:if>
 
 		<s:if test="hasDocuments()">
-			<div class="checkbox-select-all">
-				<h2>
-					<small class="status-tag approved">
-						<input type="checkbox" name="check_all" value="y" id="approve_select_all"/><b>Select All</b></small>
-				</h2>
-			</div>
 			<s:iterator var="one" value="documents">
 				<s:if test="hasDaily()">
 					<div class="approval-wrapper">
@@ -98,7 +97,7 @@
 			<s:submit name="action" type="button" value="Approve" class="fn1-btn"/>
 		</s:if>
 		-->
-		<s:submit name="action" type="button" value="Approve" class="fn1-btn"/>		
+		<s:submit name="action" type="submit" value="Approve" class="fn1-btn"/>
 	</s:if>
 </s:form>
 

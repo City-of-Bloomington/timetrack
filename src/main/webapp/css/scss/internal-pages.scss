@@ -19,39 +19,6 @@
     margin: $internal-page-h2-margin;
     padding: $internal-page-h2-padding;
 
-    small {
-      font-weight: $internal-page-h2-small-font-weight;
-      margin-left: auto;
-
-      // to-do: lets think about moving these out onto their own
-      &.status-tag {
-        border-radius: .25em;
-        padding: 0 5px;
-        color: white;
-        font-size: $font-size-small;
-
-        &.processed {
-          background: $roman-coffee;
-        }
-
-        &.approved {
-          background: $fern;
-        }
-
-        &.approval-ready {
-          background: $cob-blue;
-        }
-
-        &.not-submitted {
-          background: $california;
-        }
-
-        &.not-approved {
-          background: $california;
-        }
-      }
-    }
-
     label {
       display: flex;
       justify-content: flex-end;
@@ -61,6 +28,43 @@
 
       input {
         margin: $internal-page-h2-label-input-margin;
+      }
+    }
+  }
+
+  small {
+    font-weight: $internal-page-h2-small-font-weight;
+    margin-left: auto;
+
+    // to-do: lets think about moving these out onto their own
+    &.status-tag {
+      border-radius: .25em;
+      padding: 2px 5px;
+      color: white;
+      font-size: 14px;
+
+      input {
+        margin: 0 5px 0 0;
+      }
+
+      &.processed {
+        background: $roman-coffee;
+      }
+
+      &.approved {
+        background: $fern;
+      }
+
+      &.approval-ready {
+        background: $cob-blue;
+      }
+
+      &.not-submitted {
+        background: $california;
+      }
+
+      &.not-approved {
+        background: $california;
       }
     }
   }
@@ -89,8 +93,22 @@
     }
   }
 
+  .emp-no-time-wrapper {
+    margin: 20px 0;
+
+    strong {
+      display: block;
+      margin: 0 0 10px 0;
+    }
+  }
+
   .calendar-header-controls {
     padding: 0 !important;
+    margin-bottom: 20px;
+
+    a {
+      color: $dark-slate;
+    }
   }
 
   // to-do: rethink everythnig below
@@ -111,5 +129,10 @@
       padding: 0;
       border-bottom: none;
     }
+  }
+
+  input[type="submit"] {
+    background-color: $fern;
+    color: white;
   }
 }
