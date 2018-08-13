@@ -293,7 +293,7 @@ $(".delete-time-confirm").on("keyup click", function(e) {
       buttons: {
         Confirm: function() {
           // On confirm button click, POST, then reload the page
-          $.post({
+          var jqxhr = $.post({
             url  : APPLICATION_URL + 'timeBlock?id=' + block_id +'&action=Delete'
           })
           .done(function(data) {
@@ -303,7 +303,7 @@ $(".delete-time-confirm").on("keyup click", function(e) {
               // this.location.reload();
             }, 5);
           })
-          .fail(function(xhrGet, status, error) {
+          .fail(function(jqxhr, status, error) {
             var err = JSON.parse(xhr.responseText);
             alert(err.error);
           })
@@ -375,14 +375,14 @@ $(".data").on("keyup click", function(e) {
         submitDialogOnEnter();
 
         // Get data to fill Dialog Modal
-        var xhrGet = $.get({
+        var jqxhr = $.get({
           url  : editURL,
           data : queryString,
         })
         .done(function(data) {
           $('.modal.add-edit').html(data);
         })
-        .fail(function(xhrGet, status, error) {
+        .fail(function(jqxhr, status, error) {
           var err = JSON.parse(xhr.responseText);
           alert(err.error);
         })
@@ -456,7 +456,7 @@ $(".data").on("keyup click", function(e) {
             // Remove any alert
             alertElm.remove();
             // Post the Edited Calendar Time Block
-            $.post({
+            var jqxhr = $.post({
               url: submitURL,
               data: formData,
             })
@@ -465,9 +465,10 @@ $(".data").on("keyup click", function(e) {
                 window.location = window.location;
               }, 5);
             })
-            .fail(function(xhrGet, status, error) {
+            .fail(function(jqxhr, xhrGet, status, error) {
               var err = JSON.parse(xhr.responseText);
               alert(err.error);
+              $(".alert p").html(jqXHR.responseText);
             })
             .always(function() {
               // alert( "finished" );
@@ -525,7 +526,7 @@ $(".day").on("keyup click", function(e) {
         submitDialogOnEnter();
 
         // Get data to fill Dialog Modal
-        var xhrGet = $.get({
+        var jqxhr = $.get({
           url  : addURL,
           data : queryString
         })
@@ -533,9 +534,10 @@ $(".day").on("keyup click", function(e) {
           $('.modal.add-edit').html(data);
           // alert(data);
         })
-        .fail(function(xhrGet, status, error) {
+        .fail(function(jqxhr, status, error) {
           var err = JSON.parse(xhr.responseText);
           alert(err.error);
+          $(".alert p").html(jqXHR.responseText);
         })
         .always(function() {
           // alert( "finished" );
@@ -607,7 +609,7 @@ $(".day").on("keyup click", function(e) {
             // Remove any alert
             alertElm.remove();
             // Post the Added Calendar Time Block
-            $.post({
+            var jqxhr = $.post({
               url: submitURL,
               data: formData
             })
@@ -616,9 +618,11 @@ $(".day").on("keyup click", function(e) {
                 window.location = window.location;
               }, 5);
             })
-            .fail(function(xhrGet, status, error) {
+            .fail(function(jqxhr, status, textStatus, error) {
               var err = JSON.parse(xhr.responseText);
               alert(err.error);
+              alert( "Request failed: " + textStatus );
+              $(".alert p").html(jqXHR.responseText);
             })
             .always(function() {
               // alert( "finished" );
@@ -686,14 +690,14 @@ $(".pay-notes").click(function() {
       }, 500);
 
       // Get data to fill Dialog Modal
-      var xhrGet = $.get({
+      var jqxhr = $.get({
         url  : addURL,
         data : queryString
       })
       .done(function(data) {
         $('.modal.pay-notes').html(data);
       })
-      .fail(function(xhrGet, status, error) {
+      .fail(function(jqxhr, status, error) {
         var err = JSON.parse(xhr.responseText);
         alert(err.error);
       })
@@ -715,7 +719,7 @@ $(".pay-notes").click(function() {
         } else {
           alertElm.remove();
           // Post the Added Calendar Time Block
-          $.post({
+          var jqxhr = $.post({
             url: submitURL,
             data: formData,
           })
@@ -724,7 +728,7 @@ $(".pay-notes").click(function() {
               window.location = window.location;
             }, 5);
           })
-          .fail(function(xhrGet, status, error) {
+          .fail(function(jqxhr, status, error) {
             var err = JSON.parse(xhr.responseText);
             alert(err.error);
           })
@@ -776,9 +780,9 @@ $('#approve_select_all').click(function() {
 /**
  * Add active class to navigation tabs
  */
-var FULL_URL = window.location.href;
+var FULL_URL = window.location.pathname;
 $(".tabs a").each(function() {
-  if (this.href == FULL_URL) {
+  if (this.pathname == FULL_URL) {
     $(this).addClass("active");
   }
 })
