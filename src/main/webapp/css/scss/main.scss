@@ -112,6 +112,10 @@
     .pay-period {
       margin-left: auto;
     }
+
+    button {
+      @include visuallyHidden;
+    }
   }
 
   .calendar-summary-controls {

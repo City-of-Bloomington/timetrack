@@ -436,6 +436,23 @@ $(".data").on("keyup click", function(e) {
           var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
           var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
 
+          // Check values before Posting
+          if(timeInError){
+            // Time In cannot be emtpy
+            alertElmP.html("Time In cannot be empty.");
+            timeInElm.focus();
+            return false;
+          } else if (timeOutError) {
+            // Time Out cannot be emtpy
+            alertElmP.html("Time Out cannot be empty.");
+            timeOutElm.focus();
+            return false;
+          } else if (hoursError) {
+            // Non-REG Hours cannot be emtpy
+            alertElmP.html("Hours cannot be 0.0");
+            hoursElm.focus();
+            return false;
+          } else {
             // Remove any alert
             alertElm.remove();
             // Post the Edited Calendar Time Block
@@ -456,6 +473,7 @@ $(".data").on("keyup click", function(e) {
             .always(function() {
               // alert( "finished" );
             });
+          }
         },
         Cancel: function() {
           // On cancel button click, destroy the Dialog Modal
@@ -570,7 +588,23 @@ $(".day").on("keyup click", function(e) {
           var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
           var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
 
-          
+           // Check values before Posting
+          if(timeInError){
+            // Time In cannot be emtpy
+            alertElmP.html("Time In cannot be empty.");
+            timeInElm.focus();
+            return false;
+          } else if (timeOutError) {
+            // Time Out cannot be emtpy
+            alertElmP.html("Time Out cannot be empty.");
+            timeOutElm.focus();
+            return false;
+          } else if (hoursError) {
+            // Non-REG Hours cannot be emtpy
+            alertElmP.html("Hours cannot be 0.0");
+            hoursElm.focus();
+            return false;
+          } else {
             e.preventDefault();
             // Remove any alert
             alertElm.remove();
@@ -720,13 +754,11 @@ $(".pay-notes").click(function() {
   // Prevent default click clash
   return false;
 });
-// Adam & Walid 
-// change class name to timesheet-submit-2 to cancel this effect right now
-//
+
 submitTimesheetObserver();
 function submitTimesheetObserver(){
   // Selectors
-  var submitFormBtn   = $('.timesheet-submit-2 input[type=submit]')
+  var submitFormBtn   = $('.timesheet-submit input[type=submit]')
   var weekOneTotalVal = submitFormBtn.attr('data-week-one-total');
   var weekTwoTotalVal = submitFormBtn.attr('data-week-two-total');
 
