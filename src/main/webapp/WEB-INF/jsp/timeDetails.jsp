@@ -8,7 +8,7 @@
 <s:if test="!hasActionErrors()">
 	<%@ include file="calendarTopDetails.jsp" %>
 	<%@ include file="strutMessages.jsp" %>
-	<s:if test="document.isProcessed()">	
+	<s:if test="document.isProcessed()">
 		<%@ include file="calendarFullView.jsp" %>
 	</s:if>
 	<s:else>
@@ -40,6 +40,9 @@
 			      	 data-week-two-total="%{document.week2Total}" />
 			    </s:form>
 			  </s:if>
+			  <s:else>
+			  	<strong>Submitted on: [WALID NEED SUBMIT DATE HERE]</strong>
+				</s:else>
 			</s:if>
 		</div>
 
