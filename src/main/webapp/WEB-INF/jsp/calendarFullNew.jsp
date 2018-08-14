@@ -45,7 +45,7 @@
                 data-doc-id="<s:property value='document_id' />"
                 data-date="<s:property value='date' />"
                 data-order-index="<s:property value='#blockKey' />">
-						</s:if>						
+						</s:if>
 						<s:elseif test="isHoliday()">
 							<div class="day holiday"
                 data-block-id="<s:property value='id' />"
@@ -65,7 +65,7 @@
           <s:property value="dayInt" />
         </s:if>
         <s:if test="hasData()">
-          <div class="data"
+          <div class="data <s:if test='!hasNextLine()'>non-regular</s:if>"
                data-block-id="<s:property value='id' />"
                data-date="<s:property value='date' />"
                data-time-out="<s:property value='Time_out' />">

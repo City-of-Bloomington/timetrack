@@ -85,6 +85,10 @@
           background-color: $calendar-day-data-hover-background-color;
         }
 
+        &.non-regular {
+          background-color: #fff3cc;
+        }
+
         &.incomplete-time {
           border: $calendar-day-data-incomplete-border;
           background-color: $calendar-day-data-incomplete-background;
