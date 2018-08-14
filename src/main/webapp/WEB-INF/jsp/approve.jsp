@@ -64,9 +64,17 @@
 							<s:elseif test="isApproved()">
 								<small class="status-tag approved">Approved</small>
 							</s:elseif>
+
+							<s:elseif test="!isApproved()">
+								<small class="status-tag not-approved">Not Approved
+									<s:if test="!isSubmitted()">(Not Submitted)</s:if>
+								</small>
+							</s:elseif>
+
 							<s:elseif test="isProcessed()">
 								<small class="status-tag processed">Processed</small>
 							</s:elseif>
+
 							<s:else>
 								<small class="status-tag not-submitted">Not Submitted</small>
 							</s:else>
