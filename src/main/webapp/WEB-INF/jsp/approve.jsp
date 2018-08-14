@@ -106,7 +106,8 @@
 			<s:submit name="action" type="button" value="Approve" class="fn1-btn"/>
 		</s:if>
 		-->
-		<s:submit name="action" type="submit" value="Approve" class="fn1-btn"/>
+
+		<s:submit name="action" type="submit" value="Approve" class="button"/>
 	</s:if>
 </s:form>
 

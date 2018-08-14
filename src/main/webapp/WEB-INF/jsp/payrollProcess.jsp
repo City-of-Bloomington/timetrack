@@ -98,7 +98,7 @@
 		</s:if>
 
 		<s:if test="isUserCurrentEmployee()">
-			<s:submit name="action" type="button" value="Payroll Process Approve" class="fn1-btn"/>
+			<s:submit name="action" type="button" value="Payroll Process Approve" class="button"/>
 		</s:if>
 	</s:if>
 </s:form>
