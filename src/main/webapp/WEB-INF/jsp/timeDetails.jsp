@@ -17,10 +17,7 @@
 	<div class="container-with-padding">
 
 		<div class="calendar-summary-controls m-b-40">
-
-			<s:if test="!document.isSubmitted()">
-			  <a class="button pay-notes" data-doc-id="<s:property value='%{document.id}' />">Add Pay Period Note</a>
-			</s:if>
+			<a class="button pay-notes" data-doc-id="<s:property value='%{document.id}' />">Add Pay Period Note</a>
 
 			<s:if test="document.hasLastWorkflow()" >
 			  <s:if test="document.lastWorkflow.canSubmit()">
@@ -40,6 +37,7 @@
 			      	 data-week-two-total="%{document.week2Total}" />
 			    </s:form>
 			  </s:if>
+
 			  <s:else>
 			  	<strong>Submitted on: [WALID NEED SUBMIT DATE HERE]</strong>
 				</s:else>
