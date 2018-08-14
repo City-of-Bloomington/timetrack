@@ -31,7 +31,7 @@
 			</div>
 		</div>
 
-		<small class="status-tag approved">
+		<small class="status-tag approval-ready">
 			<input type="checkbox" name="check_all" value="y" id="approve_select_all"/><b>Select All (Approvals)</b>
 		</small>
 
@@ -53,26 +53,27 @@
 							<a href="<s:property value='#application.url' />timeDetails.action?document_id=<s:property value='id' />&source=approve" />
 								<s:property value="employee" />
 							</a>
+
 							<s:if test="canBeProcessed()">
-								<small class="status-tag approved">
-									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Payroll Process Approve</input></small>
+								<small class="status-tag approval-ready">
+									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve Payroll</input></small>
 							</s:if>
+
 							<s:elseif test="isApproved()">
-								<small class="status-tag approved">Approved</small>
+								<small class="status-tag approved">Payroll Approved</small>
 							</s:elseif>
 
 							<s:elseif test="!isApproved()">
-								<small class="status-tag not-approved">Not Approved
-									<s:if test="!isSubmitted()">(Not Submitted)</s:if>
-								</small>
+								<s:if test="!isSubmitted()"><small class="status-tag not-submitted">Time Not Submitted</small></s:if>
+								<s:elseif test="!isApproved()"><small class="status-tag not-approved">Time Not Approved</small></s:elseif>
 							</s:elseif>
 
 							<s:elseif test="isProcessed()">
-								<small class="status-tag processed">Processed</small>
+								<small class="status-tag processed">Payroll Processed</small>
 							</s:elseif>
 
 							<s:else>
-								<small class="status-tag not-submitted">Not Submitted</small>
+								<small class="status-tag not-submitted">n/a</small>
 							</s:else>
 						</h2>
 
