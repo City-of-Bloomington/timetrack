@@ -261,6 +261,12 @@ function verifyCancel() {
     return x;
  }
 
+function outsideClickCloseModal(dialogType) {
+  $('.ui-widget-overlay').bind('click', function() {
+    dialogType.dialog("destroy");
+  });
+}
+
 /* Calendar Time Block:
  * Deletes single data entry
  * file: /jsp/calendarFullNew.jsp
@@ -289,6 +295,8 @@ $(".delete-time-confirm").on("keyup click", function(e) {
         $(".ui-dialog-titlebar").remove();
         $('h1 small').html(dataDate);
         $('.details').html(dateInfo);
+
+        outsideClickCloseModal(removeDialog);
       },
       buttons: {
         Confirm: function() {
@@ -372,6 +380,7 @@ $(".data").on("keyup click", function(e) {
         // Remove provided Titlebar
         $(".ui-dialog-titlebar").remove();
 
+        outsideClickCloseModal(editDialog);
         submitDialogOnEnter();
 
         // Get data to fill Dialog Modal
@@ -436,44 +445,26 @@ $(".data").on("keyup click", function(e) {
           var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
           var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
 
-          // Check values before Posting
-          if(timeInError){
-            // Time In cannot be emtpy
-            alertElmP.html("Time In cannot be empty.");
-            timeInElm.focus();
-            return false;
-          } else if (timeOutError) {
-            // Time Out cannot be emtpy
-            alertElmP.html("Time Out cannot be empty.");
-            timeOutElm.focus();
-            return false;
-          } else if (hoursError) {
-            // Non-REG Hours cannot be emtpy
-            alertElmP.html("Hours cannot be 0.0");
-            hoursElm.focus();
-            return false;
-          } else {
-            // Remove any alert
-            alertElm.remove();
-            // Post the Edited Calendar Time Block
-            var jqxhr = $.post({
-              url: submitURL,
-              data: formData,
-            })
-            .done(function(data) {
-              setTimeout(function(){
-                window.location = window.location;
-              }, 5);
-            })
-            .fail(function(jqxhr, xhrGet, status, error) {
-              var err = JSON.parse(xhr.responseText);
-              alert(err.error);
-              $(".alert p").html(jqXHR.responseText);
-            })
-            .always(function() {
-              // alert( "finished" );
-            });
-          }
+          // Remove any alert
+          alertElm.remove();
+          // Post the Edited Calendar Time Block
+          var jqxhr = $.post({
+            url: submitURL,
+            data: formData,
+          })
+          .done(function(data) {
+            setTimeout(function(){
+              window.location = window.location;
+            }, 5);
+          })
+          .fail(function(jqxhr, xhrGet, status, error) {
+            var err = JSON.parse(xhr.responseText);
+            alert(err.error);
+            $(".alert p").html(jqXHR.responseText);
+          })
+          .always(function() {
+            // alert( "finished" );
+          });
         },
         Cancel: function() {
           // On cancel button click, destroy the Dialog Modal
@@ -523,6 +514,7 @@ $(".day").on("keyup click", function(e) {
       open: function (event, ui) {
         $(".ui-dialog-titlebar").remove();
 
+        outsideClickCloseModal(addDialog);
         submitDialogOnEnter();
 
         // Get data to fill Dialog Modal
@@ -588,46 +580,29 @@ $(".day").on("keyup click", function(e) {
           var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
           var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
 
-           // Check values before Posting
-          if(timeInError){
-            // Time In cannot be emtpy
-            alertElmP.html("Time In cannot be empty.");
-            timeInElm.focus();
-            return false;
-          } else if (timeOutError) {
-            // Time Out cannot be emtpy
-            alertElmP.html("Time Out cannot be empty.");
-            timeOutElm.focus();
-            return false;
-          } else if (hoursError) {
-            // Non-REG Hours cannot be emtpy
-            alertElmP.html("Hours cannot be 0.0");
-            hoursElm.focus();
-            return false;
-          } else {
-            e.preventDefault();
-            // Remove any alert
-            alertElm.remove();
-            // Post the Added Calendar Time Block
-            var jqxhr = $.post({
-              url: submitURL,
-              data: formData
-            })
-            .done(function(data) {
-              setTimeout(function(){
-                window.location = window.location;
-              }, 5);
-            })
-            .fail(function(jqxhr, status, textStatus, error) {
-              var err = JSON.parse(xhr.responseText);
-              alert(err.error);
-              alert( "Request failed: " + textStatus );
-              $(".alert p").html(jqXHR.responseText);
-            })
-            .always(function() {
-              // alert( "finished" );
-            });
-          }
+
+          e.preventDefault();
+          // Remove any alert
+          alertElm.remove();
+          // Post the Added Calendar Time Block
+          var jqxhr = $.post({
+            url: submitURL,
+            data: formData
+          })
+          .done(function(data) {
+            setTimeout(function(){
+              window.location = window.location;
+            }, 5);
+          })
+          .fail(function(jqxhr, status, textStatus, error) {
+            var err = JSON.parse(xhr.responseText);
+            alert(err.error);
+            alert( "Request failed: " + textStatus );
+            $(".alert p").html(jqXHR.responseText);
+          })
+          .always(function() {
+            // alert( "finished" );
+          });
         },
         Cancel: function() {
           // On cancel button click, destroy the Dialog Modal
@@ -679,6 +654,7 @@ $(".pay-notes").click(function() {
                 collision: "none"
     },
     open: function (event, ui) {
+      outsideClickCloseModal(payNotesDialog);
 
       $(".ui-dialog-titlebar").remove();
       $(event.target).parent().css('position', 'fixed');
@@ -714,28 +690,24 @@ $(".pay-notes").click(function() {
         var alertElmP       = $('.alert').addClass('active').find('p');
         var alertElm        = $('.alert');
 
-        if(textAreaVal == "") {
-          alertElmP.html("Sorry, a note is required for submit.");
-        } else {
-          alertElm.remove();
-          // Post the Added Calendar Time Block
-          var jqxhr = $.post({
-            url: submitURL,
-            data: formData,
-          })
-          .done(function(data) {
-            setTimeout(function(){
-              window.location = window.location;
-            }, 5);
-          })
-          .fail(function(jqxhr, status, error) {
-            var err = JSON.parse(xhr.responseText);
-            alert(err.error);
-          })
-          .always(function() {
-            // alert( "finished" );
-          });
-        }
+        alertElm.remove();
+        // Post the Added Calendar Time Block
+        var jqxhr = $.post({
+          url: submitURL,
+          data: formData,
+        })
+        .done(function(data) {
+          setTimeout(function(){
+            window.location = window.location;
+          }, 5);
+        })
+        .fail(function(jqxhr, status, error) {
+          var err = JSON.parse(xhr.responseText);
+          alert(err.error);
+        })
+        .always(function() {
+          // alert( "finished" );
+        });
       },
       Cancel: function() {
         // On cancel button click, destroy the Dialog Modal
@@ -754,11 +726,13 @@ $(".pay-notes").click(function() {
   // Prevent default click clash
   return false;
 });
-
+// Adam & Walid
+// change class name to timesheet-submit-2 to cancel this effect right now
+//
 submitTimesheetObserver();
 function submitTimesheetObserver(){
   // Selectors
-  var submitFormBtn   = $('.timesheet-submit input[type=submit]')
+  var submitFormBtn   = $('.timesheet-submit-2 input[type=submit]')
   var weekOneTotalVal = submitFormBtn.attr('data-week-one-total');
   var weekTwoTotalVal = submitFormBtn.attr('data-week-two-total');
 
@@ -780,9 +754,9 @@ $('#approve_select_all').click(function() {
 /**
  * Add active class to navigation tabs
  */
-var FULL_URL = window.location.pathname;
+var FULL_URL = window.location.href;
 $(".tabs a").each(function() {
-  if (this.pathname == FULL_URL) {
+  if (this.href == FULL_URL) {
     $(this).addClass("active");
   }
 })
