@@ -34,18 +34,43 @@
 		</div>
 
 		<small class="status-tag approval-ready">
-			<input type="checkbox" name="check_all" value="y" id="approve_select_all"/><b>Select All (Approvals)</b>
+			<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
 		</small>
 
-		<s:if test="hasNonDocEmps()">
-		<div class="emp-no-time-wrapper">
-			<strong>Employee(s) with no time entry for this pay period:</strong>
-			<s:iterator var="one" value="nonDocEmps">
-				<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve">
-					<s:property value="full_name" />,</a>&nbsp;
-			</s:iterator>
+		<div class="approve-process-header-lists">
+			<s:if test="hasNonDocEmps()">
+				<div class="emp-no-time-wrapper">
+					<strong>Employee(s) with no time entry for this pay period:</strong>
+					<s:iterator var="one" value="nonDocEmps">
+						<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve">
+							<s:property value="full_name" />,</a>&nbsp;
+					</s:iterator>
+				</div>
+			</s:if>
+
+			<!-- these ifs below should only display if there are users within -->
+			<s:if test="!isSubmitted()">
+				<ul>
+					<small class="status-tag not-submitted">Time Not Submitted</small>
+					<s:iterator var="one" value="documents">
+					<li><s:property value="employee" />,</li>
+					</s:iterator>
+				</ul>
+			</s:if>
+
+			<s:elseif test="!isApproved()">
+				<ul>
+					<small class="status-tag not-approved">Time Not Approved</small>
+					<s:iterator var="one" value="documents">
+					<li><s:property value="employee" />,</li>
+					</s:iterator>
+				</ul>
+			</s:elseif>
 		</div>
-		</s:if>
+
+
+
+
 
 		<s:if test="hasDocuments()">
 			<s:iterator var="one" value="documents">

@@ -125,8 +125,35 @@
     padding: 0 0 20px 0;
   }
 
+  .approve-process-header-lists {
+    border-bottom: 1px solid $silver-chalice;
+    margin: 0 0 20px 0;
+
+    small {
+      &.status-tag {
+        float: left;
+        margin: 0 0 5px 0;
+        min-width: 140px;
+        text-align: center;
+      }
+    }
+
+    ul {
+      display: inline-block;
+      margin: 0 0 20px 0;
+      padding: 0;
+
+      li {
+        float: left;
+        list-style: none;
+        margin: 0 5px 5px 0;
+      }
+    }
+  }
+
   input[type="submit"] {
     background-color: $fern;
+    border-color: $fern;
     color: white;
     margin-left: auto;
   }
