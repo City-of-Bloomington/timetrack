@@ -23,7 +23,7 @@
 		<s:set var="dayKey" value="#one.key" />
 		<s:set var="dayVal" value="#one.value" />
 		<s:if test="#dayKey == 0">
-	    <tr><td>Week 1</td>
+	    <tr><td>Week 1 - <small>(07/30 - 08/05)</small> </td>
 		</s:if>
 
 		<s:if test="#dayKey == 7">
@@ -32,7 +32,7 @@
 				<td><s:property value="#week1Flsa" /></td>
 			</s:if>
 	    </tr>
-			<tr><td>Week 2</td>
+			<tr><td>Week 2 - <small>(08/06 - 08/12)</small></td>
 		</s:if>
 
 		<td><s:property value="dayVal" /></td>
