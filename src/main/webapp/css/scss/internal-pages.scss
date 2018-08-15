@@ -66,6 +66,10 @@
       &.not-approved {
         background: $california;
       }
+
+      &.select-all {
+        margin: 0 0 20px auto;
+      }
     }
   }
 
@@ -142,6 +146,7 @@
       display: inline-block;
       margin: 0 0 20px 0;
       padding: 0;
+      width: 100%;
 
       li {
         float: left;

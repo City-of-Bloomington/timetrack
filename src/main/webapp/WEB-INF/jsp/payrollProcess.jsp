@@ -31,9 +31,7 @@
 			</div>
 		</div>
 
-		<small class="status-tag approval-ready">
-			<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
-		</small>
+
 
 		<div class="approve-process-header-lists">
 			<s:if test="hasNonDocEmps()">
@@ -66,9 +64,13 @@
 			</s:if>
 		</div>
 
+		<div class="flex-row">
+			<small class="status-tag approval-ready select-all">
+				<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
+			</small>
+		</div>
 
-
-
+		<hr>
 
 		<s:if test="hasDocuments()">
 			<s:iterator var="one" value="documents">

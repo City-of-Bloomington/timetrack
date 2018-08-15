@@ -33,9 +33,7 @@
 			</div>
 		</div>
 
-		<small class="status-tag approval-ready">
-			<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
-		</small>
+
 
 		<div class="approve-process-header-lists">
 			<s:if test="hasNonDocEmps()">
@@ -50,8 +48,8 @@
 
 			<!-- these ifs below should only display if there are users within -->
 			<s:if test="!isSubmitted()">
+				<small class="status-tag not-submitted">Time Not Submitted</small>
 				<ul>
-					<small class="status-tag not-submitted">Time Not Submitted</small>
 					<s:iterator var="one" value="documents">
 					<li><s:property value="employee" />,</li>
 					</s:iterator>
@@ -59,8 +57,8 @@
 			</s:if>
 
 			<s:elseif test="!isApproved()">
+				<small class="status-tag not-approved">Time Not Approved</small>
 				<ul>
-					<small class="status-tag not-approved">Time Not Approved</small>
 					<s:iterator var="one" value="documents">
 					<li><s:property value="employee" />,</li>
 					</s:iterator>
@@ -68,9 +66,13 @@
 			</s:elseif>
 		</div>
 
+		<div class="flex-row">
+			<small class="status-tag approval-ready select-all">
+				<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
+			</small>
+		</div>
 
-
-
+		<hr>
 
 		<s:if test="hasDocuments()">
 			<s:iterator var="one" value="documents">
