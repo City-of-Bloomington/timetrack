@@ -1,6 +1,6 @@
+<s:set var="allAccruals" value="document.allAccruals" />
+<h1>Accrual Summary</h1>
 <s:if test="document.hasAllAccruals()">
-	<s:set var="allAccruals" value="document.allAccruals" />
-	<h1>Accrual Summary</h1>
 	<table class="accruals-summary width-full">
 		<tr>
 			<th width="25%">Accrual Category</th>
@@ -20,3 +20,8 @@
 		</s:iterator>
 	</table>
 </s:if>
+<s:else>
+	<div class="m-b-40">
+		<p><strong>Note:</strong> Accrual / Benefits information is not yet available for this pay period.</p>
+	</div>
+</s:else>
