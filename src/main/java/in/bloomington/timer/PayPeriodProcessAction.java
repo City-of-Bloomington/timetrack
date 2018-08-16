@@ -311,12 +311,12 @@ public class PayPeriodProcessAction extends TopAction{
 		}
 		public PayPeriod getPayPeriod(){
 				//
-				// if pay period is not set, we look for current one
+				// if pay period is not set, we look for previous one
 				//
 				if(payPeriod == null){
 						if(pay_period_id.equals("")){
 								PayPeriodList ppl = new PayPeriodList();
-								ppl.currentOnly();
+								ppl.setPreviousOnly();
 								String back = ppl.find();
 								if(back.equals("")){
 										List<PayPeriod> ones = ppl.getPeriods();

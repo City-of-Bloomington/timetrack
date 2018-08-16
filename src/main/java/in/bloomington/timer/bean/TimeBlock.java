@@ -194,6 +194,7 @@ public class TimeBlock extends Block{
 			  splitTimes(val, false);
 		}
 		public void setTime_out(String val){
+				time_out_changed = true;
 				splitTimes(val, true);
 		}
 		private String splitTimes(String val, boolean isOut){
@@ -421,10 +422,12 @@ public class TimeBlock extends Block{
 						end_hour += 24;
 				}
 		}
+		/*
 		public boolean checkIfEndTimeChanged(){
 				
 				return (end_hour + end_minute) > 0;
 		}
+		*/
 		private void adjustAccraulBalance(String code_id, double hrs){
 				if(accrualBalance != null){
 						if(accrualBalance.containsKey(code_id)){
@@ -615,10 +618,7 @@ public class TimeBlock extends Block{
 						end_minute = 59;
 				}
 				else {
-						
 						hours = (end_hour+end_minute/60.) - (begin_hour+begin_minute/60.);
-						// System.err.println(" begin "+begin_hour+": "+begin_minute);
-						// System.err.println(" end "+end_hour+": "+end_minute);
 						if(hours < 0){
 								hours = 0.0;
 								msg = "Time in is greater than time out";
@@ -794,10 +794,68 @@ public class TimeBlock extends Block{
 				}
 				return msg;
 		}
+		public String doUpdate(){
+				 /// for admins who changes the clock in but no clock out
+				if(isClockIn() && !isClockOut() && !time_out_changed){
+						return doUpdateForInOnly();
+				}
+				return doUpdateForInOut();
+		}
+		public String doUpdateForInOnly(){
+				System.err.println(" update time in only ");
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				if(action_type.equals("")) action_type="Update";
+				if(id.equals("")){
+						return " id not set ";
+				}
+				msg = checkForConflicts();
+				if(!msg.equals("")){
+						return msg;
+				}
+				String qq = "update time_blocks set begin_hour=?,begin_minute=? where id=? ";
+				logger.debug(qq);
+				try{
+						con = Helper.getConnection();
+						if(con != null){
+								pstmt = con.prepareStatement(qq);
+								pstmt.setInt(1, begin_hour);
+								pstmt.setInt(2, begin_minute);
+								pstmt.setString(3, id);
+								pstmt.executeUpdate();
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}
+				if(msg.equals("")){
+						msg = doSelect(); // to get the other info for logging
+				}
+				if(msg.equals("")){
+						TimeBlockLog tbl = new TimeBlockLog(null, document_id,
+																								job_id, hour_code_id,
+																								date,
+																								begin_hour, begin_minute,
+																								end_hour, end_minute,
+																								hours, ovt_pref,
+																								clock_in,clock_out,
+																								id, action_type,
+																								action_by_id,null);
+						msg = tbl.doSave();
+				}				
+				return msg;				
+
+		}
 		//
 		// we can update expire date and inactive
 		//
-		public String doUpdate(){
+		public String doUpdateForInOut(){		
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -805,7 +863,7 @@ public class TimeBlock extends Block{
 				String msg="", str="";
 				checkForOvernight();
 				if(isClockIn() && !isClockOut()){
-						if(checkIfEndTimeChanged()){ /// for admins who
+						if(time_out_changed){ /// for admins who
 								setClock_out("y");
 								setAction_type("ClockOut");
 						}

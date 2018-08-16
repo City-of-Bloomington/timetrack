@@ -58,9 +58,20 @@ public class IpAddressAction extends TopAction{
 						}
 						else{
 								addMessage("Saved Successfully");
-								addActionMessage("Saved Successfully");
 						}
 				}
+				else if(action.startsWith("Delete")){
+						back = ipaddress.doDelete();
+						if(!back.equals("")){
+								addActionError(back);
+								addError(back);
+						}
+						else{
+								id="";
+								ipaddress = new IpAddress();
+								addMessage("Deleted Successfully");
+						}
+				}				
 				else{		
 						getIpaddress();
 						if(!id.equals("")){

@@ -180,6 +180,35 @@ public class IpAddress{
 						Helper.databaseDisconnect(con, pstmt, rs);
 				}
 				return msg;
-		}		
+		}
+		public String doDelete(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = " delete from ip_allowed where id=?";
+				if(id.equals("")){
+						msg = "id is required";
+						return msg;
+				}
+				try{
+						con = Helper.getConnection();
+						if(con == null){
+								msg = "Could not connect to DB ";
+								return msg;
+						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}
+				return msg;
+		}				
 
 }

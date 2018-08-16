@@ -20,7 +20,7 @@
 			<div class="button-group">
 		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='previousPayPeriod.id' />" class="button hide-text has-icon chevron-left"><span>Backwards</span></a>
 
-		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='currentPayPeriod.id' />" class="button today"><span>Today</span></a>
+		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='currentPayPeriod.id' />" class="button today"><span>Current Pay Period</span></a>
 		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
 
 		  </div>
@@ -31,7 +31,9 @@
 			</div>
 		</div>
 
-
+		<!--  we need these as global since they will be used multiple times -->
+		<s:set var="week1DateRange" value="payPeriod.week1DateRange" />
+		<s:set var="week2DateRange" value="payPeriod.week2DateRange" />
 
 		<div class="approve-process-header-lists">
 			<s:if test="hasNonDocEmps()">
@@ -45,20 +47,19 @@
 			</s:if>
 
 			<!-- these ifs below should only display if there are users within -->
-			<s:if test="!isSubmitted()">
+			<s:if test="hasNotSubmittedEmps()">
 				<small class="status-tag not-submitted">Time Not Submitted</small>
 				<ul>
-					<s:iterator var="one" value="documents">
-					<li><s:property value="employee" />,</li>
+					<s:iterator value="notSubmittedEmps" status="row" >
+						<li><s:property value="full_name" /><s:if test="!#row.last">,</s:if></li>
 					</s:iterator>
 				</ul>
 			</s:if>
-
-			<s:if test="!isApproved()">
+			<s:if test="hasNotApprovedEmps()">
 				<small class="status-tag not-approved">Time Not Approved</small>
 				<ul>
-					<s:iterator var="one" value="documents">
-					<li><s:property value="employee" />,</li>
+					<s:iterator value="notApprovedEmps" status="row">
+						<li><s:property value="full_name" /><s:if test="!#row.last">,</li></s:if></li>
 					</s:iterator>
 				</ul>
 			</s:if>

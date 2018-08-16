@@ -37,12 +37,15 @@
 			      	 data-week-two-total="%{document.week2Total}" />
 			    </s:form>
 			  </s:if>
-
 			  <s:else>
-			  	<strong>Submitted on: [WALID NEED SUBMIT DATE HERE]</strong>
+			  	<strong>Submitted on: <s:property value="document.submitTimeAction.action_time" /></strong>
 				</s:else>
 			</s:if>
 		</div>
+
+		<!--  we need these as global since they will be used in daily -->
+		<s:set var="week1DateRange" value="payPeriod.week1DateRange" />
+		<s:set var="week2DateRange" value="payPeriod.week2DateRange" />		
 
 		<hr class="m-b-40" />
 

@@ -29,11 +29,15 @@ public class ApproveAction extends TopAction{
 		
 		String workflow_id = ""; 
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
-				nextPayPeriod=null;
+				nextPayPeriod=null, payPeriod = null;
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
+		List<Employee> notSubmittedEmps = null;
+		List<Employee> notApprovedEmps = null;
+		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
+
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -126,6 +130,21 @@ public class ApproveAction extends TopAction{
 				}
 				return managers;
 		}
+		public PayPeriod getPayPeriod(){
+				//
+				if(payPeriod == null){
+						if(!pay_period_id.equals("")){
+								PayPeriod one = new PayPeriod(pay_period_id);
+								String back = one.doSelect();
+								if(back.equals(""))
+										payPeriod = one;
+						}
+						else {
+								getCurrentPayPeriod();
+						}
+				}
+				return payPeriod;
+		}		
 		public PayPeriod getCurrentPayPeriod(){
 				//
 				if(currentPayPeriod == null){
@@ -138,6 +157,7 @@ public class ApproveAction extends TopAction{
 										currentPayPeriod = ones.get(0);
 										if(pay_period_id.equals("")){
 												pay_period_id = currentPayPeriod.getId();
+												payPeriod = currentPayPeriod;
 										}
 								}
 						}
@@ -223,50 +243,54 @@ public class ApproveAction extends TopAction{
 				return documents != null && documents.size() > 0;
 		}
 		public List<Document> getDocuments(){
-				if(hasGroups()){
-						if(pay_period_id.equals("")){
-								getPay_period_id(); // current
-						}
-						DocumentList dl = new DocumentList();
-						dl.setPay_period_id(pay_period_id);
-						if(!group_id.equals("")){
-								dl.setGroup_id(group_id);
-						}
-						else if(groups != null && groups.size() > 0){
-								for(Group one:groups){
-										dl.setGroup_id(one.getId());										
+				if(documents == null){
+						if(hasGroups()){
+								if(pay_period_id.equals("")){
+										getPay_period_id(); // current
 								}
-						}
-						String back = dl.find();
-						if(back.equals("")){
-								List<Document> ones = dl.getDocuments();
-								if(ones != null && ones.size() > 0){
-										documents = ones;
+								DocumentList dl = new DocumentList();
+								dl.setPay_period_id(pay_period_id);
+								if(!group_id.equals("")){
+										dl.setGroup_id(group_id);
+								}
+								else if(groups != null && groups.size() > 0){
+										for(Group one:groups){
+												dl.setGroup_id(one.getId());										
+										}
+								}
+								String back = dl.find();
+								if(back.equals("")){
+										List<Document> ones = dl.getDocuments();
+										if(ones != null && ones.size() > 0){
+												documents = ones;
+										}
 								}
 						}
 				}
 				return documents;
 		}
 		public List<Employee> getNonDocEmps(){
-				EmployeeList empl = new EmployeeList();
-				if(!group_id.equals("")){
-						empl.setGroup_id(group_id);
-				}
-				else if(groups != null && groups.size() > 0){
-						for(Group one:groups){
-								empl.setGroup_id(one.getId());										
+				if(nonDocEmps == null){
+						EmployeeList empl = new EmployeeList();
+						if(!group_id.equals("")){
+								empl.setGroup_id(group_id);
 						}
-				}
-				if(pay_period_id.equals("")){
-						getPay_period_id(); // current
-				}				
-				empl.setNoDocumentForPayPeriodId(pay_period_id);
-				empl.setActiveOnly();
-				String back = empl.find();
-				if(back.equals("")){
-						List<Employee> ones = empl.getEmployees();
-						if(ones != null && ones.size() > 0){
-								nonDocEmps = ones;
+						else if(groups != null && groups.size() > 0){
+								for(Group one:groups){
+										empl.setGroup_id(one.getId());										
+								}
+						}
+						if(pay_period_id.equals("")){
+								getPay_period_id(); // current
+						}				
+						empl.setNoDocumentForPayPeriodId(pay_period_id);
+						empl.setActiveOnly();
+						String back = empl.find();
+						if(back.equals("")){
+								List<Employee> ones = empl.getEmployees();
+								if(ones != null && ones.size() > 0){
+										nonDocEmps = ones;
+								}
 						}
 				}
 				return nonDocEmps;
@@ -274,6 +298,47 @@ public class ApproveAction extends TopAction{
 		public boolean hasNonDocEmps(){
 				getNonDocEmps();
 				return nonDocEmps != null && nonDocEmps.size() > 0; 
+		}
+		public boolean hasNotSubmittedEmps(){
+				findNotSubmittedAndNotApprovedEmps();
+				return notSubmittedEmps != null && notSubmittedEmps.size() > 0;
+
+		}
+		public boolean hasNotApprovedEmps(){
+				findNotSubmittedAndNotApprovedEmps();				
+				return notApprovedEmps != null && notApprovedEmps.size() > 0;
+		}
+		public List<Employee> getNotSubmittedEmps(){
+				return notSubmittedEmps;
+		}
+		public List<Employee> getNotApprovedEmps(){
+				return notApprovedEmps;
+		}
+		void findNotSubmittedAndNotApprovedEmps(){
+				if(notSubmitAndApproveFlag){
+						notSubmitAndApproveFlag = false; // to turn off
+						getNonDocEmps();
+						if(hasDocuments()){
+								for(Document one:documents){
+										if(one.canBeApproved()){
+												if(notApprovedEmps == null)
+														notApprovedEmps = new ArrayList<>();
+												notApprovedEmps.add(one.getEmployee());
+										}
+										else{
+												Employee emp = one.getEmployee();
+												if(nonDocEmps != null && nonDocEmps.contains(emp)){
+														continue;
+												}
+												else{
+														if(notSubmittedEmps == null)
+																notSubmittedEmps = new ArrayList<>();
+														notSubmittedEmps.add(emp);
+												}
+										}
+								}
+						}
+				}
 		}
 		public void setCheck_all(boolean val){
 				// will do nothing

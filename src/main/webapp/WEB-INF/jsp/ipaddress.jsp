@@ -35,9 +35,9 @@
 			<s:if test="ipaddress.id == ''">
 				<s:submit name="action" accrual="button" value="Save" class="button"/>
 			</s:if>
-
 			<s:else>
 				<s:submit name="action" accrual="button" value="Save Changes" class="button"/>
+				<s:submit name="action" accrual="button" value="Delete" class="button"/>				
 			</s:else>
 		</div>
 	</s:form>

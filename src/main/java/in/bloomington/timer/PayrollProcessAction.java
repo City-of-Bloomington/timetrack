@@ -29,11 +29,14 @@ public class PayrollProcessAction extends TopAction{
 		String pay_period_id="", group_id="";
 		String workflow_id = ""; 
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
-				nextPayPeriod = null;
+				nextPayPeriod = null, payPeriod = null;
 		
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
+		List<Employee> notSubmittedEmps = null;
+		List<Employee> notApprovedEmps = null;
+		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
 		public String execute(){
 				String ret = SUCCESS;
@@ -143,6 +146,21 @@ public class PayrollProcessAction extends TopAction{
 						}
 				}
 				return currentPayPeriod;
+		}
+		public PayPeriod getPayPeriod(){
+				//
+				if(payPeriod == null){
+						if(!pay_period_id.equals("")){
+								PayPeriod one = new PayPeriod(pay_period_id);
+								String back = one.doSelect();
+								if(back.equals(""))
+										payPeriod = one;								
+						}
+						else {
+								getCurrentPayPeriod();
+						}
+				}
+				return payPeriod;
 		}				
 		public boolean hasGroups(){
 				return isGroupManager() && groups != null && groups.size() > 0;
@@ -272,6 +290,51 @@ public class PayrollProcessAction extends TopAction{
 				}
 				return nextPayPeriod;
 		}					
+		public boolean hasNotSubmittedEmps(){
+				findNotSubmittedAndNotApprovedEmps();
+				return notSubmittedEmps != null && notSubmittedEmps.size() > 0;
+
+		}
+		public boolean hasNotApprovedEmps(){
+				findNotSubmittedAndNotApprovedEmps();				
+				return notApprovedEmps != null && notApprovedEmps.size() > 0;
+		}
+		public List<Employee> getNotSubmittedEmps(){
+				return notSubmittedEmps;
+		}
+		public List<Employee> getNotApprovedEmps(){
+				return notApprovedEmps;
+		}
+		void findNotSubmittedAndNotApprovedEmps(){
+				if(notSubmitAndApproveFlag){
+						notSubmitAndApproveFlag = false; // to turn off
+						getNonDocEmps();
+						if(hasDocuments()){
+								for(Document one:documents){
+										if(one.canBeApproved()){
+												if(notApprovedEmps == null)
+														notApprovedEmps = new ArrayList<>();
+												notApprovedEmps.add(one.getEmployee());
+										}
+										else{
+												Employee emp = one.getEmployee();
+												if(nonDocEmps != null && nonDocEmps.contains(emp)){
+														continue;
+												}
+												else{
+														if(notSubmittedEmps == null)
+																notSubmittedEmps = new ArrayList<>();
+														notSubmittedEmps.add(emp);
+												}
+										}
+								}
+						}
+				}
+		}
+
+		public void setCheck_all(boolean val){
+				// will do nothing
+		}
 }
 
 
