@@ -3,9 +3,26 @@
   <s:hidden name="source" value="source" />
 
   <div class="button-group">
-    <a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='previousPayPeriod.id' />" class="button hide-text has-icon chevron-left"><span>Backwards</span></a>
-    <a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='currentPayPeriod.id' />" class="button today"><span>Current Pay Period</span></a>
-    <a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
+    <a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='previousPayPeriod.id' />"
+       class="button hide-text has-icon chevron-left"
+       alt="Previous Pay Period"
+       title="Previous Pay Period">
+       <span>Backwards</span>
+    </a>
+
+    <a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='currentPayPeriod.id' />"
+       class="button today"
+       alt="Current Pay Period"
+       title="Current Pay Period">
+       <span>Current Pay Period</span>
+    </a>
+
+    <a href="<s:property value='#application.url' />timeDetails.action?pay_period_id=<s:property value='nextPayPeriod.id' />"
+       class="button hide-text has-icon chevron-right"
+       alt="Forward Pay Period"
+       title="Forward Pay Period">
+       <span>Forwards</span>
+    </a>
   </div>
 
   <h1 class="month-year">
@@ -18,3 +35,9 @@
   </div>
   <button type="submit">Submit</button>
 </s:form>
+
+<s:if test="hasErrors()">
+        <div class="alert">
+          <s:hidden name="errors" value="<s:property value='errorsAll' />" id="id_errors"/>
+        </div>
+      </s:if>
