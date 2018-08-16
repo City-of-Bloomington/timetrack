@@ -43,6 +43,11 @@
         color: $calendar-day-hover-text-color;
       }
 
+      &.today {
+        background-color: $calendar-day-hover-background-color;
+        color: $calendar-day-hover-text-color;
+      }
+
       &.holiday {
         // background-color: $calendar-holiday-background-color;
 
