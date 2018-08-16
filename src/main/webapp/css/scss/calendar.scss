@@ -38,12 +38,12 @@
         background-color: $calendar-weekend-background-color;
       }
 
-      &:hover {
-        background-color: $calendar-day-hover-background-color;
-        color: $calendar-day-hover-text-color;
+      &.today {
+        background-color: #FFF9E5;
+        color: darken($calendar-day-text-color, 10%);
       }
 
-      &.today {
+      &:hover {
         background-color: $calendar-day-hover-background-color;
         color: $calendar-day-hover-text-color;
       }
