@@ -23,9 +23,7 @@
 		<s:if test="hasOneJobOnly()">
 			<s:hidden name="timeBlock.job_id" value="%{selected_job_id}" />
 		</s:if>
-		<s:if test="hasErrors()">
-			<s:hidden name="errors" value="<s:property value='errorsAll' />"  id="id_errors "/>
-		</s:if>
+
 		<h1>
 			<s:if test="timeBlock.id == ''">
 				Add Time Block
@@ -36,7 +34,12 @@
 			</s:else>
 			<small><s:property value="timeBlock.date" /></small>
 		</h1>
-		<div class="alert"><p></p></div>
+
+		<s:if test="!hasErrors()">
+			<div class="alert">
+				<s:hidden name="errors" value="<s:property value='errorsAll' />" id="id_errors "/>
+			</div>
+		</s:if>
 
 		<s:if test="hasMoreThanOneJob()">
 			<div class="form-group">
@@ -112,8 +115,6 @@
 			</s:if>
 			<s:else>
 				<s:submit name="action" type="submit" value="Save Changes" class="button" id="time-block-submit" tabindex="8" />
-
-				<button type="submit">Save New</button>
 			</s:else>
 			<a class="button" href="#" onclick="javascript:window.close('', '_blank', '')" tabindex="10">Cancel</a>
 		</div> -->
