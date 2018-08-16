@@ -43,7 +43,12 @@
 
 			<s:else>
 				<div class="log-info">
-					<h1>Hi, <s:property value="timeClock.timeBlock.document.employee" />!</h1><br/>
+					<h1>
+						<s:if test="timeClock.timeBlock.isClockOut()">Bye,</s:if>
+						<s:elseif test="timeClock.timeBlock.isClockIn()">Hi,</s:elseif>
+
+						<s:property value="timeClock.timeBlock.document.employee" />
+					</h1><br/>
 
 					<h2>Current Log:</h2>
 					<h3>
@@ -69,7 +74,7 @@
 				<script type="text/javascript">
 		    	setTimeout(function(){
 		    		window.top.location = "<s:property value='#application.url' />timeClock.action"
-		    	}, 10000); // wait 10 seconds
+		    	}, 6000); // wait 6 seconds
 		    </script>
 		  </s:else>
 		</s:form>
@@ -92,20 +97,6 @@
 
 <%@ include file="footer.jsp" %>
 <script type="text/javascript">
-
-	// (function getServerTime() {
-	//   var xhr = $.ajax({
-	//     url: APPLICATION_URL + 'timeClock.action',
-	//     success: function(data, status) {
-	//     	var testingTime = document.querySelector('.testing');
-	// 			testingTime.innerHTML = new Date(xhr.getResponseHeader('Date'));
-	//     },
-	//     complete: function() {
-	//       setTimeout(getServerTime, 10000);
-	//     }
-	//   });
-	// })();
-
 	function displayTime() {
 		var displayTime = document.getElementById('time_clock_id2').value;
 
