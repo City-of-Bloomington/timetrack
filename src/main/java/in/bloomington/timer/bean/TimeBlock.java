@@ -191,11 +191,16 @@ public class TimeBlock extends Block{
 				return Helper.getDayInt(date);
 		}
 		public void setTime_in(String val){
-			  splitTimes(val, false);
+				if(val != null && !val.trim().equals("")){
+						time_in_changed = true;
+						splitTimes(val, false);
+				}
 		}
 		public void setTime_out(String val){
-				time_out_changed = true;
-				splitTimes(val, true);
+				if(val != null && !val.trim().equals("")){
+						time_out_changed = true;
+						splitTimes(val, true);
+				}
 		}
 		private String splitTimes(String val, boolean isOut){
 				String msg = "";
@@ -422,12 +427,6 @@ public class TimeBlock extends Block{
 						end_hour += 24;
 				}
 		}
-		/*
-		public boolean checkIfEndTimeChanged(){
-				
-				return (end_hour + end_minute) > 0;
-		}
-		*/
 		private void adjustAccraulBalance(String code_id, double hrs){
 				if(accrualBalance != null){
 						if(accrualBalance.containsKey(code_id)){
@@ -796,7 +795,7 @@ public class TimeBlock extends Block{
 		}
 		public String doUpdate(){
 				 /// for admins who changes the clock in but no clock out
-				if(isClockIn() && !isClockOut() && !time_out_changed){
+				if(time_in_changed && !time_out_changed){
 						return doUpdateForInOnly();
 				}
 				return doUpdateForInOut();
