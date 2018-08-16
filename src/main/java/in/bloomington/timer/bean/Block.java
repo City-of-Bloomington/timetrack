@@ -33,6 +33,10 @@ public class Block{
 		JobTask jobTask = null;
 		Document document = null;
 		boolean hourCodeSet = false, isHoliday=false;
+		//
+		// this flag needed for clock machines
+		// when the managers change the clock in time but not clock out
+		boolean time_in_changed=false, time_out_changed = false;
 		String today = Helper.getToday();
     public Block(
 								 String val,

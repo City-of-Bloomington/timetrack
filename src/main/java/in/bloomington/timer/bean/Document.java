@@ -266,7 +266,19 @@ public class Document{
 						}
 				}
 				return false;
-		}		
+		}
+		public TimeAction getSubmitTimeAction(){
+				getTimeActions();
+				if(timeActions != null){
+						for(TimeAction one:timeActions){ 
+								Workflow wf = one.getWorkflow();
+								if(wf.isSubmitted()){
+										return one;
+								}
+						}
+				}
+				return null;
+		}
 		public boolean canBeProcessed(){
 				return isApproved() && !isProcessed();
 		}

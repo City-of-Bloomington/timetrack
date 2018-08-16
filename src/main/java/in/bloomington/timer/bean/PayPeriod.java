@@ -166,6 +166,21 @@ public class PayPeriod{
 		public String getDateRange(){
 				return start_date+" - "+end_date;
 		}
+		// something like 08/02 - 08/09
+		public String getWeek1DateRange(){
+				String endWeek1 = Helper.getDateAfter(start_date, 6);
+				endWeek1 = endWeek1.substring(0,endWeek1.lastIndexOf("/"));
+				String startWeek1 = start_date.substring(0,start_date.lastIndexOf("/"));
+				String ret = startWeek1+" - "+endWeek1;
+				return ret;
+		}
+		public String getWeek2DateRange(){
+				String startWeek2 = Helper.getDateAfter(start_date, 7);
+				startWeek2 = startWeek2.substring(0, startWeek2.lastIndexOf("/"));
+				String endWeek2  = end_date.substring(0,end_date.lastIndexOf("/"));
+				String ret = startWeek2+" - "+endWeek2;
+				return ret;				
+		}		
 		/*
 		 * for the end of the year, the pay period is divided
 		 * into two ranges from (start_date, to 12/31/first year)

@@ -637,9 +637,11 @@ public class Employee implements Serializable{
 										departmentEmployee.setEmployee_id(id);
 										msg = departmentEmployee.doSave();
 								}
-								if(groupEmployee != null){
-										groupEmployee.setEmployee_id(id);
-										msg = groupEmployee.doSave();
+								if(!group_id.equals("")){
+										if(groupEmployee != null){
+												groupEmployee.setEmployee_id(id);
+												msg = groupEmployee.doSave();
+										}
 								}
 						}
 				}

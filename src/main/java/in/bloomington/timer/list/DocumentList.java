@@ -99,7 +99,7 @@ public class DocumentList{
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
-				qq += " order by e.first_name,e.last_name ";
+				qq += " order by e.last_name,e.first_name ";
 				con = Helper.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
