@@ -27,7 +27,7 @@ public class PayrollProcessAction extends TopAction{
 		List<GroupManager> managers = null;
 		String groupsTitle = "Manage Group(s)";
 		String pay_period_id="", group_id="";
-		String workflow_id = ""; 
+		String workflow_id = "", document_id=""; 
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
 				nextPayPeriod = null, payPeriod = null;
 		
@@ -38,6 +38,10 @@ public class PayrollProcessAction extends TopAction{
 		List<Employee> notApprovedEmps = null;
 		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
+		/*
+		 *
+		 url+"payrollProcess.action?action=PayrollOne&document_id=<s:property value='id' />"
+		 */		
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -52,7 +56,24 @@ public class PayrollProcessAction extends TopAction{
 						}	
 				}
 				clearAll();
-				if(action.startsWith("Payroll")){
+				if(action.startsWith("PayrollOne")){
+						if(document_id != null && user != null){
+								TimeAction one =
+										new TimeAction(CommonInc.default_payroll_process_workflow_id,
+																	 document_id,
+																	 user.getId());
+								back = one.doSave();
+								if(!back.equals("")){
+										if(!back.equals("")){
+												addError(back);
+										}
+								}
+								if(!hasErrors()){
+										addMessage("Payroll Process Approved Successfully");
+								}
+						}
+				}
+				else if(action.startsWith("Payroll")){
 						if(document_ids != null){
 								for(String doc_id:document_ids){
 										TimeAction one =
@@ -90,6 +111,10 @@ public class PayrollProcessAction extends TopAction{
 		public void setDocument_ids(String[] vals){
 				if(vals != null)		
 						document_ids = vals;
+		}
+		public void setDocument_id(String val){
+				if(val != null)		
+						document_id = val;
 		}		
 		public String getGroup_id(){
 				if(group_id.equals("")){

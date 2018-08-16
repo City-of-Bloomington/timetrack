@@ -25,7 +25,7 @@ public class ApproveAction extends TopAction{
 		List<Group> groups = null;
 		List<GroupManager> managers = null;
 		String groupsTitle = "Manage Group(s)";
-		String pay_period_id="", group_id="";
+		String pay_period_id="", group_id="", document_id=""; //for one only
 		
 		String workflow_id = ""; 
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
@@ -37,7 +37,10 @@ public class ApproveAction extends TopAction{
 		List<Employee> notApprovedEmps = null;
 		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
-
+		/*
+		 *
+		 url+"approve.action?action=ApproveOne&document_id=<s:property value='id' />"
+		 */
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -52,7 +55,7 @@ public class ApproveAction extends TopAction{
 						}	
 				}
 				clearAll();
-				if(action.startsWith("Approve")){
+				if(action.equals("Approve")){
 						if(document_ids != null){
 								for(String doc_id:document_ids){
 										TimeAction one =
@@ -72,6 +75,23 @@ public class ApproveAction extends TopAction{
 								}
 						}
 				}
+				else if(action.equals("ApproveOne")){
+						if(document_id != null && user != null){
+								TimeAction one =
+										new TimeAction(CommonInc.default_approve_workflow_id,
+																	 document_id,
+																	 user.getId());
+								back = one.doSave();
+								if(!back.equals("")){
+										if(!back.equals("")){
+												addError(back);
+										}
+								}
+								if(!hasErrors()){
+										addMessage("Approved successfully");
+								}
+						}
+				}				
 				return ret;
 		}
 
@@ -90,7 +110,11 @@ public class ApproveAction extends TopAction{
 		public void setDocument_ids(String[] vals){
 				if(vals != null)		
 						document_ids = vals;
-		}		
+		}
+		public void setDocument_id(String val){
+				if(val != null)		
+						document_id = val;
+		}				
 		public String getGroup_id(){
 				if(group_id.equals("")){
 						return "-1";
@@ -197,7 +221,8 @@ public class ApproveAction extends TopAction{
 						}
 				}
 				return nextPayPeriod;
-		}					
+		}
+
 		public boolean hasMoreThanOneGroup(){
 				return isGroupManager() && groups != null && groups.size() > 1;
 		}
