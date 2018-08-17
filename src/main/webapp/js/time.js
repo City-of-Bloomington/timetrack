@@ -760,3 +760,43 @@ $(".tabs a").each(function() {
     $(this).addClass("active");
   }
 })
+
+/**
+ * Timesheet Approve / Process - Individual Approval Button
+ */
+$('.quick-approve').click(function() {
+  var docId           = $(this).attr("data-doc-id");
+  var pageURL         = window.location.pathname;
+
+  var approveHref     = '/timetrack/approve.action';
+  var processHref     = '/timetrack/payrollProcess.action';
+
+  var approveURL      = APPLICATION_URL + 'approve.action?action=ApproveOne&document_id=' + docId;
+  var processURL      = APPLICATION_URL + 'payrollProcess.action?action=PayrollOne&document_id=' + docId;
+
+  if(pageURL == approveHref) {
+    var submitURL  = approveURL;
+  } else if(pageURL == processHref) {
+    var submitURL = processURL;
+  } else {
+    alert("We don't know the URL for this click action.")
+  }
+
+  alert(submitURL);
+
+  var jqxhr = $.post({
+    url: submitURL,
+    data: submitURL
+  })
+  .done(function(data) {
+    alert("post method done");
+    setTimeout(function(){
+      window.location = window.location.href;
+    }, 50);
+  })
+  .fail(function(jqxhr, status, error) {
+    var err = JSON.parse(xhr.responseText);
+    alert(err.error);
+  })
+  .always(function() {});
+});

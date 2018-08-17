@@ -84,7 +84,9 @@
 
 							<s:if test="canBeProcessed()">
 								<small class="status-tag approval-ready">
-									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve Payroll</input></small>
+									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve Payroll</input>
+								</small>
+								<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
 							</s:if>
 
 							<s:elseif test="isApproved()">

@@ -32,11 +32,11 @@
 				<b>Pay Period:&nbsp;</b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
 			</div>
 		</div>
-		
+
 		<!--  we need these as global since they will be used multiple times -->
 		<s:set var="week1DateRange" value="payPeriod.week1DateRange" />
 		<s:set var="week2DateRange" value="payPeriod.week2DateRange" />
-		
+
 		<div class="approve-process-header-lists">
 			<s:if test="hasNonDocEmps()">
 				<div class="emp-no-time-wrapper">
@@ -86,7 +86,9 @@
 							-->
 							<s:if test="canBeApproved()">
 								<small class="status-tag approval-ready">
-									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input></small>
+									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
+								</small>
+								<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
 							</s:if>
 
 							<s:elseif test="isApproved()">

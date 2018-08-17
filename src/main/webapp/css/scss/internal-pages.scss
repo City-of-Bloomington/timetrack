@@ -129,6 +129,19 @@
     padding: 0 0 20px 0;
   }
 
+  button {
+    &.quick-approve {
+      background-color: $fern;
+      color: white;
+      margin: 0 0 0 10px;
+      padding: 0 16px;
+
+      &:hover {
+        background-color: darken($fern, 10%);
+      }
+    }
+  }
+
   .approve-process-header-lists {
     border-bottom: 1px solid $silver-chalice;
     margin: 0 0 20px 0;
