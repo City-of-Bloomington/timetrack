@@ -387,6 +387,9 @@ public class TimeBlock extends Block{
 				return ret;
 		}
 		public boolean hasNextLine(){
+				if(hourCode == null){
+						getHourCode();
+				}
 				return !isHourType() && !isClockInOnly();
 		}
 		
@@ -664,6 +667,94 @@ public class TimeBlock extends Block{
 				}
 		}
 		public String doSave(){
+				if(time_in_changed && !time_out_changed){
+						clock_in = "y";
+						return doSaveForInOnly();
+				}
+				return doSaveForInOut();
+		}
+		private String doSaveForInOnly(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				if(!errors.equals("")){
+						return errors;
+				}
+				if(action_type.equals("")) action_type="Add";
+				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,?,null) ";
+				String qq2 = "select LAST_INSERT_ID()";
+				msg = checkForConflicts();
+				if(!msg.equals("")){
+						System.err.println(" conflict "+msg);
+						return msg;
+				}
+				if(document_id.equals("")){
+						msg = " document not set ";
+						return msg;
+				}
+				if(job_id.equals("")){
+						msg = " job not set ";
+						return msg;
+				}
+				if(hour_code_id.equals("")){
+						msg = " hour code not set ";
+						return msg;
+				}
+				con = Helper.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
+						return msg;
+				}
+				logger.debug(qq);
+				if(date.equals(""))
+						date = Helper.getToday();
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, document_id);
+						pstmt.setString(2, job_id);
+						pstmt.setString(3, hour_code_id);
+						java.util.Date date_tmp = df.parse(date);
+						pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setInt(5, begin_hour);
+						pstmt.setInt(6, begin_minute);
+						pstmt.setInt(7, end_hour);
+						pstmt.setInt(8, end_minute);
+						pstmt.setDouble(9, 0.0);
+						pstmt.setNull(10,Types.INTEGER); // for ovt_pref
+						pstmt.setString(11, "y"); // clock_in
+						pstmt.setNull(12,Types.CHAR); // clock_out
+						pstmt.executeUpdate();
+						pstmt = con.prepareStatement(qq2);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								id = rs.getString(1);
+						}
+						TimeBlockLog tbl = new TimeBlockLog(null,
+																								document_id,
+																								job_id,
+																								hour_code_id,
+																								date,
+																								begin_hour, begin_minute,
+																								end_hour, end_minute,
+																								hours, ovt_pref,
+																								clock_in,clock_out,
+																								id,
+																								action_type,
+																								action_by_id,
+																								null);
+						msg += tbl.doSave();								
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, rs, pstmt);
+				}
+				return msg;
+		}
+		private String doSaveForInOut(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null, pstmt2=null;

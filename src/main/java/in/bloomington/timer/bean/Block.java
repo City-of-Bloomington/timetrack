@@ -311,16 +311,18 @@ public class Block{
 				return jobTask;
 		}
 		public HourCode getHourCode(){
-				if(!hour_code_id.equals("")){
-						HourCode one = new HourCode(hour_code_id);
-						String back = one.doSelect();
-						if(back.equals("")){
-							 hourCode = one;
-							 hourCodeSet = true;
+				if(!hourCodeSet){
+						if(!hour_code_id.equals("")){
+								HourCode one = new HourCode(hour_code_id);
+								String back = one.doSelect();
+								if(back.equals("")){
+										hourCode = one;
+										hourCodeSet = true;
+								}
 						}
-				}
-				else{
-						hourCode = new HourCode();
+						else{
+								hourCode = new HourCode();
+						}
 				}
 				return hourCode;
 		}
