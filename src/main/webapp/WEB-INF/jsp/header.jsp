@@ -29,7 +29,7 @@
 
   <div class="tabs container">
     <s:if test="#session != null && #session.user != null">
-      <a href="<s:property value='#application.url'/>timeDetails.action" class="active">Time Details</a>
+      <a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
 
       <s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.canDataEntry())">
         <a href="<s:property value='#application.url'/>dataEntry.action">Data Entry</a>
