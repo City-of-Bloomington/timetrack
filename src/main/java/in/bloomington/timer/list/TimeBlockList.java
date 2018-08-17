@@ -185,15 +185,15 @@ public class TimeBlockList{
 						"t.end_minute,"+
 						"t.hours,"+
 						
-						"t.ovt_pref,"+
 						"t.clock_in,"+
 						"t.clock_out,"+
 						"t.inactive,"+
 						" datediff(t.date,p.start_date), "+ // order id start at 0
-						
 						" c.name,"+
+						
 						" c.description,"+
 						" cf.nw_code "+
+						
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
@@ -304,10 +304,10 @@ public class TimeBlockList{
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								double hrs = rs.getDouble(10);
-								int order_id = rs.getInt(15);
+								int order_id = rs.getInt(14); // 15
 								int hr_code_id = rs.getInt(4);
-								String hr_code = rs.getString(16);
-								String hr_code_desc = rs.getString(17);
+								String hr_code = rs.getString(15); //16
+								String hr_code_desc = rs.getString(16); // 17
 								String date = rs.getString(5);
 								boolean isHoliday = isHoliday(date);
 								String holidayName = "";
@@ -339,14 +339,13 @@ public class TimeBlockList{
 																			hrs,
 																			rs.getString(11),
 																			rs.getString(12),
-																			rs.getString(13),
 																			isHoliday,
 																			holidayName,
-																			rs.getString(14) != null,
-																			rs.getInt(15),
+																			rs.getString(13) != null,
+																			rs.getInt(14),
 																			hr_code,
-																			rs.getString(17),
-																			rs.getString(18)
+																			rs.getString(16),
+																			rs.getString(17)
 																			);
 										timeBlocks.add(one);
 										addToBlocks(order_id, one);										

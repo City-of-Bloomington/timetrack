@@ -24,7 +24,8 @@ public class Block{
 				document_id="",
 				job_id="",
 				hour_code_id="",
-				ovt_pref="", clock_in="", clock_out="", holidayName="";
+		// ovt_pref="",
+				clock_in="", clock_out="", holidayName="";
 		String date = ""; // the user pick date, needed for PTO, Holiday etc
 		double hours = 0.0;
 		int begin_hour = 0, begin_minute=0, end_hour=0, end_minute=0;
@@ -50,10 +51,9 @@ public class Block{
 								 int val9,
 								 double val10,
 								 String val11,
-								 String val12,
-								 String val13
+								 String val12
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12);
 		}
     public Block(
 								 String val,
@@ -68,11 +68,10 @@ public class Block{
 								 double val10,
 								 String val11,
 								 String val12,
-								 String val13,
-								 boolean val14,
-								 String val15
+								 boolean val13,
+								 String val14
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14);
 		}
 		void setVals(
 								 String val,
@@ -86,8 +85,7 @@ public class Block{
 								 int val9,
 								 double val10,
 								 String val11,
-								 String val12,
-								 String val13
+								 String val12
 							 ){								
 				setId(val);
 				setDocument_id(val2);
@@ -98,10 +96,9 @@ public class Block{
 				setBegin_minute(val7);
 				setEnd_hour(val8);
 				setEnd_minute(val9);				
-				setHours(""+val10);
-				setOvt_pref(val11);
-				setClock_in(val12);
-				setClock_out(val13);
+				setHours(""+val10);// ovt_pref was 11
+				setClock_in(val11);
+				setClock_out(val12);
     }
 		void setVals(
 								 String val,
@@ -116,9 +113,8 @@ public class Block{
 								 double val10,
 								 String val11,
 								 String val12,
-								 String val13,
-								 boolean val14,
-								 String val15
+								 boolean val13,
+								 String val14
 							 ){								
 				setId(val);
 				setDocument_id(val2);
@@ -130,11 +126,10 @@ public class Block{
 				setEnd_hour(val8);
 				setEnd_minute(val9);				
 				setHours(""+val10);
-				setOvt_pref(val11);
-				setClock_in(val12);
-				setClock_out(val13);
-				setIsHoliday(val14);
-				setHolidayName(val15);
+				setClock_in(val11);
+				setClock_out(val12);
+				setIsHoliday(val13);
+				setHolidayName(val14);
     }		
     public Block(String val){
 				setId(val);
@@ -184,10 +179,12 @@ public class Block{
 						return "";
 				}
 				return ""+hours;
-    }		
+    }
+		/*
 		public String getOvt_pref(){
 				return ovt_pref;
     }
+		*/
 		public String getClock_in(){
 				return clock_in;
     }
@@ -266,10 +263,12 @@ public class Block{
 						}
 				}
     }
+		/*
     public void setOvt_pref(String val){
 				if(val != null)
 						ovt_pref = val;
     }
+		*/
     public void setClock_in(String val){
 				if(val != null)
 						clock_in = val;

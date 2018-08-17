@@ -39,14 +39,13 @@ public class TimeBlockLog extends Block{
 							 String val13,
 							 String val14,
 							 String val15,
-							 String val16,
-							 String val17
+							 String val16
 							 ){
-				super(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13);
-				setTime_block_id(val14);
-				setAction_type(val15);
-				setAction_by_id(val16);
-				setAction_time(val17);
+				super(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12);
+				setTime_block_id(val13);
+				setAction_type(val14);
+				setAction_by_id(val15);
+				setAction_time(val16);
 		}
     public TimeBlockLog(String val){
 				super(val);
@@ -113,7 +112,7 @@ public class TimeBlockLog extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,document_id,job_id,hour_code_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,ovt_pref,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%Y %H:%i') from block_time_logs where id =? ";
+				String qq = "select id,document_id,job_id,hour_code_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%Y %H:%i') from block_time_logs where id =? ";
 				logger.debug(qq);
 				try{
 						con = Helper.getConnection();
@@ -134,12 +133,11 @@ public class TimeBlockLog extends Block{
 														rs.getInt(0),
 														rs.getDouble(10),
 														rs.getString(11),
-														rs.getString(12),
-														rs.getString(13));
-										setTime_block_id(rs.getString(14));
-										setAction_type(rs.getString(15));
-										setAction_by_id(rs.getString(16));
-										setAction_time(rs.getString(17));
+														rs.getString(12));
+										setTime_block_id(rs.getString(13));
+										setAction_type(rs.getString(14));
+										setAction_by_id(rs.getString(15));
+										setAction_time(rs.getString(16));
 								}
 						}
 				}
@@ -161,7 +159,7 @@ public class TimeBlockLog extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into time_block_logs values(0,?,?,?,?, ?,?,?,?,? ,?,?,?,?,?,?, now()) ";
+				String qq = "insert into time_block_logs values(0,?,?,?,?, ?,?,?,?,? ,?,?,?,?,?, now()) ";
 				if(document_id.equals("")){
 						msg = " document not set ";
 						return msg;
@@ -189,21 +187,17 @@ public class TimeBlockLog extends Block{
 								pstmt.setInt(7, end_hour);
 								pstmt.setInt(8, end_minute);
 								pstmt.setDouble(9, hours);
-								if(ovt_pref.equals(""))
-										pstmt.setNull(10,Types.INTEGER);
-								else
-										pstmt.setString(10, ovt_pref);
 								if(clock_in.equals(""))
+										pstmt.setNull(10,Types.CHAR);
+								else
+										pstmt.setString(10, "y");
+								if(clock_out.equals(""))
 										pstmt.setNull(11,Types.CHAR);
 								else
-										pstmt.setString(11, "y");
-								if(clock_out.equals(""))
-										pstmt.setNull(12,Types.CHAR);
-								else
-										pstmt.setString(12, "y");								
-								pstmt.setString(13, time_block_id);
-								pstmt.setString(14, action_type);
-								pstmt.setString(15, action_by_id);
+										pstmt.setString(11, "y");								
+								pstmt.setString(12, time_block_id);
+								pstmt.setString(13, action_type);
+								pstmt.setString(14, action_by_id);
 								pstmt.executeUpdate();
 						}
 						qq = "select LAST_INSERT_ID()";

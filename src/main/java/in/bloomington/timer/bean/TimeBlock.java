@@ -52,12 +52,11 @@ public class TimeBlock extends Block{
 										 
 										 String val11,
 										 String val12,
-										 String val13,
-										 boolean val14,
-										 String val15
+										 boolean val13,
+										 String val14
 							 ){
 				super(val, val2, val3, val4, val5, val6, val7, val8, val9, val10,
-							val11, val12, val13, val14, val15);
+							val11, val12, val13, val14);
 		}
     public TimeBlock(
 							 String val,
@@ -72,22 +71,21 @@ public class TimeBlock extends Block{
 							 double val10,
 							 String val11,
 							 String val12,
-							 String val13,
-							 boolean val14,
-							 String val15,
-							 boolean val16,
-							 int val17,
+							 boolean val13,
+							 String val14,
+							 boolean val15,
+							 int val16,
+							 String val17,
 							 String val18,
-							 String val19,
-							 String val20
+							 String val19
 							 ){
 				super(val, val2, val3, val4, val5, val6, val7, val8, val9, val10,
-							val11, val12, val13, val14, val15);
-				setInactive(val16);
-				setOrder_index(val17);
-				setHour_code(val18);
-				setCode_desc(val19);
-				setNw_code(val20);
+							val11, val12, val13, val14);
+				setInactive(val15);
+				setOrder_index(val16);
+				setHour_code(val17);
+				setCode_desc(val18);
+				setNw_code(val19);
 		}
     public TimeBlock(String val){
 				super(val);
@@ -507,7 +505,8 @@ public class TimeBlock extends Block{
 						pstmt.setDouble(jj++, timeIn);
 						pstmt.setDouble(jj++, timeIn);
 						if((clock_in.equals("") && clock_out.equals(""))
-							 || (!clock_in.equals("") && !clock_out.equals(""))){								
+							 || (!clock_in.equals("") && !clock_out.equals(""))){
+								
 								pstmt.setDouble(jj++, timeOut);
 								pstmt.setDouble(jj++, timeOut);
 								
@@ -545,7 +544,7 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select t.id,t.document_id,t.job_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.ovt_pref,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),c.name,c.description,cf.nw_code "+
+				String qq = "select t.id,t.document_id,t.job_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),c.name,c.description,cf.nw_code "+
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
@@ -583,16 +582,15 @@ public class TimeBlock extends Block{
 														hrs,
 														rs.getString(11),
 														rs.getString(12),
-														rs.getString(13),
 														false, // isHoliday
 														null // holiday
 														);
 										
-										setInactive(rs.getString(14) != null);
-										setOrder_index(rs.getInt(15));
-										setHour_code(rs.getString(16));
-										setCode_desc(rs.getString(17));
-										setNw_code(rs.getString(18));
+										setInactive(rs.getString(13) != null);
+										setOrder_index(rs.getInt(14));
+										setHour_code(rs.getString(15));
+										setCode_desc(rs.getString(16));
+										setNw_code(rs.getString(17));
 								}
 						}
 				}
@@ -682,7 +680,7 @@ public class TimeBlock extends Block{
 						return errors;
 				}
 				if(action_type.equals("")) action_type="Add";
-				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,?,null) ";
+				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,null) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				msg = checkForConflicts();
 				if(!msg.equals("")){
@@ -721,9 +719,9 @@ public class TimeBlock extends Block{
 						pstmt.setInt(7, end_hour);
 						pstmt.setInt(8, end_minute);
 						pstmt.setDouble(9, 0.0);
-						pstmt.setNull(10,Types.INTEGER); // for ovt_pref
-						pstmt.setString(11, "y"); // clock_in
-						pstmt.setNull(12,Types.CHAR); // clock_out
+						// pstmt.setNull(10,Types.INTEGER); // for ovt_pref
+						pstmt.setString(10, "y"); // clock_in
+						pstmt.setNull(11,Types.CHAR); // clock_out
 						pstmt.executeUpdate();
 						pstmt = con.prepareStatement(qq2);
 						rs = pstmt.executeQuery();
@@ -737,7 +735,7 @@ public class TimeBlock extends Block{
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
-																								hours, ovt_pref,
+																								hours, 
 																								clock_in,clock_out,
 																								id,
 																								action_type,
@@ -764,7 +762,7 @@ public class TimeBlock extends Block{
 						return errors;
 				}
 				if(action_type.equals("")) action_type="Add";
-				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,?,null) ";
+				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,null) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				checkForOvernight();
 				if((clock_in.equals("") && clock_out.equals(""))
@@ -836,18 +834,14 @@ public class TimeBlock extends Block{
 								pstmt.setInt(7, end_hour);
 								pstmt.setInt(8, end_minute);
 								pstmt.setDouble(9, hours);
-								if(ovt_pref.equals(""))
-										pstmt.setNull(10,Types.INTEGER);
-								else
-										pstmt.setString(10, ovt_pref);
 								if(clock_in.equals(""))
+										pstmt.setNull(10,Types.CHAR);
+								else
+										pstmt.setString(10, "y");
+								if(clock_out.equals(""))
 										pstmt.setNull(11,Types.CHAR);
 								else
-										pstmt.setString(11, "y");
-								if(clock_out.equals(""))
-										pstmt.setNull(12,Types.CHAR);
-								else
-										pstmt.setString(12, "y");								
+										pstmt.setString(11, "y");								
 								pstmt.executeUpdate();
 								pstmt2 = con.prepareStatement(qq2);
 								rs = pstmt2.executeQuery();
@@ -866,7 +860,7 @@ public class TimeBlock extends Block{
 																										date,
 																										begin_hour, begin_minute,
 																										end_hour, end_minute,
-																										hours, ovt_pref,
+																										hours, 
 																										clock_in,clock_out,
 																										id,
 																										action_type,
@@ -932,7 +926,7 @@ public class TimeBlock extends Block{
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
-																								hours, ovt_pref,
+																								hours, 
 																								clock_in,clock_out,
 																								id, action_type,
 																								action_by_id,null);
@@ -988,7 +982,7 @@ public class TimeBlock extends Block{
 				if(!msg.equals("")){
 						return msg;
 				}
-				String qq = "update time_blocks set job_id=?,hour_code_id=?,begin_hour=?,begin_minute=?,end_hour=?,end_minute=?,hours=?,ovt_pref=?,clock_in=?,clock_out=? where id=? ";
+				String qq = "update time_blocks set job_id=?,hour_code_id=?,begin_hour=?,begin_minute=?,end_hour=?,end_minute=?,hours=?,clock_in=?,clock_out=? where id=? ";
 				logger.debug(qq);
 				try{
 						con = Helper.getConnection();
@@ -1001,22 +995,18 @@ public class TimeBlock extends Block{
 								pstmt.setInt(5, end_hour);
 								pstmt.setInt(6, end_minute);
 								pstmt.setDouble(7, hours);
-								if(ovt_pref.equals(""))
-										pstmt.setNull(8,Types.INTEGER);
-								else
-										pstmt.setString(8, ovt_pref);
 								if(clock_in.equals(""))
+										pstmt.setNull(8,Types.CHAR);
+								else
+										pstmt.setString(8, "y");
+								if(clock_out.equals(""))
 										pstmt.setNull(9,Types.CHAR);
 								else
-										pstmt.setString(9, "y");
-								if(clock_out.equals(""))
-										pstmt.setNull(10,Types.CHAR);
-								else
-										pstmt.setString(10, "y");	
+										pstmt.setString(9, "y");	
 								//
 								// we do not change inactive here
 								// doDelete will take care of it
-								pstmt.setString(11, id);
+								pstmt.setString(10, id);
 								pstmt.executeUpdate();
 						}
 				}
@@ -1033,7 +1023,7 @@ public class TimeBlock extends Block{
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
-																								hours, ovt_pref,
+																								hours, 
 																								clock_in,clock_out,
 																								id, action_type,
 																								action_by_id,null);
@@ -1077,7 +1067,7 @@ public class TimeBlock extends Block{
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
-																								hours, ovt_pref,
+																								hours, 
 																								clock_in,clock_out,
 																								id, action_type,
 																								action_by_id,null);
