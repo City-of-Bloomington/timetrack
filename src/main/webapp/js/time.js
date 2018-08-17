@@ -754,9 +754,10 @@ $('#approve_select_all').click(function() {
 /**
  * Add active class to navigation tabs
  */
-var FULL_URL = window.location.href;
-$(".tabs a").each(function() {
-  if (this.href == FULL_URL) {
+var locPath        = window.location.pathname;
+var navItems       = $(".tabs a");
+navItems.each(function(index, element) {
+  if (this.pathname == locPath) {
     $(this).addClass("active");
   }
 })
