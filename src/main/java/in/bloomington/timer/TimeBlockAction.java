@@ -47,11 +47,10 @@ public class TimeBlockAction extends TopAction{
 						back = timeBlock.doSave();
 						if(!back.equals("")){
 								addError(back);
-								addActionError(back);
+								return "json";
 						}
 						else{
 								addMessage("Added Successfully");
-								addActionMessage("Added Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
@@ -59,11 +58,10 @@ public class TimeBlockAction extends TopAction{
 						back = timeBlock.doUpdate();
 						if(!back.equals("")){
 								addError(back);								
-								addActionError(back);
+								return "json";
 						}
 						else{
 								addMessage("Updated Successfully");								
-								addActionMessage("Updated Successfully");
 						}
 				}
 				else if(action.equals("Delete")){

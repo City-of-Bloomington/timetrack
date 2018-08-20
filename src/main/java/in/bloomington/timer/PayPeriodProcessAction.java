@@ -53,10 +53,9 @@ public class PayPeriodProcessAction extends TopAction{
 						}	
 				}
 				clearAll();
-				if(!action.equals("")){
+				if(!action.equals("") && !department_id.equals("")){
 						back = doProcess();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{

@@ -371,6 +371,7 @@
 			<result name="input">/WEB-INF/jsp/timeBlock.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timeBlock.jsp</result>
 			<result name="success">/WEB-INF/jsp/timeBlock.jsp</result>
+			<result name="json">/WEB-INF/jsp/timeblockJson.jsp</result>			
 		</action>				
 		<action name="hourcode" 
 						class="in.bloomington.timer.HourCodeAction" 

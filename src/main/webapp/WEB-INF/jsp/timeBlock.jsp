@@ -109,7 +109,7 @@
 			<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}" tabindex="7" />
 		</div>
 
-		<!-- <div class="button-group">
+		<!-- <div class="button-group">		
 			<s:if test="timeBlock.id == ''">
 				<s:submit name="action" type="submit" value="Save" class="button" id="time-block-submit" tabindex="8" />
 			</s:if>
