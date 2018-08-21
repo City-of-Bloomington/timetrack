@@ -558,7 +558,7 @@ public class Employee implements Serializable{
 						qq += " e.id_code = ? ";		
 				}
 				else{
-						msg = "Employee info can not be found as no employee id is not set";
+						msg = "Employee info can not be found as no employee id is set";
 						return msg;
 				}
 				logger.debug(qq);
@@ -723,6 +723,20 @@ public class Employee implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(con, pstmt, rs);
+				}
+				return msg;
+		}
+		public String doUpdateDeptGroupInfo(){
+				String msg="";
+				if(departmentEmployee != null){
+						departmentEmployee.setEmployee_id(id);
+						msg = departmentEmployee.doSave();
+				}
+				if(!group_id.equals("")){
+						if(groupEmployee != null){
+								groupEmployee.setEmployee_id(id);
+								msg = groupEmployee.doSave();
+						}
 				}
 				return msg;
 		}

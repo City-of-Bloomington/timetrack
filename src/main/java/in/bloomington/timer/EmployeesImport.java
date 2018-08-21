@@ -127,6 +127,7 @@ public class EmployeesImport{
 						//
 						String str="", str2="", str3="";						
 						for (CSVRecord record : records) {
+								boolean emp_exist = false;
 								str = record.get(0);
 								if(str != null && str.equals("Department")){
 										str = record.get(1);
@@ -201,18 +202,24 @@ public class EmployeesImport{
 												str = record.get(3); // username
 												if(str != null && !str.equals("")){
 														emp.setUsername(str);
-														EmpList empl = new EmpList(bean, str, true);
-														str = empl.simpleFind();
-														if(!str.equals("")){
-																errors += str;
+														str = emp.doSelect();
+														if(!str.equals("")){ // not exist
+																EmpList empl = new EmpList(bean, str, true);
+																str = empl.simpleFind();
+																if(!str.equals("")){
+																		errors += str;
+																}
+																else{
+																		List<Employee> ldapEmps = empl.getEmps();
+																		if(ldapEmps != null && ldapEmps.size() > 0){
+																				Employee ldapEmp = ldapEmps.get(0);
+																				// emp.setEmployee_number(ldapEmp.getEmployee_number());
+																				emp.setId_code(ldapEmp.getId_code());
+																		}
+																}
 														}
 														else{
-																List<Employee> ldapEmps = empl.getEmps();
-																if(ldapEmps != null && ldapEmps.size() > 0){
-																		Employee ldapEmp = ldapEmps.get(0);
-																		// emp.setEmployee_number(ldapEmp.getEmployee_number());
-																		emp.setId_code(ldapEmp.getId_code());
-																}
+																emp_exist = true;
 														}
 												}
 												str = record.get(4); // dept
@@ -248,8 +255,9 @@ public class EmployeesImport{
 																}
 														}
 												}
-												str = record.get(6);
+												str = record.get(6); // salary group
 												if(str != null && !str.equals("")){
+														if(str.equals("Temporary")) str = "Temp";
 														if(salaryGrps.containsKey(str)){
 																salary_grp_id = salaryGrps.get(str);
 																if(str.startsWith("Exempt")){
@@ -292,7 +300,12 @@ public class EmployeesImport{
 														}
 												}
 												if(errors.equals("")){
-														str = emp.doSave();
+														if(emp_exist){
+																str = emp.doUpdateDeptGroupInfo();
+														}
+														else{
+																str = emp.doSave();
+														}
 														if(str.equals("")){
 																emps.put(emp.getUsername(), emp.getId());
 														}
