@@ -306,19 +306,16 @@ $(".delete-time-confirm").on("keyup click", function(e) {
           })
           .done(function(data) {
             setTimeout(function(){
-              // location.reload();
               window.location = window.location;
-              // this.location.reload();
             }, 5);
           })
-          .fail(function(jqxhr, status, error) {
-            var err = JSON.parse(xhr.responseText);
-            alert(err.error);
+          .fail(function(jqXHR, status, textStatus, error, responseText) {
+            var resText = JSON.parse(jqXHR.responseText);
+            $.each( resText, function( i, val ) {
+              $(".alert p").addClass('show').html(val);
+            });
           })
-          .always(function() {
-            // alert( "finished" );
-          });
-
+          .always(function() {});
         },
         Cancel: function() {
           // On cancel button click, destroy the Dialog Modal
@@ -361,6 +358,7 @@ $(".data").on("keyup click", function(e) {
     // Selectors
     var block_id        = $(this).attr('data-block-id');
     var timeBlockDate   = $(this).attr('data-date');
+    var alertElm        = $('.time-block .alert');
     var editURL         = APPLICATION_URL + 'timeBlock?id=' + block_id;
     var queryString     = $(".time-block-form").serialize();
 
@@ -391,14 +389,13 @@ $(".data").on("keyup click", function(e) {
         .done(function(data) {
           $('.modal.add-edit').html(data);
         })
-        .fail(function(jqxhr, status, error) {
-          var err = JSON.parse(xhr.responseText);
-          alert(err.error);
+        .fail(function(jqXHR, status, textStatus, error, responseText) {
+          var resText = JSON.parse(jqXHR.responseText);
+          $.each( resText, function( i, val ) {
+            alertElm.addClass('show').children( "p" ).html(val);
+          });
         })
-        .always(function() {
-          // alert( "finished" );
-        });
-
+        .always(function() {});
 
         // Focus Input Helper
         setTimeout(function(){
@@ -435,8 +432,8 @@ $(".data").on("keyup click", function(e) {
           var timeInElm       = $('[name="timeBlock.time_in"]');
           var timeOutElm      = $('[name="timeBlock.time_out"]');
           var hoursElm        = $('[name="timeBlock.hours"]');
-          var alertElmP       = $('.alert').addClass('active').find('p');
-          var alertElm        = $('.alert');
+          var alertElmP       = $('.time-block .alert').addClass('active').find('p');
+          var alertElm        = $('.time-block .alert');
           var timeIn          = $('[name="timeBlock.time_in"]').val();
           var timeOut         = $('[name="timeBlock.time_out"]').val();
           var hours           = $('[name="timeBlock.hours"]').val();
@@ -445,26 +442,25 @@ $(".data").on("keyup click", function(e) {
           var timeOutError    = hourCodeIdVal === '1_Time' && ['', 0.0].indexOf(timeOut) != -1;
           var hoursError      = hourCodeIdVal != '1_Time' && ['', '0.0' , 0.0].indexOf(hours) != -1;
 
-          // Remove any alert
-          alertElm.remove();
           // Post the Edited Calendar Time Block
           var jqxhr = $.post({
             url: submitURL,
             data: formData,
           })
           .done(function(data) {
+            alertElm.remove();
+            alertElm.addClass('hide');
             setTimeout(function(){
               window.location = window.location;
             }, 5);
           })
-          .fail(function(jqxhr, xhrGet, status, error) {
-            var err = JSON.parse(xhr.responseText);
-            alert(err.error);
-            $(".alert p").html(jqXHR.responseText);
+          .fail(function(jqXHR, status, textStatus, error, responseText) {
+            var resText = JSON.parse(jqXHR.responseText);
+            $.each( resText, function( i, val ) {
+              alertElm.addClass('show').children( "p" ).html(val);
+            });
           })
-          .always(function() {
-            // alert( "finished" );
-          });
+          .always(function() { });
         },
         Cancel: function() {
           // On cancel button click, destroy the Dialog Modal
@@ -496,6 +492,7 @@ $(".day").on("keyup click", function(e) {
     var docId               = $(this).attr('data-doc-id');
     var timeBlockDate       = $(this).attr('data-date');
     var timeBlockOrderIndex = $(this).attr('data-order-index');
+    var alertElm            = $('.time-block .alert');
     var addURL              = APPLICATION_URL + 'timeBlock?document_id=' + docId + '&date=' + timeBlockDate + '&order_index=' + timeBlockOrderIndex;
     var queryString         = $(".time-block-form").serialize();
 
@@ -523,17 +520,17 @@ $(".day").on("keyup click", function(e) {
           data : queryString
         })
         .done(function(data) {
+          alertElm.remove();
+          alertElm.addClass('hide');
           $('.modal.add-edit').html(data);
-          // alert(data);
         })
-        .fail(function(jqxhr, status, error) {
-          var err = JSON.parse(xhr.responseText);
-          alert(err.error);
-          $(".alert p").html(jqXHR.responseText);
+        .fail(function(jqXHR, status, textStatus, error, responseText) {
+          var resText = JSON.parse(jqXHR.responseText);
+          $.each( resText, function( i, val ) {
+            alertElm.addClass('show').children( "p" ).html(val);
+          });
         })
-        .always(function() {
-          // alert( "finished" );
-        });
+        .always(function() {});
 
         // Focus Input Helper
         setTimeout(function(){
@@ -570,8 +567,8 @@ $(".day").on("keyup click", function(e) {
           var timeInElm       = $('[name="timeBlock.time_in"]');
           var timeOutElm      = $('[name="timeBlock.time_out"]');
           var hoursElm        = $('[name="timeBlock.hours"]');
-          var alertElmP       = $('.alert').addClass('active').find('p');
-          var alertElm        = $('.alert');
+          var alertElmP       = $('.time-block .alert').addClass('active').find('p');
+          var alertElm        = $('.time-block .alert');
           var timeIn          = $('[name="timeBlock.time_in"]').val();
           var timeOut         = $('[name="timeBlock.time_out"]').val();
           var hours           = $('[name="timeBlock.hours"]').val();
@@ -582,27 +579,26 @@ $(".day").on("keyup click", function(e) {
 
 
           e.preventDefault();
-          // Remove any alert
-          alertElm.remove();
+          alertElm.addClass('hide');
           // Post the Added Calendar Time Block
           var jqxhr = $.post({
             url: submitURL,
             data: formData
           })
-          .done(function(data) {
+          .done(function(jqxhr, status, data) {
+            alertElm.remove();
+            alertElm.addClass('hide');
             setTimeout(function(){
               window.location = window.location;
             }, 5);
           })
-          .fail(function(jqxhr, status, textStatus, error) {
-            var err = JSON.parse(xhr.responseText);
-            alert(err.error);
-            alert( "Request failed: " + textStatus );
-            $(".alert p").html(jqXHR.responseText);
+          .fail(function(jqXHR, status, textStatus, error, responseText) {
+            var resText = JSON.parse(jqXHR.responseText);
+            $.each( resText, function( i, val ) {
+              alertElm.addClass('show').children( "p" ).html(val);
+            });
           })
-          .always(function() {
-            // alert( "finished" );
-          });
+          .always(function() {});
         },
         Cancel: function() {
           // On cancel button click, destroy the Dialog Modal
@@ -670,7 +666,7 @@ $(".pay-notes").click(function() {
         url  : addURL,
         data : queryString
       })
-      .done(function(data) {
+      .done(function(data, staus) {
         $('.modal.pay-notes').html(data);
       })
       .fail(function(jqxhr, status, error) {
