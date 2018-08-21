@@ -35,11 +35,7 @@
 			<small><s:property value="timeBlock.date" /></small>
 		</h1>
 
-		<s:if test="!hasErrors()">
-			<div class="alert">
-				<s:hidden name="errors" value="<s:property value='errorsAll' />" id="id_errors "/>
-			</div>
-		</s:if>
+		<div class="alert"><p></p></div>
 
 		<s:if test="hasMoreThanOneJob()">
 			<div class="form-group">
@@ -109,7 +105,7 @@
 			<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}" tabindex="7" />
 		</div>
 
-		<!-- <div class="button-group">		
+		<!-- <div class="button-group">
 			<s:if test="timeBlock.id == ''">
 				<s:submit name="action" type="submit" value="Save" class="button" id="time-block-submit" tabindex="8" />
 			</s:if>
