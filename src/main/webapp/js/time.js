@@ -263,6 +263,7 @@ function verifyCancel() {
 
 function outsideClickCloseModal(dialogType) {
   $('.ui-widget-overlay').bind('click', function() {
+    $('.modal').empty();
     dialogType.dialog("destroy");
   });
 }
@@ -468,7 +469,7 @@ $(".data").on("keyup click", function(e) {
           $(this).empty();
         }
       },
-      Close : function() {
+      close: function() {
         $('.modal.add-edit').empty();
       }
     });
@@ -606,7 +607,7 @@ $(".day").on("keyup click", function(e) {
           $(this).empty();
         }
       },
-      Close : function() {
+      close: function(event, ui) {
         $('.modal.add-edit').empty();
       }
     });
