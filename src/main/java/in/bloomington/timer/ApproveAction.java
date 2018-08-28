@@ -307,7 +307,7 @@ public class ApproveAction extends TopAction{
 						}
 						if(pay_period_id.equals("")){
 								getPay_period_id(); // current
-						}				
+						}
 						empl.setNoDocumentForPayPeriodId(pay_period_id);
 						empl.setActiveOnly();
 						String back = empl.find();
@@ -352,7 +352,7 @@ public class ApproveAction extends TopAction{
 										}
 										else{
 												Employee emp = one.getEmployee();
-												if(nonDocEmps != null && nonDocEmps.contains(emp)){
+												if(nonDocEmps == null || !nonDocEmps.contains(emp)){
 														continue;
 												}
 												else{
@@ -370,7 +370,12 @@ public class ApproveAction extends TopAction{
 		}
 }
 
+/*
 
+select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.role,e.inactive from employees e join group_employees ge on ge.employee_id=e.id   where  ge.group_id in (2,3,4,1)  and  e.id not in (select td.employee_id from time_documents td where td.pay_period_id = 538) and  e.inactive is null order by e.last_name,e.first_name
+
+
+ */
 
 
 

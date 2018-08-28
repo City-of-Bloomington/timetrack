@@ -5,7 +5,7 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
-<s:if test="!hasActionErrors()">
+<s:if test="!hasErrors()">
 	<%@ include file="calendarTopDetails.jsp" %>
 	<%@ include file="strutMessages.jsp" %>
 	<s:if test="document.isProcessed()">

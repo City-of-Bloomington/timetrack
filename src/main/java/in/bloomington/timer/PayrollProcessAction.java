@@ -343,7 +343,7 @@ public class PayrollProcessAction extends TopAction{
 										}
 										else{
 												Employee emp = one.getEmployee();
-												if(nonDocEmps != null && nonDocEmps.contains(emp)){
+												if(nonDocEmps == null || !nonDocEmps.contains(emp)){
 														continue;
 												}
 												else{
