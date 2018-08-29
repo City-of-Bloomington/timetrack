@@ -457,35 +457,57 @@ public class TimeBlock extends Block{
 				String msg = "";
 				double timeIn = begin_hour+begin_minute/60.;
 				double timeOut = end_hour+end_minute/60.;				
-				String qq = " select count(*) from time_blocks t "+
-						" where t.document_id=? and t.date = ? and t.inactive is null ";
-				
+				String qq = " select count(*) as tt from time_blocks t "+
+						" where t.document_id=? and t.date = ? and "+
+						"t.inactive is null and "+
+						" ((t.clock_in is null and t.clock_out is null) or "+
+						" (t.clock_in is not null and t.clock_out is not null)) ";
+				if(!id.equals("")){
+						qq += " and t.id <> ? "; // 5
+				}								
+				//
+				// looking for clock-in withoud clock-out being inbetween
+				// exist clock-in between the two times
+				String qq2 = " select count(*) as tt from time_blocks t "+
+						" where t.document_id=? and t.date = ? and "+
+						"t.inactive is null and "+
+						" t.clock_in is not null and t.clock_out is null ";
+				if(!id.equals("")){
+						qq2 += " and t.id <> ? ";
+				}								
+				qq2 += " and ? <= t.begin_hour+t.begin_minute/60. "+ 
+						" and ? >= t.begin_hour+t.begin_minute/60. ";
+
 				if((clock_in.equals("") && clock_out.equals(""))
 					 || (!clock_in.equals("") && !clock_out.equals(""))){				
 						qq +=" and (((? > t.begin_hour+t.begin_minute/60. "+ // start in between
-								" and ? < t.end_hour+t.end_minute/60.) or "+
+								" and ? < t.end_hour+t.end_minute/60. "+
+								" ) or "+
 								" (? > t.begin_hour+t.begin_minute/60. "+ // end in between
-								" and ? < t.end_hour+t.end_minute/60.) or ";
+								" and ? < t.end_hour+t.end_minute/60. "+
+								" ) or ";
 								//
 						qq +=" (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
-								" and ? <= t.end_hour+t.end_minute/60.)) or ";
-						
+								" and ? <= t.end_hour+t.end_minute/60. "+
+								" )) or ";
 						// start and end in between
-						qq +=" ((? <= t.begin_hour+t.begin_minute/60. "+ 
-								" and ? >= t.end_hour+t.end_minute/60.))) ";
+						qq +=" (? <= t.begin_hour+t.begin_minute/60. "+ 
+								" and ? >= t.end_hour+t.end_minute/60.)) ";
+						//
+						// for updates we would have an id to exclude
+						//
 						
 						if(timeOut < timeIn){
 								msg = "Time IN is greater than time OUT";
 								return msg;
-						}						
+						}
+						qq = " select sum(tt) from ("+qq+" union all "+qq2+") t2";
+						
 				}
 				else if(!clock_in.equals("")){				
 						qq +=" and (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
 								" and ? <= t.end_hour+t.end_minute/60.) ";
-				}
-				// for updates we would have an id to exclude
-				if(!id.equals("")){
-						qq += " and t.id <> ? ";
+						
 				}
 				logger.debug(qq);
 				con = Helper.getConnection();				
@@ -496,29 +518,39 @@ public class TimeBlock extends Block{
 				try{
 						int jj=1;
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(jj++, document_id);
+						pstmt.setString(jj++, document_id); // 1
 						if(date.equals(""))
 								date = Helper.getToday();
 						java.util.Date date_tmp = df.parse(date);
-						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); // 2
 						//
-						pstmt.setDouble(jj++, timeIn);
-						pstmt.setDouble(jj++, timeIn);
+						if(!id.equals("")){
+								pstmt.setString(jj++, id); // 3
+						}														
+						pstmt.setDouble(jj++, timeIn); // time in between
+						pstmt.setDouble(jj++, timeIn); // 5
 						if((clock_in.equals("") && clock_out.equals(""))
 							 || (!clock_in.equals("") && !clock_out.equals(""))){
 								
-								pstmt.setDouble(jj++, timeOut);
+								pstmt.setDouble(jj++, timeOut); //6 time out between
 								pstmt.setDouble(jj++, timeOut);
 								
 								pstmt.setDouble(jj++, timeIn);
-								pstmt.setDouble(jj++, timeOut);
+								pstmt.setDouble(jj++, timeOut); // 9
 								//
 								// between start and end between two
 								pstmt.setDouble(jj++, timeIn);
-								pstmt.setDouble(jj++, timeOut);								
-						}
-						if(!id.equals("")){
-								pstmt.setString(jj++, id);
+								pstmt.setDouble(jj++, timeOut); // 11
+
+								//
+								// for qq2
+								pstmt.setString(jj++, document_id); // 12
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); //13
+								if(!id.equals("")){
+										pstmt.setString(jj++, id); //14
+								}
+								pstmt.setDouble(jj++, timeIn); //15
+								pstmt.setDouble(jj++, timeOut);//16
 						}
 						rs = pstmt.executeQuery();
 						if(rs.next()){

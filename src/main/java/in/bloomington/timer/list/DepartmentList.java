@@ -54,6 +54,25 @@ public class DepartmentList{
 				depts.put("Fleet Maintenance","38");
 				depts.put("Fleet","38");		
 				depts.put("Parks","39");
+				//
+				Sanitation    37
+					Street    40
+					Utilities/Accounting    42
+					Utilities/Billings & Collections    43
+					Utilities/Blucher Poole WWTP    44
+					Utilities/Communications    46
+					Utilities/Customer Relations    47
+					Utilities/Department of the Director    48
+					Utilities/Dillman Road WWTP    49
+					Utilities/Engineering    50
+					Utilities/Laboratory    53
+					Utilities/Meters    55
+					Utilities/Monroe Water Treatment Plant    56
+					Utilities/Purchasing    57
+					Utilities/Stormwater    58
+					Utilities/Transmission & Distribution    59
+					Utilities/Utility Service Board    60
+				
 		*/
 		List<Department> departments = null;
 		

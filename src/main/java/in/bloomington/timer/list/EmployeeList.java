@@ -219,8 +219,8 @@ public class EmployeeList extends CommonInc{
 								}
 						}
 						if(!dept_ref_id.equals("")){
-								qq += " join department_employees de on de.employee_id=e.id  ";
-								qq += " join departments dd on de.department_id=dd.id ";
+								qq += " join department_employees de on de.employee_id=e.id ";
+								qq += " join departments dd on de.department_id=dd.id or de.department2_id=dd.id ";
 								if(!qw.equals("")) qw += " and ";
 								qw += " dd.ref_id in (?) ";
 						}

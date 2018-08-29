@@ -40,6 +40,9 @@ public class Login extends HttpServlet{
 						principal = (AttributePrincipal) req.getUserPrincipal();
 						username = principal.getName();
 				}
+				String host_forward = req.getHeader("X-Forwarded-Host");
+				String host = req.getHeader("host");	
+				
 				Enumeration<String> values = req.getParameterNames();
 				while (values.hasMoreElements()) {
 						name = values.nextElement().trim();
@@ -53,7 +56,20 @@ public class Login extends HttpServlet{
 				}
 				res.setContentType("text/html");
 				PrintWriter out = res.getWriter();
-				if(url.equals("")){
+				if(host_forward != null){
+						// System.err.println(" login host forward "+host_forward);
+						url = host_forward+"/timetrack/";
+				}
+				else if(host != null){
+						// System.err.println(" login host "+host);
+						if(host.indexOf("timetrack") > -1){
+								url = host;
+						}
+						else{
+								url = host+"/timetrack/";
+						}
+				}
+				else{
 						url  = getServletContext().getInitParameter("url");
 				}
 				HttpSession session = null;
