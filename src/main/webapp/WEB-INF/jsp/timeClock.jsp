@@ -32,12 +32,6 @@
 			</div>
 
 			<s:if test="action == ''">
-				<script>
-					// hack window refresh for updated time value
-					setInterval(function() {
-					  window.location.reload();
-					}, 6000); // 60 seconds || every minute for new minute update
-				</script>
 				<div id="current-time"></div>
 			</s:if>
 
@@ -52,7 +46,6 @@
 
 					<h2>Current Log:</h2>
 					<h3>
-						<!-- this displays AM value if logged time is PM -->
 						- <s:property value="timeClock.timeBlock.timeInfo" />
 						<s:if test="timeClock.timeBlock.hasNextLine()">
 							-- <s:property value="timeClock.timeBlock.timeInfoNextLine" /><br>
@@ -97,31 +90,33 @@
 
 <%@ include file="footer.jsp" %>
 <script type="text/javascript">
-	function displayTime() {
-		var displayTime = document.getElementById('time_clock_id2').value;
+	function timeUpdate() {
+		$.post('timeClock.action', {data: { serverTime: $("#time_clock_id2").val() }}, function(data){
+			var displayTime = $(data).find('#time_clock_id2').val();
+			displayTime = displayTime.split(':');
 
-		displayTime = displayTime.split(':');
+			var displayHours = Number(displayTime[0]);
+			var displayMinutes = Number(displayTime[1]);
 
-		var displayHours = Number(displayTime[0]);
-		var displayMinutes = Number(displayTime[1]);
+			var displayTimeValue;
 
-		var displayTimeValue;
+			if (displayHours > 0 && displayHours <= 12) {
+			  displayTimeValue = "" + displayHours;
+			} else if (displayHours > 12) {
+			  displayTimeValue = "" + (displayHours - 12);
+			} else if (displayHours == 0) {
+			  displayTimeValue = "12";
+			}
 
-		if (displayHours > 0 && displayHours <= 12) {
-		  displayTimeValue = "" + displayHours;
-		} else if (displayHours > 12) {
-		  displayTimeValue = "" + (displayHours - 12);
-		} else if (displayHours == 0) {
-		  displayTimeValue = "12";
-		}
+			displayTimeValue += (displayMinutes < 10) ? ":0" + displayMinutes : ":" + displayMinutes;
+			displayTimeValue += (displayHours >= 12) ? " <span class='pm'>PM</span>" : " <span class='am'>AM</span>";
 
-		displayTimeValue += (displayMinutes < 10) ? ":0" + displayMinutes : ":" + displayMinutes;
-		displayTimeValue += (displayHours >= 12) ? " <span class='pm'>PM</span>" : " <span class='am'>AM</span>";
-
-		var paintTime = document.getElementById("current-time");
-		paintTime.innerHTML = displayTimeValue;
+			var paintTime = document.getElementById("current-time");
+			paintTime.innerHTML = displayTimeValue;
+		});
 	}
-	displayTime();
+	setInterval(function() { timeUpdate(); }, 10000);
+	timeUpdate();
 
 	var headingMetaElm = document.getElementById('meta');
 	var dayMoment = moment().format('dddd');
