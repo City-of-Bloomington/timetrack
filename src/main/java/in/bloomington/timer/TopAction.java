@@ -36,14 +36,6 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		String action="", id="", employee_id="";
 		List<String> errors = new ArrayList<>(),
 				messages = new ArrayList<>();
-		/**
-define('BASE_URI' , '/timetrack');
-define('BASE_HOST', isset($_SERVER['HTTP_X_FORWARDED_HOST'])
-                        ? $_SERVER['HTTP_X_FORWARDED_HOST']
-                        : $_SERVER['SERVER_NAME']);
-define('BASE_URL' , "$_SERVER[REQUEST_SCHEME]://".BASE_HOST.BASE_URI);
-
-		 */
 		Employee user = null;
 		Employee employee = null;
 	  ServletContext ctx;
@@ -222,20 +214,8 @@ define('BASE_URL' , "$_SERVER[REQUEST_SCHEME]://".BASE_HOST.BASE_URI);
 				HttpServletRequest request = ServletActionContext.getRequest();				
 				String host_forward = request.getHeader("X-Forwarded-Host");
 				String host = request.getHeader("host");				
-				StringBuffer r_url = request.getRequestURL();	// https://outlaw.b.. /timeClock.action		
-				// String path = request.getPathTranslated();
-				// String server_name = request.geServerName();
-				// System.err.println(" server_name "+server_name);
+				// StringBuffer r_url = request.getRequestURL();	// https://outlaw.b.. /timeClock.action		
 				String servlet_path = request.getServletPath();
-				/*
-				Enumeration vals = request.getHeaderNames();
-				while(vals.hasMoreElements()){
-						String param = (String)vals.nextElement();
-						// String val = (String) vals.get(param);
-						System.err.println(" param "+param);
-				}
-				*/
-				// System.err.println("uri "+uri+", url "+r_url); //
 				if(host_forward != null){
 						// System.err.println(" host forward "+host_forward);
 						url = host_forward+"/timetrack/";
@@ -249,13 +229,6 @@ define('BASE_URL' , "$_SERVER[REQUEST_SCHEME]://".BASE_HOST.BASE_URI);
 								url = host+"/timetrack/";
 						}
 				}
-				/**
-				else if(r_url != null && servlet_path != null){
-						url = r_url.substring(0, r_url.indexOf(servlet_path))+"/";
-				}
-				*/
-				// host will something like https://outlaw.bloomington.in.gov/timetrack
-				System.err.println(" url "+url);
 		}
 		
 }

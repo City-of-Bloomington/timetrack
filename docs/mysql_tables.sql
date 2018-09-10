@@ -529,6 +529,24 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;; the user need to create quartz tables, get them from
 ;; quartz website
 ;;
+;; changes to utilities departments
+;; change name from Utilities Finance ==> Utilities
+;;
+;; change groups that belong to department 35,37 ==> 36
+;;
+update department_employees set department_id=36 where department_id in (35,37);
+;; we have 21 employees
+;;
+;;
+select * from groups where department_id in (35,37);
+;;  7 groups
+;;
+update groups set department_id=36 where department_id in (35,37);
+;;
+;; delete the two departments
+delete from departments where id in (35,37);
+;;
+delete from group_managers where id=77;
 
 
 

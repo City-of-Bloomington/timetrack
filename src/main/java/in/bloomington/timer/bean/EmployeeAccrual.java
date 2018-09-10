@@ -49,9 +49,10 @@ public class EmployeeAccrual extends CommonInc{
 													 double val5,
 													 String val6,
 													 String val7,
-													 int val8,
-													 String val9){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
+													 String val8,
+													 int val9,
+													 String val10){
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10);
     }
     void setVals(String val,
 								 String val2,
@@ -60,8 +61,9 @@ public class EmployeeAccrual extends CommonInc{
 								 double val5,
 								 String val6,
 								 String val7,
-								 int val8,
-								 String val9
+								 String val8,
+								 int val9,
+								 String val10
 								 ){
 				setId(val);
 				setAccrual_id(val2);
@@ -70,10 +72,10 @@ public class EmployeeAccrual extends CommonInc{
 				setHours(val5);
 				setDate(val6);
 				if(val7 != null){
-						accrual = new Accrual(accrual_id, val7, val8);
+						accrual = new Accrual(accrual_id, val7, val8, val9);
 				}
-				if(val9 != null){
-						hourCode = new HourCode(related_hour_code_id, val9);
+				if(val10 != null){
+						hourCode = new HourCode(related_hour_code_id, val10);
 				}
     }		
 		public String getId(){
@@ -149,7 +151,7 @@ public class EmployeeAccrual extends CommonInc{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id where a.id=?";
+				String qq = "select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.description,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id where a.id=?";
 				if(id.equals("")){
 						msg = "accrual id is not set";
 						return msg;
@@ -172,8 +174,9 @@ public class EmployeeAccrual extends CommonInc{
 														rs.getDouble(5),
 														rs.getString(6),
 														rs.getString(7),
-														rs.getInt(8),
-														rs.getString(9));
+														rs.getString(8),
+														rs.getInt(9),
+														rs.getString(10));
 								}
 								else{
 										msg = "Accrual not found";

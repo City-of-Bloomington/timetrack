@@ -373,8 +373,8 @@ public class TimeBlockList{
 				return msg;
 		}
 		/**
-			 select t.hour_code_id, sum(t.hours)                                             from time_blocks t,time_documents d                                             where t.document_id=d.id and t.inactive is null and                             t.date >= '2017-08-01' and d.employee_id=1                                      and t.date <= (select end_date from pay_periods p,time_documents d              where p.id=d.pay_period_id and d.id=30) and t.hour_code_id in                   (select id from hour_codes where accrual_id is not null)                        group by t.hour_code_id;
-
+			 select t.hour_code_id, sum(t.hours)                                             from time_blocks t,time_documents d                                             where t.document_id=d.id and t.inactive is null and                             t.date >= '2018-08-27' and d.employee_id=10                                      and t.date <= (select end_date from pay_periods p,time_documents d              where p.id=d.pay_period_id and d.id=310) and t.hour_code_id in                   (select id from hour_codes where accrual_id is not null)                        group by t.hour_code_id;
+ 
 		 */
 		public String findUsedAccruals(){
 
@@ -419,7 +419,6 @@ public class TimeBlockList{
 						while(rs.next()){
 								int code_id = rs.getInt(1);
 								double hrs = rs.getDouble(2);
-								// System.err.println(" code "+code_id+":"+hrs);
 								usedAccrualTotals.put(code_id, hrs);
 						}
 				}

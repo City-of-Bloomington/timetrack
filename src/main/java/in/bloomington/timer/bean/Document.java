@@ -41,7 +41,7 @@ public class Document{
 		List<String> warnings = new ArrayList<>();
 		JobTask jobTask = null;
 		SalaryGroup salaryGroup = null;
-		Map<String, List<Double>> allAccruals = new TreeMap<>();
+		Map<String, List<String>> allAccruals = new TreeMap<>();
 		Map<Integer, Double> hourCodeTotals = null;
 		Map<Integer, Double> usedAccrualTotals = null;
 		Map<String, Double> hourCodeWeek1 = null;
@@ -387,6 +387,13 @@ public class Document{
 				}
 				return jobTask;
 		}
+		public JobTask getJob(){
+				return getJobTask();
+		}
+		public boolean hasJob(){
+				getJobTask();
+				return jobTask != null;
+		}
 		public SalaryGroup getSalaryGroup(){
 				if(salaryGroup == null){
 						getJobTask();
@@ -435,6 +442,12 @@ public class Document{
 						// now we adjust the totals see below
 						findHourCodeTotals();
 						findUsedAccruals();
+						if(usedAccrualTotals != null){
+								Set<Integer> set = usedAccrualTotals.keySet();
+								for(Integer key:set){
+										Double val = usedAccrualTotals.get(key);
+								}
+						}
 						adjustAccruals();
 						checkForWarnings();
 				}
@@ -446,8 +459,11 @@ public class Document{
 				if(hasAllAccruals()){
 						for(EmployeeAccrual one:employeeAccruals){
 								if(one.getHours() > 0){
-										if(!ret.equals("")) ret += ", ";
-										ret += one.getAccrual().getName()+":"+one.getHours();
+										String str = one.getAccrual().getName();
+										if(ret.indexOf(str) == -1){
+												if(!ret.equals("")) ret += ", ";
+												ret += str+": "+one.getHours();
+										}
 								}
 						}
 				}
@@ -461,6 +477,9 @@ public class Document{
 						String back = tl.findUsedAccruals();
 						if(back.equals("")){
 								usedAccrualTotals = tl.getUsedAccrualTotals();
+						}
+						else{
+								logger.error(back);
 						}
 				}
 		}
@@ -511,43 +530,47 @@ public class Document{
 		public Map<String, Double> getHourCodeWeek2(){
 				return hourCodeWeek2;
 		}
-		public Map<String, List<Double>> getAllAccruals(){
+		public Map<String, List<String>> getAllAccruals(){
 				return allAccruals;
-		}		
+		}
 		public void adjustAccruals(){
 				if(employeeAccruals != null && usedAccrualTotals != null){
 						for(EmployeeAccrual one: employeeAccruals){
 								Accrual accrual = one.getAccrual();
-								List<Double> list = new ArrayList<>();
+								List<String> list = new ArrayList<>();
 								String accName = accrual.getName();
+								String accDesc = accrual.getDescription();
+
+								if(accDesc == null) accDesc="";
 								String related_id = one.getRelated_hour_code_id();
 								if(related_id != null && !related_id.equals("")){
 										double hrs_total = one.getHours();
-										list.add(hrs_total);
+										list.add(""+hrs_total);
 										try{
 												int cd_id = Integer.parseInt(related_id);
 												if(usedAccrualTotals.containsKey(cd_id)){
 														double hrs_used = usedAccrualTotals.get(cd_id);
-														list.add(hrs_used);
+														list.add(""+hrs_used);
 														if(hrs_total > hrs_used){
-																hrs_total = hrs_total - hrs_used;
+																hrs_total -= hrs_used;
 														}
-														else
+														else{
 																hrs_total = 0.0;
+														}
 														one.setHours(hrs_total);
 												}
 												else{
-														list.add(0.0); // nothing used
+														list.add("0.0"); // nothing used
 												}
-												list.add(hrs_total); // adjusted
+												list.add(""+dfn.format(hrs_total)); // adjusted
 												if(accrual.hasPref_max_leval()){
 														if(hrs_total > accrual.getPref_max_level()){
-																String str = accrual.getName()+" Accrual balance of "+hrs_total+" greater than "+accrual.getPref_max_level();
+																String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO until this balance is reduced to no more than "+accrual.getPref_max_level()+" hours.";
 																if(!warnings.contains(str))
 																		warnings.add(str);
 														}
 												}
-												allAccruals.put(accName, list);
+												allAccruals.put(accName+": "+accDesc, list);
 										}catch(Exception ex){
 												logger.error(ex);
 										}
@@ -877,7 +900,6 @@ public class Document{
 						// we look for first workflow 
 						//
 						Workflow wf = findFirstWorkFlow();
-						System.err.println(" first workflow "+wf);
 						if(wf != null){
 								TimeAction ta = new TimeAction(wf.getId(), id, initiated_by);
 								msg = ta.doSave();

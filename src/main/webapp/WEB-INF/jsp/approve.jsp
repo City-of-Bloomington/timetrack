@@ -4,18 +4,18 @@
 	<h1>Approve Timesheets
 		<small><b>Approver:&nbsp;</b><s:property value="employee.full_name" /></small>
 	</h1>
-
-	<s:if test="hasActionErrors()">
+	<s:if test="hasErrors()">
+		<s:set var="errors" value="errors" />
 		<div class="errors">
-	    <s:actionerror/>
+			<%@  include file="errors.jsp" %>
 		</div>
 	</s:if>
-	<s:elseif test="hasActionMessages()">
+	<s:elseif test="hasMessages()">
+		<s:set var="messages" value="messages" />		
 		<div class="welcome">
-	    <s:actionmessage/>
+			<%@  include file="messages.jsp" %>
 		</div>
 	</s:elseif>
-
 	<s:if test="hasGroups()">
 		<div class="calendar-header-controls">
 			<div class="button-group">
@@ -41,10 +41,13 @@
 			<s:if test="hasNonDocEmps()">
 				<div class="emp-no-time-wrapper">
 					<strong>Employee(s) with no time entry for this pay period:</strong>
-					<s:iterator var="one" value="nonDocEmps">
+					<s:iterator var="one" value="nonDocEmps" status="row" >
 						<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve">
-							<s:property value="full_name" />,</a>&nbsp;
+							<s:property value="full_name" /></a><s:if test="!#row.last">,&nbsp;</s:if>
 					</s:iterator>
+					<br />
+					<div class="button-group">
+						<a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='nonDocEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noEntry&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Inform Employees</a></div>					
 				</div>
 			</s:if>
 
@@ -72,7 +75,7 @@
 			</small>
 		</div>
 
-		<hr>
+		<hr />
 
 		<s:if test="hasDocuments()">
 			<s:iterator var="one" value="documents">
@@ -92,7 +95,7 @@
 							</s:if>
 
 							<s:elseif test="isApproved()">
-								<small class="status-tag approved">Payroll Approved</small>
+								<small class="status-tag approved">Approved</small>
 							</s:elseif>
 
 
@@ -102,7 +105,7 @@
 							</s:elseif>
 
 							<s:elseif test="isProcessed()">
-								<small class="status-tag processed">Processed</small>
+								<small class="status-tag processed">Payroll Approved</small>
 							</s:elseif>
 
 							<s:else>
@@ -125,6 +128,10 @@
 							<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />
 							<s:set var="timeIssues" value="timeIssues" />
 							<%@ include file="timeIssues.jsp" %>
+						</s:if>
+						<strong>Available Accruals</strong> <s:property value="employeeAccrualsShort" /> <br />
+						<s:if test="hasJob()">
+							<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />, <strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="job.comp_time_weekly_hours" /> <br />
 						</s:if>
 					</div>
 				</s:if>

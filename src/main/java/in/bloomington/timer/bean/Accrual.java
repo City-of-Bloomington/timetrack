@@ -41,7 +41,13 @@ public class Accrual{
 				setId(val);
 				setName(val2);
 				setPref_max_level(val3);
-    }		
+    }
+		public Accrual(String val, String val2, String val3, int val4){
+				setId(val);
+				setName(val2);
+				setDescription(val3);
+				setPref_max_level(val4);
+    }				
 		public Accrual(String val, String val2, String val3, int val4, boolean val5){
 				setId(val);
 				setName(val2);

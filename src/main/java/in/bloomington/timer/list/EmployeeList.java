@@ -28,6 +28,7 @@ public class EmployeeList extends CommonInc{
 				dept_ref_id="", // one or more values
 				employee_number="",  exclude_name="",
 				pay_period_id="",
+				employee_ids = "", // comma separated
 				no_document_for_payperiod_id="";
 		Set<String> group_id_set = new HashSet<>();
 		boolean active_only = false, inactive_only = false, hasEmployeeNumber=false;
@@ -91,6 +92,10 @@ public class EmployeeList extends CommonInc{
 				if(val != null)
 						id_code = val;
 		}
+		public void setEmployee_ids(String val){
+				if(val != null)
+						employee_ids = val;
+		}		
 		public void setEmployee_number(String val){
 				if(val != null)
 					 employee_number = val;
@@ -189,6 +194,10 @@ public class EmployeeList extends CommonInc{
 						if(!qw.equals("")) qw += " and ";
 						qw += " e.id_code = ? ";
 				}
+				else if(!employee_ids.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " e.id  in ("+employee_ids+") ";
+				}
 				else{
 						if(!name.equals("")){
 								if(!qw.equals("")) qw += " and ";
@@ -274,6 +283,9 @@ public class EmployeeList extends CommonInc{
 						else if(!id_code.equals("")){
 								pstmt.setString(jj++,id_code);
 						}
+						else if(!employee_ids.equals("")){
+								// nothing here
+						}						
 						else{
 								if(!name.equals("")){
 										pstmt.setString(jj++,name+"%");

@@ -8,12 +8,12 @@
 			<th width="25%">Usage</th>
 			<th>Available Balance</th>
 		</tr>
-		<s:iterator value="#allAccruals" var="one" >
+		<s:iterator value="document.allAccruals" var="one" >
 			<s:set var="key" value="#one.key" />
 			<s:set var="list" value="#one.value" />
 			<tr>
 				<td><s:property value="#key" /></td>
-				<s:iterator value="#list">
+				<s:iterator value="#list" status="row">
 					<td><s:property /></td>
 				</s:iterator>
 		</tr>

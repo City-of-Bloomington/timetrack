@@ -41,7 +41,7 @@
 
 			<div class="form-group">
 				<label>Referance ID(s)</label>
-				<s:textfield name="department.ref_id" value="%{department.ref_id}" size="6" maxlength="10" /><br />(for multiple ID's, use comma in between)
+				<s:textfield name="department.ref_id" value="%{department.ref_id}" size="10" maxlength="30" /><br />(for multiple ID's, use comma in between)
 			</div>
 
 			<div class="form-group">

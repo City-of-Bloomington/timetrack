@@ -33,6 +33,13 @@
 			<result name="error">/Login</result>			
 			<result name="login">/Login</result>	   
 		</action>
+		<action name="inform" 
+						class="in.bloomington.timer.InformAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/inform.jsp</result>		
+			<result name="error">/WEB-INF/jsp/inform.jsp</result>
+			<result name="success">/WEB-INF/jsp/inform.jsp</result>
+		</action>		
 		<action name="type" 
 						class="in.bloomington.timer.TypeAction" 
 						method="execute">

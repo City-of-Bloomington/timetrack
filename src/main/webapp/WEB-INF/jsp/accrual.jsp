@@ -29,7 +29,7 @@
 
 			<div class="form-group">
 				<label>Description</label>
-				<s:textarea name="accrual.description" value="%{accrual.description}" rows="5" maxlength="50" />
+				<s:textarea name="accrual.description" value="%{accrual.description}" rows="5" maxlength="50" required="true"/>
 			</div>
 
 			<div class="form-group">

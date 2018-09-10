@@ -80,7 +80,7 @@ public class EmployeeAccrualList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", qw="";
-				String qq = "select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id ";
+				String qq = "select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.description,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id ";
 				if(!document_id.equals("")){
 						qq += " join time_documents d on d.employee_id=a.employee_id ";
 						qq += " join pay_periods p on p.id = d.pay_period_id ";						
@@ -167,8 +167,9 @@ public class EmployeeAccrualList{
 																						rs.getDouble(5),
 																						rs.getString(6),
 																						rs.getString(7),
-																						rs.getInt(8),
-																						rs.getString(9));
+																						rs.getString(8),
+																						rs.getInt(9),
+																						rs.getString(10));
 										if(employeeAccruals == null)
 												employeeAccruals = new ArrayList<>();
 										employeeAccruals.add(one);
