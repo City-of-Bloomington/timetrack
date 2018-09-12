@@ -31,7 +31,7 @@ public class PayPeriodProcessAction extends TopAction{
 		String pay_period_id = "";
 		String department_id = "";
 		String source="", outputType="html";
-		boolean isHand = false, csvOutput = false;
+		boolean isHand = false, csvOutput = false, isUtil = false;
 		Hashtable<String, Profile> profMap = null;
 		List<Department> departments = null;
 		List<Profile> profiles = null;
@@ -54,6 +54,11 @@ public class PayPeriodProcessAction extends TopAction{
 				}
 				clearAll();
 				if(!action.equals("") && !department_id.equals("")){
+						// utilities department
+						if(department_id.equals("36")) 
+								isUtil = true;
+						else if(department_id.equals("3"))
+								isHand = true;
 						back = doProcess();
 						if(!back.equals("")){
 								addError(back);
@@ -61,7 +66,7 @@ public class PayPeriodProcessAction extends TopAction{
 						else{
 								if(csvOutput){
 										if(payPeriod.hasTwoDifferentYears()){
-												if(isHand){ // ToDo
+												if(isHand){ 
 														ret = "handEndYearCsv";
 												}
 												else{
@@ -182,7 +187,8 @@ public class PayPeriodProcessAction extends TopAction{
 																		 payPeriod,
 																		 holys,
 																		 isHand, // HAND flag
-																		 csvOutput);			
+																		 csvOutput,
+																		 isUtil);			
 						msg = one.find();
 						if(!msg.equals("")){
 								if(msg.startsWith("No time")){

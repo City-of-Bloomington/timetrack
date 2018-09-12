@@ -24,25 +24,24 @@ public class InformAction extends TopAction{
 		//
 		String pay_period_id="", text_message="", subject="";
 		String type="", inform_type="", email_cc="";
+		String source = "";
 		PayPeriod payPeriod = null;
 		List<Employee> employees = null;
-		String employee_ids = null;
+		List<GroupManager> managers = null;
+		String employee_ids = null, group_ids=null;
 		private static final Map<String, String> typeMap = new HashMap<>();
     static {
-				typeMap.put("noEntry","Timesheet Submit Reminder");
 				typeMap.put("noSubmit","Timesheet Submit Reminder");
 				typeMap.put("noApprove","Timesheet Approve Reminder");
     }		
 		private static final Map<String, String> messageMap = new HashMap<>();
     static {
-				messageMap.put("noEntry","Quick reminder: Please submit your timesheet for the last pay period when you have a moment. The Timetrack system is available here: ");
 				messageMap.put("noSubmit","Quick reminder: Please submit your timesheet for the last pay period when you have a moment. The Timetrack system is available here: ");
 				messageMap.put("noApprove","Quick reminder: When you have a moment, please review and approve time sheets for your direct reports for the last pay period . The Timetrack system is available here: ");
 
     }
 		private static final Map<String, String> subjectMap = new HashMap<>();
     static {
-				subjectMap.put("noEntry","Timesheet Submit Reminder");
 				subjectMap.put("noSubmit","Timesheet Submit Reminder");
 				subjectMap.put("noApprove","Timesheet Approval Reminder");
     }		
@@ -62,24 +61,56 @@ public class InformAction extends TopAction{
 				clearAll();
 				if(action.equals("Send")){
 						if(employee_ids != null){
-								/*
-								for(String doc_id:document_ids){
-										TimeAction one =
-												new TimeAction(CommonInc.default_approve_workflow_id,
-																			 doc_id,
-																			 user.getId());
-										back = one.doSave();
-										if(!back.equals("")){
-												if(!back.equals("")){
-														addActionError(back);
-														addError(back);
-												}
+								String bcc = "", email_from="";
+								getEmployees();
+								if(employees != null){
+										for(Employee one:employees){
+												if(!bcc.equals("")) bcc +=",";
+												bcc += one.getEmail();
 										}
 								}
-								if(!hasErrors()){
-										addMessage("Approved successfully");
-								}
-								*/
+								if(!bcc.equals("")){
+										getEmployee();
+										if(employee != null){
+												email_from = employee.getEmail();
+										}
+										MailHandle mail =
+												new MailHandle(null,
+																			 email_from,
+																			 email_cc,
+																			 bcc,
+																			 subject,
+																			 text_message,
+																			 debug
+																			 );
+										/*
+										System.err.println(" from "+email_from);
+										System.err.println(" bcc "+bcc);
+										System.err.println(" cc "+email_cc);										
+										System.err.println(" subject "+subject);
+										System.err.println(" msg "+text_message);
+										*/
+										//
+										// turned off for now
+										// back = mail.send();
+										if(!back.equals("")){
+												addError(back);
+												// change ret to success
+										}
+										else{
+												// TODO
+												// add email log 
+												addMessage("Email send successfully");
+										}
+								}								
+						}
+				}
+				else{
+						if(employee_ids != null){
+								getEmployees();
+						}
+						else if(group_ids != null){
+								findManagers();
 						}
 				}
 				return ret;
@@ -90,9 +121,15 @@ public class InformAction extends TopAction{
 						action = val;
 		}
 		public void setEmployee_ids(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.equals("")){		
 					 employee_ids = val;
+					 System.err.println("emp ids "+val);
+				}
 		}
+		public void setGroup_ids(String val){
+				if(val != null && !val.equals(""))		
+					 group_ids = val;
+		}		
 		public void setType(String val){
 				if(val != null && !val.equals("")){		
 						type = val;
@@ -114,6 +151,13 @@ public class InformAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						subject = val;
 		}
+		public void setSource(String val){
+				if(val != null && !val.equals(""))		
+						source = val;
+		}
+		public void setApprove(String val){
+				// ignore
+		}
 		public void setText_message(String val){
 				if(val != null && !val.equals(""))		
 						text_message = val;
@@ -131,18 +175,62 @@ public class InformAction extends TopAction{
 				return inform_type;
 		}		
 		public String getSubject(){
+				if(subject.equals("") && !type.equals("")){
+						if(subjectMap.containsKey(type)){
+								subject = subjectMap.get(type);
+						}						
+				}
 				return subject;
+		}
+		//
+		// approvers only
+		//
+		void findManagers(){
+				if(managers == null && group_ids != null){
+						GroupManagerList gml = new GroupManagerList();
+						gml.setApproversOnly();
+						gml.setPay_period_id(pay_period_id);
+						gml.execludeManager_id(employee_id);
+						String[] id_arr = null;
+						try{
+								id_arr = group_ids.split("_");
+								if(id_arr != null && id_arr.length > 0){
+										for(String str:id_arr){
+												gml.addGroup_id(str);
+										}
+								}
+								String back = gml.find();
+								if(back.equals("")){
+										List<GroupManager> ones = gml.getManagers();
+										if(ones != null && ones.size() > 0){
+												managers = ones;
+										}
+								}
+								else {
+										addError(back);
+								}
+						}catch(Exception ex){
+								addError(""+ex);
+						}
+				}
+		}
+		public boolean hasManagers(){
+				findManagers();
+				return managers != null && managers.size() > 0;
+		}
+		public List<GroupManager> getManagers(){
+				return managers;
 		}
 		
 		public String getText_message(){
 				if(text_message.equals("")){
-						text_message = "Dear employees(s) \n\n";
+						text_message = "\n\n";
 						if(!type.equals("")){
 								if(messageMap.containsKey(type)){
-										text_message += messageMap.get(type)+"\n\n "+url+"\n\n";
+										text_message += messageMap.get(type)+"\n\n https://"+url+"\n\n";
 								}
 						}
-						text_message += "Thanks your \n";
+						text_message += "Thank you\n\n";
 				}
 				return text_message;
 		}		
@@ -183,8 +271,10 @@ public class InformAction extends TopAction{
 				if(employees == null && employee_ids != null){
 						String[] emp_arr = null;
 						try{
-								emp_arr = employee_ids.split("_");
-
+								if(employee_ids.indexOf("_") > -1)
+										emp_arr = employee_ids.split("_");
+								else if(employee_ids.indexOf(",") > -1)
+										emp_arr = employee_ids.split(",");
 						}catch(Exception ex){
 								System.err.println(ex);
 						}

@@ -148,7 +148,7 @@ public class WeekSplit{
 				}
 				else{ // non regular such On Call, or CO Call Out
 						//
-						if(code.indexOf("ONCALL 35") > -1){ // one time = $35 only
+						if(code.indexOf("ONCALL") > -1){ //oncall35: one time = $35 only
 								hours = 1.0f;
 								non_reg_hrs += hours;
 								if(daily.containsKey(code)){

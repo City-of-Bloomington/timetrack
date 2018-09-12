@@ -19,6 +19,8 @@ public class GroupManagerList{
 		static final long serialVersionUID = 1900L;
 		static Logger logger = LogManager.getLogger(GroupManagerList.class);
 		String employee_id = "", group_id="", pay_period_id="";
+		String group_ids = "";
+		String execludeManager_id = ""; // employee_id
 		boolean active_only = false,approversOnly=false,
 				processorsOnly=false,
 				reviewersOnly=false, dataEntryOnly = false;
@@ -43,7 +45,13 @@ public class GroupManagerList{
     public void setPay_period_id (String val){
 				if(val != null)
 						pay_period_id = val;
-    }		
+    }
+		public void addGroup_id(String val){
+				if(val != null){
+						if(!group_ids.equals("")) group_ids +=",";
+						group_ids += val;
+				}
+		}
 		public void setActiveOnly(){
 				active_only = true;
 		}
@@ -59,6 +67,10 @@ public class GroupManagerList{
 		public void setDataEntryOnly(){
 				dataEntryOnly = true;
 		}
+		public void execludeManager_id(String val){
+				if(val != null)
+					 execludeManager_id = val;
+    }		
 		public List<GroupManager> getManagers(){
 				return managers;
 		}
@@ -75,11 +87,20 @@ public class GroupManagerList{
 				String qq = "select g.id,g.group_id,g.employee_id,g.wf_node_id,date_format(g.start_date,'%m/%d/%Y'),date_format(g.expire_date,'%m/%d/%Y'),g.inactive,wn.name from group_managers g join workflow_nodes wn on wn.id=g.wf_node_id ";
 				String qw = "";
 				if(!group_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
 					  qw += " g.group_id=? ";
+				}
+				else if(!group_ids.equals("")){
+						if(!qw.equals("")) qw += " and ";
+					  qw += " g.group_id in ("+group_ids+")";
 				}
 				if(!employee_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
 						qw += " g.employee_id=?";
+				}
+				if(!execludeManager_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " g.employee_id <> ?";
 				}
 				if(!pay_period_id.equals("")){
 						qq += ", pay_periods pp ";
@@ -125,6 +146,9 @@ public class GroupManagerList{
 						}						
 						if(!employee_id.equals("")){
 								pstmt.setString(jj++, employee_id);
+						}
+						if(!execludeManager_id.equals("")){
+								pstmt.setString(jj++, execludeManager_id);
 						}
 						if(!pay_period_id.equals("")){
 								pstmt.setString(jj++, pay_period_id);

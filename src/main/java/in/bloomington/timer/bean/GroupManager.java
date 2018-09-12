@@ -165,7 +165,7 @@ public class GroupManager implements Serializable{
     public void setEmployee_id2(String val){
 				if(val != null)
 						employee_id2 = val;
-    }		
+    }
     public void setStart_date(String val){
 				if(val != null)
 						start_date = val;

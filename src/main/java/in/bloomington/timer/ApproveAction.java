@@ -25,7 +25,9 @@ public class ApproveAction extends TopAction{
 		List<Group> groups = null;
 		List<GroupManager> managers = null;
 		String groupsTitle = "Manage Group(s)";
-		String pay_period_id="", group_id="", document_id=""; //for one only
+		String pay_period_id="", group_id="",
+				department_id="", // needed to forward to timewarp
+				document_id=""; //for one only
 		
 		String workflow_id = ""; 
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
@@ -35,6 +37,7 @@ public class ApproveAction extends TopAction{
 		List<Employee> nonDocEmps = null;
 		List<Employee> notSubmittedEmps = null;
 		List<Employee> notApprovedEmps = null;
+		List<Employee> noDocNorSubmitEmps = null;		
 		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
 		/*
@@ -315,6 +318,14 @@ public class ApproveAction extends TopAction{
 								List<Employee> ones = empl.getEmployees();
 								if(ones != null && ones.size() > 0){
 										nonDocEmps = ones;
+										if(noDocNorSubmitEmps == null){
+												noDocNorSubmitEmps = ones;
+										}
+										else{
+												for(Employee one:ones){
+														noDocNorSubmitEmps.add(one);
+												}
+										}
 								}
 						}
 				}
@@ -328,6 +339,12 @@ public class ApproveAction extends TopAction{
 				findNotSubmittedAndNotApprovedEmps();
 				return notSubmittedEmps != null && notSubmittedEmps.size() > 0;
 
+		}
+		public boolean hasNoDocNorSubmitEmps(){
+				return hasNotSubmittedEmps() || hasNonDocEmps();
+		}
+		public List<Employee> getNoDocNorSubmitEmps(){
+				return noDocNorSubmitEmps;
 		}
 		public boolean hasNotApprovedEmps(){
 				findNotSubmittedAndNotApprovedEmps();				
@@ -350,15 +367,21 @@ public class ApproveAction extends TopAction{
 														notApprovedEmps = new ArrayList<>();
 												notApprovedEmps.add(one.getEmployee());
 										}
+										else if(one.isApproved() || one.isProcessed()){
+												continue;
+										}
 										else{
 												Employee emp = one.getEmployee();
-												if(nonDocEmps == null || !nonDocEmps.contains(emp)){
+												if(nonDocEmps != null && nonDocEmps.contains(emp)){
 														continue;
 												}
 												else{
 														if(notSubmittedEmps == null)
 																notSubmittedEmps = new ArrayList<>();
 														notSubmittedEmps.add(emp);
+														if(noDocNorSubmitEmps == null)
+																noDocNorSubmitEmps = new ArrayList<>();
+														noDocNorSubmitEmps.add(emp);
 												}
 										}
 								}
@@ -368,14 +391,26 @@ public class ApproveAction extends TopAction{
 		public void setCheck_all(boolean val){
 				// will do nothing
 		}
+		public String getDepartment_id(){
+				if(department_id.equals("")){
+						findDepartment();
+				}
+				return department_id;
+		}
+		void findDepartment(){
+				// to do
+				getGroups();
+				if(hasGroups()){
+						if(groups != null && groups.size() > 0){
+								// we need only one
+								Group one = groups.get(0);
+								department_id = one.getDepartment_id();
+						}
+				}
+		}
 }
 
-/*
 
-select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.role,e.inactive from employees e join group_employees ge on ge.employee_id=e.id   where  ge.group_id in (2,3,4,1)  and  e.id not in (select td.employee_id from time_documents td where td.pay_period_id = 538) and  e.inactive is null order by e.last_name,e.first_name
-
-
- */
 
 
 

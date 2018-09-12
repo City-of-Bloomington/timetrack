@@ -533,6 +533,55 @@ public class Document{
 		public Map<String, List<String>> getAllAccruals(){
 				return allAccruals;
 		}
+		
+		public void adjustAccruals(){
+				if(employeeAccruals != null && usedAccrualTotals != null){
+						for(EmployeeAccrual one: employeeAccruals){
+								String accrual_id = one.getAccrual_id();
+								Accrual accrual = one.getAccrual();
+								List<String> list = new ArrayList<>();
+								String accName = accrual.getName();
+								String accDesc = accrual.getDescription();
+								if(accDesc == null) accDesc="";
+								String codeInfo = accName+": "+accDesc;
+								//
+								// String related_id = one.getRelated_hour_code_id();
+								if(accrual_id != null && !accrual_id.equals("")){
+										double hrs_total = one.getHours();
+										list.add(""+hrs_total);
+										try{
+												int cd_id = Integer.parseInt(accrual_id);
+												if(usedAccrualTotals.containsKey(cd_id)){
+														double hrs_used = usedAccrualTotals.get(cd_id);
+														list.add(""+hrs_used);
+														if(hrs_total > hrs_used){
+																hrs_total -= hrs_used;
+														}
+														else{
+																hrs_total = 0.0;
+														}
+														one.setHours(hrs_total);
+												}
+												else{
+														list.add("0.0"); // nothing used
+												}
+												list.add(""+dfn.format(hrs_total)); // adjusted
+												if(accrual.hasPref_max_leval()){
+														if(hrs_total > accrual.getPref_max_level()){
+																String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO until this balance is reduced to no more than "+accrual.getPref_max_level()+" hours.";
+																if(!warnings.contains(str))
+																		warnings.add(str);
+														}
+												}
+												allAccruals.put(codeInfo, list);
+										}catch(Exception ex){
+												logger.error(ex);
+										}
+								}
+						}
+				}
+		}
+		/**
 		public void adjustAccruals(){
 				if(employeeAccruals != null && usedAccrualTotals != null){
 						for(EmployeeAccrual one: employeeAccruals){
@@ -540,8 +589,9 @@ public class Document{
 								List<String> list = new ArrayList<>();
 								String accName = accrual.getName();
 								String accDesc = accrual.getDescription();
-
 								if(accDesc == null) accDesc="";
+								String codeInfo = accName+": "+accDesc;
+								//
 								String related_id = one.getRelated_hour_code_id();
 								if(related_id != null && !related_id.equals("")){
 										double hrs_total = one.getHours();
@@ -570,7 +620,7 @@ public class Document{
 																		warnings.add(str);
 														}
 												}
-												allAccruals.put(accName+": "+accDesc, list);
+												allAccruals.put(codeInfo, list);
 										}catch(Exception ex){
 												logger.error(ex);
 										}
@@ -578,6 +628,7 @@ public class Document{
 						}
 				}
 		}
+		*/
 		void prepareHolidays(){
 				HolidayList hl = new HolidayList(debug);
 				if(!pay_period_id.equals("")){

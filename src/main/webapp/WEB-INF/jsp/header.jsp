@@ -31,19 +31,18 @@
     <s:if test="#session != null && #session.user != null">
       <a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
 
-      <s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.canDataEntry())">
+      <s:if test="user.isAdmin() || (user.isEmployee() && user.canDataEntry())">
         <a href="<s:property value='#application.url'/>dataEntry.action">Data Entry</a>
       </s:if>
 
-      <s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.canApprove())">
+      <s:if test="user.isAdmin() || (user.isEmployee() && user.canApprove())">
         <a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>
       </s:if>
 
-      <s:if test="#session.user.isAdmin() || (#session.user.isEmployee() && #session.user.canProcess())">
+      <s:if test="user.isAdmin() || (user.isEmployee() && user.canPayrollProcess())">
         <a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>
       </s:if>
 
-      <a href="<s:property value='#application.url'/>settings.action">Settings</a>
     </s:if>
   </div>
 

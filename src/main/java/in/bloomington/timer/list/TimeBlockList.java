@@ -383,18 +383,30 @@ public class TimeBlockList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", last_date="", // last accrual date
-						emp_id = "";
+						emp_id = "", end_date=""; // payPeriod end_date
+				//
+				// we assume all employee accruals are updated the day before
+				// any payperiod therefore we are concerned by the current
+				// pay period end date
 				//
 				// we find the last accrual carry over date and employee id
-				// given document id
+				// given document id and the end date of this pay period
 				//
 				String qq = " ";
-				qq = " select a.date,a.employee_id from employee_accruals a,                           pay_periods p, time_documents d                                                 where d.employee_id=a.employee_id                                               and p.id = d.pay_period_id and a.date < p.start_date                            and d.id = ? order by a.date desc limit 1 ";
+				qq = " select a.date,a.employee_id,p.end_date from employee_accruals a,                pay_periods p, time_documents d                                                 where d.employee_id=a.employee_id                                               and p.id = d.pay_period_id and a.date < p.start_date                            and d.id = ? order by a.date desc limit 1 ";
 				//
-				// find total hours used  PTO and other accrual related
-				// hour codes since last accrual carry over date
+				// find total accrual hours used  (PTO and other related
+				// hour codes) since last accrual carry over date
 				//
-				String qq2 = " select t.hour_code_id, sum(t.hours)                                     from time_blocks t,time_documents d                                             where t.document_id=d.id and t.inactive is null and                             t.date >= ? and d.employee_id=?                                                 and t.date <= (select p.end_date from pay_periods p,                            time_documents d2 where p.id=d2.pay_period_id and d2.id=d.id)                   and t.hour_code_id in (select id from hour_codes where                          accrual_id is not null) group by t.hour_code_id ";
+				String qq2 = " select c.accrual_id, sum(t.hours)                                     from time_blocks t,time_documents d,hour_codes c                                 where t.document_id=d.id and t.inactive is null                                 and c.id=t.hour_code_id and c.inactive is null                                  and c.accrual_id is not null                                                    and t.date >= ? and d.employee_id=?                                             and t.date <= ? group by c.accrual_id";
+				
+				/**
+					 //
+					 // this addition will cause to add all the accrual used since
+					 // the last update, this could mean two pay period hours
+					 //
+					 (select p.end_date from pay_periods p,                                          time_documents d2 where p.id=d2.pay_period_id and d2.id=d.id)                   and t.hour_code_id in (select id from hour_codes where                          accrual_id is not null) group by c.accrual_id ";
+       */				
 				con = Helper.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -409,15 +421,17 @@ public class TimeBlockList{
 						if(rs.next()){
 								last_date = rs.getString(1); // accrual date
 								emp_id = rs.getString(2);
+								end_date = rs.getString(3); // end of pay period
 						}
 						qq = qq2;
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, last_date);
 						pstmt.setString(2, emp_id);
+						pstmt.setString(3, end_date);						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
-								int code_id = rs.getInt(1);
+								int code_id = rs.getInt(1); // accrual_id now
 								double hrs = rs.getDouble(2);
 								usedAccrualTotals.put(code_id, hrs);
 						}

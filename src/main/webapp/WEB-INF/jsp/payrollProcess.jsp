@@ -1,8 +1,8 @@
 <%@  include file="header.jsp" %>
 <s:form action="payrollProcess" id="form_id" method="post" class="internal-page">
 	<s:hidden name="action2" id="action2" value="" />
-	<h1>Payroll Process Approval
-		<small><b>Payroll Processor:&nbsp;</b><s:property value="employee.full_name" /></small>
+	<h1>Payroll Approval
+		<small><b>Payroll Approver:&nbsp;</b><s:property value="employee.full_name" /></small>
 	</h1>
 
 	<s:if test="hasErrors()">
@@ -31,6 +31,8 @@
 
 				<b>Pay Period:&nbsp;</b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
 			</div>
+			<div class="button-group">
+				<a href="<s:property value='#application.url' />payperiodProcess.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit" class="button">More Details</a></div>				
 		</div>
 
 		<!--  we need these as global since they will be used multiple times -->
@@ -45,6 +47,7 @@
 						<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve">
 							<s:property value="full_name" /></a><s:if test="!#row.last">,&nbsp;</s:if>
 					</s:iterator>
+					<br />
 				</div>
 			</s:if>
 
@@ -65,33 +68,38 @@
 					</s:iterator>
 				</ul>
 			</s:if>
+			<s:if test="needAction()">			
+				<div class="button-group">
+					<a href="<s:property value='#application.url' />inform.action?group_ids=<s:iterator value='groups' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noApprove&source=payrollProcess&pay_period_id=<s:property value='pay_period_id' />" class="button">Inform Approvers</a></div>
+			</s:if>
 		</div>
-
 		<div class="flex-row">
 			<small class="status-tag approval-ready select-all">
 				<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
 			</small>
 		</div>
 
-		<hr>
+		<hr />
 
 		<s:if test="hasDocuments()">
 			<s:iterator var="one" value="documents">
 				<s:if test="hasDaily()">
 					<div class="approval-wrapper">
 						<h2>
-							<!-- 
-							<a href="<s:property value='#application.url' />timeDetails.action?document_id=<s:property value='id' />&source=approve" />
-							-->
 							<a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" />							
 								<s:property value="employee" />
 							</a>
 
 							<s:if test="canBeProcessed()">
-								<small class="status-tag approval-ready">
-									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve Payroll</input>
-								</small>
-								<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
+								<s:if test="isUserCurrentEmployee()">
+									<small class="status-tag approval-ready">
+										<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve Payroll</input>
+									</small>
+									<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
+								</s:if>
+								<s:else>
+									<small class="status-tag approval-ready">Ready for Payroll Approval</small>
+								</s:else>
 							</s:if>
 
 							<s:elseif test="isApproved()">
@@ -136,7 +144,7 @@
 		</s:if>
 
 		<s:if test="isUserCurrentEmployee()">
-			<s:submit name="action" type="button" value="Payroll Process Approve" class="button"/>
+			<s:submit name="action" type="button" value="Payroll Approve" class="button"/>
 		</s:if>
 	</s:if>
 </s:form>

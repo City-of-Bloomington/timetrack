@@ -27,6 +27,7 @@ public class PayrollProcessAction extends TopAction{
 		List<GroupManager> managers = null;
 		String groupsTitle = "Manage Group(s)";
 		String pay_period_id="", group_id="";
+		String department_id=""; // needed for timewarp link
 		String workflow_id = "", document_id=""; 
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
 				nextPayPeriod = null, payPeriod = null;
@@ -36,8 +37,11 @@ public class PayrollProcessAction extends TopAction{
 		List<Employee> nonDocEmps = null;
 		List<Employee> notSubmittedEmps = null;
 		List<Employee> notApprovedEmps = null;
+		List<Employee> noDocNorSubmitEmps = null;		
 		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
+
+		
 		/*
 		 *
 		 url+"payrollProcess.action?action=PayrollOne&document_id=<s:property value='id' />"
@@ -147,7 +151,8 @@ public class PayrollProcessAction extends TopAction{
 										if(one2 != null){
 												if(groups == null)
 														groups = new ArrayList<>();
-												groups.add(one2);
+												if(!groups.contains(one2))
+														groups.add(one2);
 										}
 								}
 						}
@@ -254,25 +259,35 @@ public class PayrollProcessAction extends TopAction{
 				return documents;
 		}
 		public List<Employee> getNonDocEmps(){
-				EmployeeList empl = new EmployeeList();
-				if(!group_id.equals("")){
-						empl.setGroup_id(group_id);
-				}
-				else if(groups != null && groups.size() > 0){
-						for(Group one:groups){
-								empl.setGroup_id(one.getId());										
+				if(nonDocEmps == null){
+						EmployeeList empl = new EmployeeList();
+						if(!group_id.equals("")){
+								empl.setGroup_id(group_id);
 						}
-				}
-				if(pay_period_id.equals("")){
-						getPay_period_id(); // current
-				}				
-				empl.setNoDocumentForPayPeriodId(pay_period_id);
-				empl.setActiveOnly();
-				String back = empl.find();
-				if(back.equals("")){
-						List<Employee> ones = empl.getEmployees();
-						if(ones != null && ones.size() > 0){
-								nonDocEmps = ones;
+						else if(groups != null && groups.size() > 0){
+								for(Group one:groups){
+										empl.setGroup_id(one.getId());										
+								}
+						}
+						if(pay_period_id.equals("")){
+								getPay_period_id(); // current
+						}				
+						empl.setNoDocumentForPayPeriodId(pay_period_id);
+						empl.setActiveOnly();
+						String back = empl.find();
+						if(back.equals("")){
+								List<Employee> ones = empl.getEmployees();
+								if(ones != null && ones.size() > 0){
+										nonDocEmps = ones;
+										if(noDocNorSubmitEmps == null){
+												noDocNorSubmitEmps = ones;
+										}
+										else{
+												for(Employee one:ones){
+														noDocNorSubmitEmps.add(one);
+												}
+										}
+								}
 						}
 				}
 				return nonDocEmps;
@@ -324,6 +339,9 @@ public class PayrollProcessAction extends TopAction{
 				findNotSubmittedAndNotApprovedEmps();				
 				return notApprovedEmps != null && notApprovedEmps.size() > 0;
 		}
+		public boolean needAction(){
+				return hasNotApprovedEmps() || hasNotSubmittedEmps() || hasNonDocEmps();
+		}
 		public List<Employee> getNotSubmittedEmps(){
 				return notSubmittedEmps;
 		}
@@ -341,25 +359,53 @@ public class PayrollProcessAction extends TopAction{
 														notApprovedEmps = new ArrayList<>();
 												notApprovedEmps.add(one.getEmployee());
 										}
+										else if(one.isApproved() || one.isProcessed()){
+												continue;
+										}
 										else{
 												Employee emp = one.getEmployee();
-												if(nonDocEmps == null || !nonDocEmps.contains(emp)){
+												if(nonDocEmps != null && nonDocEmps.contains(emp)){
 														continue;
 												}
 												else{
 														if(notSubmittedEmps == null)
 																notSubmittedEmps = new ArrayList<>();
 														notSubmittedEmps.add(emp);
+														if(noDocNorSubmitEmps == null)
+																noDocNorSubmitEmps = new ArrayList<>();
+														noDocNorSubmitEmps.add(emp);
 												}
 										}
 								}
 						}
 				}
 		}
-
+		public boolean hasNoDocNorSubmitEmps(){
+				return hasNotSubmittedEmps() || hasNonDocEmps();
+		}
+		public List<Employee> getNoDocNorSubmitEmps(){
+				return noDocNorSubmitEmps;
+		}
 		public void setCheck_all(boolean val){
 				// will do nothing
 		}
+		public String getDepartment_id(){
+				if(department_id.equals("")){
+						findDepartment();
+				}
+				return department_id;
+		}
+		void findDepartment(){
+				getGroups();
+				if(hasGroups()){
+						if(groups != null && groups.size() > 0){
+								// we need only one
+								Group one = groups.get(0);
+								department_id = one.getDepartment_id();
+						}
+				}
+		}
+		
 }
 
 

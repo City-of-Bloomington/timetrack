@@ -28,6 +28,7 @@ public class PayPeriodProcess{
 		Document document = null;
 		boolean twoDifferentYears = false;
 		boolean weekOneHasSplit = false;
+		boolean isUtil = false;
 		static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		static DecimalFormat df = new DecimalFormat("#0.00");
 		static DecimalFormat df4 = new DecimalFormat("#0.0000");
@@ -63,13 +64,15 @@ public class PayPeriodProcess{
 														PayPeriod val3,
 														HolidayList val4,
 														boolean val5, // HAND flag
-														boolean val6){ // csv flag
+														boolean val6,// csv flag
+														boolean val7){  // isUtil 
 				setEmployee(val);
 				setProfile(val2);
 				setPayPeriod(val3);
 				setHolidayList(val4);
 				setIsHand(val5);
 				setCsvOutuput(val6);
+				setIsUtil(val7);
 				//
 				// prepare the objects
 				//
@@ -93,6 +96,9 @@ public class PayPeriodProcess{
 		public void setIsHand(boolean val){
 				isHand = val;
 		}
+		public void setIsUtil(boolean val){
+				isUtil = val;
+		}		
 		public void setCsvOutuput(boolean val){
 				csvOutput = val;
 		}
@@ -139,6 +145,9 @@ public class PayPeriodProcess{
 				return status;
 		}
 		public String getRegCode(){
+				if(isUtil && csvOutput){
+						return "u"+regCode;
+				}
 				return regCode;
 		}
 		double getWeek1Total(){
@@ -268,6 +277,17 @@ public class PayPeriodProcess{
 				Hashtable<String, Double> w2all = week2.getAll();
 				if(!w2all.isEmpty())
 						mergeTwoHashes(w2all, all);
+				if(isUtil && csvOutput){
+						Hashtable<String, Double> all2 = new Hashtable<String, Double>();
+						Set<String> keySet = all.keySet();
+						for(String key:keySet){
+								Double val = all.get(key);
+								if(val != null){
+										all2.put("u"+key, val);
+								}
+						}
+						return all2;
+				}
 				return all;
 		}
 		boolean hasWeek1ProfHours(){

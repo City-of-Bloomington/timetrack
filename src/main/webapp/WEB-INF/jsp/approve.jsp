@@ -31,6 +31,8 @@
 
 				<b>Pay Period:&nbsp;</b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
 			</div>
+			<div class="button-group">
+				<a href="<s:property value='#application.url' />payperiodProcess.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit" class="button">More Details</a></div>								
 		</div>
 
 		<!--  we need these as global since they will be used multiple times -->
@@ -45,12 +47,8 @@
 						<a href="<s:property value='#application.url' />timeDetails.action?employee_id=<s:property value='id' />&pay_period_id=<s:property value='pay_period_id' />&source=approve">
 							<s:property value="full_name" /></a><s:if test="!#row.last">,&nbsp;</s:if>
 					</s:iterator>
-					<br />
-					<div class="button-group">
-						<a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='nonDocEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noEntry&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Inform Employees</a></div>					
 				</div>
 			</s:if>
-
 			<!-- these ifs below should only display if there are users within -->
 			<s:if test="hasNotSubmittedEmps()">
 				<small class="status-tag not-submitted">Time Not Submitted</small>
@@ -59,6 +57,11 @@
 						<li><s:property value="full_name" /><s:if test="!#row.last">,</s:if></li>
 					</s:iterator>
 				</ul>
+			</s:if>
+			<s:if test="hasNoDocNorSubmitEmps()">
+					<div class="button-group">
+						<a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Inform Employees</a></div>					
+				</div>
 			</s:if>
 			<s:if test="hasNotApprovedEmps()">
 				<small class="status-tag not-approved">Time Not Approved</small>
@@ -88,22 +91,24 @@
 							<!-- this is comment out for testing purpose, we need to change in prod, get back from approve.jsp.old
 							-->
 							<s:if test="canBeApproved()">
-								<small class="status-tag approval-ready">
-									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
-								</small>
-								<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
+								<s:if test="isUserCurrentEmployee()">
+									<small class="status-tag approval-ready">
+										<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
+									</small>
+									<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
+								</s:if>
+								<s:else>
+									<small class="status-tag approval-ready">Ready for Approval</small>
+								</s:else>
 							</s:if>
-
 							<s:elseif test="isApproved()">
 								<small class="status-tag approved">Approved</small>
 							</s:elseif>
-
 
 							<s:elseif test="!isApproved()">
 								<s:if test="!isSubmitted()"><small class="status-tag not-submitted">Time Not Submitted</small></s:if>
 								<s:elseif test="!isApproved()"><small class="status-tag not-approved">Time Not Approved</small></s:elseif>
 							</s:elseif>
-
 							<s:elseif test="isProcessed()">
 								<small class="status-tag processed">Payroll Approved</small>
 							</s:elseif>
@@ -137,13 +142,10 @@
 				</s:if>
 			</s:iterator>
 		</s:if>
-		<!-- for testing we comment out this, we need to remove in prod
-		<s:if test="isUserCurrentEmployee()">
-			<s:submit name="action" type="button" value="Approve" class="fn1-btn"/>
-		</s:if>
-		-->
 
-		<s:submit name="action" type="submit" value="Approve" class="button"/>
+		<s:if test="isUserCurrentEmployee()">
+			<s:submit name="action" type="submit" value="Approve" class="button"/>
+		</s:if>
 	</s:if>
 </s:form>
 

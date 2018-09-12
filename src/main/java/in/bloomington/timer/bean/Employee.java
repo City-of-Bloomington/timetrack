@@ -32,7 +32,10 @@ public class Employee implements Serializable{
 		// User user = null;
 		List<JobTask> jobs = null;
 		List<Group> groups = null;
-		List<GroupManager> managers = null;
+		List<GroupManager> approvers = null;
+		List<GroupManager> processors = null;
+		List<GroupManager> reviewers = null;
+		List<GroupManager> enterors = null;
 		List<DepartmentEmployee> departmentEmployees = null;
 		List<GroupEmployee> groupEmployees = null;		
 		DepartmentEmployee departmentEmployee = null;
@@ -358,57 +361,65 @@ public class Employee implements Serializable{
 		}
 
 		public boolean canApprove(){
-				GroupManagerList gml = new GroupManagerList(id);
-				gml.setActiveOnly();
-				gml.setApproversOnly();
-				String back = gml.find();
-				if(back.equals("")){
-						List<GroupManager> ones = gml.getManagers();
-						if(ones != null){
-								managers = ones;
+				if(approvers == null){
+						GroupManagerList gml = new GroupManagerList(id);
+						gml.setActiveOnly();
+						gml.setApproversOnly();
+						String back = gml.find();
+						if(back.equals("")){
+								List<GroupManager> ones = gml.getManagers();
+								if(ones != null){
+										approvers = ones;
+								}
 						}
 				}
-				return managers != null && managers.size() > 0;
+				return approvers != null && approvers.size() > 0;
 		}
 		
 		public boolean canPayrollProcess(){
-				GroupManagerList gml = new GroupManagerList(id);
-				gml.setActiveOnly();
-				gml.setProcessorsOnly();
-				String back = gml.find();
-				if(back.equals("")){
-						List<GroupManager> ones = gml.getManagers();
-						if(ones != null){
-								managers = ones;
+				if(processors == null){
+						GroupManagerList gml = new GroupManagerList(id);
+						gml.setActiveOnly();
+						gml.setProcessorsOnly();
+						String back = gml.find();
+						if(back.equals("")){
+								List<GroupManager> ones = gml.getManagers();
+								if(ones != null){
+										processors = ones;
+								}
 						}
 				}
-				return managers != null && managers.size() > 0;
+				return processors != null && processors.size() > 0;
 		}
 		public boolean canReview(){
-				GroupManagerList gml = new GroupManagerList(id);
-				gml.setActiveOnly();
-				gml.setReviewersOnly();
-				String back = gml.find();
-				if(back.equals("")){
-						List<GroupManager> ones = gml.getManagers();
-						if(ones != null){
-								managers = ones;
+				if(reviewers == null){
+						GroupManagerList gml = new GroupManagerList(id);
+						gml.setActiveOnly();
+						gml.setReviewersOnly();
+						String back = gml.find();
+						if(back.equals("")){
+								List<GroupManager> ones = gml.getManagers();
+								if(ones != null){
+										reviewers = ones;
+								}
 						}
 				}
-				return managers != null && managers.size() > 0;
+				return reviewers != null && reviewers.size() > 0;
 		}
 		public boolean canDataEntry(){
-				GroupManagerList gml = new GroupManagerList(id);
-				gml.setActiveOnly();
-				gml.setDataEntryOnly();
-				String back = gml.find();
-				if(back.equals("")){
-						List<GroupManager> ones = gml.getManagers();
-						if(ones != null){
-								managers = ones;
+				if(enterors == null){
+						GroupManagerList gml = new GroupManagerList(id);
+						gml.setActiveOnly();
+						gml.setDataEntryOnly();
+						String back = gml.find();
+						if(back.equals("")){
+								List<GroupManager> ones = gml.getManagers();
+								if(ones != null){
+										enterors = ones;
+								}
 						}
 				}
-				return managers != null && managers.size() > 0;
+				return enterors != null && enterors.size() > 0;
 		}		
 		//
 		public boolean hasDepartment(){
