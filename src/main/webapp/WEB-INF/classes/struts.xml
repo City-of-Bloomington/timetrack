@@ -39,6 +39,8 @@
 			<result name="input">/WEB-INF/jsp/inform.jsp</result>		
 			<result name="error">/WEB-INF/jsp/inform.jsp</result>
 			<result name="success">/WEB-INF/jsp/inform.jsp</result>
+			<result name="informSuccess">/WEB-INF/jsp/informSuccess.jsp</result>
+			<result name="logs">/WEB-INF/jsp/email_logs.jsp</result>			
 		</action>		
 		<action name="type" 
 						class="in.bloomington.timer.TypeAction" 

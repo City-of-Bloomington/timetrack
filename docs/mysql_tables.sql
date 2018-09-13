@@ -320,13 +320,13 @@ CREATE TABLE `jobs` (
 ;;
 ;; notification_logs table
 ;;
- CREATE TABLE `notification_logs` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `receipants` text,
-  `message` varchar(512) DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
-  `status` enum('Success','Failure') DEFAULT NULL,
-  `error_msg` text,
+ CREATE TABLE notification_logs (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  receipants text,
+  message  varchar(512) DEFAULT NULL,
+  date datetime DEFAULT NULL,
+  status enum('Success','Failure') DEFAULT NULL,
+  error_msg text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 ;;
@@ -483,6 +483,9 @@ CREATE TABLE `time_block_logs` (
   CONSTRAINT `time_notes_ibfk_2` FOREIGN KEY (`reported_by`) REFERENCES `employees` (`id`)
 ) ENGINE=InnoDB;
 ;;
+ CREATE TABLE email_logs (                                                        id int(10) unsigned NOT NULL AUTO_INCREMENT,                                    user_id int(10) unsigned,                                                       date_time datetime,                                                             email_from varchar(56),                                                         email_to varchar(56),                                                           cc      varchar(56),                                                            bcc     varchar(512),                                                           subject varchar(56),                                                            text_message varchar(1024),                                                     send_errors  varchar(1024),                                                     type enum('Approvers','Processors'),                                            PRIMARY KEY (`id`),                                                             foreign key(user_id) references employees(id)                                   ) ENGINE=InnoDB;
+
+;;
 ;; we need the following data in tables
 ;;
 insert into workflow_nodes values( 1,'Initiated','Document first initiated for data entry',NULL,'Document initiated',NULL),
@@ -529,24 +532,8 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;; the user need to create quartz tables, get them from
 ;; quartz website
 ;;
-;; changes to utilities departments
-;; change name from Utilities Finance ==> Utilities
 ;;
-;; change groups that belong to department 35,37 ==> 36
-;;
-update department_employees set department_id=36 where department_id in (35,37);
-;; we have 21 employees
-;;
-;;
-select * from groups where department_id in (35,37);
-;;  7 groups
-;;
-update groups set department_id=36 where department_id in (35,37);
-;;
-;; delete the two departments
-delete from departments where id in (35,37);
-;;
-delete from group_managers where id=77;
+
 
 
 

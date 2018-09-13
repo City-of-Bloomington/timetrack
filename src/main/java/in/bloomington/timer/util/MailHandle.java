@@ -16,10 +16,11 @@ public class MailHandle{
 		final static long serialVersionUID = 580L;
 		static Logger logger = Logger.getLogger(MailHandle.class);			
 		static boolean debug = false;
+		static String host = "localhost"; 
     String msgText = "This is a message body.\nHere's the second line.";
     String to = null;
     String from = "";
-		String host = "smtp.bloomington.in.gov";
+
     // static String host = "localhost";		
     
     String subject = "";
@@ -37,14 +38,16 @@ public class MailHandle{
 		 * @param bcc2 the blind carbon copy list 
      * @param debug2 the debug flag true|false
      */
-    public MailHandle( String to2,
-											 String from2,
-											 String cc2,
-											 String bcc2,											 
-											 String subject2,
-											 String msg2,
-											 boolean debug2){
-
+    public MailHandle(String host2,
+											String to2,
+											String from2,
+											String cc2,
+											String bcc2,											 
+											String subject2,
+											String msg2,
+											boolean debug2){
+				if(host2 != null)
+						host = host2;
 				if(to2 != null && to2.equals("Bulk")){
 						to = null;
 				}
@@ -60,12 +63,14 @@ public class MailHandle{
 		}
 	
 		//
-    public MailHandle( String to2, String from2,
-											 String subject2, String msg2,
-											 String cc2, String bcc2,
-											 String file_name2, String file_path2,
-											 boolean debug2){
-
+    public MailHandle(String host2,
+											String to2, String from2,
+											String subject2, String msg2,
+											String cc2, String bcc2,
+											String file_name2, String file_path2,
+											boolean debug2){
+				if(host2 != null)
+						host = host2;
 				if(to2 != null && to2.equals("Bulk")){
 						to = null;
 				}

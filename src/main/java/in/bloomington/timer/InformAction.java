@@ -8,6 +8,8 @@ import java.io.*;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
@@ -28,6 +30,7 @@ public class InformAction extends TopAction{
 		PayPeriod payPeriod = null;
 		List<Employee> employees = null;
 		List<GroupManager> managers = null;
+		List<EmailLog> emailLogs = null;
 		String employee_ids = null, group_ids=null;
 		private static final Map<String, String> typeMap = new HashMap<>();
     static {
@@ -37,14 +40,15 @@ public class InformAction extends TopAction{
 		private static final Map<String, String> messageMap = new HashMap<>();
     static {
 				messageMap.put("noSubmit","Quick reminder: Please submit your timesheet for the last pay period when you have a moment. The Timetrack system is available here: ");
-				messageMap.put("noApprove","Quick reminder: When you have a moment, please review and approve time sheets for your direct reports for the last pay period . The Timetrack system is available here: ");
+				messageMap.put("noApprove","Quick reminder: When you have a moment, please review and approve time sheets for your direct reports for the last pay period. The Timetrack system is available here: ");
 
     }
 		private static final Map<String, String> subjectMap = new HashMap<>();
     static {
 				subjectMap.put("noSubmit","Timesheet Submit Reminder");
 				subjectMap.put("noApprove","Timesheet Approval Reminder");
-    }		
+    }
+		private Map<Employee, List<Group>> managerMap = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -59,7 +63,10 @@ public class InformAction extends TopAction{
 						}	
 				}
 				clearAll();
-				if(action.equals("Send")){
+				if(action.equals("logs")){
+						ret = "logs";
+				}
+				else if(action.equals("Send")){
 						if(employee_ids != null){
 								String bcc = "", email_from="";
 								getEmployees();
@@ -75,7 +82,8 @@ public class InformAction extends TopAction{
 												email_from = employee.getEmail();
 										}
 										MailHandle mail =
-												new MailHandle(null,
+												new MailHandle(mail_host,
+																			 null, // to
 																			 email_from,
 																			 email_cc,
 																			 bcc,
@@ -83,25 +91,32 @@ public class InformAction extends TopAction{
 																			 text_message,
 																			 debug
 																			 );
-										/*
-										System.err.println(" from "+email_from);
-										System.err.println(" bcc "+bcc);
-										System.err.println(" cc "+email_cc);										
-										System.err.println(" subject "+subject);
-										System.err.println(" msg "+text_message);
-										*/
 										//
-										// turned off for now
-										// back = mail.send();
-										if(!back.equals("")){
-												addError(back);
-												// change ret to success
+										if(activeMail){
+												// back = mail.send();
+												back = "email activity is commented out";
 										}
 										else{
-												// TODO
-												// add email log 
-												addMessage("Email send successfully");
+												back = "email activity flag is turned off, if you need to send email this flag need to be turned on in your configuration file";
 										}
+										if(!back.equals("")){
+												addError(back);
+										}
+										else{
+												addMessage("Email send successfully");
+												ret = "informSuccess";
+										}
+										EmailLog elog = new EmailLog(debug,
+																								 user.getId(),
+																								 email_from,
+																								 null, // to
+																								 email_cc,
+																								 bcc,
+																								 subject,
+																								 text_message,
+																								 back,
+																								 type.equals("noSubmit")?"Approvers":"Processors");
+										back = elog.doSave();
 								}								
 						}
 				}
@@ -123,7 +138,6 @@ public class InformAction extends TopAction{
 		public void setEmployee_ids(String val){
 				if(val != null && !val.equals("")){		
 					 employee_ids = val;
-					 System.err.println("emp ids "+val);
 				}
 		}
 		public void setGroup_ids(String val){
@@ -173,6 +187,9 @@ public class InformAction extends TopAction{
 						}
 				}
 				return inform_type;
+		}
+		public String getType(){
+				return type;
 		}		
 		public String getSubject(){
 				if(subject.equals("") && !type.equals("")){
@@ -191,12 +208,14 @@ public class InformAction extends TopAction{
 						gml.setApproversOnly();
 						gml.setPay_period_id(pay_period_id);
 						gml.execludeManager_id(employee_id);
+						Set<String> grp_set = new HashSet<>();
 						String[] id_arr = null;
 						try{
 								id_arr = group_ids.split("_");
 								if(id_arr != null && id_arr.length > 0){
 										for(String str:id_arr){
 												gml.addGroup_id(str);
+												grp_set.add(str);
 										}
 								}
 								String back = gml.find();
@@ -204,6 +223,26 @@ public class InformAction extends TopAction{
 										List<GroupManager> ones = gml.getManagers();
 										if(ones != null && ones.size() > 0){
 												managers = ones;
+												managerMap = new HashMap<>();
+												for(GroupManager one:managers){
+														Employee emp = one.getEmployee();
+														Group grp = one.getGroup();
+														//
+														// we pick only groups in the set
+														//
+														if(grp_set.contains(grp.getId())){ 
+																if(managerMap.containsKey(emp)){
+																		List<Group> lst = managerMap.get(emp);
+																		lst.add(grp);
+																		managerMap.put(emp, lst);
+																}
+																else{
+																		List<Group> lst = new ArrayList<>();
+																		lst.add(grp);
+																		managerMap.put(emp, lst);
+																}
+														}
+												}
 										}
 								}
 								else {
@@ -221,7 +260,14 @@ public class InformAction extends TopAction{
 		public List<GroupManager> getManagers(){
 				return managers;
 		}
-		
+		public Map<Employee, List<Group>> getManagerMap(){
+				return managerMap;
+		}
+		public String getPageTitle(){
+				if(type.equals("noApprove"))
+						return "Remind Approvers";
+				return "Remind Employees";
+		}
 		public String getText_message(){
 				if(text_message.equals("")){
 						text_message = "\n\n";
@@ -268,7 +314,9 @@ public class InformAction extends TopAction{
 				return payPeriod;
 		}
 		public List<Employee> getEmployees(){
-				if(employees == null && employee_ids != null){
+				if(employees == null &&
+					 employee_ids != null &&
+					 !employee_ids.equals("")){
 						String[] emp_arr = null;
 						try{
 								if(employee_ids.indexOf("_") > -1)
@@ -303,8 +351,26 @@ public class InformAction extends TopAction{
 				getEmployees();
 				return employees != null && employees.size() > 0; 
 		}
-
+		public List<EmailLog> getEmailLogs(){
+				if(emailLogs == null){
+						EmailLogList ell = new EmailLogList(debug);
+						String back = ell.find();
+						if(back.equals("")){
+								List<EmailLog> ones = ell.getEmailLogs();
+								if(ones != null &&  ones.size() > 0){
+										emailLogs = ones;
+								}
+						}
+				}
+				return emailLogs;
+		}
+		public boolean hasEmailLogs(){
+				getEmailLogs();
+				return emailLogs != null && emailLogs.size() > 0;
+		}
 }
+
+
 
 
 

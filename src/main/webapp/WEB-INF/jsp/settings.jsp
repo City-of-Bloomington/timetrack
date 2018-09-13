@@ -33,6 +33,11 @@
 				<li><a href="<s:property value='#application.url'/>codeRef.action">Hour Code Cross Reference</a></li>
 				<li><a href="<s:property value='#application.url'/>ipaddress.action">Allowed IP Addresses</a></li>
 			</ul>
+			<h2>Audit</h2>
+			<ul>			
+				<li><a href="<s:property value='#application.url'/>inform.action?action=logs">Approvers/Payroll Email Logs</a></li>
+			</ul>
+			
 		</div>
 
 		<div class="width-one-half float-right">
@@ -68,7 +73,6 @@
 				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch clock batch submission </a></li>
 				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Update Employees (including active status)</a></li>
 			</ul>
-
 		</div>
 	</s:if>
 </div>

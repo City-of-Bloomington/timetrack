@@ -60,7 +60,7 @@
 			</s:if>
 			<s:if test="hasNoDocNorSubmitEmps()">
 					<div class="button-group">
-						<a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Inform Employees</a></div>					
+						<a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a></div>					
 				</div>
 			</s:if>
 			<s:if test="hasNotApprovedEmps()">
