@@ -93,6 +93,9 @@
 
 		<%@ include file="timeActions.jsp" %>
 		<%@ include file="timeNotes.jsp" %>
+		<br />
+		<li><a href="<s:property value='#application.url' />timeBlockLog.action?document_id=<s:property value='document.id' />"> Time block history</a></li>
+		<br />
 	</div>
 </s:if>
 

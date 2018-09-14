@@ -165,6 +165,52 @@ public class Block{
     public int getBegin_minute(){
 				return begin_minute;
     }
+		public String getBeginHourMinute(){
+				String ret = "";
+				if(begin_hour == 0){
+						ret = "00";
+				}
+				else if(begin_hour < 10){
+						ret = "0"+begin_hour;
+				}
+				else {
+						ret = ""+begin_hour;
+				}
+				ret += ":";
+				if(begin_minute == 0){
+						ret += "00";
+				}
+				else if(begin_minute  < 10){
+						ret += "0"+begin_minute;
+				}
+				else{
+						ret += begin_minute;
+				}
+				return ret;
+		}
+		public String getEndHourMinute(){
+				String ret = "";
+				if(end_hour == 0){
+						ret = "00";
+				}
+				else if(end_hour < 10){
+						ret = "0"+end_hour;
+				}
+				else {
+						ret = ""+end_hour;
+				}
+				ret += ":";
+				if(end_minute == 0){
+						ret += "00";
+				}
+				else if(end_minute  < 10){
+						ret += "0"+end_minute;
+				}
+				else{
+						ret += end_minute;
+				}
+				return ret;
+		}		
     public int getEnd_hour(){
 				return end_hour;
     }		

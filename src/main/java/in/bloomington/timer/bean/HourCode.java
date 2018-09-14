@@ -74,7 +74,10 @@ public class HourCode extends Type{
     }
 		public String getReg_default(){
 				return reg_default;
-    }		
+    }
+		public boolean isRecordMethodHours(){
+				return record_method.equals("Hours");
+		}
 		public boolean isAccrualRelated(){
 				return !accrual_id.equals("");
 		}

@@ -36,8 +36,8 @@
 			<h2>Audit</h2>
 			<ul>			
 				<li><a href="<s:property value='#application.url'/>inform.action?action=logs">Approvers/Payroll Email Logs</a></li>
+				<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Search Time Blocks</a></li>				
 			</ul>
-			
 		</div>
 
 		<div class="width-one-half float-right">

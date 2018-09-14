@@ -67,7 +67,17 @@ public class TimeBlockLog extends Block{
 		public String getAction_time(){
 				return action_time;
     }
-		
+		public boolean isClockInOut(){
+				return isClockIn() || isClockOut();
+		}
+		public boolean showBeginTime(){
+				getHourCode();
+				return !(action_type.equals("Delete") || hourCode.isRecordMethodHours());
+		}
+		public boolean showEndTime(){
+				getHourCode();				
+				return !(action_type.equals("Delete") || hourCode.isRecordMethodHours() || isClockIn());
+		}		
     //
     // setters
     //
@@ -112,7 +122,7 @@ public class TimeBlockLog extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,document_id,job_id,hour_code_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%Y %H:%i') from block_time_logs where id =? ";
+				String qq = "select id,document_id,job_id,hour_code_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs where id =? ";
 				logger.debug(qq);
 				try{
 						con = Helper.getConnection();
@@ -130,7 +140,7 @@ public class TimeBlockLog extends Block{
 														rs.getInt(6),
 														rs.getInt(7),
 														rs.getInt(8),
-														rs.getInt(0),
+														rs.getInt(9),
 														rs.getDouble(10),
 														rs.getString(11),
 														rs.getString(12));
