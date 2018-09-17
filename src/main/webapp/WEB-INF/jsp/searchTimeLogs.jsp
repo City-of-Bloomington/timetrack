@@ -1,8 +1,8 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
 	<s:form action="timeBlockLog" id="form_id" method="post">
-		<h1>Time Block Log Search</h1>
-		To search for time block history, enter the employee name and then pick
+		<h1>Time Entry History Search</h1>
+		To search for time entry history, enter the employee name and then pick
 		the pay period from the list. Then hit Submit button.
 	  <div class="width-one-half">
 			<div class="form-group">

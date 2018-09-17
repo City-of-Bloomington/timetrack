@@ -292,6 +292,13 @@ public class Document{
 				getDaily();
 				return daily != null && daily.size() > 0;
 		}
+		public boolean isPunchClockOnly(){
+				getJob();
+				if(jobTask != null){
+						return jobTask.isPunchClockOnly();
+				}
+				return false;
+		}
 		public Map<Integer, Double> getDaily(boolean includeEmptyBlocks){
 				if(daily == null && !id.equals("")){
 						TimeBlockList tl = new TimeBlockList();

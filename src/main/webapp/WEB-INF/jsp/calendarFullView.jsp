@@ -8,7 +8,6 @@
     <div>Sat</div>
     <div>Sun</div>
   </div>
-
   <div class="week">
     <s:iterator value="document.dailyBlocks" var="block" >
       <s:set var="blockKey" value="#block.key" />

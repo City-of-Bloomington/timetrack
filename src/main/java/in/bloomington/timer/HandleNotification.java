@@ -97,6 +97,7 @@ public class HandleNotification{
 						" and j.clock_time_required is null "+
 						" and j.inactive is null "+
 						" and d.pay_period_id = ? "+
+						" and e.username not like 'admin' "+  // exclude admin user
 						" and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=? and a.workflow_id=2) "; // initiated but not submitted for approval
 				try{
 						con = Helper.getConnection();
@@ -144,13 +145,11 @@ public class HandleNotification{
 						System.err.println(" no emps ");
 						return msg;
 				}
-				// String bcc_str = "Walid Sibn<sibow@bloomington.in.gov>,Charles Brandt<brandtc@bloomington.in.gov>,Alan Schertz<schertza@bloomington.in.gov>";
 				String bcc_str = "";
 				for(Employee one:emps){
 						if(!bcc_str.equals("")) bcc_str += ",";
 						bcc_str += one.getFull_name()+"<"+one.getEmail()+">";
 				}
-				// System.err.println(" emp list "+bcc_str);
 				msg = compuseAndSend(bcc_str);
 				
 				return msg;
@@ -161,7 +160,7 @@ public class HandleNotification{
 						"This is a friendly reminder that today marks the beginning of a new pay period. Our records show you have not submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible. The timetrack system is available here: \n\n"+
 						"https://timetrack.bloomington.in.gov/timetrack \n\n"+
 						"If you have any questions, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n"+
-						"Thank yuu\n\n"+
+						"Thank you\n\n"+
 						"City of Bloomington ITS\n";
 				if(emps == null || emps.size() < 1){
 						return msg;

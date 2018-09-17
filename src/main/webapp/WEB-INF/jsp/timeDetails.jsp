@@ -6,16 +6,20 @@
  *
 	-->
 <s:if test="!hasErrors()">
+	<s:if test="hasMessages()">
+		<%@ include file="messages.jsp" %>
+	</s:if>
+	<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
+		<div style="text-align:center"> View Only Time Details</div>
+	</s:if>
 	<%@ include file="calendarTopDetails.jsp" %>
-	<%@ include file="strutMessages.jsp" %>
-	<s:if test="document.isProcessed()">
+	<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
 		<%@ include file="calendarFullView.jsp" %>
 	</s:if>
 	<s:else>
 		<%@ include file="calendarFullNew.jsp" %>
 	</s:else>
 	<div class="container-with-padding">
-
 		<div class="calendar-summary-controls m-b-40">
 			<a class="button pay-notes" data-doc-id="<s:property value='%{document.id}' />">Add Pay Period Note</a>
 
@@ -94,7 +98,7 @@
 		<%@ include file="timeActions.jsp" %>
 		<%@ include file="timeNotes.jsp" %>
 		<br />
-		<li><a href="<s:property value='#application.url' />timeBlockLog.action?document_id=<s:property value='document.id' />"> Time block history</a></li>
+		<li><a href="<s:property value='#application.url' />timeBlockLog.action?document_id=<s:property value='document.id' />"> Time Entry History</a></li>
 		<br />
 	</div>
 </s:if>

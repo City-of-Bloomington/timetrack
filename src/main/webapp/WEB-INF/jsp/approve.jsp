@@ -134,6 +134,22 @@
 							<s:set var="timeIssues" value="timeIssues" />
 							<%@ include file="timeIssues.jsp" %>
 						</s:if>
+						<div class="d-flex">
+							<s:if test="hasHourCodeWeek1()">
+								<s:set var="weeklyHourCodes" value="hourCodeWeek1" />
+								<s:set var="weekTotal" value="week1Total" />
+								<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
+								<s:set var="whichWeek" value="'week-one'" />
+								<%@ include file="weeklySummary.jsp" %>
+							</s:if>
+							<s:if test="hasHourCodeWeek2()">
+								<s:set var="weeklyHourCodes" value="hourCodeWeek2" />
+								<s:set var="weekTotal" value="week2Total" />
+								<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
+								<s:set var="whichWeek" value="'week-two'" />
+								<%@ include file="weeklySummary.jsp" %>
+							</s:if>
+						</div>									
 						<strong>Available Accruals</strong> <s:property value="employeeAccrualsShort" /> <br />
 						<s:if test="hasJob()">
 							<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />, <strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="job.comp_time_weekly_hours" /> <br />

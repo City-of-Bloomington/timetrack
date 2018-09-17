@@ -223,6 +223,13 @@
 			<result name="input">/WEB-INF/jsp/approve.jsp</result>		
 			<result name="error">/WEB-INF/jsp/approve.jsp</result>
 			<result name="success">/WEB-INF/jsp/approve.jsp</result>
+		</action>
+		<action name="review" 
+						class="in.bloomington.timer.ReviewAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/review.jsp</result>		
+			<result name="error">/WEB-INF/jsp/review.jsp</result>
+			<result name="success">/WEB-INF/jsp/review.jsp</result>
 		</action>		
 		<action name="payrollProcess" 
 						class="in.bloomington.timer.PayrollProcessAction" 
@@ -358,6 +365,7 @@
 			<result name="input">/WEB-INF/jsp/timeDetails.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timeDetails.jsp</result>
 			<result name="success">/WEB-INF/jsp/timeDetails.jsp</result>
+			<result name="view">/WEB-INF/jsp/timeDetailView.jsp</result>			
 			<result name="login">/Login</result>			
 		</action>
 		<action name="timeAction" 

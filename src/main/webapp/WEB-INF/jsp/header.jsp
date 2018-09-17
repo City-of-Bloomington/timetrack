@@ -34,7 +34,9 @@
       <s:if test="user.isAdmin() || (user.isEmployee() && user.canDataEntry())">
         <a href="<s:property value='#application.url'/>dataEntry.action">Data Entry</a>
       </s:if>
-
+      <s:if test="user.isAdmin() || (user.isEmployee() && user.canReview())">
+        <a href="<s:property value='#application.url'/>review.action">Timesheet Review</a>
+      </s:if>
       <s:if test="user.isAdmin() || (user.isEmployee() && user.canApprove())">
         <a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>
       </s:if>

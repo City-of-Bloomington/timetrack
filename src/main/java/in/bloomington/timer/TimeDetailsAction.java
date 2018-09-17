@@ -43,6 +43,9 @@ public class TimeDetailsAction extends TopAction{
 						addError("No job found for employee ");
 						addActionError("No job found for employee ");						
 				}
+				if(action.equals("View")){
+						ret = "view";
+				}
 				return ret;
 		}
 		public String getTimeBlocksTitle(){

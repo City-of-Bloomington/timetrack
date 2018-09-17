@@ -146,6 +146,9 @@ public class JobTask implements Serializable{
 		public boolean isActive(){
 				return inactive.equals("");
     }
+		public boolean isPunchClockOnly(){
+				return !clock_time_required.equals("");
+		}
     public int getWeekly_regular_hours(){
 				return weekly_regular_hours;
     }

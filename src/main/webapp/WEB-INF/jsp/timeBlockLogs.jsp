@@ -1,6 +1,6 @@
 <%@  include file="header.jsp" %>
 
-<h1>Time Block History</h1>
+<h1>Time Entry History</h1>
 <s:if test="hasTimeBlockLogs()">
 	<table class="width-full">
 		<tr>
