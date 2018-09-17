@@ -26,6 +26,7 @@ public class NotificationJob implements Job{
 		static final long serialVersionUID = 55L;		
 		static Logger logger = LogManager.getLogger(NotificationJob.class);
 		boolean activeMail = false;
+		String mail_host = "";
 		PayPeriod lastPayPeriod = null;
 		public NotificationJob(){
 
@@ -39,6 +40,10 @@ public class NotificationJob implements Job{
 								if(val != null && val.equals("true")){
 										activeMail = true;
 								}
+								val = dataMap.getString("mail_host");
+								if(val != null){
+										mail_host = val;
+								}								
 						}
 						doInit();
 						doWork();
@@ -69,7 +74,10 @@ public class NotificationJob implements Job{
 		}	    
     public void doWork(){
 				if(lastPayPeriod != null){
-						HandleNotification handle = new HandleNotification(lastPayPeriod, activeMail);
+						HandleNotification handle = new
+								HandleNotification(lastPayPeriod,
+																	 mail_host,
+																	 activeMail);
 						String msg = handle.process();
 						if(!msg.equals(""))
 								logger.error(msg);

@@ -22,25 +22,32 @@ public class HandleNotification{
 
 		boolean debug = false, activeMail = false;
 		static final long serialVersionUID = 53L;
+		static String mail_host = "";
 		static Logger logger = LogManager.getLogger(HandleNotification.class);
-		static String host = "smtp.bloomington.in.gov"; // city relay
 		String date="", dept_id="", pay_period_id="";
 		List<Employee> emps = null;
-    public HandleNotification(String val, boolean val2){
+    public HandleNotification(String val, String val2, boolean val3){
 				setPay_period_id(val);
-				if(val2)
+				setMail_host(val2);
+				if(val3)
 						setActiveMail();
     }
-    public HandleNotification(PayPeriod val, boolean val2){
+    public HandleNotification(PayPeriod val, String val2, boolean val3){
 				if(val != null){
 						setPay_period_id(val.getId()); 
 				}
-				if(val2)
+				setMail_host(val2);				
+				if(val3)
 						setActiveMail();				
     }
 		void setActiveMail(){
 				activeMail = true;
 		}
+    public void setMail_host(String val){
+				if(val != null){		
+					  mail_host = val;
+				}
+    }		
     //
     // setters
     //
@@ -143,7 +150,7 @@ public class HandleNotification{
 						if(!bcc_str.equals("")) bcc_str += ",";
 						bcc_str += one.getFull_name()+"<"+one.getEmail()+">";
 				}
-				System.err.println(" emp list "+bcc_str);
+				// System.err.println(" emp list "+bcc_str);
 				msg = compuseAndSend(bcc_str);
 				
 				return msg;
@@ -152,7 +159,7 @@ public class HandleNotification{
 				String msg = "";
 				String body_text =
 						"This is a friendly reminder that today marks the beginning of a new pay period. Our records show you have not submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible. The timetrack system is available here: \n\n"+
-						"https://timetrack.bloomington.in.gov \n\n"+
+						"https://timetrack.bloomington.in.gov/timetrack \n\n"+
 						"If you have any questions, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n"+
 						"Thank yuu\n\n"+
 						"City of Bloomington ITS\n";
@@ -160,7 +167,7 @@ public class HandleNotification{
 						return msg;
 				}
 				Properties props = new Properties();
-				props.put("mail.smtp.host", host);
+				props.put("mail.smtp.host", mail_host);
 				
 				Session session = Session.getDefaultInstance(props, null);
 				try{
@@ -171,12 +178,11 @@ public class HandleNotification{
 						InternetAddress[] addrArray = InternetAddress.parse(bcc_str);
 						message.setRecipients(Message.RecipientType.BCC, addrArray);
 						if(activeMail){
-								// ToDo uncomment for production
-								// Transport.send(message);
-								System.err.println(" active mail is on, email not sent");
+								Transport.send(message);
+								// System.err.println(" active mail is on, email not sent");
 						}
 						else{
-								System.err.println(" active mail is off, no email sent");
+								logger.warn(" active mail is off, no email sent");
 						}
 						//
 						// Success

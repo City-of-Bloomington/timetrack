@@ -77,7 +77,7 @@ public class NotificationScheduleAction extends TopAction{
 								addError("Pay period not selected");
 						}
 						else{
-								HandleNotification handle = new HandleNotification(pay_period_id, activeMail);
+								HandleNotification handle = new HandleNotification(pay_period_id, mail_host, activeMail);
 								back = handle.process();
 								if(!back.equals("")){
 										addActionError(back);
@@ -107,7 +107,7 @@ public class NotificationScheduleAction extends TopAction{
 						}
 				}
 				if(!date.equals("")){
-						schedular = new NotificationScheduler(date, activeMail);
+						schedular = new NotificationScheduler(date, mail_host, activeMail);
 				}
 				quartzMisc = new QuartzMisc("notification");
 				msg = quartzMisc.findScheduledDates();
@@ -138,12 +138,6 @@ public class NotificationScheduleAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						date = val;
 		}
-		/*
-		public void setDept_id(String val){
-				if(val != null && !val.equals("-1"))		
-						dept_id = val;
-		}
-		*/
 		public void setPay_period_id(String val){
 				if(val != null && !val.equals("-1"))		
 						pay_period_id = val;
@@ -166,30 +160,6 @@ public class NotificationScheduleAction extends TopAction{
 		public boolean hasPrevDates(){
 				return !prev_date.equals("");
 		}
-		/*
-		public List<Department> getDepts(){
-				if(depts == null){
-						DepartmentList dl = new DepartmentList();
-						dl.setActiveOnly();
-						dl.hasRefIds();
-						String msg = dl.find();
-						if(!msg.equals("")){
-								logger.error(msg);
-						}
-						else{
-								List<Department> ones = dl.getDepartments();
-								if(ones != null && ones.size() > 0){
-										depts = ones;
-								}
-						}
-				}
-				return depts;
-		}
-		public boolean hasDepts(){
-				getDepts();
-				return depts != null && depts.size() > 0;
-		}
-		*/
 		public List<PayPeriod> getPeriods(){
 				if(periods == null){
 						PayPeriodList dl = new PayPeriodList();

@@ -23,12 +23,16 @@ import org.apache.logging.log4j.Logger;
 public class NotificationScheduler {
 
 		static boolean debug = false, activeMail = false;
+		static String mail_host = "";
 		static Logger logger = LogManager.getLogger(NotificationScheduler.class);
 		int month = 1, day = 7, year=2017;
 		Date startDate, endDate = null;
-		public NotificationScheduler(String date, boolean activeMailFlag){
+		public NotificationScheduler(String date,
+																 String mail_host,
+																 boolean activeMailFlag){
 				if(activeMailFlag)
 						activeMail = true;
+				this.mail_host = mail_host;
 				try{
 						if(!date.equals("")){
 								String strArr[] = date.split("/");
@@ -73,6 +77,7 @@ public class NotificationScheduler {
 								.withIdentity(jobName, groupName)
 								.build();
 						job.getJobDataMap().put("activeMail", ""+activeMail);
+						job.getJobDataMap().put("mail_host", ""+mail_host);						
 						// 
 						// Trigger will run at 7am on the speciified date
 						// cron date and time entries (year can be ignored)
