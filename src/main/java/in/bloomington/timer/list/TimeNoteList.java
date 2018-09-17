@@ -44,7 +44,7 @@ public class TimeNoteList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				Connection con = Helper.getConnection();
-				String qq = "select t.id,t.document_id,t.reported_by,date_format(t.date,'%m/%d/%Y %H:%i'),notes from time_notes t ";
+				String qq = "select t.id,t.document_id,t.reported_by,date_format(t.date,'%m/%d/%y %H:%i'),notes from time_notes t ";
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;

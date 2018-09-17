@@ -58,7 +58,7 @@ public class TimeActionList{
 				ResultSet rs = null;
 				String msg="", qw="";
 				String qq = "select a.id,a.workflow_id,a.document_id,a.action_by,"+
-						" date_format(a.action_time,'%m/%d/%Y %H:%i'),w.node_id,w.next_node_id from time_actions a join workflows w on w.id=a.workflow_id ";
+						" date_format(a.action_time,'%m/%d/%y %H:%i'),w.node_id,w.next_node_id from time_actions a join workflows w on w.id=a.workflow_id ";
 				if(!id.equals("")){
 						qw += " w.id = ? ";
 				}

@@ -26,7 +26,7 @@ public class Document{
 		static Logger logger = LogManager.getLogger(Document.class);
 		static final long serialVersionUID = 2400L;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		DecimalFormat dfn = new DecimalFormat("###.00");
+		DecimalFormat dfn = new DecimalFormat("##0.00");
     private String id="", employee_id="", pay_period_id="",
 				initiated="",initiated_by="", selected_job_id="";
 		double week1Total = 0, week2Total = 0, week1_flsa=0, week2_flsa=0;
@@ -548,12 +548,12 @@ public class Document{
 								// String related_id = one.getRelated_hour_code_id();
 								if(accrual_id != null && !accrual_id.equals("")){
 										double hrs_total = one.getHours();
-										list.add(""+hrs_total);
+										list.add(""+dfn.format(hrs_total));
 										try{
 												int cd_id = Integer.parseInt(accrual_id);
 												if(usedAccrualTotals.containsKey(cd_id)){
 														double hrs_used = usedAccrualTotals.get(cd_id);
-														list.add(""+hrs_used);
+														list.add(""+dfn.format(hrs_used));
 														if(hrs_total > hrs_used){
 																hrs_total -= hrs_used;
 														}
@@ -563,7 +563,7 @@ public class Document{
 														one.setHours(hrs_total);
 												}
 												else{
-														list.add("0.0"); // nothing used
+														list.add("0.00"); // nothing used
 												}
 												list.add(""+dfn.format(hrs_total)); // adjusted
 												if(accrual.hasPref_max_leval()){

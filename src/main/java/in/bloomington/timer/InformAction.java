@@ -93,8 +93,8 @@ public class InformAction extends TopAction{
 																			 );
 										//
 										if(activeMail){
-												// back = mail.send();
-												back = "email activity is commented out";
+											  back = mail.send();
+												//	back = "email activity is commented out";
 										}
 										else{
 												back = "email activity flag is turned off, if you need to send email this flag need to be turned on in your configuration file";

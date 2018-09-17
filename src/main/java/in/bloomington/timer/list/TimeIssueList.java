@@ -54,7 +54,7 @@ public class TimeIssueList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				Connection con = Helper.getConnection();
-				String qq = "select i.id,i.time_block_id,i.reported_by,date_format(i.date,'%m/%d/%Y %H:%i'),i.issue_notes,i.status,date_format(i.closed_date,'%m/%d/%Y %H:%i'),i.closed_by from time_issues i ";
+				String qq = "select i.id,i.time_block_id,i.reported_by,date_format(i.date,'%m/%d/%Y %H:%i'),i.issue_notes,i.status,date_format(i.closed_date,'%m/%d/%y %H:%i'),i.closed_by from time_issues i ";
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;

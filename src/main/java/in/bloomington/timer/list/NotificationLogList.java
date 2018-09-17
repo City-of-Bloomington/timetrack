@@ -31,7 +31,7 @@ public class NotificationLogList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				Connection con = Helper.getConnection();
-				String qq = "select id,receipiants,message,date_format(date,'%m/%d/%Y %h:%i'),status,error_msg from notification_logs order by id desc limit 5 ";
+				String qq = "select id,receipiants,message,date_format(date,'%m/%d/%y %H:%i'),status,error_msg from notification_logs order by id desc limit 5 ";
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
