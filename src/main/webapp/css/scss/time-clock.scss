@@ -96,8 +96,7 @@
       font-size: $tc-clock-wrapper-current-time-font-size;
       line-height: $tc-clock-wrapper-current-time-line-height;
 
-      .am,
-      .pm {
+      .a {
         position: $tc-clock-wrapper-current-time-am-pm-position;
         right: $tc-clock-wrapper-current-time-am-pm-right;
         font-size: $tc-clock-wrapper-current-time-am-pm-font-size;
