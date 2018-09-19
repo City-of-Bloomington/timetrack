@@ -11,7 +11,7 @@
 		</div>
 	</s:if>
 	<s:elseif test="hasMessages()">
-		<s:set var="messages" value="messages" />		
+		<s:set var="messages" value="messages" />
 		<div class="welcome">
 			<%@  include file="messages.jsp" %>
 		</div>
@@ -24,6 +24,8 @@
 		    <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
 		  </div>
 
+		  <a href="<s:property value='#application.url' />payperiodProcess.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit" class="button">More Details</a>
+
 		  <div class="pay-period">
 		  	<s:if test="hasMoreThanOneGroup()">
 					<b>Group:&nbsp;</b><s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
@@ -31,8 +33,6 @@
 
 				<b>Pay Period:&nbsp;</b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
 			</div>
-			<div class="button-group">
-				<a href="<s:property value='#application.url' />payperiodProcess.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit" class="button">More Details</a></div>								
 		</div>
 
 		<!--  we need these as global since they will be used multiple times -->
@@ -60,7 +60,7 @@
 			</s:if>
 			<s:if test="hasNoDocNorSubmitEmps()">
 					<div class="button-group">
-						<a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a></div>					
+						<a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a></div>
 				</div>
 			</s:if>
 			<s:if test="hasNotApprovedEmps()">
@@ -149,7 +149,7 @@
 								<s:set var="whichWeek" value="'week-two'" />
 								<%@ include file="weeklySummary.jsp" %>
 							</s:if>
-						</div>									
+						</div>
 						<strong>Available Accruals</strong> <s:property value="employeeAccrualsShort" /> <br />
 						<s:if test="hasJob()">
 							<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />, <strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="job.comp_time_weekly_hours" /> <br />
