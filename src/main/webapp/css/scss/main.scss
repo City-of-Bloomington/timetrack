@@ -6,25 +6,9 @@
 */
 /*! Note: this is a cherry-picked tweak of FN1, specifically for Time Track */
 
-/* Import Components */
+/* Import Vars */
 @import 'colors';
 @import 'vars-mixins';
-@import 'icons';
-@import 'helpers';
-@import 'normalize';
-@import 'alerts';
-@import 'buttons';
-@import 'header';
-@import 'dropdown';
-@import 'tabs';
-@import 'tables';
-@import 'forms';
-@import 'calendar';
-@import 'internal-pages';
-@import 'time-block';
-@import 'time-clock';
-@import 'modals';
-@import 'customs';
 
 /* Global */
 .timetrack {
@@ -72,6 +56,10 @@
 
   p {
     color: $dark-slate;
+  }
+
+  a {
+    color: $cob-blue;
   }
 
   .container {
@@ -168,4 +156,35 @@
       }
     }
   }
+
+  .homepage {
+    .time-details {
+      @include clearfix;
+      width: calc(100% - 8px);
+      margin: 0 auto;
+      padding: 0 0 40px 0;
+
+      h1 {
+        display: inline-block;
+      }
+    }
+  }
 }
+
+/* Import Components */
+@import 'icons';
+@import 'helpers';
+@import 'normalize';
+@import 'alerts';
+@import 'buttons';
+@import 'header';
+@import 'dropdown';
+@import 'tabs';
+@import 'tables';
+@import 'forms';
+@import 'calendar';
+@import 'internal-pages';
+@import 'time-block';
+@import 'time-clock';
+@import 'modals';
+@import 'customs';
