@@ -24,7 +24,15 @@
 		    <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
 		  </div>
 
-		  <a href="<s:property value='#application.url' />payperiodProcess.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit" class="button">More Details</a>
+			<div class="button-group">
+		  	<a href="<s:property value='#application.url' />payperiodProcess.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit" class="button">More Details</a>
+		  </div>
+
+		  <s:if test="hasNoDocNorSubmitEmps()">
+		  	<div class="button-group">
+					<a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a>
+				</div>
+			</s:if>
 
 		  <div class="pay-period">
 		  	<s:if test="hasMoreThanOneGroup()">
@@ -35,7 +43,6 @@
 			</div>
 		</div>
 
-		<!--  we need these as global since they will be used multiple times -->
 		<s:set var="week1DateRange" value="payPeriod.week1DateRange" />
 		<s:set var="week2DateRange" value="payPeriod.week2DateRange" />
 
@@ -49,7 +56,7 @@
 					</s:iterator>
 				</div>
 			</s:if>
-			<!-- these ifs below should only display if there are users within -->
+
 			<s:if test="hasNotSubmittedEmps()">
 				<small class="status-tag not-submitted">Time Not Submitted</small>
 				<ul>
@@ -58,11 +65,7 @@
 					</s:iterator>
 				</ul>
 			</s:if>
-			<s:if test="hasNoDocNorSubmitEmps()">
-					<div class="button-group">
-						<a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a></div>
-				</div>
-			</s:if>
+
 			<s:if test="hasNotApprovedEmps()">
 				<small class="status-tag not-approved">Time Not Approved</small>
 				<ul>
