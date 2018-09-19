@@ -172,6 +172,22 @@
         display: inline-block;
       }
     }
+
+    .viewing-as {
+      background-color: $header-proxy-background-color;
+      border: none;
+      text-align: center;
+      font-weight: 700;
+      color: $dark-slate;
+      padding: 5px 0;
+    }
+
+    .calendar-header-controls {
+      .pay-period {
+        margin-left: auto;
+        margin-right: 0;
+      }
+    }
   }
 }
 
