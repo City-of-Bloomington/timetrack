@@ -137,9 +137,6 @@ public class PayrollProcessAction extends TopAction{
 				GroupManagerList gml = new GroupManagerList(employee_id);
 				getPay_period_id();
 				gml.setPay_period_id(pay_period_id);
-				if(!group_id.equals("")){
-						gml.setGroup_id(group_id);
-				}
 				gml.setProcessorsOnly();
 				String back = gml.find();
 				if(back.equals("")){

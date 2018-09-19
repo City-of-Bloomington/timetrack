@@ -17,7 +17,7 @@ public class QuartzMisc{
 
 		boolean debug = false;
 		static Logger logger = LogManager.getLogger(QuartzMisc.class);
-		String type = "accrual"; // accrual, notification 
+		String type = "accrual"; // accrual, notification, profile
 		String prevScheduleDate = "", nextScheduleDate = "";
     public QuartzMisc(boolean deb){
 				debug = deb;

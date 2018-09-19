@@ -93,7 +93,7 @@ public class AccrualScheduleAction extends TopAction{
 				if(!date.equals("")){
 						schedular = new AccrualScheduler(date);
 				}
-				quartzMisc = new QuartzMisc(debug);
+				quartzMisc = new QuartzMisc(debug); // default type:accrual
 				msg = quartzMisc.findScheduledDates();
 				if(msg.equals("")){
 						prev_date = quartzMisc.getPrevScheduleDate();

@@ -86,7 +86,7 @@ public class Profile extends CommonInc{
 				if(val != null)
 						nw_employee_id = val;
     }		
-		public void setBenefitGroup_id(String val){ // benefit Group
+		public void setBenefitGroup_id(String val){ // benefit Group Id
 				if(val != null)
 						benefitGroup_id = val;
     }

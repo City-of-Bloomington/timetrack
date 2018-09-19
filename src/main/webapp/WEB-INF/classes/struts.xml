@@ -98,6 +98,13 @@
 			<result name="error">/WEB-INF/jsp/accrualSchedular.jsp</result>
 			<result name="success">/WEB-INF/jsp/accrualSchedular.jsp</result>
 		</action>
+		<action name="profileSchedule" 
+						class="in.bloomington.timer.ProfileScheduleAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/profileSchedular.jsp</result>		
+			<result name="error">/WEB-INF/jsp/profileSchedular.jsp</result>
+			<result name="success">/WEB-INF/jsp/profileSchedular.jsp</result>
+		</action>
 		<action name="employeesSchedule" 
 						class="in.bloomington.timer.CurrentEmployeesScheduleAction" 
 						method="execute">

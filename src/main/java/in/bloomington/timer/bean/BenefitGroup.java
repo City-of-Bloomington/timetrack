@@ -73,6 +73,11 @@ public class BenefitGroup{
 		public boolean getExempt(){
 				return exempt;
 		}
+		public boolean isNonExempt(){
+				return isFullTime() &&
+						!isTemporary() &&
+						!isUnioned() && !isExempt();
+		}
 		public boolean getUnioned(){
 				return unioned;
 		}
@@ -83,7 +88,7 @@ public class BenefitGroup{
 				return temporary;
 		}
 		public boolean hasBenefits(){ // full time and part time w/benefits
-				return !temporary; // evertybody except temp
+				return !temporary; // everybody except temp
 		}
 		public boolean overTimeElegible(){
 				return temporary;  // only temp workers have overtime 

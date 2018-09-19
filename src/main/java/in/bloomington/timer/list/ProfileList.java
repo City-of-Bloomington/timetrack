@@ -34,6 +34,7 @@ public class ProfileList{
     public ProfileList(boolean deb){
 				debug = deb;
     }
+		// specific dept
     public ProfileList(String val,
 											 String val2,
 											 List<BenefitGroup> vals){
@@ -41,6 +42,7 @@ public class ProfileList{
 				setSelectedDeptRef(val2);
 				setBenefitGroups(vals);
 		}
+		// all depts
     public ProfileList(boolean deb,
 											 Hashtable<String, BenefitGroup> vals,
 											 PayPeriod period,
@@ -50,6 +52,18 @@ public class ProfileList{
 				setPayPeriod(period);
 				this.currentOnly = currentOnly;
     }
+		// all depts
+    public ProfileList(boolean deb,
+											 List<BenefitGroup> vals,
+											 String val, // date
+											 String val2, // dept_ref
+											 boolean currentOnly){
+				debug = deb;
+				setBenefitGroups(vals);
+				setEndDate(val);
+				setSelectedDeptRef(val2);
+				this.currentOnly = currentOnly;
+    }		
     //
     // setters
     //
@@ -71,7 +85,7 @@ public class ProfileList{
 						payPeriod = val;
 		}
 		public void setSelectedDeptRef(String val){
-				if(val != null){
+				if(val != null && !val.equals("")){
 						selected_dept_ref = val;
 				}
 		}
@@ -232,11 +246,11 @@ public class ProfileList{
 						" and ejp.PositionDetailESD <= '"+date+"' "+
 						" and ejp.IsPrimaryJob = 1 ";
 						//" and (ejp.jobEventReasonId is null or ejp.jobEventReasonId in(2,5))";
-				// one dept only				
+				// one dept may be with one or multiple refs				
 				if(!selected_dept_ref.equals("")){
 						qq += " and ejp.departmentID in ("+selected_dept_ref+") ";// list of all depts
 				}
-				else{ // all departments
+				else{ // all departments at once
 						qq += " and ejp.departmentID in ("+deptRefs+") ";// list of all depts
 				}
 				if(currentOnly){

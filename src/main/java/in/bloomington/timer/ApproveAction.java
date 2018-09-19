@@ -136,9 +136,6 @@ public class ApproveAction extends TopAction{
 				getPay_period_id();
 				gml.setPay_period_id(pay_period_id);
 				gml.setApproversOnly();
-				if(!group_id.equals("")){
-						gml.setGroup_id(group_id);
-				}
 				String back = gml.find();
 				if(back.equals("")){
 						List<GroupManager> ones = gml.getManagers();

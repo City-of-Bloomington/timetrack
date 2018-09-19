@@ -162,21 +162,28 @@ public class JobTaskList{
 
 		}
     //
-		/*
-				select j.id,j.position_id,j.salary_group_id,j.employee_id,date_format(j.effective_date,'%m/%d/%Y'),date_format(j.expire_date,'%m/%d/%Y'),j.primary_flag,j.weekly_regular_hours,j.comp_time_weekly_hours,j.comp_time_factor,j.holiday_comp_factor,j.inactive,g.name,g.description,g.default_regular_id,g.inactive from jobs j join salary_groups g on g.id=j.salary_group_id join department_employees de on de.employee_id=j.employee_id where de.department_id=1 ;
-		 */
 		public String find(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", qw="";
-				String qq = "select j.id,j.position_id,j.salary_group_id,j.employee_id,date_format(j.effective_date,'%m/%d/%Y'),date_format(j.expire_date,'%m/%d/%Y'),j.primary_flag,"+
+				String qq = "select j.id,"+
+						"j.position_id,"+
+						"j.salary_group_id,"+
+						"j.employee_id,"+
+						"date_format(j.effective_date,'%m/%d/%Y'),"+
+						
+						"date_format(j.expire_date,'%m/%d/%Y'),"+
+						"j.primary_flag,"+
 						"j.weekly_regular_hours,"+
 						"j.comp_time_weekly_hours,"+
 						"j.comp_time_factor,"+
+						
 						"j.holiday_comp_factor,"+
 						"j.clock_time_required,"+
+						"j.hourly_rate,"+
 						"j.inactive,  "+
+						
 						"g.name,g.description,g.default_regular_id,g.inactive "+
 						" from jobs j ";
 				qq += " join salary_groups g on g.id=j.salary_group_id ";
@@ -292,12 +299,14 @@ public class JobTaskList{
 															 rs.getDouble(10),
 															 rs.getDouble(11),
 															 rs.getString(12) != null,
-															 rs.getString(13) != null,
-															 rs.getString(14),
+															 rs.getDouble(13),
+															 rs.getString(14) != null,
 															 rs.getString(15),
 															 rs.getString(16),
-															 rs.getString(17) != null
+															 rs.getString(17),
+															 rs.getString(18) != null
 															 );
+							 
 							 if(!jobTasks.contains(one))
 									 jobTasks.add(one);
 						}
@@ -311,5 +320,86 @@ public class JobTaskList{
 				}
 				return msg;
 		}
-
+		public String findForUpdate(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", qw="";
+				String qq = "select j.id,"+
+						"j.position_id,"+
+						"j.salary_group_id,"+
+						"j.employee_id,"+
+						"date_format(j.effective_date,'%m/%d/%Y'),"+
+						
+						"date_format(j.expire_date,'%m/%d/%Y'),"+
+						"j.primary_flag,"+
+						"j.weekly_regular_hours,"+
+						"j.comp_time_weekly_hours,"+
+						"j.comp_time_factor,"+
+						
+						"j.holiday_comp_factor,"+
+						"j.clock_time_required,"+
+						"j.hourly_rate,"+
+						"j.inactive,  "+
+						"g.name,g.description,g.default_regular_id,g.inactive,"+
+						" e.employee_number "+
+						" from jobs j,employees e, "+
+						" salary_groups g ";
+				qq += " where g.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null "+
+						" and e.inactive is null ";
+				// active only
+				qq += " and j.inactive is null ";
+				// current only
+				qq += " and j.effective_date < now() and (j.expire_date > now() or j.expire_date is null) ";
+				
+				con = Helper.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}				
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								if(jobTasks == null)
+									 jobTasks = new ArrayList<>();
+							 JobTask one =
+									 new JobTask(
+															 rs.getString(1),
+															 rs.getString(2),
+															 rs.getString(3),
+															 rs.getString(4),
+															 rs.getString(5),
+															 rs.getString(6),
+															 rs.getString(7) != null,
+															 rs.getInt(8),
+															 rs.getInt(9),
+															 rs.getDouble(10),
+															 rs.getDouble(11),
+															 rs.getString(12) != null,
+															 rs.getDouble(13),
+															 rs.getString(14) != null,
+															 rs.getString(15),
+															 rs.getString(16),
+															 rs.getString(17),
+															 rs.getString(18) != null,
+															 rs.getString(19)
+															 );
+							 System.err.println(" adding "+one.getEmployee_number());
+							 if(!jobTasks.contains(one))
+									 jobTasks.add(one);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}
+				return msg;
+		}
+						
 }

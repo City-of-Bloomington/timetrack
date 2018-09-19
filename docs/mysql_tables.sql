@@ -308,6 +308,7 @@ CREATE TABLE `jobs` (
   `comp_time_factor` double(2,1) DEFAULT '1.0',
   `holiday_comp_factor` double(2,1) DEFAULT '1.0',
   `clock_time_required` char(1) DEFAULT NULL,
+		hourly_rate double(7,2) default 0.00,
   `inactive` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `position_id` (`position_id`),
@@ -532,7 +533,8 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;; the user need to create quartz tables, get them from
 ;; quartz website
 ;;
-;;
+;; alter table jobs add hourly_rate double(6,2) default 0.00 after clock_time_required;
+
 
 
 
