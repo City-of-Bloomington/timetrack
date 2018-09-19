@@ -38,6 +38,8 @@
 
     // to-do: lets think about moving these out onto their own
     &.status-tag {
+      display: inline-flex;
+      align-self: center;
       border-radius: .25em;
       padding: 2px 5px;
       color: white;
@@ -68,7 +70,7 @@
       }
 
       &.select-all {
-        margin: 0 0 20px auto;
+        margin: 0;
       }
     }
   }
@@ -144,7 +146,7 @@
 
   .approve-process-header-lists {
     border-bottom: 1px solid $silver-chalice;
-    margin: 0 0 20px 0;
+    margin: 20px 0;
 
     small {
       &.status-tag {

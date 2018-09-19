@@ -18,6 +18,16 @@
 	</s:elseif>
 	<s:if test="hasGroups()">
 		<div class="calendar-header-controls">
+			<div class="pay-period">
+		  	<s:if test="hasMoreThanOneGroup()">
+		  		<b>Pay Period:&nbsp;</b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
+
+					<b>Group:&nbsp;</b><s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
+				</s:if>
+			</div>
+		</div>
+
+		<div class="calendar-header-controls">
 			<div class="button-group">
 		    <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='previousPayPeriod.id' />" class="button hide-text has-icon chevron-left"><span>Backwards</span></a>
 		    <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='currentPayPeriod.id' />" class="button today"><span>Current Pay Period</span></a>
@@ -34,19 +44,20 @@
 				</div>
 			</s:if>
 
-		  <div class="pay-period">
-		  	<s:if test="hasMoreThanOneGroup()">
-					<b>Group:&nbsp;</b><s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
-				</s:if>
-
-				<b>Pay Period:&nbsp;</b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
+			<div class="form-group">
+				<small class="status-tag approval-ready select-all">
+					<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
+				</small>
 			</div>
 		</div>
+
+		<hr />
 
 		<s:set var="week1DateRange" value="payPeriod.week1DateRange" />
 		<s:set var="week2DateRange" value="payPeriod.week2DateRange" />
 
-		<div class="approve-process-header-lists">
+		<s:if test="hasNonDocEmps() || hasNotSubmittedEmps() || hasNotApprovedEmps()">
+			<div class="approve-process-header-lists">
 			<s:if test="hasNonDocEmps()">
 				<div class="emp-no-time-wrapper">
 					<strong>Employee(s) with no time entry for this pay period:</strong>
@@ -74,14 +85,10 @@
 					</s:iterator>
 				</ul>
 			</s:if>
-		</div>
-		<div class="flex-row">
-			<small class="status-tag approval-ready select-all">
-				<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
-			</small>
-		</div>
+			</div>
+		</s:if>
 
-		<hr />
+
 
 		<s:if test="hasDocuments()">
 			<s:iterator var="one" value="documents">
