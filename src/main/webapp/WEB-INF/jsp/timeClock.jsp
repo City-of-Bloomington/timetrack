@@ -103,7 +103,7 @@
 		var isBeforeNoon = moment(btownTime).isBefore(beforeNoon);
 
 		bigTime.innerHTML = exp.format('h:mm');
-		bigTimeAmPm.innerHTML = exp.format('a');
+		bigTimeAmPm.innerHTML = exp.format('a').toUpperCase();
 		isBeforeNoon ? bigTimeAmPm.classList.add("am") : bigTimeAmPm.classList.add("pm");
 	}
 	setInterval(function() { timeUpdate(); }, 10);
