@@ -94,12 +94,11 @@
 			<s:iterator var="one" value="documents">
 				<s:if test="hasDaily()">
 					<div class="approval-wrapper">
-						<h2>
+						<h1>
 							<a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" />
 								<s:property value="employee" />
 							</a>
-							<!-- this is comment out for testing purpose, we need to change in prod, get back from approve.jsp.old
-							-->
+
 							<s:if test="canBeApproved()">
 								<s:if test="isUserCurrentEmployee()">
 									<small class="status-tag approval-ready">
@@ -126,7 +125,21 @@
 							<s:else>
 								<small class="status-tag not-submitted">Not Submitted</small>
 							</s:else>
-						</h2>
+						</h1>
+
+						<ul>
+							<li>
+								<strong>Available Accruals</strong> <s:property value="employeeAccrualsShort" />
+							</li>
+							<s:if test="hasJob()">
+								<li>
+									<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />
+								</li>
+								<li>
+									<strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="job.comp_time_weekly_hours" />
+								</li>
+							</s:if>
+						</ul>
 
 						<s:if test="hasWarnings()">
 							<s:set var="warnings" value="warnings" />
@@ -160,10 +173,8 @@
 								<%@ include file="weeklySummary.jsp" %>
 							</s:if>
 						</div>
-						<strong>Available Accruals</strong> <s:property value="employeeAccrualsShort" /> <br />
-						<s:if test="hasJob()">
-							<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />, <strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="job.comp_time_weekly_hours" /> <br />
-						</s:if>
+
+
 					</div>
 				</s:if>
 			</s:iterator>

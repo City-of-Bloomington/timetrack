@@ -20,9 +20,9 @@
 	<s:if test="hasGroups()">
 		<div class="calendar-header-controls">
 			<div class="pay-period">
-		  	<b>Group:&nbsp;</b><s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
-
 				<b>Pay Period:&nbsp;</b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
+
+		  	<b>Group:&nbsp;</b><s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
 			</div>
 		</div>
 
@@ -95,7 +95,7 @@
 			<s:iterator var="one" value="documents">
 				<s:if test="hasDaily()">
 					<div class="approval-wrapper">
-						<h2>
+						<h1>
 							<a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" />
 								<s:property value="employee" />
 							</a>
@@ -128,7 +128,21 @@
 							<s:else>
 								<small class="status-tag not-submitted">n/a</small>
 							</s:else>
-						</h2>
+						</h1>
+
+						<ul>
+							<li>
+								<strong>Available Accruals</strong> <s:property value="employeeAccrualsShort" />
+							</li>
+							<s:if test="hasJob()">
+								<li>
+									<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />
+								</li>
+								<li>
+									<strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="job.comp_time_weekly_hours" />
+								</li>
+							</s:if>
+						</ul>
 
 						<s:if test="hasWarnings()">
 							<s:set var="warnings" value="warnings" />
@@ -143,10 +157,6 @@
 							<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />
 							<s:set var="timeIssues" value="timeIssues" />
 							<%@ include file="timeIssues.jsp" %>
-						</s:if>
-						<strong>Available Accruals:</strong> <s:property value="employeeAccrualsShort" /> <br />
-						<s:if test="hasJob()">
-							<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />, <strong>Weekly Compt Time Earned After Hrs: </strong><s:property value="job.comp_time_weekly_hours" /> <br />
 						</s:if>
 					</div>
 				</s:if>

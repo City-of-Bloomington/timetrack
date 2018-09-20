@@ -75,11 +75,34 @@
 			<s:iterator var="one" value="documents">
 				<s:if test="hasDaily()">
 					<div class="approval-wrapper">
-						<h2>
+						<h1>
 							<a href="<s:property value='#application.url' />timeDetails.action?document_id=<s:property value='id' />&action=View" />
 								<s:property value="employee" />
 							</a>
-						</h2>
+
+							<!-- <s:if test="hasNotSubmittedEmps()">
+								<small class="status-tag not-submitted">Time Not Submitted</small>
+							</s:if>
+
+							<s:if test="hasNotApprovedEmps()">
+								<small class="status-tag not-approved">Time Not Approved</small>
+								</ul>
+							</s:if> -->
+						</h1>
+
+						<ul>
+							<li>
+								<strong>Available Accruals</strong> <s:property value="employeeAccrualsShort" />
+							</li>
+							<s:if test="hasJob()">
+								<li>
+									<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />
+								</li>
+								<li>
+									<strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="job.comp_time_weekly_hours" />
+								</li>
+							</s:if>
+						</ul>
 
 						<s:if test="hasWarnings()">
 							<s:set var="warnings" value="warnings" />
@@ -112,10 +135,6 @@
 								<%@ include file="weeklySummary.jsp" %>
 							</s:if>
 						</div>
-						<strong>Available Accruals</strong> <s:property value="employeeAccrualsShort" /> <br />
-						<s:if test="hasJob()">
-							<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />, <strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="job.comp_time_weekly_hours" /> <br />
-						</s:if>
 					</div>
 				</s:if>
 			</s:iterator>
