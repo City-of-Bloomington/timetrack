@@ -107,4 +107,32 @@ table {
       }
     }
   }
+
+  &.email-logs {
+    margin: 20px 0 0 0;
+    table-layout: fixed;
+    width: 100%;
+
+    thead,
+    tbody {
+      tr {
+        th,
+        td {
+          &:nth-of-type(1),
+          &:last-of-type {
+            border-right: 1px solid silver;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          word-break: break-word;
+          vertical-align: top;
+        }
+      }
+    }
+  }
 }
