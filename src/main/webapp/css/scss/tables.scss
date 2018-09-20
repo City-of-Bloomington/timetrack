@@ -21,6 +21,7 @@ table {
 
       td {
         border: $table-tr-totals-td-border;
+        border-right: $table-tr-totals-td-border !important;
 
         &:last-of-type {
           strong {
@@ -106,6 +107,30 @@ table {
         text-align: $tables-group-three-th-td-second-type-text-align;
       }
     }
+  }
+
+  &.timewarp {
+    thead {
+      tr {
+        th {
+          &:last-of-type {
+            text-align: right;
+          }
+        }
+      }
+    }
+    // thead,
+    // tbody {
+    //   tr {
+    //     th,
+    //     td {
+    //       &:nth-of-type(1),
+    //       &:last-of-type {
+    //         border-right: 1px solid silver;
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   &.email-logs {

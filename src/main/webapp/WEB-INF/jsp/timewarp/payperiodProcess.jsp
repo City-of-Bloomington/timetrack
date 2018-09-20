@@ -8,47 +8,49 @@
 <s:form action="payperiodProcess" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="source" value="source" />
-<s:if test="hasActionErrors()">
-	<div class="errors">
-    <s:actionerror/>
-	</div>
-</s:if>
-<s:elseif test="hasActionMessages()">
-	<div class="welcome">
-    <s:actionmessage/>
-	</div>
-</s:elseif>
-<table width="100%" border="1">
-	<tr><td align="center">
-		<table width="90%" border="0">
-			<tr>
-				<td align="right" class="td_text">Pay Period </td>
-				<td align="left" class="td_text">&nbsp;&nbsp;<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="doRefresh()" />
-				</td>
-				<td align="right" class="td_text"><a href="<s:property value='#application.url' />paypriodProcess.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a></td>
-			</tr>
-			<tr>
-				<td align="right" class="td_text">Department </td>
-				<td align="left" class="td_text">&nbsp;&nbsp;<s:select name="department_id" valuw="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" onchange="doRefresh()" /></td>
-			</tr>
-			<tr>
-				<td align="right" class="td_text">Output format </td>
-				<td align="left" class="td_text">&nbsp;&nbsp;<s:radio name="outputType" value="%{outputType}" list="#{'html':'html','csv':'csv'}" /></td>
-			</tr>
-			<tr>
-				<td class="th_text">&nbsp;</td>
-				<td class="th_text">&nbsp;</td>
-				<td class="th_text"><s:submit name="action" type="button" value="Submit" class="fn1-btn"/></td>
-			</tr>
-		</table>
-	</td>
-	</tr>
-</table>
+
+	<s:if test="hasActionErrors()">
+		<div class="errors">
+	    <s:actionerror/>
+		</div>
+	</s:if>
+	<s:elseif test="hasActionMessages()">
+		<div class="welcome">
+	    <s:actionmessage/>
+		</div>
+	</s:elseif>
+
+	<table width="100%" border="1">
+		<tr><td align="center">
+			<table width="90%" border="0">
+				<tr>
+					<td align="right" class="td_text">Pay Period </td>
+					<td align="left" class="td_text">&nbsp;&nbsp;<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="doRefresh()" />
+					</td>
+					<td align="right" class="td_text"><a href="<s:property value='#application.url' />paypriodProcess.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a></td>
+				</tr>
+				<tr>
+					<td align="right" class="td_text">Department </td>
+					<td align="left" class="td_text">&nbsp;&nbsp;<s:select name="department_id" valuw="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" onchange="doRefresh()" /></td>
+				</tr>
+				<tr>
+					<td align="right" class="td_text">Output format </td>
+					<td align="left" class="td_text">&nbsp;&nbsp;<s:radio name="outputType" value="%{outputType}" list="#{'html':'html','csv':'csv'}" /></td>
+				</tr>
+				<tr>
+					<td class="th_text">&nbsp;</td>
+					<td class="th_text">&nbsp;</td>
+					<td class="th_text"><s:submit name="action" type="button" value="Submit" class="fn1-btn"/></td>
+				</tr>
+			</table>
+		</td>
+		</tr>
+	</table>
 </s:form>
+
 <s:if test="action != ''">
-	<div style="text-align:center">
-		<h4><s:property value="department" /> Employees</h4>			
-	</div> 		
+	<h1><s:property value="department" /> Employees</h1>
+
 	<s:if test="hasProcesses()">
 			<table width="100%">
 				<tr>
@@ -63,7 +65,7 @@
 							<s:if test="document.hasTimeActions()">
 								<s:set var="timeActions" value="document.timeActions" />
 								<s:set var="timeActionsTitle" value="' '" />
-								<%@  include file="../timeActions.jsp" %>									
+								<%@  include file="../timeActions.jsp" %>
 							</s:if>
 						</td>
 						<td valign="top">
@@ -100,7 +102,7 @@
 									<td class="td_text"><s:property value="lastEntry.val" /></td>
 									<td class="td_text"><s:property value="lastEntry.val2" /></td>
 									<td class="td_text" align="right"><s:property value="lastEntry.val3" /></td>
-								</tr>									
+								</tr>
 							</table>
 						</td>
 					</tr>
@@ -110,10 +112,10 @@
 								<b>Status:</b> <s:property value="document.LastWorkflow.node.annotation" />
 							</td>
 						</tr>
-					</s:if>					
+					</s:if>
 					<s:if test="document.hasAllAccruals()">
 						<tr>
-							<td colspan="2" class="td_text"><b> Available Accruals: </b> 
+							<td colspan="2" class="td_text"><b> Available Accruals: </b>
 								<s:property value="document.employeeAccrualsShort" />
 							</td>
 						</tr>
