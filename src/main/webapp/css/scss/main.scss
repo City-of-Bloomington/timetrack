@@ -88,6 +88,10 @@
     padding: 20px 4px;
     color: $dark-slate;
 
+    a {
+      color: $dark-slate;
+    }
+
     select {
       margin: 0 20px 0 0;
 
@@ -125,6 +129,10 @@
   .calendar-summary-controls {
     display: flex;
     color: $dark-slate;
+
+    a {
+      color: $dark-slate;
+    }
 
     .button {
       background-color: $alabaster;
