@@ -24,48 +24,59 @@
             <!-- this is for the weekend -->
 						<s:if test="isToday()">
 							<div class="day today"
-                data-block-id="<s:property value='id' />"
-                data-doc-id="<s:property value='document_id' />"
-                data-date="<s:property value='date' />"
-                data-order-index="<s:property value='#blockKey' />">
+                   tabindex="1"
+                   data-block-id="<s:property value='id' />"
+                   data-doc-id="<s:property value='document_id' />"
+                   data-date="<s:property value='date' />"
+                   data-order-index="<s:property value='#blockKey' />">
 						</s:if>
+
 						<s:else>
 							<div class="day weekend"
-                data-block-id="<s:property value='id' />"
-                data-doc-id="<s:property value='document_id' />"
-                data-date="<s:property value='date' />"
-                data-order-index="<s:property value='#blockKey' />">
+                   tabindex="1"
+                   data-block-id="<s:property value='id' />"
+                   data-doc-id="<s:property value='document_id' />"
+                   data-date="<s:property value='date' />"
+                   data-order-index="<s:property value='#blockKey' />">
 						</s:else>
           </s:if>
+
           <s:else>
             <!-- this is for each day -->
 						<s:if test="isToday()">
 							<div class="day today"
-                data-block-id="<s:property value='id' />"
-                data-doc-id="<s:property value='document_id' />"
-                data-date="<s:property value='date' />"
-                data-order-index="<s:property value='#blockKey' />">
+                   tabindex="1"
+                   data-block-id="<s:property value='id' />"
+                   data-doc-id="<s:property value='document_id' />"
+                   data-date="<s:property value='date' />"
+                   data-order-index="<s:property value='#blockKey' />">
 						</s:if>
+
 						<s:elseif test="isHoliday()">
 							<div class="day holiday"
-                data-block-id="<s:property value='id' />"
-                data-doc-id="<s:property value='document_id' />"
-                data-date="<s:property value='date' />"
-                data-order-index="<s:property value='#blockKey' />">
-								<span><s:property value="holidayName" /></span>
+                   tabindex="1"
+                   data-block-id="<s:property value='id' />"
+                   data-doc-id="<s:property value='document_id' />"
+                   data-date="<s:property value='date' />"
+                   data-order-index="<s:property value='#blockKey' />">
+								   <span><s:property value="holidayName" /></span>
 						</s:elseif>
+
 						<s:else>
 							<div class="day"
-                data-block-id="<s:property value='id' />"
-                data-doc-id="<s:property value='document_id' />"
-                data-date="<s:property value='date' />"
-                data-order-index="<s:property value='#blockKey' />">
+                   tabindex="1"
+                   data-block-id="<s:property value='id' />"
+                   data-doc-id="<s:property value='document_id' />"
+                   data-date="<s:property value='date' />"
+                   data-order-index="<s:property value='#blockKey' />">
 						</s:else>
           </s:else>
           <s:property value="dayInt" />
         </s:if>
+
         <s:if test="hasData()">
           <div class="data <s:if test='!hasNextLine()'>non-regular</s:if>"
+               tabindex="1"
                data-block-id="<s:property value='id' />"
                data-date="<s:property value='date' />"
                data-time-out="<s:property value='Time_out' />">
@@ -75,9 +86,10 @@
             <span><b><s:property value="timeInfo" /></b></span>
 
             <a class="delete-time-confirm"
-                data-info="<s:property value='timeInfo' />"
-                data-date="<s:property value='date' />"
-                data-block-id="<s:property value='id' />">
+               tabindex="1"
+               data-info="<s:property value='timeInfo' />"
+               data-date="<s:property value='date' />"
+               data-block-id="<s:property value='id' />">
               <svg id="remove-icon" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 352 512'><path fill="" d='M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z'/></svg>
             </a>
           </div>

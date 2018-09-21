@@ -26,7 +26,7 @@
 
 		<div class="time-details">
 			<div class="calendar-summary-controls m-b-40">
-				<a class="button pay-notes" data-doc-id="<s:property value='%{document.id}' />">Add Pay Period Note</a>
+				<a class="button pay-notes" data-doc-id="<s:property value='%{document.id}' />" tabindex="2">Add Pay Period Note</a>
 
 				<s:if test="document.hasLastWorkflow()" >
 				  <s:if test="document.lastWorkflow.canSubmit()">
@@ -35,6 +35,7 @@
 				      <s:hidden name="document_id" value="%{document.id}" />
 				      <s:hidden name="workflow_id" value="%{document.lastWorkflow.next_workflow_id}" />
 				      <s:submit
+				         tabindex="2"
 				      	 name="action"
 				      	 type="submit"
 				      	 class="button"
