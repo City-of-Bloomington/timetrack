@@ -139,6 +139,16 @@
       margin: 10px 0 30px 0;
     }
 
+    p {
+      margin: 0 0 10px 0;
+    }
+
+    .alert {
+      p {
+        margin: 0;
+      }
+    }
+
     &:last-of-type {
       border-bottom: none;
     }
