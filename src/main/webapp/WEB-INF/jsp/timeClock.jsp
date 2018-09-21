@@ -32,7 +32,10 @@
 			</div>
 
 			<s:if test="action == ''">
-				<div id="current-time"></div>
+				<div id="current-time">
+					<span class="time"></span>
+					<span class="a"></span>
+				</div>
 			</s:if>
 
 			<s:else>
@@ -91,36 +94,29 @@
 <%@ include file="footer.jsp" %>
 <script type="text/javascript">
 	function timeUpdate() {
-		$.post('timeClock.action', {data: { serverTime: $("#time_clock_id2").val() }}, function(data){
-			var displayTime = $(data).find('#time_clock_id2').val();
-			displayTime = displayTime.split(':');
+		var btownTime = moment().tz("America/Indiana/Indianapolis");
+		var now = moment();
+		var exp = moment(btownTime);
+		var bigTime = document.getElementsByClassName("time")[0];
+		var bigTimeAmPm = document.getElementsByClassName("a")[0];
+		var beforeNoon = btownTime.clone().hour(12).minute(0).second(0);
+		var isBeforeNoon = moment(btownTime).isBefore(beforeNoon);
 
-			var displayHours = Number(displayTime[0]);
-			var displayMinutes = Number(displayTime[1]);
-
-			var displayTimeValue;
-
-			if (displayHours > 0 && displayHours <= 12) {
-			  displayTimeValue = "" + displayHours;
-			} else if (displayHours > 12) {
-			  displayTimeValue = "" + (displayHours - 12);
-			} else if (displayHours == 0) {
-			  displayTimeValue = "12";
-			}
-
-			displayTimeValue += (displayMinutes < 10) ? ":0" + displayMinutes : ":" + displayMinutes;
-			displayTimeValue += (displayHours >= 12) ? " <span class='pm'>PM</span>" : " <span class='am'>AM</span>";
-
-			var paintTime = document.getElementById("current-time");
-			paintTime.innerHTML = displayTimeValue;
-		});
+		bigTime.innerHTML = exp.format('h:mm');
+		bigTimeAmPm.innerHTML = exp.format('a').toUpperCase();
+		isBeforeNoon ? bigTimeAmPm.classList.add("am") : bigTimeAmPm.classList.add("pm");
 	}
-	setInterval(function() { timeUpdate(); }, 10000);
+	setInterval(function() { timeUpdate(); }, 10);
 	timeUpdate();
 
-	var headingMetaElm = document.getElementById('meta');
-	var dayMoment = moment().format('dddd');
-	var dateMoment = moment().format('MMMM Do YYYY');
-	var newHeadingMetaElm = dayMoment + "  -  " + dateMoment;
-	headingMetaElm.innerHTML = newHeadingMetaElm;
+	function topTime() {
+		var btownTime = moment().tz("America/Indiana/Indianapolis");
+		var now = moment();
+		var exp = moment(btownTime);
+		var headingMetaElm = document.getElementById('meta');
+		var btownTime = moment().tz("America/Indiana/Indianapolis");
+		headingMetaElm.innerHTML = exp.format('MMMM Do YYYY, h:mm:ss a');
+	}
+	setInterval(function() { topTime(); }, 10);
+	topTime();
 </script>

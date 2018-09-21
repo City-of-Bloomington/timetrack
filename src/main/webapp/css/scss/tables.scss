@@ -21,6 +21,7 @@ table {
 
       td {
         border: $table-tr-totals-td-border;
+        border-right: $table-tr-totals-td-border !important;
 
         &:last-of-type {
           strong {
@@ -104,6 +105,58 @@ table {
 
       &:nth-of-type(2) {
         text-align: $tables-group-three-th-td-second-type-text-align;
+      }
+    }
+  }
+
+  &.timewarp {
+    thead {
+      tr {
+        th {
+          &:last-of-type {
+            text-align: right;
+          }
+        }
+      }
+    }
+    // thead,
+    // tbody {
+    //   tr {
+    //     th,
+    //     td {
+    //       &:nth-of-type(1),
+    //       &:last-of-type {
+    //         border-right: 1px solid silver;
+    //       }
+    //     }
+    //   }
+    // }
+  }
+
+  &.email-logs {
+    margin: 20px 0 0 0;
+    table-layout: fixed;
+    width: 100%;
+
+    thead,
+    tbody {
+      tr {
+        th,
+        td {
+          &:nth-of-type(1),
+          &:last-of-type {
+            border-right: 1px solid silver;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          word-break: break-word;
+          vertical-align: top;
+        }
       }
     }
   }

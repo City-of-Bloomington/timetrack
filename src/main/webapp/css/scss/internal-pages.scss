@@ -10,7 +10,7 @@
 
     small {
       font-weight: $internal-page-h1-small-font-weight;
-      margin-left: auto;
+      margin: 0 0 0 20px;
     }
   }
 
@@ -34,10 +34,12 @@
 
   small {
     font-weight: $internal-page-h2-small-font-weight;
-    margin-left: auto;
+    // margin-left: auto;
 
     // to-do: lets think about moving these out onto their own
     &.status-tag {
+      display: inline-flex;
+      align-self: center;
       border-radius: .25em;
       padding: 2px 5px;
       color: white;
@@ -68,7 +70,7 @@
       }
 
       &.select-all {
-        margin: 0 0 20px auto;
+        margin: 0;
       }
     }
   }
@@ -88,9 +90,9 @@
     padding: 0 0 0 10px;
     list-style-position: $internal-page-ul-list-style-position;
 
-    &:last-of-type {
-      margin: 0;
-    }
+    // &:last-of-type {
+    //   margin: 0;
+    // }
 
     li {
       margin: $internal-page-ul-li-margin;
@@ -108,7 +110,7 @@
 
   .calendar-header-controls {
     padding: 0 !important;
-    margin-bottom: 20px;
+    margin: 20px 0;
 
     a {
       color: $dark-slate;
@@ -125,8 +127,29 @@
 
   .approval-wrapper {
     border-bottom: 1px solid $silver-chalice;
-    margin: 30px 0 20px 0;
-    padding: 0 0 20px 0;
+    margin: 0 0 0 -20px;
+    padding: 20px;
+    width: calc(100% + 40px);
+
+    h1 {
+      border: none;
+    }
+
+    ul {
+      margin: 10px 0 30px 0;
+    }
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:nth-child(odd) {
+      background: #efefef;
+
+      .totals-row {
+        background: #efefef
+      }
+    }
   }
 
   button {
@@ -144,7 +167,7 @@
 
   .approve-process-header-lists {
     border-bottom: 1px solid $silver-chalice;
-    margin: 0 0 20px 0;
+    margin: 20px 0;
 
     small {
       &.status-tag {

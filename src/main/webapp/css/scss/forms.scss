@@ -34,8 +34,10 @@
 
   input {
     &[type=checkbox] {
+      position: relative;
       cursor: pointer;
       margin: $form-input-checkbox-margin;
+      top: 1px;
     }
 
     &:focus {
