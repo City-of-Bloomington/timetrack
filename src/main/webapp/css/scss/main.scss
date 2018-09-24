@@ -186,10 +186,24 @@
   }
 
   .submitted-on {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 0 0 20px;
+    padding: 0 0 0 30px;
+
+    &:before {
+      position: absolute;
+      content: '';
+      top: 7px;
+      left: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 173.59082 127.51709'%3E%3Cg id='Layer_2' data-name='Layer 2'%3E%3Cg id='calendar-check'%3E%3Cpolygon id='check' points='173.591 17.85 156.087 0 61.925 92.333 17.678 48.086 0 65.764 61.752 127.517 173.591 17.85' fill='%234caf50'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 20px;
+      height: 23px;
+    }
   }
 
   .homepage {
