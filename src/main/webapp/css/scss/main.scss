@@ -13,6 +13,8 @@
 /* Global */
 .timetrack {
   font-family: $font-base;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
   * { box-sizing: border-box; }
 
@@ -228,7 +230,8 @@
     }
 
     .calendar-notice {
-      background: $fern;
+      background: lighten($luxor-gold, 10%);
+      border-bottom: 1px solid $luxor-gold;
       color: white;
       padding: 10px;
     }
