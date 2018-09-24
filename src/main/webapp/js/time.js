@@ -780,10 +780,7 @@ $('.quick-approve').click(function() {
     alert("We don't know the URL for this click action.")
   }
 
-  var jqxhr = $.post({
-    url: submitURL,
-    data: docId
-  })
+  var jqxhr = $.post({ url: submitURL })
   .done(function(data) {
     setTimeout(function(){
       window.location = window.location.href;
