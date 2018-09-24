@@ -45,7 +45,9 @@
 				    </s:form>
 				  </s:if>
 				  <s:else>
-				  	<strong>Submitted on: <s:property value="document.submitTimeAction.action_time" /></strong>
+				  	<div class="submitted-on">
+				  		<strong>Submitted on:&nbsp;<s:property value="document.submitTimeAction.action_time" /></strong>
+				  	</div>
 					</s:else>
 				</s:if>
 			</div>
