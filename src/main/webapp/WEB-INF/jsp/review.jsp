@@ -2,7 +2,7 @@
 <s:form action="review" id="form_id" method="post" class="internal-page">
 	<s:hidden name="action2" id="action2" value="" />
 	<h1>Review Timesheets
-		<small><b>Reviewer:&nbsp;</b><s:property value="employee.full_name" /></small>
+		<small><b>Reviewer:&nbsp;</b><s:property value="user.full_name" /></small>
 	</h1>
 	<s:if test="hasErrors()">
 		<s:set var="errors" value="errors" />

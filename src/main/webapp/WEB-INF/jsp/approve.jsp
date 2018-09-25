@@ -2,7 +2,7 @@
 <s:form action="approve" id="form_id" method="post" class="internal-page">
 	<s:hidden name="action2" id="action2" value="" />
 	<h1>Approve Timesheets
-		<small><b>Approver:&nbsp;</b><s:property value="employee.full_name" /></small>
+		<small><b>Approver:&nbsp;</b><s:property value="user.full_name" /></small>
 	</h1>
 	<s:if test="hasErrors()">
 		<s:set var="errors" value="errors" />
@@ -100,15 +100,10 @@
 							</a>
 
 							<s:if test="canBeApproved()">
-								<s:if test="isUserCurrentEmployee()">
-									<small class="status-tag approval-ready">
-										<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
-									</small>
-									<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
-								</s:if>
-								<s:else>
-									<small class="status-tag approval-ready">Ready for Approval</small>
-								</s:else>
+								<small class="status-tag approval-ready">
+									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
+								</small>
+								<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
 							</s:if>
 							<s:elseif test="isApproved()">
 								<small class="status-tag approved">Approved</small>
@@ -179,10 +174,7 @@
 				</s:if>
 			</s:iterator>
 		</s:if>
-
-		<s:if test="isUserCurrentEmployee()">
-			<s:submit name="action" type="submit" value="Approve" class="button"/>
-		</s:if>
+		<s:submit name="action" type="submit" value="Approve" class="button"/>
 	</s:if>
 </s:form>
 
