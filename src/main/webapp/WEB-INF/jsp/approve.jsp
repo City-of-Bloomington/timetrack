@@ -100,10 +100,15 @@
 							</a>
 
 							<s:if test="canBeApproved()">
-								<small class="status-tag approval-ready">
-									<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
-								</small>
-								<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
+								<s:if test="isUserCurrentEmployee()">								
+									<small class="status-tag approval-ready">
+										<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
+									</small>
+									<button type="button" class="quick-approve" data-doc-id="<s:property value='id' />">Quick Approve</button>
+								</s:if>
+								<s:else>
+									<small class="status-tag approval-ready">Ready for Approval</small>
+								</s:else>
 							</s:if>
 							<s:elseif test="isApproved()">
 								<small class="status-tag approved">Approved</small>
@@ -174,7 +179,9 @@
 				</s:if>
 			</s:iterator>
 		</s:if>
-		<s:submit name="action" type="submit" value="Approve" class="button"/>
+		<s:if test="isUserCurrentEmployee()">		
+			<s:submit name="action" type="submit" value="Approve" class="button"/>
+		</s:if>
 	</s:if>
 </s:form>
 
