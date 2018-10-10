@@ -17,7 +17,7 @@ We're using a Raspberry Pi and touchscreen to serve as a simple kiosk terminal. 
 
 ![supplies]({{ site.github.url }}/assets/IMG_1008_l_sq.JPG)
 ---
-## Assembly
+## Flashing the image
 
 Start by opening the memory card and inserting it into your PC/laptop's reader.
 
@@ -25,10 +25,9 @@ We will be using RDS (Raspberry Digital Signage) to run our kiosk, so download a
 
 **Download: [RDS]**
 
-*This guide is written as if your intent is to flash this image to many different SD cards, and as a result some of the steps may be more complex than if you were just doing it for a single device.
+*This guide is written as if your intent is to flash this image to many different SD cards, and as a result some of the steps may be more complex than if you were just doing it for a single device.*
 
 ---
-## Flashing the image
 ### Imaging software
 
 ![transfer]({{ site.github.url }}/assets/IMG_1013_l_sq.JPG)
@@ -48,7 +47,10 @@ For Linux/macOS you can also just used the **dd** command to read/write images.
 ### Flashing
 ![etcher screenshot]({{ site.github.url }}/assets/etcher.png)
 
-Once you are finished, eject that from your system and insert it into the RaspberryPi.
+Once flashing is complete, eject the Micro SD card from your system.
+
+## Assembly
+Insert the Micro SD card from the previous section into the RaspberryPi.
 
 ![insert SD card]({{ site.github.url }}/assets/IMG_1015_l.JPG)
 
@@ -58,7 +60,7 @@ Next, install the Pi in the case and install the touch screen too. This is a goo
 
 ---
 
-## Connecting the Ribbon Cable
+### Connecting the Ribbon Cable
 
 One aspect that was glossed over is how to connect the ribbon cables. Be sure to pull out the black plastic tab that keeps the cable secure first:
 
@@ -79,13 +81,14 @@ If all goes well, plug in the power supply to the "Y" cable and the machine shou
 
 ---
 
-## Configuring Networking
+## Configuration
+### Configuring Networking
 
 If the machine is plugged in via Ethernet, RDS will use DHCP by default and assign an address. If you wish to use WiFi, leave the cable unplugged and a menu will appear with options to type in your wireless network options.
 
 ---
 
-## Setting up Basic Options
+### Setting up Basic Options
 
 If you click the option to enter the setup during the 15-second boot window, you will be taken to a screen with several options to control how the kiosk behaves.
 
@@ -95,7 +98,7 @@ Be sure to **change the password** using the link at the bottom.
 
 ---
 
-## Fetching MAC info
+### Fetching MAC info
 
 Next, open a SSH session to the Pi. The IP address should be displayed onscreen. The username is "pi" and the password is whatever you set it to in the options. Run the following command:
 
@@ -103,13 +106,9 @@ Next, open a SSH session to the Pi. The IP address should be displayed onscreen.
 
 Note the network interface's MAC address ("HWaddr" in output). If you're using the wired network connection, it will be in the "eth0" section. If you're using the wireless connection it will be in the "wlan0" section.
 
-At the end of this process, send the MAC address and physical location to the system administrator so that he can configure the right address in our DHCP server.
+At the end of this process, send the MAC address and physical location to the system administrator so they can configure the right address in our DHCP server.
 
----
 
-TODO:
-
-* change default pi password
 
 [RDS]:http://www.binaryemotions.com/digital-signage/raspberry-digital-signage/
 [Raspberry Pi 3]: https://www.raspberrypi.org/products/raspberry-pi-3-model-b/
