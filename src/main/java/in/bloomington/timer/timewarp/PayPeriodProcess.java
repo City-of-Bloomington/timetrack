@@ -86,6 +86,12 @@ public class PayPeriodProcess{
 		public void setProfile(Profile val){
 				if(val != null){
 						profile = val;
+						BenefitGroup bgroup = profile.getBenefitGroup();
+						if(bgroup != null){
+								if(bgroup.isTemporary()){
+										regCode = "TEMP";
+								}
+						}
 				}
 		}
 		public void setHolidayList(HolidayList val){
@@ -290,6 +296,31 @@ public class PayPeriodProcess{
 				}
 				return all;
 		}
+		public Hashtable<String, ArrayList<Double>> getAll2(){
+				Hashtable<String, Double> all2 = getAll();
+				Hashtable<String, ArrayList<Double>> all = new Hashtable<>();
+				if(!all2.isEmpty()){
+						Set<String> keySet = all2.keySet();
+						for(String key:keySet){
+								Double val = all2.get(key);
+								if(val != null){
+										ArrayList<Double> lval = new ArrayList<>();
+										if(key.indexOf("ONCALL") == -1){
+												lval.add(val);
+										}
+										else{
+												int cnt = (int)(val.doubleValue());
+												for(int i=0;i<cnt;i++){
+																lval.add(new Double(1.0));
+														}
+												}
+										all.put(key, lval);
+								}
+						}
+						
+				}
+				return all;
+		}		
 		boolean hasWeek1ProfHours(){
 				return week1.getProfHours() > 0;
 		}
@@ -343,6 +374,9 @@ public class PayPeriodProcess{
 				if(blocks == null || blocks.size() == 0){
 						msg = "No time entry found";
 						return msg;
+				}
+				if(document.isTemporary()){
+						regCode =  "TEMP";
 				}
 				try{
 						for(TimeBlock one:blocks){

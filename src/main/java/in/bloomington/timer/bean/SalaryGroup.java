@@ -92,6 +92,9 @@ public class SalaryGroup{
 		public boolean isTemporary(){
 				return name.equals("Temp");
 		}
+		public boolean isTemporaryWithBen(){
+				return name.equals("Temp W/Ben");
+		}		
 		public boolean isUnionned(){
 				return name.equals("Union");
 		}		

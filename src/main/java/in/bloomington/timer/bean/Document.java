@@ -426,6 +426,14 @@ public class Document{
 				}
 				return false;
 		}
+		public boolean isTemporaryWithBen(){
+				if(salaryGroup == null)
+						getSalaryGroup();
+				if(salaryGroup != null){
+						return salaryGroup.isTemporaryWithBen();
+				}
+				return false;
+		}		
 		public boolean isUnionned(){
 				if(salaryGroup == null)
 						getSalaryGroup();
@@ -469,7 +477,7 @@ public class Document{
 										String str = one.getAccrual().getName();
 										if(ret.indexOf(str) == -1){
 												if(!ret.equals("")) ret += ", ";
-												ret += str+": "+one.getHours();
+												ret += str+": "+dfn.format(one.getHours());
 										}
 								}
 						}

@@ -270,10 +270,10 @@ public class InformAction extends TopAction{
 		}
 		public String getText_message(){
 				if(text_message.equals("")){
-						text_message = "\n\n";
+						text_message = "\n";
 						if(!type.equals("")){
 								if(messageMap.containsKey(type)){
-										text_message += messageMap.get(type)+"\n\n https://"+url+"\n\n";
+										text_message += messageMap.get(type)+"\n\n "+proxy_url+"\n\n";
 								}
 						}
 						text_message += "Thank you\n\n";

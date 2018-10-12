@@ -8,6 +8,7 @@
 	<s:else>
 		<h1>Edit Job: <s:property value="%{jobTask.name}" /></h1>
 		<s:hidden id="jobTask.id" name="jobTask.id" value="%{jobTask.id}" />
+		<s:hidden name="jobTask.hourlyRate" value="%{jobTask.hourlyRate}" />		
 	</s:else>
 	<s:if test="jobTask.employee_id != ''">
 		<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />

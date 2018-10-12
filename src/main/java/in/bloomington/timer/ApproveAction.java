@@ -58,6 +58,7 @@ public class ApproveAction extends TopAction{
 						}	
 				}
 				clearAll();
+				resetEmployee();
 				if(action.equals("Approve")){
 						if(document_ids != null){
 								for(String doc_id:document_ids){
@@ -129,10 +130,8 @@ public class ApproveAction extends TopAction{
 				return managers != null && managers.size() > 0;
 		}
 		public List<GroupManager> getManagers(){
-				if(employee_id.equals("")){
-						getEmployee_id();
-				}
-				GroupManagerList gml = new GroupManagerList(employee_id);
+				
+				GroupManagerList gml = new GroupManagerList(user.getId());
 				getPay_period_id();
 				gml.setPay_period_id(pay_period_id);
 				gml.setApproversOnly();

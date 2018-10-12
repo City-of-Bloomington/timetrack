@@ -238,9 +238,9 @@ public class EmployeeList extends CommonInc{
 								qw += " e.employee_number is not null";
 						}
 						if(!group_ids.equals("")){
-								qq += " join group_employees ge on ge.employee_id=e.id  ";
+								qq += ", group_employees ge ";
 								if(!qw.equals("")) qw += " and ";
-								qw += " ge.group_id in ("+group_ids+") ";
+								qw += " ge.employee_id=e.id and ge.group_id in ("+group_ids+") ";
 						}
 						if(!exclude_group_id.equals("")){
 								if(!qw.equals("")) qw += " and ";
@@ -251,9 +251,9 @@ public class EmployeeList extends CommonInc{
 								qw += " e.id not in (select td.employee_id from time_documents td where td.pay_period_id = ?)";						
 						}
 						if(!groupManager_id.equals("")){
-								qq += " join group_managers gm on gm.employee_id=e.id ";
+								qq += ", group_managers gm ";
 								if(!qw.equals("")) qw += " and ";
-								qw += " gm.group_id = ? ";
+								qw += " gm.employee_id=e.id and gm.group_id = ? ";
 						}				
 						if(active_only){
 								if(!qw.equals("")) qw += " and ";

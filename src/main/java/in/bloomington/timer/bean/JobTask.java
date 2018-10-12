@@ -155,7 +155,7 @@ public class JobTask implements Serializable{
 				setComp_time_factor(val10);
 				setHoliday_comp_factor(val11);
 				setClock_time_required(val12);
-				setHourlyRate(val13);				
+				setHourlyRateDbl(val13);				
 				setInactive(val14);
 				if(!salary_group_id.equals("")){
 						salaryGroup = new SalaryGroup(salary_group_id, val15,val16,val17, val18);
@@ -289,9 +289,16 @@ public class JobTask implements Serializable{
 				if(val > 0)
 						holiday_comp_factor = val;
 		}
-		public void setHourlyRate(double val){
+		public void setHourlyRateDbl(double val){
 				if(val > 0)
 						hourly_rate = val;
+		}
+		public void setHourlyRate(String val){
+				if(val  != null && !val.equals("")){
+						try{
+								hourly_rate = Double.parseDouble(val);
+						}catch(Exception ex){}
+				}
 		}		
 		public String toString(){
 				return id;
@@ -371,51 +378,43 @@ public class JobTask implements Serializable{
 				else if(bGroup.isUnioned()){
 						new_salary_group_id = "4";
 				}
+				else if(bGroup.isTemporaryWithBen()){
+						new_salary_group_id = "5";
+				}				
 				if(!new_salary_group_id.equals("")){
 						if(!salary_group_id.equals(new_salary_group_id)){
-								System.err.println(" old salary group "+salary_group_id);
 								salary_group_id = new_salary_group_id;
 								needUpdate = true;
-								System.err.println(" new salary group "+salary_group_id);
 						}
 				}
 				if(weekly_regular_hours != new_weekly_regular_hours){
-						System.err.println(" old weekly hrs "+weekly_regular_hours);
 						weekly_regular_hours = new_weekly_regular_hours;
-						System.err.println(" new weekly hrs "+weekly_regular_hours);
 						needUpdate = true;
 				}
 				if(comp_time_weekly_hours != new_comp_time_weekly_hours){
-						System.err.println(" old weekly comp hrs "+comp_time_weekly_hours);
 						comp_time_weekly_hours = new_comp_time_weekly_hours;
-						System.err.println(" new weekly comp hrs "+comp_time_weekly_hours);
 						needUpdate = true;
 				}
 				if(comp_factor - comp_time_factor > 0.1 ||
 					 comp_factor - comp_time_factor < -0.1
 					 ){
-						System.err.println(" old comp factor "+comp_time_factor);
 						comp_time_factor = comp_factor;
-						System.err.println(" new comp factor "+comp_time_factor);						
 						needUpdate = true;						
 				}
 				if(holiday_comp_factor - holiday_factor > 0.1 ||
 					 holiday_comp_factor - holiday_factor < -0.1){
-						System.err.println(" old holiday factor "+holiday_comp_factor);
 						holiday_comp_factor = holiday_factor;
-						System.err.println(" new holiday factor "+holiday_comp_factor);
 						needUpdate = true;						
 				}
 				if(hr_rate - hourly_rate > 0.1 || hr_rate - hourly_rate < -0.1){
 						hourly_rate = hr_rate;
-						System.err.println("hr rate "+hourly_rate);
 						needUpdate = true;							
 				}
 				if(needUpdate){
-						System.err.println(" need update ");
-						// back = doPartialUpdate();
+						String back = doPartialUpdate();
+						if(!back.equals(""))
+								System.err.println(back);
 				}
-
 		}
 		public String doSelect(){
 				//

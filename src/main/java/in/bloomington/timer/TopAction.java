@@ -32,7 +32,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		static String server_path="";
 		static EnvBean envBean = null;
 		static String mail_host = null;
-		String uri="",url="";
+		String uri="",url="", proxy_url="";
 		
 		String action="", id="", employee_id="";
 		List<String> errors = new ArrayList<>(),
@@ -70,7 +70,9 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								val = ctx.getInitParameter("url");
 								if(val != null)
 										url = val;
-								
+								val = ctx.getInitParameter("proxy_url");
+								if(val != null)
+										proxy_url = val;								
 								val = ctx.getInitParameter("server_path");
 								if(val != null)
 										server_path = val;
@@ -123,7 +125,6 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		String doPrepare(){
 				return doPrepare(null);
 		}
-
 		public void setEmployee_id(String val){
 				if(val != null && !val.equals("")){		
 						employee_id = val;
@@ -177,6 +178,11 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 						return employee_id.equals(user.getId());
 				return false;
 		}
+		// to change proxy employee back to main user
+		void resetEmployee(){
+				setEmployee_id(user.getId());
+				getEmployee();
+		}
 		@Override  
 		public void setSession(Map<String, Object> map) {  
 				sessionMap=map;  
@@ -219,12 +225,13 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				HttpServletRequest request = ServletActionContext.getRequest();				
 				String host_forward = request.getHeader("X-Forwarded-Host");
 				String host = request.getHeader("host");				
-				// StringBuffer r_url = request.getRequestURL();	// https://outlaw.b.. /timeClock.action		
 				String servlet_path = request.getServletPath();
 				if(host_forward != null){
 						// System.err.println(" host forward "+host_forward);
-						
-						url = host_forward+"/timetrack/";
+						if(host_forward.indexOf("/timetrack") == -1)
+								url = host_forward+"/timetrack/";
+						else
+								url = host_forward;
 				}
 				else if(host != null){
 						// System.err.println("host "+host);												
