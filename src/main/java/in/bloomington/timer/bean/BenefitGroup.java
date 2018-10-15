@@ -20,7 +20,9 @@ public class BenefitGroup{
 		boolean debug = false;
 		boolean fullTime = false,
 				exempt = false,
+				nonExempt = false,
 				temporary = false,
+				partTime = false, // non temp, exempt, ono-exempt
 				unioned = false,
 				afscme = false;
 
@@ -70,11 +72,14 @@ public class BenefitGroup{
 		public boolean isExempt(){
 				return exempt;
     }
+		public boolean isPartTime(){
+				return partTime;
+    }
 		public boolean getExempt(){
 				return exempt;
 		}
 		public boolean isNonExempt(){
-				return isFullTime() &&
+				return // isFullTime() &&
 						!isTemporary() &&
 						!isUnioned() && !isExempt();
 		}
@@ -91,7 +96,7 @@ public class BenefitGroup{
 				return !temporary; // everybody except temp
 		}
 		public boolean overTimeElegible(){
-				return temporary;  // only temp workers have overtime 
+				return temporary || afscme || isNonExempt();  // only temp workers have overtime 
 		}
 		public boolean isAfscme(){
 				return afscme;
@@ -126,6 +131,20 @@ public class BenefitGroup{
 						if(name.indexOf("TEMP") > -1){
 								temporary = true;
 						}
+						else if(name.indexOf("PART") > -1){
+								// NON-U RPARTnx, NON-U RPARTx
+								partTime = true;
+								if(name.indexOf("Tx") > -1){
+										exempt = true;
+								}
+						}
+						else if(name.indexOf("RPT") > -1){
+								// NON-U RPTx
+								partTime = true;
+								if(name.indexOf("Tx") > -1){
+										exempt = true;
+								}
+						}						
 						else if(name.indexOf("AFSCME") > -1){
 								afscme = true;
 								unioned = true;

@@ -426,11 +426,11 @@ public class Document{
 				}
 				return false;
 		}
-		public boolean isTemporaryWithBen(){
+		public boolean isPartTime(){
 				if(salaryGroup == null)
 						getSalaryGroup();
 				if(salaryGroup != null){
-						return salaryGroup.isTemporaryWithBen();
+						return salaryGroup.isPartTime();
 				}
 				return false;
 		}		

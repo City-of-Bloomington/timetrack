@@ -29,9 +29,6 @@ public class HandleProfile{
 				dept_ref_id=""; // dept referance in NW app, one or more values
 		Hashtable<String, JobTask> ejobHash = null;
 		//
-		// accrual values from New World (Carry Over)
-		//
-		// for all
     public HandleProfile(){
     }
 		public HandleProfile(String val){
@@ -118,7 +115,6 @@ public class HandleProfile{
 						}
 				}
 				for(Profile pp:profiles){
-						System.err.println(" emp "+pp.getEmployee_number());
 						String empNum = pp.getEmployee_number();
 						if(ejobHash != null && ejobHash.containsKey(empNum)){
 								JobTask job = ejobHash.get(empNum);
@@ -128,7 +124,6 @@ public class HandleProfile{
 								double comp_time_multiple = pp.getCompTimeMultiple();
 								double holiday_time_multiple = pp.getHolidayTimeMultiple();
 								BenefitGroup bGroup = pp.getBenefitGroup();
-								System.err.println(" check ");
 								job.compareWith(weekly_hrs,
 																hr_rate,
 																comp_time_after,

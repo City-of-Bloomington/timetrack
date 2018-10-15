@@ -92,8 +92,8 @@ public class SalaryGroup{
 		public boolean isTemporary(){
 				return name.equals("Temp");
 		}
-		public boolean isTemporaryWithBen(){
-				return name.equals("Temp W/Ben");
+		public boolean isPartTime(){
+				return name.equals("Part Time");
 		}		
 		public boolean isUnionned(){
 				return name.equals("Union");
@@ -242,7 +242,7 @@ public class SalaryGroup{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update salary_groups set name=?, description=?,default_regualr_id=?,inactive=? where id=?";
+				String qq = " update salary_groups set name=?, description=?,default_regular_id=?,inactive=? where id=?";
 				if(name.equals("")){
 						msg = "Earn code name is required";
 						return msg;

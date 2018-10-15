@@ -378,7 +378,7 @@ public class JobTask implements Serializable{
 				else if(bGroup.isUnioned()){
 						new_salary_group_id = "4";
 				}
-				else if(bGroup.isTemporaryWithBen()){
+				else if(bGroup.isPartTime()){
 						new_salary_group_id = "5";
 				}				
 				if(!new_salary_group_id.equals("")){

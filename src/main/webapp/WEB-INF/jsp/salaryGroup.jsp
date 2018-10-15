@@ -28,7 +28,7 @@
 
 			<div class="form-group">
 				<label>Description</label>
-				<s:textarea name="salaryGroup.description" value="%{salaryGroup.description}" rows="5" maxlength="50" />
+				<s:textarea name="salaryGroup.description" value="%{salaryGroup.description}" rows="5" cols="50" />
 			</div>
 
 			<div class="form-group">
@@ -36,7 +36,6 @@
 				<s:select name="salaryGroup.default_regular_id" value="%{salaryGroup.default_regular_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Default Hour Code"/><br />
 				(Each salary group need one default regular hour code)
 			</div>
-
 			<div class="form-group">
 				<label>Inactive?</label>
 				<s:checkbox name="salaryGroup.inactive" value="%{salaryGroup.inactive}" fieldValue="true" />Yes
