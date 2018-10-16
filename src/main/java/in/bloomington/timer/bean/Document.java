@@ -37,9 +37,11 @@ public class Document{
 		Workflow lastWorkflow = null;
 		List<TimeAction> timeActions = null;
 		Map<Integer, Double> daily = null;
+		Map<String, Map<Integer, Double>> daily2 = null;				
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
 		JobTask jobTask = null;
+		List<JobTask> jobs = null;
 		SalaryGroup salaryGroup = null;
 		Map<String, List<String>> allAccruals = new TreeMap<>();
 		Map<Integer, Double> hourCodeTotals = null;
@@ -299,6 +301,7 @@ public class Document{
 				}
 				return false;
 		}
+		
 		public Map<Integer, Double> getDaily(boolean includeEmptyBlocks){
 				if(daily == null && !id.equals("")){
 						TimeBlockList tl = new TimeBlockList();
@@ -320,6 +323,10 @@ public class Document{
 										week1_flsa = tl.getWeek1_flsa();
 										week2_flsa = tl.getWeek2_flsa();										
 								}
+								Map<String, Map<Integer, Double>> ones2 = tl.getDaily2();
+								if(ones2 != null){
+										daily2 = ones2;
+								}
 						}
 						if(includeEmptyBlocks){
 								fillTwoWeekEmptyBlocks();
@@ -333,6 +340,9 @@ public class Document{
 				// include empty blocks as well
 				//
 				return getDaily(true);
+		}
+		public Map<String, Map<Integer, Double>> getDaily2(){
+				return daily2;
 		}
 		
 		public List<TimeBlock> getTimeBlocks(){
@@ -382,18 +392,44 @@ public class Document{
 		// about the employee
 		public JobTask getJobTask(){
 				if(jobTask == null){
+						getJobs();
+						if(jobs.size() == 1){
+								jobTask = jobs.get(0);
+						}
+						else if(!selected_job_id.equals("")){
+								for(JobTask one:jobs){
+										if(one.getId().equals(selected_job_id)){
+												jobTask = one;
+												break;
+										}
+								}
+						}
+						else {
+								for(JobTask one:jobs){
+										if(one.isPrimary()){
+												jobTask = one;
+												selected_job_id = one.getId();
+												break;
+										}
+								}								
+						}
+				}
+				return jobTask;
+		}
+		public List<JobTask> getJobs(){
+				if(jobs == null){
 						JobTaskList jl = new JobTaskList(employee_id);
 						jl.setPay_period_id(pay_period_id);
 						String back = jl.find();
 						if(back.equals("")){
 								List<JobTask> ones = jl.getJobTasks();
 								if(ones != null && ones.size() > 0){
-										jobTask = ones.get(0); // get one
+										jobs = ones; // get one
 								}
 						}
 				}
-				return jobTask;
-		}
+				return jobs;
+		}		
 		public JobTask getJob(){
 				return getJobTask();
 		}

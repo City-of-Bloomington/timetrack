@@ -102,6 +102,9 @@
 					<s:if test="employee.hasNoJob()">
 						<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='employee.id' />" class="button"> Add A Job</a>
 					</s:if>
+					<s:else>
+						<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='employee.id' />" class="button"> Add Another Job</a>
+					</s:else>
 					<s:submit name="action" type="button" value="Save Changes" class="button"/>
 				</div>
 			</s:else>

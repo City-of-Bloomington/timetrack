@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Hashtable;
 import java.util.TreeMap;
 import java.util.Map;
+import java.util.Set;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.sql.*;
@@ -42,7 +43,9 @@ public class TimeBlockList{
 		Map<String, Double> hourCodeWeek2 = new TreeMap<>();
 		Map<Integer, Double> usedAccrualTotals = new TreeMap<>();
 		HolidayList holidays = null;
-		
+		Map<String, Map<Integer, Double>> daily2 = new TreeMap<>();		
+		Document document = null;
+		List<String> jobNames = null;
     public TimeBlockList(){
     }
     public TimeBlockList(String val){
@@ -141,6 +144,16 @@ public class TimeBlockList{
 		public Map<Integer, Double> getDaily(){
 				return daily;
 		}
+		public Map<String, Map<Integer, Double>> getDaily2(){
+				Set<String> set = daily2.keySet();
+				for(String str:set){
+						Map<Integer, Double> map = daily2.get(str);
+						for(int j=0;j<16;j++){ // 8 total week1, 15 total week2
+								double val = map.get(j);
+						}
+				}
+				return daily2;
+		}		
 		public double getTotal_hours(){
 				return total_hours;
 		}
@@ -161,6 +174,82 @@ public class TimeBlockList{
 						return holidays.getHolidayName(date);
 				}
 				return "";
+		}
+		public Document getDocument(){
+				if(!document_id.equals("")){
+						Document one = new Document(document_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								document = one;
+						}
+				}
+				return document;
+		}
+		// find employee jobs in this pay period
+		private List<String> findJobNames(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				List<String> jobNames = new ArrayList<>();
+				String qq = "select "+
+						" distinct ps.name "+ // job name (position)
+						" from positions ps join jobs j on ps.id=j.position_id, "+
+						" pay_periods p ";
+				String qw = "ps.inactive is null and j.inactive is null and (j.expire_date is null or "+
+						" j.expire_date <= p.end_date) and j.effective_date <= p.start_date ";
+				if(pay_period_id.equals("")){
+						getDocument();
+						if(document != null){
+								pay_period_id = document.getPay_period_id();
+						}
+				}
+				if(employee_id.equals("")){
+						getDocument();
+						if(document != null){
+								employee_id = document.getEmployee_id();
+						}
+				}
+				if(!pay_period_id.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += "p.id=? ";
+				}
+				if(!employee_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "j.employee_id=? ";
+				}
+				qq = qq +" where "+qw;
+				con = Helper.getConnection();
+				if(con == null){
+						logger.error(msg);
+						return null;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						if(!pay_period_id.equals("")){
+								pstmt.setString(jj++, pay_period_id);
+						}
+						if(!employee_id.equals("")){
+								pstmt.setString(jj++, employee_id);
+						}
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								str = rs.getString(1);
+								if(!jobNames.contains(str)){
+										jobNames.add(str);
+								}
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}								
+				return jobNames;
 		}
     //
     // getters
@@ -192,11 +281,13 @@ public class TimeBlockList{
 						" c.name,"+
 						
 						" c.description,"+
-						" cf.nw_code "+
-						
+						" cf.nw_code, "+
+						" ps.name "+ // job name
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
+						" join jobs j on t.job_id=j.id "+
+						" join positions ps on j.position_id=ps.id "+
 						" join hour_codes c on t.hour_code_id=c.id "+
 						" left join code_cross_ref cf on c.id=cf.code_id ";
 				String qw = "";
@@ -306,8 +397,9 @@ public class TimeBlockList{
 								double hrs = rs.getDouble(10);
 								int order_id = rs.getInt(14); // 15
 								int hr_code_id = rs.getInt(4);
-								String hr_code = rs.getString(15); //16
-								String hr_code_desc = rs.getString(16); // 17
+								String hr_code = rs.getString(15); 
+								String hr_code_desc = rs.getString(16); 
+								String job_name = rs.getString(18); // job name
 								String date = rs.getString(5);
 								boolean isHoliday = isHoliday(date);
 								String holidayName = "";
@@ -329,7 +421,7 @@ public class TimeBlockList{
 										TimeBlock one =
 												new TimeBlock(rs.getString(1),
 																			rs.getString(2),
-																			rs.getString(3),
+																			rs.getString(3), // job_id
 																			rs.getString(4),
 																			rs.getString(5),
 																			rs.getInt(6),
@@ -356,11 +448,10 @@ public class TimeBlockList{
 										else
 												week2_flsa += hrs;
 								}
-								// modified hr_code
 								hr_code += ": "+hr_code_desc;
 								addToHourCodeTotals(order_id, hr_code_id, hr_code, hrs);
 								total_hours += hrs;
-								addToDaily(order_id, hrs);
+								addToDaily(job_name, order_id, hrs);
 						}
 				}
 				catch(Exception ex){
@@ -449,6 +540,21 @@ public class TimeBlockList{
 				for(int i=0;i<14;i++){
 						daily.put(i,0.);
 				}
+				prepareDaily2();
+		}
+		void prepareDaily2(){
+				if(jobNames == null){
+						jobNames = findJobNames();
+						if(jobNames != null && jobNames.size() > 0){
+								for(String jobName:jobNames){
+										Map<Integer, Double> map = new TreeMap<>();
+										for(int i=0;i<16;i++){
+												map.put(i,0.);
+										}
+										daily2.put(jobName, map);
+								}
+						}
+				}
 		}
 		void prepareHolidays(){
 				HolidayList hl = new HolidayList(debug);
@@ -466,14 +572,39 @@ public class TimeBlockList{
 						holidays = hl;
 				}
 		}
-		void addToDaily(int order_id, double hrs){
+		void addToDaily(String job_name, int order_id, double hrs){
 				double total = 0.;
 				if(daily.containsKey(order_id)){
 						total = daily.get(order_id);
 						total += hrs;
 				}
 				daily.put(order_id, total);
-				
+				total = 0.;
+				if(daily2.containsKey(job_name)){
+						Map<Integer, Double> map = daily2.get(job_name);
+						if(order_id > 6) order_id = order_id + 1;
+						if(map.containsKey(order_id)){
+								total = map.get(order_id);
+								total += hrs;
+								double week_total = 0;
+								if(order_id < 7){
+										week_total = map.get(7)+hrs; // total week1
+										map.put(7, week_total);
+								}
+								else{
+										week_total = map.get(15)+hrs; // total week2
+										map.put(15, week_total);
+								}
+						}
+						map.put(order_id, total);
+						daily2.put(job_name, map);
+						
+				}
+				else{ // shis is not needed
+						Map<Integer, Double> map = new TreeMap<>();
+						map.put(order_id, hrs);
+						daily2.put(job_name, map);												
+				}
 		}		
 		void addToBlocks(int order_id, TimeBlock block){
 				List<TimeBlock> list = dailyBlocks.get(order_id);

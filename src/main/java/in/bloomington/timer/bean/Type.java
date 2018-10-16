@@ -149,26 +149,40 @@ public class Type implements java.io.Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
-				String qq = " insert into "+table_name+" values(0,?,?,?)";
+				String qq = "select count(*) "+
+						"from "+table_name+" where name like ?";
+				String qq2 = " insert into "+table_name+" values(0,?,?,?)";
 				if(name.equals("")){
 						msg = "Earn code name is required";
 						return msg;
 				}
+				con = Helper.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
+						int cnt = 0;
 						pstmt = con.prepareStatement(qq);
-						msg = setParams(pstmt);
-						if(msg.equals("")){
-								pstmt.executeUpdate();
-								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										id = rs.getString(1);
+						pstmt.setString(1, name);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								cnt = rs.getInt(1);
+						}
+						if(cnt > 0){
+								msg = "This name alrady exist";
+						}
+						else {
+								pstmt = con.prepareStatement(qq2);						
+								msg = setParams(pstmt);
+								if(msg.equals("")){
+										pstmt.executeUpdate();
+										qq = "select LAST_INSERT_ID()";
+										pstmt = con.prepareStatement(qq);
+										rs = pstmt.executeQuery();
+										if(rs.next()){
+												id = rs.getString(1);
+										}
 								}
 						}
 				}

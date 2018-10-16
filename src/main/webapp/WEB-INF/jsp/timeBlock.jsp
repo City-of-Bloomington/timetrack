@@ -40,10 +40,9 @@
 		<s:if test="hasMoreThanOneJob()">
 			<div class="form-group">
 				<label>Job</label>
-				<s:select name="timeBlock.job_id" value="%{timeBlock.job_id}" list="jobTasks" listKey="id" listValue="jobTask.position" headerKey="-1" headerValue="Pick Job Assignment" />
+				<s:select name="timeBlock.job_id" value="%{timeBlock.job_id}" list="jobs" listKey="id" listValue="name" headerKey="-1" headerValue="Pick a Job" />
 			</div>
 		</s:if>
-
 		<div class="form-group">
 			<label>Hour Code</label>
 			<s:if test="hasHourCodes()">

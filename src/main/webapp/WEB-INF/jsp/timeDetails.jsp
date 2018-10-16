@@ -58,6 +58,7 @@
 
 			<s:set var="payPeriodTotal" value="document.payPeriodTotal" />
 			<s:set var="daily" value="document.daily" />
+			<s:set var="daily2" value="document.daily2" />			
 			<s:set var="week1Total" value="document.week1Total" />
 			<s:set var="week2Total" value="document.week2Total" />
 			<s:if test="document.isUnionned()">
@@ -76,7 +77,9 @@
 			</s:if>
 
 			<%@ include file="dailySummary.jsp" %>
-
+			
+			<%@ include file="daily2Summary.jsp" %>
+			
 			<div class="d-flex">
 				<s:if test="document.hasHourCodeWeek1()">
 					<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />

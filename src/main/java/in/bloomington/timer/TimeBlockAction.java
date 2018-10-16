@@ -31,7 +31,7 @@ public class TimeBlockAction extends TopAction{
 		PayPeriod payPeriod = null;
 		List<EmployeeAccrual> employeeAccruals = null;
 		JobTask selectedJob = null;		
-		List<JobTask> jobTasks = null;
+		List<JobTask> jobs = null;
 		List<HourCode> hourCodes = null;
 		Department department = null;
 		//
@@ -170,8 +170,8 @@ public class TimeBlockAction extends TopAction{
 				}
 				return document;
 		}
-		public List<JobTask> getJobTasks(){
-				if(jobTasks == null && employee != null){
+		public List<JobTask> getJobs(){
+				if(jobs == null && employee != null){
 						JobTaskList jl = new JobTaskList(employee.getId());
 						if(payPeriod != null){
 								jl.setPay_period_id(payPeriod.getId());
@@ -180,25 +180,36 @@ public class TimeBlockAction extends TopAction{
 						if(back.equals("")){
 								List<JobTask> ones = jl.getJobTasks();
 								if(ones != null && ones.size() > 0){
-										jobTasks = ones;
-										if(jobTasks.size() > 0){
-												selectedJob = jobTasks.get(0); // get one
-												selected_job_id = selectedJob.getId();
+										jobs = ones;
+										if(jobs.size() > 0){
+												if(selected_job_id.equals("")){
+														for(JobTask one:jobs){
+																if(one.isPrimary()){
+																		selectedJob = one; // get one
+																		selected_job_id = selectedJob.getId();
+																		break;
+																}
+														}
+														if(selectedJob == null){
+																selectedJob = jobs.get(0);
+																selected_job_id = selectedJob.getId();
+														}
+												}
 										}
 								}
 						}
 				}
-				return jobTasks;
+				return jobs;
 		}
 		public boolean hasMoreThanOneJob(){
 				getDocument();
-				getJobTasks();
-				return jobTasks != null && jobTasks.size() > 1;
+				getJobs();
+				return jobs != null && jobs.size() > 1;
 		}
 		public boolean hasOneJobOnly(){
 				getDocument();
-				getJobTasks();
-				return jobTasks != null && jobTasks.size() == 1;
+				getJobs();
+				return jobs != null && jobs.size() == 1;
 		}		
 		
 		public void setDocument_id(String val){
@@ -217,7 +228,7 @@ public class TimeBlockAction extends TopAction{
 				// hours code are part of finding document
 				//
 				getDocument();
-				getJobTasks();
+				getJobs();
 				findHourCodes();
 				return hourCodes;
 		}

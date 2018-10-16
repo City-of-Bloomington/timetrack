@@ -19,7 +19,6 @@ public class JobTask implements Serializable{
 
 		static Logger logger = LogManager.getLogger(JobTask.class);
 		static final long serialVersionUID = 2400L;
-		String clock_time_required="";
     private String id="",
 				employee_id="",
 				employee_number="", // needed for update from nw
@@ -27,6 +26,7 @@ public class JobTask implements Serializable{
 				salary_group_id="",
 				inactive="",
 				effective_date="", expire_date="", primary_flag="";
+		String clock_time_required="";
     int weekly_regular_hours=40, comp_time_weekly_hours=40;
 		double comp_time_factor=1.0, holiday_comp_factor=1.0;
 		double hourly_rate=0;
@@ -194,6 +194,9 @@ public class JobTask implements Serializable{
 				if(id.equals(""))
 						return true; // default
 				return !primary_flag.equals("");
+    }
+		public boolean isPrimary(){
+				return getPrimary_flag();
     }		
 		public boolean getInactive(){
 				return !inactive.equals("");
@@ -299,8 +302,16 @@ public class JobTask implements Serializable{
 								hourly_rate = Double.parseDouble(val);
 						}catch(Exception ex){}
 				}
-		}		
+		}
+		public String getName(){
+				getPosition();
+				if(position != null) {
+						return position.getName();
+				}
+				return "";
+		}
 		public String toString(){
+
 				return id;
 		}
 		public boolean equals(Object o) {
