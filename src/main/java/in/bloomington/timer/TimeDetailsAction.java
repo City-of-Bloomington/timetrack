@@ -26,10 +26,11 @@ public class TimeDetailsAction extends TopAction{
 				previousPayPeriod=null, nextPayPeriod=null;
 		String timeBlocksTitle = "Time Details";
 		String pay_period_id = "";
-		String document_id = "";
+		String document_id = "", job_id="";
 		Document document = null;
 		String date = "", source="";
-		JobTask jobTask = null;
+		JobTask job = null;
+		List<JobTask> jobs = null;
 		List<PayPeriod> payPeriods = null;
 		public String execute(){
 				String ret = SUCCESS;
@@ -76,6 +77,10 @@ public class TimeDetailsAction extends TopAction{
 								getPayPeriod();
 						}
 						dl.setPay_period_id(pay_period_id);
+						if(job_id.equals("")){
+								getJob();
+						}
+						dl.setJob_id(job_id);						
 						String back = dl.find();
 						if(back.equals("")){
 								List<Document> ones = dl.getDocuments();
@@ -91,11 +96,23 @@ public class TimeDetailsAction extends TopAction{
 				if(document_id.equals("")){
 						if(employee_id.equals("")){
 								getEmployee_id();
+								if(employee_id.equals("")){
+										addError("Employee not set ");								
+								}
 						}
 						if(pay_period_id.equals("")){
 								getPayPeriod();
+								if(pay_period_id.equals("")){
+										addError("Pay period not set ");								
+								}
 						}
-						Document one = new Document(null, employee_id, pay_period_id, null, user.getId());
+						if(job_id.equals("")){
+								getJob();
+								if(job_id.equals("")){
+										addError("Job not set ");								
+								}														
+						}
+						Document one = new Document(null, employee_id, pay_period_id, job_id, null, user.getId());
 						String back = one.doSave();
 						if(back.equals("")){
 								document_id = one.getId();
@@ -112,6 +129,10 @@ public class TimeDetailsAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						pay_period_id = val;
 		}
+		public void setJob_id(String val){
+				if(val != null && !val.equals("-1"))		
+						job_id = val;
+		}		
 		public void setDate(String val){
 				if(val != null && !val.equals(""))		
 						date = val;
@@ -247,8 +268,48 @@ public class TimeDetailsAction extends TopAction{
 				getPay_period_id();
 				return pay_period_id.equals(currentPayPeriod.getId());
 		}
-		public JobTask getJobTask(){
-				if(jobTask == null){
+		public JobTask getJob(){
+				if(job_id.equals("") && job == null){
+						getJobs();
+						if(jobs.size() > 1){
+								for(JobTask one:jobs){
+										if(one.isPrimary()){
+												job = one;
+												break;
+										}
+								}
+								//
+								// if no job is marked as primary,
+								// then we pick the first
+								if(job == null){
+										job = jobs.get(0);
+								}
+						}
+						else if(jobs.size() == 1){
+								job = jobs.get(0);
+						}
+						if(job != null){
+								job_id = job.getId();
+						}
+				}
+				else if(!job_id.equals("") && job == null){
+						JobTask one = new JobTask(job_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								job = one;
+						}
+				}
+				return job;
+		}
+		public boolean hasJob(){
+				getJob();
+				return job != null;
+		}
+		public String getJob_id(){
+				return job_id;
+		}
+		public List<JobTask> getJobs(){
+				if(jobs == null){
 						JobTaskList jl = new JobTaskList(getEmployee_id());
 						if(payPeriod != null){
 								jl.setPay_period_id(payPeriod.getId());
@@ -257,15 +318,22 @@ public class TimeDetailsAction extends TopAction{
 						if(back.equals("")){
 								List<JobTask> ones = jl.getJobTasks();
 								if(ones != null && ones.size() > 0){
-										jobTask = ones.get(0); // get one
+										jobs = ones;
+										if(jobs.size() == 1){
+												job = jobs.get(0);
+										}
 								}
 						}
 				}
-				return jobTask;
-		}
+				return jobs;
+		}		
 		public boolean hasNoJob(){
-				getJobTask();
-				return jobTask == null;
+				getJobs();
+				return jobs == null || jobs.size() == 0;
+		}
+		public boolean hasMultipleJobs(){
+				getJobs();
+				return jobs != null && jobs.size() > 1;
 		}
 				
 }

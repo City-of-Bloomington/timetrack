@@ -23,15 +23,15 @@ public class TimeBlockAction extends TopAction{
 		//
 		TimeBlock timeBlock = null;
 		String timeBlocksTitle = "Time Block Entry";
-		String document_id = "", selected_job_id="";
+		String document_id = "";//  selected_job_id="";
 		String date = "";
 		int order_index = 0;
 		Employee employee = null;
 		Document document = null;
 		PayPeriod payPeriod = null;
 		List<EmployeeAccrual> employeeAccruals = null;
-		JobTask selectedJob = null;		
-		List<JobTask> jobs = null;
+		// JobTask selectedJob = null;		
+		// List<JobTask> jobs = null;
 		List<HourCode> hourCodes = null;
 		Department department = null;
 		//
@@ -97,7 +97,7 @@ public class TimeBlockAction extends TopAction{
 										addActionError(back);
 										addError(back);
 								}
-								selected_job_id = timeBlock.getJob_id();
+								// selected_job_id = timeBlock.getJob_id();
 								document_id = timeBlock.getDocument_id();
 						}
 				}
@@ -170,6 +170,7 @@ public class TimeBlockAction extends TopAction{
 				}
 				return document;
 		}
+		/*
 		public List<JobTask> getJobs(){
 				if(jobs == null && employee != null){
 						JobTaskList jl = new JobTaskList(employee.getId());
@@ -200,7 +201,7 @@ public class TimeBlockAction extends TopAction{
 						}
 				}
 				return jobs;
-		}
+		 }
 		public boolean hasMoreThanOneJob(){
 				getDocument();
 				getJobs();
@@ -211,6 +212,7 @@ public class TimeBlockAction extends TopAction{
 				getJobs();
 				return jobs != null && jobs.size() == 1;
 		}		
+		*/
 		
 		public void setDocument_id(String val){
 				if(val != null && !val.equals(""))		
@@ -220,23 +222,27 @@ public class TimeBlockAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						date = val;
 		}
+		/*
 		public String getSelected_job_id(){
 				return selected_job_id;
-		}		
+		}
+		*/
 		public List<HourCode> getHourCodes(){
 				//
 				// hours code are part of finding document
 				//
 				getDocument();
-				getJobs();
+				// getJobs();
 				findHourCodes();
 				return hourCodes;
 		}
 		void findHourCodes(){
 				if(hourCodes == null){
-						if(selectedJob != null){
+						//	if(selectedJob != null){
+						getDocument();
+						if(document != null){
 								HourCodeList ecl = new HourCodeList();
-								String salary_group_id = selectedJob.getSalary_group_id();
+								String salary_group_id = document.getJob().getSalary_group_id();
 								ecl.setSalary_group_id(salary_group_id);
 								if(department != null){
 										ecl.setDepartment_id(department.getId());

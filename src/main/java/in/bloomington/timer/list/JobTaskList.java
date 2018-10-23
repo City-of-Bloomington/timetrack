@@ -26,8 +26,9 @@ public class JobTaskList{
 		String salary_group_id="", employee_id="", pay_period_id="";
 		String id="", effective_date = "", which_date="j.effective_date",
 				date_from="", date_to="", position_id="", employee_name="",
-				department_id="";
+				department_id="", group_id="";
 		String clock_status="";
+		List<Group> groups = null;
     public JobTaskList(){
     }
     public JobTaskList(String val){
@@ -53,6 +54,10 @@ public class JobTaskList{
 				if(val != null && !val.equals("-1"))
 						id = val;
 		}
+		public void setGroup_id(String val){
+				if(val != null && !val.equals("-1"))
+						group_id = val;
+		}		
     public void setEmployee_id(String val){
 				if(val != null && !val.equals("-1"))
 						employee_id = val;
@@ -67,7 +72,8 @@ public class JobTaskList{
     public void setPosition_id(String val){
 				if(val != null && !val.equals("-1"))
 						position_id = val;
-    }		
+    }
+		
     public void setWhich_date(String val){
 				if(val != null)
 					 which_date = val;
@@ -95,6 +101,7 @@ public class JobTaskList{
 				if(val != null && !val.equals("-1"))
 						salary_group_id = val;
     }
+		
     public void setActive_status(String val){
 				if(val != null && !val.equals("-1")){
 						if(val.equals("Active")) 
@@ -123,6 +130,12 @@ public class JobTaskList{
 
 				return salary_group_id;
 		}
+		public String getGroup_id(){
+				if(group_id.equals(""))
+						return "-1";
+
+				return group_id;
+		}		
 		public String getPosition_id(){
 				if(position_id.equals(""))
 						return "-1";
@@ -161,6 +174,26 @@ public class JobTaskList{
 				return "-1";
 
 		}
+		public List<Group> getGroups(){
+				if(groups == null){
+						if(!department_id.equals("")){
+								GroupList gl = new GroupList();
+								gl.setDepartment_id(department_id);
+								gl.setActiveOnly();
+								String back = gl.find();
+								if(back.equals("")){
+										List<Group> ones = gl.getGroups();
+										if(ones != null && ones.size() > 0)
+												groups = ones;
+								}
+						}
+				}
+				return groups;
+		}
+		public boolean hasGroups(){
+				getGroups();
+				return groups != null && groups.size() > 0;
+		}
     //
 		public String find(){
 				Connection con = null;
@@ -171,6 +204,7 @@ public class JobTaskList{
 						"j.position_id,"+
 						"j.salary_group_id,"+
 						"j.employee_id,"+
+						"j.group_id,"+
 						"date_format(j.effective_date,'%m/%d/%Y'),"+
 						
 						"date_format(j.expire_date,'%m/%d/%Y'),"+
@@ -215,6 +249,10 @@ public class JobTaskList{
 								if(!qw.equals("")) qw += " and ";
 								qw += " j.employee_id = ? ";
 						}
+						if(!group_id.equals("")){
+								if(!qw.equals("")) qw += " and ";
+								qw += " j.group_id = ? ";
+						}						
 						if(!effective_date.equals("")){
 								if(!qw.equals("")) qw += " and ";
 								qw += " j.effective_date <= ? and (j.expire_date > ? or j.expire_date is null)";
@@ -260,6 +298,9 @@ public class JobTaskList{
 						if(!employee_id.equals("")){
 								pstmt.setString(jj++, employee_id);
 						}
+						if(!group_id.equals("")){
+								pstmt.setString(jj++, group_id);
+						}						
 						if(!effective_date.equals("")){
 								java.util.Date date_tmp = df.parse(effective_date);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
@@ -293,18 +334,19 @@ public class JobTaskList{
 															 rs.getString(4),
 															 rs.getString(5),
 															 rs.getString(6),
-															 rs.getString(7) != null,
-															 rs.getInt(8),
+															 rs.getString(7),
+															 rs.getString(8) != null,
 															 rs.getInt(9),
-															 rs.getDouble(10),
+															 rs.getInt(10),
 															 rs.getDouble(11),
-															 rs.getString(12) != null,
-															 rs.getDouble(13),
-															 rs.getString(14) != null,
-															 rs.getString(15),
+															 rs.getDouble(12),
+															 rs.getString(13) != null,
+															 rs.getDouble(14),
+															 rs.getString(15) != null,
 															 rs.getString(16),
 															 rs.getString(17),
-															 rs.getString(18) != null
+															 rs.getString(18),
+															 rs.getString(19) != null
 															 );
 							 
 							 if(!jobTasks.contains(one))
@@ -329,6 +371,7 @@ public class JobTaskList{
 						"j.position_id,"+
 						"j.salary_group_id,"+
 						"j.employee_id,"+
+						"j.group_id,"+
 						"date_format(j.effective_date,'%m/%d/%Y'),"+
 						
 						"date_format(j.expire_date,'%m/%d/%Y'),"+
@@ -373,21 +416,21 @@ public class JobTaskList{
 															 rs.getString(4),
 															 rs.getString(5),
 															 rs.getString(6),
-															 rs.getString(7) != null,
-															 rs.getInt(8),
+															 rs.getString(7),
+															 rs.getString(8) != null,
 															 rs.getInt(9),
-															 rs.getDouble(10),
+															 rs.getInt(10),
 															 rs.getDouble(11),
-															 rs.getString(12) != null,
-															 rs.getDouble(13),
-															 rs.getString(14) != null,
-															 rs.getString(15),
+															 rs.getDouble(12),
+															 rs.getString(13) != null,
+															 rs.getDouble(14),
+															 rs.getString(15) != null,
 															 rs.getString(16),
 															 rs.getString(17),
-															 rs.getString(18) != null,
-															 rs.getString(19)
+															 rs.getString(18),
+															 rs.getString(19) != null,
+															 rs.getString(20)
 															 );
-							 System.err.println(" adding "+one.getEmployee_number());
 							 if(!jobTasks.contains(one))
 									 jobTasks.add(one);
 						}

@@ -40,9 +40,9 @@
 					<s:select name="emplst.group_id" value="%{emplst.group_id}" id="group_id_set"  list="%{emplst.groups}" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
 				</s:if>
 				<s:else>
-					<select name="emplst.group_id" value="" id="group_id_set"  disabled="disabled"/>
-					<option value="-1">All</option>
-				</select><br />
+					<select name="emplst.group_id" value="" id="group_id_set"  disabled="disabled" >
+						<option value="-1">All</option>
+					</select><br />
 				(To pick a group you need to pick a department first)
 				</s:else>
 			</div>

@@ -8,14 +8,12 @@
 		<th width="10%">Fri</th>
 		<th width="10%">Sat</th>
 		<th width="10%">Sun</th>
+		<th width="10%">Total</th>
 		<s:if test="#unionned">
-			<th width="10%">Total</th>
 			<th>FLSA Total</th>
 		</s:if>
-		<s:else>
-			<th>Total</th>
-		</s:else>
 	</tr>
+
 	<s:iterator value="#daily2" var="one" >
 		<s:set var="jobKey" value="#one.key" />		
 		<s:set var="jobVal" value="#one.value" />

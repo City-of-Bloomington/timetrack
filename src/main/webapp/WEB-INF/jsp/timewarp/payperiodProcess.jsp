@@ -19,7 +19,6 @@
 	    <s:actionmessage/>
 		</div>
 	</s:elseif>
-
 	<table width="100%" border="1">
 		<tr><td align="center">
 			<table width="90%" border="0">
@@ -27,7 +26,7 @@
 					<td align="right" class="td_text">Pay Period </td>
 					<td align="left" class="td_text">&nbsp;&nbsp;<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="doRefresh()" />
 					</td>
-					<td align="right" class="td_text"><a href="<s:property value='#application.url' />paypriodProcess.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a></td>
+					<td align="right" class="td_text"><a href="<s:property value='#application.url' />payperiodProcess.action?pay_period_id=<s:property value='currentPayPeriod.id' />">Current Pay Period</a></td>
 				</tr>
 				<tr>
 					<td align="right" class="td_text">Department </td>

@@ -8,12 +8,14 @@
 	<s:else>
 		<h1>Edit Job: <s:property value="%{jobTask.name}" /></h1>
 		<s:hidden id="jobTask.id" name="jobTask.id" value="%{jobTask.id}" />
-		<s:hidden name="jobTask.hourlyRate" value="%{jobTask.hourlyRate}" />		
+		<s:hidden name="jobTask.hourlyRate" value="%{jobTask.hourlyRate}" />
 	</s:else>
 	<s:if test="jobTask.employee_id != ''">
 		<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />
+		<s:if test="jobTask.group_id != ''">
+			<s:hidden name="jobTask.group_id" value="%{jobTask.group_id}" />
+		</s:if>
 	</s:if>
-
   <%@ include file="strutMessages.jsp" %>
 
 	<div class="width-one-half">
@@ -39,12 +41,21 @@
 			<s:if test="jobTask.employee_id == ''">
 				<s:textfield name="jobTask.name" value="" size="30" id="employee_name" />Employee ID <s:textfield name="jobTask.employee_id" value="%{jobTask.employee_id}" size="10" id="employee_id" />
 			</s:if>
-
 			<s:else>
 				<a href="<s:property value='#application.url' />employee.action?id=<s:property value='%{jobTask.employee_id}' />"> <s:property value="%{jobTask.employee}" /></a>
 			</s:else>
 		</div>
-
+		<div class="form-group">
+			<label>Group</label>
+			<s:if test="jobTask.hasNoGroup()">			
+				<s:if test="jobTask.employee.hasMultipleGroups()">
+					<s:select name="jobTask.group_id" value="%{jobTask.group_id}" list="jobTask.employee.groups"  listKey="id" listValue="name" headerKey="-1" headerValue="Pick a group" />
+				</s:if>
+			</s:if>
+			<s:else>
+				<s:property value="%{jobTask.group}" />
+			</s:else>
+		</div>
 		<div class="form-group">
 			<label>Effective Date</label>
 			<s:textfield name="jobTask.effective_date" value="%{jobTask.effective_date}" size="10" cssClass="date" />
@@ -57,7 +68,7 @@
 
 		<div class="form-group">
 			<label>Primary Job?</label>
-			<s:checkbox name="jobTask.primary_flag" value="%{jobTask.primary_flag}" />Yes
+			<s:checkbox name="jobTask.primary_flag" value="%{jobTask.primary_flag}" fieldValue="true" />Yes
 		</div>
 
 		<div class="form-group">

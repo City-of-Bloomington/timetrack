@@ -134,6 +134,9 @@ public class PayPeriodProcessAction extends TopAction{
 						source = val;
 		}
 		public String getPay_period_id(){
+				if(pay_period_id.equals("")){
+						getPayPeriod();
+				}
 				return pay_period_id;
 		}
 		public String getSource(){
@@ -179,34 +182,71 @@ public class PayPeriodProcessAction extends TopAction{
 						if(!emp_num.equals("") && profMap.containsKey(emp_num)){
 								profile = profMap.get(emp_num);
 						}
+						emp.setPay_period_id(pay_period_id);
 						System.err.println(" emp "+emp.getFull_name());						
 						System.err.println(" profile "+profile);
-						PayPeriodProcess one =
-								new PayPeriodProcess(emp,
-																		 profile,
-																		 payPeriod,
-																		 holys,
-																		 isHand, // HAND flag
-																		 csvOutput,
-																		 isUtil);			
-						msg = one.find();
-						if(!msg.equals("")){
-								if(msg.startsWith("No time")){
-										if(noDataEmployees == null){
-												noDataEmployees = new ArrayList<>();
+						if(emp.hasMultipleJobs()){
+								List<JobTask> jobs = emp.getJobs();
+								// loop over jobs
+								for(JobTask job:jobs){
+										PayPeriodProcess one =										
+												new PayPeriodProcess(emp,
+																						 profile,
+																						 payPeriod,
+																						 holys,
+																						 isHand, // HAND flag
+																						 csvOutput,
+																						 isUtil,
+																						 job.getId());
+										msg = one.find();
+										if(!msg.equals("")){
+												if(msg.startsWith("No time")){
+														if(noDataEmployees == null){
+																noDataEmployees = new ArrayList<>();
+														}
+														noDataEmployees.add(emp);
+												}
+												else{
+														if(!back.equals("")) back +=", ";
+														back += msg;
+												}
 										}
-										noDataEmployees.add(emp);
-								}
-								else{
-										if(!back.equals("")) back +=", ";
-										back += msg;
+										else{
+												if(processes == null){
+														processes = new ArrayList<>();
+												}
+												processes.add(one);
+										}
 								}
 						}
-						else{
-								if(processes == null){
-										processes = new ArrayList<>();
+						else{ // one job
+								PayPeriodProcess one =									
+										new PayPeriodProcess(emp,
+																				 profile,
+																				 payPeriod,
+																				 holys,
+																				 isHand, // HAND flag
+																				 csvOutput,
+																				 isUtil);
+								msg = one.find();
+								if(!msg.equals("")){
+										if(msg.startsWith("No time")){
+												if(noDataEmployees == null){
+														noDataEmployees = new ArrayList<>();
+												}
+												noDataEmployees.add(emp);
+										}
+										else{
+												if(!back.equals("")) back +=", ";
+												back += msg;
+										}
 								}
-								processes.add(one);
+								else{
+										if(processes == null){
+												processes = new ArrayList<>();
+										}
+										processes.add(one);
+								}
 						}
 				}
 				return back;

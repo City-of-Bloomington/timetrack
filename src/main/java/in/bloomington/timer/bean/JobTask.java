@@ -20,7 +20,7 @@ public class JobTask implements Serializable{
 		static Logger logger = LogManager.getLogger(JobTask.class);
 		static final long serialVersionUID = 2400L;
     private String id="",
-				employee_id="",
+				employee_id="", group_id="",
 				employee_number="", // needed for update from nw
 				position_id="",
 				salary_group_id="",
@@ -34,7 +34,7 @@ public class JobTask implements Serializable{
 		SalaryGroup salaryGroup = null;
 		Type position = null;
 		Employee employee = null;
-		
+		Group group = null;
     public JobTask(String val,
 									 String val2,
 									 String val3,
@@ -42,20 +42,21 @@ public class JobTask implements Serializable{
 									 String val5,
 									 
 									 String val6,
-									 boolean val7,
-									 int val8,
+									 String val7,
+									 boolean val8,
 									 int val9,
-									 double val10,
-									 
+									 int val10,
 									 double val11,
-									 boolean val12,
-									 double val13,
-									 boolean val14,
 									 
-									 String val15,
+									 double val12,
+									 boolean val13,
+									 double val14,
+									 boolean val15,
+									 
 									 String val16,
 									 String val17,
-									 boolean val18
+									 String val18,
+									 boolean val19
 							 ){
 				
 				setVals(val,
@@ -75,7 +76,8 @@ public class JobTask implements Serializable{
 								val15,
 								val16,
 								val17,
-								val18);
+								val18,
+								val19);
 		}
     public JobTask(String val,
 									 String val2,
@@ -84,21 +86,22 @@ public class JobTask implements Serializable{
 									 String val5,
 									 
 									 String val6,
-									 boolean val7,
-									 int val8,
+									 String val7,
+									 boolean val8,
 									 int val9,
-									 double val10,
-									 
+									 int val10,
 									 double val11,
-									 boolean val12,
-									 double val13,
-									 boolean val14,
 									 
-									 String val15,
+									 double val12,
+									 boolean val13,
+									 double val14,
+									 boolean val15,
+									 
 									 String val16,
 									 String val17,
-									 boolean val18,
-									 String val19
+									 String val18,
+									 boolean val19,
+									 String val20
 							 ){
 				setVals(val,
 								val2,
@@ -117,9 +120,10 @@ public class JobTask implements Serializable{
 								val15,
 								val16,
 								val17,
-								val18);
+								val18,
+								val19);
 				
-				setEmployee_number(val19);
+				setEmployee_number(val20);
 
 		}
 		private void setVals(String val,
@@ -128,37 +132,39 @@ public class JobTask implements Serializable{
 												 String val4,
 												 String val5,
 												 String val6,
-												 boolean val7,
-												 int val8,
+												 String val7,
+												 boolean val8,
 												 int val9,
-												 double val10,
+												 int val10,
 												 double val11,
-												 boolean val12,
-												 double val13,
-												 boolean val14,												 
+												 double val12,
+												 boolean val13,
+												 double val14,
+												 boolean val15,												 
 
-												 String val15,
 												 String val16,
 												 String val17,
-												 boolean val18
+												 String val18,
+												 boolean val19
 												 
 												 ){
 				setId(val);
 				setPosition_id(val2);
 				setSalary_group_id(val3);
 				setEmployee_id(val4);
-				setEffective_date(val5);
-				setExpire_date(val6);
-				setPrimary_flag(val7);
-				setWeekly_regular_hours(val8);
-				setComp_time_weekly_hours(val9);
-				setComp_time_factor(val10);
-				setHoliday_comp_factor(val11);
-				setClock_time_required(val12);
-				setHourlyRateDbl(val13);				
-				setInactive(val14);
+				setGroup_id(val5);
+				setEffective_date(val6);
+				setExpire_date(val7);
+				setPrimary_flag(val8);
+				setWeekly_regular_hours(val9);
+				setComp_time_weekly_hours(val10);
+				setComp_time_factor(val11);
+				setHoliday_comp_factor(val12);
+				setClock_time_required(val13);
+				setHourlyRateDbl(val14);				
+				setInactive(val15);
 				if(!salary_group_id.equals("")){
-						salaryGroup = new SalaryGroup(salary_group_id, val15,val16,val17, val18);
+						salaryGroup = new SalaryGroup(salary_group_id, val16,val17,val18, val19);
 				}
 
     }
@@ -176,6 +182,9 @@ public class JobTask implements Serializable{
     public String getEmployee_id(){
 				return employee_id;
     }
+    public String getGroup_id(){
+				return group_id;
+    }		
     public String getEmployee_number(){
 				return employee_number;
     }		
@@ -197,6 +206,9 @@ public class JobTask implements Serializable{
     }
 		public boolean isPrimary(){
 				return getPrimary_flag();
+    }
+		public boolean hasNoGroup(){
+				return group_id.equals("");
     }		
 		public boolean getInactive(){
 				return !inactive.equals("");
@@ -234,13 +246,17 @@ public class JobTask implements Serializable{
 						id = val;
     }
     public void setPosition_id (String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						position_id = val;
     }
     public void setEmployee_id(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						employee_id = val;
     }
+    public void setGroup_id(String val){
+				if(val != null && !val.equals("-1"))
+						group_id = val;
+    }		
     public void setEmployee_number(String val){
 				if(val != null)
 						employee_number = val;
@@ -343,6 +359,16 @@ public class JobTask implements Serializable{
 				}
 				return salaryGroup;
 		}
+		public Group getGroup(){
+				if(!group_id.equals("") && group == null){
+						Group one = new Group(group_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								group = one;
+						}
+				}
+				return group;
+		}		
 		public Type getPosition(){
 				if(!position_id.equals("") && position == null){
 						Type one = new Type(position_id);
@@ -437,6 +463,7 @@ public class JobTask implements Serializable{
 						"j.position_id,"+
 						"j.salary_group_id,"+
 						"j.employee_id,"+
+						"j.group_id,"+
 						"date_format(j.effective_date,'%m/%d/%Y'),"+
 						
 						"date_format(j.expire_date,'%m/%d/%Y'),"+
@@ -470,19 +497,20 @@ public class JobTask implements Serializable{
 												rs.getString(4),
 												rs.getString(5),
 												rs.getString(6),
-												rs.getString(7) != null,
-												rs.getInt(8),
+												rs.getString(7),
+												rs.getString(8) != null,
 												rs.getInt(9),
-												rs.getDouble(10),
+												rs.getInt(10),
 												rs.getDouble(11),
-												rs.getString(12) != null,
-												rs.getDouble(13),														
-												rs.getString(14) != null,
+												rs.getDouble(12),
+												rs.getString(13) != null,
+												rs.getDouble(14),														
+												rs.getString(15) != null,
 												
-												rs.getString(15),
 												rs.getString(16),
 												rs.getString(17),
-												rs.getString(18) != null
+												rs.getString(18),
+												rs.getString(19) != null
 												);
 						}
 				}
@@ -502,7 +530,7 @@ public class JobTask implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into jobs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,null) ";
+				String qq = "insert into jobs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,null) ";
 				if(employee_id.equals("")){
 						msg = " employee_id not set ";
 						return msg;
@@ -513,6 +541,10 @@ public class JobTask implements Serializable{
 				}
 				if(salary_group_id.equals("")){
 						msg = " salary group not set ";
+						return msg;
+				}
+				if(group_id.equals("")){
+						msg = " group not set ";
 						return msg;
 				}				
 				logger.debug(qq);
@@ -526,30 +558,31 @@ public class JobTask implements Serializable{
 						pstmt.setString(1, position_id);
 						pstmt.setString(2, salary_group_id);
 						pstmt.setString(3, employee_id);
+						pstmt.setString(4, group_id);						
 						
 						if(effective_date.equals(""))
 								effective_date = Helper.getToday();
 						java.util.Date date_tmp = df.parse(effective_date);
-						pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
 						if(!expire_date.equals("")){
 								date_tmp = df.parse(expire_date);								
-								pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
+								pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));
 						}
 						else
-								pstmt.setNull(5, Types.DATE);	
+								pstmt.setNull(6, Types.DATE);	
 						if(primary_flag.equals(""))
-										pstmt.setNull(6, Types.CHAR);
+										pstmt.setNull(7, Types.CHAR);
 						else
-								pstmt.setString(6, "y");
-						pstmt.setInt(7, weekly_regular_hours);
-						pstmt.setInt(8, comp_time_weekly_hours);
-						pstmt.setDouble(9, comp_time_factor);
-						pstmt.setDouble(10,holiday_comp_factor);
+								pstmt.setString(7, "y");
+						pstmt.setInt(8, weekly_regular_hours);
+						pstmt.setInt(9, comp_time_weekly_hours);
+						pstmt.setDouble(10, comp_time_factor);
+						pstmt.setDouble(11, holiday_comp_factor);
 						if(clock_time_required.equals(""))
-								pstmt.setNull(11, Types.CHAR);
+								pstmt.setNull(12, Types.CHAR);
 						else
-								pstmt.setString(11, "y");
-						pstmt.setDouble(12, hourly_rate);
+								pstmt.setString(12, "y");
+						pstmt.setDouble(13, hourly_rate);
 						pstmt.executeUpdate();
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
@@ -577,7 +610,7 @@ public class JobTask implements Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				if(id.equals("")){
-						return " id not set ";
+						return " job id not set ";
 				}
 				if(employee_id.equals("")){
 						msg = " employee_id not set ";
@@ -590,20 +623,28 @@ public class JobTask implements Serializable{
 				if(salary_group_id.equals("")){
 						msg = " salary group not set ";
 						return msg;
-				}								
+				}
+				if(group_id.equals("")){
+						msg = " group not set ";
+						return msg;
+				}				
 				String qq = "update jobs set position_id=?,"+
 						"salary_group_id=?,"+
 						"employee_id=?,"+
+						"group_id=?,"+
 						"effective_date=?,"+
+						
 						"expire_date=?,"+
 						"primary_flag=?,"+
 						"weekly_regular_hours=?,"+
 						"comp_time_weekly_hours=?,"+
 						"comp_time_factor=?,"+
+						
 						"holiday_comp_factor=?,"+
 						"clock_time_required=?,"+
 						"hourly_rate=?, "+
-						"inactive=? where id=? ";
+						"inactive=? "+
+						"where id=? ";
 				logger.debug(qq);
 				try{
 						con = Helper.getConnection();
@@ -615,34 +656,35 @@ public class JobTask implements Serializable{
 						pstmt.setString(1, position_id);
 						pstmt.setString(2, salary_group_id);
 						pstmt.setString(3, employee_id);
+						pstmt.setString(4, group_id);
 						if(effective_date.equals(""))
 								effective_date = Helper.getToday();
 						java.util.Date date_tmp = df.parse(effective_date);
-						pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
 						if(!expire_date.equals("")){
 								date_tmp = df.parse(expire_date);
-								pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
+								pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));
 						}
 						else
-								pstmt.setNull(5, Types.DATE);										
+								pstmt.setNull(6, Types.DATE);										
 						if(primary_flag.equals(""))
-								pstmt.setNull(6, Types.CHAR);
-								else
-										pstmt.setString(6, "y");
-						pstmt.setInt(7, weekly_regular_hours);
-						pstmt.setInt(8, comp_time_weekly_hours);
-						pstmt.setDouble(9, comp_time_factor);
-						pstmt.setDouble(10,holiday_comp_factor);
+								pstmt.setNull(7, Types.CHAR);
+						else
+								pstmt.setString(7, "y");
+						pstmt.setInt(8, weekly_regular_hours);
+						pstmt.setInt(9, comp_time_weekly_hours);
+						pstmt.setDouble(10, comp_time_factor);
+						pstmt.setDouble(11,holiday_comp_factor);
 						if(clock_time_required.equals(""))
-								pstmt.setNull(11, Types.CHAR);
+								pstmt.setNull(12, Types.CHAR);
 						else
-								pstmt.setString(11, "y");								
-						pstmt.setDouble(12, hourly_rate);
+								pstmt.setString(12, "y");								
+						pstmt.setDouble(13, hourly_rate);
 						if(inactive.equals(""))
-								pstmt.setNull(13, Types.CHAR);
+								pstmt.setNull(14, Types.CHAR);
 						else
-								pstmt.setString(13, "y");
-						pstmt.setString(14, id);
+								pstmt.setString(14, "y");
+						pstmt.setString(15, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

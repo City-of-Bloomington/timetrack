@@ -28,6 +28,7 @@ public class JobTaskAction extends TopAction{
 		List<Type> salaryGroups = null;
 		List<Type> positions = null;
 		List<Employee> employees = null;
+		List<Group> groups = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();

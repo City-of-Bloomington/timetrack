@@ -186,6 +186,9 @@ public class TimeBlockList{
 				return document;
 		}
 		// find employee jobs in this pay period
+		//
+		// normally one job only per document
+		//
 		private List<String> findJobNames(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -195,29 +198,10 @@ public class TimeBlockList{
 				String qq = "select "+
 						" distinct ps.name "+ // job name (position)
 						" from positions ps join jobs j on ps.id=j.position_id, "+
+						" time_documents d,"+
 						" pay_periods p ";
-				String qw = "ps.inactive is null and j.inactive is null and (j.expire_date is null or "+
+				String qw = "d.id=? and d.job_id=j.id and p.id=d.pay_period_id and ps.inactive is null and j.inactive is null and (j.expire_date is null or "+
 						" j.expire_date <= p.end_date) and j.effective_date <= p.start_date ";
-				if(pay_period_id.equals("")){
-						getDocument();
-						if(document != null){
-								pay_period_id = document.getPay_period_id();
-						}
-				}
-				if(employee_id.equals("")){
-						getDocument();
-						if(document != null){
-								employee_id = document.getEmployee_id();
-						}
-				}
-				if(!pay_period_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
-						qw += "p.id=? ";
-				}
-				if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
-						qw += "j.employee_id=? ";
-				}
 				qq = qq +" where "+qw;
 				con = Helper.getConnection();
 				if(con == null){
@@ -227,13 +211,7 @@ public class TimeBlockList{
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
-						int jj=1;
-						if(!pay_period_id.equals("")){
-								pstmt.setString(jj++, pay_period_id);
-						}
-						if(!employee_id.equals("")){
-								pstmt.setString(jj++, employee_id);
-						}
+						pstmt.setString(1, document_id);
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								str = rs.getString(1);
@@ -264,7 +242,6 @@ public class TimeBlockList{
 				String msg="", str="";
 				String qq = "select t.id,"+
 						" t.document_id,"+
-						"t.job_id,"+
 						"t.hour_code_id,"+
 						"date_format(t.date,'%m/%d/%Y'),"+
 						
@@ -286,7 +263,7 @@ public class TimeBlockList{
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
-						" join jobs j on t.job_id=j.id "+
+						" join jobs j on d.job_id=j.id "+
 						" join positions ps on j.position_id=ps.id "+
 						" join hour_codes c on t.hour_code_id=c.id "+
 						" left join code_cross_ref cf on c.id=cf.code_id ";
@@ -310,7 +287,7 @@ public class TimeBlockList{
 				}
 				if(!job_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += "t.job_id=? ";
+						qw += "d.job_id=? ";
 				}				
 				if(!date_from.equals("")){
 						if(!qw.equals("")) qw += " and ";
@@ -394,13 +371,13 @@ public class TimeBlockList{
 						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
-								double hrs = rs.getDouble(10);
-								int order_id = rs.getInt(14); // 15
-								int hr_code_id = rs.getInt(4);
-								String hr_code = rs.getString(15); 
-								String hr_code_desc = rs.getString(16); 
-								String job_name = rs.getString(18); // job name
-								String date = rs.getString(5);
+								double hrs = rs.getDouble(9);
+								int order_id = rs.getInt(13); // 15
+								int hr_code_id = rs.getInt(3);
+								String hr_code = rs.getString(14); 
+								String hr_code_desc = rs.getString(15); 
+								String job_name = rs.getString(17); // job name
+								String date = rs.getString(4);
 								boolean isHoliday = isHoliday(date);
 								String holidayName = "";
 								if(isHoliday){
@@ -421,23 +398,22 @@ public class TimeBlockList{
 										TimeBlock one =
 												new TimeBlock(rs.getString(1),
 																			rs.getString(2),
-																			rs.getString(3), // job_id
+																			rs.getString(3),
 																			rs.getString(4),
-																			rs.getString(5),
+																			rs.getInt(5),
 																			rs.getInt(6),
 																			rs.getInt(7),
 																			rs.getInt(8),
-																			rs.getInt(9),
 																			hrs,
+																			rs.getString(10),
 																			rs.getString(11),
-																			rs.getString(12),
 																			isHoliday,
 																			holidayName,
-																			rs.getString(13) != null,
-																			rs.getInt(14),
+																			rs.getString(12) != null,
+																			rs.getInt(13),
 																			hr_code,
-																			rs.getString(16),
-																			rs.getString(17)
+																			rs.getString(15),
+																			rs.getString(16)
 																			);
 										timeBlocks.add(one);
 										addToBlocks(order_id, one);										
@@ -464,7 +440,58 @@ public class TimeBlockList{
 				return msg;
 		}
 		/**
+		 * this method is needed for employee with multiple jobs and find out
+		 * if they have clocked-in already but no clocked-out
+		 *
+		 */
+		public String findDocumentForClockInOnly(){
+
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "select "+
+						" t.document_id "+
+						" from time_blocks t "+
+						" join time_documents d on d.id=t.document_id "+
+						" join pay_periods p on p.id=d.pay_period_id "+
+						" where "+
+						" t.clock_in is not null and t.clock_out is null "+
+						" and t.inactive is null "+
+						" and t.date = ? "+
+						" and d.pay_period_id=? "+
+						" and d.employee_id=? ";
+				con = Helper.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						String date = Helper.getToday();
+						java.util.Date date_tmp = df.parse(date);
+						pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setString(2, pay_period_id);
+						pstmt.setString(3, employee_id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								document_id = rs.getString(1); 
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}
+				return msg;
+		}
+		/**
 			 select t.hour_code_id, sum(t.hours)                                             from time_blocks t,time_documents d                                             where t.document_id=d.id and t.inactive is null and                             t.date >= '2018-08-27' and d.employee_id=10                                      and t.date <= (select end_date from pay_periods p,time_documents d              where p.id=d.pay_period_id and d.id=310) and t.hour_code_id in                   (select id from hour_codes where accrual_id is not null)                        group by t.hour_code_id;
+			 
  
 		 */
 		public String findUsedAccruals(){

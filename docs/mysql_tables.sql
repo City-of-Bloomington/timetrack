@@ -295,21 +295,22 @@ CREATE TABLE `positions` (
 ;;
 ;; jobs table
 ;;
-CREATE TABLE `jobs` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `position_id` int(10) unsigned NOT NULL,
-  `salary_group_id` int(10) unsigned NOT NULL,
-  `employee_id` int(10) unsigned NOT NULL,
-  `effective_date` date DEFAULT NULL,
-  `expire_date` date DEFAULT NULL,
-  `primary_flag` char(1) DEFAULT NULL,
-  `weekly_regular_hours` tinyint(4) DEFAULT '40',
-  `comp_time_weekly_hours` tinyint(4) DEFAULT '40',
-  `comp_time_factor` double(2,1) DEFAULT '1.0',
-  `holiday_comp_factor` double(2,1) DEFAULT '1.0',
-  `clock_time_required` char(1) DEFAULT NULL,
-		hourly_rate double(7,2) default 0.00,
-  `inactive` char(1) DEFAULT NULL,
+CREATE TABLE jobs (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  position_id int(10) unsigned NOT NULL,
+  salary_group_id int(10) unsigned NOT NULL,
+  employee_id int(10) unsigned NOT NULL,
+	group_id int unsigned not null,
+  effective_date date DEFAULT NULL,
+  expire_date date DEFAULT NULL,
+  primary_flag char(1) DEFAULT NULL,
+  weekly_regular_hours tinyint(4) DEFAULT '40',
+  comp_time_weekly_hours tinyint(4) DEFAULT '40',
+  comp_time_factor` double(2,1) DEFAULT '1.0',
+  holiday_comp_factor double(2,1) DEFAULT '1.0',
+  clock_time_required char(1) DEFAULT NULL,
+	hourly_rate double(7,2) default 0.00,
+  inactive char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `position_id` (`position_id`),
   KEY `salary_group_id` (`salary_group_id`),
@@ -356,7 +357,7 @@ CREATE TABLE `roll_backs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 ;;
-;; time_documents table
+;; time_documents 
 ;;
 CREATE TABLE `time_documents` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -374,6 +375,25 @@ CREATE TABLE `time_documents` (
   CONSTRAINT `time_documents_ibfk_3` FOREIGN KEY (`initiated_by`) REFERENCES `employees` (`id`)
 ) ENGINE=InnoDB;
 ;;
+;; time_documents
+;; modified to handle multiple jobs for an employee
+;;
+CREATE TABLE `time_documents` (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  employee_id int(10) unsigned NOT NULL,
+  pay_period_id int(10) unsigned NOT NULL,
+	job_id int(10) unsigned not null,
+  initiated datetime NOT NULL,
+  initiated_by int(10) unsigned NOT NULL,
+  PRIMARY KEY (id),
+	foreign key(job_id) references jobs(id),
+ 	FOREIGN KEY (employee_id) REFERENCES employees (id),
+  FOREIGN KEY (pay_period_id) REFERENCES pay_periods (id),
+  FOREIGN KEY (initiated_by) REFERENCES employees (id),	
+  UNIQUE KEY emp_pay_period_u (employee_id,pay_period_id, job_id)
+) ENGINE=InnoDB;
+
+;;
 ;; time_blocks
 ;;
 CREATE TABLE `time_blocks` (
@@ -387,7 +407,6 @@ CREATE TABLE `time_blocks` (
   `end_hour` int(11) DEFAULT NULL,
   `end_minute` int(11) DEFAULT NULL,
   `hours` decimal(5,2) DEFAULT NULL,
-  `ovt_pref` enum('CTE','Money') DEFAULT NULL,
   `clock_in` char(1) DEFAULT NULL,
   `clock_out` char(1) DEFAULT NULL,
   `inactive` char(1) DEFAULT NULL,
@@ -534,9 +553,40 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;; quartz website
 ;;
 ;; alter table jobs add hourly_rate double(6,2) default 0.00 after clock_time_required;
+;;
+;; changes on 10/19/2018 
+;; to handle multiple jobs for an employee we moved
+;; job from time block to document
+;; alter table time_documents add job_id int unsigned not null after pay_period_id;
+;; Now we need to delete the documents that do not have time_blocks
+;; delete from time_actions where document_id not in (select document_id from time_blocks);
+;; delete from time_documents where id not in ( select document_id from time_blocks);
+;; update time_documents set job_id = (select t.job_id from time_blocks t where t.document_id = time_documents.id limit 1);
 
+;; alter table time_documents add foreign key(job_id) references jobs(id);
+;;
+;; we need to change the unique constraint, so we need to drop the old one
+;; alter table time_documents drop foreign key time_documents_ibfk_1;
+;; alter table time_documents drop foreign key time_documents_ibfk_2;			
+;; alter table time_documents drop index emp_pay_period_u;
+;; now we need to add these foreign keys again
+;; alter table time_documents add foreign key(employee_id) references employees(id);
+;; alter table time_documents add foreign key(pay_period_id) references pay_periods(id);
+;;  alter table time_documents add unique(pay_period_id, job_id, employee_id);
+;; 
 
-
-
-
-
+;; Now we remove the time_blocks foreign key job_id
+;; alter table time_blocks drop foreign key time_blocks_ibfk_2
+;;
+;; Now we can drop the column job_id
+;; alter table time_blocks drop column job_id;
+;;
+;; we do similar thing to time_block_logs
+;;
+;; alter table time_block_logs drop foreign key time_block_logs_ibfk_2;
+;; alter table time_block_logs drop column job_id;
+;;
+;; alter table jobs add group_id int unsigned not null after employee_id;
+;; update jobs set group_id = (select ge.group_id from group_employees ge where ge.employee_id=jobs.employee_id limit 1);
+;; delete from jobs where id=44; // admin job
+;; alter table jobs add foreign key(group_id) references groups(id);

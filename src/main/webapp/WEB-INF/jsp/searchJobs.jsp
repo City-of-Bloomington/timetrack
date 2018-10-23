@@ -10,6 +10,26 @@
 
 		<div class="width-one-half">
 			<div class="form-group">
+				<label>Employee Name</label>
+				<s:textfield name="joblst.employee_name" value="%{joblst.employee_name}" id="employee_name" size="20" /><br />
+				ID:<s:textfield name="joblst.employee_id" value="%{joblst.employee_id}" id="employee_id" size="6" maxlength="6" />
+			</div>
+			<div class="form-group">
+				<label>Department</label>
+				<s:select name="joblst.department_id" value="%{joblst.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" id="department_id_change"/>
+			</div>
+			<div class="form-group">
+				<label>Group</label>
+				<s:if test="joblst.hasGroups()">
+					<s:select name="joblst.group_id" value="%{joblst.group_id}" id="group_id_set"  list="%{joblst.groups}" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
+				</s:if>
+				<s:else>
+					<select name="joblst.group_id" value="" id="group_id_set"  disabled="disabled">
+						<option value="-1">All</option>
+					</select><br />
+				</s:else>
+			</div>
+			<div class="form-group">
 				<label>Job ID</label>
 				<s:textfield name="joblst.id" value="%{joblst.id}" size="5" />
 			</div>
@@ -22,18 +42,6 @@
 			<div class="form-group">
 				<label>Salary Group</label>
 				<s:select name="joblst.salary_group_id" value="%{joblst.salary_group_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="All" required="true" />*
-			</div>
-
-			<div class="form-group">
-				<label>Employee </label>
-				<s:textfield name="joblst.employee_name" value="%{joblst.employee_name}" id="employee_name" size="20" /><br />
-				(key words) ID:
-				<s:textfield name="joblst.employee_id" value="%{joblst.employee_id}" id="employee_id" size="5" />
-			</div>
-
-			<div class="form-group">
-				<label>Department</label>
-				<s:select name="joblst.department_id" value="%{joblst.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
 			</div>
 
 			<div class="form-group">

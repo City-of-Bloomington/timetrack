@@ -22,7 +22,6 @@ public class Block{
 		static final long serialVersionUID = 250L;		
     String id="",
 				document_id="",
-				job_id="",
 				hour_code_id="",
 		// ovt_pref="",
 				clock_in="", clock_out="", holidayName="";
@@ -42,7 +41,7 @@ public class Block{
     public Block(
 								 String val,
 								 String val2,
-								 String val3,
+								 // String val3,
 								 String val4,
 								 String val5,
 								 int val6,
@@ -53,12 +52,12 @@ public class Block{
 								 String val11,
 								 String val12
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12);
+				setVals(val, val2, val4, val5, val6, val7, val8, val9, val10, val11, val12);
 		}
     public Block(
 								 String val,
 								 String val2,
-								 String val3,
+								 // String val3,
 								 String val4,
 								 String val5,
 								 int val6,
@@ -71,12 +70,12 @@ public class Block{
 								 boolean val13,
 								 String val14
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14);
+				setVals(val, val2, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14);
 		}
 		void setVals(
 								 String val,
 								 String val2,
-								 String val3,
+								 // String val3,
 								 String val4,
 								 String val5,
 								 int val6,
@@ -89,7 +88,7 @@ public class Block{
 							 ){								
 				setId(val);
 				setDocument_id(val2);
-				setJob_id(val3);
+				// setJob_id(val3);
 				setHour_code_id(val4);
 				setDate(val5);
 				setBegin_hour(val6);
@@ -103,7 +102,7 @@ public class Block{
 		void setVals(
 								 String val,
 								 String val2,
-								 String val3,
+								 // String val3,
 								 String val4,
 								 String val5,
 								 int val6,
@@ -118,7 +117,7 @@ public class Block{
 							 ){								
 				setId(val);
 				setDocument_id(val2);
-				setJob_id(val3);
+				// setJob_id(val3);
 				setHour_code_id(val4);
 				setDate(val5);
 				setBegin_hour(val6);
@@ -142,9 +141,11 @@ public class Block{
 		public String getId(){
 				return id;
     }
+		/*
     public String getJob_id(){
 				return job_id;
     }
+		*/
     public String getDocument_id(){
 				return document_id;
     }
@@ -226,11 +227,6 @@ public class Block{
 				}
 				return ""+hours;
     }
-		/*
-		public String getOvt_pref(){
-				return ovt_pref;
-    }
-		*/
 		public String getClock_in(){
 				return clock_in;
     }
@@ -250,10 +246,12 @@ public class Block{
 				if(val != null)
 						id = val;
     }
+		/*
     public void setJob_id (String val){
 				if(val != null)
 						job_id = val;
     }
+		*/
     public void setDocument_id (String val){
 				if(val != null && !val.equals("-1"))
 						document_id = val;
@@ -309,12 +307,6 @@ public class Block{
 						}
 				}
     }
-		/*
-    public void setOvt_pref(String val){
-				if(val != null)
-						ovt_pref = val;
-    }
-		*/
     public void setClock_in(String val){
 				if(val != null)
 						clock_in = val;
@@ -345,6 +337,7 @@ public class Block{
 				}
 				return seed;
 		}
+		/*
 		public JobTask getJobTask(){
 				if(!job_id.equals("") && jobTask == null){
 						JobTask one = new JobTask(job_id);
@@ -355,6 +348,11 @@ public class Block{
 				}
 				return jobTask;
 		}
+		public JobTask getJob(){
+				getJobTask();
+				return jobTask;
+		}
+		*/
 		public HourCode getHourCode(){
 				if(!hourCodeSet){
 						if(!hour_code_id.equals("")){

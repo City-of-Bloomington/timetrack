@@ -150,9 +150,7 @@
 							<s:set var="warnings" value="warnings" />
 							<%@ include file="warnings.jsp" %>
 						</s:if>
-						<s:set var="daily" value="daily" />
-						<s:set var="week1Total" value="week1Total" />
-						<s:set var="week2Total" value="week2Total" />
+						<s:set var="daily2" value="daily2" />
 						<s:set var="payPeriodTotal" value="payPeriodTotal" />
 						<div class="m-b-40"><%@ include file="dailySummary.jsp" %></div>
 						<s:if test="hasTimeIssues()">

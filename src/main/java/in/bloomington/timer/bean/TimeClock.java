@@ -16,12 +16,13 @@ public class TimeClock{
 
 		static final long serialVersionUID = 3700L;	
 		static Logger logger = LogManager.getLogger(TimeClock.class);
-    String id="", id_code="", time="", document_id="", time_in="", time_out="";
+    String id="", id_code="", time="", document_id="", time_in="", time_out="",
+				job_id="", employee_id="";
 		Employee employee = null;
 		PayPeriod currentPayPeriod  = null;
 		Document document = null;
-		List<JobTask> jobTasks = null;
-		JobTask selectedJob = null;
+		List<JobTask> jobs = null;
+		JobTask job = null;
 		HourCode defaultRegularCode = null;
 		boolean new_docuemnt = false;
 		int time_hr = -1, time_min = -1; // hour, minute of clock
@@ -67,6 +68,9 @@ public class TimeClock{
     public String getTime_out(){
 				return time_out;
     }
+    public String getJob_id(){
+				return job_id;
+    }		
     public String getTime(){
 				if(time.equals("")){
 						time = Helper.getCurrentTime();
@@ -86,6 +90,13 @@ public class TimeClock{
 				if(val != null)
 						id = val;
     }
+    public void setJob_id(String val){
+				if(val != null && !val.equals("-1")){
+						job_id = val;
+						job = new JobTask(job_id);
+						job.doSelect();
+				}
+    }		
     public void setId_code(String val){
 				if(val != null)
 						id_code = val;
@@ -138,6 +149,7 @@ public class TimeClock{
 						DocumentList dl = new DocumentList();
 						dl.setEmployee_id(employee.getId());
 						dl.setPay_period_id(currentPayPeriod.getId());
+						dl.setJob_id(job_id);
 						String back = dl.find();
 						if(back.equals("")){
 								List<Document> ones = dl.getDocuments();
@@ -150,7 +162,7 @@ public class TimeClock{
 				// if we could not find, then we create a new one
 				//
 				if(document == null){
-						Document one = new Document(null, employee.getId(), currentPayPeriod.getId(), null, employee.getId());
+						Document one = new Document(null, employee.getId(), currentPayPeriod.getId(),job_id, null, employee.getId());
 						String back = one.doSave();
 						if(back.equals("")){
 								document = one;
@@ -159,27 +171,97 @@ public class TimeClock{
 				}
 				return document;
 		}
-		public List<JobTask> getJobTasks(){
-				if(jobTasks == null){
-						JobTaskList jl = new JobTaskList(employee.getId());
-						jl.setPay_period_id(currentPayPeriod.getId());
-						String back = jl.find();
-						if(back.equals("")){
-								List<JobTask> ones = jl.getJobTasks();
-								if(ones != null && ones.size() > 0){
-										jobTasks = ones;
-										if(jobTasks.size() > 0){
-												selectedJob = jobTasks.get(0);
-												SalaryGroup salaryGroup = selectedJob.getSalaryGroup();
-												if(salaryGroup != null){
-														defaultRegularCode = salaryGroup.getDefaultRegularCode();
-												}
+		public JobTask getJob(){
+				if(job == null){
+						if(!job_id.equals("")){
+								JobTask one = new JobTask(job_id);
+								String back = one.doSelect();
+								if(back.equals("")){
+										job = one;
+								}
+						}
+						else {
+								findJobs();
+						}
+				}
+				return job;
+		}
+		void findJobs(){
+				if(jobs == null){
+						findEmployee();
+						if(employee != null){
+								JobTaskList jl = new JobTaskList(employee.getId());
+								getCurrentPayPeriod();
+								jl.setPay_period_id(currentPayPeriod.getId());
+								String back = jl.find();
+								if(back.equals("")){
+										List<JobTask> ones = jl.getJobTasks();
+										if(ones != null && ones.size() > 0){
+												jobs = ones;
 										}
 								}
 						}
+						if(jobs != null && jobs.size() > 0){
+								for(JobTask one:jobs){
+										if(one.isPrimary()){
+												job = one;
+										}
+								}
+								if(job == null){
+										job = jobs.get(0);
+										job_id = job.getId();
+								}
+						}
 				}
-				return jobTasks;
-		}		
+		}
+		//
+		public boolean hasMultipleJobs(){
+				findJobs();
+				return jobs != null && jobs.size() > 1;
+		}
+		public boolean hasEmployee(){
+				if(employee == null)
+						findEmployee();
+				return employee != null;
+		}
+		public boolean hasClockIn(){
+				boolean hasClockIn = false;
+				getCurrentPayPeriod();
+				findEmployee();
+				TimeBlockList tbl = new TimeBlockList();
+				tbl.setPay_period_id(currentPayPeriod.getId());
+				tbl.setEmployee_id(employee.getId());
+				String back = tbl.findDocumentForClockInOnly();
+				if(back.equals("")){
+						// if we have clock-in, we can get the document 
+						document = tbl.getDocument();
+						if(document != null){
+								job_id = document.getJob_id();
+								hasClockIn = true;
+						}
+				}
+				return hasClockIn;
+		}
+		public List<JobTask> getJobs(){
+				return jobs;
+		}
+		public Employee getEmployee(){
+				return employee;
+		}
+		void findEmployee(){
+				if(employee == null && !id_code.equals("")){
+						EmployeeList empl = new EmployeeList();
+						empl.setId_code(id_code);
+						String back = empl.find();
+						if(back.equals("")){
+								List<Employee> ones = empl.getEmployees();
+								if(ones != null && ones.size() > 0){
+										employee = ones.get(0);
+										employee_id = employee.getId();
+								}
+						}
+				}
+		}
 		//
 		public String process(){
 				String msg="", hour_code_id="1"; // 1:Reg, 14:TEMP
@@ -189,23 +271,6 @@ public class TimeClock{
 						return msg;
 				}
 				// find employee using id_code				
-				EmployeeList empl = new EmployeeList();
-				empl.setId_code(id_code);
-				String back = empl.find();
-				if(!back.equals("")){
-						msg += back;
-						System.err.println(msg);
-						return msg;
-				}
-				List<Employee> ones = empl.getEmployees();
-				if(ones != null && ones.size() > 0){
-						employee = ones.get(0);
-				}
-				if(employee == null){
-						msg += " No matching employee found for ID "+id_code;
-						logger.error(msg);
-						return msg;
-				}
 				//
 				// find current pay_period
 				getCurrentPayPeriod();
@@ -217,21 +282,32 @@ public class TimeClock{
 				//			
 				// find document, if non create one
 				//
-				getDocument();
 				// System.err.println(" found doc "+document.getId());
 				//
 				// we need the employee job
-				getJobTasks();
-				//
-				if(selectedJob == null){
-						msg = "Could not find related job ";
-						logger.error(msg);
-						return msg;						
+				if(job_id.equals("")){
+						getJobs();
+						if(jobs.size() > 1 && job_id.equals("")){
+								msg = "you need to select a job ";
+								return msg;
+						}
+						if(job == null){
+								msg = "Could not find related job ";
+								logger.error(msg);
+								return msg;						
+						}
 				}
-				if(defaultRegularCode != null){
-						hour_code_id = defaultRegularCode.getId();
-						// System.err.println(" hr code id "+hour_code_id);
+				getJob();
+				if(job != null){
+						SalaryGroup salaryGroup = job.getSalaryGroup();
+						if(salaryGroup != null){
+								defaultRegularCode = salaryGroup.getDefaultRegularCode();
+						}
+						if(defaultRegularCode != null){
+								hour_code_id = defaultRegularCode.getId();
+						}
 				}
+				getDocument();
 				//
 				// find if there is a clock-in, if not this a clock-in
 				//         else it is a clock-out
@@ -242,7 +318,7 @@ public class TimeClock{
 								// in this pay period, so will consider as clock_in
 								timeBlock = new TimeBlock(null,
 																					document.getId(),
-																					selectedJob.getId(),
+																					// selectedJob.getId(),
 																					hour_code_id,
 																					date,
 																					
@@ -266,7 +342,7 @@ public class TimeClock{
 								//
 								TimeBlockList tbl = new TimeBlockList();
 								tbl.setDocument_id(document.getId());
-								tbl.setJob_id(selectedJob.getId());
+								// tbl.setJob_id(job_id); // included in document
 								tbl.hasClockInOnly();
 								tbl.setActiveOnly();
 								tbl.setDate(date); // for today only
@@ -285,7 +361,7 @@ public class TimeClock{
 										else{ // it is a clock-in
 												timeBlock = new TimeBlock(null,
 																									document.getId(),
-																									selectedJob.getId(),
+																									// selectedJob.getId(),
 																									hour_code_id,
 																									date,
 																									

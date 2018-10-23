@@ -66,9 +66,14 @@
 			<s:if test="employee.id == ''">
 				<div class="form-group">
 					<label>Department</label>
-					<s:select name="employee.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id" />Group ID: <span id="group_id2">&nbsp;</span>
+					<s:select name="employee.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />
 				</div>
-
+				<div class="form-group">
+					<label>Group</label>
+					<select name="employee.group_id" value="" id="group_id_set"  disabled="disabled"/>
+					<option value="-1">Pick a group</option>
+				</select>(To pick a group you need to pick a department first)					
+				</div>
 				<div class="form-group">
 					<!-- butcherad: we need an input group style for such -->
 					<label>Effective Date</label>
@@ -99,6 +104,9 @@
 					<s:if test="!employee.hasActiveGroup()">
 						<a href="<s:property value='#application.url' />groupEmployee.action?employee_id=<s:property value='employee.id' />&department_id=<s:property value='employee.department_id' />" class="button"> Add Employee to a Group</a>
 					</s:if>
+					<s:else>
+						<a href="<s:property value='#application.url' />groupEmployee.action?employee_id=<s:property value='employee.id' />&department_id=<s:property value='employee.department_id' />" class="button"> Add Employee to Another Group</a>
+					</s:else>
 					<s:if test="employee.hasNoJob()">
 						<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='employee.id' />" class="button"> Add A Job</a>
 					</s:if>
@@ -123,13 +131,11 @@
 			<s:set var="departmentEmployees" value="%{employee.departmentEmployees}" />
 			<s:set var="departmentEmployeesTitle" value="'Employee Department'" />
 			<%@ include file="departmentEmployees.jsp" %>
-
 			<s:if test="employee.hasGroup()">
 				<s:set var="groupEmployees" value="%{employee.groupEmployees}" />
 				<s:set var="groupEmployeesTitle" value="'Employee Group'" />
 				<%@ include file="groupEmployees.jsp" %>
 			</s:if>
-
 			<s:if test="employee.hasJobs()">
 				<s:set var="jobTasks" value="%{employee.jobs}" />
 				<s:set var="jobTasksTitle" value="'Employee Jobs'" />

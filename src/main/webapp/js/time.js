@@ -131,25 +131,7 @@ $('#hide_info_button').click(function() {
     $('#hide_info').hide();
     return false;
 });
-// old code
-$('#department_id_change_old').change(function() {
-    var $option = $(this).find('option:selected');
-    var dept_id = $option.val();
-    var dept_name = $option.text();
-    var $options = $("#group_id_set");
-    $options.prop('disabled',false);
-    $options.empty();
-    $options.append(new Option("Pick a group","-1"));
-		
-    $.getJSON(APPLICATION_URL + "GroupService?department_id="+dept_id, function(result) {
-        $.each(result, function(key,item) {
-            $options.append(new Option(item.name,item.id));
-        })
-    }).fail(function(xx, statusText, error){
-        var err = statusText+","+error;
-        // alert(err);
-    })
-});
+//
 // when department change we want to populate
 // the group list
 //
@@ -162,16 +144,13 @@ $('#department_id_change').change(function() {
         dataType:'json'
     })
     .done(function( data, status ) {
-				var $options = $("#group_id_set");
-				$options.prop('disabled',false);
-				$options.empty();
-				$options.append(new Option("Pick a group","-1"));
-        for(var key in data){ // it is an array
-            var obj = data[key];
-            opt = document.createElement('option');
-            opt.value=obj.id;
-            opt.text=obj.name;
-            options.appendChild(opt);
+				var options = $("#group_id_set");
+				options.prop('disabled',false);
+				options.empty();
+				options.append(new Option("Pick a group","-1"));
+        for(key in data){ // it is an array
+            // var obj = data[key];
+            options.append(new Option(data[key].name, data[key].id));
         }
     })
     .error(function(x,status,err){

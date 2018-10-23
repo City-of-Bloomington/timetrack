@@ -40,6 +40,7 @@ public class PayPeriodProcess{
 		HolidayList holyList = null;
 		int year = 2017, splitDay = 14; // default 14 no split
 		String status = "No data";
+		String job_id = "";
 		CodeRefList codeRefList = null;
 		// for HAND only
 		Hashtable<CodeRef, String> handHash = null;
@@ -78,6 +79,27 @@ public class PayPeriodProcess{
 				//
 				setWeekEntries();
 		}
+		public PayPeriodProcess(Employee val,
+														Profile val2,
+														PayPeriod val3,
+														HolidayList val4,
+														boolean val5, // HAND flag
+														boolean val6,// csv flag
+														boolean val7, // isUtil 
+														String val8){ //job_id
+				setEmployee(val);
+				setProfile(val2);
+				setPayPeriod(val3);
+				setHolidayList(val4);
+				setIsHand(val5);
+				setCsvOutuput(val6);
+				setIsUtil(val7);
+				setJob_id(val8);
+				//
+				// prepare the objects
+				//
+				setWeekEntries();
+		}		
 		public void setEmployee(Employee val){
 				if(val != null){
 						employee = val;
@@ -101,6 +123,10 @@ public class PayPeriodProcess{
 		}
 		public void setIsHand(boolean val){
 				isHand = val;
+		}
+		public void setJob_id(String val){
+				if(val != null)
+						job_id = val;
 		}
 		public void setIsUtil(boolean val){
 				isUtil = val;
@@ -347,6 +373,9 @@ public class PayPeriodProcess{
 						DocumentList dl = new DocumentList();
 						dl.setEmployee_id(employee.getId());
 						dl.setPay_period_id(payPeriod.getId());
+						if(!job_id.equals("")){
+								dl.setJob_id(job_id);
+						}
 						back = dl.find();
 						if(back.equals("")){
 								List<Document> ones = dl.getDocuments();

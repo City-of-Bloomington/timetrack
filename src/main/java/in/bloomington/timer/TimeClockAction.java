@@ -46,12 +46,16 @@ public class TimeClockAction extends TopAction{
 				}catch(Exception ex){
 						logger.error(ex);
 				}
-				// System.err.println(" ip "+ip);
-				clearAll();
 				if(!action.equals("")){
 						if(ipSet != null){
 								if(ipSet.contains(ip)){
 										try{
+												if(!timeClock.hasClockIn() &&
+													 timeClock.hasMultipleJobs() &&
+													 timeClock.hasEmployee()){
+														if(action.equals("Submit"))
+																return "pickJob";
+												}
 												back = timeClock.process();
 												if(!back.equals("")){
 														addError(back);

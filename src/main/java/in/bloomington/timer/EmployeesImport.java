@@ -318,6 +318,7 @@ public class EmployeesImport{
 												job.setSalary_group_id(salary_grp_id);
 												job.setEmployee_id(emp.getId());
 												job.setEffective_date("07/01/2017");
+												job.setGroup_id(emp_group_id);
 												job.setPrimary_flag(true);
 												job.setWeekly_regular_hours(weekly_regular_hours);
 												job.setComp_time_weekly_hours(comp_time_weekly_hours);

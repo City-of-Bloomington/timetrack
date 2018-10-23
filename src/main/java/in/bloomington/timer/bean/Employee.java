@@ -136,6 +136,14 @@ public class Employee implements Serializable{
 		public boolean hasNoEmployeeNumber(){
 				return employee_number.equals("");
 		}
+		public boolean hasOneGroup(){
+				getGroups();
+				return groups != null && groups.size() == 1;
+		}
+		public Group getGroup(){
+				getGroups();
+				return groups.get(0);
+		}
 		public boolean hasGroup(){
 				getGroups();
 				return groups != null && groups.size() > 0;
@@ -487,14 +495,18 @@ public class Employee implements Serializable{
 						// we want all
 						String back = del.find();
 						if(back.equals("")){
-								List<GroupEmployee> des = del.getGroupEmployees();
-								if(des != null && des.size() > 0){
-										groupEmployees = des;
-										for(GroupEmployee one:des){
+								List<GroupEmployee> ones = del.getGroupEmployees();
+								if(ones != null && ones.size() > 0){
+										groupEmployees = ones;
+										for(GroupEmployee one:ones){
 												if(one.isActive() && one.isCurrent()){
 														groupEmployee = one;
 														break;
 												}
+										}
+										if(groupEmployee == null){
+												// first one the defualt
+												groupEmployee = groupEmployees.get(0);
 										}
 								}
 						}
@@ -504,6 +516,10 @@ public class Employee implements Serializable{
 		public boolean hasActiveGroup(){
 				getGroupEmployees();
 				return groupEmployee != null;
+		}
+		public boolean hasMultipleGroups(){
+				getGroupEmployees();
+				return groupEmployees != null && groupEmployees.size() > 1;
 		}
 		public GroupEmployee getGroupEmployee(){
 				getGroupEmployees();
@@ -525,13 +541,16 @@ public class Employee implements Serializable{
 		}
 		public List<JobTask> getJobs(){
 				if(!id.equals("") && jobs == null){
-						JobTaskList del = new JobTaskList();
-						del.setEmployee_id(id);
-						String back = del.find();
+						JobTaskList jtl = new JobTaskList();
+						jtl.setEmployee_id(id);
+						if(!pay_period_id.equals("")){
+								jtl.setPay_period_id(pay_period_id);
+						}
+						String back = jtl.find();
 						if(back.equals("")){
-								List<JobTask> des = del.getJobs();
-								if(des != null && des.size() > 0){
-										jobs = des;
+								List<JobTask> ones = jtl.getJobs();
+								if(ones != null && ones.size() > 0){
+										jobs = ones;
 								}
 						}
 				}
@@ -540,6 +559,10 @@ public class Employee implements Serializable{
 		public boolean hasJobs(){
 				getJobs();
 				return jobs != null && jobs.size() > 0;
+		}
+		public boolean hasMultipleJobs(){
+				getJobs();
+				return jobs != null && jobs.size() > 1;
 		}
 		public boolean hasNoJob(){
 				getJobs();

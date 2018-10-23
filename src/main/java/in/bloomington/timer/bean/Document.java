@@ -29,6 +29,7 @@ public class Document{
 		DecimalFormat dfn = new DecimalFormat("##0.00");
     private String id="", employee_id="", pay_period_id="",
 				initiated="",initiated_by="", selected_job_id="";
+		private String job_id="";
 		double week1Total = 0, week2Total = 0, week1_flsa=0, week2_flsa=0;
 		PayPeriod payPeriod = null;
 		Employee employee = null;
@@ -40,7 +41,7 @@ public class Document{
 		Map<String, Map<Integer, Double>> daily2 = null;				
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
-		JobTask jobTask = null;
+		JobTask job = null;
 		List<JobTask> jobs = null;
 		SalaryGroup salaryGroup = null;
 		Map<String, List<String>> allAccruals = new TreeMap<>();
@@ -58,13 +59,15 @@ public class Document{
 										String val2,
 										String val3,
 										String val4,
-										String val5
+										String val5,
+										String val6
 							 ){
 				setId(val);
 				setEmployee_id(val2);				
 				setPay_period_id(val3);
-				setInitiated(val4);
-				setInitiated_by(val5);
+				setJob_id(val4);
+				setInitiated(val5);
+				setInitiated_by(val6);
 				fillWarningMap();
 
     }
@@ -83,6 +86,9 @@ public class Document{
     public String getPay_period_id(){
 				return pay_period_id;
     }
+    public String getJob_id(){
+				return job_id;
+    }		
     public String getInitiated(){
 				return initiated;
     }
@@ -103,6 +109,10 @@ public class Document{
 				if(val != null && !val.equals("-1"))
 						pay_period_id = val;
     }
+    public void setJob_id (String val){
+				if(val != null && !val.equals("-1"))
+						job_id = val;
+    }		
     public void setEmployee_id(String val){
 				if(val != null && !val.equals("-1"))						
 						employee_id = val;
@@ -207,6 +217,16 @@ public class Document{
 						lastWorkflow = lastTimeAcion.getWorkflow();
 				}
 				return lastWorkflow;
+		}
+		public JobTask getJob(){
+				if(!job_id.equals("") && job == null){
+						JobTask one = new JobTask(job_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+							 job = one;
+						}
+				}
+				return job;
 		}		
 		private void fillWarningMap(){
 				AccrualWarningList tl = new AccrualWarningList();
@@ -296,8 +316,8 @@ public class Document{
 		}
 		public boolean isPunchClockOnly(){
 				getJob();
-				if(jobTask != null){
-						return jobTask.isPunchClockOnly();
+				if(job != null){
+						return job.isPunchClockOnly();
 				}
 				return false;
 		}
@@ -391,15 +411,15 @@ public class Document{
 		// we need at least one job to find some info
 		// about the employee
 		public JobTask getJobTask(){
-				if(jobTask == null){
+				if(job == null){
 						getJobs();
 						if(jobs.size() == 1){
-								jobTask = jobs.get(0);
+								job = jobs.get(0);
 						}
 						else if(!selected_job_id.equals("")){
 								for(JobTask one:jobs){
 										if(one.getId().equals(selected_job_id)){
-												jobTask = one;
+												job = one;
 												break;
 										}
 								}
@@ -407,14 +427,14 @@ public class Document{
 						else {
 								for(JobTask one:jobs){
 										if(one.isPrimary()){
-												jobTask = one;
+												job = one;
 												selected_job_id = one.getId();
 												break;
 										}
 								}								
 						}
 				}
-				return jobTask;
+				return job;
 		}
 		public List<JobTask> getJobs(){
 				if(jobs == null){
@@ -430,18 +450,15 @@ public class Document{
 				}
 				return jobs;
 		}		
-		public JobTask getJob(){
-				return getJobTask();
-		}
 		public boolean hasJob(){
-				getJobTask();
-				return jobTask != null;
+				getJob();
+				return job != null;
 		}
 		public SalaryGroup getSalaryGroup(){
 				if(salaryGroup == null){
-						getJobTask();
-						if(jobTask != null){
-								salaryGroup = jobTask.getSalaryGroup();
+						getJob();
+						if(job != null){
+								salaryGroup = job.getSalaryGroup();
 						}
 				}
 				return salaryGroup;
@@ -632,54 +649,6 @@ public class Document{
 						}
 				}
 		}
-		/**
-		public void adjustAccruals(){
-				if(employeeAccruals != null && usedAccrualTotals != null){
-						for(EmployeeAccrual one: employeeAccruals){
-								Accrual accrual = one.getAccrual();
-								List<String> list = new ArrayList<>();
-								String accName = accrual.getName();
-								String accDesc = accrual.getDescription();
-								if(accDesc == null) accDesc="";
-								String codeInfo = accName+": "+accDesc;
-								//
-								String related_id = one.getRelated_hour_code_id();
-								if(related_id != null && !related_id.equals("")){
-										double hrs_total = one.getHours();
-										list.add(""+hrs_total);
-										try{
-												int cd_id = Integer.parseInt(related_id);
-												if(usedAccrualTotals.containsKey(cd_id)){
-														double hrs_used = usedAccrualTotals.get(cd_id);
-														list.add(""+hrs_used);
-														if(hrs_total > hrs_used){
-																hrs_total -= hrs_used;
-														}
-														else{
-																hrs_total = 0.0;
-														}
-														one.setHours(hrs_total);
-												}
-												else{
-														list.add("0.0"); // nothing used
-												}
-												list.add(""+dfn.format(hrs_total)); // adjusted
-												if(accrual.hasPref_max_leval()){
-														if(hrs_total > accrual.getPref_max_level()){
-																String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO until this balance is reduced to no more than "+accrual.getPref_max_level()+" hours.";
-																if(!warnings.contains(str))
-																		warnings.add(str);
-														}
-												}
-												allAccruals.put(codeInfo, list);
-										}catch(Exception ex){
-												logger.error(ex);
-										}
-								}
-						}
-				}
-		}
-		*/
 		void prepareHolidays(){
 				HolidayList hl = new HolidayList(debug);
 				if(!pay_period_id.equals("")){
@@ -744,15 +713,15 @@ public class Document{
 		}
 		// after submission
 		private void checkForWarningsAfter(){
-				if(jobTask == null){
-						getJobTask();
+				if(job == null){
+						getJob();
 				}
 				if(getWeek1TotalDbl() > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
 				}
-				if(jobTask != null){
-						if(week1Total < jobTask.getWeekly_regular_hours()){
-								String str = "Week 1 total hours are less than "+jobTask.getWeekly_regular_hours()+" hrs";
+				if(job != null){
+						if(week1Total < job.getWeekly_regular_hours()){
+								String str = "Week 1 total hours are less than "+job.getWeekly_regular_hours()+" hrs";
 								if(!warnings.contains(str))
 										warnings.add(str);
 						}
@@ -760,9 +729,9 @@ public class Document{
 				if(getWeek2TotalDbl() > 0){
 						checkWeekWarnings(hourCodeWeek2, week2Total);
 				}
-				if(jobTask != null){				
-						if(week2Total < jobTask.getWeekly_regular_hours()){
-								String str = "Week 2 total hours are less than "+jobTask.getWeekly_regular_hours()+" hrs";
+				if(job != null){				
+						if(week2Total < job.getWeekly_regular_hours()){
+								String str = "Week 2 total hours are less than "+job.getWeekly_regular_hours()+" hrs";
 								if(!warnings.contains(str))
 										warnings.add(str);
 						}
@@ -821,8 +790,8 @@ public class Document{
 		}
 		// before submission
 		private void checkForWarningsBefore(){
-				if(jobTask == null){
-						getJobTask();
+				if(job == null){
+						getJob();
 				}
 				if(getWeek1TotalDbl() > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
@@ -935,7 +904,7 @@ public class Document{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,employee_id,pay_period_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by from time_documents where id =? ";
+				String qq = "select id,employee_id,pay_period_id,job_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by from time_documents where id =? ";
 				logger.debug(qq);
 				try{
 						con = Helper.getConnection();
@@ -946,8 +915,9 @@ public class Document{
 								if(rs.next()){
 										setEmployee_id(rs.getString(2));
 										setPay_period_id(rs.getString(3));
-										setInitiated(rs.getString(4));
-										setInitiated_by(rs.getString(5));
+										setJob_id(rs.getString(4));
+										setInitiated(rs.getString(5));
+										setInitiated_by(rs.getString(6));
 								}
 						}
 				}
@@ -969,15 +939,19 @@ public class Document{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into time_documents values(0,?,?,now(),?) ";
+				String qq = "insert into time_documents values(0,?,?,?,now(),?) ";
 				if(employee_id.equals("")){
-						msg = " employee_id not set ";
+						msg = " employee ID not set ";
 						return msg;
 				}
 				if(pay_period_id.equals("")){
-						msg = " pay_period not set ";
+						msg = " pay period not set ";
 						return msg;
 				}
+				if(job_id.equals("")){
+						msg = " job not set ";
+						return msg;
+				}				
 				if(initiated_by.equals("")){
 						msg = " initiater not set ";
 						return msg;
@@ -989,7 +963,8 @@ public class Document{
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, employee_id);
 								pstmt.setString(2, pay_period_id);
-								pstmt.setString(3, initiated_by);
+								pstmt.setString(3, job_id);
+								pstmt.setString(4, initiated_by);
 								pstmt.executeUpdate();
 						}
 						qq = "select LAST_INSERT_ID()";

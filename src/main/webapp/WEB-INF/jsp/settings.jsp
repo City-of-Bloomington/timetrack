@@ -13,25 +13,24 @@
 		<div class="width-one-half float-left">
 			<h2>Settings</h2>
 			<ul>
-				<li><a href="<s:property value='#application.url'/>hourcode.action">Hour Codes</a></li>
-				<li><a href="<s:property value='#application.url'/>hourcodeCondition.action">Hour Code Restrictions</a></li>
-				<li><a href="<s:property value='#application.url'/>type.action?type_name=position">Positions</a></li>
-				<li><a href="<s:property value='#application.url'/>salaryGroup.action">Salary Groups</a></li>
-				<li><a href="<s:property value='#application.url'/>payperiod.action">Pay Periods</a></li>
-				<li><a href="<s:property value='#application.url'/>department.action">Departments</a></li>
-				<li><a href="<s:property value='#application.url'/>node.action">Workflow Actions</a></li>
 				<li><a href="<s:property value='#application.url'/>accrual.action"">Accrual Types</a></li>
 				<li><a href="<s:property value='#application.url'/>accrualWarning.action">Accrual Warnings </a></li>
-				<li><a href="<s:property value='#application.url'/>group.action">Groups</a></li>
-				<li><a href="<s:property value='#application.url'/>employee.action">Employees</a></li>
-				<li><a href="<s:property value='#application.url'/>importEmployees.action">Import AD (ldap) Employees</a></li>
-
-				<li><a href="<s:property value='#application.url'/>jobTask.action">Jobs</a></li>
-				<li><a href="<s:property value='#application.url'/>empAccrual.action">Employee Accruals</a></li>
-				<li><a href="<s:property value='#application.url'/>holiday.action">Holidays</a></li>
+				<li><a href="<s:property value='#application.url'/>ipaddress.action">Allowed IP Addresses</a></li>				
 				<li><a href="<s:property value='#application.url'/>benefitGroup.action">Benefit Groups</a></li>
+				<li><a href="<s:property value='#application.url'/>department.action">Departments</a></li>				
+				<li><a href="<s:property value='#application.url'/>employee.action">Employees</a></li>
+				<li><a href="<s:property value='#application.url'/>empAccrual.action">Employee Accruals</a></li>
+				<li><a href="<s:property value='#application.url'/>hourcode.action">Hour Codes</a></li>
+				<li><a href="<s:property value='#application.url'/>hourcodeCondition.action">Hour Code Restrictions</a></li>
 				<li><a href="<s:property value='#application.url'/>codeRef.action">Hour Code Cross Reference</a></li>
-				<li><a href="<s:property value='#application.url'/>ipaddress.action">Allowed IP Addresses</a></li>
+				<li><a href="<s:property value='#application.url'/>holiday.action">Holidays</a></li>				
+				<li><a href="<s:property value='#application.url'/>group.action">Groups</a></li>
+				<li><a href="<s:property value='#application.url'/>jobTask.action">Jobs</a></li>				
+				<li><a href="<s:property value='#application.url'/>payperiod.action">Pay Periods</a></li>				
+				<li><a href="<s:property value='#application.url'/>type.action?type_name=position">Positions</a></li>
+				<li><a href="<s:property value='#application.url'/>salaryGroup.action">Salary Groups</a></li>
+				<li><a href="<s:property value='#application.url'/>node.action">Workflow Actions</a></li>
+
 			</ul>
 			<h2>Audit</h2>
 			<ul>
@@ -62,7 +61,7 @@
 				<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a></li>
 				<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA Report</a></li>
 			</ul>
-			<h2>Data Import</h2>
+			<h2>Employee Data Import</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>empImport.action">Employees Data Import (CSV file)</a></li>
 			</ul>
@@ -70,9 +69,10 @@
 			<ul>
 				<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Employees' accrual</a></li>
 				<li><a href="<s:property value='#application.url'/>profileSchedule.action">Employees Profile Update</a></li>
+				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees Update(including active status)</a></li>				
 				<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
+				<li><a href="<s:property value='#application.url'/>importEmployees.action">Import AD (ldap) Employees</a></li>				
 				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch clock batch submission </a></li>
-				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Update Employees (including active status)</a></li>
 
 			</ul>
 		</div>

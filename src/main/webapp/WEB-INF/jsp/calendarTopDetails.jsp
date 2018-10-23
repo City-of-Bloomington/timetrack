@@ -31,7 +31,19 @@
   <h1 class="month-year">
     <s:property value="payPeriod.monthNames" /> <s:property value="payPeriod.startYear" />
   </h1>
-
+	<s:if test="hasMultipleJobs()">
+		<div class="pay-period">
+			<b>Job:</b>
+			<s:select
+				tabindex="4"
+				name="job_id"
+				value="%{job_id}"
+				list="jobs"
+				listKey="id"
+				listValue="name"
+				onchange="this.form.submit()" />
+		</div>
+	</s:if>
   <div class="pay-period">
     <b>Pay Period:</b>
     <s:select

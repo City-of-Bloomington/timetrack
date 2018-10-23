@@ -201,7 +201,10 @@ public class TimeAction implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " insert into time_actions values(0,?,?,?,now())";
+				//
+				// check if it is not performed yet (approve or else)
+				String qq = " select count(*) from time_actions where document_id=? and workflow_id=? ";
+				String qq2 = " insert into time_actions values(0,?,?,?,now())";
 				if(workflow_id.equals("")){
 						msg = "workflow id not set ";
 						return msg;
@@ -220,9 +223,21 @@ public class TimeAction implements Serializable{
 								msg = "Could not connect to DB ";
 								return msg;
 						}
+						// to avoid multiple approve
 						pstmt = con.prepareStatement(qq);
-						msg = setParams(pstmt);
-						if(msg.equals("")){
+						pstmt.setString(1, document_id);
+						pstmt.setString(2, workflow_id);
+						rs = pstmt.executeQuery();
+						int cnt = 0;
+						if(rs.next()){
+								cnt = rs.getInt(1);
+						}
+						if(cnt == 0){
+								qq = qq2;
+								pstmt = con.prepareStatement(qq);								
+								pstmt.setString(1, workflow_id);
+								pstmt.setString(2, document_id);
+								pstmt.setString(3, action_by);
 								pstmt.executeUpdate();
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
@@ -240,20 +255,6 @@ public class TimeAction implements Serializable{
 						Helper.databaseDisconnect(con, pstmt, rs);
 				}
 				msg += doSelect();
-				return msg;
-		}
-		String setParams(PreparedStatement pstmt){
-				String msg = "";
-				int jj=1;
-				try{
-						pstmt.setString(jj++, workflow_id);
-						pstmt.setString(jj++, document_id);
-						pstmt.setString(jj++, action_by);
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg);
-				}
 				return msg;
 		}
 

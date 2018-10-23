@@ -34,13 +34,13 @@ public class TimeBlock extends Block{
 		boolean include_weekends = false, overnight = false;
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
+		Set<String> document_ids = null; // needed for employee with multiple jobs
 		String timeInfo = "";
 		// for clock_in
 		String errors = "";
 		public TimeBlock(
 										 String val,
 										 String val2,
-										 String val3,
 										 String val4,
 										 String val5,
 										 
@@ -55,13 +55,12 @@ public class TimeBlock extends Block{
 										 boolean val13,
 										 String val14
 							 ){
-				super(val, val2, val3, val4, val5, val6, val7, val8, val9, val10,
+				super(val, val2, val4, val5, val6, val7, val8, val9, val10,
 							val11, val12, val13, val14);
 		}
     public TimeBlock(
 							 String val,
 							 String val2,
-							 String val3,
 							 String val4,
 							 String val5,
 							 int val6,
@@ -79,7 +78,8 @@ public class TimeBlock extends Block{
 							 String val18,
 							 String val19
 							 ){
-				super(val, val2, val3, val4, val5, val6, val7, val8, val9, val10,
+				super(val, val2,
+							val4, val5, val6, val7, val8, val9, val10,
 							val11, val12, val13, val14);
 				setInactive(val15);
 				setOrder_index(val16);
@@ -442,6 +442,45 @@ public class TimeBlock extends Block{
 						}
 				}
 		}
+		// given any documen id, we need to find all document ids
+		// for employee with multiple jobs
+		void findAllDocumentsForPayPeriod(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg = "";
+				String qq = " select d.id from time_documents d,time_documents d2 "+
+						" where d.pay_period_id = d2.pay_period_id "+
+						" and d.employee_id=d2.employee_id and d2.id = ? ";				
+				if(!document_id.equals("") && document_ids == null){
+						logger.debug(qq);
+						con = Helper.getConnection();				
+						if(con == null){
+								msg = " Could not connect to DB ";
+								logger.error(msg);
+								return ;
+						}
+						try{
+								document_ids = new HashSet<>();
+								document_ids.add(document_id);
+								pstmt = con.prepareStatement(qq);
+								pstmt.setString(1, document_id);
+								rs = pstmt.executeQuery();
+								while(rs.next()){
+										String str = rs.getString(1);
+										if(str != null){
+												document_ids.add(str);
+										}
+								}
+						}
+						catch(Exception ex){
+								logger.error(ex+":"+qq);
+						}
+						finally{
+								Helper.databaseDisconnect(con, pstmt, rs);
+						}												
+				}
+		}
 		/**
 		 * check if the data entry conflict with existing data on the same
 		 * day for Time entry, we do not check for hours entry,
@@ -455,6 +494,8 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg = "";
+				//
+				findAllDocumentsForPayPeriod();
 				double timeIn = begin_hour+begin_minute/60.;
 				double timeOut = end_hour+end_minute/60.;				
 				String qq = " select count(*) as tt from time_blocks t "+
@@ -516,48 +557,51 @@ public class TimeBlock extends Block{
 						return msg;
 				}
 				try{
-						int jj=1;
+
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(jj++, document_id); // 1
 						if(date.equals(""))
 								date = Helper.getToday();
-						java.util.Date date_tmp = df.parse(date);
-						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); // 2
-						//
-						if(!id.equals("")){
-								pstmt.setString(jj++, id); // 3
-						}														
-						pstmt.setDouble(jj++, timeIn); // time in between
-						pstmt.setDouble(jj++, timeIn); // 5
-						if((clock_in.equals("") && clock_out.equals(""))
-							 || (!clock_in.equals("") && !clock_out.equals(""))){
-								
-								pstmt.setDouble(jj++, timeOut); //6 time out between
-								pstmt.setDouble(jj++, timeOut);
-								
-								pstmt.setDouble(jj++, timeIn);
-								pstmt.setDouble(jj++, timeOut); // 9
+						java.util.Date date_tmp = df.parse(date);						
+						for(String doc_id: document_ids){
+								int jj=1;						
+								pstmt.setString(jj++, doc_id); // 1
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); // 2
 								//
-								// between start and end between two
-								pstmt.setDouble(jj++, timeIn);
-								pstmt.setDouble(jj++, timeOut); // 11
-
-								//
-								// for qq2
-								pstmt.setString(jj++, document_id); // 12
-								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); //13
 								if(!id.equals("")){
-										pstmt.setString(jj++, id); //14
+										pstmt.setString(jj++, id); // 3
+								}														
+								pstmt.setDouble(jj++, timeIn); // time in between
+								pstmt.setDouble(jj++, timeIn); // 5
+								if((clock_in.equals("") && clock_out.equals(""))
+									 || (!clock_in.equals("") && !clock_out.equals(""))){
+										
+										pstmt.setDouble(jj++, timeOut); //6 time out between
+										pstmt.setDouble(jj++, timeOut);
+										
+										pstmt.setDouble(jj++, timeIn);
+										pstmt.setDouble(jj++, timeOut); // 9
+										//
+										// between start and end between two
+										pstmt.setDouble(jj++, timeIn);
+										pstmt.setDouble(jj++, timeOut); // 11
+										
+										//
+										// for qq2
+										pstmt.setString(jj++, document_id); // 12
+										pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); //13
+										if(!id.equals("")){
+												pstmt.setString(jj++, id); //14
+										}
+										pstmt.setDouble(jj++, timeIn); //15
+										pstmt.setDouble(jj++, timeOut);//16
 								}
-								pstmt.setDouble(jj++, timeIn); //15
-								pstmt.setDouble(jj++, timeOut);//16
-						}
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								int cnt = rs.getInt(1);
-								if(cnt > 0){
-										msg = "Data entry conflict on "+date+" times";
-										errors += msg;
+								rs = pstmt.executeQuery();
+								if(rs.next()){
+										int cnt = rs.getInt(1);
+										if(cnt > 0){
+												msg = "Data entry conflict on "+date+" times";
+												errors += msg;
+										}
 								}
 						}
 				}
@@ -576,7 +620,7 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select t.id,t.document_id,t.job_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),c.name,c.description,cf.nw_code "+
+				String qq = "select t.id,t.document_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),c.name,c.description,cf.nw_code "+
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
@@ -591,8 +635,8 @@ public class TimeBlock extends Block{
 								pstmt.setString(1, id);
 								rs = pstmt.executeQuery();
 								if(rs.next()){
-										String hrCode = rs.getString(16);
-										double hrs = rs.getDouble(10);
+										String hrCode = rs.getString(15);
+										double hrs = rs.getDouble(9);
 										if(hrCode != null){
 												if(hrCode.indexOf("ONCALL") > -1){
 														hrs = 1.0;
@@ -606,23 +650,22 @@ public class TimeBlock extends Block{
 														rs.getString(2),
 														rs.getString(3),
 														rs.getString(4),
-														rs.getString(5),
+														rs.getInt(5),
 														rs.getInt(6),
 														rs.getInt(7),
 														rs.getInt(8),
-														rs.getInt(9),
 														hrs,
+														rs.getString(10),
 														rs.getString(11),
-														rs.getString(12),
 														false, // isHoliday
 														null // holiday
 														);
 										
-										setInactive(rs.getString(13) != null);
-										setOrder_index(rs.getInt(14));
-										setHour_code(rs.getString(15));
-										setCode_desc(rs.getString(16));
-										setNw_code(rs.getString(17));
+										setInactive(rs.getString(12) != null);
+										setOrder_index(rs.getInt(13));
+										setHour_code(rs.getString(14));
+										setCode_desc(rs.getString(15));
+										setNw_code(rs.getString(16));
 								}
 						}
 				}
@@ -712,7 +755,7 @@ public class TimeBlock extends Block{
 						return errors;
 				}
 				if(action_type.equals("")) action_type="Add";
-				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,null) ";
+				String qq = "insert into time_blocks values(0,?,?,?, ?,?,?,?,? ,?,?,null) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				msg = checkForConflicts();
 				if(!msg.equals("")){
@@ -721,10 +764,6 @@ public class TimeBlock extends Block{
 				}
 				if(document_id.equals("")){
 						msg = " document not set ";
-						return msg;
-				}
-				if(job_id.equals("")){
-						msg = " job not set ";
 						return msg;
 				}
 				if(hour_code_id.equals("")){
@@ -742,18 +781,16 @@ public class TimeBlock extends Block{
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, document_id);
-						pstmt.setString(2, job_id);
-						pstmt.setString(3, hour_code_id);
+						pstmt.setString(2, hour_code_id);
 						java.util.Date date_tmp = df.parse(date);
-						pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
-						pstmt.setInt(5, begin_hour);
-						pstmt.setInt(6, begin_minute);
-						pstmt.setInt(7, end_hour);
-						pstmt.setInt(8, end_minute);
-						pstmt.setDouble(9, 0.0);
-						// pstmt.setNull(10,Types.INTEGER); // for ovt_pref
-						pstmt.setString(10, "y"); // clock_in
-						pstmt.setNull(11,Types.CHAR); // clock_out
+						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setInt(4, begin_hour);
+						pstmt.setInt(5, begin_minute);
+						pstmt.setInt(6, end_hour);
+						pstmt.setInt(7, end_minute);
+						pstmt.setDouble(8, 0.0);
+						pstmt.setString(9, "y"); // clock_in
+						pstmt.setNull(10,Types.CHAR); // clock_out
 						pstmt.executeUpdate();
 						pstmt = con.prepareStatement(qq2);
 						rs = pstmt.executeQuery();
@@ -762,7 +799,6 @@ public class TimeBlock extends Block{
 						}
 						TimeBlockLog tbl = new TimeBlockLog(null,
 																								document_id,
-																								job_id,
 																								hour_code_id,
 																								date,
 																								begin_hour, begin_minute,
@@ -794,7 +830,7 @@ public class TimeBlock extends Block{
 						return errors;
 				}
 				if(action_type.equals("")) action_type="Add";
-				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,? ,?,?,null) ";
+				String qq = "insert into time_blocks values(0,?,?,?, ?,?,?,?,? ,?,?,null) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				checkForOvernight();
 				if((clock_in.equals("") && clock_out.equals(""))
@@ -806,10 +842,6 @@ public class TimeBlock extends Block{
 				}				
 				if(document_id.equals("")){
 						msg = " document not set ";
-						return msg;
-				}
-				if(job_id.equals("")){
-						msg = " job not set ";
 						return msg;
 				}
 				if(hour_code_id.equals("")){
@@ -857,23 +889,22 @@ public class TimeBlock extends Block{
 								}
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, document_id);
-								pstmt.setString(2, job_id);
-								pstmt.setString(3, hour_code_id);
+								pstmt.setString(2, hour_code_id);
 								java.util.Date date_tmp = df.parse(date);
-								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
-								pstmt.setInt(5, begin_hour);
-								pstmt.setInt(6, begin_minute);
-								pstmt.setInt(7, end_hour);
-								pstmt.setInt(8, end_minute);
-								pstmt.setDouble(9, hours);
+								pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+								pstmt.setInt(4, begin_hour);
+								pstmt.setInt(5, begin_minute);
+								pstmt.setInt(6, end_hour);
+								pstmt.setInt(7, end_minute);
+								pstmt.setDouble(8, hours);
 								if(clock_in.equals(""))
+										pstmt.setNull(9,Types.CHAR);
+								else
+										pstmt.setString(9, "y");
+								if(clock_out.equals(""))
 										pstmt.setNull(10,Types.CHAR);
 								else
-										pstmt.setString(10, "y");
-								if(clock_out.equals(""))
-										pstmt.setNull(11,Types.CHAR);
-								else
-										pstmt.setString(11, "y");								
+										pstmt.setString(10, "y");								
 								pstmt.executeUpdate();
 								pstmt2 = con.prepareStatement(qq2);
 								rs = pstmt2.executeQuery();
@@ -887,8 +918,9 @@ public class TimeBlock extends Block{
 												adjustAccraulBalance(hour_code_id, hours);
 										}
 								}
-								TimeBlockLog tbl = new TimeBlockLog(null, document_id,
-																										job_id, hour_code_id,
+								TimeBlockLog tbl = new TimeBlockLog(null,
+																										document_id,
+																										hour_code_id,
 																										date,
 																										begin_hour, begin_minute,
 																										end_hour, end_minute,
@@ -953,8 +985,9 @@ public class TimeBlock extends Block{
 						msg = doSelect(); // to get the other info for logging
 				}
 				if(msg.equals("")){
-						TimeBlockLog tbl = new TimeBlockLog(null, document_id,
-																								job_id, hour_code_id,
+						TimeBlockLog tbl = new TimeBlockLog(null,
+																								document_id,
+																								hour_code_id,
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
@@ -997,10 +1030,6 @@ public class TimeBlock extends Block{
 				if(id.equals("")){
 						return " id not set ";
 				}
-				if(job_id.equals("")){
-						msg = " job not set ";
-						return msg;
-				}
 				if(hour_code_id.equals("")){
 						msg = " hour code not set ";
 						return msg;
@@ -1014,31 +1043,30 @@ public class TimeBlock extends Block{
 				if(!msg.equals("")){
 						return msg;
 				}
-				String qq = "update time_blocks set job_id=?,hour_code_id=?,begin_hour=?,begin_minute=?,end_hour=?,end_minute=?,hours=?,clock_in=?,clock_out=? where id=? ";
+				String qq = "update time_blocks set hour_code_id=?,begin_hour=?,begin_minute=?,end_hour=?,end_minute=?,hours=?,clock_in=?,clock_out=? where id=? ";
 				logger.debug(qq);
 				try{
 						con = Helper.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, job_id);
-								pstmt.setString(2, hour_code_id);
-								pstmt.setInt(3, begin_hour);
-								pstmt.setInt(4, begin_minute);
-								pstmt.setInt(5, end_hour);
-								pstmt.setInt(6, end_minute);
-								pstmt.setDouble(7, hours);
+								pstmt.setString(1, hour_code_id);
+								pstmt.setInt(2, begin_hour);
+								pstmt.setInt(3, begin_minute);
+								pstmt.setInt(4, end_hour);
+								pstmt.setInt(5, end_minute);
+								pstmt.setDouble(6, hours);
 								if(clock_in.equals(""))
-										pstmt.setNull(8,Types.CHAR);
+										pstmt.setNull(7, Types.CHAR);
 								else
-										pstmt.setString(8, "y");
+										pstmt.setString(7, "y");
 								if(clock_out.equals(""))
-										pstmt.setNull(9,Types.CHAR);
+										pstmt.setNull(8, Types.CHAR);
 								else
-										pstmt.setString(9, "y");	
+										pstmt.setString(8, "y");	
 								//
 								// we do not change inactive here
 								// doDelete will take care of it
-								pstmt.setString(10, id);
+								pstmt.setString(9, id);
 								pstmt.executeUpdate();
 						}
 				}
@@ -1050,8 +1078,9 @@ public class TimeBlock extends Block{
 						Helper.databaseDisconnect(con, pstmt, rs);
 				}
 				if(msg.equals("")){
-						TimeBlockLog tbl = new TimeBlockLog(null, document_id,
-																								job_id, hour_code_id,
+						TimeBlockLog tbl = new TimeBlockLog(null,
+																								document_id,
+																								hour_code_id,
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
@@ -1094,8 +1123,9 @@ public class TimeBlock extends Block{
 				}
 				msg = doSelect();
 				if(msg.equals("")){
-						TimeBlockLog tbl = new TimeBlockLog(null, document_id,
-																								job_id, hour_code_id,
+						TimeBlockLog tbl = new TimeBlockLog(null,
+																								document_id,
+																								hour_code_id,
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
@@ -1106,7 +1136,6 @@ public class TimeBlock extends Block{
 						msg = tbl.doSave();
 																								
 				}
-				// add log here
 				return msg;
 		}		
 
