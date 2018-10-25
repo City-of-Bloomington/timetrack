@@ -27,7 +27,7 @@
 				<li><a href="<s:property value='#application.url'/>group.action">Groups</a></li>
 				<li><a href="<s:property value='#application.url'/>jobTask.action">Jobs</a></li>				
 				<li><a href="<s:property value='#application.url'/>payperiod.action">Pay Periods</a></li>				
-				<li><a href="<s:property value='#application.url'/>type.action?type_name=position">Positions</a></li>
+				<li><a href="<s:property value='#application.url'/>position.action">Positions</a></li>
 				<li><a href="<s:property value='#application.url'/>salaryGroup.action">Salary Groups</a></li>
 				<li><a href="<s:property value='#application.url'/>node.action">Workflow Actions</a></li>
 

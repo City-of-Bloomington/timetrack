@@ -26,7 +26,7 @@ public class JobTaskAction extends TopAction{
 		List<JobTask> jobTasks = null;
 		String jobTasksTitle = "Current jobs";
 		List<Type> salaryGroups = null;
-		List<Type> positions = null;
+		List<Position> positions = null;
 		List<Employee> employees = null;
 		List<Group> groups = null;
 		public String execute(){
@@ -131,11 +131,11 @@ public class JobTaskAction extends TopAction{
 				}
 				return salaryGroups;
 		}
-		public List<Type> getPositions(){
-				TypeList tl = new TypeList("positions");
+		public List<Position> getPositions(){
+				PositionList tl = new PositionList();
 				String back = tl.find();
 				if(back.equals("")){
-						List<Type> ones = tl.getTypes();
+						List<Position> ones = tl.getPositions();
 						if(ones != null && ones.size() > 0){
 								positions = ones;
 						}

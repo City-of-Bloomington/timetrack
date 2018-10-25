@@ -16,24 +16,16 @@ import in.bloomington.timer.bean.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TypeAction extends TopAction{
+public class PositionAction extends TopAction{
 
 		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(TypeAction.class);
+		static Logger logger = LogManager.getLogger(PositionAction.class);
 		//
-		String type_name="node", table_name="workflow_nodes";
-		String typesTitle = "Nodes", title="node";		
+		String positionsTitle = "Positions";
 		List<Group> groups = null;
-		Type type = null;
-		List<Type> types = null;
-		private static final Map<String, String> tables = new HashMap<String, String>();
-		private static final Map<String, String> titles = new HashMap<String, String>();
+		Position position = null;
+		List<Position> positions = null;
 		
-		static {
-				tables.put("node", "workflow_nodes");
-				
-				titles.put("node","Workflow Node");				
-    }
 		@Override
 		public String execute(){
 				String ret = SUCCESS;
@@ -50,8 +42,7 @@ public class TypeAction extends TopAction{
 				}
 				clearAll();
 				if(action.equals("Save")){
-						type.setTable_name(table_name);
-						back = type.doSave();
+						back = position.doSave();
 						if(!back.equals("")){
 								addError(back);
 						}
@@ -60,83 +51,60 @@ public class TypeAction extends TopAction{
 						}
 				}				
 				else if(action.startsWith("Save")){
-						type.setTable_name(table_name);
-						back = type.doUpdate();
+						back = position.doUpdate();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
-								addMessage("Saved Successfully");
+								addMessage("Updated Successfully");
 						}
 				}
 				else{		
-						getType();
+						getPosition();
 						if(!id.equals("")){
-								back = type.doSelect();
+								back = position.doSelect();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}
 						}
 				}
 				return ret;
 		}
-		public Type getType(){
-				if(type == null){
-						type = new Type();
-						type.setId(id);
-						type.setTable_name(table_name);
+		public Position getPosition(){
+				if(position == null){
+						position = new Position();
+						position.setId(id);
 				}
-				return type;
+				return position;
 						
 		}
-		public void setType(Type val){
+		public void setPosition(Position val){
 				if(val != null){
-						type = val;
+						position = val;
 				}
-		}
-		public void setType_name(String val){
-				if(val != null && !val.equals("-1")){
-						type_name = val;
-						if(tables.containsKey(type_name)){
-								table_name = tables.get(type_name);
-						}
-						if(titles.containsKey(type_name)){
-								title = titles.get(type_name);
-						}						
-				}
-		}
-		public String getType_name(){
-				return type_name;
 		}
 		
-		public String getTypesTitle(){
-				
-				return title+"s";
+		public String getPositionsTitle(){
+				return positionsTitle;
 		}
-		public String getTitle(){
-				return title;
-		}		
 
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;
 		}
-		public List<Type> getTypes(){
-				if(types == null){
-						TypeList tl = new TypeList();
-						tl.setTable_name(table_name);
+		public List<Position> getPositions(){
+				if(positions == null){
+						PositionList tl = new PositionList();
 						tl.setActiveOnly();
 						String back = tl.find();
 						if(back.equals("")){
-								List<Type> ones = tl.getTypes();
+								List<Position> ones = tl.getPositions();
 								if(ones != null && ones.size() > 0){
-										types = ones;
+										positions = ones;
 								}
 						}
 				}
-				return types;
+				return positions;
 		}
 
 }

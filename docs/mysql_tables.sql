@@ -590,3 +590,9 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;; update jobs set group_id = (select ge.group_id from group_employees ge where ge.employee_id=jobs.employee_id limit 1);
 ;; delete from jobs where id=44; // admin job
 ;; alter table jobs add foreign key(group_id) references groups(id);
+;;
+;; alter table positions add alias varchar(64) not null after name;
+;; update positions set description=name where description is null;
+;; update positions set alias=name where alias ='';
+;;
+

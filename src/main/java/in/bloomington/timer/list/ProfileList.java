@@ -97,6 +97,69 @@ public class ProfileList{
 		public List<Profile> getProfiles(){
 				return profiles;
 		}
+		/**
+		 * not used yet
+		 * finding job titles for people with multiple jobs
+		 * example Parks & Rec employees
+		 */
+		public  String findJobs(){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", back="", date = null;
+				if(payPeriod != null){
+						date = payPeriod.getEnd_date();
+				}
+				else if(!end_date.equals("")){
+						date = end_date;
+				}
+				if(date == null){
+						date = Helper.getToday();
+				}
+				// using current date
+				String qq = "select p.JobTitle, e.EmployeeNumber, p.* "+
+						" from hr.vwEmployeeJobWithPosition p, "+
+						" hr.employee e "+
+						" where e.EmployeeId = p.EmployeeID "+
+						" and getdate() between EffectiveDate and EffectiveEndDate "+
+						" and getdate() between PositionDetailESD and PositionDetailEED "+
+						" and e.EmployeeNumber = '1886' "+
+						" order by e.employeenumber ";
+				con = SingleConnect.getNwConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				try{
+						if(debug)
+								logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						rs = pstmt.executeQuery();
+						ResultSetMetaData rsmd = rs.getMetaData();
+						int columnCount = rsmd.getColumnCount();
+						// The column count starts from 1
+						for (int i = 1; i <= columnCount; i++ ) {
+								String str = rsmd.getColumnName(i);
+								System.err.println(i+" "+str);
+						}
+						/*
+						while(rs.next()){
+
+
+						}
+						*/
+				}
+				catch(Exception ex){
+						back += ex;
+						logger.error(ex+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+				}
+				return back;
+		}
     //
     // find all matching records
     // return "" or any exception thrown by DB
@@ -140,8 +203,8 @@ public class ProfileList{
 				12 PositionId
 				13 JobId
 				14 JobTitle
-				15 PositionDetailESD
-				16 PositionDetailEED
+				15 PositionDetailESD  // date
+				16 PositionDetailEED  // date
 				17 IsPrimaryJob
 				18 JobEventReasonId
 				19 PositionNumber
@@ -182,12 +245,12 @@ public class ProfileList{
 						" CASE WHEN Jobs.Title IS NULL THEN P.PositionNumberMasked + ' - ' + PD.PositionTitle ELSE Jobs.Title END AS PositionTitle,  "+
 						" P.PositionNumberMasked, "+ 
 						" EE.vsEmploymentStatusId, "+
-						" VSE1.[Description] AS EmploymentStatus, "+
+						" VSE1.Description AS EmploymentStatus, "+
 						" SUBSTRING(ED.EmployeeSSN, 1, 3) + '-' + SUBSTRING(ED.EmployeeSSN, 4, 2) + '-' + SUBSTRING(ED.EmployeeSSN, 6, 4) AS EmployeeSSN, "+
 						" EN.FirstName, "+ 
 						" EN.MiddleName, "+
 						" EN.LastName, "+
-						" EN.LastName +  ', ' + EN.FirstName + CASE WHEN EN.MiddleName IS NOT NULL AND LEN(EN.MiddleName) > 0 THEN ' ' + EN.MiddleName ELSE '' END + CASE WHEN VSE2.[Description] IS NOT NULL THEN ' ' + VSE2.[Description] ELSE '' END AS EmployeeName, "+
+						" EN.LastName +  ', ' + EN.FirstName + CASE WHEN EN.MiddleName IS NOT NULL AND LEN(EN.MiddleName) > 0 THEN ' ' + EN.MiddleName ELSE '' END + CASE WHEN VSE2.Description IS NOT NULL THEN ' ' + VSE2.Description ELSE '' END AS EmployeeName, "+
 						" CASE WHEN EA.EmployeeAddressId IS NULL OR Jobs.EmployeeJobId IS NULL THEN 1 ELSE 0 END AS Pending, "+
 						" E.ProcessStatus "+
 						" FROM HR.Employee E "+ 
@@ -289,6 +352,7 @@ public class ProfileList{
 								String str8 = rs.getString(41); // decimal val
 								double fstr9 = rs.getDouble(11); // hourly rate
 								String str10 = rs.getString(34); // last name
+								String str11 = rs.getString(14); // job title
 								BenefitGroup bg = null;
 								if(bgroups != null
 									 && str2 != null
@@ -310,9 +374,11 @@ public class ProfileList{
 										}										
 								}
 								else{
-										pp = new Profile(debug, str, str2, str3,
+										pp = new Profile(debug,
+																		 str, str2, str3,
 																		 str4, str5, bg, str6,
-																		 fstr9);
+																		 fstr9,
+																		 str11); //job_name
 										// multiple factor
 										if(factorId == 36){
 												if(str8 != null){

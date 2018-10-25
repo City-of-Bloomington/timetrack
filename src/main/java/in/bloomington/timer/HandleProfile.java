@@ -123,12 +123,14 @@ public class HandleProfile{
 								double comp_time_after = pp.getCompTimeAfter();
 								double comp_time_multiple = pp.getCompTimeMultiple();
 								double holiday_time_multiple = pp.getHolidayTimeMultiple();
+								String job_name = pp.getJob_name();
 								BenefitGroup bGroup = pp.getBenefitGroup();
 								job.compareWith(weekly_hrs,
 																hr_rate,
 																comp_time_after,
 																comp_time_multiple,
 																holiday_time_multiple,
+																job_name,
 																bGroup);
 								
 						}

@@ -147,6 +147,13 @@
 			<result name="error">/WEB-INF/jsp/node.jsp</result>
 			<result name="success">/WEB-INF/jsp/node.jsp</result>
 		</action>
+		<action name="position" 
+						class="in.bloomington.timer.PositionAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/position.jsp</result>		
+			<result name="error">/WEB-INF/jsp/position.jsp</result>
+			<result name="success">/WEB-INF/jsp/position.jsp</result>
+		</action>		
 		<action name="codeRef" 
 						class="in.bloomington.timer.CodeRefAction" 
 						method="execute">

@@ -13,7 +13,7 @@
 			<s:hidden name="type.id" value="%{type.id}" />
 		</s:else>
 
-	  <%@ include file="strutMessages.jsp" %>
+	  <%@ include file="messages.jsp" %>
 
 	  <div class="width-one-half">
 			<s:if test="type.id != ''">
@@ -25,12 +25,12 @@
 
 			<div class="form-group">
 				<label>Name</label>
-				<s:textfield name="type.name" value="%{type.name}" size="30" maxlength="70" requiredLabel="true" required="true" id="type_name_id" />
+				<s:textfield name="type.name" value="%{type.name}" size="30" maxlength="64" requiredLabel="true" required="true" id="type_name_id" />
 			</div>
 
 			<div class="form-group">
 				<label>Description</label>
-				<s:textarea name="type.description" value="%{type.description}" rows="5" maxlength="50" />
+				<s:textarea name="type.description" value="%{type.description}" rows="5" cols="50" />
 			</div>
 
 			<div class="form-group">
@@ -41,7 +41,6 @@
 			<s:if test="type.id == ''">
 				<s:submit name="action" type="button" value="Save" class="button"/></dd>
 			</s:if>
-
 			<s:else>
 				<div class="button-group">
 					<a href="<s:property value='#application.url'/>type.action?type_name=<s:property value='type_name' />" class="button">New <s:property value="type_name" /></a>

@@ -13,44 +13,48 @@ import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
 
-public class Type implements java.io.Serializable{
+public class Position implements java.io.Serializable{
 
-		static final long serialVersionUID = 3700L;	
-		static Logger logger = LogManager.getLogger(Type.class);
-    String id="", name="", description="", inactive="", table_name="";
+		static final long serialVersionUID = 3750L;	
+		static Logger logger = LogManager.getLogger(Position.class);
+    String id="", name="", description="", alias="", inactive="";
 		//
-		public Type(){
+		public Position(){
 				super();
 		}
-		public Type(String val){
+		public Position(String val){
 				//
 				setId(val);
     }		
-		public Type(String val, String val2){
+		public Position(String val, String val2){
 				//
 				// initialize
 				//
 				setId(val);
 				setName(val2);
     }
-		public Type(String val, String val2, String val3, boolean val4){
+		public Position(String val, String val2, String val3){
+				// // for new record
+				setName(val);
+				setAlias(val2);
+				setDescription(val3);
+    }		
+		public Position(String val, String val2, String val3, String val4, boolean val5){
 				setId(val);
 				setName(val2);
-				setDescription(val3);
-				setInactive(val4);
+				setAlias(val3);
+				setDescription(val4);
+				setInactive(val5);
     }		
 		public boolean equals(Object obj){
-				if(obj instanceof Type){
-						Type one =(Type)obj;
+				if(obj instanceof Position){
+						Position one =(Position)obj;
 						return id.equals(one.getId());
 				}
 				return false;				
 		}
 		public int hashCode(){
 				int seed = 17;
-				if(!table_name.equals("")){
-						seed += table_name.hashCode();
-				}
 				if(!id.equals("")){
 						try{
 								seed += Integer.parseInt(id);
@@ -68,6 +72,9 @@ public class Type implements java.io.Serializable{
     public String getName(){
 				return name;
     }
+    public String getAlias(){
+				return alias;
+    }		
     public String getDescription(){
 				return description;
     }		
@@ -91,6 +98,10 @@ public class Type implements java.io.Serializable{
 				if(val != null)
 						name = val.trim();
     }
+    public void setAlias(String val){
+				if(val != null)
+						alias = val.trim();
+    }		
     public void setDescription(String val){
 				if(val != null){
 						description = val.trim();
@@ -99,10 +110,6 @@ public class Type implements java.io.Serializable{
     public void setInactive(boolean val){
 				if(val)
 						inactive = "y";
-    }		
-    public void setTable_name(String val){
-				if(val != null)
-						table_name = val;
     }		
     public String toString(){
 				return name;
@@ -113,8 +120,8 @@ public class Type implements java.io.Serializable{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select id,name,description,inactive "+
-						"from "+table_name+" where id=?";
+				String qq = "select name,alias,description,inactive "+
+						"from positions where id=?";
 				con = Helper.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
@@ -126,7 +133,8 @@ public class Type implements java.io.Serializable{
 						pstmt.setString(1,id);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
-								setName(rs.getString(2));
+								setName(rs.getString(1));
+								setAlias(rs.getString(2));								
 								setDescription(rs.getString(3));
 								setInactive(rs.getString(4) != null);
 						}
@@ -150,8 +158,8 @@ public class Type implements java.io.Serializable{
 				String msg="", str="";
 				inactive=""; // default
 				String qq = "select count(*) "+
-						"from "+table_name+" where name like ?";
-				String qq2 = " insert into "+table_name+" values(0,?,?,?)";
+						"from positions where name like ?";
+				String qq2 = " insert into positions values(0,?,?,?,?)";
 				if(name.equals("")){
 						msg = "Name is required";
 						return msg;
@@ -200,6 +208,10 @@ public class Type implements java.io.Serializable{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, name);
+						if(alias.equals("")){
+								alias = name;
+						}
+						pstmt.setString(jj++, alias);
 						if(description.equals("")){
 								description = name;
 						}
@@ -220,7 +232,7 @@ public class Type implements java.io.Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update "+table_name+" set name=?, description=?,inactive=? where id=?";
+				String qq = " update positions set name=?, alias=?, description=?,inactive=? where id=?";
 				if(name.equals("")){
 						msg = "Earn code name is required";
 						return msg;
@@ -233,7 +245,7 @@ public class Type implements java.io.Serializable{
 						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						pstmt.setString(4, id);
+						pstmt.setString(5, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

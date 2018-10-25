@@ -39,6 +39,7 @@ public class Profile extends CommonInc{
 		double hourlyRate = 0; // needed for planning dept
 		boolean debug = false;
 		boolean overTimeElegible = false;
+		String job_name="";
 		BenefitGroup bGroup = null;
 		int payGrade = 0;
 		//
@@ -63,7 +64,8 @@ public class Profile extends CommonInc{
 									 String val5,
 									 BenefitGroup val6,
 									 String val7,
-									 double val8){
+									 double val8,
+									 String val9){
 				super(deb);
 				setNw_employee_id(val);
 				setBenefitGroup_id(val2);
@@ -72,6 +74,7 @@ public class Profile extends CommonInc{
 				setBenefitGroup(val6);
 				setStWeeklyHrs(val7);
 				setHourlyRate(val8);
+				setJob_name(val9);
 				//
 				setParams();
     }	
@@ -85,6 +88,10 @@ public class Profile extends CommonInc{
 		public void setNw_employee_id(String val){
 				if(val != null)
 						nw_employee_id = val;
+    }
+		public void setJob_name(String val){
+				if(val != null)
+						job_name = val;
     }		
 		public void setBenefitGroup_id(String val){ // benefit Group Id
 				if(val != null)
@@ -151,6 +158,9 @@ public class Profile extends CommonInc{
 		}
 		public String getEmployee_id(){
 				return employee_id;
+		}
+		public String getJob_name(){
+				return job_name;
 		}		
 		public String getEmployee_number(){
 				return employee_number;

@@ -32,7 +32,7 @@ public class JobTask implements Serializable{
 		double hourly_rate=0;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		SalaryGroup salaryGroup = null;
-		Type position = null;
+		Position position = null;
 		Employee employee = null;
 		Group group = null;
     public JobTask(String val,
@@ -369,10 +369,9 @@ public class JobTask implements Serializable{
 				}
 				return group;
 		}		
-		public Type getPosition(){
+		public Position getPosition(){
 				if(!position_id.equals("") && position == null){
-						Type one = new Type(position_id);
-						one.setTable_name("positions");
+						Position one = new Position(position_id);
 						String back = one.doSelect();
 						if(back.equals("")){
 								position = one;
@@ -395,6 +394,7 @@ public class JobTask implements Serializable{
 														double comp_after,
 														double comp_factor,
 														double holiday_factor,
+														String job_name,
 														BenefitGroup bGroup){
 				//
 				// salary groups id:1:exempt, 2:Non-Exempt, 3:Temp, 4:Union
@@ -446,6 +446,44 @@ public class JobTask implements Serializable{
 				if(hr_rate - hourly_rate > 0.1 || hr_rate - hourly_rate < -0.1){
 						hourly_rate = hr_rate;
 						needUpdate = true;							
+				}
+				if(!job_name.equals("")){
+						getPosition();
+						boolean pos_update = false;
+						if(position != null){
+								String alias = position.getAlias();
+								if(!job_name.equals(alias)){
+										pos_update = true;
+								}
+						}
+						else{
+								pos_update = true;
+						}
+						if(pos_update){
+								boolean found = false;
+								needUpdate = true;
+								PositionList pl = new PositionList();
+								pl.setName(job_name);
+								pl.setActiveOnly();
+								pl.setExactMatch();
+								String back = pl.find();
+								if(back.equals("")){
+										List<Position> ones = pl.getPositions();
+										if(ones != null && ones.size() > 0){
+												position = ones.get(0);
+												position_id = position.getId();
+												found = true;
+										}
+								}
+								if(!found){
+										Position pos = new Position(job_name, job_name, job_name);
+										back = pos.doSave();
+										if(back.equals("")){
+												position = pos;												
+												position_id = pos.getId();
+										}
+								}
+						}
 				}
 				if(needUpdate){
 						String back = doPartialUpdate();

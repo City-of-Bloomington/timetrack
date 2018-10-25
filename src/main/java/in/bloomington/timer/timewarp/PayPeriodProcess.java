@@ -40,7 +40,7 @@ public class PayPeriodProcess{
 		HolidayList holyList = null;
 		int year = 2017, splitDay = 14; // default 14 no split
 		String status = "No data";
-		String job_id = "";
+		String job_id = "", job_name="";
 		CodeRefList codeRefList = null;
 		// for HAND only
 		Hashtable<CodeRef, String> handHash = null;
@@ -54,6 +54,7 @@ public class PayPeriodProcess{
 		static double compTimeAccrualLimit = 10f;
 		
 		boolean isHand = false; // HAND dept has special treatment
+		boolean multipleJobs = false;
 		//		
 		// two week entries for display purpose
 		//
@@ -79,6 +80,7 @@ public class PayPeriodProcess{
 				//
 				setWeekEntries();
 		}
+		// employee with multiple jobs
 		public PayPeriodProcess(Employee val,
 														Profile val2,
 														PayPeriod val3,
@@ -95,6 +97,7 @@ public class PayPeriodProcess{
 				setCsvOutuput(val6);
 				setIsUtil(val7);
 				setJob_id(val8);
+				multipleJobs = true;
 				//
 				// prepare the objects
 				//
@@ -352,6 +355,22 @@ public class PayPeriodProcess{
 		}
 		boolean hasWeek2ProfHours(){
 				return week2.getProfHours() > 0;
+		}
+		public boolean hasMultipleJobs(){
+				return multipleJobs;
+		}
+		public String getJob_name(){
+				if(!job_id.equals("") && job_name.equals("")){
+						JobTask job = new JobTask(job_id);
+						String back = job.doSelect();
+						if(back.equals("")){
+								Position pos = job.getPosition();
+								if(pos != null){
+										job_name = pos.getAlias();
+								}
+						}
+				}
+				return job_name;
 		}
 		public double getWeek1ProfHours(){
 				return week1.getProfHours();

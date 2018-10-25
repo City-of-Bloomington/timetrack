@@ -52,6 +52,7 @@ public class EmployeesImport{
 		Map<String, String> positions = new HashMap<>(); // name, id
 		Map<String, String> salaryGrps = new HashMap<>(); // salary groups
 		Map<String, String> roles = new HashMap<>(); // name, id
+		Map<String, List<Group>> deptGroups = new HashMap<>();
 		String errors = "";
 		EmployeesImport(){
 
@@ -156,16 +157,22 @@ public class EmployeesImport{
 											 str2 != null && !str2.equals("")){
 												if(depts.containsKey(str2)){
 														String dept_id = depts.get(str2);
-														Group gg = new Group();
-														gg.setName(str);
-														gg.setDescription(str);
-														gg.setDepartment_id(dept_id);
-														str = gg.doSave();
-														if(str.equals("")){
-																groups.put(gg.getName(), gg.getId());
-														}
-														else{
-																errors += str;
+														boolean groupFound = false;
+														if(!deptGroups.containsKey(str2)){
+																Group gg = new Group();
+																gg.setName(str);
+																gg.setDescription(str);
+																gg.setDepartment_id(dept_id);
+																str = gg.doSave();
+																if(str.equals("")){
+																		groups.put(gg.getName(), gg.getId());
+																		List<Group> ones = deptGroups.get(str2);
+																		ones.add(gg);
+																		deptGroups.put(str2, ones);
+																}
+																else{
+																		errors += str;
+																}
 														}
 												}
 												else{
@@ -176,7 +183,7 @@ public class EmployeesImport{
 								else if(str != null &&
 												str.equals("Employee")){
 										String position_id="", dept_id="",
-												salary_grp_id="",
+												salary_grp_id="", dept_name="",
 												emp_group_id="";
 										int weekly_regular_hours=40,
 												comp_time_weekly_hours=40;
@@ -224,6 +231,7 @@ public class EmployeesImport{
 												}
 												str = record.get(4); // dept
 												if(str != null && !str.equals("")){
+														dept_name = str;
 														if(depts.containsKey(str)){
 																dept_id = depts.get(str);
 																emp.setDepartment_id(dept_id);
@@ -241,10 +249,7 @@ public class EmployeesImport{
 																position_id = positions.get(str);
 														}
 														else{
-																Type position = new Type();
-																position.setName(str);
-																position.setDescription(str);
-																position.setTable_name("positions");
+																Position position = new Position(str, str, str);
 																str = position.doSave();
 																if(str.equals("")){
 																		position_id = position.getId();
@@ -289,10 +294,20 @@ public class EmployeesImport{
 																errors += " salary group: "+str+" does not exist";
 														}
 												}
-												str = record.get(7);
+												str = record.get(7); // group name
 												if(str != null && !str.equals("")){
-														if(groups.containsKey(str)){
-																emp_group_id = groups.get(str);
+														if(!dept_name.equals("") && deptGroups.containsKey(dept_name)){
+																List<Group> grps = deptGroups.get(dept_name);
+																for(Goup one:grps){
+																		if(one.getName().equals(str)){
+																				emp_group_id = one.getId();
+																				break;
+																		}
+																}
+														}
+														if(!emp_group_id.equals("")){
+																// && groups.containsKey(str)){
+																// emp_group_id = groups.get(str);
 																emp.setGroup_id(emp_group_id);
 														}
 														else{
@@ -389,6 +404,9 @@ public class EmployeesImport{
 						List<Department> dds = dl.getDepartments();
 						for(Department one:dds){
 								depts.put(one.getName(), one.getId());
+								if(one.hasGroups()){
+										deptGroups.put(one.getName(), one.getGroups());
+								}
 						}
 				}
 				TypeList pl = new TypeList("positions");
@@ -415,10 +433,6 @@ public class EmployeesImport{
 								roles.put(one.getName(), one.getId());
 						}
 				}				
-		}
-		void prepareRollBack(){
-				
-
 		}
 
 }

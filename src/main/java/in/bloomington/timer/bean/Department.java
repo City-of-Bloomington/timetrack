@@ -4,6 +4,7 @@ package in.bloomington.timer.bean;
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
+import java.util.List;
 import java.sql.*;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
@@ -16,6 +17,7 @@ public class Department implements java.io.Serializable{
 		static final long serialVersionUID = 3700L;	
 		static Logger logger = LogManager.getLogger(Department.class);
     String id="", name="", ldap_name="", description="", inactive="", ref_id="";
+		List<Group> groups = null;
 		//
 		public Department(){
 
@@ -114,6 +116,25 @@ public class Department implements java.io.Serializable{
     public String toString(){
 				return name;
     }
+		public List<Group> getGroups(){
+				if(!id.equals("") && groups == null){
+						GroupList gl = new GroupList();
+						gl.setDepartment_id(id);
+						gl.setActiveOnly();
+						String back = gl.find();
+						if(back.equals("")){
+								List<Group> ones = gl.getGroups();
+								if(ones != null && ones.size() > 0){
+										groups = ones;
+								}
+						}
+				}
+				return groups;
+		}
+		public boolean hasGroups(){
+				getGroups();
+				return groups != null && groups.size() > 0;
+		}
 		//
 		public String doSelect(){
 				String back = "";
