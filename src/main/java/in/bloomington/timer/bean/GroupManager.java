@@ -271,19 +271,37 @@ public class GroupManager implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into group_managers values(0,?,?,?,?,null,null) ";
+				String qq = "select count(*) from group_managers gm where gm.group_id=? and gm.employee_id=? and gm.wf_node_id=? and gm.inactive is null and gm.expire_date is null";
+				String qq2 = "insert into group_managers values(0,?,?,?,?,null,null) ";
 				if(employee_id.equals("") || group_id.equals("") || wf_node_id.equals("")){
-						msg = " group, employee or node_id not set ";
+						msg = " group, employee or role not set ";
 						return msg;
 				}
 				logger.debug(qq);
 				try{
 						con = Helper.getConnection();
-						if(con != null){
+						if(con == null){
+								msg = "unable to connect";
+								return msg;
+						}
+						//
+						// check first if this already set
+						//
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, group_id);
+						pstmt.setString(2, employee_id);
+						pstmt.setString(3, wf_node_id);
+						rs = pstmt.executeQuery();
+						int cnt = 0;
+						if(rs.next()){
+								cnt = rs.getInt(1);
+						}
+						if(cnt == 0){ // if not set 
+								qq = qq2;
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, group_id);
 								pstmt.setString(2, employee_id);
-								pstmt.setString(3, wf_node_id);
+								pstmt.setString(3, wf_node_id);								
 								if(start_date.equals("")){
 										start_date = Helper.getToday();
 								}
@@ -297,12 +315,12 @@ public class GroupManager implements Serializable{
 										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 										pstmt.executeUpdate();
 								}
-						}
-						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								id = rs.getString(1);
+								qq = "select LAST_INSERT_ID()";
+								pstmt = con.prepareStatement(qq);
+								rs = pstmt.executeQuery();
+								if(rs.next()){
+										id = rs.getString(1);
+								}
 						}
 				}
 				catch(Exception ex){

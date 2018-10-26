@@ -23,6 +23,7 @@ import org.apache.commons.csv.CSVFormat;
 import java.text.SimpleDateFormat;
 import in.bloomington.timer.bean.Type;
 import in.bloomington.timer.bean.Group;
+import in.bloomington.timer.bean.Position;
 import in.bloomington.timer.bean.Node;
 import in.bloomington.timer.bean.JobTask;
 import in.bloomington.timer.bean.Employee;
@@ -30,12 +31,17 @@ import in.bloomington.timer.bean.Department;
 import in.bloomington.timer.bean.SalaryGroup;
 import in.bloomington.timer.bean.GroupManager;
 import in.bloomington.timer.bean.EnvBean;
+import in.bloomington.timer.bean.Profile;
+import in.bloomington.timer.bean.BenefitGroup;
 import in.bloomington.timer.list.TypeList;
 import in.bloomington.timer.list.GroupList;
 import in.bloomington.timer.list.NodeList;
 import in.bloomington.timer.list.EmpList;
+import in.bloomington.timer.list.BenefitGroupList;
+import in.bloomington.timer.list.ProfileList;
 import in.bloomington.timer.list.DepartmentList;
 import in.bloomington.timer.list.SalaryGroupList;
+import in.bloomington.timer.util.Helper;
 
 import org.apache.log4j.Logger;
 
@@ -51,8 +57,10 @@ public class EmployeesImport{
 		Map<String, String> groups = new HashMap<>(); // name, id
 		Map<String, String> positions = new HashMap<>(); // name, id
 		Map<String, String> salaryGrps = new HashMap<>(); // salary groups
-		Map<String, String> roles = new HashMap<>(); // name, id
 		Map<String, List<Group>> deptGroups = new HashMap<>();
+		List<BenefitGroup> benefitGroups = null;
+		Map<String, Profile> profMap = new HashMap<>();
+		String dept_refs = "";
 		String errors = "";
 		EmployeesImport(){
 
@@ -130,6 +138,7 @@ public class EmployeesImport{
 						for (CSVRecord record : records) {
 								boolean emp_exist = false;
 								str = record.get(0);
+								System.err.println(" record "+str);
 								if(str != null && str.equals("Department")){
 										str = record.get(1);
 										if(str != null && !str.equals("")){
@@ -140,6 +149,10 @@ public class EmployeesImport{
 														dept.setLdap_name(str);
 														str = record.get(3);
 														dept.setRef_id(str);
+														if(!dept_refs.equals("")){
+																dept_refs +=",";
+														}
+														dept_refs += str;
 														str = dept.doSave();
 														if(str.equals("")){
 																depts.put(dept.getName(), dept.getId());
@@ -148,9 +161,19 @@ public class EmployeesImport{
 																errors += str;
 														}
 												}
+												else{ //we already have the dept, we just need the
+														// the dept ref to get the profiles
+														str = record.get(3);
+														if(!dept_refs.equals("")){
+																dept_refs +=",";
+														}
+														dept_refs += str;														
+												}
 										}
 								}
 								else if(str != null && str.trim().equals("Group")){
+										// after departments is done
+										prepareProfiles(); 
 										str = record.get(1); // group name
 										str2 = record.get(2); // dept name
 										if(str != null && !str.equals("") &&
@@ -158,21 +181,42 @@ public class EmployeesImport{
 												if(depts.containsKey(str2)){
 														String dept_id = depts.get(str2);
 														boolean groupFound = false;
-														if(!deptGroups.containsKey(str2)){
+														if(deptGroups.containsKey(str2)){
+																List<Group> ones = deptGroups.get(str2);
+																for(Group gg:ones){
+																		if(gg.getName().equals(str)){
+																				groupFound = true;
+																				groups.put(gg.getName(), gg.getId());
+																		}
+																}
+																if(!groupFound){
+																		Group gg = new Group();
+																		gg.setName(str);
+																		gg.setDescription(str);
+																		gg.setDepartment_id(dept_id);
+																		str = gg.doSave();
+																		if(str.equals("")){
+																				ones.add(gg);
+																				deptGroups.put(str2, ones);
+																				groups.put(gg.getName(), gg.getId());
+																		}
+																}
+																else{
+																		errors += str;
+																}
+														} // no groups in this department
+														else{
+																List<Group> ones = new ArrayList<>();
 																Group gg = new Group();
 																gg.setName(str);
 																gg.setDescription(str);
 																gg.setDepartment_id(dept_id);
 																str = gg.doSave();
 																if(str.equals("")){
-																		groups.put(gg.getName(), gg.getId());
-																		List<Group> ones = deptGroups.get(str2);
 																		ones.add(gg);
 																		deptGroups.put(str2, ones);
-																}
-																else{
-																		errors += str;
-																}
+																		groups.put(gg.getName(), gg.getId());
+																}																
 														}
 												}
 												else{
@@ -182,6 +226,8 @@ public class EmployeesImport{
 								}
 								else if(str != null &&
 												str.equals("Employee")){
+										Profile profile = null;
+										BenefitGroup bgroup = null;
 										String position_id="", dept_id="",
 												salary_grp_id="", dept_name="",
 												emp_group_id="";
@@ -191,6 +237,11 @@ public class EmployeesImport{
 												holiday_comp_factor=1.0;
 										str = record.get(1);
 										if(str != null && !str.equals("")){
+
+												if(profMap.containsKey(str)){
+														profile = profMap.get(str);
+														bgroup = profile.getBenefitGroup();
+												}
 												Employee emp = new Employee();
 												emp.setRole("Employee");
 												emp.setEffective_date("07/01/2017");
@@ -209,18 +260,17 @@ public class EmployeesImport{
 												str = record.get(3); // username
 												if(str != null && !str.equals("")){
 														emp.setUsername(str);
-														str = emp.doSelect();
-														if(!str.equals("")){ // not exist
+														back = emp.doSelect();
+														if(!back.equals("")){ // not exist
 																EmpList empl = new EmpList(bean, str, true);
-																str = empl.simpleFind();
-																if(!str.equals("")){
-																		errors += str;
+																back = empl.simpleFind();
+																if(!back.equals("")){
+																		errors += back;
 																}
 																else{
 																		List<Employee> ldapEmps = empl.getEmps();
 																		if(ldapEmps != null && ldapEmps.size() > 0){
 																				Employee ldapEmp = ldapEmps.get(0);
-																				// emp.setEmployee_number(ldapEmp.getEmployee_number());
 																				emp.setId_code(ldapEmp.getId_code());
 																		}
 																}
@@ -240,16 +290,24 @@ public class EmployeesImport{
 																errors += " Employee department not set properly";
 														}
 												}
-												str = record.get(5); // title
-												if(str != null && !str.equals("")){
-														if(str.indexOf("/") > 0){
-																str = str.replaceAll("/","_");
+												String job_name = "";
+												if(profile != null){
+														job_name = profile.getJob_name();
+												}
+												if(job_name.equals("")){
+														errors += " job title not found ";
+												}
+												if(job_name != null && !job_name.equals("")){
+														if(job_name.indexOf("/") > 0){
+																job_name = job_name.replaceAll("/"," ");
 														}
-														if(positions.containsKey(str)){
-																position_id = positions.get(str);
+														if(positions.containsKey(job_name)){
+																position_id = positions.get(job_name);
 														}
 														else{
-																Position position = new Position(str, str, str);
+																Position position = new Position(job_name,
+																																 job_name,
+																																 job_name);
 																str = position.doSave();
 																if(str.equals("")){
 																		position_id = position.getId();
@@ -260,45 +318,25 @@ public class EmployeesImport{
 																}
 														}
 												}
-												str = record.get(6); // salary group
-												if(str != null && !str.equals("")){
-														if(str.equals("Temporary")) str = "Temp";
+												if(profile != null && bgroup != null){
+														System.err.println("using profile");
+														str = bgroup.getSalary_group_name();
 														if(salaryGrps.containsKey(str)){
 																salary_grp_id = salaryGrps.get(str);
-																if(str.startsWith("Exempt")){
-																		weekly_regular_hours = 40;
-																		comp_time_weekly_hours = 45;
-																		comp_time_factor=1.0;
-																		holiday_comp_factor=1.0;
-																}
-																else if(str.startsWith("Non")){ // non
-																		weekly_regular_hours = 40;
-																		comp_time_weekly_hours = 40;
-																		comp_time_factor=1.5;
-																		holiday_comp_factor=1.5;
-																}
-																else if(str.startsWith("Temp")){
-																		weekly_regular_hours = 20;
-																		comp_time_weekly_hours = 0;
-																		comp_time_factor=0;
-																		holiday_comp_factor=0;
-																}
-																else if(str.startsWith("Union")){ // non
-																		weekly_regular_hours = 40;
-																		comp_time_weekly_hours = 40;
-																		comp_time_factor=1.5;
-																		holiday_comp_factor=2.0;
-																}																
 														}
-														else{
-																errors += " salary group: "+str+" does not exist";
+														else {
+																errors += " salary group name "+str+" not found ";
 														}
+														weekly_regular_hours = (int)profile.getStWeeklyHrs();
+														comp_time_weekly_hours = (int)profile.getCompTimeAfter();
+														comp_time_factor = profile.getCompTimeMultiple();
+														holiday_comp_factor = profile.getHolidayTimeMultiple();
 												}
-												str = record.get(7); // group name
+												str = record.get(5); // group name
 												if(str != null && !str.equals("")){
 														if(!dept_name.equals("") && deptGroups.containsKey(dept_name)){
 																List<Group> grps = deptGroups.get(dept_name);
-																for(Goup one:grps){
+																for(Group one:grps){
 																		if(one.getName().equals(str)){
 																				emp_group_id = one.getId();
 																				break;
@@ -306,8 +344,6 @@ public class EmployeesImport{
 																}
 														}
 														if(!emp_group_id.equals("")){
-																// && groups.containsKey(str)){
-																// emp_group_id = groups.get(str);
 																emp.setGroup_id(emp_group_id);
 														}
 														else{
@@ -348,9 +384,11 @@ public class EmployeesImport{
 								else if(str != null &&
 												str.equals("Manager")){
 										str = record.get(1); // group name
-										str2 = record.get(2); // role
-										str3 = record.get(3); // username
+										str2 = record.get(2); // approver username
+										str3 = record.get(3); // payroll approver username
+										String approve_role_id="3", payroll_role_id="4";
 										String group_id="", role_id="", emp_id="";
+										String approver_id="", payroll_id="";
 										if(str.equals("") || str2.equals("") || str3.equals("")){
 												errors += "Error setting group manager "+str;
 										}
@@ -361,26 +399,49 @@ public class EmployeesImport{
 												else{
 														errors +=" Error manager group, group name does not exist "+str;
 												}
-												if(roles.containsKey(str2)){
-														role_id = roles.get(str2);
+												if(emps.containsKey(str2)){
+														approver_id = emps.get(str2);
 												}
 												else{
-														errors +=" Error group manager role not set properly "+str2;
+														Employee empp = new Employee();
+														empp.setUsername(str2);
+														back = empp.doSelect();
+														if(back.equals("")){
+																approver_id = empp.getId();
+																emps.put(str2, empp.getId());
+														}
+														else{
+																errors +=" Error group approver not set properly "+str2;
+														}
 												}
 												if(emps.containsKey(str3)){
-														emp_id = emps.get(str3);
+														payroll_id = emps.get(str3);
 												}
 												else{
-														errors +=" Error group manager username not set properly "+str3;
+														Employee empp = new Employee();
+														empp.setUsername(str3);
+														back = empp.doSelect();
+														if(back.equals("")){
+																payroll_id = empp.getId();
+																emps.put(str3, empp.getId());
+														}														
+														errors +=" Error group payroll username not set properly "+str3;
 												}
 												if(errors.equals("")){
 														GroupManager gm = new GroupManager();
 														gm.setGroup_id(group_id);
-														gm.setEmployee_id(emp_id);
-														gm.setWf_node_id(role_id);
+														gm.setEmployee_id(approver_id);
+														gm.setWf_node_id(approve_role_id);
 														gm.setStart_date("07/01/2017");
 														str = gm.doSave();
 														if(!str.equals("")) errors += str;
+														gm = new GroupManager();
+														gm.setGroup_id(group_id);
+														gm.setEmployee_id(payroll_id);
+														gm.setWf_node_id(payroll_role_id);
+														gm.setStart_date("07/01/2017");
+														str = gm.doSave();
+														if(!str.equals("")) errors += str;														
 												}
 										}
 								}
@@ -395,6 +456,44 @@ public class EmployeesImport{
 						errors += ex;
 				}
 				return errors;
+		}
+		public List<BenefitGroup> getBenefitGroups(){
+				if(benefitGroups == null){
+						BenefitGroupList tl = new BenefitGroupList();
+						String back = tl.find();
+						if(back.equals("")){
+								List<BenefitGroup> ones = tl.getBenefitGroups();
+								if(ones != null && ones.size() > 0){
+										benefitGroups = ones;
+								}
+						}
+				}
+				return benefitGroups;
+		}				
+		void prepareProfiles(){
+				//
+				// knowing the dept_refs we can find list of employees profiles
+				//
+				if(!dept_refs.equals("") && profMap.isEmpty()){
+						getBenefitGroups();
+						List<Profile> profiles = null;
+						ProfileList pfl =
+								new ProfileList(Helper.getToday(),
+																dept_refs,
+																benefitGroups);
+						String back = pfl.find();
+						if(back.equals("")){
+								List<Profile> ones = pfl.getProfiles();
+								if(ones != null && ones.size() > 0){
+										profiles = ones;
+								}
+						}
+						if(profiles != null){
+								for(Profile one:profiles){
+										profMap.put(one.getEmployee_number(), one);
+								}
+						}
+				}
 		}
 		void prepareMaps(){
 				groups.put("Directors","7"); // we already have this for directors
@@ -416,7 +515,7 @@ public class EmployeesImport{
 						for(Type one:dds){
 								positions.put(one.getName(), one.getId());
 						}
-				}				
+				}
 				SalaryGroupList sgl = new SalaryGroupList();
 				back = sgl.find();
 				if(back.equals("")){
@@ -425,14 +524,6 @@ public class EmployeesImport{
 								salaryGrps.put(one.getName(), one.getId());
 						}
 				}
-				NodeList nl = new NodeList();
-				back = nl.find();
-				if(back.equals("")){
-						List<Node> dds = nl.getNodes();
-						for(Node one:dds){
-								roles.put(one.getName(), one.getId());
-						}
-				}				
 		}
 
 }

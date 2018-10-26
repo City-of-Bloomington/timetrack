@@ -104,6 +104,24 @@ public class BenefitGroup{
 		public String toString(){
 				return name;
 		}
+		public String getSalary_group_name(){
+				if(isExempt()){
+						return "Exempt";
+				}
+				else if(isNonExempt()){
+						return "Non-Exempt";
+				}
+				else if(isUnioned()){
+						return "Union";
+				}
+				else if(isTemporary()){
+						return "Temp";
+				}
+				else if(isPartTime()){
+						return "Part Time";
+				}
+				return "Unknown";
+		}
 		public boolean equals(Object  gg){
 				boolean match = false;
 				if (gg != null && gg instanceof BenefitGroup){
