@@ -34,7 +34,6 @@ public class Document{
 		PayPeriod payPeriod = null;
 		Employee employee = null;
 		Employee initiater = null;
-		TimeAction lastTimeAcion = null;
 		Workflow lastWorkflow = null;
 		List<TimeAction> timeActions = null;
 		Map<String, Map<Integer, String>> daily = null;				
@@ -51,7 +50,9 @@ public class Document{
 		Map<Integer, List<TimeBlock>> dailyBlocks = null;
 		List<EmployeeAccrual> employeeAccruals = null;
 		List<TimeNote> timeNotes = null;
-		List<TimeIssue> timeIssues = null;		
+		List<TimeIssue> timeIssues = null;
+		List<Employee> nextActioners = null;
+		TimeAction lastTimeAcion = null;
 		Map<String, AccrualWarning> warningMap = new TreeMap<>();
 		HolidayList holidays = null;
     public Document(String val,
@@ -186,22 +187,21 @@ public class Document{
 								List<TimeAction> ones = tal.getTimeActions();
 								if(ones != null && ones.size() > 0){
 										timeActions = ones;
+										lastTimeAcion = ones.get(0); // last is first since desc
 								}
 						}
 				}
 				return timeActions;
 		}
+		public TimeAction getLastTimeAction(){
+				if(hasTimeBlocks() && lastTimeAcion == null){
+						lastTimeAcion = timeActions.get(0);
+				}
+				return lastTimeAcion;
+		}
 		public boolean hasTimeActions(){
 				getTimeActions();
 				return timeActions != null && timeActions.size() > 0;
-		}
-		public TimeAction getLastTimeAction(){
-				if(lastTimeAcion == null){
-						if(hasTimeActions()){
-								lastTimeAcion = timeActions.get(0);
-						}
-				}
-				return lastTimeAcion;
 		}
 		public boolean hasLastTimeAction(){
 				getLastTimeAction();
@@ -216,6 +216,46 @@ public class Document{
 						lastWorkflow = lastTimeAcion.getWorkflow();
 				}
 				return lastWorkflow;
+		}
+		public boolean hasNextActioners(){
+				if(hasLastWorkflow() && nextActioners == null){
+						getJob();
+						if(lastWorkflow.hasNextNode() && job != null){
+								String wf_id = lastWorkflow.getNext_workflow_id();
+								GroupManagerList gml = new GroupManagerList();
+								gml.setWorkflow_id(wf_id);
+								gml.setGroup_id(job.getGroup_id());
+								String back = gml.find();
+								if(back.equals("")){
+										List<GroupManager> ones = gml.getManagers();
+										if(ones != null){
+												for(GroupManager one:ones){
+														Employee emp = one.getEmployee();
+														if(emp != null){
+																if(nextActioners == null)
+																		nextActioners = new ArrayList<>();
+																nextActioners.add(emp);
+														}
+												}
+										}
+								}
+						}
+				}
+				return nextActioners != null && nextActioners.size() > 0;
+		}
+		// this next actions managers list
+		public List<Employee> getNextActioners(){
+				return nextActioners;
+		}
+		public String getNextActionerNames(){
+				String ret = "";
+				if(hasNextActioners()){
+						for(Employee one:nextActioners){
+								if(!ret.equals("")) ret += ", ";
+								ret += one.getFull_name();
+						}
+				}
+				return ret;
 		}
 		public JobTask getJob(){
 				if(!job_id.equals("") && job == null){

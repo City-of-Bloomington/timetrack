@@ -19,7 +19,7 @@ public class GroupManagerList{
 		static final long serialVersionUID = 1900L;
 		static Logger logger = LogManager.getLogger(GroupManagerList.class);
 		String employee_id = "", group_id="", pay_period_id="";
-		String group_ids = "";
+		String group_ids = "", wf_node_id="";
 		String execludeManager_id = ""; // employee_id
 		boolean active_only = false,approversOnly=false,
 				processorsOnly=false,
@@ -52,6 +52,10 @@ public class GroupManagerList{
 						group_ids += val;
 				}
 		}
+    public void setWorkflow_id(String val){
+				if(val != null)
+						wf_node_id = val;
+    }		
 		public void setActiveOnly(){
 				active_only = true;
 		}
@@ -98,6 +102,10 @@ public class GroupManagerList{
 						if(!qw.equals("")) qw += " and ";
 						qw += " g.employee_id=?";
 				}
+				if(!wf_node_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " g.wf_node_id=?";
+				}				
 				if(!execludeManager_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
 						qw += " g.employee_id <> ?";
@@ -147,6 +155,9 @@ public class GroupManagerList{
 						if(!employee_id.equals("")){
 								pstmt.setString(jj++, employee_id);
 						}
+						if(!wf_node_id.equals("")){
+								pstmt.setString(jj++, wf_node_id);
+						}						
 						if(!execludeManager_id.equals("")){
 								pstmt.setString(jj++, execludeManager_id);
 						}
