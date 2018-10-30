@@ -28,7 +28,7 @@ Timetracker requires Tomcat version 8.0.47 or above.  If you are using Ubuntu, t
 
 ## Development
 
-Timetrack uses Maven to build a WAR version.
+Timetrack uses Maven to build a WAR file version.
 
 ```bash
 mvn clean package

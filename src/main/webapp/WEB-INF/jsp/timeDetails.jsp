@@ -101,7 +101,7 @@
 			<%@ include file="timeNotes.jsp" %>
 			<br />
 
-			<h1>Time Entry History</h1>
+			<h1>Time Log History</h1>
 			<a href="<s:property value='#application.url' />timeBlockLog.action?document_id=<s:property value='document.id' />">(view)</a>
 		</div>
 	</s:if>

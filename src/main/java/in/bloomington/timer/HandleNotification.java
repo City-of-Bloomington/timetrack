@@ -68,9 +68,7 @@ public class HandleNotification{
     }
 		/**
 		 *
-			 select d.employee_id from time_documents d where d.pay_period_id = 517 and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=517 and a.workflow_id=2) 
-
-			  select u.username,u.first_name,u.last_name from time_documents d,employees e,users u where e.id=d.employee_id and e.user_id=u.id and e.inactive is null and u.inactive is null and d.pay_period_id = 517 and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=517 and a.workflow_id=2) 
+		 select e.first_name,e.last_name from time_documents d,employees e,jobs j where e.id=d.employee_id and e.inactive is null and j.employee_id=e.id and j.clock_time_required is null and j.inactive is null and d.pay_period_id = 543 and e.username not like 'admin' and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=543 and a.workflow_id=2) 
 			 
 		 */
 		//

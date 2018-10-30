@@ -148,6 +148,9 @@ public class PayPeriodList{
 						qq += " union "+qq2;
 						
 				}
+				if(!limit.equals("") && qo.indexOf("limit") == -1){
+						qo += " limit "+limit;
+				}
 				qq += qo;
 				logger.debug(qq);
 				con = Helper.getConnection();

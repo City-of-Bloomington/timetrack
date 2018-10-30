@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import java.util.Map;
 import java.util.Set;
 import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.sql.*;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +24,8 @@ public class TimeBlockList{
 		boolean debug = false;
 		static final long serialVersionUID = 4200L;
 		static Logger logger = LogManager.getLogger(TimeBlockList.class);
-		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
+		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		DecimalFormat dfn = new DecimalFormat("##0.00");		
 		String employee_id = "", pay_period_id="", job_id="";
 		String date_from="", date_to="", document_id="", department_id="";
 		String date = "";// specific day
@@ -144,7 +146,7 @@ public class TimeBlockList{
 		public Map<Integer, Double> getDaily(){
 				return daily;
 		}
-		public Map<String, Map<Integer, Double>> getDaily2(){
+		public Map<String, Map<Integer, Double>> getDaily2Old(){
 				Set<String> set = daily2.keySet();
 				for(String str:set){
 						Map<Integer, Double> map = daily2.get(str);
@@ -153,7 +155,22 @@ public class TimeBlockList{
 						}
 				}
 				return daily2;
-		}		
+		}
+		public Map<String, Map<Integer, String>> getDaily2(){
+				Set<String> set = daily2.keySet();
+				Map<String, Map<Integer, String>> mapd = new TreeMap<>();
+				for(String str:set){
+						Map<Integer, String> map2 = new TreeMap<>();
+						
+						Map<Integer, Double> map = daily2.get(str);
+						for(int j=0;j<16;j++){ // 8 total week1, 15 total week2
+								double val = map.get(j);
+								map2.put(j, dfn.format(val));
+						}
+						mapd.put(str, map2);
+				}
+				return mapd;
+		}				
 		public double getTotal_hours(){
 				return total_hours;
 		}
@@ -609,6 +626,7 @@ public class TimeBlockList{
 				total = 0.;
 				if(daily2.containsKey(job_name)){
 						Map<Integer, Double> map = daily2.get(job_name);
+						// leaving space for total at 6
 						if(order_id > 6) order_id = order_id + 1;
 						if(map.containsKey(order_id)){
 								total = map.get(order_id);

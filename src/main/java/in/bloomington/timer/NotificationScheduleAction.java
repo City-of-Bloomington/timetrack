@@ -23,7 +23,6 @@ public class NotificationScheduleAction extends TopAction{
 		static Logger logger =
 				LogManager.getLogger(NotificationScheduleAction.class);
 		//
-		// List<Department> depts = null;
 		List<PayPeriod> periods = null;
 		String notificationSchedulesTitle = "Notification Schedules";
 		QuartzMisc quartzMisc = null;
@@ -95,21 +94,31 @@ public class NotificationScheduleAction extends TopAction{
 				String msg = "";
 				PayPeriodList pl = new PayPeriodList();
 				if(date.equals("")){
-						pl.setLastPayPeriod();
-						msg = pl.find();
-						if(msg.equals("")){
-								List<PayPeriod> ones = pl.getPeriods();
-								if(ones != null && ones.size() > 0){
-										PayPeriod one = ones.get(0);
-										String end_date = one.getEnd_date();
-										date = Helper.getDateAfter(end_date, 1);
+						if(!pay_period_id.equals("")){
+								PayPeriod pp = new PayPeriod(pay_period_id);
+								msg = pp.doSelect();
+								if(msg.equals("")){
+										String end_date = pp.getEnd_date();
+										date = Helper.getDateAfter(end_date, 1);										
+								}
+						}
+						else {
+								pl.currentOnly();
+								msg = pl.find();
+								if(msg.equals("")){
+										List<PayPeriod> ones = pl.getPeriods();
+										if(ones != null && ones.size() > 0){
+												PayPeriod one = ones.get(0);
+												String end_date = one.getEnd_date();
+												date = Helper.getDateAfter(end_date, 1);
+										}
 								}
 						}
 				}
 				if(!date.equals("")){
+						// System.err.println(" scheduled date "+date);
 						schedular = new NotificationScheduler(date, mail_host, activeMail);
-				}
-				quartzMisc = new QuartzMisc("notification");
+				}quartzMisc = new QuartzMisc("notification");
 				msg = quartzMisc.findScheduledDates();
 				if(msg.equals("")){
 						prev_date = quartzMisc.getPrevScheduleDate();
@@ -164,7 +173,7 @@ public class NotificationScheduleAction extends TopAction{
 				if(periods == null){
 						PayPeriodList dl = new PayPeriodList();
 						dl.avoidFuturePeriods();
-						dl.setLimit("5");
+						dl.setLimit("3");
 						String msg = dl.find();
 						if(!msg.equals("")){
 								logger.error(msg);

@@ -43,13 +43,14 @@ public class SwitchAction extends TopAction{
 								else{
 										try{
 												HttpServletResponse res = ServletActionContext.getResponse();
-												String str = url+"timeDetails.action?";
+												// we do not need the url here
+												String str = "timeDetails.action?";
 												if(!document_id.equals("")){
 														str += "document_id="+document_id;
 												}
 												if(!source.equals("")){
 														str += "&source="+source;
-												}												
+												}
 												res.sendRedirect(str);
 												return super.execute();
 										}catch(Exception ex){

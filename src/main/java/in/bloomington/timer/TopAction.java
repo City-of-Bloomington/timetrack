@@ -97,10 +97,11 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								activeMail = true;																
 						}
 						if(sessionMap == null || sessionMap.get("user") == null){
-								// timeblock we do not need login								
+								//
+								// timeClock we do not need login								
 								if(source != null && !source.equals("timeClock")){
 										HttpServletResponse res = ServletActionContext.getResponse();
-										String str = url+"Login";								
+										String str = "Login";								
 										if(source != null)
 												str += "?source="+source;
 										res.sendRedirect(str);
@@ -227,14 +228,12 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				String host = request.getHeader("host");				
 				String servlet_path = request.getServletPath();
 				if(host_forward != null){
-						// System.err.println(" host forward "+host_forward);
 						if(host_forward.indexOf("/timetrack") == -1)
 								url = host_forward+"/timetrack/";
 						else
 								url = host_forward;
 				}
 				else if(host != null){
-						// System.err.println("host "+host);												
 						if(host.indexOf("timetrack") > -1){
 								url = host;
 						}

@@ -30,11 +30,13 @@ public class TimeBlock extends Block{
 		// order_index is day order in the payperiod day list
 		// Mond=0, Tue=1, Wed=2, Thu=3, Fr=4, Sat=5, Sun=6, .. Sat=12, Sun=13
 		final static Set<Integer> weekendSet = new HashSet<>(Arrays.asList(5,6,12,13));
+		Set<String> rangeDateSet = new HashSet<>();
 		int order_index=0, repeat_count=0;
 		boolean include_weekends = false, overnight = false;
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
 		Set<String> document_ids = null; // needed for employee with multiple jobs
+		String start_date = "", end_date="";
 		String timeInfo = "";
 		// for clock_in
 		String errors = "";
@@ -112,6 +114,18 @@ public class TimeBlock extends Block{
 		}
 		public String getNw_code(){
 				return nw_code;
+		}
+		public String getStart_date(){
+				if(start_date.equals("")){
+						start_date = date;
+				}
+				return start_date;
+		}
+		public String getEnd_date(){
+				if(end_date.equals("")){
+						end_date = date;
+				}				
+				return end_date;
 		}		
 		public String getRepeat_count(){
 				return "";
@@ -143,6 +157,14 @@ public class TimeBlock extends Block{
 		public void setNw_code(String val){
 				if(val != null)
 						nw_code = val;
+		}
+		public void setStart_date(String val){
+				if(val != null)
+						start_date = val;
+		}
+		public void setEnd_date(String val){
+				if(val != null)
+						end_date = val;
 		}		
 		public void setCode_desc(String val){
 				if(val != null)
@@ -445,6 +467,7 @@ public class TimeBlock extends Block{
 		// given any documen id, we need to find all document ids
 		// for employee with multiple jobs
 		void findAllDocumentsForPayPeriod(){
+				
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -557,10 +580,9 @@ public class TimeBlock extends Block{
 						return msg;
 				}
 				try{
-
 						pstmt = con.prepareStatement(qq);
 						if(date.equals(""))
-								date = Helper.getToday();
+								date = today;
 						java.util.Date date_tmp = df.parse(date);						
 						for(String doc_id: document_ids){
 								int jj=1;						
@@ -739,6 +761,51 @@ public class TimeBlock extends Block{
 						}
 				}
 		}
+		private String prepareDateSet(){
+
+				String msg = "";
+				String payPeriodDates[] = new String[14];
+				Set<String> weekendDates = new HashSet<>();
+				PayPeriod payPeriod = null;
+				if(document == null){
+						getDocument();
+				}
+				if(document != null){
+						int start_index=-1, end_index=-1;
+						payPeriod = document.getPayPeriod();
+						String dt = payPeriod.getStart_date();
+						payPeriodDates [0] = dt;
+						if(dt.equals(start_date))
+								start_index = 0;
+						else if(dt.equals(end_date))
+								end_index = 0;
+						for(int i=1;i<14;i++){
+								String dt2 = Helper.getDateAfter(dt, i);
+								if(dt2.equals(start_date))
+										start_index = i;
+								else if(dt2.equals(end_date))
+										end_index = i;
+								payPeriodDates[i] = dt2;
+						}
+						if(start_index < 0 || end_index < 0){
+								msg = "invalid date range "+start_date+"-"+end_date;
+								return msg;
+						}
+						if(start_index > end_index){ // swap
+								int i=start_index;
+								start_index = end_index;
+								end_index = i;
+						}
+						for(int i=start_index;i<=end_index;i++){
+								if(include_weekends)
+										rangeDateSet.add(payPeriodDates[i]);										
+								else if(!include_weekends && !weekendSet.contains(i))
+										rangeDateSet.add(payPeriodDates[i]);										
+						}
+						System.err.println(" range dates "+rangeDateSet);
+				}
+				return msg;
+		}		
 		public String doSave(){
 				if(time_in_changed && !time_out_changed){
 						clock_in = "y";
@@ -825,6 +892,124 @@ public class TimeBlock extends Block{
 				Connection con = null;
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
+				String msg="", str="", mgtext="";
+				if(!errors.equals("")){
+						return errors;
+				}
+				if(action_type.equals("")) action_type="Add";
+				String qq = "insert into time_blocks values(0,?,?,?, ?,?,?,?,? ,?,?,null) ";
+				String qq2 = "select LAST_INSERT_ID()";
+				checkForOvernight();
+				if((clock_in.equals("") && clock_out.equals(""))
+					 || (!clock_in.equals("") && !clock_out.equals(""))){
+						msg = prepareTimes();
+				}
+				if(!msg.equals("")){
+						return msg;
+				}				
+				if(document_id.equals("")){
+						msg = " document not set ";
+						return msg;
+				}
+				if(hour_code_id.equals("")){
+						msg = " hour code not set ";
+						return msg;
+				}
+				//
+				if(!start_date.equals(end_date)){
+						msg = prepareDateSet();
+						if(!msg.equals(""))
+								return msg;
+				}
+				else{
+						date = start_date;
+						if(date.equals(""))
+								date = today;
+						rangeDateSet.add(date); // one date
+				}
+				con = Helper.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						// date2 is now the old date 
+						for(String dd:rangeDateSet){
+								date = dd;
+								System.err.println(" date "+date);
+								if(isHourType()){
+										mgtext = checkWithAvailableBalance();
+								}
+								else{
+										id=""; // for multiple input
+										mgtext = checkForConflicts();
+								}
+								if(!mgtext.equals("")){
+										// we do not show the conflict for multiple entries
+										if(rangeDateSet.size() == 1) 
+												msg += mgtext;
+								}
+								else{
+										pstmt = con.prepareStatement(qq);
+										pstmt.setString(1, document_id);
+										pstmt.setString(2, hour_code_id);
+										java.util.Date date_tmp = df.parse(date);
+										pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+										pstmt.setInt(4, begin_hour);
+										pstmt.setInt(5, begin_minute);
+										pstmt.setInt(6, end_hour);
+										pstmt.setInt(7, end_minute);
+										pstmt.setDouble(8, hours);
+										if(clock_in.equals(""))
+												pstmt.setNull(9,Types.CHAR);
+										else
+												pstmt.setString(9, "y");
+										if(clock_out.equals(""))
+												pstmt.setNull(10,Types.CHAR);
+										else
+												pstmt.setString(10, "y");								
+										pstmt.executeUpdate();
+										pstmt2 = con.prepareStatement(qq2);
+										rs = pstmt2.executeQuery();
+										if(rs.next()){
+												id = rs.getString(1);
+										}
+										// if we are using accruals, we need to deduce the
+										// amount we used in this day
+										if(isHourType()){
+												adjustAccraulBalance(hour_code_id, hours);
+										}
+										TimeBlockLog tbl = new TimeBlockLog(null,
+																												document_id,
+																												hour_code_id,
+																												date,
+																												begin_hour, begin_minute,
+																												end_hour, end_minute,
+																												hours, 
+																												clock_in,clock_out,
+																												id,
+																												action_type,
+																												action_by_id,
+																												null);
+										msg += tbl.doSave();
+								}
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, rs, pstmt, pstmt2);
+				}
+				return msg;
+		}
+		private String doSaveForInOutOld(){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null, pstmt2=null;
+				ResultSet rs = null;
 				String msg="", str="";
 				if(!errors.equals("")){
 						return errors;
@@ -852,6 +1037,11 @@ public class TimeBlock extends Block{
 				// of pay period
 				if(repeat_count > 0){
 						checkRepeatCount();
+				}
+				if(!start_date.equals(end_date)){
+						msg = prepareDateSet();
+						if(!msg.equals(""))
+								return msg;
 				}
 				con = Helper.getConnection();
 				if(con == null){
@@ -941,7 +1131,8 @@ public class TimeBlock extends Block{
 						Helper.databaseDisconnect(con, rs, pstmt, pstmt2);
 				}
 				return msg;
-		}
+		}		
+		
 		public String doUpdate(){
 				 /// for admins who changes the clock in but no clock out
 				if(time_in_changed && !time_out_changed){

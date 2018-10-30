@@ -38,7 +38,7 @@ public class Document{
 		Workflow lastWorkflow = null;
 		List<TimeAction> timeActions = null;
 		Map<Integer, Double> daily = null;
-		Map<String, Map<Integer, Double>> daily2 = null;				
+		Map<String, Map<Integer, String>> daily2 = null;				
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
 		JobTask job = null;
@@ -343,7 +343,7 @@ public class Document{
 										week1_flsa = tl.getWeek1_flsa();
 										week2_flsa = tl.getWeek2_flsa();										
 								}
-								Map<String, Map<Integer, Double>> ones2 = tl.getDaily2();
+								Map<String, Map<Integer, String>> ones2 = tl.getDaily2();
 								if(ones2 != null){
 										daily2 = ones2;
 								}
@@ -361,7 +361,7 @@ public class Document{
 				//
 				return getDaily(true);
 		}
-		public Map<String, Map<Integer, Double>> getDaily2(){
+		public Map<String, Map<Integer, String>> getDaily2(){
 				return daily2;
 		}
 		
@@ -592,11 +592,29 @@ public class Document{
 		public Map<Integer, Double> getHourCodeTotals(){
 				return hourCodeTotals;
 		}
-		public Map<String, Double> getHourCodeWeek1(){
-				return hourCodeWeek1;
+		// change double to string for formating purpose
+		public Map<String, String> getHourCodeWeek1(){
+				Map<String, String> map2 = new TreeMap<>();
+				if(hasHourCodeWeek1()){
+						Set<String> keys = hourCodeWeek1.keySet();
+						for(String key:keys){
+								double val = hourCodeWeek1.get(key);
+								map2.put(key, dfn.format(val));
+						}
+				}
+				return map2;
 		}
-		public Map<String, Double> getHourCodeWeek2(){
-				return hourCodeWeek2;
+		// change double to string for formating purpose
+		public Map<String, String> getHourCodeWeek2(){
+				Map<String, String> map2 = new TreeMap<>();
+				if(hasHourCodeWeek2()){
+						Set<String> keys = hourCodeWeek2.keySet();
+						for(String key:keys){
+								double val = hourCodeWeek2.get(key);
+								map2.put(key, dfn.format(val));
+						}
+				}
+				return map2;
 		}
 		public Map<String, List<String>> getAllAccruals(){
 				return allAccruals;
