@@ -37,8 +37,7 @@ public class Document{
 		TimeAction lastTimeAcion = null;
 		Workflow lastWorkflow = null;
 		List<TimeAction> timeActions = null;
-		Map<Integer, Double> daily = null;
-		Map<String, Map<Integer, String>> daily2 = null;				
+		Map<String, Map<Integer, String>> daily = null;				
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
 		JobTask job = null;
@@ -311,7 +310,7 @@ public class Document{
 				return ""+dfn.format(week2_flsa);
 		}						
 		public boolean hasDaily(){
-				getDaily();
+				prepareDaily();
 				return daily != null && daily.size() > 0;
 		}
 		public boolean isPunchClockOnly(){
@@ -322,16 +321,20 @@ public class Document{
 				return false;
 		}
 		
-		public Map<Integer, Double> getDaily(boolean includeEmptyBlocks){
+		public void prepareDaily(boolean includeEmptyBlocks){
 				if(daily == null && !id.equals("")){
 						TimeBlockList tl = new TimeBlockList();
 						tl.setDocument_id(id);
 						tl.setActiveOnly();
 						String back = tl.find();
 						if(back.equals("")){
-								Map<Integer, Double> ones = tl.getDaily();
+								Map<String, Map<Integer, String>> ones = tl.getDaily();
 								if(ones != null && ones.size() > 0){
 										daily = ones;
+										// }								
+										// Map<Integer, Double> ones = tl.getDaily();
+										// if(ones != null && ones.size() > 0){
+										// daily = ones;
 										dailyBlocks = tl.getDailyBlocks();
 										hourCodeTotals = tl.getHourCodeTotals();
 										hourCodeWeek1 = tl.getHourCodeWeek1();
@@ -341,11 +344,9 @@ public class Document{
 												timeBlocks = ones2;
 										}
 										week1_flsa = tl.getWeek1_flsa();
-										week2_flsa = tl.getWeek2_flsa();										
-								}
-								Map<String, Map<Integer, String>> ones2 = tl.getDaily2();
-								if(ones2 != null){
-										daily2 = ones2;
+										week2_flsa = tl.getWeek2_flsa();
+										week1Total = tl.getWeek1Total();
+										week2Total = tl.getWeek2Total();										
 								}
 						}
 						if(includeEmptyBlocks){
@@ -353,21 +354,20 @@ public class Document{
 						}
 						getEmpAccruals();
 				}
-				return daily;
 		}
-		public Map<Integer, Double> getDaily(){
+		public void prepareDaily(){
 				//
 				// include empty blocks as well
 				//
-				return getDaily(true);
+				prepareDaily(true);
 		}
-		public Map<String, Map<Integer, String>> getDaily2(){
-				return daily2;
+		public Map<String, Map<Integer, String>> getDaily(){
+				return daily;
 		}
 		
 		public List<TimeBlock> getTimeBlocks(){
 				if(timeBlocks == null){
-						getDaily();
+						prepareDaily();
 				}
 				if(timeBlocks == null){
 						timeBlocks = new ArrayList<>();
@@ -375,33 +375,10 @@ public class Document{
 				}
 				return timeBlocks;
 		}
-		public double getWeek1TotalDbl(){
-				if(week1Total == 0){
-						if(daily != null){
-								for(int i=0;i<7;i++){
-										week1Total += daily.get(i);
-								}
-						}
-				}
-				return week1Total;
-		}
-		public double getWeek2TotalDbl(){
-				if(week2Total == 0){
-						if(daily != null){
-								for(int i=7;i<14;i++){
-										week2Total += daily.get(i);
-								}
-						}
-				}
-				return week2Total;
-		}		
-				
 		public String getWeek1Total(){
-				getWeek1TotalDbl();
 				return ""+dfn.format(week1Total);
 		}
 		public String getWeek2Total(){
-				getWeek2TotalDbl();
 				return ""+dfn.format(week2Total);
 		}
 		public String getPayPeriodTotal(){
@@ -585,7 +562,7 @@ public class Document{
 		}
 		public Map<Integer, List<TimeBlock>> getDailyBlocks(){
 				if(dailyBlocks == null){
-						getDaily();
+						prepareDaily();
 				}
 				return dailyBlocks;
 		}
@@ -734,7 +711,7 @@ public class Document{
 				if(job == null){
 						getJob();
 				}
-				if(getWeek1TotalDbl() > 0){
+				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
 				}
 				if(job != null){
@@ -744,7 +721,7 @@ public class Document{
 										warnings.add(str);
 						}
 				}
-				if(getWeek2TotalDbl() > 0){
+				if(week2Total > 0){
 						checkWeekWarnings(hourCodeWeek2, week2Total);
 				}
 				if(job != null){				
@@ -811,10 +788,10 @@ public class Document{
 				if(job == null){
 						getJob();
 				}
-				if(getWeek1TotalDbl() > 0){
+				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
 				}
-				if(getWeek2TotalDbl() > 0){
+				if(week2Total > 0){
 						checkWeekWarnings(hourCodeWeek2, week2Total);
 				}
 		}		

@@ -417,7 +417,7 @@ public class PayPeriodProcess{
 				if(!msg.equals("")){
 						return msg;
 				}
-				document.getDaily(false); //false: ignore empty blocks
+				document.prepareDaily(false); //false: ignore empty blocks
 				List<TimeBlock> blocks = document.getTimeBlocks();
 				if(blocks == null || blocks.size() == 0){
 						msg = "No time entry found";

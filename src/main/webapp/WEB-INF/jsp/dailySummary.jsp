@@ -16,7 +16,7 @@
 			<th>Total</th>
 		</s:else>
 	</tr>
-	<s:iterator value="#daily2" var="one" >
+	<s:iterator value="#daily" var="one" >
 		<s:set var="jobKey" value="#one.key" />		
 		<s:set var="jobVal" value="#one.value" />
 		<s:iterator value="#jobVal" var="day" >		

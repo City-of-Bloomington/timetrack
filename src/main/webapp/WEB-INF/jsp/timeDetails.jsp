@@ -57,7 +57,7 @@
 			<hr class="m-b-40" />
 
 			<s:set var="payPeriodTotal" value="document.payPeriodTotal" />
-			<s:set var="daily2" value="document.daily2" />			
+			<s:set var="daily" value="document.daily" />			
 			<s:set var="week1Total" value="document.week1Total" />
 			<s:set var="week2Total" value="document.week2Total" />
 			<s:if test="document.isUnionned()">
