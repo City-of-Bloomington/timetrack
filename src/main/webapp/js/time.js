@@ -631,7 +631,8 @@ $(".day").on("keyup click", function(e) {
 /* If a Time Block day data entry has no time out,
  * this adds an 'incomplete-time' class for style */
 $('.data').each(function() {
-  if($(this).attr('data-time-out') == "" || $(this).attr('data-time-out') == "12:00 AM")
+  var timeOut = $(this).attr('data-time-out');
+  if(timeOut == "")
     $(this).addClass("incomplete-time");
 });
 
