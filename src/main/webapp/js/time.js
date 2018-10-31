@@ -156,8 +156,8 @@ $('#department_id_change').change(function() {
     .error(function(x,status,err){
         alert(status+" "+err);
     });
-})						
-   
+})
+
 
 /**
  * toggle input of time-in, time-out or hours depending
