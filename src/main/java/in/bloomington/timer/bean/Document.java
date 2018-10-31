@@ -222,19 +222,29 @@ public class Document{
 						getJob();
 						if(lastWorkflow.hasNextNode() && job != null){
 								String wf_id = lastWorkflow.getNext_workflow_id();
-								GroupManagerList gml = new GroupManagerList();
-								gml.setWorkflow_id(wf_id);
-								gml.setGroup_id(job.getGroup_id());
-								String back = gml.find();
-								if(back.equals("")){
-										List<GroupManager> ones = gml.getManagers();
-										if(ones != null){
-												for(GroupManager one:ones){
-														Employee emp = one.getEmployee();
-														if(emp != null){
-																if(nextActioners == null)
-																		nextActioners = new ArrayList<>();
-																nextActioners.add(emp);
+								if(wf_id.equals("2")){ // submit for approval
+										getEmployee();
+										if(employee != null){
+												if(nextActioners == null)
+														nextActioners = new ArrayList<>();
+												nextActioners.add(employee);
+										}
+								}
+								else{
+										GroupManagerList gml = new GroupManagerList();
+										gml.setWorkflow_id(wf_id);
+										gml.setGroup_id(job.getGroup_id());
+										String back = gml.find();
+										if(back.equals("")){
+												List<GroupManager> ones = gml.getManagers();
+												if(ones != null){
+														for(GroupManager one:ones){
+																Employee emp = one.getEmployee();
+																if(emp != null){
+																		if(nextActioners == null)
+																				nextActioners = new ArrayList<>();
+																		nextActioners.add(emp);
+																}
 														}
 												}
 										}
