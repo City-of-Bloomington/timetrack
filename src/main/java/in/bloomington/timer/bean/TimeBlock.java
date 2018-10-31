@@ -214,12 +214,20 @@ public class TimeBlock extends Block{
 				if(val != null && !val.trim().equals("")){
 						time_in_changed = true;
 						splitTimes(val, false);
+						time_in_set = true;
+				}
+				else{
+						time_in_set = false;
 				}
 		}
 		public void setTime_out(String val){
 				if(val != null && !val.trim().equals("")){
 						time_out_changed = true;
 						splitTimes(val, true);
+						time_out_set = true;
+				}
+				else{
+						time_out_set = false;
 				}
 		}
 		private String splitTimes(String val, boolean isOut){
@@ -272,7 +280,7 @@ public class TimeBlock extends Block{
 														hrs = Integer.parseInt(dd[0].trim());
 														mins = Integer.parseInt(dd[1].trim());
 														if(hrs < 0){
-																msg = "hours can be negative: "+hrs;
+																msg = "hours can not be negative: "+hrs;
 																errors += msg;
 																return msg;
 														}
@@ -284,7 +292,7 @@ public class TimeBlock extends Block{
 														if(is_pm && hrs < 12){
 																hrs += 12;
 														}
-														if(is_am && hrs == 12){ // 12 am case
+														if(is_am && hrs == 12){ 
 																hrs = 0;
 														}
 														if(isOut){
@@ -338,6 +346,14 @@ public class TimeBlock extends Block{
 				}
 				ret += begin_minute+" "+am_pm;
 				return ret;
+		}
+		public boolean areAllTimesSet(){
+				//
+				// if one of them set but not the other
+				//
+				if((time_in_set && !time_out_set) ||
+					 (!time_in_set && time_out_set)) return false;
+				return ((time_in_set && time_out_set) || hours_set);
 		}
 		public String getTime_out(){
 				String ret = "";
@@ -937,7 +953,6 @@ public class TimeBlock extends Block{
 						// date2 is now the old date 
 						for(String dd:rangeDateSet){
 								date = dd;
-								System.err.println(" date "+date);
 								if(isHourType()){
 										mgtext = checkWithAvailableBalance();
 								}

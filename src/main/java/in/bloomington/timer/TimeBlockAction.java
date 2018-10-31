@@ -43,25 +43,39 @@ public class TimeBlockAction extends TopAction{
 				}
 				clearAll();
 				if(action.equals("Save")){
-						timeBlock.setAction_by_id(user.getId());
-						back = timeBlock.doSave();
-						if(!back.equals("")){
-								addError(back);
-								return "json";
+						if(timeBlock.areAllTimesSet()){
+								timeBlock.setAction_by_id(user.getId());
+								back = timeBlock.doSave();
+								if(!back.equals("")){
+										addError(back);
+										return "json";
+								}
+								else{
+										addMessage("Added Successfully");
+								}
 						}
 						else{
-								addMessage("Added Successfully");
+								back = "All fields are required";
+								addError(back);
+								return "json";								
 						}
 				}				
 				else if(action.startsWith("Save")){
-						timeBlock.setAction_by_id(user.getId());
-						back = timeBlock.doUpdate();
-						if(!back.equals("")){
-								addError(back);								
-								return "json";
+						if(timeBlock.areAllTimesSet()){						
+								timeBlock.setAction_by_id(user.getId());
+								back = timeBlock.doUpdate();
+								if(!back.equals("")){
+										addError(back);								
+										return "json";
+								}
+								else{
+										addMessage("Updated Successfully");								
+								}
 						}
 						else{
-								addMessage("Updated Successfully");								
+								back = "All fields are required";
+								addError(back);
+								return "json";	
 						}
 				}
 				else if(action.equals("Delete")){

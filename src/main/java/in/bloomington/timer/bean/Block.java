@@ -33,6 +33,7 @@ public class Block{
 		JobTask jobTask = null;
 		Document document = null;
 		boolean hourCodeSet = false, isHoliday=false;
+		boolean time_in_set = false, time_out_set=false, hours_set=false;
 		//
 		// this flag needed for clock machines
 		// when the managers change the clock in time but not clock out
@@ -302,9 +303,13 @@ public class Block{
 				if(val != null && !val.equals("")){
 						try{
 								hours = Double.parseDouble(val);
+								hours_set = true;
 						}catch(Exception ex){
 
 						}
+				}
+				else{
+						hours_set = false;
 				}
     }
     public void setClock_in(String val){
