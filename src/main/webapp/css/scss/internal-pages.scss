@@ -213,10 +213,16 @@
     }
   }
 
-  input[type="submit"] {
+  input[type="submit"],
+  button[type=submit],
+  .button[type=submit] {
     background-color: $fern;
     border-color: $fern;
     color: white;
     margin-left: auto;
+  }
+
+  .approval-button-row {
+    padding: 20px 0 0 0;
   }
 }

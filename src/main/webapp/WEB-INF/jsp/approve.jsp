@@ -100,7 +100,7 @@
 							</a>
 
 							<s:if test="canBeApproved()">
-								<s:if test="isUserCurrentEmployee()">								
+								<s:if test="isUserCurrentEmployee()">
 									<small class="status-tag approval-ready">
 										<input type="checkbox" name="document_ids" value="<s:property value='id' />">Approve</input>
 									</small>
@@ -175,7 +175,7 @@
 				</s:if>
 			</s:iterator>
 		</s:if>
-		<s:if test="isUserCurrentEmployee()">		
+		<s:if test="isUserCurrentEmployee()">
 			<s:submit name="action" type="submit" value="Approve" class="button"/>
 		</s:if>
 	</s:if>
