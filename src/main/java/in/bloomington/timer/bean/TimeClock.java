@@ -282,8 +282,6 @@ public class TimeClock{
 				//			
 				// find document, if non create one
 				//
-				// System.err.println(" found doc "+document.getId());
-				//
 				// we need the employee job
 				if(job_id.equals("")){
 						getJobs();
@@ -318,7 +316,6 @@ public class TimeClock{
 								// in this pay period, so will consider as clock_in
 								timeBlock = new TimeBlock(null,
 																					document.getId(),
-																					// selectedJob.getId(),
 																					hour_code_id,
 																					date,
 																					
@@ -342,7 +339,6 @@ public class TimeClock{
 								//
 								TimeBlockList tbl = new TimeBlockList();
 								tbl.setDocument_id(document.getId());
-								// tbl.setJob_id(job_id); // included in document
 								tbl.hasClockInOnly();
 								tbl.setActiveOnly();
 								tbl.setDate(date); // for today only
@@ -361,7 +357,6 @@ public class TimeClock{
 										else{ // it is a clock-in
 												timeBlock = new TimeBlock(null,
 																									document.getId(),
-																									// selectedJob.getId(),
 																									hour_code_id,
 																									date,
 																									

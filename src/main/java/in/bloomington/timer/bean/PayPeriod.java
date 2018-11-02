@@ -180,7 +180,14 @@ public class PayPeriod{
 				String endWeek2  = end_date.substring(0,end_date.lastIndexOf("/"));
 				String ret = startWeek2+" - "+endWeek2;
 				return ret;				
-		}		
+		}
+		// we compate start_date with today and find if is more than two weeks
+		// in the future
+		public boolean isTwoWeekOrMoreInFuture(){
+				String today = Helper.getToday();
+				int days = findDateDiffWithDate(today);
+				return days >= 14;
+		}
 		/*
 		 * for the end of the year, the pay period is divided
 		 * into two ranges from (start_date, to 12/31/first year)
@@ -196,6 +203,46 @@ public class PayPeriod{
 				}
 				return ret;
 		}
+		public int findDateDiffWithDate(String date){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				int days = 0;
+				String qq = "select  "+
+						"datediff(p.start_date,?) "+
+						"from pay_periods p where id=?";
+				con = Helper.getConnection();
+				if(con == null){
+						msg = " could not connect to Database ";
+						logger.error(msg);
+						return days;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						if(!id.equals("")){
+
+						}
+						pstmt.setDate(1, new java.sql.Date(dateFormat.parse(date).getTime()));
+						pstmt.setString(2, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								days = rs.getInt(1);
+						}
+						else{
+								msg = "No pay period found";
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(con, pstmt, rs);
+				}				
+				return days;
+		}
 		public String find(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -206,7 +253,7 @@ public class PayPeriod{
 						"date_format(p.end_date,'%m/%d/%Y'), "+
 						"year(p.start_date),month(p.start_date),day(p.start_date),"+
 						"year(p.end_date),month(p.end_date),day(p.end_date), "+
-						"datediff(p.end_date,p.start_date "+
+						"datediff(p.end_date,p.start_date) "+
 						"from pay_periods p where ";
 				if(!id.equals("")){
 						qq += " p.id=? ";

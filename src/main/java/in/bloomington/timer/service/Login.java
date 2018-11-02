@@ -112,7 +112,7 @@ public class Login extends HttpServlet{
 										if(source.equals(""))
 												source = "timeDetails.action";
 										out.println("<head><title></title><META HTTP-EQUIV="+
-																"\"refresh\" CONTENT=\"0; URL=" + url+source+"\"></head>");
+																"\"refresh\" CONTENT=\"0; URL=" + source+"\"></head>");
 										out.println("<body>");
 										out.println("</body>");
 										out.println("</html>");

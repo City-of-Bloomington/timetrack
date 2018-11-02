@@ -222,6 +222,10 @@ public class JobTask implements Serializable{
 		public boolean isPunchClockOnly(){
 				return !clock_time_required.equals("");
 		}
+		public boolean isLeaveEligible(){
+				getSalaryGroup();
+				return salaryGroup != null && salaryGroup.isLeaveEligible();
+		}
     public int getWeekly_regular_hours(){
 				return weekly_regular_hours;
     }

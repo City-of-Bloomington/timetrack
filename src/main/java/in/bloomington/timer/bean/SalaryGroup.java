@@ -97,7 +97,13 @@ public class SalaryGroup{
 		}		
 		public boolean isUnionned(){
 				return name.equals("Union");
-		}		
+		}
+		//
+		// all groups are leave elegible except temp workers
+		//
+		public boolean isLeaveEligible(){
+				return !isTemporary();
+		}
     //
     // setters
     //

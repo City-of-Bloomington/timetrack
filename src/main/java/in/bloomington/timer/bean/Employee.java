@@ -568,6 +568,14 @@ public class Employee implements Serializable{
 				getJobs();
 				return jobs == null || jobs.size() == 0;
 		}
+		public boolean isLeaveEligible(){
+				JobTask job = null;				
+				getJobs();
+				if(jobs != null){
+						job = jobs.get(0); // primary job if more than one
+				}
+				return job != null && job.isLeaveEligible();
+		}
 		public boolean isSameEntity(Employee one){
 				return one.getUsername().equals(username) && 
 						one.getLast_name().equals(last_name) &&

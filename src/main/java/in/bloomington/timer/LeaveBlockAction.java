@@ -12,22 +12,23 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import in.bloomington.timer.leave.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TimeBlockAction extends TopAction{
+public class LeaveBlockAction extends TopAction{
 
 		static final long serialVersionUID = 4300L;
 		DecimalFormat dFormat = new DecimalFormat("###.00");
-		static Logger logger = LogManager.getLogger(TimeBlockAction.class);
+		static Logger logger = LogManager.getLogger(LeaveBlockAction.class);
 		//
-		TimeBlock timeBlock = null;
-		String timeBlocksTitle = "Time Block Entry";
-		String document_id = "";//  selected_job_id="";
+		LeaveBlock leaveBlock = null;
+		String leaveBlocksTitle = "Leave Block Entry";
+		String document_id = "";
 		String date = "";
 		int order_index = 0;
 		Employee employee = null;
-		Document document = null;
+		LeaveDocument document = null;
 		PayPeriod payPeriod = null;
 		List<EmployeeAccrual> employeeAccruals = null;
 		// JobTask selectedJob = null;		
@@ -37,15 +38,16 @@ public class TimeBlockAction extends TopAction{
 		//
 		public String execute(){
 				String ret = SUCCESS;
-				String back = doPrepare("timeBlock.action");
+				String back = doPrepare("leaveBlock.action");
 				if(!back.equals("")){
 						return "login";
 				}
 				clearAll();
 				if(action.equals("Save")){
-						if(timeBlock.areAllTimesSet()){
-								timeBlock.setAction_by_id(user.getId());
-								back = timeBlock.doSave();
+						/*
+						if(leaveBlock.areAllTimesSet()){
+								leaveBlock.setAction_by_id(user.getId());
+								back = leaveBlock.doSave();
 								if(!back.equals("")){
 										addError(back);
 										return "json";
@@ -59,11 +61,13 @@ public class TimeBlockAction extends TopAction{
 								addError(back);
 								return "json";								
 						}
+						*/
 				}				
 				else if(action.startsWith("Save")){
-						if(timeBlock.areAllTimesSet()){						
-								timeBlock.setAction_by_id(user.getId());
-								back = timeBlock.doUpdate();
+						/*
+						if(leaveBlock.areAllTimesSet()){						
+								leaveBlock.setAction_by_id(user.getId());
+								back = leaveBlock.doUpdate();
 								if(!back.equals("")){
 										addError(back);								
 										return "json";
@@ -77,17 +81,19 @@ public class TimeBlockAction extends TopAction{
 								addError(back);
 								return "json";	
 						}
+						*/
 				}
 				else if(action.equals("Delete")){
-						getTimeBlock();
-						back = timeBlock.doSelect();
+						getLeaveBlock();
+						back = leaveBlock.doSelect();
 						//
 						// we need document_id so that when we delete the timeblock
 						// we stay on the same payperiod
 						//
-						document_id = timeBlock.getDocument_id();
-						timeBlock.setAction_by_id(user.getId());
-						back = timeBlock.doDelete();
+						document_id = leaveBlock.getDocument_id();
+						leaveBlock.setInactive(true);
+						leaveBlock.setChange_by(user.getId());
+						back = leaveBlock.doPartialUpdate();
 						if(!back.equals("")){
 								addActionError(back);
 								addError(back);
@@ -95,7 +101,7 @@ public class TimeBlockAction extends TopAction{
 						else{
 								try{
 										HttpServletResponse res = ServletActionContext.getResponse();
-										String str = url+"timeDetails.action?document_id="+document_id;
+										String str = url+"leaveDetails.action?document_id="+document_id;
 										res.sendRedirect(str);
 										return super.execute();
 								}catch(Exception ex){
@@ -104,40 +110,40 @@ public class TimeBlockAction extends TopAction{
 						}
 				}
 				else{		
-						getTimeBlock();
+						getLeaveBlock();
 						if(!id.equals("")){
-								back = timeBlock.doSelect();
+								back = leaveBlock.doSelect();
 								if(!back.equals("")){
 										addActionError(back);
 										addError(back);
 								}
-								// selected_job_id = timeBlock.getJob_id();
-								document_id = timeBlock.getDocument_id();
+								// selected_job_id = leaveBlock.getJob_id();
+								document_id = leaveBlock.getDocument_id();
 						}
 				}
 				return ret;
 		}
-		public TimeBlock getTimeBlock(){ 
-				if(timeBlock == null){
-						timeBlock = new TimeBlock();
+		public LeaveBlock getLeaveBlock(){ 
+				if(leaveBlock == null){
+						leaveBlock = new LeaveBlock();
 						if(!id.equals(""))
-								timeBlock.setId(id);
+								leaveBlock.setId(id);
 						if(!document_id.equals(""))
-								timeBlock.setDocument_id(document_id);
+								leaveBlock.setDocument_id(document_id);
 						if(!date.equals(""))
-								timeBlock.setDate(date);
-						timeBlock.setOrder_index(order_index);
+								leaveBlock.setDate(date);
+						leaveBlock.setOrderIndex(order_index);
 				}
-				return timeBlock;
+				return leaveBlock;
 		}
-		public void setTimeBlock(TimeBlock val){
+		public void setLeaveBlock(LeaveBlock val){
 				if(val != null){
-						timeBlock = val;
+						leaveBlock = val;
 				}
 		}
 
-		public String getTimeBlocksTitle(){
-				return timeBlocksTitle;
+		public String getLeaveBlocksTitle(){
+				return leaveBlocksTitle;
 		}
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
@@ -148,8 +154,8 @@ public class TimeBlockAction extends TopAction{
 						order_index = val;
 		}
 		public int getOrder_index(){
-				if(order_index == 0 && timeBlock != null){
-						order_index = timeBlock.getOrder_index();
+				if(order_index == 0 && leaveBlock != null){
+						order_index = leaveBlock.getOrderIndex();
 				}
 				return order_index;
 		}
@@ -159,18 +165,18 @@ public class TimeBlockAction extends TopAction{
 		//
 		// this is passed through the link
 		public String getDocument_id(){
-				if(document_id.equals("") && timeBlock != null){
-						document_id = timeBlock.getDocument_id();
+				if(document_id.equals("") && leaveBlock != null){
+						document_id = leaveBlock.getDocument_id();
 				}
 				return document_id;
 		}
-		public Document getDocument(){
+		public LeaveDocument getDocument(){
 				if(document == null){
 						if(document_id.equals("")){
 								getDocument_id();
 						}
 						if(!document_id.equals("")){
-								Document one = new Document(document_id);
+								LeaveDocument one = new LeaveDocument(document_id);
 								String back = one.doSelect();
 								if(back.equals("")){
 										document = one;
@@ -262,6 +268,8 @@ public class TimeBlockAction extends TopAction{
 										ecl.setDepartment_id(department.getId());
 								}
 								ecl.setActiveOnly();
+								// hour codes that can be usef for leave only
+								ecl.relatedToAccrualsOnly();
 								String back = ecl.lookFor();
 								if(back.equals("")){
 										List<HourCode> ones = ecl.getHourCodes();
@@ -282,9 +290,12 @@ public class TimeBlockAction extends TopAction{
 				if(document == null){
 						getDocument();
 				}
+				// ToDo
+				/*
 				if(document.hasAllAccruals()){
 						employeeAccruals = document.getEmpAccruals();
-				}						
+				}
+				*/
 				return employeeAccruals;
 		}
 		public boolean hasEmpAccruals(){

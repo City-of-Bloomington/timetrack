@@ -216,6 +216,16 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		public List<String> getErrors(){
 				return errors;
 		}
+		public String getErrorsAll(){
+				String ret = "";
+				if(hasErrors()){
+						for(String str:errors){
+								if(!ret.equals("")) ret += ", ";
+								ret += str;
+						}
+				}
+				return ret;
+		}
 		public boolean hasMessages(){
 				return messages != null && messages.size() > 0;
 		}		

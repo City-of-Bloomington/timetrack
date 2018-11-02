@@ -259,7 +259,7 @@ CREATE TABLE `salary_groups` (
 CREATE TABLE `positions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
-  `description` varchar(512) DEFAULT NULL,
+  `alias varchar(64) not null,                                                     description` varchar(512) DEFAULT NULL,
   `inactive` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
@@ -309,7 +309,7 @@ CREATE TABLE jobs (
   comp_time_factor` double(2,1) DEFAULT '1.0',
   holiday_comp_factor double(2,1) DEFAULT '1.0',
   clock_time_required char(1) DEFAULT NULL,
-	hourly_rate double(7,2) default 0.00,
+	hourly_rate double(12,2) default 0.00,
   inactive char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `position_id` (`position_id`),
@@ -357,23 +357,6 @@ CREATE TABLE `roll_backs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 ;;
-;; time_documents 
-;;
-CREATE TABLE `time_documents` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `employee_id` int(10) unsigned NOT NULL,
-  `pay_period_id` int(10) unsigned NOT NULL,
-  `initiated` datetime NOT NULL,
-  `initiated_by` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `emp_pay_period_u` (`employee_id`,`pay_period_id`),
-  KEY `pay_period_id` (`pay_period_id`),
-  KEY `initiated` (`initiated`),
-  KEY `initiated_by` (`initiated_by`),
-  CONSTRAINT `time_documents_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
-  CONSTRAINT `time_documents_ibfk_2` FOREIGN KEY (`pay_period_id`) REFERENCES `pay_periods` (`id`),
-  CONSTRAINT `time_documents_ibfk_3` FOREIGN KEY (`initiated_by`) REFERENCES `employees` (`id`)
-) ENGINE=InnoDB;
 ;;
 ;; time_documents
 ;; modified to handle multiple jobs for an employee
@@ -399,7 +382,6 @@ CREATE TABLE `time_documents` (
 CREATE TABLE `time_blocks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `document_id` int(10) unsigned NOT NULL,
-  `job_id` int(10) unsigned NOT NULL,
   `hour_code_id` int(10) unsigned NOT NULL,
   `date` date NOT NULL,
   `begin_hour` int(11) DEFAULT NULL,
@@ -412,11 +394,9 @@ CREATE TABLE `time_blocks` (
   `inactive` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `document_id` (`document_id`),
-  KEY `job_id` (`job_id`),
   KEY `hour_code_id` (`hour_code_id`),
   KEY `date` (`date`),
   CONSTRAINT `time_blocks_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `time_documents` (`id`),
-  CONSTRAINT `time_blocks_ibfk_2` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`),
   CONSTRAINT `time_blocks_ibfk_3` FOREIGN KEY (`hour_code_id`) REFERENCES `hour_codes` (`id`)
 ) ENGINE=InnoDB;
 ;;
@@ -442,7 +422,6 @@ CREATE TABLE `time_blocks` (
 CREATE TABLE `time_block_logs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `document_id` int(10) unsigned NOT NULL,
-  `job_id` int(10) unsigned NOT NULL,
   `hour_code_id` int(10) unsigned NOT NULL,
   `date` date DEFAULT NULL,
   `begin_hour` int(11) DEFAULT NULL,
@@ -459,11 +438,9 @@ CREATE TABLE `time_block_logs` (
   `action_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `time_block_id` (`time_block_id`),
-  KEY `job_id` (`job_id`),
   KEY `hour_code_id` (`hour_code_id`),
   KEY `action_by_id` (`action_by_id`),
   CONSTRAINT `time_block_logs_ibfk_1` FOREIGN KEY (`time_block_id`) REFERENCES `time_blocks` (`id`),
-  CONSTRAINT `time_block_logs_ibfk_2` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`),
   CONSTRAINT `time_block_logs_ibfk_3` FOREIGN KEY (`hour_code_id`) REFERENCES `hour_codes` (`id`),
   CONSTRAINT `time_block_logs_ibfk_4` FOREIGN KEY (`action_by_id`) REFERENCES `employees` (`id`)
 ) ENGINE=InnoDB;
@@ -595,4 +572,69 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;; update positions set description=name where description is null;
 ;; update positions set alias=name where alias ='';
 ;;
+
+;;
+;; ====================================================
+;;
+;; Leave management tables
+;;
+;; leave_documents table
+;;
+CREATE TABLE leave_documents (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  employee_id int(10) unsigned NOT NULL,
+  pay_period_id int(10) unsigned NOT NULL,
+	job_id int(10) unsigned not null,
+  initiated datetime NOT NULL,
+  initiated_by int(10) unsigned NOT NULL,
+  PRIMARY KEY (id),
+	foreign key(job_id) references jobs(id),
+ 	FOREIGN KEY (employee_id) REFERENCES employees (id),
+  FOREIGN KEY (pay_period_id) REFERENCES pay_periods (id),
+  FOREIGN KEY (initiated_by) REFERENCES employees (id),	
+  UNIQUE KEY emp_pay_period_job_u (employee_id,pay_period_id, job_id)
+) ENGINE=InnoDB;
+;;
+;;
+;; leave_blocks
+;;
+CREATE TABLE leave_blocks (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  document_id int(10) unsigned NOT NULL,
+  hour_code_id int(10) unsigned NOT NULL,
+  date date NOT NULL,
+  hours decimal(5,2),
+  request_date date,
+	request_approval char(1),
+	action_status  enum('Approved','Denied'),
+	action_by int unsigned,
+	action_date date,
+  inactive char(1),
+  PRIMARY KEY (`id`),
+	foreign key(document_id) references leave_documents(id),
+	foreign key(hour_code_id) references hour_codes(id),
+	foreign key(action_by) references employees(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE leave_block_logs (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  document_id int(10) unsigned NOT NULL,
+	block_id int(10) unsigned not null,
+  hour_code_id int(10) unsigned NOT NULL,
+  date date NOT NULL,
+  hours decimal(5,2),
+  request_date date,
+	request_approval char(1),
+	action_status  enum('Approved','Denied'),
+	action_by int unsigned,
+	action_date date,
+	change_type enum('Add','Update','Delete'),
+	change_time datetime,
+	change_by int unsigned,
+  PRIMARY KEY (`id`),
+	foreign key(document_id) references leave_documents(id),
+	foreign key(hour_code_id) references hour_codes(id),
+	foreign key(change_by) references employees(id),
+  foreign key(action_by) references employees(id)			
+) ENGINE=InnoDB;
 

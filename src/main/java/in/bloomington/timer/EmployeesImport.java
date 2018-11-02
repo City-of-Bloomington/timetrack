@@ -389,6 +389,8 @@ public class EmployeesImport{
 										String approve_role_id="3", payroll_role_id="4";
 										String group_id="", role_id="", emp_id="";
 										String approver_id="", payroll_id="";
+										List<String> approver_ids = new ArrayList<>();
+										List<String> payroll_ids = new ArrayList<>();
 										if(str.equals("") || str2.equals("") || str3.equals("")){
 												errors += "Error setting group manager "+str;
 										}
@@ -399,49 +401,77 @@ public class EmployeesImport{
 												else{
 														errors +=" Error manager group, group name does not exist "+str;
 												}
-												if(emps.containsKey(str2)){
-														approver_id = emps.get(str2);
+												String[] str2Arr = new String[1];
+												if(str2.indexOf(",") > 0){
+														str2Arr = str2.split(",");
 												}
 												else{
-														Employee empp = new Employee();
-														empp.setUsername(str2);
-														back = empp.doSelect();
-														if(back.equals("")){
-																approver_id = empp.getId();
-																emps.put(str2, empp.getId());
+														str2Arr[0] = str2;
+												}
+												for(String stt:str2Arr){
+														if(emps.containsKey(stt)){
+																approver_id = emps.get(stt);
+																approver_ids.add(approver_id);
 														}
 														else{
-																errors +=" Error group approver not set properly "+str2;
+																Employee empp = new Employee();
+																empp.setUsername(stt);
+																back = empp.doSelect();
+																if(back.equals("")){
+																		approver_id = empp.getId();
+																		approver_ids.add(approver_id);
+																		emps.put(stt, empp.getId());
+																}
+																else{
+																		errors +=" Error group approver not set properly "+str2;
+																}
 														}
 												}
-												if(emps.containsKey(str3)){
-														payroll_id = emps.get(str3);
+												String[] str3Arr = new String[1];
+												if(str3.indexOf(",") > 0){
+														str3Arr = str3.split(",");
 												}
 												else{
-														Employee empp = new Employee();
-														empp.setUsername(str3);
-														back = empp.doSelect();
-														if(back.equals("")){
-																payroll_id = empp.getId();
-																emps.put(str3, empp.getId());
-														}														
-														errors +=" Error group payroll username not set properly "+str3;
+														str3Arr[0] = str3;
+												}
+												for(String stt2:str3Arr){
+														if(emps.containsKey(stt2)){
+																payroll_id = emps.get(stt2);
+																payroll_ids.add(payroll_id);
+														}
+														else{
+																Employee empp = new Employee();
+																empp.setUsername(stt2);
+																back = empp.doSelect();
+																if(back.equals("")){
+																		payroll_id = empp.getId();
+																		payroll_ids.add(payroll_id);
+																		emps.put(stt2, empp.getId());
+																}														
+																errors +=" Error group payroll username not set properly "+str3;
+														}
 												}
 												if(errors.equals("")){
-														GroupManager gm = new GroupManager();
-														gm.setGroup_id(group_id);
-														gm.setEmployee_id(approver_id);
-														gm.setWf_node_id(approve_role_id);
-														gm.setStart_date("07/01/2017");
-														str = gm.doSave();
-														if(!str.equals("")) errors += str;
-														gm = new GroupManager();
-														gm.setGroup_id(group_id);
-														gm.setEmployee_id(payroll_id);
-														gm.setWf_node_id(payroll_role_id);
-														gm.setStart_date("07/01/2017");
-														str = gm.doSave();
-														if(!str.equals("")) errors += str;														
+														GroupManager gm = null;
+														
+														for(String ap_id:approver_ids){
+																gm = new GroupManager();
+																gm.setGroup_id(group_id);
+																gm.setEmployee_id(ap_id);
+																gm.setWf_node_id(approve_role_id);
+																gm.setStart_date("07/01/2017");
+																str = gm.doSave();
+																if(!str.equals("")) errors += str;
+														}
+														for(String rol_id:payroll_ids){
+																gm = new GroupManager();
+																gm.setGroup_id(group_id);
+																gm.setEmployee_id(rol_id);
+																gm.setWf_node_id(payroll_role_id);
+																gm.setStart_date("07/01/2017");
+																str = gm.doSave();
+																if(!str.equals("")) errors += str;
+														}
 												}
 										}
 								}
