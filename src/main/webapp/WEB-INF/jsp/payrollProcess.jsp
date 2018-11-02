@@ -163,9 +163,11 @@
 			</s:iterator>
 		</s:if>
 
-		<s:if test="isUserCurrentEmployee()">
-			<s:submit name="action" type="button" value="Payroll Approve" class="button"/>
-		</s:if>
+		<div class="approval-button-row">
+			<s:if test="isUserCurrentEmployee()">
+				<s:submit name="action" type="button" value="Payroll Approve" class="button"/>
+			</s:if>
+		</div>
 	</s:if>
 </s:form>
 <%@ include file="footer.jsp" %>
