@@ -26,6 +26,26 @@
     }
   }
 
+  ul {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 !important;
+    border: none;
+    background: red;
+    border-radius: 0;
+
+    li {
+      display: flex;
+      position: relative;
+      padding: $alert-padding;
+      margin: $alert-margin;
+      border: $alert-border;
+      background: $alert-background-color;
+      border-radius:$alert-border-radius;
+      color: $alert-text-color;
+    }
+  }
+
   &.strut-action {
     padding: 0;
     margin: 0 0 20px 0;
@@ -33,25 +53,50 @@
     background: transparent;
     border-radius: 0;
 
+    &.error {
+      ul {
+        li {
+          border: $alert-border;
+          background: $alert-background-color;
+          color: $alert-text-color;
+        }
+      }
+    }
+
+    &.messages {
+      ul {
+        li {
+          background: $cob-blue;
+          color: white !important;
+        }
+      }
+    }
+
     ul {
       width: 100%;
       margin: 0 auto;
-      width: calc(100% - 8px);
-      min-width: calc(100% - 8px);
       padding: 0;
       border: none;
       background: transparent;
       border-radius: 0;
 
       li {
+        &:first-of-type {
+          margin: 10px 0 5px 0;
+        }
+
+        &:last-of-type {
+          margin: 5px 0 10px 0;
+        }
+
         display: flex;
         position: relative;
         padding: $alert-padding;
         margin: $alert-margin;
-        border: $alert-border;
-        background: $alert-background-color;
+
+
         border-radius:$alert-border-radius;
-        color: $alert-text-color;
+
       }
     }
   }
