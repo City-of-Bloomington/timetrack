@@ -30,19 +30,26 @@
 
 				<s:if test="document.hasLastWorkflow()" >
 				  <s:if test="document.lastWorkflow.canSubmit()">
-						<s:form action="timeAction" id="form_id" class="timesheet-submit" method="post" >
-				      <input type="hidden" name="source" value="timeDetails" />
-				      <s:hidden name="document_id" value="%{document.id}" />
-				      <s:hidden name="workflow_id" value="%{document.lastWorkflow.next_workflow_id}" />
-				      <s:submit
-				      	 name="action"
-				      	 type="submit"
-				      	 class="button"
-				      	 value="Submit for Approval"
+						<s:if test="isUserCurrentEmployee() || user.canApprove() || user.canProcess()">
+							<s:form action="timeAction" id="form_id" class="timesheet-submit" method="post" >
+								<input type="hidden" name="source" value="timeDetails" />
+								<s:hidden name="document_id" value="%{document.id}" />
+								<s:hidden name="workflow_id" value="%{document.lastWorkflow.next_workflow_id}" />
+								<s:submit
+				      		name="action"
+				      		type="submit"
+				      		class="button"
+				      		value="Submit for Approval"
 				      	 data-week-one-total="%{document.week1Total}"
-				      	 data-week-two-total="%{document.week2Total}" />
-				    </s:form>
-				  </s:if>
+				      		data-week-two-total="%{document.week2Total}" />
+							</s:form>
+						</s:if>
+						<s:else>
+							<div>
+				  			<strong>&nbsp; Not submitted yet&nbsp;</strong>
+							</div>
+						</s:else>
+					</s:if>
 				  <s:else>
 				  <div class="submitted-on">
 				  	<strong>Submitted on:&nbsp;<s:property value="document.submitTimeAction.action_time" /></strong>
@@ -50,7 +57,6 @@
 					</s:else>
 				</s:if>
 			</div>
-
 			<s:set var="week1DateRange" value="payPeriod.week1DateRange" />
 			<s:set var="week2DateRange" value="payPeriod.week2DateRange" />
 

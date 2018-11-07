@@ -237,7 +237,7 @@ public class MpoReport{
 						}
 				}
 				String qq = "select "+
-						" concat_ws(' ',u.first_name,u.last_name) name,"+
+						" concat_ws(' ',e.first_name,e.last_name) name,"+
 						" e.employee_number empnum,"+
 						" c.description code, "+												
 						" sum(t.hours) "+
@@ -247,7 +247,6 @@ public class MpoReport{
 						" join pay_periods p on p.id=d.pay_period_id "+
 						" join department_employees de on de.employee_id=d.employee_id "+
 						" join employees e on d.employee_id=e.id "+
-						" join users u on e.user_id=u.id "+
 						" where de.department_id = ? and "+
 						" p.start_date >= ? and p.end_date <= ? ";
 				if(!code2.equals("")){

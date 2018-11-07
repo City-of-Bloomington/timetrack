@@ -150,7 +150,7 @@ public class WeekSplit{
 						//
 						if(code.indexOf("ONCALL") > -1){ //oncall35: one time = $35 only
 								hours = 1.0f;
-								non_reg_hrs += hours;
+								// non_reg_hrs += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}
@@ -200,9 +200,15 @@ public class WeekSplit{
 				}
 				else{ // non regular such On Call, or CO Call Out
 						//
-						if(code.indexOf("ONCALL") > -1 || // one time = $35 only
-							 code.indexOf("CO") > -1){ // call out (if < 3 ==> 3)
-								non_reg_hrs += hours; // hours are taken care off in timeblock
+						if(code.indexOf("ONCALL") > -1){
+								// hours do not count
+								// non_reg_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}
+						}						
+						else if(code.indexOf("CO") > -1){ // call out (if < 3 ==> 3)
+								non_reg_hrs += hours;// hours are taken care off in timeblock
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}

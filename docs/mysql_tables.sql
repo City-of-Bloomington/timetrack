@@ -489,7 +489,7 @@ insert into workflow_nodes values( 1,'Initiated','Document first initiated for d
 (2,'Submit for Approval','Submit timesheet for approval',            NULL          ,'Routed for Approval',NULL),     
 (  3 ,'Approve','manager first step approve','y',             'Approved', NULL     ),
 (  4 , 'Payroll Approve','final director approve',                  'y',  'Payroll Approved',  NULL     ),
-(  5,'Data Entry','Data entry for other employees','y'              Data entered        | NULL     ),
+(  5,'Time Maintain','Time data maintainace for other employees','y','Time Maintained', NULL),
 (  6, 'Review','Can review data entry', 'y', 'Reviewed',           NULL); 
 ;;
 ;; workflows data

@@ -31,8 +31,8 @@
     <s:if test="#session != null && #session.user != null">
       <a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
 
-      <s:if test="user.canDataEntry()">
-        <a href="<s:property value='#application.url'/>dataEntry.action">Data Entry</a>
+      <s:if test="user.canMaintain()">
+        <a href="<s:property value='#application.url'/>dataEntry.action">Time Maintenance</a>
       </s:if>
 
       <s:if test="user.canReview()">

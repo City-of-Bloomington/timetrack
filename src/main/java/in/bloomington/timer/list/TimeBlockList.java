@@ -437,7 +437,7 @@ public class TimeBlockList{
 								hr_code += ": "+hr_code_desc;
 								addToHourCodeTotals(order_id, hr_code_id, hr_code, hrs);
 								total_hours += hrs;
-								addToDaily(job_name, order_id, hrs);
+								addToDaily(job_name, order_id, hrs, hr_code);
 						}
 				}
 				catch(Exception ex){
@@ -606,7 +606,7 @@ public class TimeBlockList{
 						holidays = hl;
 				}
 		}
-		void addToDaily(String job_name, int order_id, double hrs){
+		void addToDaily(String job_name, int order_id, double hrs, String hr_code){
 				double total = 0.;
 				if(daily.containsKey(job_name)){
 						Map<Integer, Double> map = daily.get(job_name);
@@ -616,15 +616,17 @@ public class TimeBlockList{
 								total = map.get(order_id);
 								total += hrs;
 								double week_total = 0;
-								if(order_id < 7){
-										week_total = map.get(7)+hrs; // total week1
-										map.put(7, week_total);
-										week1Total = week_total;
-								}
-								else{
-										week_total = map.get(15)+hrs; // total week2
-										map.put(15, week_total);
-										week2Total = week_total;
+								if(hr_code.indexOf("ONCALL") == -1){
+										if(order_id < 7){
+												week_total = map.get(7)+hrs; // total week1
+												map.put(7, week_total);
+												week1Total = week_total;
+										}
+										else{
+												week_total = map.get(15)+hrs; // total week2
+												map.put(15, week_total);
+												week2Total = week_total;
+										}
 								}
 						}
 						map.put(order_id, total);

@@ -72,7 +72,7 @@ public class DepartmentList{
 					Utilities/Stormwater    58
 					Utilities/Transmission & Distribution    59
 					Utilities/Utility Service Board    60
-				
+				  42,43,44,46,47,48,49,50,53,55,56,57,58,59,60
 		*/
 		List<Department> departments = null;
 		

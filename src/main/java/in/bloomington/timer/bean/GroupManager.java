@@ -97,10 +97,10 @@ public class GroupManager implements Serializable{
     public boolean isActive(){
 				return inactive.equals("");
     }
-		public boolean canEnterData(){
+		public boolean canTimeMaintain(){
 				getNode();
 				if(node != null){
-						return node.getName().startsWith("Data");
+						return node.getName().startsWith("Time");
 				}
 				return false;
 		}

@@ -175,8 +175,10 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				return employee != null;
 		}
 		public boolean isUserCurrentEmployee(){
-				if(user != null)
+				if(user != null){
+						getEmployee();
 						return employee_id.equals(user.getId());
+				}
 				return false;
 		}
 		// to change proxy employee back to main user

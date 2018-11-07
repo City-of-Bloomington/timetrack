@@ -3,6 +3,9 @@
 <s:form action="jobTask" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:if test="jobTask.id == ''">
+		<s:elseif test="!jobTask.employee.hasMultipleGroups() && jobTask.employee.group_id !='' ">
+			<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
+		</s:elseif>
 		<h1>New job</h1>
 	</s:if>
 	<s:else>
@@ -15,16 +18,29 @@
 		<s:if test="jobTask.group_id != ''">
 			<s:hidden name="jobTask.group_id" value="%{jobTask.group_id}" />
 		</s:if>
+		<s:elseif test="jobTask.employee.group_id !=''">
+			<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
+		</s:elseif>
 	</s:if>
   <%@ include file="strutMessages.jsp" %>
 
 	<div class="width-one-half">
+		
 		<s:if test="jobTask.id != ''">
 			<div class="form-group">
 				<label>ID</label>
 				<s:property value="jobTask.id" />
 			</div>
 		</s:if>
+		<div class="form-group">
+			<label>Employee</label>
+			<s:if test="jobTask.employee_id == ''">
+				<s:textfield name="jobTask.name" value="" size="30" id="employee_name" />Employee ID <s:textfield name="jobTask.employee_id" value="%{jobTask.employee_id}" size="10" id="employee_id" />
+			</s:if>
+			<s:else>
+				<a href="<s:property value='#application.url' />employee.action?id=<s:property value='%{jobTask.employee_id}' />"> <s:property value="%{jobTask.employee}" /></a>
+			</s:else>
+		</div>
 
 		<div class="form-group">
 			<label>Position</label>
@@ -37,20 +53,14 @@
 		</div>
 
 		<div class="form-group">
-			<label>Employee</label>
-			<s:if test="jobTask.employee_id == ''">
-				<s:textfield name="jobTask.name" value="" size="30" id="employee_name" />Employee ID <s:textfield name="jobTask.employee_id" value="%{jobTask.employee_id}" size="10" id="employee_id" />
-			</s:if>
-			<s:else>
-				<a href="<s:property value='#application.url' />employee.action?id=<s:property value='%{jobTask.employee_id}' />"> <s:property value="%{jobTask.employee}" /></a>
-			</s:else>
-		</div>
-		<div class="form-group">
 			<label>Group</label>
 			<s:if test="jobTask.hasNoGroup()">			
 				<s:if test="jobTask.employee.hasMultipleGroups()">
 					<s:select name="jobTask.group_id" value="%{jobTask.group_id}" list="jobTask.employee.groups"  listKey="id" listValue="name" headerKey="-1" headerValue="Pick a group" />
 				</s:if>
+				<s:else>
+					<s:property value="%{jobTask.group}" />
+				</s:else>				
 			</s:if>
 			<s:else>
 				<s:property value="%{jobTask.group}" />

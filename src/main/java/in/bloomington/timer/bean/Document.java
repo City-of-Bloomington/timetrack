@@ -858,6 +858,7 @@ public class Document{
 		private void checkWeekWarnings(Map<String, Double> hourCodeWeek,
 																			double weekTotal
 																			){
+				getJob();
 				for(String key:warningMap.keySet()){
 						if(hourCodeWeek.containsKey(key)){
 								AccrualWarning acc_warn = warningMap.get(key);
@@ -876,8 +877,15 @@ public class Document{
 								}
 								double d_dif = weekTotal - dbl_used; // 45.27 - 8.27
 								double d_need = 0;
-								if(d_dif < 40)
-										d_need = 40. - d_dif;   // 40 - 37 = 3
+								if(job != null){
+										if(d_dif < job.getWeekly_regular_hours())
+												d_need = job.getWeekly_regular_hours() - d_dif;   // 40 - 37 = 3
+								}
+								else{
+										
+										if(d_dif < 40)
+												d_need = 40. - d_dif;   // 40 - 37 = 3
+								}
 								if(d_need > 0){
 										if(acc_warn.require_step()){
 												if(d_need % acc_warn.getStep_hrs() > 0.01){

@@ -32,6 +32,7 @@ public class ApproveAction extends TopAction{
 		String workflow_id = ""; 
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
 				nextPayPeriod=null, payPeriod = null;
+		Group group = null;
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
@@ -221,12 +222,31 @@ public class ApproveAction extends TopAction{
 				}
 				return nextPayPeriod;
 		}
-
+		public Group getGroup(){
+				getGroups();
+				if(hasGroups()){
+						if(group == null && !group_id.equals("")){
+								Group one = new Group(group_id);
+								String back = one.doSelect();
+								if(back.equals("")){
+										group = one;
+								}
+						}
+				}
+				return group;
+		}
 		public boolean hasMoreThanOneGroup(){
 				return isGroupManager() && groups != null && groups.size() > 1;
 		}
 		public boolean hasGroups(){
+				if(groups != null){
+						if(group_id.equals("")){
+								group = groups.get(0);
+								group_id = group.getId();
+						}
+				}
 				return isGroupManager() && groups != null && groups.size() > 0;
+				
 		}
 		public List<Group> getGroups(){
 				return groups;

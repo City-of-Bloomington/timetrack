@@ -414,11 +414,14 @@ public class Employee implements Serializable{
 				}
 				return reviewers != null && reviewers.size() > 0;
 		}
-		public boolean canDataEntry(){
+		/**
+		 * time maintainer group role
+		 */
+		public boolean canMaintain(){
 				if(enterors == null){
 						GroupManagerList gml = new GroupManagerList(id);
 						gml.setActiveOnly();
-						gml.setDataEntryOnly();
+						gml.setTimeMaintainerOnly();
 						String back = gml.find();
 						if(back.equals("")){
 								List<GroupManager> ones = gml.getManagers();

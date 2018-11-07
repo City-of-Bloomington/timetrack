@@ -23,7 +23,7 @@ public class GroupManagerList{
 		String execludeManager_id = ""; // employee_id
 		boolean active_only = false,approversOnly=false,
 				processorsOnly=false,
-				reviewersOnly=false, dataEntryOnly = false;
+				reviewersOnly=false, timeMaintainOnly = false;
 		List<GroupManager> managers = null;
     public GroupManagerList(){
     }
@@ -68,8 +68,8 @@ public class GroupManagerList{
 		public void setProcessorsOnly(){
 				processorsOnly = true;
 		}
-		public void setDataEntryOnly(){
-				dataEntryOnly = true;
+		public void setTimeMaintainerOnly(){
+				timeMaintainOnly = true;
 		}
 		public void execludeManager_id(String val){
 				if(val != null)
@@ -127,9 +127,9 @@ public class GroupManagerList{
 						if(!qw.equals("")) qw += " and ";						
 						qw += " wn.name like 'Review'";
 				}
-				else if(dataEntryOnly){
+				else if(timeMaintainOnly){
 						if(!qw.equals("")) qw += " and ";						
-						qw += " wn.name like 'Data%'";
+						qw += " wn.name like 'Time%'";
 				}				
 				if(active_only){
 						if(!qw.equals("")) qw += " and ";

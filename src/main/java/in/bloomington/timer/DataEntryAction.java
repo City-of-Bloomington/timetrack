@@ -25,17 +25,21 @@ public class DataEntryAction extends TopAction{
 		List<GroupManager> managers = null;
 		String groupsTitle = "Manage Group(s)";
 		String pay_period_id="", group_id="";
-		String workflow_id = ""; 
-		PayPeriod currentPayPeriod=null;
+		String workflow_id = "";
+		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
+				nextPayPeriod=null, payPeriod = null;		
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
+		Group group = null;
 		String[] document_ids = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
+				clearAll();
+				resetEmployee();
 				if(!back.equals("")){
-						return "error";
+						addError(back);
 				}
 				return ret;
 		}
@@ -73,7 +77,7 @@ public class DataEntryAction extends TopAction{
 				GroupManagerList gml = new GroupManagerList(employee_id);
 				getPay_period_id();
 				gml.setPay_period_id(pay_period_id);
-				gml.setDataEntryOnly();
+				gml.setTimeMaintainerOnly();
 				if(!group_id.equals("")){
 						gml.setGroup_id(group_id);
 				}
@@ -87,7 +91,8 @@ public class DataEntryAction extends TopAction{
 										if(one2 != null){
 												if(groups == null)
 														groups = new ArrayList<>();
-												groups.add(one2);
+												if(!groups.contains(one2))
+														groups.add(one2);
 										}
 								}
 						}
@@ -106,6 +111,7 @@ public class DataEntryAction extends TopAction{
 										currentPayPeriod = ones.get(0);
 										if(pay_period_id.equals("")){
 												pay_period_id = currentPayPeriod.getId();
+												payPeriod = currentPayPeriod;
 										}
 								}
 						}
@@ -113,11 +119,33 @@ public class DataEntryAction extends TopAction{
 				return currentPayPeriod;
 		}				
 		public boolean hasGroups(){
+				if(groups != null){
+						if(group_id.equals("")){
+								group = groups.get(0);
+								group_id = group.getId();
+						}
+				}
 				return isGroupManager() && groups != null && groups.size() > 0;
 		}
 		public List<Group> getGroups(){
 				return groups;
 		}
+		public Group getGroup(){
+				getGroups();
+				if(hasGroups()){
+						if(group == null && !group_id.equals("")){
+								Group one = new Group(group_id);
+								String back = one.doSelect();
+								if(back.equals("")){
+										group = one;
+								}
+						}
+				}
+				return group;
+		}
+		public boolean hasMoreThanOneGroup(){
+				return isGroupManager() && groups != null && groups.size() > 1;
+		}		
 		public String getPay_period_id(){
 				if(pay_period_id.equals("")){
 						PayPeriodList ppl = new PayPeriodList();
@@ -126,14 +154,28 @@ public class DataEntryAction extends TopAction{
 						if(back.equals("")){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
-										PayPeriod  one = ones.get(0);
-										pay_period_id = one.getId();
+										payPeriod = ones.get(0);
+										pay_period_id = payPeriod.getId();
 								}
 						}						
 				}
 				return pay_period_id;
 		}
+		public PayPeriod getPayPeriod(){
+				if(payPeriod == null){
+						if(!pay_period_id.equals("")){
+								PayPeriod one = new PayPeriod(pay_period_id);
+								String back = one.doSelect();
+								if(back.equals(""))
+										payPeriod = one;
+						}
+						else {
+								getCurrentPayPeriod();
+						}
+				}
+				return payPeriod;
 
+		}
 		public List<PayPeriod> getPayPeriods(){
 				if(payPeriods == null){
 						PayPeriodList tl = new PayPeriodList();
@@ -149,6 +191,40 @@ public class DataEntryAction extends TopAction{
 				return payPeriods;
 		}
 		
+		public PayPeriod getPreviousPayPeriod(){
+				//
+				if(previousPayPeriod == null){
+						if(pay_period_id.equals(""))
+								getPay_period_id();
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.setPreviousTo(pay_period_id); // relative to currently used
+						String back = ppl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = ppl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										previousPayPeriod = ones.get(0);
+								}
+						}
+				}
+				return previousPayPeriod;
+		}
+		public PayPeriod getNextPayPeriod(){
+				//
+				if(nextPayPeriod == null){
+						if(pay_period_id.equals(""))
+								getPay_period_id();						
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.setNextTo(pay_period_id); 						
+						String back = ppl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = ppl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										nextPayPeriod = ones.get(0);
+								}
+						}
+				}
+				return nextPayPeriod;
+		}		
 		public boolean hasDocuments(){
 				getDocuments();
 				return documents != null && documents.size() > 0;

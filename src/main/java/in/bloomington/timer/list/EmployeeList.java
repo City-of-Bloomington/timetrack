@@ -215,8 +215,11 @@ public class EmployeeList extends CommonInc{
 								qq += ", department_employees de ";
 								if(!qw.equals("")) qw += " and ";
 								qw += " de.employee_id=e.id and ";
+								//
+								// city directors = 18, human resource = 4
+								//
 								if(includeAllDirectors){
-										qw += " (de.department_id in(?,18) or de.department2_id in (?,18))";// all city directors dept=18								
+										qw += " (de.department_id in(?,4,18) or de.department2_id in (?,18))";// all city directors dept=18								
 								}
 								else{
 										qw += " (de.department_id = ? or de.department2_id=?)";
