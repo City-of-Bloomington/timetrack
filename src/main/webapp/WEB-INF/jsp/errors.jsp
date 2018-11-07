@@ -1,5 +1,7 @@
-<s:iterator var="one" value="#errors">
-	<ul class="error">
-    <li><strong>Error!</strong> <s:property /></li>
+<div class="alert strut-action error">
+  <ul>
+    <s:iterator var="one" value="#errors">
+      <li><strong>Error!</strong> <s:property /></li>
+    </s:iterator>
   </ul>
-</s:iterator>
+</div>

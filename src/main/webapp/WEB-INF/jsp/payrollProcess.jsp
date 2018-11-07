@@ -7,16 +7,14 @@
 
 	<s:if test="hasErrors()">
 		<s:set var="errors" value="errors" />
-		<div class="errors">
-			<%@  include file="errors.jsp" %>
-		</div>
+		<%@ include file="errors.jsp" %>
 	</s:if>
+
 	<s:elseif test="hasMessages()">
 		<s:set var="messages" value="messages" />
-		<div class="welcome">
-			<%@  include file="messages.jsp" %>
-		</div>
+		<%@ include file="messages.jsp" %>
 	</s:elseif>
+
 	<s:if test="hasGroups()">
 		<div class="calendar-header-controls">
 			<div class="pay-period">
