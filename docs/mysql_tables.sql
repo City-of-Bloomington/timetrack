@@ -31,7 +31,7 @@ CREATE TABLE `departments` (
 ;;
  CREATE TABLE `employees` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(10) DEFAULT NULL,
+  `username` varchar(70) DEFAULT NULL,
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) NOT NULL,
   `id_code` varchar(10) DEFAULT NULL,
@@ -571,6 +571,8 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;; alter table positions add alias varchar(64) not null after name;
 ;; update positions set description=name where description is null;
 ;; update positions set alias=name where alias ='';
+;;
+;; alter table employees modify username varchar(70);
 ;;
 
 ;;

@@ -36,7 +36,7 @@ public class TimeBlock extends Block{
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
 		Set<String> document_ids = null; // needed for employee with multiple jobs
-		String start_date = "", end_date="";
+		String start_date = "", end_date="", job_name="";
 		String timeInfo = "";
 		// for clock_in
 		String errors = "";
@@ -66,19 +66,23 @@ public class TimeBlock extends Block{
 							 String val4,
 							 String val5,
 							 int val6,
+							 
 							 int val7,
 							 int val8,
 							 int val9,
 							 double val10,
 							 String val11,
+							 
 							 String val12,
 							 boolean val13,
 							 String val14,
 							 boolean val15,
 							 int val16,
+							 
 							 String val17,
 							 String val18,
-							 String val19
+							 String val19,
+							 String val20
 							 ){
 				super(val, val2,
 							val4, val5, val6, val7, val8, val9, val10,
@@ -88,6 +92,7 @@ public class TimeBlock extends Block{
 				setHour_code(val17);
 				setCode_desc(val18);
 				setNw_code(val19);
+				setJob_name(val20);
 		}
     public TimeBlock(String val){
 				super(val);
@@ -115,6 +120,9 @@ public class TimeBlock extends Block{
 		public String getNw_code(){
 				return nw_code;
 		}
+		public String getJob_name(){
+				return job_name;
+		}		
 		public String getStart_date(){
 				if(start_date.equals("")){
 						start_date = date;
@@ -158,6 +166,10 @@ public class TimeBlock extends Block{
 				if(val != null)
 						nw_code = val;
 		}
+		public void setJob_name(String val){
+				if(val != null)
+						job_name = val;
+		}		
 		public void setStart_date(String val){
 				if(val != null)
 						start_date = val;

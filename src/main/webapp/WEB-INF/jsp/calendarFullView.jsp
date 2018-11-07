@@ -52,6 +52,7 @@
           <div class="data"
                data-block-id="<s:property value='id' />"
                data-date="<s:property value='date' />"
+						   data-job-name="<s:property value='job_name' />"						
                data-time-out="<s:property value='Time_out' />">
             <s:if test="hasNextLine()">
               <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>

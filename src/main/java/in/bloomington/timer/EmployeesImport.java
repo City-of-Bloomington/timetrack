@@ -53,7 +53,7 @@ public class EmployeesImport{
 		static EnvBean bean = null;		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		Map<String, String> emps = new HashMap<>(); // username, id
-		Map<String, String> depts = new HashMap<>(); // name, id
+		Map<String, Department> depts = new HashMap<>(); // name, id
 		Map<String, String> groups = new HashMap<>(); // name, id
 		Map<String, String> positions = new HashMap<>(); // name, id
 		Map<String, String> salaryGrps = new HashMap<>(); // salary groups
@@ -155,7 +155,7 @@ public class EmployeesImport{
 														dept_refs += str;
 														str = dept.doSave();
 														if(str.equals("")){
-																depts.put(dept.getName(), dept.getId());
+																depts.put(dept.getName(), dept);
 														}
 														else{
 																errors += str;
@@ -163,13 +163,17 @@ public class EmployeesImport{
 												}
 												else{ //we already have the dept, we just need the
 														// the dept ref to get the profiles
-														str = record.get(3);
+														Department dept = depts.get(str);
+														str = dept.getRef_id();
+														if(str == null || str.equals(""))
+																str = record.get(3);
 														if(!dept_refs.equals("")){
 																dept_refs +=",";
 														}
 														dept_refs += str;														
 												}
 										}
+										System.err.println("dept refs "+dept_refs);
 								}
 								else if(str != null && str.trim().equals("Group")){
 										// after departments is done
@@ -179,7 +183,10 @@ public class EmployeesImport{
 										if(str != null && !str.equals("") &&
 											 str2 != null && !str2.equals("")){
 												if(depts.containsKey(str2)){
-														String dept_id = depts.get(str2);
+														String dept_id = "";
+														Department dept = depts.get(str2);
+														if(dept != null)
+																dept_id = dept.getId();
 														boolean groupFound = false;
 														if(deptGroups.containsKey(str2)){
 																List<Group> ones = deptGroups.get(str2);
@@ -272,6 +279,7 @@ public class EmployeesImport{
 																		if(ldapEmps != null && ldapEmps.size() > 0){
 																				Employee ldapEmp = ldapEmps.get(0);
 																				emp.setId_code(ldapEmp.getId_code());
+																				emp.setEmail(ldapEmp.getEmail());
 																		}
 																}
 														}
@@ -283,7 +291,9 @@ public class EmployeesImport{
 												if(str != null && !str.equals("")){
 														dept_name = str;
 														if(depts.containsKey(str)){
-																dept_id = depts.get(str);
+																Department dept = depts.get(str);
+																if(dept != null)
+																		dept_id = dept.getId();
 																emp.setDepartment_id(dept_id);
 														}
 														else {
@@ -532,7 +542,7 @@ public class EmployeesImport{
 				if(back.equals("")){
 						List<Department> dds = dl.getDepartments();
 						for(Department one:dds){
-								depts.put(one.getName(), one.getId());
+								depts.put(one.getName(), one);
 								if(one.hasGroups()){
 										deptGroups.put(one.getName(), one.getGroups());
 								}

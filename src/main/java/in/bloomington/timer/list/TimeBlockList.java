@@ -411,19 +411,23 @@ public class TimeBlockList{
 																			rs.getString(3),
 																			rs.getString(4),
 																			rs.getInt(5),
+																			
 																			rs.getInt(6),
 																			rs.getInt(7),
 																			rs.getInt(8),
 																			hrs,
 																			rs.getString(10),
+																			
 																			rs.getString(11),
 																			isHoliday,
 																			holidayName,
 																			rs.getString(12) != null,
 																			rs.getInt(13),
+																			
 																			hr_code,
 																			rs.getString(15),
-																			rs.getString(16)
+																			rs.getString(16),  // 18
+																			job_name
 																			);
 										timeBlocks.add(one);
 										addToBlocks(order_id, one);										
