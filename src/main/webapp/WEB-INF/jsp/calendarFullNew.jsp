@@ -86,11 +86,11 @@
               <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>
             </s:if>
 
+
             <span><b><s:property value="timeInfo" /></b></span>
 
-            <s:if test="hasNextLine()">
-              <span><b><s:property value='job_name' /></b></span>
-            </s:if>
+            <span><s:property value='job_name' /></span>
+
 
             <a class="delete-time-confirm"
                tabindex="1"
