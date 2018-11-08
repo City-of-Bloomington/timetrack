@@ -26,6 +26,8 @@
 			<s:else>
 				Edit Time Block
 			</s:else>
+
+			<small>Date: <s:property value="timeBlock.date" /></small>
 		</h1>
 		<div class="alert"><p></p></div>
 		<s:if test="timeBlock.id == ''">
@@ -47,9 +49,6 @@
 
 			</div>
 		</s:if>
-		<s:else>
-			<small>Date: <s:property value="timeBlock.date" /></small>
-		</s:else>
 		<div class="form-group">
 			<label>Hour Code</label>
 			<s:if test="hasHourCodes()">
