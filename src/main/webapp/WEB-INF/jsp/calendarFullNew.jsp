@@ -79,12 +79,18 @@
                tabindex="1"
                data-block-id="<s:property value='id' />"
                data-date="<s:property value='date' />"
-						   data-job-name="<s:property value='job_name' />"						
+						   data-job-name="<s:property value='job_name' />"
                data-time-out="<s:property value='Time_out' />">
+
             <s:if test="hasNextLine()">
               <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>
             </s:if>
+
             <span><b><s:property value="timeInfo" /></b></span>
+
+            <s:if test="hasNextLine()">
+              <span><b>Job:<br></b> <s:property value='job_name' /></span>
+            </s:if>
 
             <a class="delete-time-confirm"
                tabindex="1"
