@@ -29,7 +29,25 @@
           //note: focus-within -- via https://caniuse.com/#feat=css-focus-within
           label {
             &:first-child {
-              color: $tb-form-form-group-hover-focus-label-first-child-color
+              color: $tb-form-form-group-hover-focus-label-first-child-color;
+            }
+          }
+
+          .date-range-picker {
+            label {
+              color: $form-label-text-color;
+            }
+
+            div {
+
+              &:hover,
+              &.active,
+              &:focus,
+              &:focus-within {
+                label {
+                  color: $tb-form-form-group-hover-focus-label-first-child-color;
+                }
+              }
             }
           }
         }

@@ -1,7 +1,7 @@
 <%@ include file="headerMin.jsp" %>
 <div class="time-block">
 	<s:form action="timeBlock" id="form_id" class="time-block-form" method="post">
-		<s:hidden id="document_id" name="timeBlock.document_id" value="%{timeBlock.document_id}" />		
+		<s:hidden id="document_id" name="timeBlock.document_id" value="%{timeBlock.document_id}" />
 		<s:if test="timeBlock.id == ''">
 			<input type="hidden" name="action" value="Save">
 		</s:if>
@@ -31,8 +31,20 @@
 		<s:if test="timeBlock.id == ''">
 			<div class="form-group">
 				<label>Date Range</label>
-				<s:textfield name="timeBlock.start_date" value="%{timeBlock.start_date}" placeholder="Start Date" maxlength="10" class="date" /> -
-				<s:textfield name="timeBlock.end_date" value="%{timeBlock.end_date}" placeholder="End Date" maxlength="10" class="date" />			
+
+				<div class="date-range-picker">
+					<div>
+						<label for="timeBlock.start_date">From</label>
+						<s:textfield name="timeBlock.start_date" type="date" value="%{timeBlock.start_date}" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="start" />
+					</div>
+
+					<div>
+						<label for="timeBlock.end_date">To</label>
+						<s:textfield name="timeBlock.end_date" type="date" value="%{timeBlock.end_date}" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="end" />
+					</div>
+				</div>
+
+
 			</div>
 		</s:if>
 		<s:else>
@@ -80,7 +92,7 @@
 				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" placeholder="(dd.dd)" />
 			</div>
 		</s:else>
-		
+
 		<s:if test="timeBlock.id == ''">
 			<div class="form-group">
 				<label>Include Weekend</label>
@@ -96,7 +108,7 @@
 		</s:else>
 		<a class="button" href="#" onclick="javascript:window.close('', '_blank', '')" >Cancel</a>
 		</div> -->
-	</s:form>			
+	</s:form>
 </div>
 
 <%@ include file="footer.jsp" %>

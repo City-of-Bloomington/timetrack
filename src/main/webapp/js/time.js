@@ -29,14 +29,6 @@ var icons = {
 //   setTimeout('setCurTime("'+id+'");','1000');
 //   return true;
 // };
-$(".date").datepicker({
-    nextText: "Next",
-    prevText:"Prev",
-    buttonText: "Pick Date",
-    showOn: "both",
-    navigationAsDateFormat: true,
-    buttonImage: "/timetrack/js/calendar.gif"
-});
 
 $("#selection_id").change(function() {
     $("#action2").val("refresh");

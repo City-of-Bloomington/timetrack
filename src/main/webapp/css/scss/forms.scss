@@ -44,4 +44,34 @@
       outline: $focus-outline-state;
     }
   }
+
+  .date-range-picker {
+    display: flex;
+
+    div {
+      // display: flex;
+      // align-items: center;
+
+      &:first-of-type {
+        margin: 0 40px 0 0;
+      }
+    }
+
+    label {
+      margin: 0 5px 0 0;
+
+      &:first-of-type {
+        min-width: auto !important;
+      }
+    }
+
+    input[type="date"] {
+      width: 145px !important;
+      padding: .35em 0 .35em .35em !important;
+
+      &::-webkit-datetime-edit {
+        font-size: 14px;
+      }
+    }
+  }
 }
