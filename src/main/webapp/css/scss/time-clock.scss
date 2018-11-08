@@ -145,4 +145,53 @@
       text-align: $tc-p-ip-text-align;
     }
   }
+
+  &.job-select {
+    .job-cards {
+      .card {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 23%;
+        margin: 20px 1% 20px 0;
+        height: 180px;
+        vertical-align: top;
+        font-size: 22px;
+        text-align: center;
+      }
+    }
+
+    label {
+      border: 1px solid rgba(red, .15);
+      box-sizing: border-box;
+      display: block;
+      height: 100%;
+      width: 100%;
+      padding: 10px 10px 30px 10px;
+      cursor: pointer;
+      opacity: .5;
+      transition: all .5s ease-in-out;
+
+      &:hover,
+      &:focus,
+      &:active {
+        border: 1px solid red;
+      }
+    }
+
+    input[type="radio"] {
+      background: green;
+      // opacity: 0;
+      // width: 0;
+      // height: 0;
+    }
+
+    input[type="radio"]:active ~ label {
+      opacity: 1;
+    }
+
+    input[type="radio"]:checked ~ label {
+      opacity: 1;
+      border: 1px solid red;
+    }
+  }
 }
