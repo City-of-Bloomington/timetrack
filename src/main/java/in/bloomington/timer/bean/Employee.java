@@ -41,6 +41,7 @@ public class Employee implements Serializable{
 		DepartmentEmployee departmentEmployee = null;
 		Department department = null;
 		GroupEmployee groupEmployee = null;
+		boolean receive_email = true;
 		//
 		// for a given selected job and pay_period_id we need to find
 		// salary group, hour codes
@@ -173,10 +174,11 @@ public class Employee implements Serializable{
 				return role;
     }
 		public String getEmail(){
-				if(email.equals("") && !username.equals("")){
-						email = username+CommonInc.emailStr;
-				}
+				
 				return email;
+		}
+		public boolean canReceiveEmail(){
+				return receive_email;
 		}
     //
     // setters
@@ -195,8 +197,11 @@ public class Employee implements Serializable{
 						employee_number = val.trim();
     }
     public void setUsername (String val){
-				if(val != null)
+				if(val != null){
 						username = val.trim();
+						if(username.indexOf(".") > 0)
+								receive_email = false;
+				}
     }
     public void setFirst_name (String val){
 				if(val != null)
@@ -210,10 +215,13 @@ public class Employee implements Serializable{
 		public void setFull_name(String val){
 
 		}
-		
+		// sometimes in AD email is set as N/A
     public void setEmail(String val){
-				if(val != null)
+				if(val != null && !val.equals("N/A")){
 						email = val.trim();
+				}
+				if(email.equals(""))
+						receive_email = false;
     }
     public void setRole (String val){
 				if(val != null && !val.equals("-1"))

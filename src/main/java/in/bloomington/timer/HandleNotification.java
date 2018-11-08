@@ -145,8 +145,10 @@ public class HandleNotification{
 				}
 				String bcc_str = "";
 				for(Employee one:emps){
-						if(!bcc_str.equals("")) bcc_str += ",";
-						bcc_str += one.getFull_name()+"<"+one.getEmail()+">";
+						if(one.canReceiveEmail()){
+								if(!bcc_str.equals("")) bcc_str += ",";
+								bcc_str += one.getFull_name()+"<"+one.getEmail()+">";
+						}
 				}
 				msg = compuseAndSend(bcc_str);
 				

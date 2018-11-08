@@ -340,8 +340,14 @@ public class InformAction extends TopAction{
 						String back = empl.find();
 						if(back.equals("")){
 								List<Employee> ones = empl.getEmployees();
-								if(ones != null && ones.size() > 0){
-										employees = ones;
+								if(employees == null)
+										employees = new ArrayList<>();
+								for(Employee one:ones){
+										if(one.canReceiveEmail()){
+												if(!employees.contains(one)){
+														employees.add(one);
+												}
+										}
 								}
 						}
 				}
