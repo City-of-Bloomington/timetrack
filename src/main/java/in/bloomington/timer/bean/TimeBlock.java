@@ -125,13 +125,13 @@ public class TimeBlock extends Block{
 		}		
 		public String getStart_date(){
 				if(start_date.equals("")){
-						start_date = date;
+						start_date = Helper.changeDateFormat(date);
 				}
 				return start_date;
 		}
 		public String getEnd_date(){
 				if(end_date.equals("")){
-						end_date = date;
+						end_date = Helper.changeDateFormat(date);
 				}				
 				return end_date;
 		}		
@@ -171,12 +171,16 @@ public class TimeBlock extends Block{
 						job_name = val;
 		}		
 		public void setStart_date(String val){
-				if(val != null)
-						start_date = val;
+				if(val != null){
+						if(val.indexOf("-") > 0){
+								start_date = Helper.changeDateFormat(val);
+						}
+				}
 		}
 		public void setEnd_date(String val){
-				if(val != null)
-						end_date = val;
+				if(val != null && val.indexOf("-") > 0){
+						end_date = Helper.changeDateFormat(val);
+				}
 		}		
 		public void setCode_desc(String val){
 				if(val != null)

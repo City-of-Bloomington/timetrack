@@ -33,6 +33,7 @@ public class EmployeeList extends CommonInc{
 		Set<String> group_id_set = new HashSet<>();
 		boolean active_only = false, inactive_only = false, hasEmployeeNumber=false;
 		boolean includeAllDirectors = false;
+		boolean used_time_track = false; // since last two weeks
 		List<Employee> employees = null;
 		List<Group> groups = null;
     //
@@ -153,6 +154,9 @@ public class EmployeeList extends CommonInc{
 		public void setHasEmployeeNumber(){
 				hasEmployeeNumber = true;
 		}
+		public void setUsedTimeTrack(){
+				used_time_track = true;
+		}
 		public List<Employee> getEmployees(){
 				return employees;
 		}
@@ -257,7 +261,12 @@ public class EmployeeList extends CommonInc{
 								qq += ", group_managers gm ";
 								if(!qw.equals("")) qw += " and ";
 								qw += " gm.employee_id=e.id and gm.group_id = ? ";
-						}				
+						}
+						if(used_time_track){
+								if(!qw.equals("")) qw += " and ";								
+								qw += " e.id in (select employee_id from time_documents where initiated > (NOW() - INTERVAL 14 DAY)) ";
+
+						}
 						if(active_only){
 								if(!qw.equals("")) qw += " and ";
 								qw += " e.inactive is null";

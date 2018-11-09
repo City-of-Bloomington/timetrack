@@ -223,6 +223,7 @@ public class ApproveAction extends TopAction{
 				return nextPayPeriod;
 		}
 		public Group getGroup(){
+				
 				getGroups();
 				if(hasGroups()){
 						if(group == null && !group_id.equals("")){
@@ -239,12 +240,14 @@ public class ApproveAction extends TopAction{
 				return isGroupManager() && groups != null && groups.size() > 1;
 		}
 		public boolean hasGroups(){
+				/*
 				if(groups != null){
 						if(group_id.equals("")){
 								group = groups.get(0);
 								group_id = group.getId();
 						}
 				}
+				*/
 				return isGroupManager() && groups != null && groups.size() > 0;
 				
 		}
@@ -395,9 +398,11 @@ public class ApproveAction extends TopAction{
 														if(notSubmittedEmps == null)
 																notSubmittedEmps = new ArrayList<>();
 														notSubmittedEmps.add(emp);
+														/*
 														if(noDocNorSubmitEmps == null)
 																noDocNorSubmitEmps = new ArrayList<>();
 														noDocNorSubmitEmps.add(emp);
+														*/
 												}
 										}
 								}

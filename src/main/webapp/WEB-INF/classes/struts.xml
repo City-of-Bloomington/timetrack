@@ -260,6 +260,13 @@
 			<result name="success">/WEB-INF/jsp/employee.jsp</result>
 			<result name="view">/WEB-INF/jsp/employeeView.jsp</result>			
 		</action>
+		<action name="activeEmployees" 
+						class="in.bloomington.timer.ActiveEmployeesAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/activeEmployees.jsp</result>		
+			<result name="error">/WEB-INF/jsp/activeEmployees.jsp</result>
+			<result name="success">/WEB-INF/jsp/activeEmployees.jsp</result>
+		</action>		
 		<action name="importEmployees" 
 						class="in.bloomington.timer.ImportEmployeeAction" 
 						method="execute">

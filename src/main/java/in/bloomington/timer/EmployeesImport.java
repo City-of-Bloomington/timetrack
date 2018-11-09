@@ -134,7 +134,7 @@ public class EmployeesImport{
 						FileReader fr = new FileReader(myFile);
 						Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(fr);
 						//
-						String str="", str2="", str3="";						
+						String str="", str2="", str3="", str4="";						
 						for (CSVRecord record : records) {
 								boolean emp_exist = false;
 								str = record.get(0);
@@ -396,11 +396,15 @@ public class EmployeesImport{
 										str = record.get(1); // group name
 										str2 = record.get(2); // approver username
 										str3 = record.get(3); // payroll approver username
+										str4 = record.get(4); // reviewers
 										String approve_role_id="3", payroll_role_id="4";
+										String review_role_id = "6";
 										String group_id="", role_id="", emp_id="";
 										String approver_id="", payroll_id="";
+										String reviewer_id="";
 										List<String> approver_ids = new ArrayList<>();
 										List<String> payroll_ids = new ArrayList<>();
+										List<String> reviewer_ids = new ArrayList<>();
 										if(str.equals("") || str2.equals("") || str3.equals("")){
 												errors += "Error setting group manager "+str;
 										}
@@ -461,6 +465,30 @@ public class EmployeesImport{
 																errors +=" Error group payroll username not set properly "+str3;
 														}
 												}
+												String[] str4Arr = new String[1];
+												if(str4.indexOf(",") > 0){
+														str4Arr = str4.split(",");
+												}
+												else{
+														str4Arr[0] = str4;
+												}
+												for(String stt4:str4Arr){
+														if(emps.containsKey(stt4)){
+																reviewer_id = emps.get(stt4);
+																reviewer_ids.add(reviewer_id);
+														}
+														else{
+																Employee empp = new Employee();
+																empp.setUsername(stt4);
+																back = empp.doSelect();
+																if(back.equals("")){
+																		reviewer_id = empp.getId();
+																		reviewer_ids.add(reviewer_id);
+																		emps.put(stt4, empp.getId());
+																}														
+																errors +=" Error group reviewer username not set properly "+str4;
+														}														
+												}
 												if(errors.equals("")){
 														GroupManager gm = null;
 														
@@ -481,6 +509,17 @@ public class EmployeesImport{
 																gm.setStart_date("07/01/2017");
 																str = gm.doSave();
 																if(!str.equals("")) errors += str;
+														}
+														if(reviewer_ids != null && reviewer_ids.size() > 0){
+																for(String rev_id:reviewer_ids){
+																		gm = new GroupManager();
+																		gm.setGroup_id(group_id);
+																		gm.setEmployee_id(rev_id);
+																		gm.setWf_node_id(review_role_id);
+																		gm.setStart_date("07/01/2017");
+																		str = gm.doSave();
+																		if(!str.equals("")) errors += str;
+																}
 														}
 												}
 										}

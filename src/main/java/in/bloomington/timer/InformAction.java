@@ -323,6 +323,10 @@ public class InformAction extends TopAction{
 										emp_arr = employee_ids.split("_");
 								else if(employee_ids.indexOf(",") > -1)
 										emp_arr = employee_ids.split(",");
+								else{
+										emp_arr = new String[1];
+										emp_arr[0] = employee_ids;
+								}
 						}catch(Exception ex){
 								System.err.println(ex);
 						}
@@ -336,16 +340,16 @@ public class InformAction extends TopAction{
 						EmployeeList empl = new EmployeeList();
 						if(!emp_set.equals("")){
 								empl.setEmployee_ids(emp_set);
-						}
-						String back = empl.find();
-						if(back.equals("")){
-								List<Employee> ones = empl.getEmployees();
-								if(employees == null)
-										employees = new ArrayList<>();
-								for(Employee one:ones){
-										if(one.canReceiveEmail()){
-												if(!employees.contains(one)){
-														employees.add(one);
+								String back = empl.find();
+								if(back.equals("")){
+										List<Employee> ones = empl.getEmployees();
+										if(employees == null)
+												employees = new ArrayList<>();
+										for(Employee one:ones){
+												if(one.canReceiveEmail()){
+														if(!employees.contains(one)){
+																employees.add(one);
+														}
 												}
 										}
 								}

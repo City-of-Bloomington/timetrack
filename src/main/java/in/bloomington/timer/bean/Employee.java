@@ -886,4 +886,8 @@ public class Employee implements Serializable{
 				}
 				return msg;
 		}						
+		/**
+			 select distinct(email) from employees where id in (select employee_id from time_documents where initiated > '2018-10-20');
+
+		 */
 }

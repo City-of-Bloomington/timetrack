@@ -142,6 +142,7 @@ public class EmpList extends CommonInc{
 						//
 						DirContext ctx = new InitialDirContext(env);
 						SearchControls ctls = new SearchControls();
+						ctls.setCountLimit(2000);
 						String[] attrIDs = {"givenName",
 																"department", // not accurate use dn instead
 																"telephoneNumber",
@@ -172,13 +173,18 @@ public class EmpList extends CommonInc{
 								else
 										filter = "(distinguishedName=*,ou="+dept_name+",*)";
 								*/
-								filter ="(&(objectCategory=person)(objectClass=user))";
+								// we are excluding disabled users and any user that
+								// givenName starts with * (code \2a)
+								filter ="(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=512)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(accountExpires=9223372036854775807)(!(givenName=\2a*)))";
 						}
 						else{ // all
-								filter ="(&(objectCategory=person)(objectClass=user))";
+								// we are excluding disabled users and any user that
+								// givenName (first name) that starts with * code \2a 				
+								filter ="(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=512)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(accountExpires=9223372036854775807)(!(givenName=\2a*)))";								
 						}
 						System.err.println(" filter "+filter);
 						NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctls);
+						int jj=1;
 						while(answer.hasMore()){
 								//
 								emp = new Employee();
@@ -187,15 +193,12 @@ public class EmpList extends CommonInc{
 								Attribute dn = atts.get("distinguishedName");
 								if (dn != null){
 										str = dn.get().toString();
-										/*
-										if(str.indexOf("Util") > -1){
-										    System.err.println("dn "+str);
-										}
-										*/
 										if(!dept_name.equals("")){
 												if(str.indexOf(dept_name) == -1) continue;
+												/*
 												if(!group_name.equals(""))
 														if(str.indexOf(group_name) == -1) continue;
+												*/
 										}
 										// System.err.println("dn "+str);										
 										String strArr[] = setDn(str);
@@ -204,6 +207,7 @@ public class EmpList extends CommonInc{
 												if(deptTable.containsKey(strArr[0])){
 														deptId = deptTable.get(strArr[0]);
 												}
+												/*
 												if(!deptId.equals("")){
 														if(grpTable.containsKey(deptId)){
 																Hashtable<String, String> ttable = grpTable.get(deptId);
@@ -212,14 +216,11 @@ public class EmpList extends CommonInc{
 																}
 														}
 												}
+												*/
 										}
 										if(!deptId.equals("")){
 												emp.setDepartment_id(deptId);
 										}
-										if(!grpId.equals("")){
-												emp.setGroup_id(grpId);
-										}
-										// System.err.println(" found dept, grp: "+strArr[0]+" "+strArr[1]+" "+deptId+" "+grpId);
 								}
 								//
 								Attribute cn = atts.get("cn");
@@ -230,6 +231,7 @@ public class EmpList extends CommonInc{
 								Attribute givenname = atts.get("givenName");
 								if (givenname != null){
 										str = givenname.get().toString();
+										if(str.indexOf("*") > -1) continue;
 										emp.setFirst_name(str);
 								}
 								Attribute sn = atts.get("sn");
@@ -255,11 +257,11 @@ public class EmpList extends CommonInc{
 								if(emps == null){
 										emps = new ArrayList<>();
 								}
-								// try to avoid made up names like "*parks-user";
 								if(!emp.getUsername().startsWith("*")){
 										emps.add(emp);
 								}
-								System.err.println(" emp "+emp.getInfo());
+								System.err.println(jj+" emp "+emp.getInfo());
+								jj++;
 						}
 				}
 				catch(Exception ex){

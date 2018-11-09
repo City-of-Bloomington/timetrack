@@ -15,12 +15,14 @@
 	</s:else>
 	<s:if test="jobTask.employee_id != ''">
 		<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />
-		<s:if test="jobTask.group_id != ''">
-			<s:hidden name="jobTask.group_id" value="%{jobTask.group_id}" />
+		<s:if test="jobTask.id == '' && !jobTask.employee.hasMultipleGroups()">
+			<s:if test="jobTask.group_id != ''">
+				<s:hidden name="jobTask.group_id" value="%{jobTask.group_id}" />
+			</s:if>
+			<s:elseif test="jobTask.employee.group_id !=''">
+				<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
+			</s:elseif>
 		</s:if>
-		<s:elseif test="jobTask.employee.group_id !=''">
-			<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
-		</s:elseif>
 	</s:if>
   <%@ include file="strutMessages.jsp" %>
 
