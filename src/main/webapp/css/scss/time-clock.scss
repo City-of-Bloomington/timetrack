@@ -148,12 +148,23 @@
 
   &.job-select {
     .job-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      background: #0f2d57;
+      border-radius: 4px;
+      margin: 20px 0;
+      padding: 20px 0 0 0;
+      width: 100%;
+      height: 225px;
+      overflow-y: scroll;
+
       .card {
-        display: inline-block;
+        flex-basis: calc(33% - 20px);
         box-sizing: border-box;
-        width: 23%;
-        margin: 20px 1% 20px 0;
-        height: 180px;
+        // width: 200px;
+        margin: 0 0 20px 0;
+        // height: 200px;
         vertical-align: top;
         font-size: 22px;
         text-align: center;
@@ -161,28 +172,32 @@
     }
 
     label {
-      border: 1px solid rgba(red, .15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      line-height: 24px;
+      letter-spacing: .5px;
+      border: 2px solid rgba(white, .15);
       box-sizing: border-box;
-      display: block;
       height: 100%;
       width: 100%;
-      padding: 10px 10px 30px 10px;
+      padding: 30px 10px;
       cursor: pointer;
-      opacity: .5;
-      transition: all .5s ease-in-out;
+      // transition: all .5s ease-in-out;
 
       &:hover,
       &:focus,
       &:active {
-        border: 1px solid red;
+        border: 2px solid white;
       }
     }
 
     input[type="radio"] {
-      background: green;
-      // opacity: 0;
-      // width: 0;
-      // height: 0;
+      // background: green;
+      opacity: 0;
+      width: 0;
+      height: 0;
     }
 
     input[type="radio"]:active ~ label {
@@ -191,7 +206,9 @@
 
     input[type="radio"]:checked ~ label {
       opacity: 1;
-      border: 1px solid red;
+      border: 2px solid white;
+      background: white;
+      color: $tc-background-color;
     }
   }
 }

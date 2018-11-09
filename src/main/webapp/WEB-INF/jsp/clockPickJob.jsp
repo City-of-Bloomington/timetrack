@@ -19,11 +19,11 @@
 				<s:iterator var="one" value="%{timeClock.jobs}">
 					<div class="card">
 						<input type="radio"
-								   name="timeClock.job_id"
-								   value="<s:property value='%{#one.id}' />"
-								   checked="<s:if test="%{#one.isPrimary()}">checked</s:if>" />
+									 name="timeClock.job_id"
+								   id="<s:property value='%{#one.name}' />"
+								   value="<s:property value='%{#one.id}' />" />
 
-						<label for="%{timeClock.job_id}">
+						<label for="<s:property value='%{#one.name}' />">
 							<s:property value="%{#one.name}" />
 						</label>
 					</div>
@@ -46,4 +46,16 @@
 	}
 	setInterval(function() { topTime(); }, 10);
 	topTime();
+
+	function showNextButton() {
+		var selectedJob 	= document.querySelectorAll('input[type=radio]:checked')[0];
+		var processButton = document.querySelectorAll('#form_id_action');
+
+		if(
+			selectedJob != '' ||
+			selectedJob != undefined ||
+			selectedJob != null
+		){}
+	}
+	showNextButton();
 </script>
