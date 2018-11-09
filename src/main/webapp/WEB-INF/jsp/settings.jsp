@@ -47,8 +47,10 @@
 			<h2>Search</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>searchEmployees.action">Employees</a></li>
+				<li><a href="<s:property value='#application.url'/>activeEmployees.action">Active Employees</a></li>				
 				<li><a href="<s:property value='#application.url'/>searchGroups.action">Groups</a></li>
 				<li><a href="<s:property value='#application.url'/>searchJobs.action">Jobs</a></li>
+				
 			</ul>
 			<h2>Target Employee</h2>
 			<ul>
@@ -71,7 +73,6 @@
 				<li><a href="<s:property value='#application.url'/>profileSchedule.action">Employees Profile Update</a></li>
 				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees Update(including active status)</a></li>				
 				<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
-				<li><a href="<s:property value='#application.url'/>importEmployees.action">Import AD (ldap) Employees</a></li>				
 				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch clock batch submission </a></li>
 
 			</ul>

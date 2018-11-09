@@ -248,7 +248,33 @@ public class Helper{
 				return con;
 
 		}
-
+		//
+		// we want to change yyyy-mm-dd format to mm/dd/yyyy format
+		//
+		public final static String changeDateFormat(String val){
+				String ret = "";
+				if(val != null){
+						if(val.indexOf("-") > 0){
+								String arr[] = val.split("-");
+								if(arr.length == 3){
+										ret = arr[1]+"/"+arr[2]+"/"+arr[0];
+								}
+						}
+						else if(val.indexOf("/") > 0){
+								String arr[] = val.split("/");
+								if(arr.length == 3){
+										ret = arr[2]+"-"+arr[0]+"-"+arr[1];
+								}										
+						}
+						else{
+								ret = val;
+						}
+				}
+				else{
+						ret = val;
+				}
+				return ret;
+		}
 		final static boolean testCon(Connection con){
 				boolean pass = false;
 				Statement stmt  = null;

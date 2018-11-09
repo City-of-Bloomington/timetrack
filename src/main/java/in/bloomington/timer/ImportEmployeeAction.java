@@ -152,7 +152,7 @@ public class ImportEmployeeAction extends TopAction{
 						if(back.equals("")){
 								List<Department> ones = tl.getDepartments();
 								if(ones != null && ones.size() > 0){
-								departments = ones;
+										departments = ones;
 								}
 						}
 				}

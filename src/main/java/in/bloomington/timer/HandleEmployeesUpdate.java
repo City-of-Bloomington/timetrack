@@ -72,7 +72,6 @@ public class HandleEmployeesUpdate{
 								empUsrTable = new Hashtable<>();
 								for(Employee one:ldapEmps){
 										// System.err.println(one.getInfo());
-										if(one.getFirst_name().startsWith("*")) continue;
 										empUsrTable.put(one.getUsername(), one);
 										if(one.hasNoEmployeeNumber()) continue;
 										empTable.put(one.getEmployee_number(), one);

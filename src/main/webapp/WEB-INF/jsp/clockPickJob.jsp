@@ -19,7 +19,7 @@
 				<s:iterator var="one" value="%{timeClock.jobs}">
 					<div class="card">
 						<input type="radio"
-								   name="timeClock.job_id"
+								   name="<s:property value='%{#one.name}' />"
 								   value="<s:property value='%{#one.id}' />"
 								   checked="<s:if test="%{#one.isPrimary()}">checked</s:if>" />
 

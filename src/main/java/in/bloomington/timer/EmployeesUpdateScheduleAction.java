@@ -68,7 +68,6 @@ public class EmployeesUpdateScheduleAction extends TopAction{
 						}
 				}
 				else if(action.startsWith("Submit")){
-						System.err.println(" envBean "+envBean);
 						HandleEmployeesUpdate handle = new HandleEmployeesUpdate(envBean);
 						back = handle.process();
 						if(!back.equals("")){
