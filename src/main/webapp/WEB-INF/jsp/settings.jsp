@@ -50,7 +50,6 @@
 
 				<li><a href="<s:property value='#application.url'/>searchGroups.action">Groups</a></li>
 				<li><a href="<s:property value='#application.url'/>searchJobs.action">Jobs</a></li>
-				
 			</ul>
 			<h2>Target Employee</h2>
 			<ul>
