@@ -47,7 +47,7 @@
 			<h2>Search</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>searchEmployees.action">Employees</a></li>
-				<li><a href="<s:property value='#application.url'/>activeEmployees.action">Active Employees</a></li>				
+
 				<li><a href="<s:property value='#application.url'/>searchGroups.action">Groups</a></li>
 				<li><a href="<s:property value='#application.url'/>searchJobs.action">Jobs</a></li>
 				
@@ -59,10 +59,14 @@
 			<h2>Timewarp</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>payperiodProcess.action">Pay Period Process</a></li>
+			</ul>
+			<h2>Reports</h2>
+			<ul>
+				<li><a href="<s:property value='#application.url'/>activeEmployees.action">Active Employees Report</a></li>								
 				<li><a href="<s:property value='#application.url'/>reportHand.action">HAND MPO Report</a></li>
 				<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a></li>
 				<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA Report</a></li>
-			</ul>
+			</ul>			
 			<h2>Employee Data Import</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>empImport.action">Employees Data Import (CSV file)</a></li>
