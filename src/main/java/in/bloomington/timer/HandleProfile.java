@@ -100,7 +100,7 @@ public class HandleProfile{
 				if(!msg.equals("") || ejobHash == null){
 						msg += " could not find related employee jobs ";
 						return msg;
-				}				
+				}
 				ProfileList plist =
 						new ProfileList(debug,
 														benefitGroups,

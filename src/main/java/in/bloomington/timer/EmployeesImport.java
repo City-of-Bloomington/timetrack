@@ -485,8 +485,10 @@ public class EmployeesImport{
 																		reviewer_id = empp.getId();
 																		reviewer_ids.add(reviewer_id);
 																		emps.put(stt4, empp.getId());
-																}														
-																errors +=" Error group reviewer username not set properly "+str4;
+																}
+																else{
+																		errors +=" Error group reviewer username not set properly "+str4;
+																}
 														}														
 												}
 												if(errors.equals("")){

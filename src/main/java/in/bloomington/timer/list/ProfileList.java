@@ -336,6 +336,7 @@ public class ProfileList{
 						if(profiles == null){
 								profiles = new ArrayList<>();
 						}
+						int jj=1;
 						while(rs.next()){
 								String str = rs.getString(4); // nw employeeId 
 								String str2 = rs.getString(25); // group id
@@ -358,6 +359,12 @@ public class ProfileList{
 									 && str2 != null
 									 && bgroups.containsKey(str2)){
 										bg = bgroups.get(str2);
+										/*
+										if(str2.equals("6")){
+												System.err.println(jj+" bg code "+str2+" :"+str11);
+												jj++;
+										}
+										*/
 								}
 								if(str.equals(prev_id)){
 										if(factorId == 36){
