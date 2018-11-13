@@ -3,31 +3,36 @@
 <s:form action="jobTask" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:if test="jobTask.id == ''">
-		<s:elseif test="!jobTask.employee.hasMultipleGroups() && jobTask.employee.group_id !='' ">
-			<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
-		</s:elseif>
-		<h1>New job</h1>
-	</s:if>
-	<s:else>
-		<h1>Edit Job: <s:property value="%{jobTask.name}" /></h1>
-		<s:hidden id="jobTask.id" name="jobTask.id" value="%{jobTask.id}" />
-		<s:hidden name="jobTask.hourlyRate" value="%{jobTask.hourlyRate}" />
-	</s:else>
-	<s:if test="jobTask.employee_id != ''">
-		<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />
-		<s:if test="jobTask.id == '' && !jobTask.employee.hasMultipleGroups()">
-			<s:if test="jobTask.group_id != ''">
-				<s:hidden name="jobTask.group_id" value="%{jobTask.group_id}" />
+		<s:if test="jobTask.employee_id != ''">
+			<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />			
+			<s:if test="!jobTask.employee.hasMultipleGroups() && jobTask.employee.group_id !='' ">
+				<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
 			</s:if>
 			<s:elseif test="jobTask.employee.group_id !=''">
 				<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
 			</s:elseif>
 		</s:if>
+		<h1>New job</h1>
+		<s:if test="jobTask.employee_id == ''">
+			<p>Employee Info is needed to create a job, start from employee page</p>
+		</s:if>
 	</s:if>
-  <%@ include file="strutMessages.jsp" %>
-
+	<s:else>
+		<h1>Edit Job: <s:property value="%{jobTask.name}" /></h1>
+		<s:hidden id="jobTask.id" name="jobTask.id" value="%{jobTask.id}" />
+		<s:hidden name="jobTask.hourlyRate" value="%{jobTask.hourlyRate}" />
+		<s:hidden name="jobTask.group_id" value="%{jobTask.group_id}" />
+		<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />		
+	</s:else>
+	<s:if test="hasMessages()">
+		<s:set var="messages" value="messages" />		
+		<%@ include file="messages.jsp" %>
+	</s:if>
+	<s:elseif test="hasErrors()">
+		<s:set var="errors" value="errors" />		
+		<%@ include file="errors.jsp" %>
+	</s:elseif>
 	<div class="width-one-half">
-		
 		<s:if test="jobTask.id != ''">
 			<div class="form-group">
 				<label>ID</label>
@@ -43,7 +48,6 @@
 				<a href="<s:property value='#application.url' />employee.action?id=<s:property value='%{jobTask.employee_id}' />"> <s:property value="%{jobTask.employee}" /></a>
 			</s:else>
 		</div>
-
 		<div class="form-group">
 			<label>Position</label>
 			<s:select name="jobTask.position_id" value="%{jobTask.position_id}" list="positions" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Position" required="true" />

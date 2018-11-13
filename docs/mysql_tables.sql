@@ -501,7 +501,8 @@ insert into workflows values(1,1,2),(2,2,3),(3,3,4),(4,4,null);
 insert into salary_groups values(1,'Exempt','Exempt employees',1,null),
 (2,'Non Exempt','Non exempt employees',1,null),
 (3,'Temp','Temp employees and interns',14,null),
-(4,'Union','Union employees',1,null);
+(4,'Union','Union employees',1,null),
+(5,'Part Time','Part time exempt or non-exempt, does not include temps',1,null);
 ;;
 ;; we need at least the following codes in hour_codes table
 ;;
@@ -564,8 +565,10 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;; alter table time_block_logs drop column job_id;
 ;;
 ;; alter table jobs add group_id int unsigned not null after employee_id;
-;; update jobs set group_id = (select ge.group_id from group_employees ge where ge.employee_id=jobs.employee_id limit 1);
 ;; delete from jobs where id=44; // admin job
+;; update jobs set group_id = (select ge.group_id from group_employees ge where ge.employee_id=jobs.employee_id limit 1);
+
+
 ;; alter table jobs add foreign key(group_id) references groups(id);
 ;;
 ;; alter table positions add alias varchar(64) not null after name;
