@@ -164,6 +164,15 @@ public class WeekSplit{
 										hours +=  daily.get(code);
 								}								
 						}
+						else if(code.indexOf("COSH") > -1){ //call out holiday(if < 3 ==> 3)
+								if(hours  < 3.0f){
+										hours = 3.0f;
+								}
+								non_reg_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}								
+						}						
 						else if(code_desc.indexOf("used") > -1){
 								earn_time_used += hours;
 								if(daily.containsKey(code)){

@@ -16,7 +16,7 @@
 		</s:if>
 
 		<%@ include file="calendarTopDetails.jsp" %>
-
+		<s:set var="dailyBlocks" value="document.dailyBlocks" />		
 		<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
 			<%@ include file="calendarFullView.jsp" %>
 		</s:if>

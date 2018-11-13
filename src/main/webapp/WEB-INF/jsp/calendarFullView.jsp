@@ -9,7 +9,7 @@
     <div>Sun</div>
   </div>
   <div class="week">
-    <s:iterator value="document.dailyBlocks" var="block" >
+    <s:iterator value="#dailyBlocks" var="block" >
       <s:set var="blockKey" value="#block.key" />
       <s:set var="blockList" value="#block.value" />
 
@@ -50,10 +50,10 @@
         </s:if>
         <s:if test="hasData()">
           <div class="data"
-               data-block-id="<s:property value='id' />"
-               data-date="<s:property value='date' />"
-						   data-job-name="<s:property value='job_name' />"						
-               data-time-out="<s:property value='Time_out' />">
+            data-block-id="<s:property value='id' />"
+            data-date="<s:property value='date' />"
+						data-job-name="<s:property value='job_name' />"
+            data-time-out="<s:property value='Time_out' />">
             <s:if test="hasNextLine()">
               <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>
             </s:if>
