@@ -51,6 +51,10 @@
 		var selectedJob 	= document.querySelectorAll('input[type=radio]:checked')[0];
 		var processButton = document.querySelectorAll('#form_id_action');
 
+		selectedJob.addEventListener('change', function() {
+			console.log('changed');
+		});
+
 		if(
 			selectedJob != '' ||
 			selectedJob != undefined ||
