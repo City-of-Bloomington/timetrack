@@ -94,9 +94,14 @@
   }
 
   .calendar-header-controls {
-    display: flex;
-    padding: 20px 4px;
+    padding: 10px 4px;
     color: $dark-slate;
+
+    form {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
 
     a {
       color: $dark-slate;
@@ -111,7 +116,7 @@
     }
 
     .month-year {
-      margin-left: auto;
+      margin: 0 auto;
     }
 
     .button {
@@ -131,12 +136,17 @@
       }
     }
 
-    .button-group {
-      margin: 0 20px 0 0;
+    .job-select {
+      label {
+        text-align: right;
+      }
     }
 
+
     .pay-period {
-      margin-right: auto;
+      .button-group {
+        margin: 10px 0 0 0;
+      }
     }
 
     button {
@@ -209,6 +219,17 @@
   }
 
   .homepage {
+    overflow: auto;
+
+    .alert {
+      width: calc(100% - 10px);
+      margin: 5px auto 0 auto;
+
+      &:nth-child(n+2) {
+        margin: 5px auto;
+      }
+    }
+
     .time-details {
       @include clearfix;
       width: calc(100% - 8px);
@@ -234,13 +255,6 @@
       border-bottom: 1px solid $luxor-gold;
       color: white;
       padding: 10px;
-    }
-
-    .calendar-header-controls {
-      .pay-period {
-        margin-left: auto;
-        margin-right: 0;
-      }
     }
   }
 }

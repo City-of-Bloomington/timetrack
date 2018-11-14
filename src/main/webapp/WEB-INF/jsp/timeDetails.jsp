@@ -12,11 +12,12 @@
 		</s:if>
 
 		<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
-			<div style="text-align:center"> View Only Time Details</div>
+			<div class="alert"><p><b>Note:</b> Time Details (View Only)</p></div>
 		</s:if>
 
 		<%@ include file="calendarTopDetails.jsp" %>
-		<s:set var="dailyBlocks" value="document.dailyBlocks" />		
+
+		<s:set var="dailyBlocks" value="document.dailyBlocks" />
 		<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
 			<%@ include file="calendarFullView.jsp" %>
 		</s:if>
@@ -63,7 +64,7 @@
 			<hr class="m-b-40" />
 
 			<s:set var="payPeriodTotal" value="document.payPeriodTotal" />
-			<s:set var="daily" value="document.daily" />			
+			<s:set var="daily" value="document.daily" />
 			<s:set var="week1Total" value="document.week1Total" />
 			<s:set var="week2Total" value="document.week2Total" />
 			<s:if test="document.isUnionned()">
