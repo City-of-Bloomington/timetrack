@@ -10,7 +10,7 @@
   </div>
 
   <div class="week">
-    <s:iterator value="document.dailyBlocks" var="block" >
+    <s:iterator value="#dailyBlocks" var="block" >
       <s:set var="blockKey" value="#block.key" />
       <s:set var="blockList" value="#block.value" />
 

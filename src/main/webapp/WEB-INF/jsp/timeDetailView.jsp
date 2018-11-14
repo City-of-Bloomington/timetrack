@@ -8,15 +8,16 @@
 <div class="homepage">
 	<s:if test="!hasErrors()">
 		<s:if test="hasMessages()">
+			<s:set var="messages" value="messages" />
 			<%@ include file="messages.jsp" %>
 		</s:if>
-
 		<div class="viewing-as">
 			Time Details View for Employee: <s:property value="%{document.employee}" />
 		</div>
 
 		<%@ include file="calendarTopDetails.jsp" %>
-		<%@ include file="calendarFullView.jsp" %>
+		<s:set var="dailyBlocks" value="document.dailyBlocks" />		
+`		<%@ include file="calendarFullView.jsp" %>
 		<div class="container-with-padding">
 			<div class="calendar-summary-controls m-b-40">
 				<a class="button pay-notes" data-doc-id="<s:property value='%{document.id}' />">Add Pay Period Note</a>
