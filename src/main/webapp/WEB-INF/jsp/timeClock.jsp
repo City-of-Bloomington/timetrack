@@ -70,7 +70,7 @@
 				<script type="text/javascript">
 		    	setTimeout(function(){
 		    		window.top.location = "<s:property value='#application.url' />timeClock.action"
-		    	}, 6000); // wait 6 seconds
+		    	}, 3000); // wait 3 seconds
 		    </script>
 		  </s:else>
 		</s:form>

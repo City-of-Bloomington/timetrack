@@ -1,9 +1,7 @@
 <%@ include file="headerMin.jsp" %>
 <div class="time-clock job-select">
 	<h1>Time Clock <small id="meta"></small></h1>
-	<h2>Please Pick a Job</h2>
-
-	<h3>Welcome <s:property value="%{timeClock.employee}" />
+	<h2>Please Pick a Job <small>Welcome, <s:property value="%{timeClock.employee}" /></small></h2>
 
 	<s:if test="hasMessages()">
 		<s:set var="messages" value="messages" />

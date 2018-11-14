@@ -23,17 +23,19 @@
     height: $tc-img-height;
   }
 
+  h1, h2, h3 {
+    small {
+      float: $tc-h1-small-meta-float;
+      font-size: $tc-h1-small-meta-font-size;
+      color: $tc-h1-small-meta-color;
+
+      &#meta {}
+    }
+  }
+
   h1 {
     font-size: $tc-h1-font-size;
     line-height: $tc-h1-line-height;
-
-    small {
-      &#meta {
-        float: $tc-h1-small-meta-float;
-        font-size: $tc-h1-small-meta-font-size;
-        color: $tc-h1-small-meta-color;
-      }
-    }
   }
 
   h2 {
@@ -123,6 +125,7 @@
     color: $tc-input-color;
     font-size: $tc-input-font-size;
     letter-spacing: $tc-input-letter-spacing;
+    text-align: center;
     outline: $tc-input-outline;
 
     &::placeholder {
@@ -153,7 +156,7 @@
       justify-content: space-evenly;
       background-color: $tc-clock-wrapper-actions-in-out-bg-color;
       border-radius: 4px;
-      margin: 20px 0;
+      margin: 10px 0 20px 0;
       padding: 20px 0 0 0;
       width: 100%;
       height: 225px;
@@ -177,6 +180,7 @@
       font-size: 18px;
       line-height: 24px;
       letter-spacing: .5px;
+      color: white;
       border: 2px solid rgba(white, .15);
       box-sizing: border-box;
       height: 100%;
