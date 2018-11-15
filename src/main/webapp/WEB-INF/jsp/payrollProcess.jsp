@@ -18,12 +18,17 @@
 	<s:if test="hasGroups()">
 		<div class="calendar-header-controls">
 			<div class="pay-period">
-				<b>Pay Period:&nbsp;</b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
+				<label for="pay_period_id"><strong>Pay Period:&nbsp;</strong></label>
+				<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
+
 				<s:if test="hasMoreThanOneGroup()">
-					<b> &nbsp;Group:&nbsp;</b><s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
+					<label for="groupd_id"><strong>Group:&nbsp;</strong></label>
+					<s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
 				</s:if>
+
 				<s:else>
-					<b>Group:&nbsp;</b> &nbsp;<s:property value="group" />
+					<strong>Group:&nbsp;</strong>
+					<s:property value="group" />
 				</s:else>
 			</div>
 		</div>
@@ -36,17 +41,16 @@
 		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
 		  </div>
 
-			<div class="button-group">
-				<a href="<s:property value='#application.url' />payperiodProcess.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit" class="button">More Details</a>
-			</div>
+			<a href="<s:property value='#application.url' />payperiodProcess.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit" class="button">More Details</a>
 
 			<s:if test="needAction()">
-				<div class="button-group">
-					<a href="<s:property value='#application.url' />inform.action?group_ids=<s:iterator value='groups' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noApprove&source=payrollProcess&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Approvers</a>
-				</div>
+				<a href="<s:property value='#application.url' />inform.action?group_ids=<s:iterator value='groups' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noApprove&source=payrollProcess&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Approvers</a>
 			</s:if>
 
+			<hr />
+
 			<div class="form-group">
+				<label for="check_all"><strong>Select all approve eligible individuals.</strong></label>
 				<small class="status-tag approval-ready select-all">
 					<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
 				</small>
