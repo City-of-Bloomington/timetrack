@@ -1,0 +1,15 @@
+$logout-width:            320px;
+$logout-margin:           20px auto;
+$logout-padding:          20px;
+$logout-background-color: lighten($gainsboro, 10%);
+$logout-border:           1px solid darken($gainsboro, 10%);
+$logout-text-align:       center;
+
+.logout {
+  width: $logout-width;
+  margin: $logout-margin;
+  padding: $logout-padding;
+  background-color: $logout-background-color;
+  border: $logout-border;
+  text-align: $logout-text-align;
+}

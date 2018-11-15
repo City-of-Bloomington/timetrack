@@ -27,6 +27,7 @@
   }
 
   main {
+    overflow: auto;
     background: $gainsboro;
     display: block;
     // padding: 20px 0 0 0;
@@ -275,4 +276,5 @@
 @import 'time-block';
 @import 'time-clock';
 @import 'modals';
+@import 'logout';
 @import 'customs';

@@ -1,7 +1,9 @@
 <%@  include file="header.jsp" %>
-<h3>Time Track </h3>
+  <div class="logout">
+    <h1>Time Track </h1>
 
-<p> You logged out successfully</p>
+    <p> You logged out successfully</p>
 
-You can login again by clicking on <a href="<s:property value='#application.url' />/Login"> Login </a><br /> 
+    <a href="<s:property value='#application.url' />Login">Login</a>
+  </div>
 <%@  include file="footer.jsp" %>
