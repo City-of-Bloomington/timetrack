@@ -20,27 +20,32 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Document{
+/**
+ * this class is needed for employees who have multiple jobs
+ *
+ */
+public class MultiJobDoc{
 
 		boolean debug = false;
-		static Logger logger = LogManager.getLogger(Document.class);
+		static Logger logger = LogManager.getLogger(MultiJobDoc.class);
 		static final long serialVersionUID = 2400L;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		DecimalFormat dfn = new DecimalFormat("##0.00");
-    private String id="", employee_id="", pay_period_id="",
-				initiated="",initiated_by="", selected_job_id="";
+    private String employee_id="", pay_period_id="";
 		private String job_id="";
 		double week1Total = 0, week2Total = 0, week1_flsa=0, week2_flsa=0;
 		PayPeriod payPeriod = null;
 		Employee employee = null;
-		Employee initiater = null;
+		JobTask job = null; // we need one of the jobs to get more info
+		Document document = null; // we need one to get the accruals 
+		// Employee initiater = null;
 		Workflow lastWorkflow = null;
-		List<TimeAction> timeActions = null;
 		Map<String, Map<Integer, String>> daily = null;				
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
-		JobTask job = null;
 		List<JobTask> jobs = null;
+		List<Document> documents = null;
+
 		SalaryGroup salaryGroup = null;
 		Map<String, List<String>> allAccruals = new TreeMap<>();
 		Map<Integer, Double> hourCodeTotals = null;
@@ -52,31 +57,41 @@ public class Document{
 		List<TimeNote> timeNotes = null;
 		List<TimeIssue> timeIssues = null;
 		List<Employee> nextActioners = null;
-		TimeAction lastTimeAcion = null;
 		Map<String, AccrualWarning> warningMap = new TreeMap<>();
 		HolidayList holidays = null;
-    public Document(String val,
-										String val2,
-										String val3,
-										String val4,
-										String val5,
-										String val6
-							 ){
-				setId(val);
-				setEmployee_id(val2);				
-				setPay_period_id(val3);
-				setJob_id(val4);
-				setInitiated(val5);
-				setInitiated_by(val6);
-				fillWarningMap();
-
+    public MultiJobDoc(String val,
+											 String val2
+											 ){
+				setEmployee_id(val);				
+				setPay_period_id(val2);
+				findDocuments();
+				// fillWarningMap();
     }
-    public Document(String val){
-				setId(val);
-				fillWarningMap();
+    public MultiJobDoc(){
     }
-    public Document(){
-    }		
+		void findDocuments(){
+				if(documents == null &&
+					 !(employee_id.equals("") || pay_period_id.equals(""))){
+						DocumentList dl = new DocumentList(employee_id);
+						dl.setPay_period_id(pay_period_id);
+						String back = dl.find();
+						if(back.equals("")){
+								List<Document> ones = dl.getDocuments();
+								if(ones != null && ones.size() > 0){
+										documents = ones;
+										for(Document one:documents){
+												one.prepareDaily();
+										}
+										document = ones.get(0); // any one will do
+								}
+						}
+				}
+		}
+		public boolean hasDocuments(){
+				findDocuments();
+				return documents != null && documents.size() > 0;
+		}
+				
     //
     // getters
     //
@@ -86,66 +101,45 @@ public class Document{
     public String getPay_period_id(){
 				return pay_period_id;
     }
-    public String getJob_id(){
-				return job_id;
-    }		
-    public String getInitiated(){
-				return initiated;
-    }
-    public String getInitiated_by(){
-				return initiated_by;
-    }		
-		public String getId(){
-				return id;
-    }
     //
     // setters
     //
-    public void setId (String val){
-				if(val != null)
-						id = val;
-    }
     public void setPay_period_id (String val){
 				if(val != null && !val.equals("-1"))
 						pay_period_id = val;
     }
-    public void setJob_id (String val){
-				if(val != null && !val.equals("-1"))
-						job_id = val;
-    }		
     public void setEmployee_id(String val){
 				if(val != null && !val.equals("-1"))						
 						employee_id = val;
     }
-    public void setInitiated(String val){
-				if(val != null)
-						initiated = val;
-    }
-    public void setInitiated_by(String val){
-				if(val != null)
-						initiated_by = val;
-    }
 		public String toString(){
-				return id;
+				return employee_id+" "+pay_period_id;
 		}
 
 		public boolean equals(Object o) {
-				if (o instanceof Document) {
-						Document c = (Document) o;
-						if ( this.id.equals(c.getId())) 
-								return true;
+				if (o instanceof MultiJobDoc) {
+						MultiJobDoc c = (MultiJobDoc) o;
+						return (this.employee_id.equals(c.getEmployee_id()))
+								&& this.pay_period_id.equals(c.getPay_period_id());
 				}
-				return false;
+				return false;				
 		}
 		public int hashCode(){
-				int seed = 37;
-				if(!id.equals("")){
+				int seed = 23;
+				if(!employee_id.equals("")){
 						try{
-								seed += Integer.parseInt(id)*31;
+								seed += Integer.parseInt(employee_id)*31;
+								
 						}catch(Exception ex){
-								// we ignore
 						}
 				}
+				if(!pay_period_id.equals("")){
+						try{
+								seed += Integer.parseInt(pay_period_id)*37;
+								
+						}catch(Exception ex){
+						}
+				}				
 				return seed;
 		}
 		public PayPeriod getPayPeriod(){
@@ -168,115 +162,34 @@ public class Document{
 				}
 				return employee;
 		}
-		public Employee getInitiater(){
-				if(!initiated_by.equals("") && initiater == null){
-						Employee one = new Employee(initiated_by);
-						String back = one.doSelect();
+
+		public List<JobTask> getJobs(){
+				if(!employee_id.equals("") && !pay_period_id.equals("")){
+						JobTaskList jl = new JobTaskList(employee_id, pay_period_id);
+						String back = jl.find();
 						if(back.equals("")){
-								initiater = one;
-						}
-				}
-				return initiater;
-		}
-		public List<TimeAction> getTimeActions(){
-				if(timeActions == null && !id.equals("")){
-						TimeActionList tal = new TimeActionList(id);
-						tal.setSortby("a.id desc");
-						String back = tal.find();
-						if(back.equals("")){
-								List<TimeAction> ones = tal.getTimeActions();
+								List<JobTask> ones = jl.getJobs();
 								if(ones != null && ones.size() > 0){
-										timeActions = ones;
-										lastTimeAcion = ones.get(0); // last is first since desc
-								}
-						}
-				}
-				return timeActions;
-		}
-		public TimeAction getLastTimeAction(){
-				if(hasTimeBlocks() && lastTimeAcion == null){
-						lastTimeAcion = timeActions.get(0);
-				}
-				return lastTimeAcion;
-		}
-		public boolean hasTimeActions(){
-				getTimeActions();
-				return timeActions != null && timeActions.size() > 0;
-		}
-		public boolean hasLastTimeAction(){
-				getLastTimeAction();
-				return lastTimeAcion != null;
-		}
-		public boolean hasLastWorkflow(){
-				getLastWorkflow();
-				return lastWorkflow != null;
-		}
-		public Workflow getLastWorkflow(){
-				if(hasLastTimeAction()){
-						lastWorkflow = lastTimeAcion.getWorkflow();
-				}
-				return lastWorkflow;
-		}
-		public boolean hasNextActioners(){
-				if(hasLastWorkflow() && nextActioners == null){
-						getJob();
-						if(lastWorkflow.hasNextNode() && job != null){
-								String wf_id = lastWorkflow.getNext_workflow_id();
-								if(wf_id.equals("2")){ // submit for approval
-										getEmployee();
-										if(employee != null){
-												if(nextActioners == null)
-														nextActioners = new ArrayList<>();
-												nextActioners.add(employee);
-										}
-								}
-								else{
-										GroupManagerList gml = new GroupManagerList();
-										gml.setWorkflow_id(wf_id);
-										gml.setGroup_id(job.getGroup_id());
-										String back = gml.find();
-										if(back.equals("")){
-												List<GroupManager> ones = gml.getManagers();
-												if(ones != null){
-														for(GroupManager one:ones){
-																Employee emp = one.getEmployee();
-																if(emp != null){
-																		if(nextActioners == null)
-																				nextActioners = new ArrayList<>();
-																		nextActioners.add(emp);
-																}
-														}
+										jobs = ones;
+										for(JobTask one:jobs){
+												if(one.isPrimary()){
+														job = one;
+														break;
 												}
 										}
+										if(job == null){ // if no primary set, any one will do
+												job = jobs.get(0); 
+										}
 								}
 						}
 				}
-				return nextActioners != null && nextActioners.size() > 0;
+				return jobs;
 		}
-		// this next actions managers list
-		public List<Employee> getNextActioners(){
-				return nextActioners;
+		public boolean hasMultipleJobs(){
+				getJobs();
+				return jobs != null && jobs.size() > 0;
 		}
-		public String getNextActionerNames(){
-				String ret = "";
-				if(hasNextActioners()){
-						for(Employee one:nextActioners){
-								if(!ret.equals("")) ret += ", ";
-								ret += one.getFull_name();
-						}
-				}
-				return ret;
-		}
-		public JobTask getJob(){
-				if(!job_id.equals("") && job == null){
-						JobTask one = new JobTask(job_id);
-						String back = one.doSelect();
-						if(back.equals("")){
-							 job = one;
-						}
-				}
-				return job;
-		}		
+/*
 		private void fillWarningMap(){
 				AccrualWarningList tl = new AccrualWarningList();
 				String back = tl.find();
@@ -293,90 +206,182 @@ public class Document{
 								}
 						}
 				}
-		}		
-		public boolean canBeApproved(){
-				getLastTimeAction();
-				if(lastTimeAcion != null){
-						Workflow lastWorkFlow = lastTimeAcion.getWorkflow();
-						return lastWorkFlow != null && lastWorkFlow.canApprove();
-				}
-				return false;
 		}
-		public boolean isApproved(){
-				getTimeActions();
-				if(timeActions != null){
-						for(TimeAction one:timeActions){ 
-								Workflow wf = one.getWorkflow();
-								if(wf.isApproved()){
-										return true;
-								}
-						}
-				}
-				return false;
-		}
-		public boolean isProcessed(){
-				getTimeActions();
-				if(timeActions != null){
-						for(TimeAction one:timeActions){ 
-								Workflow wf = one.getWorkflow();
-								if(wf.isProcessed()){
-										return true;
-								}
-						}
-				}
-				return false;
-		}
-		public boolean isSubmitted(){
-				getTimeActions();
-				if(timeActions != null){
-						for(TimeAction one:timeActions){ 
-								Workflow wf = one.getWorkflow();
-								if(wf.isSubmitted()){
-										return true;
-								}
-						}
-				}
-				return false;
-		}
-		public TimeAction getSubmitTimeAction(){
-				getTimeActions();
-				if(timeActions != null){
-						for(TimeAction one:timeActions){ 
-								Workflow wf = one.getWorkflow();
-								if(wf.isSubmitted()){
-										return one;
-								}
-						}
-				}
-				return null;
-		}
-		public boolean canBeProcessed(){
-				return isApproved() && !isProcessed();
-		}
+*/
+
 		public String getWeek1_flsa(){
 				return ""+dfn.format(week1_flsa);
 		}
 		public String getWeek2_flsa(){
 				return ""+dfn.format(week2_flsa);
-		}
-		public double getWeek1_flsaDbl(){
-				return week1_flsa;
-		}
-		public double getWeek2_flsaDbl(){
-				return week2_flsa;
-		}					
+		}						
 		public boolean hasDaily(){
-				prepareDaily();
+				// prepareDaily();
 				return daily != null && daily.size() > 0;
 		}
-		public boolean isPunchClockOnly(){
-				getJob();
-				if(job != null){
-						return job.isPunchClockOnly();
+		public void prepareDaily(boolean includeEmptyBlocks){
+				if(daily == null){
+						if(documents == null)
+								findDocuments();
+						if(documents != null && documents.size() > 0){
+								for(Document doc:documents){
+										doc.prepareDaily(true);
+										// daily
+										Map<String, Map<Integer, String>> ones = doc.getDaily();
+										if(ones != null && ones.size() > 0){
+												if(daily == null){
+														daily = ones;
+												}
+												else{
+														Set<String> keySet = ones.keySet();
+														for(String key:keySet){												
+																Map<Integer, String> map = ones.get(key);
+																if(daily.containsKey(key)){
+																		Map<Integer, String> one = daily.get(key);
+																		for(int i=0;i<16;i++){
+																				if(one.containsKey(i)){
+																						String sdd = one.get(i);
+																						double dd = 0;
+																						if(sdd != null){
+																								try{
+																										dd = Double.parseDouble(sdd);
+																								}catch(Exception ex){}
+																						}
+																						if(map.containsKey(i)){
+																								sdd = map.get(i);
+																								try{
+																										dd += Double.parseDouble(sdd);
+																								}catch(Exception ex){}				
+																						}
+																						map.put(i, dfn.format(dd));
+																				}
+																		}
+																		daily.put(key, map);
+																}
+																else{
+																		daily.put(key, map);
+																}
+														} // for key
+												} // else
+										}
+										// time blocks
+										Map<Integer, List<TimeBlock>> blocks = doc.getDailyBlocks();
+										if(blocks != null){
+												if(dailyBlocks == null){
+														dailyBlocks = blocks;
+												}
+												else{
+														for(int i=0;i<16;i++){
+																List<TimeBlock> bls = null, bls2=null;
+																if(dailyBlocks.containsKey(i)){
+																		bls = dailyBlocks.get(i);
+																}
+																if(blocks.containsKey(i)){
+																		bls2 = blocks.get(i);
+																}
+																if(bls != null && bls2 != null){
+																		for(TimeBlock tb:bls2){
+																				bls.add(tb);
+																		}
+																}
+																else if(bls2 != null){
+																		bls = bls2;
+																}
+																dailyBlocks.put(i, bls);
+														}
+												}
+										}
+										// hour code total
+										Map<Integer, Double> hrct = doc.getHourCodeTotals();
+										if(hrct != null && hrct.size() > 0){
+												if(hourCodeTotals == null){
+														hourCodeTotals = hrct;
+												}
+												else{
+														Set<Integer> set = hourCodeTotals.keySet();
+														Set<Integer> set2 = hrct.keySet();
+														if(set2 != null && set2.size() > 0){
+																for(int i:set2){
+																		set.add(i);
+																}
+														}
+														for(int i:set){
+																double dd = 0;
+																if(hourCodeTotals.containsKey(i)){
+																		dd = hourCodeTotals.get(i);
+																}
+																if(hrct.containsKey(i)){
+																		dd += hrct.get(i);
+																}
+																hourCodeTotals.put(i, dd);
+														}
+												}
+										}
+										// hourCodeWeek1
+										Map<String, Double> hrw1 = doc.getHourCodeWeek1Dbl();
+										if(hrw1 != null && hrw1.size() > 0){
+												if(hourCodeWeek1 == null){
+														hourCodeWeek1 = hrw1;
+												}
+												else{
+														Set<String> set = hourCodeWeek1.keySet();
+														Set<String> set2 = hrw1.keySet();
+														if(set2 != null && set2.size() > 0){
+																for(String key:set2){
+																		set.add(key);
+																}
+														}
+														for(String key:set){
+																double dd = 0;
+																if(hourCodeWeek1.containsKey(key)){
+																		dd = hourCodeWeek1.get(key);
+																}
+																if(hrw1.containsKey(key)){
+																		dd += hrw1.get(key);
+																}
+																hourCodeWeek1.put(key, dd);
+														}
+												}
+										}
+										Map<String, Double> hrw2 = doc.getHourCodeWeek2Dbl();
+										if(hrw1 != null && hrw2.size() > 0){
+												if(hourCodeWeek2 == null){
+														hourCodeWeek2 = hrw2;
+												}
+												else{
+														Set<String> set = hourCodeWeek2.keySet();
+														Set<String> set2 = hrw2.keySet();
+														if(set2 != null && set2.size() > 0){
+																for(String key:set2){
+																		set.add(key);
+																}
+														}
+														for(String key:set){
+																double dd = 0;
+																if(hourCodeWeek2.containsKey(key)){
+																		dd = hourCodeWeek2.get(key);
+																}
+																if(hrw2.containsKey(key)){
+																		dd += hrw2.get(key);
+																}
+																hourCodeWeek2.put(key, dd);
+														}
+												}												
+										}
+										week1Total += doc.getWeek1TotalDbl();
+										week2Total += doc.getWeek2TotalDbl();
+										week1_flsa += doc.getWeek1_flsaDbl();
+										week2_flsa += doc.getWeek2_flsaDbl();										
+								} // end for
+						} // end if
+						if(includeEmptyBlocks){
+								fillTwoWeekEmptyBlocks();
+						}
+						// getEmpAccruals();
 				}
-				return false;
 		}
 		
+		/*
 		public void prepareDaily(boolean includeEmptyBlocks){
 				if(daily == null && !id.equals("")){
 						TimeBlockList tl = new TimeBlockList();
@@ -416,12 +421,15 @@ public class Document{
 				// include empty blocks as well
 				//
 				prepareDaily(true);
-		}
+		}		
+		*/
+
 		public Map<String, Map<Integer, String>> getDaily(){
 				return daily;
 		}
 		
 		public List<TimeBlock> getTimeBlocks(){
+				/*
 				if(timeBlocks == null){
 						prepareDaily();
 				}
@@ -429,6 +437,7 @@ public class Document{
 						timeBlocks = new ArrayList<>();
 						dailyBlocks = new TreeMap<>();
 				}
+				*/
 				return timeBlocks;
 		}
 		public String getWeek1Total(){
@@ -437,65 +446,13 @@ public class Document{
 		public String getWeek2Total(){
 				return ""+dfn.format(week2Total);
 		}
-		public double getWeek1TotalDbl(){
-				return week1Total;
-		}
-		public double getWeek2TotalDbl(){
-				return week2Total;
-		}		
 		public String getPayPeriodTotal(){
 				double ret = week1Total+week2Total;
 				return ""+dfn.format(ret);
 		}
-		// we need at least one job to find some info
-		// about the employee
-		public JobTask getJobTask(){
-				if(job == null){
-						getJobs();
-						if(jobs.size() == 1){
-								job = jobs.get(0);
-						}
-						else if(!selected_job_id.equals("")){
-								for(JobTask one:jobs){
-										if(one.getId().equals(selected_job_id)){
-												job = one;
-												break;
-										}
-								}
-						}
-						else {
-								for(JobTask one:jobs){
-										if(one.isPrimary()){
-												job = one;
-												selected_job_id = one.getId();
-												break;
-										}
-								}								
-						}
-				}
-				return job;
-		}
-		public List<JobTask> getJobs(){
-				if(jobs == null){
-						JobTaskList jl = new JobTaskList(employee_id);
-						jl.setPay_period_id(pay_period_id);
-						String back = jl.find();
-						if(back.equals("")){
-								List<JobTask> ones = jl.getJobTasks();
-								if(ones != null && ones.size() > 0){
-										jobs = ones; // get one
-								}
-						}
-				}
-				return jobs;
-		}		
-		public boolean hasJob(){
-				getJob();
-				return job != null;
-		}
 		public SalaryGroup getSalaryGroup(){
 				if(salaryGroup == null){
-						getJob();
+						getJobs();
 						if(job != null){
 								salaryGroup = job.getSalaryGroup();
 						}
@@ -535,28 +492,9 @@ public class Document{
 				return false;
 		}		
 		public List<EmployeeAccrual> getEmpAccruals(){
-
-				if(employeeAccruals == null){
-						EmployeeAccrualList al = new EmployeeAccrualList();						
-						al.setDocument_id(id);
-						String back = al.find();
-						if(back.equals("")){
-								List<EmployeeAccrual> ones = al.getEmployeeAccruals();
-								if(ones != null && ones.size() > 0){
-										employeeAccruals = ones;
-								}
-						}
-						// now we adjust the totals see below
-						findHourCodeTotals();
-						findUsedAccruals();
-						if(usedAccrualTotals != null){
-								Set<Integer> set = usedAccrualTotals.keySet();
-								for(Integer key:set){
-										Double val = usedAccrualTotals.get(key);
-								}
-						}
-						adjustAccruals();
-						checkForWarnings();
+				// get it from one of the doucments
+				if(document != null){
+						employeeAccruals = document.getEmpAccruals();
 				}
 				return employeeAccruals;
 		}
@@ -577,6 +515,7 @@ public class Document{
 				return ret;
 		}
 		public void findUsedAccruals(){
+				/*
 				if(usedAccrualTotals == null){
 						TimeBlockList tl = new TimeBlockList();
 						tl.setActiveOnly();
@@ -589,8 +528,10 @@ public class Document{
 								logger.error(back);
 						}
 				}
+				*/
 		}
 		public void findHourCodeTotals(){
+				/*
 				if(hourCodeTotals == null){
 						TimeBlockList tl = new TimeBlockList();
 						tl.setActiveOnly();
@@ -600,6 +541,7 @@ public class Document{
 								hourCodeTotals = tl.getHourCodeTotals();
 						}
 				}
+				*/
 		}
 		public boolean hasDailyBlocks(){
 				return dailyBlocks != null;
@@ -624,19 +566,13 @@ public class Document{
 		}
 		public Map<Integer, List<TimeBlock>> getDailyBlocks(){
 				if(dailyBlocks == null){
-						prepareDaily();
+						// prepareDaily();
 				}
 				return dailyBlocks;
 		}
 		public Map<Integer, Double> getHourCodeTotals(){
 				return hourCodeTotals;
 		}
-		public Map<String, Double> getHourCodeWeek1Dbl(){
-				return hourCodeWeek1;
-		}
-		public Map<String, Double> getHourCodeWeek2Dbl(){
-				return hourCodeWeek2;
-		}		
 		// change double to string for formating purpose
 		public Map<String, String> getHourCodeWeek1(){
 				Map<String, String> map2 = new TreeMap<>();
@@ -737,6 +673,7 @@ public class Document{
 		// since not everyday we have timeblock, we need to fill
 		// the empty ones, needed for display and related links
 		void fillTwoWeekEmptyBlocks(){
+				/*
 				prepareHolidays();
 				if(payPeriod == null){
 						getPayPeriod();
@@ -769,6 +706,7 @@ public class Document{
 								dailyBlocks.put(j, lone);
 						}
 				}
+				*/
 		}
 		private void checkForWarnings(){
 				checkForWarningsAfter();
@@ -777,7 +715,7 @@ public class Document{
 		// after submission
 		private void checkForWarningsAfter(){
 				if(job == null){
-						getJob();
+						getJobs();
 				}
 				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
@@ -854,7 +792,7 @@ public class Document{
 		// before submission
 		private void checkForWarningsBefore(){
 				if(job == null){
-						getJob();
+						getJobs();
 				}
 				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
@@ -874,9 +812,9 @@ public class Document{
 		 *   only needed 6
 		 */
 		private void checkWeekWarnings(Map<String, Double> hourCodeWeek,
-																			double weekTotal
-																			){
-				getJob();
+																	 double weekTotal
+																	 ){
+				getJobs();
 				for(String key:warningMap.keySet()){
 						if(hourCodeWeek.containsKey(key)){
 								AccrualWarning acc_warn = warningMap.get(key);
@@ -934,145 +872,6 @@ public class Document{
 		public List<String> getWarnings(){
 				return warnings;
 		}
-		public boolean hasTimeNotes(){
-				getTimeNotes();
-				return timeNotes != null && timeNotes.size() > 0;
-		}
-		public List<TimeNote> getTimeNotes(){
-				if(timeNotes == null && !id.equals("")){
-						TimeNoteList tnl = new TimeNoteList(id);
-						String back = tnl.find();
-						if(back.equals("")){
-								List<TimeNote> ones = tnl.getTimeNotes();
-								if(ones != null && ones.size() > 0){
-										timeNotes = ones;
-								}
-						}
-				}
-				return timeNotes;
-		}
-		public boolean hasTimeIssues(){
-				getTimeIssues();
-				return timeIssues != null && timeIssues.size() > 0;
-		}
-		public List<TimeIssue> getTimeIssues(){
-				if(timeIssues == null && !id.equals("")){
-						TimeIssueList tnl = new TimeIssueList(id);
-						tnl.setOpenOnly();
-						String back = tnl.find();
-						if(back.equals("")){
-								List<TimeIssue> ones = tnl.getTimeIssues();
-								if(ones != null && ones.size() > 0){
-										timeIssues = ones;
-								}
-						}
-				}
-				return timeIssues;
-		}		
-		public String doSelect(){
-				//
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				String msg="", str="";
-				String qq = "select id,employee_id,pay_period_id,job_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by from time_documents where id =? ";
-				logger.debug(qq);
-				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										setEmployee_id(rs.getString(2));
-										setPay_period_id(rs.getString(3));
-										setJob_id(rs.getString(4));
-										setInitiated(rs.getString(5));
-										setInitiated_by(rs.getString(6));
-								}
-						}
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
-				}
-				return msg;
-		}
-		//
-		// save only, no updates
-		//
-		public String doSave(){
-				//
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				String msg="", str="";
-				String qq = "insert into time_documents values(0,?,?,?,now(),?) ";
-				if(employee_id.equals("")){
-						msg = " employee ID not set ";
-						return msg;
-				}
-				if(pay_period_id.equals("")){
-						msg = " pay period not set ";
-						return msg;
-				}
-				if(job_id.equals("")){
-						msg = " job not set ";
-						return msg;
-				}				
-				if(initiated_by.equals("")){
-						msg = " initiater not set ";
-						return msg;
-				}				
-				logger.debug(qq);
-				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, employee_id);
-								pstmt.setString(2, pay_period_id);
-								pstmt.setString(3, job_id);
-								pstmt.setString(4, initiated_by);
-								pstmt.executeUpdate();
-						}
-						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								id = rs.getString(1);
-						}
-						//
-						// we look for first workflow 
-						//
-						Workflow wf = findFirstWorkFlow();
-						if(wf != null){
-								TimeAction ta = new TimeAction(wf.getId(), id, initiated_by);
-								msg = ta.doSave();
-						}
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
-				}
-				return msg;
-		}
-		Workflow findFirstWorkFlow(){
-				Workflow workflow = null;
-				WorkflowList wfl = new WorkflowList();
-				wfl.forFirstWorkflow();
-				String back = wfl.find();
-				if(back.equals("")){
-						List<Workflow> ones = wfl.getWorkflows();
-						if(ones != null && ones.size() == 1)
-								workflow = ones.get(0);
-				}
-				return workflow;
-		}
+
 		
 }
