@@ -99,25 +99,27 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 						if(sessionMap == null || sessionMap.get("user") == null){
 								//
 								// timeClock we do not need login								
-								if(source != null && !source.equals("timeClock")){
+								if(source != null && !source.equals("timeClock.action")){
 										HttpServletResponse res = ServletActionContext.getResponse();
 										String str = "Login";								
-										if(source != null)
+										if(source != null && !source.equals(""))
 												str += "?source="+source;
 										res.sendRedirect(str);
 										return super.execute();
+										// back = "login";
 								}
 						}
 						else{
 								user = (Employee)sessionMap.get("user");
 						}
-						if(sessionMap.containsKey("employee_id")){
+						if(sessionMap != null && sessionMap.containsKey("employee_id")){
 								Object obj = sessionMap.get("employee_id");
 								if(obj != null){
 										employee_id = (String) obj;
 								}
 						}
 						setUrls();
+						clearAll();
 				}catch(Exception ex){
 						logger.error(ex);
 				}
@@ -143,9 +145,11 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								}
 						}
 						else {
-								String str = user.getId();
-								if(str != null && str.length() > 0){
-										setEmployee_id(str);
+								if(user != null){
+										String str = user.getId();
+										if(str != null && str.length() > 0){
+												setEmployee_id(str);
+										}
 								}
 						}
 				}
@@ -183,8 +187,10 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		}
 		// to change proxy employee back to main user
 		void resetEmployee(){
-				setEmployee_id(user.getId());
-				getEmployee();
+				if(user != null){
+						setEmployee_id(user.getId());
+						getEmployee();
+				}
 		}
 		@Override  
 		public void setSession(Map<String, Object> map) {  
@@ -238,7 +244,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				HttpServletRequest request = ServletActionContext.getRequest();				
 				String host_forward = request.getHeader("X-Forwarded-Host");
 				String host = request.getHeader("host");				
-				String servlet_path = request.getServletPath();
+				// String servlet_path = request.getServletPath();
 				if(host_forward != null){
 						if(host_forward.indexOf("/timetrack") == -1)
 								url = host_forward+"/timetrack/";

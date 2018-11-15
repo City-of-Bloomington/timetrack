@@ -41,24 +41,9 @@ public class ApproveAction extends TopAction{
 		List<Employee> noDocNorSubmitEmps = null;		
 		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
-		/*
-		 *
-		 url+"approve.action?action=ApproveOne&document_id=<s:property value='id' />"
-		 */
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				resetEmployee();
 				if(action.equals("Approve")){
 						if(document_ids != null){
@@ -232,6 +217,10 @@ public class ApproveAction extends TopAction{
 								if(back.equals("")){
 										group = one;
 								}
+						}
+						else if(groups.size() == 1){
+								group = groups.get(0);
+								group_id = group.getId();
 						}
 				}
 				return group;

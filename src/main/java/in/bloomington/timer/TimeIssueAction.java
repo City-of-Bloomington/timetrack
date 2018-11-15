@@ -30,8 +30,6 @@ public class TimeIssueAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				// for this login is not required
-				clearAll();
 				if(action.equals("Save")){
 						// timeIssue.setReported_by(user.getEmployee_id());
 						back = timeIssue.doSave();

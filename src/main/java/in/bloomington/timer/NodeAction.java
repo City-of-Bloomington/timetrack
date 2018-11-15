@@ -27,25 +27,12 @@ public class NodeAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(action.equals("Save")){
 						back = node.doSave();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
 
 						}
@@ -53,13 +40,10 @@ public class NodeAction extends TopAction{
 				else if(action.startsWith("Save")){
 						back = node.doUpdate();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
-
 						}
 				}
 				else{		
@@ -68,7 +52,6 @@ public class NodeAction extends TopAction{
 								back = node.doSelect();
 								if(!back.equals("")){
 										addError(back);
-										addActionError(back);
 								}
 						}
 				}

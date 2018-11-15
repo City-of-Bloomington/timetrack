@@ -37,10 +37,6 @@ public class LeaveDetailsAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("leaveDetails.action");
-				if(!back.equals("")){
-						return "login";
-				}
-				clearAll();
 				if(hasNoJob()){
 						addError("No job found for employee ");
 						addActionError("No job found for employee ");						

@@ -35,10 +35,6 @@ public class TimeDetailsAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("timeDetails.action");
-				if(!back.equals("")){
-						return "login";
-				}
-				clearAll();
 				getDocument_id();
 				if(hasNoJob()){
 						addError("No job found for employee ");

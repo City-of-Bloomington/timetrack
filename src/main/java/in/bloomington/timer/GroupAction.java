@@ -29,25 +29,12 @@ public class GroupAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(action.equals("Save")){
 						back = group.doSave();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
-								addActionMessage("Added Successfully");
 								addMessage("Added Successfully");
 						}
 				}				
@@ -58,7 +45,6 @@ public class GroupAction extends TopAction{
 								addError(back);								
 						}
 						else{
-								addActionMessage("Updated Successfully");
 								addMessage("Added Successfully");
 						}
 				}
@@ -67,7 +53,6 @@ public class GroupAction extends TopAction{
 						if(!id.equals("")){
 								back = group.doSelect();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}								
 						}

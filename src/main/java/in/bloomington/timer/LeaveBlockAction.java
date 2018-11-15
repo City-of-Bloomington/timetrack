@@ -42,7 +42,6 @@ public class LeaveBlockAction extends TopAction{
 				if(!back.equals("")){
 						return "login";
 				}
-				clearAll();
 				if(action.equals("Save")){
 						/*
 						if(leaveBlock.areAllTimesSet()){

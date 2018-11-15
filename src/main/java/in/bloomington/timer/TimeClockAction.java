@@ -32,9 +32,8 @@ public class TimeClockAction extends TopAction{
 		//
 		public String execute(){
 				String ret = SUCCESS;
-				String back = doPrepare();
+				String back = doPrepare("timeClock.action");
 				prepareIps();
-				clearAll();
 				try{
 						HttpServletRequest req = ServletActionContext.getRequest();
 						ip = req.getRemoteAddr();
@@ -50,7 +49,12 @@ public class TimeClockAction extends TopAction{
 						if(ipSet != null){
 								if(ipSet.contains(ip)){
 										try{
-												if(!timeClock.hasClockIn() &&
+												if(!timeClock.hasEmployee()){
+														back = "Unrecognized Employee ID: "+timeClock.getId_code();
+														addError(back);
+														return ret;
+												}
+												else if(!timeClock.hasClockIn() &&
 													 timeClock.hasMultipleJobs() &&
 													 timeClock.hasEmployee()){
 														if(action.equals("Submit"))
@@ -59,12 +63,10 @@ public class TimeClockAction extends TopAction{
 												back = timeClock.process();
 												if(!back.equals("")){
 														addError(back);
-														addActionError(back);
 												}
 												else{
 														document_id = timeClock.getTimeBlock().getDocument_id();
 														date = timeClock.getTimeBlock().getDate();
-														addActionMessage("Received Successfully");
 														addMessage("Received Successfully");
 												}
 										}

@@ -36,7 +36,6 @@ public class DataEntryAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				clearAll();
 				resetEmployee();
 				if(!back.equals("")){
 						addError(back);

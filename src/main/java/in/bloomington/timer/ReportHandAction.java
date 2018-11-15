@@ -31,21 +31,9 @@ public class ReportHandAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(!action.equals("")){
 						back = report.findHoursByNameCode();						
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
@@ -53,14 +41,12 @@ public class ReportHandAction extends TopAction{
 										List<WarpEntry> ones = report.getEntries();
 										if(ones != null && ones.size() > 0){
 												entries = ones;
-												addActionMessage("Found "+ones.size()+" entries");
 												addMessage("Found "+ones.size()+" entries");
 										}
 								}
 								if(true){
 										back = report.find();
 										if(!back.equals("")){
-												addActionError(back);
 												addError(back);
 										}
 										else{
@@ -69,8 +55,7 @@ public class ReportHandAction extends TopAction{
 														timeBlocks = ones;
 												}
 												else{
-														addActionMessage("No match found");
-														addMessage("No match found");														
+														addMessage("No match found");
 												}
 										}
 								}

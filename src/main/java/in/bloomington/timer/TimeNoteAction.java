@@ -29,26 +29,13 @@ public class TimeNoteAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(action.equals("Save")){
 						timeNote.setReported_by(user.getId());
 						back = timeNote.doSave();
 						if(!back.equals("")){
 								addError(back);
-								addActionError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");								
 						}
 				}				
@@ -58,7 +45,6 @@ public class TimeNoteAction extends TopAction{
 								back = timeNote.doSelect();
 								if(!back.equals("")){
 										addError(back);
-										addActionError(back);
 								}
 						}
 				}

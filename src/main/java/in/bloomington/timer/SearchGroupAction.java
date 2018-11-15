@@ -27,21 +27,9 @@ public class SearchGroupAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(!action.equals("")){
 						back = grplst.find();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
@@ -49,13 +37,11 @@ public class SearchGroupAction extends TopAction{
 								if(ones != null && ones.size() > 0){
 										groups = ones;
 										groupsTitle = " Found "+groups.size()+" groups";
-										addActionMessage("Found "+groups.size()+" groups");
 										addMessage("Found "+groups.size()+" groups");
 								}
 								else{
 										addMessage("No match found");
 										groupsTitle = "No match found";
-										addActionMessage("No match found");
 								}
 						}
 				}

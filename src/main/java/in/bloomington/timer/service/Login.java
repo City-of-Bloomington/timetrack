@@ -83,14 +83,14 @@ public class Login extends HttpServlet{
                     final Object attributeValue = attributes.get(attributeName);
 										if (attributeValue instanceof List) {
                         final List vals = (List) attributeValue;
-                        System.err.println("Multi-valued attribute: " + vals.size());
+                        // System.err.println("Multi-valued attribute: " + vals.size());
 												int jj=1;
                         for (Object val : vals) {
                             System.err.println(jj+" "+val);
 														jj++;
                         }
                     } else {
-                        System.err.println(" value "+attributeValue);
+                        // System.err.println(" value "+attributeValue);
                     }
 							 }
 					 }

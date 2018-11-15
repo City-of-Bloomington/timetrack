@@ -27,17 +27,12 @@ public class SwitchAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("switch.action");
-				if(!back.equals("")){
-						return "login";
-				}
-				clearAll();
 				if(!action.equals("")){ // normally 'Change'
 						if(!new_employee_id.equals("")){
 								setEmployee_id(new_employee_id);
 								getEmployee();
 								if(employee == null){
 										back = "could not get employee info ";
-										addActionError(back);
 										addError(back);
 								}
 								else{

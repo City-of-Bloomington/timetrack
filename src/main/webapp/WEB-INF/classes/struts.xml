@@ -20,6 +20,9 @@
 			<interceptor-ref name="defaultStack"></interceptor-ref>
 			<result>/Login</result>
 		</action>
+		<action name="index"> 
+      <result >/index.html</result>
+    </action>				
 		<action name="settings"
 						class="in.bloomington.timer.SettingAction">
 			<result name="success">/WEB-INF/jsp/settings.jsp</result>
@@ -33,6 +36,12 @@
 			<result name="error">/Login</result>			
 			<result name="login">/Login</result>	   
 		</action>
+
+		<action name="logout"
+						class="in.bloomington.timer.LogoutAction">
+			<result name="success">/WEB-INF/jsp/logoutPage.jsp</result>
+			<result name="error">/WEB-INF/jsp/logoutPage.jsp</result>
+		</action>		
 		<action name="inform" 
 						class="in.bloomington.timer.InformAction" 
 						method="execute">
@@ -410,7 +419,8 @@
 			<result name="input">/WEB-INF/jsp/timeBlock.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timeBlock.jsp</result>
 			<result name="success">/WEB-INF/jsp/timeBlock.jsp</result>
-			<result name="json">/WEB-INF/jsp/timeblockJson.jsp</result>			
+			<result name="json">/WEB-INF/jsp/timeblockJson.jsp</result>
+			<result name="index" type="redirectAction">index</result>
 		</action>
 		<action name="timeBlockLog" 
 						class="in.bloomington.timer.TimeBlockLogAction" 

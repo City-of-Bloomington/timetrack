@@ -214,7 +214,10 @@ public class Profile extends CommonInc{
 		//
 		private void setParams(){
 				if(bGroup != null){
-						if(bGroup.isExempt()){
+						if(bGroup.isExemptSpecial()){
+								// use the defaults, 40, 1
+						}
+						else if(bGroup.isExempt()){
 								if(payGrade > 10){ // 11, 12
 										comp_time_after = 50; // hours per week
 								}

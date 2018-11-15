@@ -39,8 +39,8 @@ public class Logout extends HttpServlet{
 			url    = getServletContext().getInitParameter("url");
 			cas_url_prefix = getServletContext().getInitParameter("casServerUrlPrefix");
 		}
-		String str = cas_url_prefix+"/logout?url="+url;
-		res.sendRedirect(str);
+		// String str = cas_url_prefix+"/logout?url="+url;
+		// res.sendRedirect(str);
 		return;
 
 

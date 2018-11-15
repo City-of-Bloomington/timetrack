@@ -30,21 +30,9 @@ public class SearchJobAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(!action.equals("")){
 						back = joblst.find();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
@@ -52,7 +40,6 @@ public class SearchJobAction extends TopAction{
 								if(ones != null){
 										if(ones.size() > 1){
 												jobs = ones;
-												addActionMessage("Found "+jobs.size()+" Jobs");
 												addMessage("Found "+jobs.size()+" Jobs");
 										}
 										else if(ones.size() == 1){

@@ -31,17 +31,6 @@ public class HourCodeConditionAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(action.equals("Save")){
 						back = hourcodeCondition.doSave();
 						if(!back.equals("")){
@@ -49,7 +38,6 @@ public class HourCodeConditionAction extends TopAction{
 								addError(back);
 						}
 						else{
-								addActionMessage("Added Successfully");
 								addMessage("Added Successfully");
 								id = hourcodeCondition.getId();
 						}
@@ -57,11 +45,9 @@ public class HourCodeConditionAction extends TopAction{
 				else if(action.startsWith("Save")){
 						back = hourcodeCondition.doUpdate();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
 						}
 				}
@@ -71,7 +57,6 @@ public class HourCodeConditionAction extends TopAction{
 								back = hourcodeCondition.doSelect();
 								if(!back.equals("")){
 										addError(back);
-										addActionError(back);
 								}								
 						}
 				}

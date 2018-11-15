@@ -28,36 +28,21 @@ public class HourCodeAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(action.equals("Save")){
 						back = hourcode.doSave();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
-								addActionMessage("Added Successfully");
 								addMessage("Added Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = hourcode.doUpdate();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
 						}
 				}

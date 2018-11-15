@@ -31,7 +31,7 @@ public class PayrollProcessAction extends TopAction{
 		String workflow_id = "", document_id=""; 
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
 				nextPayPeriod = null, payPeriod = null;
-		
+		Group group = null;
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
@@ -40,7 +40,6 @@ public class PayrollProcessAction extends TopAction{
 		List<Employee> noDocNorSubmitEmps = null;		
 		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
-
 		
 		/*
 		 *
@@ -49,17 +48,6 @@ public class PayrollProcessAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				resetEmployee();
 				if(action.startsWith("PayrollOne")){
 						if(document_id != null && user != null){
@@ -89,7 +77,6 @@ public class PayrollProcessAction extends TopAction{
 										if(!back.equals("")){
 												if(!back.equals("")){
 														addError(back);
-														addActionError(back);
 												}
 										}
 								}
@@ -127,6 +114,27 @@ public class PayrollProcessAction extends TopAction{
 				}
 				return group_id;
 		}
+		public boolean hasMoreThanOneGroup(){
+				return isGroupManager() && groups != null && groups.size() > 1;
+		}		
+		public Group getGroup(){
+				
+				getGroups();
+				if(hasGroups()){
+						if(group == null && !group_id.equals("")){
+								Group one = new Group(group_id);
+								String back = one.doSelect();
+								if(back.equals("")){
+										group = one;
+								}
+						}
+						else if(groups.size() == 1){
+								group = groups.get(0);
+								group_id = group.getId();
+						}
+				}
+				return group;
+		}		
 		public boolean isGroupManager(){
 				getManagers();
 				return managers != null && managers.size() > 0;

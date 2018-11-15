@@ -32,37 +32,22 @@ public class JobTaskAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(action.equals("Save")){
 						back = jobTask.doSave();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
 								addMessage("Added Successfully");
-								addActionMessage("Added Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = jobTask.doUpdate();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
 								addMessage("Saved Successfully");
-								addActionMessage("Saved Successfully");
 						}
 				}
 				else{		
@@ -71,7 +56,6 @@ public class JobTaskAction extends TopAction{
 								back = jobTask.doSelect();
 								if(!back.equals("")){
 										addError(back);
-										addActionError(back);
 								}								
 						}
 				}

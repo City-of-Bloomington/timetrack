@@ -37,10 +37,6 @@ public class TimeBlockLogAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("timeBlockLog.action");
-				if(!back.equals("")){
-						return "login";
-				}
-				clearAll();
 				if(action.equals("")){
 						if(document_id.equals("")){
 								return "search";

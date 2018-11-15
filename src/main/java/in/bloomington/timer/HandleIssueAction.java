@@ -29,26 +29,13 @@ public class HandleIssueAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}
-				}
-				clearAll();
 				if(action.startsWith("Close")){
 						timeIssue.setClosed_by(user.getId());
 						back = timeIssue.doClose();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
-								addActionMessage("Closed Successfully");
 								addMessage("Closed Successfully");
 						}
 				}				
@@ -57,7 +44,6 @@ public class HandleIssueAction extends TopAction{
 						if(!id.equals("")){
 								back = timeIssue.doSelect();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}
 								time_block_id = timeIssue.getTime_block_id();

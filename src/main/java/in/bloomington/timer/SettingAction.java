@@ -25,9 +25,6 @@ public class SettingAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("settings.action");
-				if(!back.equals("")){
-						return "login";		
-				}
 				return ret;
 		}
 

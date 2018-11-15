@@ -35,13 +35,13 @@ public class TimeBlockAction extends TopAction{
 		List<HourCode> hourCodes = null;
 		Department department = null;
 		//
+		//
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("timeBlock.action");
 				if(!back.equals("")){
-						return "login";
+						return back; // login
 				}
-				clearAll();
 				if(action.equals("Save")){
 						if(timeBlock.areAllTimesSet()){
 								timeBlock.setAction_by_id(user.getId());
@@ -111,7 +111,6 @@ public class TimeBlockAction extends TopAction{
 										addActionError(back);
 										addError(back);
 								}
-								// selected_job_id = timeBlock.getJob_id();
 								document_id = timeBlock.getDocument_id();
 						}
 				}

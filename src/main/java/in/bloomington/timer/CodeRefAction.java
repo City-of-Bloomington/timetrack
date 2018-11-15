@@ -28,37 +28,22 @@ public class CodeRefAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(action.equals("Save")){
 						back = codeRef.doSave();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
 								addMessage("Saved Successfully");
-								addActionMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = codeRef.doUpdate();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
 								addMessage("Saved Successfully");
-								addActionMessage("Saved Successfully");
 						}
 				}
 				else{		
@@ -66,7 +51,6 @@ public class CodeRefAction extends TopAction{
 						if(!id.equals("")){
 								back = codeRef.doSelect();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}
 						}

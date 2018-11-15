@@ -72,6 +72,13 @@ public class BenefitGroup{
 		public boolean isExempt(){
 				return exempt;
     }
+		//
+		// utility non union FT exempt Special group
+		// uNon-U RFTx-Spec
+		//
+		public boolean isExemptSpecial(){
+				return name.indexOf("RFTx-Spec") > 0;
+		}
 		public boolean isPartTime(){
 				return partTime;
     }

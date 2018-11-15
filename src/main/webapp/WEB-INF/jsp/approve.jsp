@@ -20,7 +20,7 @@
 			<div class="pay-period">
 	  		<b>Pay Period:&nbsp;</b><s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Period" onchange="doRefresh()" />
 				<s:if test="hasMoreThanOneGroup()">
-				<b> &nbsp;Group:&nbsp;</b><s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
+					<b> &nbsp;Group:&nbsp;</b><s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
 				</s:if>
 				<s:else>
 					<b>Group:&nbsp;</b> &nbsp;<s:property value="group" />

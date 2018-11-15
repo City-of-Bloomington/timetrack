@@ -28,27 +28,14 @@ public class TimeActionAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(action.startsWith("Submit")){
 						getTimeAction();
 						timeAction.setAction_by(user.getId());
 						back = timeAction.doSave();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{ // normally we return to TimeDetails
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
 						}
 				}				
@@ -57,7 +44,6 @@ public class TimeActionAction extends TopAction{
 						if(!id.equals("")){
 								back = timeAction.doSelect();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}
 								else{

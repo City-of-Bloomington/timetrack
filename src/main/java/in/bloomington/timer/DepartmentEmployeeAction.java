@@ -28,17 +28,6 @@ public class DepartmentEmployeeAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				if(action.equals("Save")){
 						back = departmentEmployee.doSave();
 						if(!back.equals("")){
@@ -47,18 +36,15 @@ public class DepartmentEmployeeAction extends TopAction{
 						}
 						else{
 								addMessage("Saved Successfully");
-								addActionMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){ 
 						back = departmentEmployee.doUpdate();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
 								addMessage("Saved Successfully");								
-								addActionMessage("Saved Successfully");
 						}
 				}
 				else{		

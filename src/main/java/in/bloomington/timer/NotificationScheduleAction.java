@@ -31,28 +31,15 @@ public class NotificationScheduleAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!back.equals("")){
-						try{
-								HttpServletResponse res = ServletActionContext.getResponse();
-								String str = url+"Login";
-								res.sendRedirect(str);
-								return super.execute();
-						}catch(Exception ex){
-								System.err.println(ex);
-						}	
-				}
-				clearAll();
 				prepareSchedular();				
 				if(action.equals("Schedule")){
 						back = doClean();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						try{
 								back = schedular.run();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}
 								else{
@@ -62,7 +49,6 @@ public class NotificationScheduleAction extends TopAction{
 														prev_date = "No Previous date found";
 												next_date = quartzMisc.getNextScheduleDate();
 										}
-										addActionMessage("Scheduled Successfully");
 										addMessage("Scheduled Successfully");										
 								}
 						}catch(Exception ex){
@@ -79,11 +65,9 @@ public class NotificationScheduleAction extends TopAction{
 								HandleNotification handle = new HandleNotification(pay_period_id, mail_host, activeMail);
 								back = handle.process();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}
 								else{
-										addActionMessage("Notifications Processed Successfully");
 										addMessage("Notifications Processed Successfully");
 								}
 						}
