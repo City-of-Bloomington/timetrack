@@ -23,7 +23,6 @@ public class Block{
     String id="",
 				document_id="",
 				hour_code_id="",
-		// ovt_pref="",
 				clock_in="", clock_out="", holidayName="";
 		String date = ""; // the user pick date, needed for PTO, Holiday etc
 		double hours = 0.0;
@@ -89,7 +88,6 @@ public class Block{
 							 ){								
 				setId(val);
 				setDocument_id(val2);
-				// setJob_id(val3);
 				setHour_code_id(val4);
 				setDate(val5);
 				setBegin_hour(val6);
@@ -103,7 +101,6 @@ public class Block{
 		void setVals(
 								 String val,
 								 String val2,
-								 // String val3,
 								 String val4,
 								 String val5,
 								 int val6,
@@ -118,7 +115,6 @@ public class Block{
 							 ){								
 				setId(val);
 				setDocument_id(val2);
-				// setJob_id(val3);
 				setHour_code_id(val4);
 				setDate(val5);
 				setBegin_hour(val6);

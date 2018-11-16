@@ -125,13 +125,16 @@ public class HandleProfile{
 								double holiday_time_multiple = pp.getHolidayTimeMultiple();
 								String job_name = pp.getJob_name();
 								BenefitGroup bGroup = pp.getBenefitGroup();
-								job.compareWith(weekly_hrs,
-																hr_rate,
-																comp_time_after,
-																comp_time_multiple,
-																holiday_time_multiple,
-																job_name,
-																bGroup);
+								// we are skipping temp employee
+								if(!bGroup.isTemporary()){
+										job.compareWith(weekly_hrs,
+																		hr_rate,
+																		comp_time_after,
+																		comp_time_multiple,
+																		holiday_time_multiple,
+																		job_name,
+																		bGroup);
+								}
 								
 						}
 

@@ -365,10 +365,13 @@ public class TimeBlock extends Block{
 		}
 		public boolean areAllTimesSet(){
 				//
-				// if one of them set but not the other
-				//
-				if((time_in_set && !time_out_set) ||
-					 (!time_in_set && time_out_set)) return false;
+				// for clock-in only
+				if(time_in_set && !time_out_set){
+						if(id.equals(""))
+								clock_in="y";
+						return true;
+				}
+				if((!time_in_set && time_out_set)) return false;
 				return ((time_in_set && time_out_set) || hours_set);
 		}
 		public String getTime_out(){

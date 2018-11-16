@@ -27,6 +27,7 @@ public class Employee implements Serializable{
 				full_name="", first_name="", last_name="";
 		// needed for saving
 		String department_id="", group_id="";
+		String group_ids = ""; // for new employee with multiple groups/jobs
 		// normally this date is pay period start date
 		String job_active_date = "", pay_period_id="", selected_job_id="";
 		// User user = null;
@@ -267,6 +268,12 @@ public class Employee implements Serializable{
 						groupEmployee.setGroup_id(val);
 				}
     }
+    public void addGroup_id(String val){
+				if(val != null && !val.equals("")){
+						if(!group_ids.equals("")) group_ids +=",";
+						group_ids += val;
+				}
+    }		
     public void setJob_active_date(String val){
 				if(val != null)
 					 job_active_date = val;
@@ -696,6 +703,22 @@ public class Employee implements Serializable{
 												msg = groupEmployee.doSave();
 										}
 								}
+								else if(!group_ids.equals("")){
+										String[] g_arr = null;
+										try{
+												g_arr = group_ids.split(",");
+										}catch(Exception ex){
+												System.err.println(ex);
+										}
+										if(g_arr != null && g_arr.length > 0){
+												for(String str2:g_arr){
+														groupEmployee = new GroupEmployee();
+														groupEmployee.setGroup_id(str2);
+														groupEmployee.setEmployee_id(id);
+														msg = groupEmployee.doSave();
+												}
+										}
+								}
 						}
 				}
 				catch(Exception ex){
@@ -719,7 +742,7 @@ public class Employee implements Serializable{
 						else
 								pstmt.setString(jj++, first_name);
 						pstmt.setString(jj++, last_name);
-						if(id_code.equals(""))
+						if(id_code.equals("") || id_code.equals("0"))
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
 								pstmt.setString(jj++, id_code);
