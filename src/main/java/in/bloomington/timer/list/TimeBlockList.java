@@ -148,7 +148,10 @@ public class TimeBlockList{
 		}
 		public double getWeek2Total(){
 				return week2Total;
-		}		
+		}
+		public Map<String, Map<Integer, Double>> getDailyDbl(){
+				return daily;
+		}
 		public Map<String, Map<Integer, String>> getDaily(){
 				Set<String> set = daily.keySet();
 				Map<String, Map<Integer, String>> mapd = new TreeMap<>();

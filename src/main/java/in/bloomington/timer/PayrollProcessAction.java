@@ -375,9 +375,6 @@ public class PayrollProcessAction extends TopAction{
 														if(notSubmittedEmps == null)
 																notSubmittedEmps = new ArrayList<>();
 														notSubmittedEmps.add(emp);
-														if(noDocNorSubmitEmps == null)
-																noDocNorSubmitEmps = new ArrayList<>();
-														noDocNorSubmitEmps.add(emp);
 												}
 										}
 								}

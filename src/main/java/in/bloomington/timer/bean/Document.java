@@ -36,7 +36,8 @@ public class Document{
 		Employee initiater = null;
 		Workflow lastWorkflow = null;
 		List<TimeAction> timeActions = null;
-		Map<String, Map<Integer, String>> daily = null;				
+		Map<String, Map<Integer, String>> daily = null;
+		Map<String, Map<Integer, Double>> dailyDbl = null;		
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
 		JobTask job = null;
@@ -387,6 +388,7 @@ public class Document{
 								Map<String, Map<Integer, String>> ones = tl.getDaily();
 								if(ones != null && ones.size() > 0){
 										daily = ones;
+										dailyDbl = tl.getDailyDbl();
 										// }								
 										// Map<Integer, Double> ones = tl.getDaily();
 										// if(ones != null && ones.size() > 0){
@@ -417,9 +419,13 @@ public class Document{
 				//
 				prepareDaily(true);
 		}
+		
 		public Map<String, Map<Integer, String>> getDaily(){
 				return daily;
 		}
+		public Map<String, Map<Integer, Double>> getDailyDbl(){
+				return dailyDbl;
+		}		
 		
 		public List<TimeBlock> getTimeBlocks(){
 				if(timeBlocks == null){
@@ -589,6 +595,11 @@ public class Document{
 								logger.error(back);
 						}
 				}
+		}
+		public Map<Integer, Double> getUsedAccrualTotals(){
+				if(usedAccrualTotals == null)
+						findUsedAccruals();
+				return usedAccrualTotals;
 		}
 		public void findHourCodeTotals(){
 				if(hourCodeTotals == null){
@@ -858,9 +869,11 @@ public class Document{
 				}
 				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
+						checkForExcessUse(hourCodeWeek1, week1Total, "1");
 				}
 				if(week2Total > 0){
 						checkWeekWarnings(hourCodeWeek2, week2Total);
+						checkForExcessUse(hourCodeWeek2, week2Total, "2");						
 				}
 		}		
 		/**
@@ -928,6 +941,26 @@ public class Document{
 						}
 				}
 		}
+		private void checkForExcessUse(Map<String, Double> hourCodeWeek,
+																	 double weekTotal,
+																	 String whichWeek){
+				if(job != null){
+						if(weekTotal > job.getWeekly_regular_hours()){
+								double dif = weekTotal - job.getWeekly_regular_hours();
+								Set<String> keys = hourCodeWeek.keySet();
+								for(String key:keys){
+										if(key.indexOf("used") > -1){
+												double used = hourCodeWeek.get(key);
+												if(used > dif+0.01){
+														String str = "Week "+whichWeek+" excess of ("+dfn.format(dif)+" hrs) of ("+key+") used";
+														if(!warnings.contains(str))
+																warnings.add(str);
+												}
+										}
+								}
+						}
+				}				
+		}		
 		public boolean hasWarnings(){
 				return warnings.size() > 0;
 		}

@@ -205,6 +205,7 @@ public class TimeClock{
 								for(JobTask one:jobs){
 										if(one.isPrimary()){
 												job = one;
+												job_id = job.getId();
 										}
 								}
 								if(job == null){
@@ -243,6 +244,9 @@ public class TimeClock{
 				return hasClockIn;
 		}
 		public List<JobTask> getJobs(){
+				if(jobs == null){
+						findJobs();
+				}
 				return jobs;
 		}
 		public Employee getEmployee(){
@@ -282,6 +286,7 @@ public class TimeClock{
 				//			
 				// find document, if non create one
 				//
+				findEmployee();
 				// we need the employee job
 				if(job_id.equals("")){
 						getJobs();

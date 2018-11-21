@@ -7,6 +7,7 @@ package in.bloomington.timer.bean;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -40,7 +41,7 @@ public class MultiJobDoc{
 		Document document = null; // we need one to get the accruals 
 		// Employee initiater = null;
 		Workflow lastWorkflow = null;
-		Map<String, Map<Integer, String>> daily = null;				
+		Map<String, Map<Integer, Double>> daily = null;				
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
 		List<JobTask> jobs = null;
@@ -64,17 +65,19 @@ public class MultiJobDoc{
 											 ){
 				setEmployee_id(val);				
 				setPay_period_id(val2);
-				findDocuments();
+				// findDocuments();
 				// fillWarningMap();
     }
     public MultiJobDoc(){
+				
     }
-		void findDocuments(){
+		public String findDocuments(){
+				String back = "";
 				if(documents == null &&
-					 !(employee_id.equals("") || pay_period_id.equals(""))){
+					 !employee_id.equals("") && !pay_period_id.equals("")){
 						DocumentList dl = new DocumentList(employee_id);
 						dl.setPay_period_id(pay_period_id);
-						String back = dl.find();
+						back = dl.find();
 						if(back.equals("")){
 								List<Document> ones = dl.getDocuments();
 								if(ones != null && ones.size() > 0){
@@ -82,10 +85,13 @@ public class MultiJobDoc{
 										for(Document one:documents){
 												one.prepareDaily();
 										}
-										document = ones.get(0); // any one will do
+										// we need one for accruals
+										document = documents.get(0); // any one will do
 								}
+								prepareDaily(true);								
 						}
 				}
+				return back;
 		}
 		public boolean hasDocuments(){
 				findDocuments();
@@ -189,7 +195,6 @@ public class MultiJobDoc{
 				getJobs();
 				return jobs != null && jobs.size() > 0;
 		}
-/*
 		private void fillWarningMap(){
 				AccrualWarningList tl = new AccrualWarningList();
 				String back = tl.find();
@@ -207,7 +212,22 @@ public class MultiJobDoc{
 						}
 				}
 		}
-*/
+
+		public Map<String, Map<Integer, String>> getDaily(){
+				Set<String> set = daily.keySet();
+				Map<String, Map<Integer, String>> mapd = new TreeMap<>();
+				for(String str:set){
+						Map<Integer, String> map2 = new TreeMap<>();
+						
+						Map<Integer, Double> map = daily.get(str);
+						for(int j=0;j<16;j++){ // 8 total week1, 15 total week2
+								double val = map.get(j);
+								map2.put(j, dfn.format(val));
+						}
+						mapd.put(str, map2);
+				}
+				return mapd;
+		}				
 
 		public String getWeek1_flsa(){
 				return ""+dfn.format(week1_flsa);
@@ -225,42 +245,17 @@ public class MultiJobDoc{
 								findDocuments();
 						if(documents != null && documents.size() > 0){
 								for(Document doc:documents){
-										doc.prepareDaily(true);
-										// daily
-										Map<String, Map<Integer, String>> ones = doc.getDaily();
-										if(ones != null && ones.size() > 0){
+										Map<String, Map<Integer, Double>> mp = doc.getDailyDbl();
+										if(mp != null){
 												if(daily == null){
-														daily = ones;
+														daily = mp;
 												}
 												else{
-														Set<String> keySet = ones.keySet();
-														for(String key:keySet){												
-																Map<Integer, String> map = ones.get(key);
-																if(daily.containsKey(key)){
-																		Map<Integer, String> one = daily.get(key);
-																		for(int i=0;i<16;i++){
-																				if(one.containsKey(i)){
-																						String sdd = one.get(i);
-																						double dd = 0;
-																						if(sdd != null){
-																								try{
-																										dd = Double.parseDouble(sdd);
-																								}catch(Exception ex){}
-																						}
-																						if(map.containsKey(i)){
-																								sdd = map.get(i);
-																								try{
-																										dd += Double.parseDouble(sdd);
-																								}catch(Exception ex){}				
-																						}
-																						map.put(i, dfn.format(dd));
-																				}
-																		}
-																		daily.put(key, map);
-																}
-																else{
-																		daily.put(key, map);
-																}
+														// normally one key (job name)
+														Set<String> keySet = mp.keySet();
+														for(String key:keySet){
+																Map<Integer, Double> map = mp.get(key);
+																daily.put(key, map);
 														} // for key
 												} // else
 										}
@@ -271,7 +266,7 @@ public class MultiJobDoc{
 														dailyBlocks = blocks;
 												}
 												else{
-														for(int i=0;i<16;i++){
+														for(int i=0;i<14;i++){
 																List<TimeBlock> bls = null, bls2=null;
 																if(dailyBlocks.containsKey(i)){
 																		bls = dailyBlocks.get(i);
@@ -292,28 +287,37 @@ public class MultiJobDoc{
 												}
 										}
 										// hour code total
-										Map<Integer, Double> hrct = doc.getHourCodeTotals();
-										if(hrct != null && hrct.size() > 0){
-												if(hourCodeTotals == null){
-														hourCodeTotals = hrct;
-												}
-												else{
-														Set<Integer> set = hourCodeTotals.keySet();
-														Set<Integer> set2 = hrct.keySet();
-														if(set2 != null && set2.size() > 0){
-																for(int i:set2){
-																		set.add(i);
-																}
+										// not needed
+										if(doc.hasHourCodeTotals()){
+												Map<Integer, Double> hrct = doc.getHourCodeTotals();
+												if(hrct != null && hrct.size() > 0){
+														if(hourCodeTotals == null){
+																hourCodeTotals = hrct;
 														}
-														for(int i:set){
-																double dd = 0;
-																if(hourCodeTotals.containsKey(i)){
-																		dd = hourCodeTotals.get(i);
+														else{
+																Set<Integer> all = new HashSet<>();
+																Set<Integer> set = hourCodeTotals.keySet();
+																Set<Integer> set2 = hrct.keySet();
+																if(set != null && set.size() > 0){
+																		for(int i:set){
+																				all.add(i);
+																		}
 																}
-																if(hrct.containsKey(i)){
-																		dd += hrct.get(i);
+																if(set2 != null && set2.size() > 0){
+																		for(int i:set2){
+																				all.add(i);
+																		}
+																}																
+																for(int i:all){
+																		double dd = 0;
+																		if(hourCodeTotals.containsKey(i)){
+																				dd = hourCodeTotals.get(i);
+																		}
+																		if(hrct.containsKey(i)){
+																				dd += hrct.get(i);
+																		}
+																		hourCodeTotals.put(i, dd);
 																}
-																hourCodeTotals.put(i, dd);
 														}
 												}
 										}
@@ -324,14 +328,20 @@ public class MultiJobDoc{
 														hourCodeWeek1 = hrw1;
 												}
 												else{
+														Set<String> all = new HashSet<>();
 														Set<String> set = hourCodeWeek1.keySet();
 														Set<String> set2 = hrw1.keySet();
+														if(set != null && set.size() > 0){
+																for(String key:set){
+																		all.add(key);
+																}
+														}														
 														if(set2 != null && set2.size() > 0){
 																for(String key:set2){
-																		set.add(key);
+																		all.add(key);
 																}
 														}
-														for(String key:set){
+														for(String key:all){
 																double dd = 0;
 																if(hourCodeWeek1.containsKey(key)){
 																		dd = hourCodeWeek1.get(key);
@@ -349,14 +359,21 @@ public class MultiJobDoc{
 														hourCodeWeek2 = hrw2;
 												}
 												else{
+														Set<String> all = new HashSet<>();
 														Set<String> set = hourCodeWeek2.keySet();
 														Set<String> set2 = hrw2.keySet();
+														if(set != null && set.size() > 0){
+																for(String key:set){
+																		all.add(key);
+																}
+														}														
 														if(set2 != null && set2.size() > 0){
 																for(String key:set2){
-																		set.add(key);
+																		all.add(key);
 																}
 														}
-														for(String key:set){
+														
+														for(String key:all){
 																double dd = 0;
 																if(hourCodeWeek2.containsKey(key)){
 																		dd = hourCodeWeek2.get(key);
@@ -371,73 +388,29 @@ public class MultiJobDoc{
 										week1Total += doc.getWeek1TotalDbl();
 										week2Total += doc.getWeek2TotalDbl();
 										week1_flsa += doc.getWeek1_flsaDbl();
-										week2_flsa += doc.getWeek2_flsaDbl();										
+										week2_flsa += doc.getWeek2_flsaDbl();
+										List<TimeBlock> tbs = doc.getTimeBlocks();
+										if(tbs == null || tbs.size() == 0) continue;
+										if(timeBlocks == null){
+												timeBlocks = tbs;
+										}
+										else {
+												for(TimeBlock tb:tbs){
+														timeBlocks.add(tb);
+												}
+										}
 								} // end for
 						} // end if
-						if(includeEmptyBlocks){
-								fillTwoWeekEmptyBlocks();
+						// one of the document can provide all these
+						if(document != null){
+								employeeAccruals = document.getEmpAccruals();
+								usedAccrualTotals = document.getUsedAccrualTotals();
 						}
-						// getEmpAccruals();
+						checkForWarnings();
 				}
-		}
-		
-		/*
-		public void prepareDaily(boolean includeEmptyBlocks){
-				if(daily == null && !id.equals("")){
-						TimeBlockList tl = new TimeBlockList();
-						tl.setDocument_id(id);
-						tl.setActiveOnly();
-						String back = tl.find();
-						if(back.equals("")){
-								Map<String, Map<Integer, String>> ones = tl.getDaily();
-								if(ones != null && ones.size() > 0){
-										daily = ones;
-										// }								
-										// Map<Integer, Double> ones = tl.getDaily();
-										// if(ones != null && ones.size() > 0){
-										// daily = ones;
-										dailyBlocks = tl.getDailyBlocks();
-										hourCodeTotals = tl.getHourCodeTotals();
-										hourCodeWeek1 = tl.getHourCodeWeek1();
-										hourCodeWeek2 = tl.getHourCodeWeek2();
-										List<TimeBlock> ones2 = tl.getTimeBlocks();
-										if(ones2 != null && ones2.size() > 0){
-												timeBlocks = ones2;
-										}
-										week1_flsa = tl.getWeek1_flsa();
-										week2_flsa = tl.getWeek2_flsa();
-										week1Total = tl.getWeek1Total();
-										week2Total = tl.getWeek2Total();										
-								}
-						}
-						if(includeEmptyBlocks){
-								fillTwoWeekEmptyBlocks();
-						}
-						getEmpAccruals();
-				}
-		}
-		public void prepareDaily(){
-				//
-				// include empty blocks as well
-				//
-				prepareDaily(true);
-		}		
-		*/
-
-		public Map<String, Map<Integer, String>> getDaily(){
-				return daily;
 		}
 		
 		public List<TimeBlock> getTimeBlocks(){
-				/*
-				if(timeBlocks == null){
-						prepareDaily();
-				}
-				if(timeBlocks == null){
-						timeBlocks = new ArrayList<>();
-						dailyBlocks = new TreeMap<>();
-				}
-				*/
 				return timeBlocks;
 		}
 		public String getWeek1Total(){
@@ -447,7 +420,8 @@ public class MultiJobDoc{
 				return ""+dfn.format(week2Total);
 		}
 		public String getPayPeriodTotal(){
-				double ret = week1Total+week2Total;
+				double ret = 0;
+				ret = week1Total+week2Total;
 				return ""+dfn.format(ret);
 		}
 		public SalaryGroup getSalaryGroup(){
@@ -514,35 +488,7 @@ public class MultiJobDoc{
 				}
 				return ret;
 		}
-		public void findUsedAccruals(){
-				/*
-				if(usedAccrualTotals == null){
-						TimeBlockList tl = new TimeBlockList();
-						tl.setActiveOnly();
-						tl.setDocument_id(id);
-						String back = tl.findUsedAccruals();
-						if(back.equals("")){
-								usedAccrualTotals = tl.getUsedAccrualTotals();
-						}
-						else{
-								logger.error(back);
-						}
-				}
-				*/
-		}
-		public void findHourCodeTotals(){
-				/*
-				if(hourCodeTotals == null){
-						TimeBlockList tl = new TimeBlockList();
-						tl.setActiveOnly();
-						tl.setDocument_id(id);
-						String back = tl.find();
-						if(back.equals("")){
-								hourCodeTotals = tl.getHourCodeTotals();
-						}
-				}
-				*/
-		}
+
 		public boolean hasDailyBlocks(){
 				return dailyBlocks != null;
 		}
@@ -565,9 +511,6 @@ public class MultiJobDoc{
 				return hourCodeWeek2 != null && hourCodeWeek2.size() > 0;
 		}
 		public Map<Integer, List<TimeBlock>> getDailyBlocks(){
-				if(dailyBlocks == null){
-						// prepareDaily();
-				}
 				return dailyBlocks;
 		}
 		public Map<Integer, Double> getHourCodeTotals(){
@@ -670,44 +613,7 @@ public class MultiJobDoc{
 				}
 				return "";
 		}		
-		// since not everyday we have timeblock, we need to fill
-		// the empty ones, needed for display and related links
-		void fillTwoWeekEmptyBlocks(){
-				/*
-				prepareHolidays();
-				if(payPeriod == null){
-						getPayPeriod();
-				}				
-				String date = payPeriod.getStart_date();
-				for(int j=13;j >=0;j--){
-						if(!dailyBlocks.containsKey(j)){
-								TimeBlock one =
-										new TimeBlock();
-								//
-								// we need to set what we need in timeblock
-								// document_id, date
-								// probably document_id directly from action
-								// and we do not need to save it in block
-								one.setDocument_id(id);
-								// we need to set the day date
-								//
-								one.setOrder_index(j);								
-								String dt = Helper.getDateAfter(date, j);
-								one.setDate(dt);
-								if(holidays.isHoliday(dt)){
-										one.setIsHoliday(true);
-										one.setHolidayName(holidays.getHolidayName(dt));
-								}
-								// we use start date from payperiod and we add j days to it
-								//
-								List<TimeBlock> lone = new ArrayList<>();
-								lone.add(one);
-								//
-								dailyBlocks.put(j, lone);
-						}
-				}
-				*/
-		}
+
 		private void checkForWarnings(){
 				checkForWarningsAfter();
 				checkForWarningsBefore();
@@ -719,6 +625,7 @@ public class MultiJobDoc{
 				}
 				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
+						checkForExcessUse(hourCodeWeek1, week1Total, "1");
 				}
 				if(job != null){
 						if(week1Total < job.getWeekly_regular_hours()){
@@ -729,6 +636,7 @@ public class MultiJobDoc{
 				}
 				if(week2Total > 0){
 						checkWeekWarnings(hourCodeWeek2, week2Total);
+						checkForExcessUse(hourCodeWeek2, week2Total, "2");
 				}
 				if(job != null){				
 						if(week2Total < job.getWeekly_regular_hours()){
@@ -738,6 +646,26 @@ public class MultiJobDoc{
 						}
 				}
 				checkForUnauthorizedHoliday();
+		}
+		private void checkForExcessUse(Map<String, Double> hourCodeWeek,
+																	 double weekTotal,
+																	 String whichWeek){
+				if(job != null){
+						if(weekTotal > job.getWeekly_regular_hours()){
+								double dif = weekTotal - job.getWeekly_regular_hours();
+								Set<String> keys = hourCodeWeek.keySet();
+								for(String key:keys){
+										if(key.indexOf("used") > -1){
+												double used = hourCodeWeek.get(key);
+												if(used > dif+0.01){
+														String str = "Week "+whichWeek+" excess of ("+dfn.format(dif)+" hrs) of ("+key+") used";
+														if(!warnings.contains(str))
+																warnings.add(str);
+												}
+										}
+								}
+						}
+				}				
 		}
 		/**
 		 * check if the employee is eligible for holiday
@@ -833,6 +761,7 @@ public class MultiJobDoc{
 								}
 								double d_dif = weekTotal - dbl_used; // 45.27 - 8.27
 								double d_need = 0;
+								System.err.println(" d_dif "+d_dif);
 								if(job != null){
 										if(d_dif < job.getWeekly_regular_hours())
 												d_need = job.getWeekly_regular_hours() - d_dif;   // 40 - 37 = 3

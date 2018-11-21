@@ -28,9 +28,11 @@ public class TimeDetailsAction extends TopAction{
 		String pay_period_id = "";
 		String document_id = "", job_id="";
 		Document document = null;
+		MultiJobDoc mjdoc = null;
 		String date = "", source="";
 		JobTask job = null;
 		List<JobTask> jobs = null;
+		List<Type> jobTypes = null;
 		List<PayPeriod> payPeriods = null;
 		public String execute(){
 				String ret = SUCCESS;
@@ -41,6 +43,9 @@ public class TimeDetailsAction extends TopAction{
 						addActionError("No job found for employee ");						
 				}
 				if(action.equals("View")){
+						ret = "view";
+				}
+				if(showAllJobs()){
 						ret = "view";
 				}
 				return ret;
@@ -76,7 +81,9 @@ public class TimeDetailsAction extends TopAction{
 						if(job_id.equals("")){
 								getJob();
 						}
-						dl.setJob_id(job_id);						
+						if(!job_id.equals("all")){
+								dl.setJob_id(job_id);
+						}
 						String back = dl.find();
 						if(back.equals("")){
 								List<Document> ones = dl.getDocuments();
@@ -108,15 +115,19 @@ public class TimeDetailsAction extends TopAction{
 										addError("Job not set ");								
 								}														
 						}
-						Document one = new Document(null, employee_id, pay_period_id, job_id, null, user.getId());
-						String back = one.doSave();
-						if(back.equals("")){
-								document_id = one.getId();
-								document = one;
+						if(!job_id.equals("all")){
+								Document one = new Document(null, employee_id, pay_period_id, job_id, null, user.getId());
+								String back = one.doSave();
+								if(back.equals("")){
+										document_id = one.getId();
+										document = one;
+								}
 						}
 				}
 				return document_id;
 		}
+
+		
 		public void setDocument_id(String val){
 				if(val != null && !val.equals(""))		
 						document_id = val;
@@ -144,6 +155,34 @@ public class TimeDetailsAction extends TopAction{
 		public String getSource(){
 				return source;
 		}
+		public boolean hasMjdoc(){
+				getMjdoc();
+				return mjdoc != null;
+		}
+		public MultiJobDoc getMjdoc(){
+				if(mjdoc == null){
+						getEmployee();
+						if(employee_id.equals("")){
+								addError(" employee id not set ");
+								return null;
+						}
+						getPayPeriod();
+						if(pay_period_id.equals("")){
+								addError(" pay period not set ");
+								return null;
+						}
+						MultiJobDoc one = new MultiJobDoc(employee_id, pay_period_id);
+						String back = one.findDocuments();
+						if(back.equals("")){
+								mjdoc = one;
+						}
+						else{
+								System.err.println(" error "+back);
+								addError(back);
+						}
+				}
+				return mjdoc;
+		}		
 		public Document getDocument(){
 				if(document == null && !document_id.equals("")){
 						Document one = new Document(document_id);
@@ -284,11 +323,11 @@ public class TimeDetailsAction extends TopAction{
 						else if(jobs.size() == 1){
 								job = jobs.get(0);
 						}
-						if(job != null){
+						if(job != null && !job_id.equals("all")){
 								job_id = job.getId();
 						}
 				}
-				else if(!job_id.equals("") && job == null){
+				else if(!job_id.equals("") && !job_id.equals("all") && job == null){
 						JobTask one = new JobTask(job_id);
 						String back = one.doSelect();
 						if(back.equals("")){
@@ -296,6 +335,9 @@ public class TimeDetailsAction extends TopAction{
 						}
 				}
 				return job;
+		}
+		public boolean showAllJobs(){
+				return hasMultipleJobs() && job_id.equals("all");
 		}
 		public boolean hasJob(){
 				getJob();
@@ -307,6 +349,7 @@ public class TimeDetailsAction extends TopAction{
 		public List<JobTask> getJobs(){
 				if(jobs == null){
 						JobTaskList jl = new JobTaskList(getEmployee_id());
+						getPayPeriod();
 						if(payPeriod != null){
 								jl.setPay_period_id(payPeriod.getId());
 						}
@@ -330,6 +373,25 @@ public class TimeDetailsAction extends TopAction{
 		public boolean hasMultipleJobs(){
 				getJobs();
 				return jobs != null && jobs.size() > 1;
+		}
+		public boolean hasJobTypes(){
+				getJobTypes();
+				return jobTypes != null && jobTypes.size() > 0;
+		}
+		public List<Type> getJobTypes(){
+				getJobs();
+				if(jobs != null && jobs.size() > 1){
+						if(jobTypes == null){
+								jobTypes = new ArrayList<>();
+								Type tp = new Type("all","All");
+								jobTypes.add(tp);					
+								for(JobTask one:jobs){
+										tp = new Type(one.getId(), one.getName());
+										jobTypes.add(tp);
+								}
+						}
+				}
+				return jobTypes;
 		}
 				
 }

@@ -208,9 +208,11 @@ public class EmployeesImport{
 																				groups.put(gg.getName(), gg.getId());
 																		}
 																}
+																/** existing group
 																else{
 																		errors += str;
 																}
+																*/
 														} // no groups in this department
 														else{
 																List<Group> ones = new ArrayList<>();
@@ -242,6 +244,7 @@ public class EmployeesImport{
 												comp_time_weekly_hours=40;
 										double comp_time_factor = 1.0,
 												holiday_comp_factor=1.0;
+										boolean clockIn = false;
 										str = record.get(1);
 										if(str != null && !str.equals("")){
 
@@ -360,6 +363,14 @@ public class EmployeesImport{
 																errors += " employee group name not set properly: "+str;
 														}
 												}
+												try{ // in case we have this field
+														str = record.get(6); // clockIn
+														if(str != null && !str.equals("")){
+																clockIn = true;
+														}
+												}catch(Exception ex){
+														// we do not have, so we ignore
+												}
 												if(errors.equals("")){
 														if(emp_exist){
 																str = emp.doUpdateDeptGroupInfo();
@@ -385,6 +396,9 @@ public class EmployeesImport{
 												job.setComp_time_weekly_hours(comp_time_weekly_hours);
 												job.setComp_time_factor(comp_time_factor);
 												job.setHoliday_comp_factor(holiday_comp_factor);
+												if(clockIn){
+														job.setClock_time_required(true);
+												}
 												str = job.doSave();
 												if(!str.equals("")){
 														errors += str;
@@ -423,6 +437,7 @@ public class EmployeesImport{
 														str2Arr[0] = str2;
 												}
 												for(String stt:str2Arr){
+														System.err.println(stt);
 														if(emps.containsKey(stt)){
 																approver_id = emps.get(stt);
 																approver_ids.add(approver_id);
@@ -461,8 +476,10 @@ public class EmployeesImport{
 																		payroll_id = empp.getId();
 																		payroll_ids.add(payroll_id);
 																		emps.put(stt2, empp.getId());
-																}														
-																errors +=" Error group payroll username not set properly "+str3;
+																}
+																else{
+																		errors +=" Error group payroll username not set properly "+str3;
+																}
 														}
 												}
 												String[] str4Arr = new String[1];
@@ -623,10 +640,7 @@ public class EmployeesImport{
 																				deptGroups.put(str2, ones);
 																				groups.put(gg.getName(), gg.getId());
 																		}
-																}
-																else{
-																		errors += str;
-																}
+																} // existing group we skip
 														} // no groups in this department
 														else{
 																List<Group> ones = new ArrayList<>();
@@ -922,6 +936,8 @@ public class EmployeesImport{
 										str = record.get(1); // username to get id
 										str2 = record.get(2); // group
 										str3 = record.get(3); // job title
+										str4 = record.get(4); // clock_in only
+										boolean clockIn = false;
 										Profile profile = null;
 										BenefitGroup bgroup = null;
 										Employee emp = null;
@@ -934,6 +950,9 @@ public class EmployeesImport{
 												holiday_comp_factor=1.0;
 										if(str3 != null)
 												job_name = str3;
+										if(str4 != null && !str4.equals("")){
+												clockIn = true;
+										}
 										if(str != null && !str.equals("")){
 												if(emps.containsKey(str)){
 														emp_id = emps.get(str);
@@ -989,7 +1008,6 @@ public class EmployeesImport{
 														else{
 																errors += " employee group name not set properly: "+str3;
 														}
-														
 												}
 												if(job_name != null && !job_name.equals("")){
 														if(positions.containsKey(job_name)){
@@ -1036,6 +1054,8 @@ public class EmployeesImport{
 												if(!emp.hasJobs()){ // first job will be primary
 														job.setPrimary_flag(true);
 												}
+												if(clockIn)
+														job.setClock_time_required(true);
 												job.setWeekly_regular_hours(weekly_regular_hours);
 												job.setComp_time_weekly_hours(comp_time_weekly_hours);
 												job.setComp_time_factor(comp_time_factor);

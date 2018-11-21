@@ -50,14 +50,16 @@
 
         <div class="job-select">
           <label for="job_id"><b>Job:</b></label><br>
-          <s:select
-            tabindex="4"
-            name="job_id"
-            value="%{job_id}"
-            list="jobs"
-            listKey="id"
-            listValue="name"
-            onchange="this.form.submit()" />
+					<s:if test="hasJobTypes()">
+						<s:select
+							tabindex="4"
+							name="job_id"
+							value="%{job_id}"
+							list="jobTypes"
+							listKey="id"
+							listValue="name"
+							onchange="this.form.submit()" />
+					</s:if>
         </div>
       </s:if>
 
