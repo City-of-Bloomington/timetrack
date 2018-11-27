@@ -58,6 +58,7 @@ public class MultiJobDoc{
 		List<TimeNote> timeNotes = null;
 		List<TimeIssue> timeIssues = null;
 		List<Employee> nextActioners = null;
+		Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = null;		
 		Map<String, AccrualWarning> warningMap = new TreeMap<>();
 		HolidayList holidays = null;
     public MultiJobDoc(String val,
@@ -195,6 +196,9 @@ public class MultiJobDoc{
 				getJobs();
 				return jobs != null && jobs.size() > 0;
 		}
+		//
+		// ToDo change to accrual instead of hourCode
+		// or discard all the way
 		private void fillWarningMap(){
 				AccrualWarningList tl = new AccrualWarningList();
 				String back = tl.find();
@@ -385,6 +389,44 @@ public class MultiJobDoc{
 														}
 												}												
 										}
+										Map<Integer, Map<Integer, Double>> usedWkAccruals = doc.getUsedWeeklyAccruals();
+										if(usedWkAccruals != null && !usedWkAccruals.isEmpty()){
+												if(usedWeeklyAccruals == null){
+														usedWeeklyAccruals = usedWkAccruals;
+												}
+												else{
+														for(int week_id=1;week_id <3; week_id++){
+																if(usedWkAccruals.containsKey(week_id)){
+																		Map<Integer, Double> map = usedWkAccruals.get(week_id);
+																		Set<Integer> set = map.keySet();
+																		Set<Integer> all = new HashSet<>();
+																		if(!set.isEmpty()){
+																				all.addAll(set);
+																		}
+																		if(usedWeeklyAccruals.containsKey(week_id)){
+																				Map<Integer, Double> map2 = usedWeeklyAccruals.get(week_id);
+																				set = map2.keySet();																				
+																				if(set.isEmpty()){
+																						all.addAll(set);
+																				}
+																				for(Integer hr_id:all){
+																						double hrs = 0;
+																						if(map.containsKey(hr_id)){
+																								hrs = map.get(hr_id);
+																						}
+																						if(map2.containsKey(hr_id)){
+																								hrs += map2.get(hr_id);
+																						}
+																						map2.put(hr_id, hrs);
+																				}
+																		}
+																		else{
+																				usedWeeklyAccruals.put(week_id, map);
+																		}
+																}
+														}
+												}
+										}
 										week1Total += doc.getWeek1TotalDbl();
 										week2Total += doc.getWeek2TotalDbl();
 										week1_flsa += doc.getWeek1_flsaDbl();
@@ -555,7 +597,6 @@ public class MultiJobDoc{
 								if(accDesc == null) accDesc="";
 								String codeInfo = accName+": "+accDesc;
 								//
-								// String related_id = one.getRelated_hour_code_id();
 								if(accrual_id != null && !accrual_id.equals("")){
 										double hrs_total = one.getHours();
 										list.add(""+dfn.format(hrs_total));
@@ -625,7 +666,8 @@ public class MultiJobDoc{
 				}
 				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
-						checkForExcessUse(hourCodeWeek1, week1Total, "1");
+						// checkForExcessUse(hourCodeWeek1, week1Total, "1");
+						checkForExcessUse(week1Total, 1);						
 				}
 				if(job != null){
 						if(week1Total < job.getWeekly_regular_hours()){
@@ -636,7 +678,8 @@ public class MultiJobDoc{
 				}
 				if(week2Total > 0){
 						checkWeekWarnings(hourCodeWeek2, week2Total);
-						checkForExcessUse(hourCodeWeek2, week2Total, "2");
+						// checkForExcessUse(hourCodeWeek2, week2Total, "2");
+						checkForExcessUse(week2Total, 2);						
 				}
 				if(job != null){				
 						if(week2Total < job.getWeekly_regular_hours()){
@@ -647,26 +690,96 @@ public class MultiJobDoc{
 				}
 				checkForUnauthorizedHoliday();
 		}
-		private void checkForExcessUse(Map<String, Double> hourCodeWeek,
-																	 double weekTotal,
-																	 String whichWeek){
+		private void checkForExcessUse(double weekTotal,
+																	 int whichWeek){
 				if(job != null){
-						if(weekTotal > job.getWeekly_regular_hours()){
-								double dif = weekTotal - job.getWeekly_regular_hours();
-								Set<String> keys = hourCodeWeek.keySet();
-								for(String key:keys){
-										if(key.indexOf("used") > -1){
-												double used = hourCodeWeek.get(key);
-												if(used > dif+0.01){
-														String str = "Week "+whichWeek+" excess of ("+dfn.format(dif)+" hrs) of ("+key+") used";
-														if(!warnings.contains(str))
-																warnings.add(str);
+						if(weekTotal > job.getWeekly_regular_hours()+0.001){
+								double week_excess = weekTotal - job.getWeekly_regular_hours();
+								double week_excess_adj = week_excess;
+								if(usedWeeklyAccruals != null &&
+									 !usedWeeklyAccruals.isEmpty()){
+										if(usedWeeklyAccruals.containsKey(whichWeek)){
+												Map<Integer, Double> map = usedWeeklyAccruals.get(whichWeek);
+												Set<Integer> keys = map.keySet();
+												if(!keys.isEmpty()){
+														for(int key:keys){
+																String str = "";
+																double used = map.get(key);
+																if(used <= week_excess_adj){
+																		HourCode hrc = new HourCode(""+key);
+																		String back = hrc.doSelect();
+																		if(back.equals("")){
+																				str = "Week "+whichWeek+" excess of ("+dfn.format(used)+" hrs) of ("+hrc.getName()+") used ";
+																				if(!warnings.contains(str))
+																						warnings.add(str);
+																				str ="";
+																				week_excess_adj -= used; // adjust for next key (if any)
+																				continue;
+																		}	
+																}
+																else if(week_excess_adj > 0.001
+																				&& used > week_excess_adj+0.001){
+																		// need is the amount we need to get
+																		// to weekly regular total required
+																		double need = used - week_excess_adj;
+																		double real_need = 0;
+																		HourCode hrc = new HourCode(""+key);
+																		String back = hrc.doSelect();
+																		double min_hrs = 0;
+																		if(back.equals("")){
+																				if(hrc.hasAccrualWarning()){
+																						AccrualWarning acw = hrc.getAccrualWarning();
+																						if(acw.require_min()){
+																								min_hrs = acw.getMin_hrs();
+																								if(need < min_hrs){
+																										need = min_hrs;
+																										if(used > need){
+																												week_excess_adj = used-need;
+																												str = "Week "+whichWeek+" excess of ("+dfn.format(week_excess_adj)+" hrs) of ("+hrc.getName()+") used";
+																												if(!warnings.contains(str))
+																														warnings.add(str);
+																												return;
+																										}
+																								} // need > min_hrs
+																								else { // need > min_hrs
+																										need -= min_hrs;
+																										real_need += min_hrs;
+																								}
+																						}
+																						else{
+																								str = "Week "+whichWeek+" excess of ("+dfn.format(week_excess_adj)+" hrs) of ("+hrc.getName()+") used";
+																								if(!warnings.contains(str))
+																										warnings.add(str);
+																								return;
+																						}
+																						if(need > 0.001){
+																								if(acw.require_step()){
+																										int cnt = (int)(need / acw.getStep_hrs());
+																										if(need % acw.getStep_hrs() > 0){
+																												cnt += 1;
+																										}
+																										need = cnt*acw.getStep_hrs();
+																										real_need += need;
+																										week_excess = used-real_need;
+																										if(week_excess > 0.001){
+																												
+																												str = "Week "+whichWeek+" excess of ("+dfn.format(week_excess)+" hrs) of ("+hrc.getName()+") used";
+																												if(!warnings.contains(str))
+																														warnings.add(str);
+																												return;
+																										}
+																								}
+																						}
+																				}
+																		}
+																}
+														}
 												}
 										}
 								}
 						}
 				}				
-		}
+		}		
 		/**
 		 * check if the employee is eligible for holiday
 		 * if the day before holiday or day after is authorized unpaid leave

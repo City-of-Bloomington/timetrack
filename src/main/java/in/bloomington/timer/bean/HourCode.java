@@ -23,7 +23,8 @@ public class HourCode extends Type{
 		static final long serialVersionUID = 700L;
 		static Logger logger = LogManager.getLogger(HourCode.class);
 
-		Type accrual = null;
+		Accrual accrual = null;
+		AccrualWarning accrualWarning = null;
 		CodeRef codeRef = null;
     private String 
 				record_method="Time", // time or hours
@@ -120,16 +121,35 @@ public class HourCode extends Type{
 				}
 				return ret;
 		}
-		public Type getAccrual(){
+		public Accrual getAccrual(){
 				if(accrual == null && !accrual_id.equals("")){
-						Type one = new Type(accrual_id);
-						one.setTable_name("accruals");
+						Accrual one = new Accrual(accrual_id);
 						String back = one.doSelect();
 						if(back.equals("")){
 								accrual = one;
 						}
 				}
 				return accrual;
+		}
+		public AccrualWarning getAccrualWarning(){
+				if(accrualWarning == null &&
+					 !id.equals("") &&
+					 !accrual_id.equals("")){
+						AccrualWarningList awl = new AccrualWarningList();
+						awl.setAccrual_id(accrual_id);
+						String back = awl.find();
+						if(back.equals("")){
+								List<AccrualWarning> ones = awl.getAccrualWarnings();
+								if(ones != null && ones.size() > 0){
+										accrualWarning = ones.get(0);
+								}
+						}
+				}
+				return accrualWarning;
+		}
+		boolean hasAccrualWarning(){
+				getAccrualWarning();
+				return accrualWarning != null;
 		}
 		@Override
 		public boolean equals(Object obj){

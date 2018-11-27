@@ -189,6 +189,7 @@ public class TimeDetailsAction extends TopAction{
 						String back = one.doSelect();
 						if(back.equals("")){
 								document = one;
+								job_id = document.getJob_id();
 						}
 				}
 				return document;

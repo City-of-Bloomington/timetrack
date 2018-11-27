@@ -55,6 +55,8 @@ public class Document{
 		List<Employee> nextActioners = null;
 		TimeAction lastTimeAcion = null;
 		Map<String, AccrualWarning> warningMap = new TreeMap<>();
+		// week 1,2 / hour_code_id /hours
+		Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = null;
 		HolidayList holidays = null;
     public Document(String val,
 										String val2,
@@ -327,6 +329,9 @@ public class Document{
 				}
 				return false;
 		}
+		Map<Integer, Map<Integer, Double>> getUsedWeeklyAccruals(){
+				return usedWeeklyAccruals;
+		}		
 		public boolean isSubmitted(){
 				getTimeActions();
 				if(timeActions != null){
@@ -401,6 +406,7 @@ public class Document{
 										if(ones2 != null && ones2.size() > 0){
 												timeBlocks = ones2;
 										}
+										usedWeeklyAccruals = tl.getUsedWeeklyAccruals();
 										week1_flsa = tl.getWeek1_flsa();
 										week2_flsa = tl.getWeek2_flsa();
 										week1Total = tl.getWeek1Total();
@@ -566,6 +572,96 @@ public class Document{
 				}
 				return employeeAccruals;
 		}
+		private void checkForExcessUse(double weekTotal,
+																	 int whichWeek){
+				if(job != null){
+						if(weekTotal > job.getWeekly_regular_hours()+0.001){
+								double week_excess = weekTotal - job.getWeekly_regular_hours();
+								double week_excess_adj = week_excess;
+								if(usedWeeklyAccruals != null &&
+									 !usedWeeklyAccruals.isEmpty()){
+										if(usedWeeklyAccruals.containsKey(whichWeek)){
+												Map<Integer, Double> map = usedWeeklyAccruals.get(whichWeek);
+												Set<Integer> keys = map.keySet();
+												if(!keys.isEmpty()){
+														for(int key:keys){
+																String str = "";
+																double used = map.get(key);
+																if(used <= week_excess_adj){
+																		HourCode hrc = new HourCode(""+key);
+																		String back = hrc.doSelect();
+																		if(back.equals("")){
+																				str = "Week "+whichWeek+" excess of ("+dfn.format(used)+" hrs) of ("+hrc.getName()+") used ";
+																				if(!warnings.contains(str))
+																						warnings.add(str);
+																				str ="";
+																				week_excess_adj -= used; // adjust for next key (if any)
+																				continue;
+																		}	
+																}
+																else if(week_excess_adj > 0.001
+																				&& used > week_excess_adj+0.001){
+																		// need is the amount we need to get
+																		// to weekly regular total required
+																		double need = used - week_excess_adj;
+																		double real_need = 0;
+																		HourCode hrc = new HourCode(""+key);
+																		String back = hrc.doSelect();
+																		double min_hrs = 0;
+																		if(back.equals("")){
+																				if(hrc.hasAccrualWarning()){
+																						AccrualWarning acw = hrc.getAccrualWarning();
+																						if(acw.require_min()){
+																								min_hrs = acw.getMin_hrs();
+																								if(need < min_hrs){
+																										need = min_hrs;
+																										if(used > need){
+																												week_excess_adj = used-need;
+																												str = "Week "+whichWeek+" excess of ("+dfn.format(week_excess_adj)+" hrs) of ("+hrc.getName()+") used";
+																												if(!warnings.contains(str))
+																														warnings.add(str);
+																												return;
+																										}
+																								} // need > min_hrs
+																								else { // need > min_hrs
+																										need -= min_hrs;
+																										real_need += min_hrs;
+																								}
+																						}
+																						else{
+																								str = "Week "+whichWeek+" excess of ("+dfn.format(week_excess_adj)+" hrs) of ("+hrc.getName()+") used";
+																								if(!warnings.contains(str))
+																										warnings.add(str);
+																								return;
+																						}
+																						if(need > 0.001){
+																								if(acw.require_step()){
+																										int cnt = (int)(need / acw.getStep_hrs());
+																										if(need % acw.getStep_hrs() > 0){
+																												cnt += 1;
+																										}
+																										need = cnt*acw.getStep_hrs();
+																										real_need += need;
+																										week_excess = used-real_need;
+																										if(week_excess > 0.001){
+																												
+																												str = "Week "+whichWeek+" excess of ("+dfn.format(week_excess)+" hrs) of ("+hrc.getName()+") used";
+																												if(!warnings.contains(str))
+																														warnings.add(str);
+																												return;
+																										}
+																								}
+																						}
+																				}
+																		}
+																}
+														}
+												}
+										}
+								}
+						}
+				}				
+		}				
 		// short description of employee accrual balance as of now
 		public String getEmployeeAccrualsShort(){
 				String ret = "";
@@ -586,7 +682,8 @@ public class Document{
 				if(usedAccrualTotals == null){
 						TimeBlockList tl = new TimeBlockList();
 						tl.setActiveOnly();
-						tl.setDocument_id(id);
+						tl.setEmployee_id(employee_id);
+						tl.setPay_period_id(pay_period_id);
 						String back = tl.findUsedAccruals();
 						if(back.equals("")){
 								usedAccrualTotals = tl.getUsedAccrualTotals();
@@ -687,7 +784,6 @@ public class Document{
 								if(accDesc == null) accDesc="";
 								String codeInfo = accName+": "+accDesc;
 								//
-								// String related_id = one.getRelated_hour_code_id();
 								if(accrual_id != null && !accrual_id.equals("")){
 										double hrs_total = one.getHours();
 										list.add(""+dfn.format(hrs_total));
@@ -723,7 +819,7 @@ public class Document{
 						}
 				}
 		}
-		void prepareHolidays(){
+		public void prepareHolidays(){
 				HolidayList hl = new HolidayList(debug);
 				if(!pay_period_id.equals("")){
 						hl.setPay_period_id(pay_period_id);
@@ -869,11 +965,11 @@ public class Document{
 				}
 				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
-						checkForExcessUse(hourCodeWeek1, week1Total, "1");
+						checkForExcessUse(week1Total, 1);
 				}
 				if(week2Total > 0){
 						checkWeekWarnings(hourCodeWeek2, week2Total);
-						checkForExcessUse(hourCodeWeek2, week2Total, "2");						
+						checkForExcessUse(week2Total, 2);						
 				}
 		}		
 		/**
@@ -941,26 +1037,7 @@ public class Document{
 						}
 				}
 		}
-		private void checkForExcessUse(Map<String, Double> hourCodeWeek,
-																	 double weekTotal,
-																	 String whichWeek){
-				if(job != null){
-						if(weekTotal > job.getWeekly_regular_hours()){
-								double dif = weekTotal - job.getWeekly_regular_hours();
-								Set<String> keys = hourCodeWeek.keySet();
-								for(String key:keys){
-										if(key.indexOf("used") > -1){
-												double used = hourCodeWeek.get(key);
-												if(used > dif+0.01){
-														String str = "Week "+whichWeek+" excess of ("+dfn.format(dif)+" hrs) of ("+key+") used";
-														if(!warnings.contains(str))
-																warnings.add(str);
-												}
-										}
-								}
-						}
-				}				
-		}		
+
 		public boolean hasWarnings(){
 				return warnings.size() > 0;
 		}

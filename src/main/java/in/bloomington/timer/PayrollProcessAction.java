@@ -191,7 +191,7 @@ public class PayrollProcessAction extends TopAction{
 										payPeriod = one;								
 						}
 						else {
-								getCurrentPayPeriod();
+								getPay_period_id();
 						}
 				}
 				return payPeriod;
@@ -205,13 +205,13 @@ public class PayrollProcessAction extends TopAction{
 		public String getPay_period_id(){
 				if(pay_period_id.equals("")){
 						PayPeriodList ppl = new PayPeriodList();
-						ppl.setLastPayPeriod();
+						ppl.setApproveSuitable();
 						String back = ppl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
-										PayPeriod  one = ones.get(0);
-										pay_period_id = one.getId();
+										payPeriod = ones.get(0);
+										pay_period_id = payPeriod.getId();
 								}
 						}						
 				}

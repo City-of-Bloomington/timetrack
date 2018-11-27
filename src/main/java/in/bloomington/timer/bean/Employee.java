@@ -190,7 +190,7 @@ public class Employee implements Serializable{
     }
 
     public void setId_code (String val){
-				if(val != null)
+				if(val != null && !val.equals("0"))
 						id_code = val.trim();
     }
     public void setEmployee_number(String val){

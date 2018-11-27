@@ -45,7 +45,9 @@ public class TimeBlockList{
 		Map<String, Double> hourCodeWeek2 = new TreeMap<>();
 		Map<Integer, Double> usedAccrualTotals = new TreeMap<>();
 		HolidayList holidays = null;
-		Map<String, Map<Integer, Double>> daily = new TreeMap<>();		
+		Map<String, Map<Integer, Double>> daily = new TreeMap<>();
+		// week 1,2 / hour_code_id /hours
+		Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = new TreeMap<>();
 		Document document = null;
 		List<String> jobNames = null;
     public TimeBlockList(){
@@ -166,7 +168,10 @@ public class TimeBlockList{
 						mapd.put(str, map2);
 				}
 				return mapd;
-		}				
+		}
+		public Map<Integer, Map<Integer, Double>> getUsedWeeklyAccruals(){
+				return usedWeeklyAccruals;
+		}
 		public double getTotal_hours(){
 				return total_hours;
 		}
@@ -272,7 +277,8 @@ public class TimeBlockList{
 						
 						" c.description,"+
 						" cf.nw_code, "+
-						" ps.name "+ // job name
+						" ps.name, "+ // job name
+						" c.accrual_id "+
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
@@ -390,6 +396,11 @@ public class TimeBlockList{
 								String hr_code = rs.getString(14); 
 								String hr_code_desc = rs.getString(15); 
 								String job_name = rs.getString(17); // job name
+								String related_accrual_id = "";
+								str = rs.getString(18);
+								if(str != null && !str.equals("")){
+										related_accrual_id = str;
+								}
 								String date = rs.getString(4);
 								boolean isHoliday = isHoliday(date);
 								String holidayName = "";
@@ -433,7 +444,10 @@ public class TimeBlockList{
 																			job_name
 																			);
 										timeBlocks.add(one);
-										addToBlocks(order_id, one);										
+										addToBlocks(order_id, one);
+										if(!related_accrual_id.equals("")){
+												addToUsedAccruals(order_id, hr_code_id, hrs);
+										}
 								}
 								if(hr_code.toLowerCase().indexOf("reg") > -1){
 										if(order_id < 7)
@@ -524,11 +538,16 @@ public class TimeBlockList{
 				// any payperiod therefore we are concerned by the current
 				// pay period end date
 				//
-				// we find the last accrual carry over date and employee id
-				// given document id and the end date of this pay period
+				// we find the last accrual carry over date given employee id
+				// and the end date of this pay period
 				//
 				String qq = " ";
+				/**
 				qq = " select a.date,a.employee_id,p.end_date from employee_accruals a,                pay_periods p, time_documents d                                                 where d.employee_id=a.employee_id                                               and p.id = d.pay_period_id and a.date < p.start_date                            and d.id = ? order by a.date desc limit 1 ";
+				*/
+				// modified to handle multiple jobs
+				qq = " select a.date,p.end_date from employee_accruals a,                pay_periods p, time_documents d                                                 where d.employee_id=a.employee_id                                               and p.id = d.pay_period_id and a.date < p.start_date                            and d.employee_id = ? and d.pay_period_id = ? order by a.date desc limit 1 ";
+				
 				//
 				// find total accrual hours used  (PTO and other related
 				// hour codes) since last accrual carry over date
@@ -551,18 +570,18 @@ public class TimeBlockList{
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, document_id);
+						pstmt.setString(1, employee_id);
+						pstmt.setString(2, pay_period_id);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
 								last_date = rs.getString(1); // accrual date
-								emp_id = rs.getString(2);
-								end_date = rs.getString(3); // end of pay period
+								end_date = rs.getString(2); // end of pay period
 						}
 						qq = qq2;
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, last_date);
-						pstmt.setString(2, emp_id);
+						pstmt.setString(2, employee_id);
 						pstmt.setString(3, end_date);						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
@@ -611,6 +630,30 @@ public class TimeBlockList{
 				String back = hl.find();
 				if(back.equals("")){
 						holidays = hl;
+				}
+		}
+		/**
+		 * hour codes ids that used accruals distributed
+		 * for week1 (index 1) or week2 (index 2) 
+		 */
+		void addToUsedAccruals(int order_id, int code_id, double hrs){
+				int week_id = 1;
+				if(order_id > 6) week_id = 2; 
+				if(usedWeeklyAccruals.containsKey(week_id)){
+						Map<Integer, Double> map = usedWeeklyAccruals.get(week_id);
+						if(map.containsKey(code_id)){
+								double ttl_hrs = map.get(code_id);
+								ttl_hrs += hrs;
+								map.put(code_id, ttl_hrs);
+						}
+						else{
+								map.put(code_id, hrs);
+						}
+				}
+				else{
+						Map<Integer, Double> map = new TreeMap<>();
+						map.put(code_id, hrs);
+						usedWeeklyAccruals.put(week_id, map);		
 				}
 		}
 		void addToDaily(String job_name, int order_id, double hrs, String hr_code){

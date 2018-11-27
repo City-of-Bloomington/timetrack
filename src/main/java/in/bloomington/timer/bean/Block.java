@@ -338,22 +338,6 @@ public class Block{
 				}
 				return seed;
 		}
-		/*
-		public JobTask getJobTask(){
-				if(!job_id.equals("") && jobTask == null){
-						JobTask one = new JobTask(job_id);
-						String back = one.doSelect();
-						if(back.equals("")){
-							 jobTask = one;
-						}
-				}
-				return jobTask;
-		}
-		public JobTask getJob(){
-				getJobTask();
-				return jobTask;
-		}
-		*/
 		public HourCode getHourCode(){
 				if(!hourCodeSet){
 						if(!hour_code_id.equals("")){

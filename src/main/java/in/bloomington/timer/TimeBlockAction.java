@@ -23,15 +23,13 @@ public class TimeBlockAction extends TopAction{
 		//
 		TimeBlock timeBlock = null;
 		String timeBlocksTitle = "Time Block Entry";
-		String document_id = "";//  selected_job_id="";
+		String document_id = "";
 		String date = "";
 		int order_index = 0;
 		Employee employee = null;
 		Document document = null;
 		PayPeriod payPeriod = null;
 		List<EmployeeAccrual> employeeAccruals = null;
-		// JobTask selectedJob = null;		
-		// List<JobTask> jobs = null;
 		List<HourCode> hourCodes = null;
 		Department department = null;
 		//
@@ -183,49 +181,6 @@ public class TimeBlockAction extends TopAction{
 				}
 				return document;
 		}
-		/*
-		public List<JobTask> getJobs(){
-				if(jobs == null && employee != null){
-						JobTaskList jl = new JobTaskList(employee.getId());
-						if(payPeriod != null){
-								jl.setPay_period_id(payPeriod.getId());
-						}
-						String back = jl.find();
-						if(back.equals("")){
-								List<JobTask> ones = jl.getJobTasks();
-								if(ones != null && ones.size() > 0){
-										jobs = ones;
-										if(jobs.size() > 0){
-												if(selected_job_id.equals("")){
-														for(JobTask one:jobs){
-																if(one.isPrimary()){
-																		selectedJob = one; // get one
-																		selected_job_id = selectedJob.getId();
-																		break;
-																}
-														}
-														if(selectedJob == null){
-																selectedJob = jobs.get(0);
-																selected_job_id = selectedJob.getId();
-														}
-												}
-										}
-								}
-						}
-				}
-				return jobs;
-		 }
-		public boolean hasMoreThanOneJob(){
-				getDocument();
-				getJobs();
-				return jobs != null && jobs.size() > 1;
-		}
-		public boolean hasOneJobOnly(){
-				getDocument();
-				getJobs();
-				return jobs != null && jobs.size() == 1;
-		}		
-		*/
 		
 		public void setDocument_id(String val){
 				if(val != null && !val.equals(""))		
@@ -235,23 +190,16 @@ public class TimeBlockAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						date = val;
 		}
-		/*
-		public String getSelected_job_id(){
-				return selected_job_id;
-		}
-		*/
 		public List<HourCode> getHourCodes(){
 				//
 				// hours code are part of finding document
 				//
 				getDocument();
-				// getJobs();
 				findHourCodes();
 				return hourCodes;
 		}
 		void findHourCodes(){
 				if(hourCodes == null){
-						//	if(selectedJob != null){
 						getDocument();
 						if(document != null){
 								HourCodeList ecl = new HourCodeList();

@@ -149,6 +149,7 @@ CREATE TABLE `group_managers` (
  CREATE TABLE `accrual_warnings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hour_code_id` int(10) unsigned NOT NULL,
+	 accrual_id int(10) unsigned Not null,
   `min_hrs` double(4,2) DEFAULT NULL,
   `step_hrs` double(4,2) DEFAULT NULL,
   `related_accrual_max_leval` double(5,2) DEFAULT NULL,
@@ -157,6 +158,7 @@ CREATE TABLE `group_managers` (
   `excess_warning_text` varchar(80) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `hour_code_id` (`hour_code_id`),
+	foreign Key(accrual_id) references accruals(id),
   CONSTRAINT `accrual_warnings_ibfk_1` FOREIGN KEY (`hour_code_id`) REFERENCES `hour_codes` (`id`)
 ) ENGINE=InnoDB;
 ;;
@@ -577,11 +579,27 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;;
 ;; alter table employees modify username varchar(70);
 ;;
-
+;; 11/27/2018 updates 
+;;
+;; alter table accrual_warnings add accrual_id int unsigned after hour_code_id;
+;; alter table accrual_warnings add foreign key(accrual_id) references accruals(id);
+;; update accrual_warnings set accrual_id=(select accrual_id from hour_codes where id=accrual_warnings.hour_code_id);
+;;
+;; update accrual_warnings set step_warning_text='Paid time off used should be in increments of 0.25 hr' where id=1;
+;; update accrual_warnings set min_warning_text='Min paid time off taken should not be less than one hr' where id=1;
+;; update accrual_warnings set excess_warning_text='Excess paid time off hours used' where id=1;
+;;
+;; update accrual_warnings set excess_warning_text='Excess comp time hours used, you can use as small as 0.01 hr increment' where id=2;
+;; update accrual_warnings set excess_warning_text='Excess holiday comp time hours used, you can use as small as 0.01 hr increment' where id=2;
+;;
+;; insert into accrual_warnings values(4,8,2,0,0,0,null,null,'Excess of sick time hours used, you can use as small as 0.01 hr increment');
+;;
+;; add HCE1.0 to hour_codes and to restrictions for exempt,non-exemp, union
+;;
 ;;
 ;; ====================================================
-;;
-;; Leave management tables
+;; 
+;; Leave Management (in progress started on 10/01/2018)
 ;;
 ;; leave_documents table
 ;;
