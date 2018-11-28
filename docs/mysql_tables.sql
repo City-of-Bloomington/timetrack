@@ -290,7 +290,7 @@ CREATE TABLE `positions` (
  CREATE TABLE `ip_allowed` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,
-  `description` varchar(512) DEFAULT NULL,
+  `location` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ip_address` (`ip_address`)
 ) ENGINE=InnoDB;
@@ -583,6 +583,9 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;;
 ;; alter table accrual_warnings add accrual_id int unsigned after hour_code_id;
 ;; alter table accrual_warnings add foreign key(accrual_id) references accruals(id);
+;; alter table ip_allowed change description name varchar(128);
+;; rename table ip_allowed to locations;
+;;
 ;; update accrual_warnings set accrual_id=(select accrual_id from hour_codes where id=accrual_warnings.hour_code_id);
 ;;
 ;; update accrual_warnings set step_warning_text='Paid time off used should be in increments of 0.25 hr' where id=1;

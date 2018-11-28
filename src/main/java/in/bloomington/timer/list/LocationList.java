@@ -13,17 +13,17 @@ import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
-public class IpAddressList{
+public class LocationList{
 
-		static Logger logger = LogManager.getLogger(IpAddressList.class);
+		static Logger logger = LogManager.getLogger(LocationList.class);
 		static final long serialVersionUID = 3800L;
 		String name = ""; // for service
-		List<IpAddress> ipAddresses = null;
+		List<Location> locations = null;
 	
-		public IpAddressList(){
+		public LocationList(){
 		}
-		public List<IpAddress> getIpAddresses(){
-				return ipAddresses;
+		public List<Location> getLocations(){
+				return locations;
 		}
 		
 		public String find(){
@@ -32,7 +32,7 @@ public class IpAddressList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				Connection con = Helper.getConnection();
-				String qq = "select t.id,t.ip_address,t.description from ip_allowed t ";
+				String qq = "select t.id,t.ip_address,t.name from locations t ";
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -42,14 +42,14 @@ public class IpAddressList{
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
-						if(ipAddresses == null)
-								ipAddresses = new ArrayList<>();
+						if(locations == null)
+								locations = new ArrayList<>();
 						while(rs.next()){
-								IpAddress one =
-										new IpAddress(rs.getString(1),
+								Location one =
+										new Location(rs.getString(1),
 																	rs.getString(2),
 																	rs.getString(3));
-								ipAddresses.add(one);
+								locations.add(one);
 						}
 				}
 				catch(Exception ex){

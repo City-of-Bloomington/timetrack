@@ -4,7 +4,7 @@
 		<tr>
 			<th>ID</th>
 			<th>IP</th>
-			<th>Description</th>
+			<th>Location</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -12,7 +12,7 @@
 			<tr>
 				<td><a href="<s:property value='#application.url' />ipaddress.action?id=<s:property value='id' />">Edit</a></td>
 				<td><s:property value="ip_address" /></td>
-				<td><s:property value="description" /></td>
+				<td><s:property value="location" /></td>
 			</tr>
 		</s:iterator>
 	</tbody>

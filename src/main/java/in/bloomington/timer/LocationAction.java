@@ -16,20 +16,20 @@ import in.bloomington.timer.bean.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class IpAddressAction extends TopAction{
+public class LocationAction extends TopAction{
 
 		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(IpAddressAction.class);
+		static Logger logger = LogManager.getLogger(LocationAction.class);
 		//
-		String ipaddressesTitle = "Current IP addresses";
-		IpAddress ipaddress = null;
-		List<IpAddress> ipaddresses = null;
+		String locationsTitle = "Current IP addresses locations";
+		Location location = null;
+		List<Location> locations = null;
 
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(action.equals("Save")){
-						back = ipaddress.doSave();
+						back = location.doSave();
 						if(!back.equals("")){
 								addError(back);
 						}
@@ -38,7 +38,7 @@ public class IpAddressAction extends TopAction{
 						}
 				}				
 				else if(action.startsWith("Save")){
-						back = ipaddress.doUpdate();
+						back = location.doUpdate();
 						if(!back.equals("")){
 								addError(back);
 						}
@@ -47,20 +47,20 @@ public class IpAddressAction extends TopAction{
 						}
 				}
 				else if(action.startsWith("Delete")){
-						back = ipaddress.doDelete();
+						back = location.doDelete();
 						if(!back.equals("")){
 								addError(back);
 						}
 						else{
 								id="";
-								ipaddress = new IpAddress();
+								location = new Location();
 								addMessage("Deleted Successfully");
 						}
 				}				
 				else{		
-						getIpaddress();
+						getLocation();
 						if(!id.equals("")){
-								back = ipaddress.doSelect();
+								back = location.doSelect();
 								if(!back.equals("")){
 										addError(back);
 								}
@@ -68,41 +68,40 @@ public class IpAddressAction extends TopAction{
 				}
 				return ret;
 		}
-		public IpAddress getIpaddress(){
-				if(ipaddress == null){
-						ipaddress = new IpAddress();
-						ipaddress.setId(id);
+		public Location getLocation(){
+				if(location == null){
+						location = new Location(id);
 				}
-				return ipaddress;
+				return location;
 						
 		}
-		public void setIpaddress(IpAddress val){
+		public void setLocation(Location val){
 				if(val != null){
-						ipaddress = val;
+						location = val;
 				}
 		}
 		
-		public String getIpaddressesTitle(){
+		public String getLocationsTitle(){
 				
-				return ipaddressesTitle;
+				return locationsTitle;
 		}
 
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;
 		}
-		public List<IpAddress> getIpaddresses(){
-				if(ipaddresses == null){
-						IpAddressList tl = new IpAddressList();
+		public List<Location> getLocations(){
+				if(locations == null){
+						LocationList tl = new LocationList();
 						String back = tl.find();
 						if(back.equals("")){
-								List<IpAddress> ones = tl.getIpAddresses();
+								List<Location> ones = tl.getLocations();
 								if(ones != null && ones.size() > 0){
-										ipaddresses = ones;
+										locations = ones;
 								}
 						}
 				}
-				return ipaddresses;
+				return locations;
 		}
 
 }

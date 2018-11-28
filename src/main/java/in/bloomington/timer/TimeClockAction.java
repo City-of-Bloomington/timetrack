@@ -137,13 +137,13 @@ public class TimeClockAction extends TopAction{
 						action = val;
 		}
 		private void prepareIps(){
-				IpAddressList ial = new IpAddressList();
+				LocationList ial = new LocationList();
 				String back = ial.find();
 				if(back.equals("")){
-						List<IpAddress> ones = ial.getIpAddresses();
+						List<Location> ones = ial.getLocations();
 						if(ones != null && ones.size() > 0){
 								ipSet = new HashSet<>();
-								for(IpAddress one:ones){
+								for(Location one:ones){
 										String str = one.getIp_address();
 										if(str != null)
 												ipSet.add(str);

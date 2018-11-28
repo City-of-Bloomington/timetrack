@@ -15,7 +15,7 @@
 			<ul>
 				<li><a href="<s:property value='#application.url'/>accrual.action"">Accrual Types</a></li>
 				<li><a href="<s:property value='#application.url'/>accrualWarning.action">Accrual Warnings </a></li>
-				<li><a href="<s:property value='#application.url'/>ipaddress.action">Allowed IP Addresses</a></li>				
+				<li><a href="<s:property value='#application.url'/>location.action">Locations</a></li>				
 				<li><a href="<s:property value='#application.url'/>benefitGroup.action">Benefit Groups</a></li>
 				<li><a href="<s:property value='#application.url'/>department.action">Departments</a></li>				
 				<li><a href="<s:property value='#application.url'/>employee.action">Employees</a></li>
