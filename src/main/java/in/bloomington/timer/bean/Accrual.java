@@ -133,7 +133,7 @@ public class Accrual{
 				ResultSet rs = null;
 				String qq = "select id,name,description,pref_max_level,inactive "+
 						"from accruals where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -158,7 +158,7 @@ public class Accrual{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -174,7 +174,7 @@ public class Accrual{
 						return msg;
 				}
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -196,7 +196,7 @@ public class Accrual{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -233,7 +233,7 @@ public class Accrual{
 						return msg;
 				}
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -248,7 +248,7 @@ public class Accrual{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

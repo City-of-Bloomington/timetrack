@@ -214,7 +214,7 @@ public class Profile extends CommonInc{
 		//
 		private void setParams(){
 				if(bGroup != null){
-						if(bGroup.isExemptSpecial()){
+						if(bGroup.isExemptSpecial()){ // prob not used any more
 								// use the defaults, 40, 1
 						}
 						else if(bGroup.isExempt()){
@@ -225,6 +225,14 @@ public class Profile extends CommonInc{
 										comp_time_after = 45;
 								}
 						}
+						else if(bGroup.isPolice()){
+								comp_time_after = 200;
+								comp_time_multiple = 0;
+						}
+						else if(bGroup.isFire()){
+								comp_time_after = 200;
+								comp_time_multiple = 0;
+						}						
 						else{ // non exempt
 								comp_time_multiple = 1.5;
 								holiday_time_multiple = 1.5;

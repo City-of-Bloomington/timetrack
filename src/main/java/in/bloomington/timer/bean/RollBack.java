@@ -81,7 +81,7 @@ public class RollBack{
 				ResultSet rs = null;
 				String q = "select max(id) from ", qq="";
 				String qq2 = "insert into roll_backs values(0,now(),?,?,?, ?,?,?,?,?)";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				date = Helper.getToday();
 				days = 0;
 				if(con == null){
@@ -119,7 +119,7 @@ public class RollBack{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -131,7 +131,7 @@ public class RollBack{
 				ResultSet rs = null;
 				boolean is_failure = false;
 				String qq = "select * from roll_backs order by id desc limit 1";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -186,7 +186,7 @@ public class RollBack{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 
@@ -197,7 +197,7 @@ public class RollBack{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;				
 				String qq = "select date_format(date_time,'%m/%d/%Y'),datediff(now(),date_time) from roll_backs order by id desc limit 1";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -217,7 +217,7 @@ public class RollBack{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}

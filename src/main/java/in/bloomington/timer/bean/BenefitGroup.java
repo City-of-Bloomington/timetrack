@@ -24,8 +24,17 @@ public class BenefitGroup{
 				temporary = false,
 				partTime = false, // non temp, exempt, ono-exempt
 				unioned = false,
-				afscme = false;
-
+				afscme = false,
+				
+				policeSworn = false,
+				policeDetective = false,
+				policeManagement = false,
+				police = false,
+				
+				fire = false,
+				fireSworn = false,
+				fireSworn5to8 = false;
+		String salary_group_name = "";
 		public BenefitGroup(){
 		}		
     public BenefitGroup(
@@ -112,6 +121,8 @@ public class BenefitGroup{
 				return name;
 		}
 		public String getSalary_group_name(){
+				return salary_group_name;
+				/*
 				if(isExempt()){
 						return "Exempt";
 				}
@@ -128,6 +139,7 @@ public class BenefitGroup{
 						return "Part Time";
 				}
 				return "Unknown";
+				*/
 		}
 		public boolean equals(Object  gg){
 				boolean match = false;
@@ -154,6 +166,7 @@ public class BenefitGroup{
 				if(val != null){
 						name = val;
 						if(name.indexOf("TEMP") > -1){
+								salary_group_name = "Temp";
 								temporary = true;
 						}
 						else if(name.indexOf("PART") > -1){
@@ -166,16 +179,62 @@ public class BenefitGroup{
 						else if(name.indexOf("RPT") > -1){
 								// NON-U RPTx
 								partTime = true;
+								salary_group_name = "Part Time";
 								if(name.indexOf("Tx") > -1){
 										exempt = true;
 								}
+						}
+						else if(name.indexOf("FULLnx") > -1 && name.indexOf("RFTnx") > -1){
+								fullTime = true;
+								salary_group_name = "Non-Exempt";
+								nonExempt = true;
 						}						
 						else if(name.indexOf("AFSCME") > -1){
+								salary_group_name = "Union";
 								afscme = true;
 								unioned = true;
 						}
+						else if(name.indexOf("POLICE SWORN") > -1){
+								policeSworn = true;
+								fullTime = true;
+								police = true;
+								salary_group_name = "Police Sworn";
+						}
+						else if(name.indexOf("POLICE SWORN DET") > -1){
+								policeDetective = true;
+								fullTime = true;
+								police = true;
+								salary_group_name = "Police Sworn Det";
+						}
+						else if(name.indexOf("POLICE SWORN MGT") > -1){
+								policeManagement = true;
+								fullTime = true;
+								police = true;
+								salary_group_name = "Police Sworn Mgt";
+						}
+						else if(name.indexOf("FIRE SWORN") > -1){
+								fireSworn = true;
+								fullTime = true;
+								fire = true;
+								salary_group_name = "Fire Sworn";
+						}
+						else if(name.indexOf("FIRE SWORN 5X8") > -1){
+								fireSworn5to8 = true;
+								fullTime = true;
+								fire = true;
+								salary_group_name = "Fire Sworn 5X8";
+						}
+						else{
+								System.err.println(" Unknown BG "+name);
+						}
 				}
     }
+		public boolean isPolice(){
+				return police;
+		}
+		public boolean isFire(){
+				return fire;
+		}
     public void setFullTime(boolean val){
 				if(val){
 						fullTime = true;
@@ -190,7 +249,8 @@ public class BenefitGroup{
 				if(val){
 						unioned = true;
 				}
-    }	
+    }
+		
    public  String doSave(){
 				//
 				Connection con = null;
@@ -205,7 +265,7 @@ public class BenefitGroup{
 						if(debug){
 								logger.debug(qq);
 						}
-						con = Helper.getConnection();				
+						con = UnoConnect.getConnection();				
 						if(con == null){
 								back = "Could not connect to DB ";
 								return back;
@@ -238,7 +298,7 @@ public class BenefitGroup{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }			
@@ -258,7 +318,7 @@ public class BenefitGroup{
 						if(debug){
 								logger.debug(qq);
 						}
-						con = Helper.getConnection();				
+						con = UnoConnect.getConnection();				
 						// con = Helper.getConnection();
 						if(con == null){
 								back = "Could not connect to DB ";
@@ -288,7 +348,7 @@ public class BenefitGroup{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }
@@ -305,7 +365,7 @@ public class BenefitGroup{
 						if(debug){
 								logger.debug(qq);
 						}
-						con = Helper.getConnection();				
+						con = UnoConnect.getConnection();				
 						if(con == null){
 								back = "Could not connect to DB ";
 								return back;
@@ -320,7 +380,7 @@ public class BenefitGroup{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }				
@@ -337,7 +397,7 @@ public class BenefitGroup{
 						if(debug){
 								logger.debug(qq);
 						}
-						con = Helper.getConnection();				
+						con = UnoConnect.getConnection();				
 						if(con == null){
 								back = "Could not connect to DB ";
 								return back;
@@ -358,7 +418,7 @@ public class BenefitGroup{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }	

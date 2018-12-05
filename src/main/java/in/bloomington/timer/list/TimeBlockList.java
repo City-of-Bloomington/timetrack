@@ -221,7 +221,7 @@ public class TimeBlockList{
 				String qw = "d.id=? and d.job_id=j.id and p.id=d.pay_period_id and ps.inactive is null and j.inactive is null and (j.expire_date is null or "+
 						" j.expire_date <= p.end_date) and j.effective_date <= p.start_date ";
 				qq = qq +" where "+qw;
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						logger.error(msg);
 						return null;
@@ -243,7 +243,7 @@ public class TimeBlockList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}								
 				return jobNames;
 		}
@@ -344,7 +344,7 @@ public class TimeBlockList{
 						qq += " where "+qw;
 				}
 				qq += " order by t.date, t.begin_hour ";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -466,7 +466,7 @@ public class TimeBlockList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -492,7 +492,7 @@ public class TimeBlockList{
 						" and t.date = ? "+
 						" and d.pay_period_id=? "+
 						" and d.employee_id=? ";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -516,7 +516,7 @@ public class TimeBlockList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -561,7 +561,7 @@ public class TimeBlockList{
 					 //
 					 (select p.end_date from pay_periods p,                                          time_documents d2 where p.id=d2.pay_period_id and d2.id=d.id)                   and t.hour_code_id in (select id from hour_codes where                          accrual_id is not null) group by c.accrual_id ";
        */				
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -595,7 +595,7 @@ public class TimeBlockList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

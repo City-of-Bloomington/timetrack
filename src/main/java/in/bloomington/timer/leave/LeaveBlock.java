@@ -330,7 +330,7 @@ public class LeaveBlock{
 						msg = " hour code not set ";
 						return msg;
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could do not get connection to DB";
 						return msg;
@@ -351,6 +351,8 @@ public class LeaveBlock{
 						else
 								pstmt.setNull(5, Types.CHAR);
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						pstmt = con.prepareStatement(qq2);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
@@ -383,7 +385,7 @@ public class LeaveBlock{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, rs, pstmt);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -401,7 +403,7 @@ public class LeaveBlock{
 						msg = " record id not set ";
 						return msg;
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could do not get connection to DB";
 						return msg;
@@ -453,7 +455,7 @@ public class LeaveBlock{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;						
 		}

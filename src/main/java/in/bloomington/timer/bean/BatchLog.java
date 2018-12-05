@@ -92,7 +92,7 @@ public class BatchLog{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String qq = "select id,document_id,name,date_format(date,'%m/%d/%Y %h:%i'),status from batch_logs where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -117,7 +117,7 @@ public class BatchLog{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -127,12 +127,13 @@ public class BatchLog{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into batch_logs values(0,?,?,now(),?)";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
+
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, document_id);
 						pstmt.setString(2, name);
@@ -150,7 +151,7 @@ public class BatchLog{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

@@ -123,30 +123,32 @@ public class TimeBlockLog extends Block{
 				String msg="", str="";
 				String qq = "select id,document_id,hour_code_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs where id =? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
+						return msg;
+				}							
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										setVals(
-														rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														rs.getString(4),
-														rs.getInt(5),
-														rs.getInt(6),
-														rs.getInt(7),
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setVals(
+												rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getInt(5),
+												rs.getInt(6),
+												rs.getInt(7),
 														rs.getInt(8),
-														rs.getDouble(9),
-														rs.getString(10),
-														rs.getString(11));
-										setTime_block_id(rs.getString(12));
-										setAction_type(rs.getString(13));
-										setAction_by_id(rs.getString(14));
-										setAction_time(rs.getString(15));
-								}
+												rs.getDouble(9),
+												rs.getString(10),
+												rs.getString(11));
+								setTime_block_id(rs.getString(12));
+								setAction_type(rs.getString(13));
+								setAction_by_id(rs.getString(14));
+								setAction_time(rs.getString(15));
 						}
 				}
 				catch(Exception ex){
@@ -154,7 +156,7 @@ public class TimeBlockLog extends Block{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -177,32 +179,36 @@ public class TimeBlockLog extends Block{
 						return msg;
 				}				
 				logger.debug(qq);
+				con = Helper.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
+						return msg;
+				}							
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, document_id);
-								pstmt.setString(2, hour_code_id);
-								java.util.Date date_tmp = df.parse(date);
-								pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
-								pstmt.setInt(4, begin_hour);
-								pstmt.setInt(5, begin_minute);
-								pstmt.setInt(6, end_hour);
-								pstmt.setInt(7, end_minute);
-								pstmt.setDouble(8, hours);
-								if(clock_in.equals(""))
-										pstmt.setNull(9, Types.CHAR);
-								else
-										pstmt.setString(9, "y");
-								if(clock_out.equals(""))
-										pstmt.setNull(10, Types.CHAR);
-								else
-										pstmt.setString(10, "y");								
-								pstmt.setString(11, time_block_id);
-								pstmt.setString(12, action_type);
-								pstmt.setString(13, action_by_id);
-								pstmt.executeUpdate();
-						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, document_id);
+						pstmt.setString(2, hour_code_id);
+						java.util.Date date_tmp = df.parse(date);
+						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setInt(4, begin_hour);
+						pstmt.setInt(5, begin_minute);
+						pstmt.setInt(6, end_hour);
+						pstmt.setInt(7, end_minute);
+						pstmt.setDouble(8, hours);
+						if(clock_in.equals(""))
+								pstmt.setNull(9, Types.CHAR);
+						else
+								pstmt.setString(9, "y");
+						if(clock_out.equals(""))
+								pstmt.setNull(10, Types.CHAR);
+						else
+								pstmt.setString(10, "y");								
+						pstmt.setString(11, time_block_id);
+						pstmt.setString(12, action_type);
+						pstmt.setString(13, action_by_id);
+						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
@@ -215,7 +221,7 @@ public class TimeBlockLog extends Block{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

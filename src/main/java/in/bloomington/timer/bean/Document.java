@@ -287,12 +287,12 @@ public class Document{
 						List<AccrualWarning> ones = tl.getAccrualWarnings();
 						if(ones != null && ones.size() > 0){
 								for(AccrualWarning one:ones){
-										String str = one.getHourCode().getName();
-										String str2 = one.getHourCode().getDescription();
-										if(str == null) continue;
-										if(str2 == null) str2 = "";
-										str += ": "+str2;
-										warningMap.put(str, one);
+										List<HourCode> codes = one.getHourCodes();
+										if(codes != null && codes.size() > 0){
+												for(HourCode cc:codes){		
+														warningMap.put(cc.getCodeInfo(), one);
+												}
+										}
 								}
 						}
 				}
@@ -1088,7 +1088,7 @@ public class Document{
 				String qq = "select id,employee_id,pay_period_id,job_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by from time_documents where id =? ";
 				logger.debug(qq);
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, id);
@@ -1107,7 +1107,7 @@ public class Document{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -1138,8 +1138,8 @@ public class Document{
 						return msg;
 				}				
 				logger.debug(qq);
+				con = UnoConnect.getConnection();				
 				try{
-						con = Helper.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, employee_id);
@@ -1168,7 +1168,7 @@ public class Document{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

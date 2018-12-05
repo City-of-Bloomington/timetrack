@@ -106,7 +106,7 @@ public class LeaveDocumentList{
 						qq += " where "+qw;
 				}
 				qq += " order by e.last_name,e.first_name ";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -153,7 +153,7 @@ public class LeaveDocumentList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

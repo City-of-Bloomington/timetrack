@@ -66,7 +66,7 @@ public class TimeBlockLogList{
 				if(!sortBy.equals("")){
 						qq += " order by "+sortBy;
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -107,7 +107,7 @@ public class TimeBlockLogList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

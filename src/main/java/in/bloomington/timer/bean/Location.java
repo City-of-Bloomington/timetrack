@@ -71,8 +71,11 @@ public class Location{
 						name = val.trim();
     }		
     public String toString(){
-				return ip_address;
+				return getInfo();
     }
+		public String getInfo(){
+				return ip_address+" ("+name+")";
+		}
 		//
 		public String doSelect(){
 				String back = "";
@@ -81,7 +84,7 @@ public class Location{
 				ResultSet rs = null;
 				String qq = "select id,ip_address,name "+
 						"from locations where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -104,7 +107,7 @@ public class Location{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -118,12 +121,12 @@ public class Location{
 						msg = "ip address is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, ip_address);
 						if(name.equals(""))
@@ -131,6 +134,7 @@ public class Location{
 						else
 								pstmt.setString(2, name);
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);						
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
@@ -143,7 +147,7 @@ public class Location{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -157,12 +161,12 @@ public class Location{
 						msg = "ip address is required";
 						return msg;
 				}
+				con = Helper.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, ip_address);
 						if(name.equals(""))
@@ -177,7 +181,7 @@ public class Location{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -191,12 +195,12 @@ public class Location{
 						msg = "id is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, id);
 						pstmt.executeUpdate();
@@ -206,7 +210,7 @@ public class Location{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}				

@@ -157,8 +157,8 @@ public class EmployeeAccrual extends CommonInc{
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();				
 				try{
-						con = Helper.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								if(!id.equals("")){
@@ -188,7 +188,7 @@ public class EmployeeAccrual extends CommonInc{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -213,8 +213,9 @@ public class EmployeeAccrual extends CommonInc{
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();				
 				try{
-						con = Helper.getConnection();
+
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, accrual_id);
@@ -239,7 +240,7 @@ public class EmployeeAccrual extends CommonInc{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -258,8 +259,8 @@ public class EmployeeAccrual extends CommonInc{
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();				
 				try{
-						con = Helper.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, accrual_id);
@@ -275,7 +276,7 @@ public class EmployeeAccrual extends CommonInc{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				doSelect();
 				return msg;

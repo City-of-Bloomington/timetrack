@@ -169,19 +169,21 @@ public class HourCodeCondition implements Serializable{
 				String msg="", str="";
 				String qq = "select id,hour_code_id,department_id,salary_group_id,date_format(date,'%m/%d/%Y'),inactive from hour_code_conditions where id =? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}								
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										setHour_code_id(rs.getString(2));
-										setDepartment_id(rs.getString(3));
-										setSalary_group_id(rs.getString(4));
-										setDate(rs.getString(5));
-										setInactive(rs.getString(6) != null);
-								}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setHour_code_id(rs.getString(2));
+								setDepartment_id(rs.getString(3));
+								setSalary_group_id(rs.getString(4));
+								setDate(rs.getString(5));
+								setInactive(rs.getString(6) != null);
 						}
 				}
 				catch(Exception ex){
@@ -189,7 +191,7 @@ public class HourCodeCondition implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -205,22 +207,26 @@ public class HourCodeCondition implements Serializable{
 						msg = " need to pick an hour code ";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}							
 				logger.debug(qq);
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, hour_code_id);
-								if(department_id.equals(""))
-										pstmt.setNull(2,Types.INTEGER);
-								else
-										pstmt.setString(2, department_id);
-								if(salary_group_id.equals(""))
-										pstmt.setNull(3,Types.INTEGER);
-								else
-										pstmt.setString(3, salary_group_id);
-								pstmt.executeUpdate();
-						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, hour_code_id);
+						if(department_id.equals(""))
+								pstmt.setNull(2,Types.INTEGER);
+						else
+								pstmt.setString(2, department_id);
+						if(salary_group_id.equals(""))
+								pstmt.setNull(3,Types.INTEGER);
+						else
+								pstmt.setString(3, salary_group_id);
+						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						date = Helper.getToday();
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
@@ -234,7 +240,7 @@ public class HourCodeCondition implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -254,38 +260,41 @@ public class HourCodeCondition implements Serializable{
 						return " hour code is required";
 				}
 				String qq = "update hour_code_conditions set hour_code_id=?,department_id=?,salary_group_id=?,inactive=? where id=? ";
+				
 				logger.debug(qq);
+				con = UnoConnect.getConnection();				
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}			
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								int jj=1;
-								pstmt.setString(jj++, hour_code_id);
-								if(department_id.equals(""))
-										pstmt.setNull(jj++, Types.INTEGER);
-								else
-										pstmt.setString(jj++, department_id);
-								if(salary_group_id.equals(""))
-										pstmt.setNull(jj++, Types.INTEGER);
-								else
-										pstmt.setString(jj++, salary_group_id);								
-								
-								if(inactive.equals("")){
-										pstmt.setNull(jj++, Types.CHAR);
-								}
-								else{
-										pstmt.setString(jj++,"y");
-								}
-								pstmt.setString(jj++, id);
-								pstmt.executeUpdate();
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						pstmt.setString(jj++, hour_code_id);
+						if(department_id.equals(""))
+								pstmt.setNull(jj++, Types.INTEGER);
+						else
+								pstmt.setString(jj++, department_id);
+						if(salary_group_id.equals(""))
+								pstmt.setNull(jj++, Types.INTEGER);
+						else
+								pstmt.setString(jj++, salary_group_id);								
+						
+						if(inactive.equals("")){
+								pstmt.setNull(jj++, Types.CHAR);
 						}
+						else{
+								pstmt.setString(jj++,"y");
+						}
+						pstmt.setString(jj++, id);
+						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
 						msg += " "+ex;
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals("")){
 						doSelect();

@@ -523,7 +523,7 @@ public class JobTask implements Serializable{
 						" left join salary_groups g on g.id=j.salary_group_id "+
 						" where j.id =? ";
 				logger.debug(qq);
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB";
 						return msg;
@@ -561,7 +561,7 @@ public class JobTask implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -590,12 +590,13 @@ public class JobTask implements Serializable{
 						return msg;
 				}				
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+						return msg;
+				}							
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB";
-								return msg;
-						}			
+
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, position_id);
 						pstmt.setString(2, salary_group_id);
@@ -638,7 +639,7 @@ public class JobTask implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -688,12 +689,12 @@ public class JobTask implements Serializable{
 						"inactive=? "+
 						"where id=? ";
 				logger.debug(qq);
-				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
 								return msg;
-						}						
+				}						
+				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, position_id);
 						pstmt.setString(2, salary_group_id);
@@ -734,7 +735,7 @@ public class JobTask implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals("")){
 						doSelect();
@@ -772,12 +773,13 @@ public class JobTask implements Serializable{
 						"hourly_rate=? "+
 						"where id=? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+						return msg;
+				}
+				
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, position_id);
 						pstmt.setString(2, salary_group_id);
@@ -794,7 +796,7 @@ public class JobTask implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		
@@ -806,20 +808,22 @@ public class JobTask implements Serializable{
 				String msg="", str="";
 				String qq = "delete jobs where id=? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								pstmt.executeUpdate();
-						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
 						msg += " "+ex;
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

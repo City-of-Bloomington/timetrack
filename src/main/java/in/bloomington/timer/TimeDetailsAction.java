@@ -307,7 +307,7 @@ public class TimeDetailsAction extends TopAction{
 		public JobTask getJob(){
 				if(job_id.equals("") && job == null){
 						getJobs();
-						if(jobs.size() > 1){
+						if(jobs != null && jobs.size() > 1){
 								for(JobTask one:jobs){
 										if(one.isPrimary()){
 												job = one;
@@ -317,11 +317,11 @@ public class TimeDetailsAction extends TopAction{
 								//
 								// if no job is marked as primary,
 								// then we pick the first
-								if(job == null){
+								if(job == null && jobs != null && jobs.size() > 0){
 										job = jobs.get(0);
 								}
 						}
-						else if(jobs.size() == 1){
+						else if(jobs != null && jobs.size() == 1){
 								job = jobs.get(0);
 						}
 						if(job != null && !job_id.equals("all")){
@@ -361,6 +361,7 @@ public class TimeDetailsAction extends TopAction{
 										jobs = ones;
 										if(jobs.size() == 1){
 												job = jobs.get(0);
+												job_id = job.getId();
 										}
 								}
 						}

@@ -238,21 +238,23 @@ public class GroupManager implements Serializable{
 				String msg="", str="";
 				String qq = "select gm.id,gm.group_id,gm.employee_id,gm.wf_node_id,date_format(gm.start_date,'%m/%d/%Y'),date_format(gm.expire_date,'%m/%d/%Y'),gm.inactive,wn.name from group_managers gm join workflow_nodes wn on wn.id=gm.wf_node_id where gm.id =? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+						return msg;
+				}						
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										setGroup_id(rs.getString(2));
-										setEmployee_id(rs.getString(3));
-										setWf_node_id(rs.getString(4));
-										setStart_date(rs.getString(5));
-										setExpire_date(rs.getString(6));
-										setInactive(rs.getString(7) != null);
-										node = new Node(wf_node_id, rs.getString(8));
-								}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setGroup_id(rs.getString(2));
+								setEmployee_id(rs.getString(3));
+								setWf_node_id(rs.getString(4));
+								setStart_date(rs.getString(5));
+								setExpire_date(rs.getString(6));
+								setInactive(rs.getString(7) != null);
+								node = new Node(wf_node_id, rs.getString(8));
 						}
 				}
 				catch(Exception ex){
@@ -260,7 +262,7 @@ public class GroupManager implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -278,12 +280,13 @@ public class GroupManager implements Serializable{
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "unable to connect";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "unable to connect";
-								return msg;
-						}
+
 						//
 						// check first if this already set
 						//
@@ -328,7 +331,7 @@ public class GroupManager implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals("")){
 						msg = doSelect();
@@ -349,38 +352,40 @@ public class GroupManager implements Serializable{
 				}
 				String qq = "update group_managers set start_date=?,expire_date=?,inactive=? where id=? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "unable to connect";
+						return msg;
+				}			
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								if(start_date.equals("")){
-										start_date = Helper.getToday();
-								}
-								java.util.Date date_tmp = df.parse(start_date);
-								pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
-								if(expire_date.equals("")){
-										pstmt.setNull(2, Types.DATE);
-								}
-								else{
-										date_tmp = df.parse(expire_date);
-										pstmt.setDate(2, new java.sql.Date(date_tmp.getTime()));
-								}
-								if(inactive.equals("")){
-										pstmt.setNull(3, Types.CHAR);
-								}
-								else{
-										pstmt.setString(3,"y");
-								}
-								pstmt.setString(4, id);
-								pstmt.executeUpdate();
+						pstmt = con.prepareStatement(qq);
+						if(start_date.equals("")){
+								start_date = Helper.getToday();
 						}
+						java.util.Date date_tmp = df.parse(start_date);
+						pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
+						if(expire_date.equals("")){
+								pstmt.setNull(2, Types.DATE);
+						}
+						else{
+								date_tmp = df.parse(expire_date);
+								pstmt.setDate(2, new java.sql.Date(date_tmp.getTime()));
+						}
+						if(inactive.equals("")){
+								pstmt.setNull(3, Types.CHAR);
+						}
+						else{
+								pstmt.setString(3,"y");
+						}
+						pstmt.setString(4, id);
+						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
 						msg += " "+ex;
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals("")){
 						doSelect();
@@ -396,8 +401,12 @@ public class GroupManager implements Serializable{
 				String msg="", str="";
 				String qq = "delete group_managers where id=? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "unable to connect";
+						return msg;
+				}							
 				try{
-						con = Helper.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, id);
@@ -409,7 +418,7 @@ public class GroupManager implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

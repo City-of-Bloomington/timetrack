@@ -31,7 +31,7 @@ public class LocationList{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
+				Connection con = UnoConnect.getConnection();
 				String qq = "select t.id,t.ip_address,t.name from locations t ";
 				if(con == null){
 						back = "Could not connect to DB";
@@ -57,7 +57,7 @@ public class LocationList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

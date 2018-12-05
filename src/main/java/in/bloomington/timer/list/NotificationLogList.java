@@ -30,7 +30,7 @@ public class NotificationLogList{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
+				Connection con = UnoConnect.getConnection();
 				String qq = "select id,receipiants,message,date_format(date,'%m/%d/%y %H:%i'),status,error_msg from notification_logs order by id desc limit 5 ";
 				if(con == null){
 						back = "Could not connect to DB";
@@ -58,7 +58,7 @@ public class NotificationLogList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

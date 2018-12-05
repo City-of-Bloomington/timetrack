@@ -24,7 +24,7 @@ public class HandleBatchSubmit{
 		static final long serialVersionUID = 53L;
 		static Logger logger = LogManager.getLogger(HandleBatchSubmit.class);
 		String date="", dept_id="", pay_period_id="";
-		List<User> emps = null;
+		List<Employee> emps = null;
     public HandleBatchSubmit(String val){
 				setPay_period_id(val);
     }
@@ -77,7 +77,7 @@ public class HandleBatchSubmit{
 						" and d.pay_period_id = ? "+
 						" and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=? and a.workflow_id=2) ";
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB";
 								return msg;

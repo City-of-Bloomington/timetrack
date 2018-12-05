@@ -282,7 +282,7 @@ public class JobTaskList{
 						if(!qw.equals("")){
 								qq += " where "+qw;
 						}
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = " Could not connect to DB ";
 								logger.error(msg);
@@ -358,7 +358,7 @@ public class JobTaskList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -395,10 +395,9 @@ public class JobTaskList{
 				// current only
 				qq += " and j.effective_date < now() and (j.expire_date > now() or j.expire_date is null) ";
 				
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
-						logger.error(msg);
 						return msg;
 				}				
 				logger.debug(qq);
@@ -440,7 +439,7 @@ public class JobTaskList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

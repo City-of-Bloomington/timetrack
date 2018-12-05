@@ -143,7 +143,7 @@ public class Department implements java.io.Serializable{
 				ResultSet rs = null;
 				String qq = "select id,name,description,ref_id,ldap_name,inactive "+
 						"from departments where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -169,7 +169,7 @@ public class Department implements java.io.Serializable{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -184,12 +184,13 @@ public class Department implements java.io.Serializable{
 						msg = "name is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
+				
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						if(msg.equals("")){
@@ -207,7 +208,7 @@ public class Department implements java.io.Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -252,12 +253,12 @@ public class Department implements java.io.Serializable{
 						msg = "name is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						pstmt.setString(6, id);
@@ -268,7 +269,7 @@ public class Department implements java.io.Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

@@ -48,7 +48,7 @@ public class PositionList{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
+				Connection con = UnoConnect.getConnection();
 				String qq = "select t.id,t.name,t.alias,t.description,t.inactive from positions t ";
 				if(con == null){
 						back = "Could not connect to DB";
@@ -101,7 +101,7 @@ public class PositionList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

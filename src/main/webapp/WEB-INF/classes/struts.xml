@@ -313,6 +313,13 @@
 			<result name="error">/WEB-INF/jsp/groupEmployee.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupEmployee.jsp</result>
 		</action>
+		<action name="groupLocation" 
+						class="in.bloomington.timer.GroupLocationAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/groupLocation.jsp</result>		
+			<result name="error">/WEB-INF/jsp/groupLocation.jsp</result>
+			<result name="success">/WEB-INF/jsp/groupLocation.jsp</result>
+		</action>		
 		<action name="salaryGroup" 
 						class="in.bloomington.timer.SalaryGroupAction" 
 						method="execute">

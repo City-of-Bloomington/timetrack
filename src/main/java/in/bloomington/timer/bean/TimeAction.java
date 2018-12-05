@@ -163,25 +163,27 @@ public class TimeAction implements Serializable{
 				String msg="", str="";
 				String qq = "select a.id,a.workflow_id,a.document_id,a.action_by,date_format(a.action_time,'%m/%d/%Y %H:%i'),w.node_id,w.next_node_id from time_actions a join workflows w on a.workflow_id=w.id where a.id=? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								//
-								if(rs.next()){
-										setVals(rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														rs.getString(4),
-														rs.getString(5),
-														rs.getString(6),
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						//
+						if(rs.next()){
+								setVals(rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getString(5),
+												rs.getString(6),
 														rs.getString(7));
-								}
-								else{
-										msg = "record not found";
-								}
+						}
+						else{
+								msg = "record not found";
 						}
 				}
 				catch(Exception ex){
@@ -189,7 +191,7 @@ public class TimeAction implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -216,13 +218,13 @@ public class TimeAction implements Serializable{
 				if(action_by.equals("")){
 						msg = "action user not set ";
 						return msg;
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
 				}				
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						// to avoid multiple approve
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, document_id);
@@ -239,6 +241,8 @@ public class TimeAction implements Serializable{
 								pstmt.setString(2, document_id);
 								pstmt.setString(3, action_by);
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();
@@ -252,7 +256,7 @@ public class TimeAction implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				msg += doSelect();
 				return msg;

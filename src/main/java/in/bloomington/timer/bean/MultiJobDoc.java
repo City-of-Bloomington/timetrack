@@ -206,12 +206,12 @@ public class MultiJobDoc{
 						List<AccrualWarning> ones = tl.getAccrualWarnings();
 						if(ones != null && ones.size() > 0){
 								for(AccrualWarning one:ones){
-										String str = one.getHourCode().getName();
-										String str2 = one.getHourCode().getDescription();
-										if(str == null) continue;
-										if(str2 == null) str2 = "";
-										str += ": "+str2;
-										warningMap.put(str, one);
+										List<HourCode> codes = one.getHourCodes();
+										if(codes != null && codes.size() > 0){
+												for(HourCode cc:codes){		
+														warningMap.put(cc.getCodeInfo(), one);
+												}
+										}
 								}
 						}
 				}

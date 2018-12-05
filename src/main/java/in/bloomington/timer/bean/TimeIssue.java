@@ -153,7 +153,7 @@ public class TimeIssue{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String qq = "select id,time_block_id,reported_by,date_format(date,'%m/%d/%Y %H:%i'),issue_notes,status,date_format(closed_date,'%m/%d/%Y %H:%i'),closed_by from time_issues where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -182,7 +182,7 @@ public class TimeIssue{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -196,12 +196,12 @@ public class TimeIssue{
 						msg = "notes are required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, time_block_id);
 						pstmt.setString(2, reported_by);
@@ -219,7 +219,7 @@ public class TimeIssue{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals("")){
 						msg = doSelect();
@@ -236,12 +236,13 @@ public class TimeIssue{
 						msg = "notes are required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
+
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, closed_by);
 						pstmt.setString(2, id);		
@@ -252,7 +253,7 @@ public class TimeIssue{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals("")){
 						msg = doSelect();

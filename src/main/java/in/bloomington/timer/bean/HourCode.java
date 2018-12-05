@@ -203,22 +203,24 @@ public class HourCode extends Type{
 				String qq = "select id,name,description,record_method,accrual_id,"+
 						" count_as_regular_pay,inactive,reg_default from hour_codes where id=? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										setVals(rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														rs.getString(4),
-														rs.getString(5),
-														rs.getString(6) != null,
-														rs.getString(7) != null,
-														rs.getString(8));
-								}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setVals(rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getString(5),
+												rs.getString(6) != null,
+												rs.getString(7) != null,
+												rs.getString(8));
 						}
 				}
 				catch(Exception ex){
@@ -226,7 +228,7 @@ public class HourCode extends Type{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -244,13 +246,14 @@ public class HourCode extends Type{
 				if(record_method.equals("")){
 						msg = "Record method is required";
 						return msg;
-				}				
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
+				
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						if(msg.equals("")){
@@ -268,7 +271,7 @@ public class HourCode extends Type{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -324,13 +327,13 @@ public class HourCode extends Type{
 				if(record_method.equals("")){
 						msg = "Record method is required";
 						return msg;
-				}				
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						pstmt.setString(8, id);
@@ -341,7 +344,7 @@ public class HourCode extends Type{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

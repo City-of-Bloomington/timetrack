@@ -176,7 +176,7 @@ public class GroupEmployee extends CommonInc {
 				if(debug){
 						logger.debug(qq);
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB";
 						addError(msg);
@@ -197,6 +197,8 @@ public class GroupEmployee extends CommonInc {
 								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 						}
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
@@ -209,7 +211,7 @@ public class GroupEmployee extends CommonInc {
 						addError(msg);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
     }
@@ -220,7 +222,7 @@ public class GroupEmployee extends CommonInc {
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String qq = "update group_employees set group_id=?,employee_id=?,effective_date=?,expire_date=?,inactive=? where id=? ";				
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB";
 						addError(msg);
@@ -251,7 +253,7 @@ public class GroupEmployee extends CommonInc {
 						addError(msg);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
     }
@@ -261,7 +263,7 @@ public class GroupEmployee extends CommonInc {
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String qq = "update group_employees set expire_date=?,inactive='y' where id=? ";				
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB";
 						addError(msg);
@@ -279,7 +281,7 @@ public class GroupEmployee extends CommonInc {
 						addError(msg);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals("")){
 						id=""; effective_date=change_date;
@@ -303,26 +305,29 @@ public class GroupEmployee extends CommonInc {
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+						addError(msg);
+						return msg;
+				}							
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								if(!id.equals("")){
-										pstmt.setString(1, id);
-								}
-								rs = pstmt.executeQuery();
-								//
-								if(rs.next()){
-										setVals(rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														rs.getString(4),
-														rs.getString(5),
-														rs.getString(6) != null);
-								}
-								else{
-										msg = "Department Employee not found";
-								}
+						pstmt = con.prepareStatement(qq);
+						if(!id.equals("")){
+								pstmt.setString(1, id);
+						}
+						rs = pstmt.executeQuery();
+						//
+						if(rs.next()){
+								setVals(rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getString(5),
+												rs.getString(6) != null);
+						}
+						else{
+								msg = "Department Employee not found";
 						}
 				}
 				catch(Exception ex){
@@ -330,7 +335,7 @@ public class GroupEmployee extends CommonInc {
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

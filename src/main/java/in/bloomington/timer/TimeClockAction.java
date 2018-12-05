@@ -54,9 +54,18 @@ public class TimeClockAction extends TopAction{
 														addError(back);
 														return ret;
 												}
+												// uncomment the following "else if" when
+												// group locations are assigned 
+												//
+												/**
+												else if(!timeClock.checkIpAddress(ip)){
+														back = "This ip address is not allowed at this location ";
+														addError(back);
+														return ret;														
+												}
+												*/
 												else if(!timeClock.hasClockIn() &&
-													 timeClock.hasMultipleJobs() &&
-													 timeClock.hasEmployee()){
+																timeClock.hasMultipleJobs()){
 														if(action.equals("Submit"))
 																return "pickJob";
 												}
@@ -72,6 +81,8 @@ public class TimeClockAction extends TopAction{
 										}
 										catch(Exception ex){
 												logger.error(ex);
+												addError("Error");
+												return ret;
 										}
 								}
 								else{
@@ -107,7 +118,6 @@ public class TimeClockAction extends TopAction{
 								String back = tbl.find();
 								if(back.equals("")){
 										List<TimeBlock> ones = tbl.getTimeBlocks();
-										// if more than one
 										if(ones != null && ones.size() > 1){
 												timeBlocks = ones;
 										}

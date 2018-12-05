@@ -91,7 +91,7 @@ select g.id,g.name,g.description,g.department_id,g.inactive,d.name from groups g
 				}
 				qq += " order by g.effective_date desc ";
 				logger.debug(qq);
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -128,7 +128,7 @@ select g.id,g.name,g.description,g.department_id,g.inactive,d.name from groups g
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

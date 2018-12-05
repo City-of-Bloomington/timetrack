@@ -3,7 +3,7 @@
 	<thead>
 		<tr>
 			<th>ID</th>
-			<th>Hour Code</th>
+			<th>Hour Codes</th>
 			<th>Min Hours</th>
 			<th>Step Hour</th>
 			<th>Related Accrual Max Level</th>
@@ -16,7 +16,7 @@
 		<s:iterator var="one" value="#accrualWarnings">
 			<tr>
 				<td><a href="<s:property value='#application.url' />accrualWarning.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
-				<td><s:property value="hourCode" /></td>
+				<td><s:property value="hourCodeNames" /></td>
 				<td><s:property value="min_hrs" /></td>
 				<td><s:property value="step_hrs" /></td>
 				<td><s:property value="related_accrual_max_level" /></td>

@@ -28,7 +28,7 @@ public class WeekSplit{
 				earned_time15 = 0f, earned_time20 =0, // for union
 				over_time15 = 0, over_time20 = 0,
 				unpaid_hrs = 0,
-				over_time25 = 0;		
+				over_time25 = 0;
 		double st_weekly_hrs = 0;
 		double prof_hrs = 0, net_reg_hrs= 0;		
 		boolean consolidated = false;
@@ -68,30 +68,39 @@ public class WeekSplit{
 				if(te != null){
 						String code = te.getHour_code();
 						String nw_code = te.getNw_code();
+						String code_desc = te.getCode_desc().toLowerCase();
 						double hours = te.getHours();
-
+						
 						if(bGroup != null && bGroup.isUnioned()){
 								addToDaily(te);
 						}
 						else{
-								total_hrs += hours;											
 								if(code.equals("Reg") ||
 									 code.endsWith("REG") ||
 									 code.startsWith("TEMP")){
 										regular_hrs += hours;
+										total_hrs += hours;																					
 										// needed for HAND dept Only, we are using original code
 										// not nw_code
-										addToHash(regHash, code, hours); 
+										addToHash(regHash, code, hours);
 								}
 								else{ 
-										if(te.getCode_desc().toLowerCase().indexOf("used") > -1){
+										if(code_desc.indexOf("used") > -1){
 												earn_time_used += hours;
+												total_hrs += hours;
 										}
-										else if(te.getCode_desc().toLowerCase().indexOf("unpaid") > -1){
+										else if(code_desc.indexOf("unpaid") > -1){
 												unpaid_hrs += hours;
 										}
+										else if(code_desc.indexOf("accrue") > -1){
+												unpaid_hrs += hours;
+										}
+										else if(code_desc.indexOf("overtime") > -1){
+												unpaid_hrs += hours;
+										}										
 										else{
 												non_reg_hrs += hours;
+												total_hrs += hours;
 										}
 										addToHash(hash, nw_code, hours);
 								}
@@ -141,6 +150,7 @@ public class WeekSplit{
 				Hashtable<String, Double> daily = dailyArr.get(jj);
 				if(code.indexOf("Reg") > -1 || code.indexOf("REG") > -1){
 						regular_hrs += hours;
+						total_hrs += hours;									
 						if(daily.containsKey(code)){
 								prev_hours = daily.get(code).doubleValue();
 								hours += prev_hours;
@@ -150,7 +160,7 @@ public class WeekSplit{
 						//
 						if(code.indexOf("ONCALL") > -1){ //oncall35: one time = $35 only
 								hours = 1.0f;
-								// non_reg_hrs += hours;
+								unpaid_hrs += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}
@@ -159,6 +169,7 @@ public class WeekSplit{
 								if(hours  < 3.0f){
 										hours = 3.0f;
 								}
+								total_hrs += hours;			
 								non_reg_hrs += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
@@ -168,6 +179,7 @@ public class WeekSplit{
 								if(hours  < 3.0f){
 										hours = 3.0f;
 								}
+								total_hrs += hours;			
 								non_reg_hrs += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
@@ -175,18 +187,32 @@ public class WeekSplit{
 						}						
 						else if(code_desc.indexOf("used") > -1){
 								earn_time_used += hours;
+								total_hrs += hours;											
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}											
 						}
+						else if(code_desc.indexOf("unpaid") > -1){
+								unpaid_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}											
+						}								
+						else if(code_desc.indexOf("accrue") > -1){
+								unpaid_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}											
+						}						
 						else{ // any thing else such as holidays
-								non_reg_hrs += hours;								
+								non_reg_hrs += hours;
+								total_hrs += hours;								
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}								
 						}
 				}
-				total_hrs += hours;
+
 				daily.put(code, hours);
 				dailyArr.set(jj, daily);
 				//
@@ -206,36 +232,52 @@ public class WeekSplit{
 								prev_hours = daily.get(code).doubleValue();
 								hours += prev_hours;
 						}
+						total_hrs += hours;						
 				}
 				else{ // non regular such On Call, or CO Call Out
 						//
 						if(code.indexOf("ONCALL") > -1){
 								// hours do not count
-								// non_reg_hrs += hours;
+								unpaid_hrs += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}
 						}						
 						else if(code.indexOf("CO") > -1){ // call out (if < 3 ==> 3)
 								non_reg_hrs += hours;// hours are taken care off in timeblock
+								total_hrs += hours;																		
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}
 						}
 						else if(code_desc.indexOf("used") > -1){
 								earn_time_used += hours;
+								total_hrs += hours;								
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}											
 						}
+						else if(code_desc.indexOf("accrue") > -1){
+								unpaid_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}											
+						}
+						else if(code_desc.indexOf("overtime") > -1){
+								unpaid_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}											
+						}						
 						else{ // any thing else such as holidays
-								non_reg_hrs += hours;								
+								non_reg_hrs += hours;
+								total_hrs += hours;									
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}								
 						}
 				}
-				total_hrs += hours;
+
 				daily.put(code, hours);
 				dailyArr.set(jj, daily);
 				//

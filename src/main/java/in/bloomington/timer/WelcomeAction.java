@@ -21,7 +21,7 @@ public class WelcomeAction extends ActionSupport implements SessionAware, Servle
 		static Logger logger = LogManager.getLogger(WelcomeAction.class);
 		private ServletContext ctx;
 		private Map<String, Object> sessionMap;
-		private User user;
+		private Employee user;
 		String action = "", id="";
 		//
 		// if we have global list we can set them here and will
@@ -39,7 +39,7 @@ public class WelcomeAction extends ActionSupport implements SessionAware, Servle
 		void doPrepare(){
 				String back = "";
 				try{
-						user = (User)sessionMap.get("user");
+						user = (Employee)sessionMap.get("user");
 				}catch(Exception ex){
 						System.out.println(ex);
 				}		

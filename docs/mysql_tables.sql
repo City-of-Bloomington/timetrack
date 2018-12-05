@@ -287,13 +287,17 @@ CREATE TABLE `positions` (
 ;;
 ;; ip_allowed table
 ;;
- CREATE TABLE `ip_allowed` (
+ CREATE TABLE locations (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,
-  `location` varchar(128) DEFAULT NULL,
+  `name` varchar(128) not NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ip_address` (`ip_address`)
 ) ENGINE=InnoDB;
+
+	create table group_locations(                                                      id int unsigned NOT NULL AUTO_INCREMENT primary key,                            group_id int unsigned not null,                                                 location_id int unsigned not null,                                              foreign key(group_id) references groups(id),                                    foreign key(location_id) references locations(id),                              unique(group_id,location_id)                                                  )Engine=InnoDB;
+
+		 
 ;;
 ;; jobs table
 ;;
@@ -599,7 +603,17 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;;
 ;; add HCE1.0 to hour_codes and to restrictions for exempt,non-exemp, union
 ;;
+;; new table group_locations
 ;;
+;; update code_cross_ref set code_id=(select id from hour_codes c where c.name like code_cross_ref.code);
+;; 
+;; select id,name from hour_codes where name not in (select code from code_cross_ref);
+;; alter table accrual_warnings drop foreign key accrual_warnings_ibfk_1;
+;; alter table accrual_warnings drop column hour_code_id;
+;;
+;; add the following to salary_groups
+;; insert into salary_groups values(6,'Police Sworn','Police Sworn',1,null),(7,'Police Sworn Det','Police Sworn Detectives',1,null),(8,'Police Sworn Mgt','Police Sworn Management',1,null),(9,'Fire Sworn','Fire Sworn',1,null),(10,'Fire Sworn 5x8','Fire Sworn 5 to 8',1,null);
+
 ;; ====================================================
 ;; 
 ;; Leave Management (in progress started on 10/01/2018)

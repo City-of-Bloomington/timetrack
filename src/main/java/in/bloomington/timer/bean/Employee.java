@@ -382,6 +382,10 @@ public class Employee implements Serializable{
 				}
 				return groups;
 		}
+		public boolean hasGroups(){
+				getGroups();
+				return groups != null && groups.size() > 0;
+		}
 
 		public boolean canApprove(){
 				if(approvers == null){
@@ -623,7 +627,7 @@ public class Employee implements Serializable{
 				}
 				logger.debug(qq);
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								if(!id.equals("")){
@@ -658,7 +662,7 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -678,7 +682,7 @@ public class Employee implements Serializable{
 				}
 				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,?)";
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -726,7 +730,7 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals(""))
 						msg = doSelect();
@@ -783,7 +787,7 @@ public class Employee implements Serializable{
 						return msg;
 				}
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -798,7 +802,7 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -845,7 +849,7 @@ public class Employee implements Serializable{
 								setEmployee_number(ldapEmp.getEmployee_number());
 						setEmail(ldapEmp.getEmail());
 						
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -874,7 +878,7 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		
@@ -892,7 +896,7 @@ public class Employee implements Serializable{
 						return msg;
 				}
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -905,12 +909,9 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}						
-		/**
-			 select distinct(email) from employees where id in (select employee_id from time_documents where initiated > '2018-10-20');
 
-		 */
 }

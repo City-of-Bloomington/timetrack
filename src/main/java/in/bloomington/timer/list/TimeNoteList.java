@@ -43,7 +43,7 @@ public class TimeNoteList{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
+				Connection con = UnoConnect.getConnection();
 				String qq = "select t.id,t.document_id,t.reported_by,date_format(t.date,'%m/%d/%y %H:%i'),notes from time_notes t ";
 				if(con == null){
 						back = "Could not connect to DB";
@@ -85,7 +85,7 @@ public class TimeNoteList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

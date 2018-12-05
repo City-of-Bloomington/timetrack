@@ -34,6 +34,10 @@ public class AccrualWarningList{
 		public void setAccrual_id(String val){
 				if(val != null)
 						accrual_id = val;
+		}
+		public void setRelated_accrual_id(String val){
+				if(val != null)
+						accrual_id = val;
 		}		
 		public List<AccrualWarning> getAccrualWarnings(){
 				return accrualWarnings;
@@ -44,8 +48,8 @@ public class AccrualWarningList{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
-				String qq = "select w.id,w.hour_code_id,w.accrual_id,w.min_hrs,w.step_hrs,w.related_accrual_max_leval,w.step_warning_text,w.min_warning_text,w.excess_warning_text "+
+				Connection con = UnoConnect.getConnection();
+				String qq = "select w.id,w.accrual_id,w.min_hrs,w.step_hrs,w.related_accrual_max_leval,w.step_warning_text,w.min_warning_text,w.excess_warning_text "+
 						"from accrual_warnings w";						
 				if(con == null){
 						back = "Could not connect to DB";
@@ -85,13 +89,12 @@ public class AccrualWarningList{
 								AccrualWarning one =
 										new AccrualWarning(rs.getString(1),
 																			 rs.getString(2),
-																			 rs.getString(3),
+																			 rs.getDouble(3),
 																			 rs.getDouble(4),
 																			 rs.getDouble(5),
-																			 rs.getDouble(6),
+																			 rs.getString(6),
 																			 rs.getString(7),
-																			 rs.getString(8),
-																			 rs.getString(9));
+																			 rs.getString(8));
 								if(!accrualWarnings.contains(one))
 										accrualWarnings.add(one);
 						}
@@ -101,7 +104,7 @@ public class AccrualWarningList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

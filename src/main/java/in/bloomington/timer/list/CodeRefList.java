@@ -85,13 +85,13 @@ public class CodeRefList{
 				}
 				qq += " order by nw_code ";
 				String back = "";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();				
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}				
 				try{
-						logger.debug(qq);
-						con = Helper.getConnection();				
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);
 						if(!code_id.equals("")){
 								pstmt.setString(1, code_id);
@@ -129,7 +129,7 @@ public class CodeRefList{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }

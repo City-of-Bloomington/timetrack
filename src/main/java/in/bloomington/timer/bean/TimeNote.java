@@ -110,7 +110,7 @@ public class TimeNote{
 				ResultSet rs = null;
 				String qq = "select id,document_id,reported_by,date_format(date,'%m/%d/%Y %H:%i'),notes "+
 						"from time_notes where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -135,7 +135,7 @@ public class TimeNote{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -149,16 +149,18 @@ public class TimeNote{
 						msg = "notes is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						if(msg.equals("")){
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();
@@ -172,7 +174,7 @@ public class TimeNote{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
