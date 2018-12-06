@@ -334,6 +334,7 @@ public class EmployeesImport{
 												if(profile != null && bgroup != null){
 														System.err.println("using profile");
 														str = bgroup.getSalary_group_name();
+														System.err.println(" salary group "+str);
 														if(salaryGrps.containsKey(str)){
 																salary_grp_id = salaryGrps.get(str);
 														}
@@ -1029,6 +1030,7 @@ public class EmployeesImport{
 												}
 												if(profile != null && bgroup != null){
 														System.err.println("using profile");
+														System.err.println(" prof "+profile);
 														str = bgroup.getSalary_group_name();
 														if(salaryGrps.containsKey(str)){
 																salary_grp_id = salaryGrps.get(str);

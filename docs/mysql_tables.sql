@@ -612,7 +612,7 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;; alter table accrual_warnings drop column hour_code_id;
 ;;
 ;; add the following to salary_groups
-;; insert into salary_groups values(6,'Police Sworn','Police Sworn',1,null),(7,'Police Sworn Det','Police Sworn Detectives',1,null),(8,'Police Sworn Mgt','Police Sworn Management',1,null),(9,'Fire Sworn','Fire Sworn',1,null),(10,'Fire Sworn 5x8','Fire Sworn 5 to 8',1,null);
+;; insert into salary_groups values(6,'Police Sworn','Police Sworn',1,null),(7,'Police Sworn Det','Police Sworn Detectives',1,null),(8,'Police Sworn Mgt','Police Sworn Management',1,null),(9,'Fire Sworn','Fire Sworn',1,null),(10,'Fire Sworn 5x8','Fire Sworn 5 to 8',1,null),(11,'Part Time Non-Exempt','Part Time non exempt',1,null);
 
 ;; ====================================================
 ;; 

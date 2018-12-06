@@ -25,6 +25,7 @@ public class BenefitGroup{
 				partTime = false, // non temp, exempt, ono-exempt
 				unioned = false,
 				afscme = false,
+				isCedc = false,
 				
 				policeSworn = false,
 				policeDetective = false,
@@ -81,6 +82,9 @@ public class BenefitGroup{
 		public boolean isExempt(){
 				return exempt;
     }
+		public boolean isCedc(){
+				return isCedc;
+		}
 		//
 		// utility non union FT exempt Special group
 		// uNon-U RFTx-Spec
@@ -118,7 +122,7 @@ public class BenefitGroup{
 				return afscme;
 		}
 		public String toString(){
-				return name;
+				return name+" : "+salary_group_name;
 		}
 		public String getSalary_group_name(){
 				return salary_group_name;
@@ -165,68 +169,98 @@ public class BenefitGroup{
     public void setName(String val){
 				if(val != null){
 						name = val;
-						if(name.indexOf("TEMP") > -1){
-								salary_group_name = "Temp";
-								temporary = true;
+						setSalary_group_name();
+				}
+		}
+		// this is needed for CEDC 5/2
+		public void setSalary_group_name(String val){
+				if(val != null){
+						salary_group_name = val;
+				}
+		}
+    public void setSalary_group_name(){
+				if(name.indexOf("TEMP") > -1){
+						salary_group_name = "Temp";
+						temporary = true;
+				}
+				else if(name.indexOf("PART") > -1){
+						// NON-U RPARTnx, NON-U RPARTx
+						salary_group_name = "Part Time Non-Exempt";
+						partTime = true;
+						if(name.indexOf("Tx") > -1){
+								salary_group_name = "Part Time Exempt";
+								exempt = true;
 						}
-						else if(name.indexOf("PART") > -1){
-								// NON-U RPARTnx, NON-U RPARTx
-								partTime = true;
-								if(name.indexOf("Tx") > -1){
-										exempt = true;
-								}
+				}				
+				else if(name.indexOf("RPT") > -1 || name.indexOf("LPT") > -1){
+						// NON-U RPTx
+						partTime = true;
+						salary_group_name = "Part Time Non-Exempt";
+						if(name.indexOf("Tx") > -1){
+						salary_group_name = "Part Time Exempt";								
+								exempt = true;
 						}
-						else if(name.indexOf("RPT") > -1){
-								// NON-U RPTx
-								partTime = true;
-								salary_group_name = "Part Time";
-								if(name.indexOf("Tx") > -1){
-										exempt = true;
-								}
-						}
-						else if(name.indexOf("FULLnx") > -1 && name.indexOf("RFTnx") > -1){
-								fullTime = true;
-								salary_group_name = "Non-Exempt";
-								nonExempt = true;
-						}						
-						else if(name.indexOf("AFSCME") > -1){
-								salary_group_name = "Union";
-								afscme = true;
-								unioned = true;
-						}
-						else if(name.indexOf("POLICE SWORN") > -1){
-								policeSworn = true;
-								fullTime = true;
-								police = true;
-								salary_group_name = "Police Sworn";
-						}
-						else if(name.indexOf("POLICE SWORN DET") > -1){
-								policeDetective = true;
-								fullTime = true;
-								police = true;
-								salary_group_name = "Police Sworn Det";
-						}
-						else if(name.indexOf("POLICE SWORN MGT") > -1){
-								policeManagement = true;
-								fullTime = true;
-								police = true;
-								salary_group_name = "Police Sworn Mgt";
-						}
-						else if(name.indexOf("FIRE SWORN") > -1){
-								fireSworn = true;
-								fullTime = true;
-								fire = true;
-								salary_group_name = "Fire Sworn";
-						}
-						else if(name.indexOf("FIRE SWORN 5X8") > -1){
-								fireSworn5to8 = true;
-								fullTime = true;
-								fire = true;
-								salary_group_name = "Fire Sworn 5X8";
-						}
-						else{
-								System.err.println(" Unknown BG "+name);
-						}
+				}
+				else if(name.indexOf("nx") > -1){
+						fullTime = true;
+						salary_group_name = "Non-Exempt";
+						nonExempt = true;
+				}
+				else if(name.indexOf("CEDC") > -1){ // CEDC 5/2 5 day work 2 off
+						fullTime = true;
+						salary_group_name = "Non-Exempt";
+						nonExempt = true;
+						isCedc = true;
+						// if grade more than 6 will be exempt
+						// we modify in profile
+				}				
+				else if(name.indexOf("LLx") > -1){
+						fullTime = true;
+						salary_group_name = "Exempt";
+						exempt = true;
+				}
+				else if(name.indexOf("RFTx") > -1){
+						fullTime = true;
+						salary_group_name = "Exempt";
+						exempt = true;
+				}
+				else if(name.indexOf("AFSCME") > -1){
+						salary_group_name = "Union";
+						afscme = true;
+						unioned = true;
+				}
+				else if(name.indexOf("POLICE SWORN") > -1){
+						policeSworn = true;
+						fullTime = true;
+						police = true;
+						salary_group_name = "Police Sworn";
+				}
+				else if(name.indexOf("POLICE SWORN DET") > -1){
+						policeDetective = true;
+						fullTime = true;
+						police = true;
+						salary_group_name = "Police Sworn Det";
+				}
+				else if(name.indexOf("POLICE SWORN MGT") > -1){
+						policeManagement = true;
+						fullTime = true;
+						police = true;
+						salary_group_name = "Police Sworn Mgt";
+				}
+				else if(name.indexOf("FIRE SWORN") > -1){
+						fireSworn = true;
+						fullTime = true;
+						fire = true;
+						salary_group_name = "Fire Sworn";
+				}
+				else if(name.indexOf("FIRE SWORN 5X8") > -1){
+						fireSworn5to8 = true;
+						fullTime = true;
+						fire = true;
+						salary_group_name = "Fire Sworn 5X8";
+				}
+				else{
+						// System.err.println(" Unknown Salary group for "+name);
 				}
     }
 		public boolean isPolice(){

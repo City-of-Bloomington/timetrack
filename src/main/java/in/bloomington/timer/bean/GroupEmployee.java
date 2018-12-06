@@ -161,7 +161,8 @@ public class GroupEmployee extends CommonInc {
 				String msg = "";
 				Connection con = null;
 				PreparedStatement pstmt = null;
-				ResultSet rs = null;		
+				ResultSet rs = null;
+				String qc = " select count(*) from group_employees where group_id=? and employee_id=? ";
 				String qq = " insert into group_employees values(0,?,?,?,?,null) "; 
 				if(employee_id.equals("")){
 						msg = "employee not set ";
@@ -183,27 +184,39 @@ public class GroupEmployee extends CommonInc {
 						return msg;
 				}			
 				try{
-						pstmt = con.prepareStatement(qq);
+						pstmt = con.prepareStatement(qc);
 						pstmt.setString(1, group_id);
 						pstmt.setString(2, employee_id);
-						if(effective_date.equals(""))
-								effective_date = Helper.getToday();
-						java.util.Date date_tmp = df.parse(effective_date);
-						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
-						if(expire_date.equals(""))
-								pstmt.setNull(4, Types.DATE);
-						else{
-								date_tmp = df.parse(expire_date);
-								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+						rs = pstmt.executeQuery();
+						int cnt = 0;
+						if(rs.next()){
+								cnt = rs.getInt(1);
 						}
-						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
-						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								id = rs.getString(1);
+						if(cnt == 0){ // avoid dups
+								pstmt = con.prepareStatement(qq);
+								pstmt.setString(1, group_id);
+								pstmt.setString(2, employee_id);								
+								if(effective_date.equals(""))
+										effective_date = Helper.getToday();
+								java.util.Date date_tmp = df.parse(effective_date);
+								pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+								if(expire_date.equals(""))
+										pstmt.setNull(4, Types.DATE);
+								else{
+										date_tmp = df.parse(expire_date);
+										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+								}
+								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
+								qq = "select LAST_INSERT_ID()";
+								pstmt = con.prepareStatement(qq);
+								rs = pstmt.executeQuery();
+								if(rs.next()){
+										id = rs.getString(1);
+								}
 						}
 				}catch(Exception ex){
 						logger.error(ex+" : "+qq);

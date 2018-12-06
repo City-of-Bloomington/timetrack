@@ -134,6 +134,6 @@
 	<session-config>
 		<!-- added to get rid of adding jsessionid by CAS -->
     <tracking-mode>COOKIE</tracking-mode>
-    <session-timeout>120</session-timeout>    		
+    <session-timeout>240</session-timeout>    		
 	</session-config>
 </web-app>
