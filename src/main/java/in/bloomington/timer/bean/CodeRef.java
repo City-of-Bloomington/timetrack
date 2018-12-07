@@ -109,7 +109,6 @@ public class CodeRef{
 						return back;
 				}				
 				try{
-
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						if(code_id.equals(""))
@@ -131,6 +130,8 @@ public class CodeRef{
 						else
 								pstmt.setString(jj++, pto_ratio);						
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID() ";
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);			

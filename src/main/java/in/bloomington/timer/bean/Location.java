@@ -134,7 +134,8 @@ public class Location{
 						else
 								pstmt.setString(2, name);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);						
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();

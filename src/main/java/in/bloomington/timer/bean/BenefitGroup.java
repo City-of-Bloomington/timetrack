@@ -320,6 +320,8 @@ public class BenefitGroup{
 						else
 								pstmt.setNull(jj++,Types.CHAR);
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();

@@ -86,6 +86,8 @@ public class Holiday{
 						pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date).getTime()));			
 						pstmt.setString(jj++,description);			
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID() ";
 						if(debug){
 								logger.debug(qq);

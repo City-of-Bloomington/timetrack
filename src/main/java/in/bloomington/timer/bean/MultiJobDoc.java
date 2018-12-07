@@ -171,21 +171,23 @@ public class MultiJobDoc{
 		}
 
 		public List<JobTask> getJobs(){
-				if(!employee_id.equals("") && !pay_period_id.equals("")){
-						JobTaskList jl = new JobTaskList(employee_id, pay_period_id);
-						String back = jl.find();
-						if(back.equals("")){
-								List<JobTask> ones = jl.getJobs();
-								if(ones != null && ones.size() > 0){
-										jobs = ones;
-										for(JobTask one:jobs){
-												if(one.isPrimary()){
-														job = one;
-														break;
+				if(jobs == null){
+						if(!employee_id.equals("") && !pay_period_id.equals("")){
+								JobTaskList jl = new JobTaskList(employee_id, pay_period_id);
+								String back = jl.find();
+								if(back.equals("")){
+										List<JobTask> ones = jl.getJobs();
+										if(ones != null && ones.size() > 0){
+												jobs = ones;
+												for(JobTask one:jobs){
+														if(one.isPrimary()){
+																job = one;
+																break;
+														}
 												}
-										}
-										if(job == null){ // if no primary set, any one will do
-												job = jobs.get(0); 
+												if(job == null){ // if no primary set, any one will do
+														job = jobs.get(0); 
+												}
 										}
 								}
 						}

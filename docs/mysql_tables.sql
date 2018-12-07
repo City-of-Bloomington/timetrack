@@ -613,7 +613,46 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;;
 ;; add the following to salary_groups
 ;; insert into salary_groups values(6,'Police Sworn','Police Sworn',1,null),(7,'Police Sworn Det','Police Sworn Detectives',1,null),(8,'Police Sworn Mgt','Police Sworn Management',1,null),(9,'Fire Sworn','Fire Sworn',1,null),(10,'Fire Sworn 5x8','Fire Sworn 5 to 8',1,null),(11,'Part Time Non-Exempt','Part Time non exempt',1,null);
+;;
+;; 12/07/2018
+;; Adding scheduling and shifts 
+;;
+CREATE TABLE shifts (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+	name varchar(72) not null,
+	start_hour    int unsigned,
+	start_minute  int unsigned,
+	duration      int unsigned,
+	start_window_minute int unsigned,
+	inactive char(1),
+	primary key(id)
+)engine=InnoDB;
 
+CREATE TABLE schedules (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+	name varchar(72) not null,
+	start_date date,
+	end_date date,
+	group_id int unsigned not null,
+	inactive char(1),
+	primary key(id),
+	foreign key(group_id) references groups(id)
+)engine=InnoDB;
+
+CREATE TABLE schedule_shifts (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+	shedule_id int unsigned,
+	shift_id  int unsigned,
+	employee_id int unsigned,
+	assigned_by_id int unsigned,
+	primary key(id)	
+	foreign key(shedule_id) references schedules(id),
+	foreign key(shift_id) references shifts(id),
+	foreign key(employee_id) references employees(id),
+  foreign key(assigned_by_id) references employees(id)			
+	)engine=InnoDB;
+	
+)Engine=InnoDB;
 ;; ====================================================
 ;; 
 ;; Leave Management (in progress started on 10/01/2018)

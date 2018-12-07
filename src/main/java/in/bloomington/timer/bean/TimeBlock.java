@@ -1286,7 +1286,7 @@ public class TimeBlock extends Block{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				msg = doSelect();
 				if(msg.equals("")){

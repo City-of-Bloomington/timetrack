@@ -227,6 +227,7 @@ public class HourCodeCondition implements Serializable{
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
+						Helper.databaseDisconnect(pstmt, rs);
 						date = Helper.getToday();
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);

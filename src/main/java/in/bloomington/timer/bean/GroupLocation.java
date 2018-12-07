@@ -185,13 +185,13 @@ public class GroupLocation{
 				if(location_id.equals("")){
 						msg = "location id is required";
 						return msg;
-				}				
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = UnoConnect.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, group_id);
 						pstmt.setString(2, location_id);
@@ -228,13 +228,13 @@ public class GroupLocation{
 				if(location_id.equals("")){
 						msg = "location id not set";
 						return msg;
-				}				
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = UnoConnect.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, group_id);
 						pstmt.setString(2, location_id);
@@ -260,12 +260,12 @@ public class GroupLocation{
 						msg = "id is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = UnoConnect.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, id);
 						pstmt.executeUpdate();

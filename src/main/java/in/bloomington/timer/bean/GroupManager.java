@@ -299,6 +299,8 @@ public class GroupManager implements Serializable{
 						if(rs.next()){
 								cnt = rs.getInt(1);
 						}
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						if(cnt == 0){ // if not set 
 								qq = qq2;
 								pstmt = con.prepareStatement(qq);
@@ -311,6 +313,8 @@ public class GroupManager implements Serializable{
 								java.util.Date date_tmp = df.parse(start_date);
 								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 								pstmt.executeUpdate();
+								//
+								// secnod record
 								if(!employee_id2.equals("") && !wf_node_id2.equals("")){
 										pstmt.setString(1, group_id);
 										pstmt.setString(2, employee_id2);
@@ -318,6 +322,8 @@ public class GroupManager implements Serializable{
 										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 										pstmt.executeUpdate();
 								}
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();

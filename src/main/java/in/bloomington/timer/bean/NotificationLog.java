@@ -144,7 +144,6 @@ public class NotificationLog{
 						return msg;
 				}				
 				try{
-
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, receipants);
 						pstmt.setString(2, message);

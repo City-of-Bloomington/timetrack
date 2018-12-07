@@ -216,19 +216,22 @@ public class Group extends Type{
 						return msg;
 				}				
 				logger.debug(qq);
-				con = UnoConnect.getConnection();				
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, name);
-								if(description.equals(""))
-										pstmt.setNull(2, Types.VARCHAR);
-								else
-										pstmt.setString(2, description);
-								pstmt.setString(3, department_id);
-								pstmt.executeUpdate();
-						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, name);
+						if(description.equals(""))
+								pstmt.setNull(2, Types.VARCHAR);
+						else
+								pstmt.setString(2, description);
+						pstmt.setString(3, department_id);
+						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
@@ -257,25 +260,27 @@ public class Group extends Type{
 				}
 				String qq = "update groups set name=?,description=?,department_id=?,inactive=? where id=? ";
 				logger.debug(qq);
-				con = UnoConnect.getConnection();				
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}			
 				try{
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, name);
-								if(description.equals(""))
-										pstmt.setNull(2, Types.VARCHAR);
-								else
-										pstmt.setString(2, description);								
-								pstmt.setString(3, department_id);								
-								if(inactive.equals("")){
-										pstmt.setNull(4, Types.CHAR);
-								}
-								else{
-										pstmt.setString(4,"y");
-								}
-								pstmt.setString(5, id);
-								pstmt.executeUpdate();
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, name);
+						if(description.equals(""))
+								pstmt.setNull(2, Types.VARCHAR);
+						else
+								pstmt.setString(2, description);								
+						pstmt.setString(3, department_id);								
+						if(inactive.equals("")){
+								pstmt.setNull(4, Types.CHAR);
 						}
+						else{
+								pstmt.setString(4,"y");
+						}
+						pstmt.setString(5, id);
+						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
 						msg += " "+ex;
@@ -294,13 +299,15 @@ public class Group extends Type{
 				String msg="", str="";
 				String qq = "delete groups where id=? ";
 				logger.debug(qq);
-				con = UnoConnect.getConnection();				
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}							
 				try{
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								pstmt.executeUpdate();
-						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
 						msg += " "+ex;

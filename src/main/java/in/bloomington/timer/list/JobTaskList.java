@@ -222,6 +222,12 @@ public class JobTaskList{
 						" from jobs j ";
 				qq += " join salary_groups g on g.id=j.salary_group_id ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
 				if(active_only){
 						qw += " j.inactive is null ";
 				}
@@ -281,12 +287,6 @@ public class JobTaskList{
 						}						
 						if(!qw.equals("")){
 								qq += " where "+qw;
-						}
-						con = UnoConnect.getConnection();
-						if(con == null){
-								msg = " Could not connect to DB ";
-								logger.error(msg);
-								return msg;
 						}
 						// System.err.println(qq);
 						logger.debug(qq);

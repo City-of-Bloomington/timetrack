@@ -680,17 +680,19 @@ public class Employee implements Serializable{
 				if(!msg.equals("")){
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,?)";
 				try{
-						con = UnoConnect.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						if(msg.equals("")){
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();
@@ -786,12 +788,12 @@ public class Employee implements Serializable{
 				if(!msg.equals("")){
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = UnoConnect.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						pstmt.setString(9, id);

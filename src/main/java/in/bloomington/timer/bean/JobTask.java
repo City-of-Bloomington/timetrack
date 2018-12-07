@@ -596,7 +596,6 @@ public class JobTask implements Serializable{
 						return msg;
 				}							
 				try{
-
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, position_id);
 						pstmt.setString(2, salary_group_id);
@@ -627,6 +626,8 @@ public class JobTask implements Serializable{
 								pstmt.setString(12, "y");
 						pstmt.setDouble(13, hourly_rate);
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
@@ -778,7 +779,6 @@ public class JobTask implements Serializable{
 						msg = "Could not connect to DB";
 						return msg;
 				}
-				
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, position_id);

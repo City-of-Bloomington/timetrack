@@ -207,6 +207,8 @@ public class TimeIssue{
 						pstmt.setString(2, reported_by);
 						pstmt.setString(3, issue_notes);		
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();

@@ -123,14 +123,14 @@ public class HolidayList{
 				}
 				qq += " order by date ";
 				String back = "";
+				con = UnoConnect.getConnection();				
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
 				try{
 						if(debug){
 								logger.debug(qq);
-						}
-						con = UnoConnect.getConnection();				
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
 						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;

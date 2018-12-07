@@ -297,18 +297,20 @@ public class TimeClock {
 								}
 						}
 						// find job
-						if (!job_id.equals("")) {
-								JobTask one = new JobTask(job_id);
-								String back = one.doSelect();
-								if (back.equals("")) {
-										job = one;
-								}
-						}
-						else if(jobs != null && jobs.size() > 0) {
-								for (JobTask one : jobs) {
-										if (one.isPrimary()) {
+						if (job == null){
+								if(!job_id.equals("")) {
+										JobTask one = new JobTask(job_id);
+										String back = one.doSelect();
+										if (back.equals("")) {
 												job = one;
-												job_id = job.getId();
+										}
+								}
+								else if(jobs != null && jobs.size() > 0) {
+										for (JobTask one : jobs) {
+												if (one.isPrimary()) {
+														job = one;
+														job_id = job.getId();
+												}
 										}
 								}
 								if (job == null) {
@@ -343,7 +345,6 @@ public class TimeClock {
 				// findEmployee();
 				// we need the employee job
 				if (job_id.equals("")) {
-						// getJobs();
 						if (jobs.size() > 1 && job_id.equals("")) {
 								msg = "you need to select a job ";
 								return msg;
@@ -354,7 +355,6 @@ public class TimeClock {
 								return msg;
 						}
 				}
-				// getJob();
 				if (job != null) {
 						SalaryGroup salaryGroup = job.getSalaryGroup();
 						if (salaryGroup != null) {

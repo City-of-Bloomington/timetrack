@@ -44,7 +44,7 @@ public class QuartzMisc{
 				ResultSet rs = null;
 				String qq = " select from_unixtime(prev_fire_time/1000),from_unixtime(next_fire_time/1000) from qrtz_triggers where job_group like '"+type+"'";
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB";
 								System.err.println(" could not connect to DB");
@@ -69,7 +69,7 @@ public class QuartzMisc{
 						System.err.println(ex);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 			
@@ -95,13 +95,13 @@ public class QuartzMisc{
 											 "delete from qrtz_fired_triggers "+where_trig,
 											 "delete from qrtz_triggers "+where_trig,
 											 "delete from qrtz_job_details "+where_job};
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+						System.err.println(" could not connect to DB");
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB";
-								System.err.println(" could not connect to DB");
-								return msg;
-						}
 						for(String str:qq){
 								if(debug){
 										System.err.println(str);
@@ -109,12 +109,13 @@ public class QuartzMisc{
 								}
 								pstmt = con.prepareStatement(str);
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
 						}
 				}catch(Exception ex){
 						msg += ex;
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

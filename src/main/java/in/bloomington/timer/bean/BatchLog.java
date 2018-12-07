@@ -139,6 +139,8 @@ public class BatchLog{
 						pstmt.setString(2, name);
 						pstmt.setString(3, status);
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();

@@ -299,6 +299,7 @@ public class DepartmentEmployee{
 										pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
 								}
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
 						}
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);

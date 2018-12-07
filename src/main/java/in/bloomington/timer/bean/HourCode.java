@@ -258,6 +258,8 @@ public class HourCode extends Type{
 						msg = setParams(pstmt);
 						if(msg.equals("")){
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();
