@@ -103,6 +103,17 @@
           }
         }
 
+
+
+        // 36 loop iterations
+        @for $i from 1 through 36 {
+          div:nth-child(#{$i})::after {
+            content: "$i == #{$i}";
+            // multiply by 10 for larger hue increments
+            background: hsl($i * 10, 50%, 50%);
+          }
+        }
+
         span {
           display: block;
           margin: 0 0 5px 0;

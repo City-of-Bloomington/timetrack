@@ -258,6 +258,19 @@
       padding: 10px;
     }
   }
+
+  // Multiple Jobs Coloring
+  // attribute: `data-job-id`
+  .calendar.view-only,
+  .view-only table.pay-period-summary-total {
+    $jobsCount: 15000;
+
+    @for $i from 1 through $jobsCount {
+      [data-job-id="#{$i}"] {
+        background-color: hsl($i * 45, 50%, 90%) !important;
+      }
+    }
+  }
 }
 
 /* Import Components */

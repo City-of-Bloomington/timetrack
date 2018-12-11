@@ -1,6 +1,6 @@
 <div class="calendar">
   <div class="daily-header">
-    <div>Mon</div>
+    <div>Monn</div>
     <div>Tues</div>
     <div>Wed</div>
     <div>Thu</div>
