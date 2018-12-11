@@ -23,14 +23,24 @@
 			<s:set var="dayKey" value="#day.key" />
 			<s:set var="dayVal" value="#day.value" />			
 			<s:if test="#dayKey == 0">
-				<tr><td>Week 1 - <small>(<s:property value="#week1DateRange" />) <s:property value="#jobKey" /></small> </td>
+				<!-- to-do: output the correct JobID into `data-job-id` below -->
+				<tr data-job-id="46">
+					<td>
+						Week 1 - <small>(<s:property value="#week1DateRange" />)</small><br>
+						<small><s:property value="#jobKey" /></small>
+					</td>
 			</s:if>
 			<s:if test="#dayKey == 8">
 				<s:if test="#unionned">
 					<td><s:property value="#week1Flsa" /></td>
 				</s:if>
 				</tr>
-				<tr><td>Week 2 - <small>(<s:property value="#week2DateRange" />) <s:property value="#jobKey" /></small></td>
+				<!-- to-do: output the correct JobID into `data-job-id` below -->
+				<tr data-job-id="1603">
+					<td>
+						Week 2 - <small>(<s:property value="#week2DateRange" />)</small><br>
+						<small><s:property value="#jobKey" /></small>
+					</td>
 			</s:if>
 			<td><s:property value="dayVal" /></td>
 			<s:if test="#dayKey == 15">

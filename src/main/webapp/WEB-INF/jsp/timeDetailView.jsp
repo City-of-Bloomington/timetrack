@@ -63,7 +63,11 @@
 					<%@ include file="warnings.jsp" %>
 				</s:if>
 			</s:else>
-			<%@ include file="dailySummary.jsp" %>
+			
+			<div class="view-only">
+				<%@ include file="dailySummary.jsp" %>
+			</div>
+			
 
 				<div class="d-flex">
 					<s:if test="showAllJobs()">					

@@ -1,6 +1,6 @@
-<div class="calendar">
+<div class="calendar view-only">
   <div class="daily-header">
-    <div>Monn</div>
+    <div>Mon</div>
     <div>Tues</div>
     <div>Wed</div>
     <div>Thu</div>
@@ -50,6 +50,7 @@
         </s:if>
         <s:if test="hasData()">
           <div class="data"
+            data-job-id="<s:property value='job_id' />"
             data-block-id="<s:property value='id' />"
             data-date="<s:property value='date' />"
 						data-job-name="<s:property value='job_name' />"
@@ -67,6 +68,3 @@
     </s:iterator>
   </div><!-- /.week -->
 </div><!-- /.calendar -->
-
-
-
