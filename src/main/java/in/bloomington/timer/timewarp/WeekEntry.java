@@ -254,7 +254,7 @@ public class WeekEntry{
 				//
 				// everybody else
 				//
-				prof_hrs = total_hrs - st_weekly_hrs - earned_time - excess_hrs - unpaid_hrs;
+				prof_hrs = total_hrs - st_weekly_hrs - earned_time - excess_hrs;//- unpaid_hrs;
 				if(prof_hrs < 0.009f){
 						prof_hrs = 0;
 				}
@@ -316,7 +316,7 @@ public class WeekEntry{
 		public void findExessHours(){
 
 				excess_hrs = 0;
-				double netHours = total_hrs - earned_time - unpaid_hrs;
+				double netHours = total_hrs - earned_time;// -unpaid_hrs;
 				//
 				// for full time working less than 40 hrs
 				//

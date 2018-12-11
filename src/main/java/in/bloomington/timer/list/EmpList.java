@@ -163,24 +163,15 @@ public class EmpList extends CommonInc{
 								filter = "(cn="+name+"*)";
 						}
 						else if (!dept_name.equals("")){
-								/*
-									// we can not use wildcard in AD so we have to do
-									// it ourselves by bringing all users and search for 
-									// dept name and group (if any)
-								if(!group_name.equals("")){
-										filter = "(&(ou="+group_name+")(ou="+dept_name+"))";
-								}
-								else
-										filter = "(distinguishedName=*,ou="+dept_name+",*)";
-								*/
 								// we are excluding disabled users and any user that
 								// givenName starts with * (code \2a)
-								filter ="(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=512)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(accountExpires=9223372036854775807)(!(givenName=\2a*)))";
+								// filter ="(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=512)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(accountExpires=9223372036854775807)(!(givenName=\2a*)))";
+								filter ="(&(objectCategory=person)(objectCategory=user)(!(givenName=\2a*)))";
 						}
 						else{ // all
 								// we are excluding disabled users and any user that
 								// givenName (first name) that starts with * code \2a 				
-								filter ="(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=512)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(accountExpires=9223372036854775807)(!(givenName=\2a*)))";								
+								filter ="(&(objectCategory=person)(objectCategory=user)(!(givenName=\2a*)))";
 						}
 						System.err.println(" filter "+filter);
 						NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctls);

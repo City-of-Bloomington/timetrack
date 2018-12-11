@@ -78,6 +78,7 @@ public class SingleConnect implements ServletContextListener{
 				return con;
 		}		
 		public void disconnect(){
+				System.err.println("closing connection");
 				Helper.databaseDisconnect(con);
 		}
 		

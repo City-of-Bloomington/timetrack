@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.Helper;
+import in.bloomington.timer.util.UnoConnect;
 import in.bloomington.timer.bean.BenefitGroup;
 
 
@@ -38,15 +39,15 @@ public class BenefitGroupList{
 		
 				String qq = "select id,name,fullTime,exempt,unioned from benefit_groups ";
 				String back = "";
+				if(debug){
+						logger.debug(qq);
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
 				try{
-						if(debug){
-								logger.debug(qq);
-						}
-						con = Helper.getConnection();
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						rs = pstmt.executeQuery();
@@ -68,7 +69,7 @@ public class BenefitGroupList{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }

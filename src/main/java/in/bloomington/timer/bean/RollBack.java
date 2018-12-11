@@ -18,6 +18,8 @@ public class RollBack{
 		static final long serialVersionUID = 3700L;	
 		static Logger logger = LogManager.getLogger(RollBack.class);
     String id="", date_time="";
+		String date = "";
+		int days = 10; // big number
 		boolean is_failure = false;
 		String[] delqq = {
 				"delete from group_employees where id > ?",
@@ -62,7 +64,13 @@ public class RollBack{
 		}
 		public boolean isFailure(){
 				return is_failure;
-		}		
+		}
+		public String getDate(){
+				return date;
+		}
+		public boolean isCurrent(){
+				return days == 0;
+		}
     //
     // getters
     //
@@ -73,7 +81,9 @@ public class RollBack{
 				ResultSet rs = null;
 				String q = "select max(id) from ", qq="";
 				String qq2 = "insert into roll_backs values(0,now(),?,?,?, ?,?,?,?,?)";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
+				date = Helper.getToday();
+				days = 0;
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -109,7 +119,7 @@ public class RollBack{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -121,7 +131,7 @@ public class RollBack{
 				ResultSet rs = null;
 				boolean is_failure = false;
 				String qq = "select * from roll_backs order by id desc limit 1";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -153,6 +163,8 @@ public class RollBack{
 						if(isSuccess()){
 								int jj=0;
 								System.err.println("Rollbacks");
+								date = Helper.getToday();
+								days = 0;
 								for(int j2=0;j2<delqq.length;j2++){
 										qq = delqq[j2];
 										logger.debug(qq);
@@ -174,10 +186,40 @@ public class RollBack{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 
+		}
+		public String findLastRollDate(){
+				String back = "";
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;				
+				String qq = "select date_format(date_time,'%m/%d/%Y'),datediff(now(),date_time) from roll_backs order by id desc limit 1";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						back = "Could not connect to DB";
+						return back;
+				}
+				try{
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								String str = rs.getString(1);
+								if(str != null) date = str;
+								days = rs.getInt(2); // days past
+						}
+				}
+				catch(Exception ex){
+						back += ex+":"+qq;
+						logger.error(back);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);			
+				}
+				return back;
 		}
 		
 }

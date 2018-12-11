@@ -70,7 +70,7 @@ public class HourCodeConditionList{
 						qq += " where "+qw;
 				}
 				qq += " order by e.name ";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -107,7 +107,7 @@ public class HourCodeConditionList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

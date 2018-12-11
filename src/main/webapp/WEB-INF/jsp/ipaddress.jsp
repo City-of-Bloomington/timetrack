@@ -24,14 +24,12 @@
 
 			<div class="form-group">
 				<label>IP</label>
-				<s:textfield name="ipaddress.ip_address" value="%{ipaddress.ip_address}" size="15" maxlength="20" requiredLabel="true" required="true" />
+				<s:textfield name="ipaddress.ip_address" value="%{ipaddress.ip_address}" size="15" maxlength="15" requiredLabel="true" required="true" />
 			</div>
-
 			<div class="form-group">
-				<label>Description</label>
-				<s:textarea name="ipaddress.description" value="%{ipaddress.description}" rows="5" maxlength="50" />
+				<label>Location</label>
+				<s:textfield name="ipaddress.location" value="%{ipaddress.location}" rows="30" maxlength="128" />
 			</div>
-
 			<s:if test="ipaddress.id == ''">
 				<s:submit name="action" accrual="button" value="Save" class="button"/>
 			</s:if>

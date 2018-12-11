@@ -23,7 +23,8 @@ public class HourCode extends Type{
 		static final long serialVersionUID = 700L;
 		static Logger logger = LogManager.getLogger(HourCode.class);
 
-		Type accrual = null;
+		Accrual accrual = null;
+		AccrualWarning accrualWarning = null;
 		CodeRef codeRef = null;
     private String 
 				record_method="Time", // time or hours
@@ -120,16 +121,35 @@ public class HourCode extends Type{
 				}
 				return ret;
 		}
-		public Type getAccrual(){
+		public Accrual getAccrual(){
 				if(accrual == null && !accrual_id.equals("")){
-						Type one = new Type(accrual_id);
-						one.setTable_name("accruals");
+						Accrual one = new Accrual(accrual_id);
 						String back = one.doSelect();
 						if(back.equals("")){
 								accrual = one;
 						}
 				}
 				return accrual;
+		}
+		public AccrualWarning getAccrualWarning(){
+				if(accrualWarning == null &&
+					 !id.equals("") &&
+					 !accrual_id.equals("")){
+						AccrualWarningList awl = new AccrualWarningList();
+						awl.setAccrual_id(accrual_id);
+						String back = awl.find();
+						if(back.equals("")){
+								List<AccrualWarning> ones = awl.getAccrualWarnings();
+								if(ones != null && ones.size() > 0){
+										accrualWarning = ones.get(0);
+								}
+						}
+				}
+				return accrualWarning;
+		}
+		boolean hasAccrualWarning(){
+				getAccrualWarning();
+				return accrualWarning != null;
 		}
 		@Override
 		public boolean equals(Object obj){
@@ -183,22 +203,24 @@ public class HourCode extends Type{
 				String qq = "select id,name,description,record_method,accrual_id,"+
 						" count_as_regular_pay,inactive,reg_default from hour_codes where id=? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										setVals(rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														rs.getString(4),
-														rs.getString(5),
-														rs.getString(6) != null,
-														rs.getString(7) != null,
-														rs.getString(8));
-								}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setVals(rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getString(5),
+												rs.getString(6) != null,
+												rs.getString(7) != null,
+												rs.getString(8));
 						}
 				}
 				catch(Exception ex){
@@ -206,7 +228,7 @@ public class HourCode extends Type{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -224,17 +246,20 @@ public class HourCode extends Type{
 				if(record_method.equals("")){
 						msg = "Record method is required";
 						return msg;
-				}				
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
+				
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						if(msg.equals("")){
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();
@@ -248,7 +273,7 @@ public class HourCode extends Type{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -304,13 +329,13 @@ public class HourCode extends Type{
 				if(record_method.equals("")){
 						msg = "Record method is required";
 						return msg;
-				}				
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						pstmt.setString(8, id);
@@ -321,7 +346,7 @@ public class HourCode extends Type{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

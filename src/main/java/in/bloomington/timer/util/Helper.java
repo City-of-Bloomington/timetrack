@@ -536,46 +536,6 @@ public class Helper{
     }
 
     /**
-     * Gets User firs/last name from ldap.
-     *
-     * @param userid string
-     * @return String user name
-     */
-    final static String getFirstName(String userid){
-				Hashtable<String, String> env = new Hashtable<String, String>(11);
-				String fname="";
-				if (!connectToServer(env)){
-						System.err.println("Error Connecting to LDAp Server");
-						return fname;
-				}
-				try{
-						DirContext ctx = new InitialDirContext(env);
-						SearchControls ctls = new SearchControls();
-						String[] attrIDs = {"givenname",
-																"sn"};
-						//
-						ctls.setReturningAttributes(attrIDs);
-						ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-						String filter = "(uid="+userid+")";
-						NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctls);
-						if(answer.hasMore()){
-								//
-								SearchResult sr = answer.next();
-								Attributes atts = sr.getAttributes();
-								//
-								Attribute givenname = atts.get("givenname");
-								if (givenname != null){
-										fname = givenname.get().toString();
-								}
-						}
-				}
-				catch(Exception ex){
-						System.err.println(ex);
-				}
-				return fname;
-    }
-
-    /**
      * Gets matching list from ldap for a given substring of a user name.
      *
      * @param subid the substring of the userid, subid has to be at least
@@ -693,19 +653,6 @@ public class Helper{
 				return ret;
     }
 
-    final static User findUserFromList(List<User> users, String empid){
-				User foundUser = null;
-				if(users != null && users.size() > 0){
-						for (int i=0;i<users.size();i++){
-								User user = users.get(i);
-								if(user != null && user.getUsername().equals(empid)){
-										foundUser = user;
-										break;
-								}
-						}
-				}
-				return foundUser;
-    }
     //
     // check the user privileges
     //

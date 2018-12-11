@@ -222,7 +222,7 @@ public class DepartmentEmployee{
 				}
 				logger.debug(qq);
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								if(!id.equals("")){
@@ -256,7 +256,7 @@ public class DepartmentEmployee{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -276,8 +276,8 @@ public class DepartmentEmployee{
 						return msg;
 				}				
 				logger.debug(qq);
+				con = UnoConnect.getConnection();				
 				try{
-						con = Helper.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, employee_id);
@@ -299,6 +299,7 @@ public class DepartmentEmployee{
 										pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
 								}
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
 						}
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
@@ -312,7 +313,7 @@ public class DepartmentEmployee{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -331,7 +332,7 @@ public class DepartmentEmployee{
 				String qq = "update department_employees set employee_id=?,department_id=?,department2_id=?,effective_date=?,expire_date=? where id=? ";
 				logger.debug(qq);
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, employee_id);
@@ -359,7 +360,7 @@ public class DepartmentEmployee{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -382,8 +383,8 @@ public class DepartmentEmployee{
 				String qq = "update department_employees set expire_date=? where id=? ";
 				
 				logger.debug(qq);
+				con = UnoConnect.getConnection();				
 				try{
-						con = Helper.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								java.util.Date date_tmp = df.parse(change_date);
@@ -397,7 +398,7 @@ public class DepartmentEmployee{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals("")){
 						effective_date = change_date;

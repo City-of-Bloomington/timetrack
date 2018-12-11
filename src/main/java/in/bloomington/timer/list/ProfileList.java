@@ -339,7 +339,7 @@ public class ProfileList{
 						int jj=1;
 						while(rs.next()){
 								String str = rs.getString(4); // nw employeeId 
-								String str2 = rs.getString(25); // group id
+								String str2 = rs.getString(25); // benefit group id
 								String str3 = ""; // rs.getString(3); //full time/part time, exempt/non-exempt
 								String str4 = rs.getString(20); // grade info
 								String str5 = rs.getString(22); // employeeNumber
@@ -359,6 +359,7 @@ public class ProfileList{
 									 && str2 != null
 									 && bgroups.containsKey(str2)){
 										bg = bgroups.get(str2);
+										System.err.println(" bg "+bg);
 										/*
 										if(str2.equals("6")){
 												System.err.println(jj+" bg code "+str2+" :"+str11);

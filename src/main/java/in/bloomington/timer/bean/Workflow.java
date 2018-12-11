@@ -227,39 +227,41 @@ public class Workflow implements Serializable{
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								if(!id.equals("")){
-										pstmt.setString(1, id);
-								}
-								else{
-										pstmt.setString(1, node_id);
-								}
-								rs = pstmt.executeQuery();
-								//
-								if(rs.next()){
-										setVals(rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														
-														rs.getString(4),
-														rs.getString(5),
-														rs.getString(6) != null,
-														rs.getString(7),
-														rs.getString(8) != null,
-														
-														rs.getString(9),
-														rs.getString(10),
-														rs.getString(11) != null,
-														rs.getString(12),
-														rs.getString(13) != null
-														);
-								}
-								else{
-										msg = "Workflow not found";
-								}
+						pstmt = con.prepareStatement(qq);
+						if(!id.equals("")){
+								pstmt.setString(1, id);
+						}
+						else{
+								pstmt.setString(1, node_id);
+						}
+						rs = pstmt.executeQuery();
+						//
+						if(rs.next()){
+								setVals(rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												
+												rs.getString(4),
+												rs.getString(5),
+												rs.getString(6) != null,
+												rs.getString(7),
+												rs.getString(8) != null,
+												
+												rs.getString(9),
+												rs.getString(10),
+												rs.getString(11) != null,
+												rs.getString(12),
+												rs.getString(13) != null
+												);
+						}
+						else{
+								msg = "Workflow not found";
 						}
 				}
 				catch(Exception ex){
@@ -267,7 +269,7 @@ public class Workflow implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -281,16 +283,18 @@ public class Workflow implements Serializable{
 						msg = "node id is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						if(msg.equals("")){
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();
@@ -304,7 +308,7 @@ public class Workflow implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				msg += doSelect();
 				return msg;
@@ -335,12 +339,12 @@ public class Workflow implements Serializable{
 						msg = "node is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						pstmt.setString(3, id);
@@ -351,7 +355,7 @@ public class Workflow implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}				

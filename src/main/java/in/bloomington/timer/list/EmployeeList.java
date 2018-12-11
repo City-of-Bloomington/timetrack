@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import in.bloomington.timer.util.*;
+import in.bloomington.timer.util.Helper;
+import in.bloomington.timer.util.CommonInc;
+import in.bloomington.timer.util.UnoConnect;
 import in.bloomington.timer.bean.*;
 
 public class EmployeeList extends CommonInc{
@@ -280,13 +282,13 @@ public class EmployeeList extends CommonInc{
 						qq += " where "+qw;
 				qq += " order by e.last_name,e.first_name ";
 				String back = "";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
 				try{
-						logger.debug(qq);
-						con = Helper.getConnection();
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						if(!id.equals("")){
@@ -354,7 +356,7 @@ public class EmployeeList extends CommonInc{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }

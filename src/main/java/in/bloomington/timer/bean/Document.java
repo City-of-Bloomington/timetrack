@@ -36,7 +36,8 @@ public class Document{
 		Employee initiater = null;
 		Workflow lastWorkflow = null;
 		List<TimeAction> timeActions = null;
-		Map<String, Map<Integer, String>> daily = null;				
+		Map<String, Map<Integer, String>> daily = null;
+		Map<String, Map<Integer, Double>> dailyDbl = null;		
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
 		JobTask job = null;
@@ -54,6 +55,8 @@ public class Document{
 		List<Employee> nextActioners = null;
 		TimeAction lastTimeAcion = null;
 		Map<String, AccrualWarning> warningMap = new TreeMap<>();
+		// week 1,2 / hour_code_id /hours
+		Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = null;
 		HolidayList holidays = null;
     public Document(String val,
 										String val2,
@@ -284,12 +287,12 @@ public class Document{
 						List<AccrualWarning> ones = tl.getAccrualWarnings();
 						if(ones != null && ones.size() > 0){
 								for(AccrualWarning one:ones){
-										String str = one.getHourCode().getName();
-										String str2 = one.getHourCode().getDescription();
-										if(str == null) continue;
-										if(str2 == null) str2 = "";
-										str += ": "+str2;
-										warningMap.put(str, one);
+										List<HourCode> codes = one.getHourCodes();
+										if(codes != null && codes.size() > 0){
+												for(HourCode cc:codes){		
+														warningMap.put(cc.getCodeInfo(), one);
+												}
+										}
 								}
 						}
 				}
@@ -326,6 +329,9 @@ public class Document{
 				}
 				return false;
 		}
+		Map<Integer, Map<Integer, Double>> getUsedWeeklyAccruals(){
+				return usedWeeklyAccruals;
+		}		
 		public boolean isSubmitted(){
 				getTimeActions();
 				if(timeActions != null){
@@ -358,7 +364,13 @@ public class Document{
 		}
 		public String getWeek2_flsa(){
 				return ""+dfn.format(week2_flsa);
-		}						
+		}
+		public double getWeek1_flsaDbl(){
+				return week1_flsa;
+		}
+		public double getWeek2_flsaDbl(){
+				return week2_flsa;
+		}					
 		public boolean hasDaily(){
 				prepareDaily();
 				return daily != null && daily.size() > 0;
@@ -381,6 +393,7 @@ public class Document{
 								Map<String, Map<Integer, String>> ones = tl.getDaily();
 								if(ones != null && ones.size() > 0){
 										daily = ones;
+										dailyDbl = tl.getDailyDbl();
 										// }								
 										// Map<Integer, Double> ones = tl.getDaily();
 										// if(ones != null && ones.size() > 0){
@@ -393,6 +406,7 @@ public class Document{
 										if(ones2 != null && ones2.size() > 0){
 												timeBlocks = ones2;
 										}
+										usedWeeklyAccruals = tl.getUsedWeeklyAccruals();
 										week1_flsa = tl.getWeek1_flsa();
 										week2_flsa = tl.getWeek2_flsa();
 										week1Total = tl.getWeek1Total();
@@ -411,9 +425,13 @@ public class Document{
 				//
 				prepareDaily(true);
 		}
+		
 		public Map<String, Map<Integer, String>> getDaily(){
 				return daily;
 		}
+		public Map<String, Map<Integer, Double>> getDailyDbl(){
+				return dailyDbl;
+		}		
 		
 		public List<TimeBlock> getTimeBlocks(){
 				if(timeBlocks == null){
@@ -431,6 +449,12 @@ public class Document{
 		public String getWeek2Total(){
 				return ""+dfn.format(week2Total);
 		}
+		public double getWeek1TotalDbl(){
+				return week1Total;
+		}
+		public double getWeek2TotalDbl(){
+				return week2Total;
+		}		
 		public String getPayPeriodTotal(){
 				double ret = week1Total+week2Total;
 				return ""+dfn.format(ret);
@@ -548,6 +572,96 @@ public class Document{
 				}
 				return employeeAccruals;
 		}
+		private void checkForExcessUse(double weekTotal,
+																	 int whichWeek){
+				if(job != null){
+						if(weekTotal > job.getWeekly_regular_hours()+0.001){
+								double week_excess = weekTotal - job.getWeekly_regular_hours();
+								double week_excess_adj = week_excess;
+								if(usedWeeklyAccruals != null &&
+									 !usedWeeklyAccruals.isEmpty()){
+										if(usedWeeklyAccruals.containsKey(whichWeek)){
+												Map<Integer, Double> map = usedWeeklyAccruals.get(whichWeek);
+												Set<Integer> keys = map.keySet();
+												if(!keys.isEmpty()){
+														for(int key:keys){
+																String str = "";
+																double used = map.get(key);
+																if(used <= week_excess_adj){
+																		HourCode hrc = new HourCode(""+key);
+																		String back = hrc.doSelect();
+																		if(back.equals("")){
+																				str = "Week "+whichWeek+" excess of ("+dfn.format(used)+" hrs) of ("+hrc.getName()+") used ";
+																				if(!warnings.contains(str))
+																						warnings.add(str);
+																				str ="";
+																				week_excess_adj -= used; // adjust for next key (if any)
+																				continue;
+																		}	
+																}
+																else if(week_excess_adj > 0.001
+																				&& used > week_excess_adj+0.001){
+																		// need is the amount we need to get
+																		// to weekly regular total required
+																		double need = used - week_excess_adj;
+																		double real_need = 0;
+																		HourCode hrc = new HourCode(""+key);
+																		String back = hrc.doSelect();
+																		double min_hrs = 0;
+																		if(back.equals("")){
+																				if(hrc.hasAccrualWarning()){
+																						AccrualWarning acw = hrc.getAccrualWarning();
+																						if(acw.require_min()){
+																								min_hrs = acw.getMin_hrs();
+																								if(need < min_hrs){
+																										need = min_hrs;
+																										if(used > need){
+																												week_excess_adj = used-need;
+																												str = "Week "+whichWeek+" excess of ("+dfn.format(week_excess_adj)+" hrs) of ("+hrc.getName()+") used";
+																												if(!warnings.contains(str))
+																														warnings.add(str);
+																												return;
+																										}
+																								} // need > min_hrs
+																								else { // need > min_hrs
+																										need -= min_hrs;
+																										real_need += min_hrs;
+																								}
+																						}
+																						else{
+																								str = "Week "+whichWeek+" excess of ("+dfn.format(week_excess_adj)+" hrs) of ("+hrc.getName()+") used";
+																								if(!warnings.contains(str))
+																										warnings.add(str);
+																								return;
+																						}
+																						if(need > 0.001){
+																								if(acw.require_step()){
+																										int cnt = (int)(need / acw.getStep_hrs());
+																										if(need % acw.getStep_hrs() > 0){
+																												cnt += 1;
+																										}
+																										need = cnt*acw.getStep_hrs();
+																										real_need += need;
+																										week_excess = used-real_need;
+																										if(week_excess > 0.001){
+																												
+																												str = "Week "+whichWeek+" excess of ("+dfn.format(week_excess)+" hrs) of ("+hrc.getName()+") used";
+																												if(!warnings.contains(str))
+																														warnings.add(str);
+																												return;
+																										}
+																								}
+																						}
+																				}
+																		}
+																}
+														}
+												}
+										}
+								}
+						}
+				}				
+		}				
 		// short description of employee accrual balance as of now
 		public String getEmployeeAccrualsShort(){
 				String ret = "";
@@ -568,7 +682,8 @@ public class Document{
 				if(usedAccrualTotals == null){
 						TimeBlockList tl = new TimeBlockList();
 						tl.setActiveOnly();
-						tl.setDocument_id(id);
+						tl.setEmployee_id(employee_id);
+						tl.setPay_period_id(pay_period_id);
 						String back = tl.findUsedAccruals();
 						if(back.equals("")){
 								usedAccrualTotals = tl.getUsedAccrualTotals();
@@ -577,6 +692,11 @@ public class Document{
 								logger.error(back);
 						}
 				}
+		}
+		public Map<Integer, Double> getUsedAccrualTotals(){
+				if(usedAccrualTotals == null)
+						findUsedAccruals();
+				return usedAccrualTotals;
 		}
 		public void findHourCodeTotals(){
 				if(hourCodeTotals == null){
@@ -619,6 +739,12 @@ public class Document{
 		public Map<Integer, Double> getHourCodeTotals(){
 				return hourCodeTotals;
 		}
+		public Map<String, Double> getHourCodeWeek1Dbl(){
+				return hourCodeWeek1;
+		}
+		public Map<String, Double> getHourCodeWeek2Dbl(){
+				return hourCodeWeek2;
+		}		
 		// change double to string for formating purpose
 		public Map<String, String> getHourCodeWeek1(){
 				Map<String, String> map2 = new TreeMap<>();
@@ -658,7 +784,6 @@ public class Document{
 								if(accDesc == null) accDesc="";
 								String codeInfo = accName+": "+accDesc;
 								//
-								// String related_id = one.getRelated_hour_code_id();
 								if(accrual_id != null && !accrual_id.equals("")){
 										double hrs_total = one.getHours();
 										list.add(""+dfn.format(hrs_total));
@@ -694,7 +819,7 @@ public class Document{
 						}
 				}
 		}
-		void prepareHolidays(){
+		public void prepareHolidays(){
 				HolidayList hl = new HolidayList(debug);
 				if(!pay_period_id.equals("")){
 						hl.setPay_period_id(pay_period_id);
@@ -840,9 +965,11 @@ public class Document{
 				}
 				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
+						checkForExcessUse(week1Total, 1);
 				}
 				if(week2Total > 0){
 						checkWeekWarnings(hourCodeWeek2, week2Total);
+						checkForExcessUse(week2Total, 2);						
 				}
 		}		
 		/**
@@ -910,6 +1037,7 @@ public class Document{
 						}
 				}
 		}
+
 		public boolean hasWarnings(){
 				return warnings.size() > 0;
 		}
@@ -960,7 +1088,7 @@ public class Document{
 				String qq = "select id,employee_id,pay_period_id,job_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by from time_documents where id =? ";
 				logger.debug(qq);
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, id);
@@ -979,7 +1107,7 @@ public class Document{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -1010,8 +1138,8 @@ public class Document{
 						return msg;
 				}				
 				logger.debug(qq);
+				con = UnoConnect.getConnection();				
 				try{
-						con = Helper.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, employee_id);
@@ -1040,7 +1168,7 @@ public class Document{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

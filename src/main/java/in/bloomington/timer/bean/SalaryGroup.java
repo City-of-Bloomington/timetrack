@@ -98,6 +98,21 @@ public class SalaryGroup{
 		public boolean isUnionned(){
 				return name.equals("Union");
 		}
+		public boolean isPoliceSworn(){
+				return name.equals("POLICE SWORN");
+		}
+		public boolean isPoliceDetective(){
+				return name.equals("POLICE SWORN DET");
+		}
+		public boolean isPoliceManagement(){
+				return name.equals("POLICE SWORN MGT");
+		}
+		public boolean isFireSworn(){
+				return name.equals("FIRE SWORN");
+		}
+		public boolean isFireSworn5x8(){
+				return name.equals("FIRE SWORN 5X8");
+		}		
 		//
 		// all groups are leave elegible except temp workers
 		//
@@ -152,7 +167,7 @@ public class SalaryGroup{
 				ResultSet rs = null;
 				String qq = "select id,name,description,default_regular_id,inactive "+
 						"from salary_groups where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -177,7 +192,7 @@ public class SalaryGroup{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -192,16 +207,18 @@ public class SalaryGroup{
 						msg = "Earn code name is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						if(msg.equals("")){
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();
@@ -215,7 +232,7 @@ public class SalaryGroup{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -253,12 +270,12 @@ public class SalaryGroup{
 						msg = "Earn code name is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						pstmt.setString(5, id);
@@ -269,7 +286,7 @@ public class SalaryGroup{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

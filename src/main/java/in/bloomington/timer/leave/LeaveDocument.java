@@ -405,19 +405,21 @@ public class LeaveDocument{
 				String msg="", str="";
 				String qq = "select id,employee_id,pay_period_id,job_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by from leave_documents where id =? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										setEmployee_id(rs.getString(2));
-										setPay_period_id(rs.getString(3));
-										setJob_id(rs.getString(4));
-										setInitiated(rs.getString(5));
-										setInitiated_by(rs.getString(6));
-								}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setEmployee_id(rs.getString(2));
+								setPay_period_id(rs.getString(3));
+								setJob_id(rs.getString(4));
+								setInitiated(rs.getString(5));
+								setInitiated_by(rs.getString(6));
 						}
 				}
 				catch(Exception ex){
@@ -425,7 +427,7 @@ public class LeaveDocument{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -456,16 +458,20 @@ public class LeaveDocument{
 						return msg;
 				}				
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, employee_id);
-								pstmt.setString(2, pay_period_id);
-								pstmt.setString(3, job_id);
-								pstmt.setString(4, initiated_by);
-								pstmt.executeUpdate();
-						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, employee_id);
+						pstmt.setString(2, pay_period_id);
+						pstmt.setString(3, job_id);
+						pstmt.setString(4, initiated_by);
+						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);						
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
@@ -479,7 +485,7 @@ public class LeaveDocument{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

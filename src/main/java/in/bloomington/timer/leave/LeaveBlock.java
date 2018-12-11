@@ -330,7 +330,7 @@ public class LeaveBlock{
 						msg = " hour code not set ";
 						return msg;
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could do not get connection to DB";
 						return msg;
@@ -351,6 +351,8 @@ public class LeaveBlock{
 						else
 								pstmt.setNull(5, Types.CHAR);
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						pstmt = con.prepareStatement(qq2);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
@@ -383,7 +385,7 @@ public class LeaveBlock{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, rs, pstmt);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -401,7 +403,7 @@ public class LeaveBlock{
 						msg = " record id not set ";
 						return msg;
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could do not get connection to DB";
 						return msg;
@@ -453,7 +455,7 @@ public class LeaveBlock{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;						
 		}
@@ -475,7 +477,7 @@ public class LeaveBlock{
 						msg = "action status or action user not set";
 						return msg;
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could do not get connection to DB";
 						return msg;
@@ -513,7 +515,7 @@ public class LeaveBlock{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;						
 		}		
@@ -541,27 +543,29 @@ public class LeaveBlock{
 						" from leave_blocks t "+
 						" where t.id=? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										setVals(
-														rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														rs.getString(4),
-														rs.getDouble(5),
-														rs.getString(6),
-														rs.getString(7) != null,
-														rs.getString(8),
-														rs.getString(9),
-														rs.getString(10),														
-														rs.getString(11) != null
-														);
-								}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setVals(
+												rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getDouble(5),
+												rs.getString(6),
+												rs.getString(7) != null,
+												rs.getString(8),
+												rs.getString(9),
+												rs.getString(10),														
+												rs.getString(11) != null
+												);
 						}
 				}
 				catch(Exception ex){
@@ -569,7 +573,7 @@ public class LeaveBlock{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

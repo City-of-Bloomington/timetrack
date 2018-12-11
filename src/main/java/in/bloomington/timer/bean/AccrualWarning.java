@@ -5,6 +5,7 @@ package in.bloomington.timer.bean;
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
 import java.sql.*;
+import java.util.List;
 import javax.naming.*;
 import javax.naming.directory.*;
 import in.bloomington.timer.*;
@@ -17,13 +18,16 @@ public class AccrualWarning{
 
 		static final long serialVersionUID = 3700L;	
 		static Logger logger = LogManager.getLogger(AccrualWarning.class);
-    String id="", hour_code_id="",
+    String id="", 
+				accrual_id="",
 				step_warning_text="",
 				min_warning_text="",
 				excess_warning_text="";
 		double min_hrs = 0., step_hrs=0.,
 				related_accrual_max_leval=0.;
 		HourCode hourCode = null;
+		Accrual accrual = null;
+    List<HourCode> hourCodes = null;
 		//
 		public AccrualWarning(){
 				super();
@@ -53,7 +57,7 @@ public class AccrualWarning{
 												 String val8
 												 ){
 				setId(val);
-				setHour_code_id(val2);
+				setAccrual_id(val2);
 				setMin_hrs(val3);
 				setStep_hrs(val4);
 				setRelated_accrual_max_level(val5);
@@ -84,9 +88,9 @@ public class AccrualWarning{
     public String getId(){
 				return id;
     }
-    public String getHour_code_id(){
-				return hour_code_id;
-    }
+    public String getAccrual_id(){
+				return accrual_id;
+    }		
     public double getMin_hrs(){
 				return min_hrs;
     }
@@ -121,10 +125,15 @@ public class AccrualWarning{
 				if(val != null)
 						id = val;
     }
-    public void setHour_code_id(String val){
+
+    public void setAccrual_id(String val){
 				if(val != null)
-						hour_code_id = val;
+						accrual_id = val;
     }
+		public void setRelated_accrual_id(String val){
+				if(val != null)
+						accrual_id = val;
+		}
     public void setMin_hrs(double val){
 						min_hrs = val;
     }
@@ -146,6 +155,7 @@ public class AccrualWarning{
 				if(val != null)
 						excess_warning_text = val;
     }
+		/*
 		public HourCode getHourCode(){
 				if(hourCode == null && !hour_code_id.equals("")){
 						HourCode one = new HourCode(hour_code_id);
@@ -156,6 +166,54 @@ public class AccrualWarning{
 				}
 				return hourCode;
 		}
+		*/
+		public Accrual getAccrual(){
+				if(accrual == null && !accrual_id.equals("")){
+						Accrual one = new Accrual(accrual_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								accrual = one;
+						}
+				}
+				return accrual;
+		}
+
+
+    public List<HourCode> getHourCodes() {
+				findHourCodes();
+        return hourCodes;
+    }
+
+    public boolean hasHourCodes() {
+				findHourCodes();				
+        return hourCodes != null && hourCodes.size() > 0;
+    }
+		public void findHourCodes() {
+        if (hourCodes == null && !accrual_id.equals("")) {
+            HourCodeList hcl = new HourCodeList();
+            hcl.setAccrual_id(accrual_id);
+            hcl.setActiveOnly();
+            String back = hcl.find();
+            if (back.equals("")) {
+                List<HourCode> ones = hcl.getHourCodes();
+                if (ones != null && ones.size() > 0) {
+                    hourCodes = ones;
+                }
+            }
+        }
+    }
+
+    public String getHourCodeNames() {
+        String ret = "";
+        if (hasHourCodes()) {
+            for (HourCode one : hourCodes) {
+                if (!ret.equals("")) { ret += ", "; }
+                ret += one.getCodeInfo();
+            }
+        }
+        return ret;
+    }
+		
     public String toString(){
 				return id;
     }
@@ -165,9 +223,9 @@ public class AccrualWarning{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select id,hour_code_id,min_hrs,step_hrs,related_accrual_max_leval,step_warning_text,min_warning_text,excess_warning_text "+
+				String qq = "select id,accrual_id,min_hrs,step_hrs,related_accrual_max_leval,step_warning_text,min_warning_text,excess_warning_text "+
 						"from accrual_warnings where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -196,7 +254,7 @@ public class AccrualWarning{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -205,17 +263,17 @@ public class AccrualWarning{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(hour_code_id.equals("")){
-						msg = " hour code not set ";
+				if(accrual_id.equals("")){
+						msg = " accrual not set ";
 						return msg;
-				}
+				}				
 				if(excess_warning_text.equals("")){
 						msg = " Excess warning test not set ";
 						return msg;
 				}				
 				String qq = " insert into accrual_warnings values(0,?,?,?,?, ?,?,?)";
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -224,6 +282,8 @@ public class AccrualWarning{
 						msg = setParams(pstmt);
 						if(msg.equals("")){
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();
@@ -237,7 +297,7 @@ public class AccrualWarning{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -245,7 +305,7 @@ public class AccrualWarning{
 				String msg = "";
 				int jj=1;
 				try{
-						pstmt.setString(jj++, hour_code_id);
+						pstmt.setString(jj++, accrual_id);						
 						pstmt.setDouble(jj++, min_hrs);
 						pstmt.setDouble(jj++, step_hrs);
 						pstmt.setDouble(jj++, related_accrual_max_leval);
@@ -277,12 +337,12 @@ public class AccrualWarning{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update accrual_warnings set "+
-						" hour_code_id=?, min_hrs=?,step_hrs=?,"+
+						" accrual_id=?,min_hrs=?,step_hrs=?,"+
 						" related_accrual_max_leval=?, step_warning_text=?,"+
 						" min_warning_text=?,excess_warning_text=? "+
 						" where id=? ";
-				if(hour_code_id.equals("")){
-						msg = "hour code is required";
+				if(accrual_id.equals("")){
+						msg = "Accrual is required";
 						return msg;
 				}
 				if(excess_warning_text.equals("")){
@@ -290,7 +350,7 @@ public class AccrualWarning{
 						return msg;
 				}								
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -305,7 +365,7 @@ public class AccrualWarning{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

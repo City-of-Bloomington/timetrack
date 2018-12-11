@@ -15,11 +15,12 @@
 			<ul>
 				<li><a href="<s:property value='#application.url'/>accrual.action"">Accrual Types</a></li>
 				<li><a href="<s:property value='#application.url'/>accrualWarning.action">Accrual Warnings </a></li>
-				<li><a href="<s:property value='#application.url'/>ipaddress.action">Allowed IP Addresses</a></li>				
+				<li><a href="<s:property value='#application.url'/>location.action">Locations</a></li>				
 				<li><a href="<s:property value='#application.url'/>benefitGroup.action">Benefit Groups</a></li>
 				<li><a href="<s:property value='#application.url'/>department.action">Departments</a></li>				
 				<li><a href="<s:property value='#application.url'/>employee.action">Employees</a></li>
 				<li><a href="<s:property value='#application.url'/>empAccrual.action">Employee Accruals</a></li>
+				<li><a href="<s:property value='#application.url'/>groupLocation.action">Group Locations</a></li>				
 				<li><a href="<s:property value='#application.url'/>hourcode.action">Hour Codes</a></li>
 				<li><a href="<s:property value='#application.url'/>hourcodeCondition.action">Hour Code Restrictions</a></li>
 				<li><a href="<s:property value='#application.url'/>codeRef.action">Hour Code Cross Reference</a></li>

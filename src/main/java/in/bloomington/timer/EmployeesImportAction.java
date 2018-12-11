@@ -21,21 +21,26 @@ public class EmployeesImportAction extends TopAction{
 		static Logger logger = Logger.getLogger(EmployeesImportAction.class);
 		//
 		String file_name = "/srv/data/timetrack/facilities.csv";
+		String multiJob = "";
 		File file = null;
 		String fileName="", contentType="";
 		EmployeesImport empImport = null;
+		RollBack roll = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(action.equals("Import")){
 						if(file != null){
-								RollBack roll = new RollBack();
+								roll = new RollBack();
 								roll.doPrepare();
 								if(roll.isFailure()){
 										addError("Table max error:  this may cause the unsuccessful import roll back");
 								}
 								getEmpImport();
-								back += empImport.doImport(file);
+								if(multiJob.equals(""))
+										back += empImport.doImport(file);
+								else
+										back += empImport.doImportMultiJobs(file);
 								if(!back.equals("")){
 										addError(back);
 								}
@@ -48,7 +53,7 @@ public class EmployeesImportAction extends TopAction{
 						}
 				}
 				if(action.equals("Rollback")){
-						RollBack roll = new RollBack();
+						roll = new RollBack();
 						back = roll.doRollback();
 						if(!back.equals("")){
 								addError(back);
@@ -59,6 +64,8 @@ public class EmployeesImportAction extends TopAction{
 				}				
 				else{		
 						getEmpImport();
+						getRoll();
+						roll.findLastRollDate();						
 				}
 				return ret;
 		}
@@ -86,12 +93,24 @@ public class EmployeesImportAction extends TopAction{
 						empImport = val;
 				}
 		}
+		public RollBack getRoll(){
+				if(roll == null)
+						roll = new RollBack();
+				return roll;
+		}		
 		public String getFile_name(){
 				return file_name;
 		}
 		public void setFile_name(String val){
 				if(val != null)
 						file_name = val;
+		}
+		public boolean getMultiJob(){
+				return !multiJob.equals("");
+		}
+		public void setMultiJob(String val){
+				if(val != null && !val.equals(""))
+						multiJob = "y";
 		}
 
 

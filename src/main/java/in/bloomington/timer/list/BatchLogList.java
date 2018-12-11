@@ -30,7 +30,7 @@ public class BatchLogList{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
+				Connection con = UnoConnect.getConnection();
 				String qq = "select id,document_id,name,date_format(date,'%m/%d/%Y %h:%i'),status from batch_logs order by id desc limit 10 ";
 				if(con == null){
 						back = "Could not connect to DB";
@@ -57,7 +57,7 @@ public class BatchLogList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

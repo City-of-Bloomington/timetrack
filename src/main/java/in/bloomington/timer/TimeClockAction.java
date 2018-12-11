@@ -54,9 +54,18 @@ public class TimeClockAction extends TopAction{
 														addError(back);
 														return ret;
 												}
+												// uncomment the following "else if" when
+												// group locations are assigned 
+												//
+												/**
+												else if(!timeClock.checkIpAddress(ip)){
+														back = "This ip address is not allowed at this location ";
+														addError(back);
+														return ret;														
+												}
+												*/
 												else if(!timeClock.hasClockIn() &&
-													 timeClock.hasMultipleJobs() &&
-													 timeClock.hasEmployee()){
+																timeClock.hasMultipleJobs()){
 														if(action.equals("Submit"))
 																return "pickJob";
 												}
@@ -72,6 +81,8 @@ public class TimeClockAction extends TopAction{
 										}
 										catch(Exception ex){
 												logger.error(ex);
+												addError("Error");
+												return ret;
 										}
 								}
 								else{
@@ -107,7 +118,6 @@ public class TimeClockAction extends TopAction{
 								String back = tbl.find();
 								if(back.equals("")){
 										List<TimeBlock> ones = tbl.getTimeBlocks();
-										// if more than one
 										if(ones != null && ones.size() > 1){
 												timeBlocks = ones;
 										}
@@ -137,13 +147,13 @@ public class TimeClockAction extends TopAction{
 						action = val;
 		}
 		private void prepareIps(){
-				IpAddressList ial = new IpAddressList();
+				LocationList ial = new LocationList();
 				String back = ial.find();
 				if(back.equals("")){
-						List<IpAddress> ones = ial.getIpAddresses();
+						List<Location> ones = ial.getLocations();
 						if(ones != null && ones.size() > 0){
 								ipSet = new HashSet<>();
-								for(IpAddress one:ones){
+								for(Location one:ones){
 										String str = one.getIp_address();
 										if(str != null)
 												ipSet.add(str);

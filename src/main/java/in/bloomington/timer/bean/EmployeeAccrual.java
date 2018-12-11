@@ -157,30 +157,32 @@ public class EmployeeAccrual extends CommonInc{
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								if(!id.equals("")){
-										pstmt.setString(1, id);
-								}
-								rs = pstmt.executeQuery();
-								//
-								if(rs.next()){
-										setVals(rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														rs.getString(4),
-														rs.getDouble(5),
-														rs.getString(6),
-														rs.getString(7),
-														rs.getString(8),
-														rs.getInt(9),
-														rs.getString(10));
-								}
-								else{
-										msg = "Accrual not found";
-								}
+						pstmt = con.prepareStatement(qq);
+						if(!id.equals("")){
+								pstmt.setString(1, id);
+						}
+						rs = pstmt.executeQuery();
+						//
+						if(rs.next()){
+								setVals(rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getDouble(5),
+												rs.getString(6),
+												rs.getString(7),
+												rs.getString(8),
+												rs.getInt(9),
+												rs.getString(10));
+						}
+						else{
+								msg = "Accrual not found";
 						}
 				}
 				catch(Exception ex){
@@ -188,7 +190,7 @@ public class EmployeeAccrual extends CommonInc{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -213,20 +215,24 @@ public class EmployeeAccrual extends CommonInc{
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}							
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, accrual_id);
-								pstmt.setString(2, employee_id);
-								pstmt.setDouble(3, hours);
-								if(date.equals("")){
-										date = Helper.getToday();
-								}
-								java.util.Date date_tmp = df.parse(date);
-								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));								
-								pstmt.executeUpdate();
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, accrual_id);
+						pstmt.setString(2, employee_id);
+						pstmt.setDouble(3, hours);
+						if(date.equals("")){
+								date = Helper.getToday();
 						}
+						java.util.Date date_tmp = df.parse(date);
+						pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));								
+						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
@@ -239,7 +245,7 @@ public class EmployeeAccrual extends CommonInc{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -258,24 +264,26 @@ public class EmployeeAccrual extends CommonInc{
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}						
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, accrual_id);
-								pstmt.setDouble(2, hours);
-								java.util.Date date_tmp = df.parse(date);
-								pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
-								pstmt.setString(4, id);
-								pstmt.executeUpdate();
-						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, accrual_id);
+						pstmt.setDouble(2, hours);
+						java.util.Date date_tmp = df.parse(date);
+						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setString(4, id);
+						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
 						msg += " "+ex;
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				doSelect();
 				return msg;

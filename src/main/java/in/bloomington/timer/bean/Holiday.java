@@ -72,20 +72,22 @@ public class Holiday{
 						back = " date or description not set ";
 						return back;
 				}
+				con = UnoConnect.getConnection();				
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
 				try{
 						if(debug){
 								logger.debug(qq);
-						}
-						con = Helper.getConnection();				
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
 						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date).getTime()));			
 						pstmt.setString(jj++,description);			
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID() ";
 						if(debug){
 								logger.debug(qq);
@@ -102,7 +104,7 @@ public class Holiday{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }			
@@ -121,14 +123,14 @@ public class Holiday{
 						back = " date, description or id not set ";
 						return back;
 				}
+				con = UnoConnect.getConnection();	
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
 				try{
 						if(debug){
 								logger.debug(qq);
-						}
-						con = Helper.getConnection();	
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
 						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
@@ -143,7 +145,7 @@ public class Holiday{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }
@@ -161,15 +163,15 @@ public class Holiday{
 						back = " holiday id not set ";
 						return back;
 				}
+				if(debug){
+						logger.debug(qq);
+				}
+				con = UnoConnect.getConnection();	
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
 				try{
-						if(debug){
-								logger.debug(qq);
-						}
-						con = Helper.getConnection();	
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						pstmt.setString(jj++,id);
@@ -180,7 +182,7 @@ public class Holiday{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }			
@@ -193,15 +195,15 @@ public class Holiday{
 				String qq = "select date_format(date,'%m/%d/%Y'),description from "+
 						" holidays where id = ? ";
 				String back = "";
+				if(debug){
+						logger.debug(qq);
+				}
+				con = UnoConnect.getConnection();				
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
 				try{
-						if(debug){
-								logger.debug(qq);
-						}
-						con = Helper.getConnection();				
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						pstmt.setString(jj,id);
@@ -218,7 +220,7 @@ public class Holiday{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }	

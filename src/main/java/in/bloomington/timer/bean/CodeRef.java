@@ -102,13 +102,13 @@ public class CodeRef{
 						back = " nw_code not set ";
 						return back;
 				}
+				logger.debug(qq);
+				con = UnoConnect.getConnection();	
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}				
 				try{
-						logger.debug(qq);
-						con = Helper.getConnection();	
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						if(code_id.equals(""))
@@ -130,6 +130,8 @@ public class CodeRef{
 						else
 								pstmt.setString(jj++, pto_ratio);						
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID() ";
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);			
@@ -143,7 +145,7 @@ public class CodeRef{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }
@@ -162,13 +164,14 @@ public class CodeRef{
 						back = " code,nw_code or id not set ";
 						return back;
 				}
+				logger.debug(qq);
+				con = UnoConnect.getConnection();	
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
+				
 				try{
-						logger.debug(qq);
-						con = Helper.getConnection();	
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						if(code_id.equals(""))
@@ -198,7 +201,7 @@ public class CodeRef{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }		
@@ -211,13 +214,13 @@ public class CodeRef{
 				String qq = "select code_id,code,nw_code,gl_string,pto_ratio from "+
 						" code_cross_ref where id = ? ";
 				String back = "";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();				
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}				
 				try{
-						logger.debug(qq);
-						con = Helper.getConnection();				
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						pstmt.setString(jj,id);
@@ -235,7 +238,7 @@ public class CodeRef{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
     }	

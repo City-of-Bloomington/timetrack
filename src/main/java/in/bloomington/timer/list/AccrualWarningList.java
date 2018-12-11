@@ -17,13 +17,10 @@ public class AccrualWarningList{
 
 		static Logger logger = LogManager.getLogger(AccrualWarningList.class);
 		static final long serialVersionUID = 3850L;
-		String sortBy="id", id="", hour_code_id=""; 
+		String sortBy="w.id", id="", hour_code_id="", accrual_id=""; 
 		List<AccrualWarning> accrualWarnings = null;
 	
 		public AccrualWarningList(){
-		}
-		public List<AccrualWarning> getAccrualWarnings(){
-				return accrualWarnings;
 		}
 		
 		public void setId(String val){
@@ -34,15 +31,26 @@ public class AccrualWarningList{
 				if(val != null)
 						hour_code_id = val;
 		}
+		public void setAccrual_id(String val){
+				if(val != null)
+						accrual_id = val;
+		}
+		public void setRelated_accrual_id(String val){
+				if(val != null)
+						accrual_id = val;
+		}		
+		public List<AccrualWarning> getAccrualWarnings(){
+				return accrualWarnings;
+		}
 		
 		public String find(){
 		
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
-				String qq = "select id,hour_code_id,min_hrs,step_hrs,related_accrual_max_leval,step_warning_text,min_warning_text,excess_warning_text "+
-						"from accrual_warnings ";						
+				Connection con = UnoConnect.getConnection();
+				String qq = "select w.id,w.accrual_id,w.min_hrs,w.step_hrs,w.related_accrual_max_leval,w.step_warning_text,w.min_warning_text,w.excess_warning_text "+
+						"from accrual_warnings w";						
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -50,8 +58,14 @@ public class AccrualWarningList{
 				String qw = "";
 				try{
 						if(!hour_code_id.equals("")){
+								qq +=", hour_codes c ";
 								if(!qw.equals("")) qw += " and ";
-								qw += " hour_code_id = ? ";
+								qw += " c.accrual_id=w.accrual_id and ";
+								qw += " c.id = ? ";
+						}
+						if(!accrual_id.equals("")){
+								if(!qw.equals("")) qw += " and ";
+								qw += " w.accrual_id = ? ";
 						}
 						if(!qw.equals("")){
 								qq += " where "+qw;
@@ -61,8 +75,12 @@ public class AccrualWarningList{
 						}
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
+						int jj=1;
 						if(!hour_code_id.equals("")){
-								pstmt.setString(1, hour_code_id);
+								pstmt.setString(jj++, hour_code_id);
+						}
+						if(!accrual_id.equals("")){
+								pstmt.setString(jj++, accrual_id);
 						}						
 						rs = pstmt.executeQuery();
 						if(accrualWarnings == null)
@@ -86,7 +104,7 @@ public class AccrualWarningList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

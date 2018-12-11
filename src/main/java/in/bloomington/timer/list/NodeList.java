@@ -47,7 +47,7 @@ public class NodeList{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
+				Connection con = UnoConnect.getConnection();
 				String qq = "select t.id,t.name,t.description,t.managers_only,t.annotation,t.inactive from workflow_nodes t ";
 				if(con == null){
 						back = "Could not connect to DB";
@@ -98,7 +98,7 @@ public class NodeList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

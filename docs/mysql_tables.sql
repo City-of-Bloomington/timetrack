@@ -149,6 +149,7 @@ CREATE TABLE `group_managers` (
  CREATE TABLE `accrual_warnings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hour_code_id` int(10) unsigned NOT NULL,
+	 accrual_id int(10) unsigned Not null,
   `min_hrs` double(4,2) DEFAULT NULL,
   `step_hrs` double(4,2) DEFAULT NULL,
   `related_accrual_max_leval` double(5,2) DEFAULT NULL,
@@ -157,6 +158,7 @@ CREATE TABLE `group_managers` (
   `excess_warning_text` varchar(80) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `hour_code_id` (`hour_code_id`),
+	foreign Key(accrual_id) references accruals(id),
   CONSTRAINT `accrual_warnings_ibfk_1` FOREIGN KEY (`hour_code_id`) REFERENCES `hour_codes` (`id`)
 ) ENGINE=InnoDB;
 ;;
@@ -285,13 +287,17 @@ CREATE TABLE `positions` (
 ;;
 ;; ip_allowed table
 ;;
- CREATE TABLE `ip_allowed` (
+ CREATE TABLE locations (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,
-  `description` varchar(512) DEFAULT NULL,
+  `name` varchar(128) not NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ip_address` (`ip_address`)
 ) ENGINE=InnoDB;
+
+	create table group_locations(                                                      id int unsigned NOT NULL AUTO_INCREMENT primary key,                            group_id int unsigned not null,                                                 location_id int unsigned not null,                                              foreign key(group_id) references groups(id),                                    foreign key(location_id) references locations(id),                              unique(group_id,location_id)                                                  )Engine=InnoDB;
+
+		 
 ;;
 ;; jobs table
 ;;
@@ -577,11 +583,79 @@ insert into pay_periods values(0,'2018-08-13','2018-08-26'),
 ;;
 ;; alter table employees modify username varchar(70);
 ;;
+;; 11/27/2018 updates 
+;;
+;; alter table accrual_warnings add accrual_id int unsigned after hour_code_id;
+;; alter table accrual_warnings add foreign key(accrual_id) references accruals(id);
+;; alter table ip_allowed change description name varchar(128);
+;; rename table ip_allowed to locations;
+;;
+;; update accrual_warnings set accrual_id=(select accrual_id from hour_codes where id=accrual_warnings.hour_code_id);
+;;
+;; update accrual_warnings set step_warning_text='Paid time off used should be in increments of 0.25 hr' where id=1;
+;; update accrual_warnings set min_warning_text='Min paid time off taken should not be less than one hr' where id=1;
+;; update accrual_warnings set excess_warning_text='Excess paid time off hours used' where id=1;
+;;
+;; update accrual_warnings set excess_warning_text='Excess comp time hours used, you can use as small as 0.01 hr increment' where id=2;
+;; update accrual_warnings set excess_warning_text='Excess holiday comp time hours used, you can use as small as 0.01 hr increment' where id=2;
+;;
+;; insert into accrual_warnings values(4,8,2,0,0,0,null,null,'Excess of sick time hours used, you can use as small as 0.01 hr increment');
+;;
+;; add HCE1.0 to hour_codes and to restrictions for exempt,non-exemp, union
+;;
+;; new table group_locations
+;;
+;; update code_cross_ref set code_id=(select id from hour_codes c where c.name like code_cross_ref.code);
+;; 
+;; select id,name from hour_codes where name not in (select code from code_cross_ref);
+;; alter table accrual_warnings drop foreign key accrual_warnings_ibfk_1;
+;; alter table accrual_warnings drop column hour_code_id;
+;;
+;; add the following to salary_groups
+;; insert into salary_groups values(6,'Police Sworn','Police Sworn',1,null),(7,'Police Sworn Det','Police Sworn Detectives',1,null),(8,'Police Sworn Mgt','Police Sworn Management',1,null),(9,'Fire Sworn','Fire Sworn',1,null),(10,'Fire Sworn 5x8','Fire Sworn 5 to 8',1,null),(11,'Part Time Non-Exempt','Part Time non exempt',1,null);
+;;
+;; 12/07/2018
+;; Adding scheduling and shifts 
+;;
+CREATE TABLE shifts (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+	name varchar(72) not null,
+	start_hour    int unsigned,
+	start_minute  int unsigned,
+	duration      int unsigned,
+	start_window_minute int unsigned,
+	inactive char(1),
+	primary key(id)
+)engine=InnoDB;
 
-;;
+CREATE TABLE schedules (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+	name varchar(72) not null,
+	start_date date,
+	end_date date,
+	group_id int unsigned not null,
+	inactive char(1),
+	primary key(id),
+	foreign key(group_id) references groups(id)
+)engine=InnoDB;
+
+CREATE TABLE schedule_shifts (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+	shedule_id int unsigned,
+	shift_id  int unsigned,
+	employee_id int unsigned,
+	assigned_by_id int unsigned,
+	primary key(id)	
+	foreign key(shedule_id) references schedules(id),
+	foreign key(shift_id) references shifts(id),
+	foreign key(employee_id) references employees(id),
+  foreign key(assigned_by_id) references employees(id)			
+	)engine=InnoDB;
+	
+)Engine=InnoDB;
 ;; ====================================================
-;;
-;; Leave management tables
+;; 
+;; Leave Management (in progress started on 10/01/2018)
 ;;
 ;; leave_documents table
 ;;

@@ -229,14 +229,6 @@ public class ApproveAction extends TopAction{
 				return isGroupManager() && groups != null && groups.size() > 1;
 		}
 		public boolean hasGroups(){
-				/*
-				if(groups != null){
-						if(group_id.equals("")){
-								group = groups.get(0);
-								group_id = group.getId();
-						}
-				}
-				*/
 				return isGroupManager() && groups != null && groups.size() > 0;
 				
 		}
@@ -246,13 +238,13 @@ public class ApproveAction extends TopAction{
 		public String getPay_period_id(){
 				if(pay_period_id.equals("")){
 						PayPeriodList ppl = new PayPeriodList();
-						ppl.setLastPayPeriod();
+						ppl.setApproveSuitable();
 						String back = ppl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
-										PayPeriod  one = ones.get(0);
-										pay_period_id = one.getId();
+										payPeriod = ones.get(0);
+										pay_period_id = payPeriod.getId();
 								}
 						}						
 				}

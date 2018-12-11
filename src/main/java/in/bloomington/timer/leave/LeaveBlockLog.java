@@ -292,7 +292,7 @@ public class LeaveBlockLog{
 						msg = " hour code not set ";
 						return msg;
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could do not get connection to DB";
 						return msg;
@@ -332,6 +332,8 @@ public class LeaveBlockLog{
 						pstmt.setString(11, change_type);
 						pstmt.setString(12, change_by);						
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//						
 						pstmt = con.prepareStatement(qq2);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
@@ -343,7 +345,7 @@ public class LeaveBlockLog{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, rs, pstmt);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -374,32 +376,34 @@ public class LeaveBlockLog{
 						" from leave_block_logs t "+
 						" where t.id=? ";
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								rs = pstmt.executeQuery();
-								if(rs.next()){
-										setVals(
-														rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														rs.getString(4),
-														rs.getString(5),
-														
-														rs.getDouble(6),
-														rs.getString(7),														
-														rs.getString(8) != null,
-														rs.getString(9),
-														rs.getString(10),
-														
-														rs.getString(11),
-														rs.getString(12),
-														rs.getString(13),														
-														rs.getString(14)														
-														);
-								}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setVals(
+												rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getString(5),
+												
+												rs.getDouble(6),
+												rs.getString(7),														
+												rs.getString(8) != null,
+												rs.getString(9),
+												rs.getString(10),
+												
+												rs.getString(11),
+												rs.getString(12),
+												rs.getString(13),														
+												rs.getString(14)														
+												);
 						}
 				}
 				catch(Exception ex){
@@ -407,7 +411,7 @@ public class LeaveBlockLog{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

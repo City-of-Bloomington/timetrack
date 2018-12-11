@@ -100,7 +100,7 @@ public class EmployeesLog{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String qq = "select id,emps_id_set,date_format(date,'%m/%d/%Y %h:%i'),status,errors from employees_logs where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -125,7 +125,7 @@ public class EmployeesLog{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -135,12 +135,12 @@ public class EmployeesLog{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into employees_logs values(0,?,now(),?,?)";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						if(empsIdSet.equals(""))
 								pstmt.setNull(1, Types.VARCHAR);
@@ -152,6 +152,8 @@ public class EmployeesLog{
 						else
 								pstmt.setString(3, errors);
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
@@ -165,7 +167,7 @@ public class EmployeesLog{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

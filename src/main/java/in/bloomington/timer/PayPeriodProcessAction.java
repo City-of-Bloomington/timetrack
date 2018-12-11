@@ -350,13 +350,12 @@ public class PayPeriodProcessAction extends TopAction{
 				if(payPeriod == null){
 						if(pay_period_id.equals("")){
 								PayPeriodList ppl = new PayPeriodList();
-								ppl.setPreviousOnly();
+								ppl.setApproveSuitable();
 								String back = ppl.find();
 								if(back.equals("")){
 										List<PayPeriod> ones = ppl.getPeriods();
 										if(ones != null && ones.size() > 0){
 												payPeriod = ones.get(0);
-												currentPayPeriod = payPeriod;
 												pay_period_id = payPeriod.getId();
 										}
 								}

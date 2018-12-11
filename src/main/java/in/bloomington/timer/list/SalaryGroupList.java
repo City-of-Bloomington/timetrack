@@ -44,7 +44,7 @@ public class SalaryGroupList{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
+				Connection con = UnoConnect.getConnection();
 				String qq = "select t.id,t.name,t.description,t.default_regular_id,t.inactive from salary_groups t ";
 				if(con == null){
 						back = "Could not connect to DB";
@@ -90,7 +90,7 @@ public class SalaryGroupList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

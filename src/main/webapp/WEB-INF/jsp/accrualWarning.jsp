@@ -25,9 +25,8 @@
 
 			<div class="form-group">
 				<label>Related Hour Code</label>
-				<s:select name="accrualWarning.hour_code_id" value="%{accrualWarning.hour_code_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Position" required="true" />
+				<s:property value="%{accrualWarning.hourCodeNames}"  />
 			</div>
-
 			<div class="form-group">
 				<label>Minum Hours</label>
 				<s:textfield name="accrualWarning.min_hrs" value="%{accrualWarning.min_hrs}" size="5" /><br />(required minimum hour if any)

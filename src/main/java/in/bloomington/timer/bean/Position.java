@@ -122,7 +122,7 @@ public class Position implements java.io.Serializable{
 				ResultSet rs = null;
 				String qq = "select name,alias,description,inactive "+
 						"from positions where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -147,7 +147,7 @@ public class Position implements java.io.Serializable{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -164,7 +164,7 @@ public class Position implements java.io.Serializable{
 						msg = "Name is required";
 						return msg;
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB ";
 						return msg;
@@ -185,6 +185,8 @@ public class Position implements java.io.Serializable{
 								msg = setParams(pstmt);
 								if(msg.equals("")){
 										pstmt.executeUpdate();
+										Helper.databaseDisconnect(pstmt, rs);
+										//
 										qq = "select LAST_INSERT_ID()";
 										pstmt = con.prepareStatement(qq);
 										rs = pstmt.executeQuery();
@@ -199,7 +201,7 @@ public class Position implements java.io.Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -237,12 +239,12 @@ public class Position implements java.io.Serializable{
 						msg = "Earn code name is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						pstmt.setString(5, id);
@@ -253,7 +255,7 @@ public class Position implements java.io.Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

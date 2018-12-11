@@ -13,25 +13,25 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class IpAddress{
+public class Location{
 
 		static final long serialVersionUID = 3700L;	
-		static Logger logger = LogManager.getLogger(IpAddress.class);
-    String id="", ip_address="", description="";
+		static Logger logger = LogManager.getLogger(Location.class);
+    String id="", ip_address="", name="";
 		//
-		public IpAddress(){
+		public Location(){
 		}
-		public IpAddress(String val){
+		public Location(String val){
 				//
 				setId(val);
     }		
-		public IpAddress(String val, String val2, String val3){
+		public Location(String val, String val2, String val3){
 				//
 				// initialize
 				//
 				setId(val);
 				setIp_address(val2);
-				setDescription(val3);
+				setName(val3);
     }
 		public int hashCode(){
 				int seed = 29;
@@ -52,8 +52,8 @@ public class IpAddress{
     public String getIp_address(){
 				return ip_address;
     }
-    public String getDescription(){
-				return description;
+    public String getName(){
+				return name;
     }		
     //
     // setters
@@ -66,22 +66,25 @@ public class IpAddress{
 				if(val != null)
 						ip_address = val.trim();
     }
-    public void setDescription(String val){
+    public void setName(String val){
 				if(val != null)
-						description = val.trim();
+						name = val.trim();
     }		
     public String toString(){
-				return ip_address;
+				return getInfo();
     }
+		public String getInfo(){
+				return ip_address+" ("+name+")";
+		}
 		//
 		public String doSelect(){
 				String back = "";
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select id,ip_address,description "+
-						"from ip_allowed where id=?";
-				con = Helper.getConnection();
+				String qq = "select id,ip_address,name "+
+						"from locations where id=?";
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -93,7 +96,7 @@ public class IpAddress{
 						rs = pstmt.executeQuery();
 						if(rs.next()){
 								setIp_address(rs.getString(2));
-								setDescription(rs.getString(3));
+								setName(rs.getString(3));
 						}
 						else{
 								back ="Record "+id+" Not found";
@@ -104,7 +107,7 @@ public class IpAddress{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);			
 				}
 				return back;
 		}
@@ -113,24 +116,26 @@ public class IpAddress{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " insert into ip_allowed values(0,?,?)";
+				String qq = " insert into locations values(0,?,?)";
 				if(ip_address.equals("")){
 						msg = "ip address is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, ip_address);
-						if(description.equals(""))
+						if(name.equals(""))
 								pstmt.setNull(2, Types.VARCHAR);
 						else
-								pstmt.setString(2, description);
+								pstmt.setString(2, name);
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
 						rs = pstmt.executeQuery();
@@ -143,7 +148,7 @@ public class IpAddress{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -152,23 +157,23 @@ public class IpAddress{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update ip_allowed set ip_address=?,description=? where id=?";
+				String qq = " update locations set ip_address=?,name=? where id=?";
 				if(ip_address.equals("")){
 						msg = "ip address is required";
 						return msg;
 				}
+				con = Helper.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, ip_address);
-						if(description.equals(""))
+						if(name.equals(""))
 								pstmt.setNull(2, Types.VARCHAR);
 						else
-								pstmt.setString(2, description);
+								pstmt.setString(2, name);
 						pstmt.setString(3, id);
 						pstmt.executeUpdate();
 				}
@@ -177,7 +182,7 @@ public class IpAddress{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -186,17 +191,17 @@ public class IpAddress{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " delete from ip_allowed where id=?";
+				String qq = " delete from locations where id=?";
 				if(id.equals("")){
 						msg = "id is required";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, id);
 						pstmt.executeUpdate();
@@ -206,7 +211,7 @@ public class IpAddress{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}				

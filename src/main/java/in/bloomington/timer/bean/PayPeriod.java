@@ -212,7 +212,7 @@ public class PayPeriod{
 				String qq = "select  "+
 						"datediff(p.start_date,?) "+
 						"from pay_periods p where id=?";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " could not connect to Database ";
 						logger.error(msg);
@@ -239,7 +239,7 @@ public class PayPeriod{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}				
 				return days;
 		}
@@ -261,7 +261,7 @@ public class PayPeriod{
 				else{
 						qq += " ? between p.start_date and p.end_date ";
 				}
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " could not connect to Database ";
 						logger.error(msg);
@@ -298,7 +298,7 @@ public class PayPeriod{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -318,7 +318,7 @@ public class PayPeriod{
 						logger.error(msg);
 						return msg;
 				}					
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " could not connect to Database ";
 						logger.error(msg);
@@ -349,7 +349,7 @@ public class PayPeriod{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

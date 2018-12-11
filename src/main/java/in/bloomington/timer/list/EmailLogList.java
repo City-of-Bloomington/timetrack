@@ -13,6 +13,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.sql.*;
 import in.bloomington.timer.util.Helper;
+import in.bloomington.timer.util.UnoConnect;
 import in.bloomington.timer.util.CommonInc;
 import in.bloomington.timer.bean.EmailLog;
 import org.apache.logging.log4j.LogManager;
@@ -54,12 +55,12 @@ public class EmailLogList extends CommonInc{
 				String qq = " select id,user_id,email_from,email_to,cc,bcc,subject,text_message,send_errors,date_format(date_time,'%m/%d/%y %H:%i'),type from email_logs order by id desc limit 10 ";
 				if(debug)
 						logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);				
 						rs = pstmt.executeQuery();
 						while(rs.next()){
@@ -84,7 +85,7 @@ public class EmailLogList extends CommonInc{
 						logger.error(ex);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);									
+						Helper.databaseDisconnect(pstmt, rs);									
 				}
 				return back;				
 		}

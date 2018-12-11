@@ -158,7 +158,7 @@ public class LeaveBlockList{
 				String qw = "d.id=? and d.job_id=j.id and p.id=d.pay_period_id and ps.inactive is null and j.inactive is null and (j.expire_date is null or "+
 						" j.expire_date <= p.end_date) and j.effective_date <= p.start_date ";
 				qq = qq +" where "+qw;
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						logger.error(msg);
 						return null;
@@ -180,7 +180,7 @@ public class LeaveBlockList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}								
 				return jobNames;
 		}
@@ -260,7 +260,7 @@ public class LeaveBlockList{
 						qq += " where "+qw;
 				}
 				qq += " order by t.date ";
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -331,7 +331,7 @@ public class LeaveBlockList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -382,7 +382,7 @@ public class LeaveBlockList{
 				// the last update, this could mean two pay period hours
 				//
 
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -416,7 +416,7 @@ public class LeaveBlockList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

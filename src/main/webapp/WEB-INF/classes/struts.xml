@@ -58,12 +58,12 @@
 			<result name="error">/WEB-INF/jsp/type.jsp</result>
 			<result name="success">/WEB-INF/jsp/type.jsp</result>
 		</action>
-		<action name="ipaddress" 
-						class="in.bloomington.timer.IpAddressAction" 
+		<action name="location" 
+						class="in.bloomington.timer.LocationAction" 
 						method="execute">
-			<result name="input">/WEB-INF/jsp/ipaddress.jsp</result>		
-			<result name="error">/WEB-INF/jsp/ipaddress.jsp</result>
-			<result name="success">/WEB-INF/jsp/ipaddress.jsp</result>
+			<result name="input">/WEB-INF/jsp/location.jsp</result>		
+			<result name="error">/WEB-INF/jsp/location.jsp</result>
+			<result name="success">/WEB-INF/jsp/location.jsp</result>
 		</action>		
 		<action name="department" 
 						class="in.bloomington.timer.DeptAction" 
@@ -313,6 +313,13 @@
 			<result name="error">/WEB-INF/jsp/groupEmployee.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupEmployee.jsp</result>
 		</action>
+		<action name="groupLocation" 
+						class="in.bloomington.timer.GroupLocationAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/groupLocation.jsp</result>		
+			<result name="error">/WEB-INF/jsp/groupLocation.jsp</result>
+			<result name="success">/WEB-INF/jsp/groupLocation.jsp</result>
+		</action>		
 		<action name="salaryGroup" 
 						class="in.bloomington.timer.SalaryGroupAction" 
 						method="execute">

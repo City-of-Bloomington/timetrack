@@ -215,7 +215,7 @@ public class EmailLog{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to Database ";
 						return back;
@@ -268,7 +268,7 @@ public class EmailLog{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);	
+						Helper.databaseDisconnect(pstmt, rs);	
 				}
 				return back;
 		
@@ -282,7 +282,7 @@ public class EmailLog{
 				qq = " select id,user_id,to_char(date_time,'%m/%d/%Y %H:%i'),email_from,email_to,cc,bcc,subject,text_message,send_errors,type from email_logs where id=? ";
 				if(debug)
 						logger.debug(qq);
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB ";
 						return back;
@@ -312,7 +312,7 @@ public class EmailLog{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);									
+						Helper.databaseDisconnect(pstmt, rs);									
 				}
 				return back;
 		}

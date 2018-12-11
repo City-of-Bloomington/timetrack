@@ -236,18 +236,22 @@ public class MpoReport{
 								return msg;
 						}
 				}
-				String qq = "select "+
-						" concat_ws(' ',e.first_name,e.last_name) name,"+
-						" e.employee_number empnum,"+
-						" c.description code, "+												
-						" sum(t.hours) "+
+				//
+				// using subquery
+				//
+				String qq = "select tt.name,tt.code,tt.empnum,sum(hours) "+
+						"from ( select "+
+						" concat_ws(' ',e.first_name,e.last_name) AS name,"+
+						" e.employee_number AS empnum,"+
+						" c.description AS code, "+												
+						" t.hours AS hours "+
 						" from time_blocks t "+
 						" join hour_codes c on t.hour_code_id=c.id "+						
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
 						" join department_employees de on de.employee_id=d.employee_id "+
 						" join employees e on d.employee_id=e.id "+
-						" where de.department_id = ? and "+
+						" where de.department_id = ? and t.inactive is null and "+
 						" p.start_date >= ? and p.end_date <= ? ";
 				if(!code2.equals("")){
 						qq += " and (c.name like ? or c.name like ?) ";
@@ -255,7 +259,8 @@ public class MpoReport{
 				else{
 						qq += " and c.name like ? ";
 				}
-				qq += " group by code,name,empnum ";
+				qq += " ) tt ";
+				qq += " group by tt.code,tt.name,tt.empnum ";
 				con = Helper.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";

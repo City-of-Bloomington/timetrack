@@ -42,8 +42,9 @@ public class AccrualList{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				Connection con = Helper.getConnection();
+				Connection con = UnoConnect.getConnection();
 				String qq = "select t.id,t.name,t.description,t.pref_max_level,t.inactive from accruals t ";
+				
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -89,7 +90,7 @@ public class AccrualList{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
 		}

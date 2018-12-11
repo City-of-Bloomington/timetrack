@@ -123,57 +123,59 @@ public class EmployeeAccrualList{
 						qq += " where "+qw;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-						con = Helper.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								int jj=1;
-								if(!document_id.equals("")){
-										pstmt.setString(jj++, document_id);
-								}								
-								else if(!employee_id.equals("")){
-										pstmt.setString(jj++, employee_id);
-										if(most_current){
-												// 
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						if(!document_id.equals("")){
+								pstmt.setString(jj++, document_id);
+						}								
+						else if(!employee_id.equals("")){
+								pstmt.setString(jj++, employee_id);
+								if(most_current){
+										// 
+								}
+								else if(!pay_period_id.equals("")){
+										pstmt.setString(jj++, pay_period_id);										
+								}
+								else{
+										if(!date.equals("")){
+												java.util.Date date_tmp = df.parse(date);
+												pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 										}
-										else if(!pay_period_id.equals("")){
-												pstmt.setString(jj++, pay_period_id);										
-										}
-										else{
-												if(!date.equals("")){
-														java.util.Date date_tmp = df.parse(date);
+										else {
+												if(!date_from.equals("")){
+														java.util.Date date_tmp = df.parse(date_from);
 														pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 												}
-												else {
-														if(!date_from.equals("")){
-																java.util.Date date_tmp = df.parse(date_from);
-																pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-														}
-														if(!date_to.equals("")){
-																java.util.Date date_tmp = df.parse(date_to);
-																pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-														}
+												if(!date_to.equals("")){
+														java.util.Date date_tmp = df.parse(date_to);
+														pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 												}
-										}																		
-								}
-								rs = pstmt.executeQuery();
-								//
-								while(rs.next()){
-										EmployeeAccrual one =
-												new EmployeeAccrual(rs.getString(1),
-																						rs.getString(2),
-																						rs.getString(3),
-																						rs.getString(4),
-																						rs.getDouble(5),
-																						rs.getString(6),
-																						rs.getString(7),
-																						rs.getString(8),
-																						rs.getInt(9),
-																						rs.getString(10));
-										if(employeeAccruals == null)
-												employeeAccruals = new ArrayList<>();
-										employeeAccruals.add(one);
-								}
+										}
+								}																		
+						}
+						rs = pstmt.executeQuery();
+						//
+						while(rs.next()){
+								EmployeeAccrual one =
+										new EmployeeAccrual(rs.getString(1),
+																				rs.getString(2),
+																				rs.getString(3),
+																				rs.getString(4),
+																				rs.getDouble(5),
+																				rs.getString(6),
+																				rs.getString(7),
+																				rs.getString(8),
+																				rs.getInt(9),
+																				rs.getString(10));
+								if(employeeAccruals == null)
+										employeeAccruals = new ArrayList<>();
+								employeeAccruals.add(one);
 						}
 				}
 				catch(Exception ex){
@@ -181,7 +183,7 @@ public class EmployeeAccrualList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		

@@ -16,7 +16,6 @@
 		</s:if>
 
 		<%@ include file="calendarTopDetails.jsp" %>
-
 		<s:set var="dailyBlocks" value="document.dailyBlocks" />
 		<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
 			<%@ include file="calendarFullView.jsp" %>
@@ -62,43 +61,83 @@
 			<s:set var="week2DateRange" value="payPeriod.week2DateRange" />
 
 			<hr class="m-b-40" />
-
-			<s:set var="payPeriodTotal" value="document.payPeriodTotal" />
-			<s:set var="daily" value="document.daily" />
-			<s:set var="week1Total" value="document.week1Total" />
-			<s:set var="week2Total" value="document.week2Total" />
-			<s:if test="document.isUnionned()">
-			  <s:set var="unionned" value="'true'" />
-			  <s:set var="week1Flsa" value="document.week1_flsa" />
-			  <s:set var="week2Flsa" value="document.week2_flsa" />
+			<s:if test="hasMultipleJobs()">
+				<s:set var="payPeriodTotal" value="mjdoc.payPeriodTotal" />
+				<s:set var="daily" value="mjdoc.daily" />
+				<s:set var="week1Total" value="mjdoc.week1Total" />
+				<s:set var="week2Total" value="mjdoc.week2Total" />
+				<s:if test="document.isUnionned()">
+					<s:set var="unionned" value="'true'" />
+					<s:set var="week1Flsa" value="mjdoc.week1_flsa" />
+					<s:set var="week2Flsa" value="mjdoc.week2_flsa" />
+				</s:if>
+				<s:else>
+					<s:set var="unionned" value="'false'" />
+				</s:else>
 			</s:if>
 			<s:else>
-			  <s:set var="unionned" value="'false'" />
+				<s:set var="payPeriodTotal" value="document.payPeriodTotal" />
+				<s:set var="daily" value="document.daily" />
+				<s:set var="week1Total" value="document.week1Total" />
+				<s:set var="week2Total" value="document.week2Total" />
+				<s:if test="document.isUnionned()">
+					<s:set var="unionned" value="'true'" />
+					<s:set var="week1Flsa" value="document.week1_flsa" />
+					<s:set var="week2Flsa" value="document.week2_flsa" />
+				</s:if>
+				<s:else>
+					<s:set var="unionned" value="'false'" />
+				</s:else>
 			</s:else>
-
 			<h1>Pay Period Summary</h1>
-			<s:if test="document.hasWarnings()">
-				<s:set var="warnings" value="document.warnings" />
-				<%@ include file="warnings.jsp" %>
+			<s:if test="hasMultipleJobs()">
+				<s:if test="mjdoc.hasWarnings()">
+					<s:set var="warnings" value="mjdoc.warnings" />
+					<%@ include file="warnings.jsp" %>
+				</s:if>
 			</s:if>
-
+			<s:else>			
+				<s:if test="document.hasWarnings()">
+					<s:set var="warnings" value="document.warnings" />
+					<%@ include file="warnings.jsp" %>
+				</s:if>
+			</s:else>
 			<%@ include file="dailySummary.jsp" %>
 			<div class="d-flex">
-				<s:if test="document.hasHourCodeWeek1()">
-					<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
-					<s:set var="weekTotal" value="document.week1Total" />
-					<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
-					<s:set var="whichWeek" value="'week-one'" />
-					<%@ include file="weeklySummary.jsp" %>
+				<s:if test="hasMultipleJobs()">
+					<s:if test="mjdoc.hasHourCodeWeek1()">
+						<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek1" />
+						<s:set var="weekTotal" value="mjdoc.week1Total" />
+						<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
+						<s:set var="whichWeek" value="'week-one'" />
+						<%@ include file="weeklySummary.jsp" %>
+					</s:if>
+					
+					<s:if test="mjdoc.hasHourCodeWeek2()">
+						<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek2" />
+						<s:set var="weekTotal" value="mjdoc.week2Total" />
+						<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
+						<s:set var="whichWeek" value="'week-two'" />
+						<%@ include file="weeklySummary.jsp" %>
+					</s:if>
 				</s:if>
-
-				<s:if test="document.hasHourCodeWeek2()">
-					<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
-					<s:set var="weekTotal" value="document.week2Total" />
-					<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
-					<s:set var="whichWeek" value="'week-two'" />
-					<%@ include file="weeklySummary.jsp" %>
-				</s:if>
+				<s:else>
+					<s:if test="document.hasHourCodeWeek1()">
+						<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
+						<s:set var="weekTotal" value="document.week1Total" />
+						<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
+						<s:set var="whichWeek" value="'week-one'" />
+						<%@ include file="weeklySummary.jsp" %>
+					</s:if>
+					
+					<s:if test="document.hasHourCodeWeek2()">
+						<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
+						<s:set var="weekTotal" value="document.week2Total" />
+						<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
+						<s:set var="whichWeek" value="'week-two'" />
+						<%@ include file="weeklySummary.jsp" %>
+					</s:if>
+				</s:else>
 			</div>
 
 			<%@ include file="accrualSummary.jsp" %>

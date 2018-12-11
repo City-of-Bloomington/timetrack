@@ -27,6 +27,7 @@ public class PayPeriodList{
 				twoPeriodsAheadOnly=false,
 				lastPayPeriod=false, previousOnly=false, nextOnly=false;
 		boolean avoidFuturePeriods = false;
+		boolean approveSuitable = false;
 		List<PayPeriod> periods = null;
     public PayPeriodList(){
     }
@@ -74,6 +75,9 @@ public class PayPeriodList{
 		public void avoidFuturePeriods(){
 				avoidFuturePeriods = true;
 		}
+		public void setApproveSuitable(){
+				approveSuitable = true;
+		}
 		public void setLimit(String val){
 				if(val != null)
 						limit = val;
@@ -83,6 +87,10 @@ public class PayPeriodList{
     //
 		/*
 			select p2.id,date_format(p2.start_date,'%m/%d/%Y'), date_format(p2.end_date,'%m/%d/%Y'), year(p2.start_date),month(p2.start_date),day(p2.start_date),year(p2.end_date),month(p2.end_date),day(p2.end_date) from pay_periods p2, time_documents d where d.pay_period_id=p2.id and d.employee_id=116 and p2.start_date > date_sub(curdate(), interval 90 day) and p2.start_date < curdate();
+			
+			select p.id,date_format(p.start_date,'%m/%d/%Y'), date_format(p.end_date,'%m/%d/%Y'), year(p.start_date),month(p.start_date),day(p.start_date),year(p.end_date),month(p.end_date),day(p.end_date),datediff(p.end_date,p.start_date) from pay_periods p  where ((datediff('2018-11-25', p.start_date) > 6 and datediff(p.end_date, '2018-11-25') > -1)  or ((p.start_date <= date_sub('2018-11-25', interval 14 day)) and (p.end_date >= date_sub('2018-11-25', interval 14 day))))  order by id desc  limit 1
+
+			
 		 */
 		public String find(){
 				Connection con = null;
@@ -129,6 +137,13 @@ public class PayPeriodList{
 						qw = " p.end_date < now() ";
 						qo += " limit 1 ";
 				}
+				else if(approveSuitable){
+						// current payperiod if less than 6 days
+						qw = "((datediff(curdate(), p.start_date) > 6 and datediff(p.end_date, curdate()) > -1) ";
+						// or previous if more than 6 days
+						qw += " or ((p.start_date <= date_sub(curdate(), interval 14 day)) and (p.end_date >= date_sub(curdate(), interval 14 day)))) ";						
+						qo += " limit 1 ";
+				}				
 				else if(!year.equals("")){
 						qw = " year(p.start_year) = ? ";
 				}
@@ -153,7 +168,7 @@ public class PayPeriodList{
 				}
 				qq += qo;
 				logger.debug(qq);
-				con = Helper.getConnection();
+				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
 						logger.error(msg);
@@ -197,7 +212,7 @@ public class PayPeriodList{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}

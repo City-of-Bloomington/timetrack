@@ -27,6 +27,7 @@ public class Employee implements Serializable{
 				full_name="", first_name="", last_name="";
 		// needed for saving
 		String department_id="", group_id="";
+		String group_ids = ""; // for new employee with multiple groups/jobs
 		// normally this date is pay period start date
 		String job_active_date = "", pay_period_id="", selected_job_id="";
 		// User user = null;
@@ -189,7 +190,7 @@ public class Employee implements Serializable{
     }
 
     public void setId_code (String val){
-				if(val != null)
+				if(val != null && !val.equals("0"))
 						id_code = val.trim();
     }
     public void setEmployee_number(String val){
@@ -267,6 +268,12 @@ public class Employee implements Serializable{
 						groupEmployee.setGroup_id(val);
 				}
     }
+    public void addGroup_id(String val){
+				if(val != null && !val.equals("")){
+						if(!group_ids.equals("")) group_ids +=",";
+						group_ids += val;
+				}
+    }		
     public void setJob_active_date(String val){
 				if(val != null)
 					 job_active_date = val;
@@ -374,6 +381,10 @@ public class Employee implements Serializable{
 						}
 				}
 				return groups;
+		}
+		public boolean hasGroups(){
+				getGroups();
+				return groups != null && groups.size() > 0;
 		}
 
 		public boolean canApprove(){
@@ -616,7 +627,7 @@ public class Employee implements Serializable{
 				}
 				logger.debug(qq);
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								if(!id.equals("")){
@@ -651,7 +662,7 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -669,17 +680,19 @@ public class Employee implements Serializable{
 				if(!msg.equals("")){
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,?)";
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						if(msg.equals("")){
 								pstmt.executeUpdate();
+								Helper.databaseDisconnect(pstmt, rs);
+								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt = con.prepareStatement(qq);
 								rs = pstmt.executeQuery();
@@ -696,6 +709,22 @@ public class Employee implements Serializable{
 												msg = groupEmployee.doSave();
 										}
 								}
+								else if(!group_ids.equals("")){
+										String[] g_arr = null;
+										try{
+												g_arr = group_ids.split(",");
+										}catch(Exception ex){
+												System.err.println(ex);
+										}
+										if(g_arr != null && g_arr.length > 0){
+												for(String str2:g_arr){
+														groupEmployee = new GroupEmployee();
+														groupEmployee.setGroup_id(str2);
+														groupEmployee.setEmployee_id(id);
+														msg = groupEmployee.doSave();
+												}
+										}
+								}
 						}
 				}
 				catch(Exception ex){
@@ -703,7 +732,7 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals(""))
 						msg = doSelect();
@@ -719,7 +748,7 @@ public class Employee implements Serializable{
 						else
 								pstmt.setString(jj++, first_name);
 						pstmt.setString(jj++, last_name);
-						if(id_code.equals(""))
+						if(id_code.equals("") || id_code.equals("0"))
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
 								pstmt.setString(jj++, id_code);
@@ -759,12 +788,12 @@ public class Employee implements Serializable{
 				if(!msg.equals("")){
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
 				try{
-						con = Helper.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						pstmt.setString(9, id);
@@ -775,7 +804,7 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}
@@ -822,7 +851,7 @@ public class Employee implements Serializable{
 								setEmployee_number(ldapEmp.getEmployee_number());
 						setEmail(ldapEmp.getEmail());
 						
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -851,7 +880,7 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}		
@@ -869,7 +898,7 @@ public class Employee implements Serializable{
 						return msg;
 				}
 				try{
-						con = Helper.getConnection();
+						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";
 								return msg;
@@ -882,12 +911,9 @@ public class Employee implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
 		}						
-		/**
-			 select distinct(email) from employees where id in (select employee_id from time_documents where initiated > '2018-10-20');
 
-		 */
 }
