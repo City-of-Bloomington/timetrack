@@ -79,7 +79,7 @@ public class Type implements java.io.Serializable{
 		}
 		public boolean isActive(){
 				return inactive.equals("");
-		}		
+		}
     //
     // setters
     //

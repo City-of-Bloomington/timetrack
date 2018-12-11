@@ -10,6 +10,7 @@ import java.util.Hashtable;
 import java.util.TreeMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -35,6 +36,7 @@ public class TimeBlockList{
 		double total_hours = 0.0, week1_flsa=0.0, week2_flsa=0.0;
 		double week1Total = 0, week2Total = 0;
 		List<TimeBlock> timeBlocks = null;
+		Set<JobType> jobTypeSet = new HashSet<>();
 		Hashtable<Integer, List<TimeBlock>> blocks = new Hashtable<>();
 		//
 		// for 14 days pay period
@@ -45,7 +47,8 @@ public class TimeBlockList{
 		Map<String, Double> hourCodeWeek2 = new TreeMap<>();
 		Map<Integer, Double> usedAccrualTotals = new TreeMap<>();
 		HolidayList holidays = null;
-		Map<String, Map<Integer, Double>> daily = new TreeMap<>();
+		// 		Map<String, Map<Integer, Double>> daily = new TreeMap<>();
+		Map<JobType, Map<Integer, Double>> daily = new TreeMap<>();		
 		// week 1,2 / hour_code_id /hours
 		Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = new TreeMap<>();
 		Document document = null;
@@ -151,6 +154,10 @@ public class TimeBlockList{
 		public double getWeek2Total(){
 				return week2Total;
 		}
+		public Map<JobType, Map<Integer, Double>> getDailyDbl(){
+				return daily;
+		}
+		/*
 		public Map<String, Map<Integer, Double>> getDailyDbl(){
 				return daily;
 		}
@@ -169,6 +176,22 @@ public class TimeBlockList{
 				}
 				return mapd;
 		}
+		*/
+		public Map<JobType, Map<Integer, String>> getDaily(){
+				Set<JobType> set = daily.keySet();
+				Map<JobType, Map<Integer, String>> mapd = new TreeMap<>();
+				for(JobType str:set){
+						Map<Integer, String> map2 = new TreeMap<>();
+						
+						Map<Integer, Double> map = daily.get(str);
+						for(int j=0;j<16;j++){ // 8 total week1, 15 total week2
+								double val = map.get(j);
+								map2.put(j, dfn.format(val));
+						}
+						mapd.put(str, map2);
+				}
+				return mapd;
+		}		
 		public Map<Integer, Map<Integer, Double>> getUsedWeeklyAccruals(){
 				return usedWeeklyAccruals;
 		}
@@ -211,10 +234,10 @@ public class TimeBlockList{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String msg="", str="";
+				String msg="", str="", str2="";
 				List<String> jobNames = new ArrayList<>();
 				String qq = "select "+
-						" distinct ps.name "+ // job name (position)
+						" distinct ps.name,j.id "+ // job name (position)
 						" from positions ps join jobs j on ps.id=j.position_id, "+
 						" time_documents d,"+
 						" pay_periods p ";
@@ -236,6 +259,9 @@ public class TimeBlockList{
 								if(!jobNames.contains(str)){
 										jobNames.add(str);
 								}
+								str2 = rs.getString(2);
+								JobType one = new JobType(str2, str);
+								jobTypeSet.add(one);
 						}
 				}
 				catch(Exception ex){
@@ -262,23 +288,25 @@ public class TimeBlockList{
 						" t.document_id,"+
 						"t.hour_code_id,"+
 						"date_format(t.date,'%m/%d/%Y'),"+
-						
 						"t.begin_hour,"+
+						
 						"t.begin_minute,"+
 						"t.end_hour,"+
 						"t.end_minute,"+
 						"t.hours,"+
-						
 						"t.clock_in,"+
+						
 						"t.clock_out,"+
 						"t.inactive,"+
 						" datediff(t.date,p.start_date), "+ // order id start at 0
 						" c.name,"+
-						
 						" c.description,"+
+						
 						" cf.nw_code, "+
 						" ps.name, "+ // job name
-						" c.accrual_id "+
+						" c.accrual_id, "+
+						" j.id "+ // job id
+						
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
@@ -396,6 +424,7 @@ public class TimeBlockList{
 								String hr_code = rs.getString(14); 
 								String hr_code_desc = rs.getString(15); 
 								String job_name = rs.getString(17); // job name
+								String job_id = rs.getString(19);
 								String related_accrual_id = "";
 								str = rs.getString(18);
 								if(str != null && !str.equals("")){
@@ -440,8 +469,9 @@ public class TimeBlockList{
 																			
 																			hr_code,
 																			rs.getString(15),
-																			rs.getString(16),  // 18
-																			job_name
+																			rs.getString(16), 
+																			job_name,
+																			job_id 
 																			);
 										timeBlocks.add(one);
 										addToBlocks(order_id, one);
@@ -458,7 +488,8 @@ public class TimeBlockList{
 								hr_code += ": "+hr_code_desc;
 								addToHourCodeTotals(order_id, hr_code_id, hr_code, hrs);
 								total_hours += hrs;
-								addToDaily(job_name, order_id, hrs, hr_code);
+								JobType jtype = new JobType(job_id, job_name);
+								addToDaily(jtype, order_id, hrs, hr_code);
 						}
 				}
 				catch(Exception ex){
@@ -605,13 +636,13 @@ public class TimeBlockList{
 		void prepareDaily(){
 				if(jobNames == null){
 						jobNames = findJobNames();
-						if(jobNames != null && jobNames.size() > 0){
-								for(String jobName:jobNames){
+						if(jobTypeSet.size() > 0){
+								for(JobType one:jobTypeSet){
 										Map<Integer, Double> map = new TreeMap<>();
 										for(int i=0;i<16;i++){
 												map.put(i,0.);
 										}
-										daily.put(jobName, map);
+										daily.put(one, map);
 								}
 						}
 				}
@@ -656,6 +687,7 @@ public class TimeBlockList{
 						usedWeeklyAccruals.put(week_id, map);		
 				}
 		}
+		/*
 		void addToDaily(String job_name, int order_id, double hrs, String hr_code){
 				double total = 0.;
 				if(daily.containsKey(job_name)){
@@ -688,7 +720,45 @@ public class TimeBlockList{
 						map.put(order_id, hrs);
 						daily.put(job_name, map);												
 				}
-		}		
+		}
+		*/
+		void addToDaily(JobType jtype, int order_id, double hrs, String hr_code){
+				double total = 0.;
+				try{
+				if(daily.containsKey(jtype)){
+						Map<Integer, Double> map = daily.get(jtype);
+						// leaving space for total at index 7
+						if(order_id > 6) order_id = order_id + 1;
+						if(map != null && map.containsKey(order_id)){
+								total = map.get(order_id);
+								total += hrs;
+								double week_total = 0;
+								if(hr_code.indexOf("ONCALL") == -1){
+										if(order_id < 7){
+												week_total = map.get(7)+hrs; // total week1
+												map.put(7, week_total);
+												week1Total = week_total;
+										}
+										else{
+												week_total = map.get(15)+hrs; // total week2
+												map.put(15, week_total);
+												week2Total = week_total;
+										}
+								}
+						}
+						map.put(order_id, total);
+						daily.put(jtype, map);
+						
+				}
+				else{ // shis is not needed
+						Map<Integer, Double> map = new TreeMap<>();
+						map.put(order_id, hrs);
+						daily.put(jtype, map);												
+				}
+				}catch(Exception ex){
+						logger.error(ex);
+				}
+		}				
 		void addToBlocks(int order_id, TimeBlock block){
 				List<TimeBlock> list = dailyBlocks.get(order_id);
 				if(list != null){

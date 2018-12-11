@@ -41,7 +41,7 @@ public class MultiJobDoc{
 		Document document = null; // we need one to get the accruals 
 		// Employee initiater = null;
 		Workflow lastWorkflow = null;
-		Map<String, Map<Integer, Double>> daily = null;				
+		Map<JobType, Map<Integer, Double>> daily = null;				
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
 		List<JobTask> jobs = null;
@@ -174,6 +174,7 @@ public class MultiJobDoc{
 				if(jobs == null){
 						if(!employee_id.equals("") && !pay_period_id.equals("")){
 								JobTaskList jl = new JobTaskList(employee_id, pay_period_id);
+								jl.setActiveOnly();
 								String back = jl.find();
 								if(back.equals("")){
 										List<JobTask> ones = jl.getJobs();
@@ -219,10 +220,10 @@ public class MultiJobDoc{
 				}
 		}
 
-		public Map<String, Map<Integer, String>> getDaily(){
-				Set<String> set = daily.keySet();
-				Map<String, Map<Integer, String>> mapd = new TreeMap<>();
-				for(String str:set){
+		public Map<JobType, Map<Integer, String>> getDaily(){
+				Set<JobType> set = daily.keySet();
+				Map<JobType, Map<Integer, String>> mapd = new TreeMap<>();
+				for(JobType str:set){
 						Map<Integer, String> map2 = new TreeMap<>();
 						
 						Map<Integer, Double> map = daily.get(str);
@@ -251,15 +252,15 @@ public class MultiJobDoc{
 								findDocuments();
 						if(documents != null && documents.size() > 0){
 								for(Document doc:documents){
-										Map<String, Map<Integer, Double>> mp = doc.getDailyDbl();
+										Map<JobType, Map<Integer, Double>> mp = doc.getDailyDbl();
 										if(mp != null){
 												if(daily == null){
 														daily = mp;
 												}
 												else{
 														// normally one key (job name)
-														Set<String> keySet = mp.keySet();
-														for(String key:keySet){
+														Set<JobType> keySet = mp.keySet();
+														for(JobType key:keySet){
 																Map<Integer, Double> map = mp.get(key);
 																daily.put(key, map);
 														} // for key

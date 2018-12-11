@@ -623,7 +623,9 @@ CREATE TABLE shifts (
 	start_hour    int unsigned,
 	start_minute  int unsigned,
 	duration      int unsigned,
-	start_window_minute int unsigned,
+	start_minute_window int unsigned,
+	minute_rounding int unsigned,
+	prefered_earn_time enum('OverTime','CompTime'),
 	inactive char(1),
 	primary key(id)
 )engine=InnoDB;
@@ -651,8 +653,23 @@ CREATE TABLE schedule_shifts (
 	foreign key(employee_id) references employees(id),
   foreign key(assigned_by_id) references employees(id)			
 	)engine=InnoDB;
-	
+
+;;
+;; for employees with fixed shifts
+;;
+	CREATE TABLE group_shifts (			
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+	group_id int unsigned not null,		
+	shift_id int unsigned not null,
+	start_date date,
+	expire_date date,
+	inactive char(1),
+	primary key(id),
+	foreign key(group_id) references groups(id),	
+	foreign key(shift_id) references shifts(id)
 )Engine=InnoDB;
+
+
 ;; ====================================================
 ;; 
 ;; Leave Management (in progress started on 10/01/2018)

@@ -9,9 +9,14 @@
 			<h1>Edit Group: <s:property value="%{group.name}" /></h1>
 			<s:hidden id="group.id" name="group.id" value="%{group.id}" />
 		</s:else>
-
-	  <%@ include file="strutMessages.jsp" %>
-
+		<s:if test="hasMessages()">
+			<s:set var="messages" value="%{messages}" />			
+			<%@ include file="messages.jsp" %>
+		</s:if>
+		<s:elseif test="hasErrors()">
+			<s:set var="errors" value="%{errors}" />			
+			<%@ include file="errors.jsp" %>
+		</s:elseif>
 		<div class="width-one-half">
 			<s:if test="group.id != ''">
 				<div class="form-group">
