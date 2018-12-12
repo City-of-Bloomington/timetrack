@@ -1,7 +1,7 @@
 <%@ include file="headerMin.jsp" %>
 <div class="time-clock job-select">
 	<h1>Time Clock <small id="meta"></small></h1>
-	<h2>Please Pick a Job <small>Welcome, <s:property value="%{timeClock.employee}" /></small></h2>
+	<h2>Please Pick a Job <small>Hi, <s:property value="%{timeClock.employee}" /></small></h2>
 
 	<s:if test="hasMessages()">
 		<s:set var="messages" value="messages" />
@@ -9,7 +9,7 @@
 	</s:if>
 
 	<div>
-		<s:form action="timeClock" id="form_id" method="post" >
+		<s:form action="timeClock" id="form_id" class="clock-pick-job-form" method="post" >
 			<s:hidden name="timeClock.id_code" value="%{timeClock.id_code}" />
 			<s:hidden name="timeClock.time" value="%{timeClock.time}" id="time_clock_id2" />
 
@@ -34,11 +34,9 @@
 </div>
 <%@ include file="footer.jsp" %>
 <script type="text/javascript">
-	// wait 15 seconds for select & submit action ...
-	// if no action, refresh
 	setTimeout(function(){
   	window.top.location = "/timetrack/timeClock.action"
-  }, 15000);
+  }, 10000);
 
 	function topTime() {
 		var btownTime = moment().tz("America/Indiana/Indianapolis");
@@ -75,6 +73,7 @@
 		}
 
 		processButton.onclick = function(e) {
+
 			var selectedJob = document.querySelectorAll('input[type=radio]:checked')[0];
 
 			if(!selectedJob){

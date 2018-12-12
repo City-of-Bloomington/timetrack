@@ -7,6 +7,14 @@
 
   .alert {
     margin: $tc-alert-margin;
+    // padding: 5px 15px;
+    // background-color: $tc-clock-wrapper-actions-in-out-bg-color;
+    // border-radius: 2px;
+
+    &.error {
+      // background: red;
+      // color: white;
+    }
 
     span {
       font-size: $tc-alert-span-font-size;
@@ -14,7 +22,10 @@
     }
 
     p {
-      color: $tc-alert-p-color;
+      // color: $tc-clock-wrapper-actions-in-out-color !important;
+      color: white;
+      font-size: 20px;
+      letter-spacing: .5px;
     }
   }
 
@@ -23,7 +34,7 @@
     height: $tc-img-height;
   }
 
-  h1, h2, h3 {
+  h1, h2 {
     small {
       float: $tc-h1-small-meta-float;
       font-size: $tc-h1-small-meta-font-size;
@@ -53,11 +64,44 @@
     color: $tc-h1-h2-h4-h5-h6-p-color;
   }
 
+  form {
+    &.time-clock-form {
+      // background: green;
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      bottom: 60px;
+
+      button {
+        &[type="submit"] {
+          border: 0;
+          clip: rect(0 0 0 0);
+          height: 1px;
+          margin: -1px;
+          overflow: hidden;
+          padding: 0;
+          position: absolute;
+          width: 1px;
+        }
+      }
+    }
+  }
+
   .clock-wrapper {
-    width: $tc-clock-wrapper-width;
-    margin: $tc-clock-wrapper-margin;
+    // width: $tc-clock-wrapper-width;
+    // margin: $tc-clock-wrapper-margin;
+    // background-color: red;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 20px;
+    right: 20px;
+    top: 180px;
 
     .actions {
+      position: relative;
       width: $tc-clock-wrapper-actions-width;
       float: $tc-clock-wrapper-actions-float;
       margin: $tc-clock-wrapper-actions-margin;
@@ -87,16 +131,26 @@
     .log-info {
       position: $tc-clock-wrapper-log-info-position;
       float: $tc-clock-wrapper-log-info-float;
+
+      h3 {
+        small {
+          font-size: 18px;
+        }
+      }
     }
 
     #current-time {
+      height: 106px;
+      line-height: 106px;
+      // background: pink;
+
       position: $tc-clock-wrapper-current-time-position;
       float: $tc-clock-wrapper-current-time-float;
       padding: $tc-clock-wrapper-current-time-padding;
       color: $tc-clock-wrapper-current-time-color;
       text-align: $tc-clock-wrapper-current-time-text-align;
       font-size: $tc-clock-wrapper-current-time-font-size;
-      line-height: $tc-clock-wrapper-current-time-line-height;
+      // line-height: $tc-clock-wrapper-current-time-line-height;
 
       .a {
         position: $tc-clock-wrapper-current-time-am-pm-position;
@@ -110,6 +164,34 @@
 
       .pm {
         bottom: $tc-clock-wrapper-current-time-pm-bottom;
+      }
+    }
+
+    .error-icon {
+      display: block;
+      width: 106px;
+      height: 106px;
+      background-color: $tc-clock-wrapper-actions-in-out-bg-color;
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      border-radius: 50%;
+
+      svg {
+        display: block;
+        position: absolute;
+        margin-top: auto;
+        margin-right: auto;
+        margin-bottom: auto;
+        margin-left: auto;
+        top: -5px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 60px;
       }
     }
   }
@@ -133,10 +215,6 @@
     }
   }
 
-  button[type=submit] {
-    visibility: $tc-button-submit-visibility;
-  }
-
   .alert-full {
     text-align: $tc-alert-text-align;
     margin-top: $tc-alert-margin-top;
@@ -144,7 +222,13 @@
 
   p {
     &.ip {
-      margin-top: $tc-p-ip-margin-top;
+      // background: red;
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      bottom: 10px;
       text-align: $tc-p-ip-text-align;
     }
   }
