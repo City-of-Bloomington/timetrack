@@ -801,11 +801,23 @@ public class Document{
 														list.add("0.00"); // nothing used
 												}
 												list.add(""+dfn.format(hrs_total)); // adjusted
-												if(accrual.hasPref_max_leval()){
-														if(hrs_total > accrual.getPref_max_level()){
-																String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO until this balance is reduced to no more than "+accrual.getPref_max_level()+" hours.";
-																if(!warnings.contains(str))
-																		warnings.add(str);
+												if(isUnionned()){
+														if(accrual.hasPref_max_leval()){
+																// union it is 40 instead of 10
+																if(hrs_total > accrual.getPref_max_level()*4){
+																		String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO or Sick time until this balance is reduced to no more than "+(accrual.getPref_max_level()*4)+" hours.";
+																		if(!warnings.contains(str))
+																				warnings.add(str);
+																}
+														}
+												}
+												else{
+														if(accrual.hasPref_max_leval()){
+																if(hrs_total > accrual.getPref_max_level()){
+																		String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO or Sick time until this balance is reduced to no more than "+accrual.getPref_max_level()+" hours.";
+																		if(!warnings.contains(str))
+																				warnings.add(str);
+																}
 														}
 												}
 												allAccruals.put(codeInfo, list);

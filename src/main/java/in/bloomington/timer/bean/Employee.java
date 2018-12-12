@@ -581,6 +581,10 @@ public class Employee implements Serializable{
 				getGroupEmployees();
 				return groupEmployees != null && groupEmployees.size() > 1;
 		}
+		public boolean hasOneGroupOnly(){
+				getGroupEmployees();
+				return groupEmployees != null && groupEmployees.size() == 1;
+		}		
 		public GroupEmployee getGroupEmployee(){
 				getGroupEmployees();
 				return groupEmployee;

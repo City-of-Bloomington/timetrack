@@ -28,6 +28,8 @@ public class HourCodeConditionAction extends TopAction{
 		List<HourCode> hourcodes = null;
 		List<Type> departments = null;
 		List<Type> salaryGroups = null;
+		List<Group> groups = null;
+		String department_id = "";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -81,6 +83,16 @@ public class HourCodeConditionAction extends TopAction{
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;
+		}
+		public void setDepartment_id(String val){
+				if(val != null && !val.equals("-1"))		
+						department_id = val;
+		}
+		public String getDepartment_id(){
+				if(department_id.equals("")){
+						return "-1";
+				}
+				return department_id;
 		}
 		public List<HourCodeCondition> getConditions(){
 				if(conditions == null){
@@ -137,7 +149,27 @@ public class HourCodeConditionAction extends TopAction{
 						}
 				}
 				return salaryGroups;
-		}		
+		}
+		public List<Group> getGroups(){
+				if(groups == null){
+						GroupList tl = new GroupList();
+						if(department_id.equals("")){
+								getHourcodeCondition();
+								department_id = hourcodeCondition.getDepartment_id();
+						}
+						if(!(department_id.equals("") || department_id.equals("-1"))){
+								tl.setDepartment_id(department_id);
+						}
+						String back = tl.find();
+						if(back.equals("")){
+								List<Group> ones = tl.getGroups();
+								if(ones != null && ones.size() > 0){
+										groups = ones;
+								}
+						}
+				}
+				return groups;
+		}				
 
 }
 

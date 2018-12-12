@@ -20,25 +20,28 @@ public class HourCodeCondition implements Serializable{
 		static Logger logger = LogManager.getLogger(HourCodeCondition.class);
 		static final long serialVersionUID = 800L;
     private String id="", hour_code_id="", department_id="", inactive="",
-				date="", salary_group_id="";
+				date="", salary_group_id="", group_id="";
 		
 		Type salaryGroup = null;
 		HourCode hourCode = null;
 		Type department = null;
+		Group group = null;
     public HourCodeCondition(
 												String val,
 												String val2,
 												String val3,
 												String val4,
 												String val5,
-												boolean val6
+												String val6,
+												boolean val7
 									 ){
 				setId(val);
 				setHour_code_id(val2);
 				setDepartment_id(val3);
 				setSalary_group_id(val4);
-				setDate(val5);
-				setInactive(val6);
+				setGroup_id(val5);
+				setDate(val6);
+				setInactive(val7);
     }
     public HourCodeCondition(String val){
 				setId(val);
@@ -51,6 +54,11 @@ public class HourCodeCondition implements Serializable{
     public String getHour_code_id(){
 				return hour_code_id;
     }
+    public String getGroup_id(){
+				if(group_id.equals(""))
+						return "-1";
+				return group_id;
+    }		
     public String getDepartment_id(){
 				if(department_id.equals(""))
 						return "-1";
@@ -91,6 +99,7 @@ public class HourCodeCondition implements Serializable{
 				}
 				return department;
 		}
+		
     //
     // setters
     //
@@ -106,6 +115,10 @@ public class HourCodeCondition implements Serializable{
 				if(val != null && !val.equals("-1"))
 						department_id = val;
     }
+    public void setGroup_id(String val){
+				if(val != null && !val.equals("-1"))
+						group_id = val;
+    }		
     public void setSalary_group_id(String val){
 				if(val != null && !val.equals("-1"))
 						salary_group_id = val;
@@ -160,14 +173,24 @@ public class HourCodeCondition implements Serializable{
 						}
 				}
 				return hourCode;
-		}		
+		}
+		public Group getGroup(){
+				if(!group_id.equals("") && group == null){
+						Group one = new Group(group_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								group = one;
+						}
+				}
+				return group;
+		}				
 		public String doSelect(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,hour_code_id,department_id,salary_group_id,date_format(date,'%m/%d/%Y'),inactive from hour_code_conditions where id =? ";
+				String qq = "select id,hour_code_id,department_id,salary_group_id,group_id,date_format(date,'%m/%d/%Y'),inactive from hour_code_conditions where id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -182,8 +205,9 @@ public class HourCodeCondition implements Serializable{
 								setHour_code_id(rs.getString(2));
 								setDepartment_id(rs.getString(3));
 								setSalary_group_id(rs.getString(4));
-								setDate(rs.getString(5));
-								setInactive(rs.getString(6) != null);
+								setGroup_id(rs.getString(5));
+								setDate(rs.getString(6));
+								setInactive(rs.getString(7) != null);
 						}
 				}
 				catch(Exception ex){
@@ -202,7 +226,7 @@ public class HourCodeCondition implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into hour_code_conditions values(0,?,?,?,now(),null) ";
+				String qq = "insert into hour_code_conditions values(0,?,?,?,?,now(),null) ";
 				if(hour_code_id.equals("")){
 						msg = " need to pick an hour code ";
 						return msg;
@@ -224,10 +248,13 @@ public class HourCodeCondition implements Serializable{
 								pstmt.setNull(3,Types.INTEGER);
 						else
 								pstmt.setString(3, salary_group_id);
+						if(group_id.equals(""))
+								pstmt.setNull(4,Types.INTEGER);
+						else
+								pstmt.setString(4, group_id);						
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
-						Helper.databaseDisconnect(pstmt, rs);
 						date = Helper.getToday();
 						qq = "select LAST_INSERT_ID()";
 						pstmt = con.prepareStatement(qq);
@@ -260,7 +287,7 @@ public class HourCodeCondition implements Serializable{
 				if(hour_code_id.equals("")){
 						return " hour code is required";
 				}
-				String qq = "update hour_code_conditions set hour_code_id=?,department_id=?,salary_group_id=?,inactive=? where id=? ";
+				String qq = "update hour_code_conditions set hour_code_id=?,department_id=?,salary_group_id=?,group_id=?,inactive=? where id=? ";
 				
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
@@ -279,7 +306,11 @@ public class HourCodeCondition implements Serializable{
 						if(salary_group_id.equals(""))
 								pstmt.setNull(jj++, Types.INTEGER);
 						else
-								pstmt.setString(jj++, salary_group_id);								
+								pstmt.setString(jj++, salary_group_id);
+						if(group_id.equals(""))
+								pstmt.setNull(jj++, Types.INTEGER);
+						else
+								pstmt.setString(jj++, group_id);								
 						
 						if(inactive.equals("")){
 								pstmt.setNull(jj++, Types.CHAR);

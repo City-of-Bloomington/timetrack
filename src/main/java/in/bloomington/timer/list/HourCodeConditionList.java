@@ -24,7 +24,7 @@ public class HourCodeConditionList{
 		
 		List<HourCodeCondition> conditions = null;
 		boolean active_only = false;
-		String department_id="", salary_group_id="", hour_code_id="";
+		String department_id="", salary_group_id="", hour_code_id="", group_id="";
     public HourCodeConditionList(){
     }
 		public List<HourCodeCondition> getConditions(){
@@ -44,6 +44,10 @@ public class HourCodeConditionList{
     public void setSalary_group_id(String val){
 				if(val != null)
 						salary_group_id = val;
+    }
+    public void setGroup_id(String val){
+				if(val != null)
+						group_id = val;
     }		
     //
     // getters
@@ -53,7 +57,7 @@ public class HourCodeConditionList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", qw="";
-				String qq = "select g.id,g.hour_code_id,g.department_id,g.salary_group_id,date_format(g.date,'%m/%d/%Y'),g.inactive from hour_code_conditions g left join hour_codes e on e.id=g.hour_code_id  ";
+				String qq = "select g.id,g.hour_code_id,g.department_id,g.salary_group_id,g.group_id,date_format(g.date,'%m/%d/%Y'),g.inactive from hour_code_conditions g left join hour_codes e on e.id=g.hour_code_id  ";
 				logger.debug(qq);
 				if(active_only){
 						qw += " g.inactive is null ";
@@ -65,6 +69,10 @@ public class HourCodeConditionList{
 				if(!salary_group_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
 						qw += " (g.salary_group_id = ? or g.salary_group_id is null)";
+				}
+				if(!group_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " (g.group_id = ? or g.group_id is null)";
 				}				
 				if(!qw.equals("")){
 						qq += " where "+qw;
@@ -85,7 +93,10 @@ public class HourCodeConditionList{
 						}
 						if(!salary_group_id.equals("")){
 								pstmt.setString(jj++, salary_group_id);								
-						}										
+						}
+						if(!group_id.equals("")){
+								pstmt.setString(jj++, group_id);								
+						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								if(conditions == null)
@@ -97,7 +108,8 @@ public class HourCodeConditionList{
 																				 rs.getString(3),
 																				 rs.getString(4),
 																				 rs.getString(5),
-																				 rs.getString(6) != null);
+																				 rs.getString(6),
+																				 rs.getString(7) != null);
 							 if(!conditions.contains(one))
 									 conditions.add(one);
 						}

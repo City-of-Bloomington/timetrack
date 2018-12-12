@@ -24,18 +24,32 @@
 			<label>Hour Code</label>
 			<s:select name="hourcodeCondition.hour_code_id" value="%{hourcodeCondition.hour_code_id}" required="true" list="hourcodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Hour Code" />
 		</div>
-
-		<div class="form-group">
-			<label>Department</label>
-			<s:select name="hourcodeCondition.department_id" value="%{hourcodeCondition.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
-		</div>
-
 		<div class="form-group">
 			<label>Salary Group</label>
 			<s:select name="hourcodeCondition.salary_group_id" value="%{hourcodeCondition.salary_group_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick salary group" required="true" />
 		</div>
-
-
+		<div class="form-group">
+			<label>Department</label>
+			<s:select name="hourcodeCondition.department_id" value="%{hourcodeCondition.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
+		</div>
+		<div class="form-group">
+			<label>Group Department</label>
+			<s:select name="department_id" value="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" id="department_id_change"/>
+		</div>		
+		<s:if test="hourcodeCondition.id != ''">
+			<div class="form-group">
+				<label>Group</label>
+				<s:select name="hourcodeCondition.group_id" value="%{hourcodeCondition.group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" /> (to pick a group pick a group department first) <br />
+			</div>
+		</s:if>
+		<s:else>
+			<div class="form-group">
+				<label>Group</label>			
+				<select name="hourcodeCondition.group_id" id="group_id_set"  disabled="disabled" >
+					<option value="-1">All</option>
+				</select>
+			</div>
+		</s:else>
 		<s:if test="hourcodeCondition.id != ''">
 			<div class="form-group">
 				<label>Inactive ?</label>
@@ -44,9 +58,10 @@
 		</s:if>
 
 		<s:if test="hourcodeCondition.id == ''">
-			<s:submit name="action" type="button" value="Save" class="fn1-btn"/>
+			<div class="button-group">
+			<s:submit name="action" type="button" value="Save" />
+			</div>
 		</s:if>
-
 		<s:else>
 			<div class="button-group">
 				<a href="<s:property value='#application.url' />hourcodeCondition.action?" class="button">New Hour Code Restriction</a>
