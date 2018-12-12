@@ -38,7 +38,8 @@ public class Employee implements Serializable{
 		List<GroupManager> reviewers = null;
 		List<GroupManager> enterors = null;
 		List<DepartmentEmployee> departmentEmployees = null;
-		List<GroupEmployee> groupEmployees = null;		
+		List<GroupEmployee> groupEmployees = null;
+		Shift shift = null;
 		DepartmentEmployee departmentEmployee = null;
 		Department department = null;
 		GroupEmployee groupEmployee = null;
@@ -386,6 +387,43 @@ public class Employee implements Serializable{
 				getGroups();
 				return groups != null && groups.size() > 0;
 		}
+		public Shift getShift(){
+				if(shift == null) findShift();
+				return shift;
+		}
+		public boolean hasShift(){
+				getShift();
+				return shift != null;
+		}
+		/**
+		 * even if an employee have more than one group,
+		 * we need one active shift
+		 */
+		void findShift(){
+				getGroups();
+				String group_ids = "";
+				if(groups != null && groups.size() > 0){
+						for(Group one:groups){
+								if(!group_ids.equals("")) group_ids +=","; 
+								group_ids += one.getId();
+						}
+				}
+				if(!group_ids.equals("")){
+						GroupShiftList gsl = new GroupShiftList();
+						gsl.setGroup_ids(group_ids);
+						gsl.setActiveOnly();
+						String back = gsl.find();
+						if(back.equals("")){
+								List<GroupShift> ones = gsl.getGroupShifts();
+								if(ones != null && ones.size() > 0){
+										Shift one = ones.get(0).getShift();
+										if(one != null){
+												shift = one;
+										}
+								}
+						}
+				}
+		}
 
 		public boolean canApprove(){
 				if(approvers == null){
@@ -543,6 +581,10 @@ public class Employee implements Serializable{
 				getGroupEmployees();
 				return groupEmployees != null && groupEmployees.size() > 1;
 		}
+		public boolean hasOneGroupOnly(){
+				getGroupEmployees();
+				return groupEmployees != null && groupEmployees.size() == 1;
+		}		
 		public GroupEmployee getGroupEmployee(){
 				getGroupEmployees();
 				return groupEmployee;

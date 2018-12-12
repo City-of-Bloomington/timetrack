@@ -5,12 +5,9 @@
 	<s:if test="jobTask.id == ''">
 		<s:if test="jobTask.employee_id != ''">
 			<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />			
-			<s:if test="!jobTask.employee.hasMultipleGroups() && jobTask.employee.group_id !='' ">
+			<s:if test="jobTask.employee.hasOnGroupOnly()">
 				<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
 			</s:if>
-			<s:elseif test="jobTask.employee.group_id !=''">
-				<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
-			</s:elseif>
 		</s:if>
 		<h1>New job</h1>
 		<s:if test="jobTask.employee_id == ''">
@@ -57,21 +54,34 @@
 			<label>Salary Group</label>
 			<s:select name="jobTask.salary_group_id" value="%{jobTask.salary_group_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Salary Group" required="true" />
 		</div>
-
-		<div class="form-group">
-			<label>Group</label>
-			<s:if test="jobTask.hasNoGroup()">			
-				<s:if test="jobTask.employee.hasMultipleGroups()">
-					<s:select name="jobTask.group_id" value="%{jobTask.group_id}" list="jobTask.employee.groups"  listKey="id" listValue="name" headerKey="-1" headerValue="Pick a group" />
+		<s:if test="jobTask.employee_id == ''">
+			<div class="form-group">
+				<label>Department</label>
+				<s:select name="department_id" value="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Dept" id="department_id_change" />
+			</div>
+			<div class="form-group">
+				<label>Group</label>
+				<select name="jobTask.group_id" value="" id="group_id_set"  disabled="disabled" >
+						<option value="-1">All</option>
+					</select><br />
+			</div>
+		</s:if>
+		<s:else>
+			<div class="form-group">
+				<label>Group</label>
+				<s:if test="jobTask.hasNoGroup()">
+					<s:if test="jobTask.employee.hasMultipleGroups()">
+						<s:select name="jobTask.group_id" value="%{jobTask.group_id}" list="jobTask.employee.groups"  listKey="id" listValue="name" headerKey="-1" headerValue="Pick a group" />
+					</s:if>
+					<s:else>
+						<s:property value="%{jobTask.group}" />
+					</s:else>
 				</s:if>
 				<s:else>
 					<s:property value="%{jobTask.group}" />
-				</s:else>				
-			</s:if>
-			<s:else>
-				<s:property value="%{jobTask.group}" />
-			</s:else>
-		</div>
+				</s:else>
+			</div>
+		</s:else>
 		<div class="form-group">
 			<label>Effective Date</label>
 			<s:textfield name="jobTask.effective_date" value="%{jobTask.effective_date}" size="10" cssClass="date" />

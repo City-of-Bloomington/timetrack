@@ -24,6 +24,7 @@ public class TimeClock {
     Document document = null;
     List<JobTask> jobs = null;
     JobTask job = null;
+		Shift shift = null;
     List<Group> groups = null;
     HourCode defaultRegularCode = null;
     boolean new_docuemnt = false;
@@ -119,8 +120,31 @@ public class TimeClock {
 
     public void setTime(String val) {
 				if (val != null) {
+						getEmployee(); 
 						time = Helper.getCurrentTime();
-						splitTime(time);
+						if(shift != null){
+								if(shift.isMinuteWithin(time)){
+										time = shift.getStartHourMinute();
+										splitTime(time);
+								}
+								else if(shift.hasRoundedMinute()){
+										splitTime(time);
+										int mm = shift.getRoundedMinute(time_min);
+										if(mm == 60){
+												time_hr += 1;
+												time_min = 0;
+										}
+										else{
+												time_min = mm;
+										}
+								}
+								else{
+										splitTime(time);
+								}
+						}
+						else{
+								splitTime(time);
+						}
 				}
     }
 
@@ -236,6 +260,9 @@ public class TimeClock {
 				if (employee != null) {
 						if (employee.hasGroups()) {
 								groups = employee.getGroups();
+						}
+						if(employee.hasShift()){
+								shift = employee.getShift();
 						}
 				}				
 				return employee;

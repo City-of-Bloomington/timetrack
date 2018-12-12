@@ -23,7 +23,7 @@ public class HourCodeList{
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		List<HourCode> hourCodes = null;
 		String department_id = "", salary_group_id="", effective_date_before="";
-		String employee_id = "", accrual_id="";
+		String employee_id = "", accrual_id="", group_id="";
 		boolean active_only = false , default_regular_only = false;
 		boolean current_only = false, related_to_accruals_only=false;
     public HourCodeList(){
@@ -51,6 +51,10 @@ public class HourCodeList{
     public void setAccrual_id(String val){
 				if(val != null && !val.equals("-1"))
 						accrual_id = val;
+    }
+    public void setGroup_id(String val){
+				if(val != null && !val.equals("-1"))
+						group_id = val;
     }		
 		public void setActiveOnly(){
 				active_only = true;
@@ -80,8 +84,8 @@ public class HourCodeList{
 				}
 				if(employee_id.equals("")){
 						if(department_id.equals("")){
-						back = " department not set ";
-						return back;
+								back = " department not set ";
+								return back;
 						}
 						if(salary_group_id.equals("")){
 								back = " salary grop not set ";
@@ -124,7 +128,8 @@ public class HourCodeList{
 								qq +=" join jobs j on j.salary_group_id=c.salary_group_id ";
 								qq += " join department_employees de on de.employee_id=j.employee_id and c.department_id=de.department_id ";
 								if(!qw.equals("")) qw += " and "; 
-								qw += " j.employee_id = ? ";										
+								qw += " j.employee_id = ? ";
+								qw += " and (j.group_id = c.group_id or c.grou_id is null)";
 						}
 						else{								
 								if(!department_id.equals("")){
@@ -135,6 +140,10 @@ public class HourCodeList{
 										if(!qw.equals("")) qw += " and "; 
 										qw += " c.salary_group_id = ? ";
 								}
+								if(!group_id.equals("")){
+										if(!qw.equals("")) qw += " and "; 
+										qw += " (c.group_id = ? or c.group_id is null)";
+								}								
 						}
 						if(!qw.equals("")){
 								qw = " where "+qw;

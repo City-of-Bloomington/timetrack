@@ -274,12 +274,14 @@ CREATE TABLE `positions` (
   `hour_code_id` int(10) unsigned NOT NULL,
   `department_id` int(10) unsigned DEFAULT NULL,
   `salary_group_id` int(10) unsigned DEFAULT NULL,
+	group_id int unsigned default null,
   `date` date DEFAULT NULL,
   `inactive` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_codes` (`hour_code_id`,`department_id`,`salary_group_id`),
   KEY `salary_group_id` (`salary_group_id`),
   KEY `department_id` (`department_id`),
+	foreign key (group_id) references groups(id),
   CONSTRAINT `hour_code_conditions_ibfk_1` FOREIGN KEY (`salary_group_id`) REFERENCES `salary_groups` (`id`),
   CONSTRAINT `hour_code_conditions_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`),
   CONSTRAINT `hour_code_conditions_ibfk_3` FOREIGN KEY (`hour_code_id`) REFERENCES `hour_codes` (`id`)
@@ -623,7 +625,9 @@ CREATE TABLE shifts (
 	start_hour    int unsigned,
 	start_minute  int unsigned,
 	duration      int unsigned,
-	start_window_minute int unsigned,
+	start_minute_window int unsigned,
+	minute_rounding int unsigned,
+	prefered_earn_time enum('OverTime','CompTime'),
 	inactive char(1),
 	primary key(id)
 )engine=InnoDB;
@@ -651,8 +655,41 @@ CREATE TABLE schedule_shifts (
 	foreign key(employee_id) references employees(id),
   foreign key(assigned_by_id) references employees(id)			
 	)engine=InnoDB;
-	
+
+;;
+;; for employees with fixed shifts
+;;
+	CREATE TABLE group_shifts (			
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+	group_id int unsigned not null,		
+	shift_id int unsigned not null,
+	start_date date,
+	expire_date date,
+	inactive char(1),
+	primary key(id),
+	foreign key(group_id) references groups(id),	
+	foreign key(shift_id) references shifts(id)
 )Engine=InnoDB;
+
+;; ===================================================
+;; 12/12/2018
+;; adding group_id to hour_code_conditions table
+;; 
+alter table hour_code_conditions drop foreign key hour_code_conditions_ibfk_1;
+alter table hour_code_conditions drop foreign key hour_code_conditions_ibfk_2;
+alter table hour_code_conditions drop foreign key hour_code_conditions_ibfk_3;
+alter table hour_code_conditions drop index unique_codes;
+alter table hour_code_conditions add group_id int unsigned after salary_group_id ;
+alter table hour_code_conditions add foreign key(salary_group_id) references salary_groups(id);
+alter table hour_code_conditions add foreign key(group_id) references groups(id);
+alter table hour_code_conditions add foreign key(department_id) references departments(id);
+alter table hour_code_conditions add foreign key(hour_code_id) references hour_codes(id);
+alter table hour_code_conditions add constraint unique_codes unique (hour_code_id,group_id,department_id,salary_group_id);
+
+alter table hour_codes add type enum("Regular","Used","Earned","Overtime","Unpaid");
+
+
+
 ;; ====================================================
 ;; 
 ;; Leave Management (in progress started on 10/01/2018)

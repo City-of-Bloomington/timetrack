@@ -24,7 +24,7 @@
 			<s:set var="dayVal" value="#day.value" />			
 			<s:if test="#dayKey == 0">
 				<!-- to-do: output the correct JobID into `data-job-id` below -->
-				<tr data-job-id="">
+				<tr data-job-id="<s:property value='#jobKey.job_id' />">
 					<td>
 						Week 1 - <small>(<s:property value="#week1DateRange" />)</small><br>
 						<small><s:property value="#jobKey" /></small>
@@ -36,7 +36,7 @@
 				</s:if>
 				</tr>
 				<!-- to-do: output the correct JobID into `data-job-id` below -->
-				<tr data-job-id="">
+				<tr data-job-id="<s:property value='#jobKey.job_id' />">
 					<td>
 						Week 2 - <small>(<s:property value="#week2DateRange" />)</small><br>
 						<small><s:property value="#jobKey" /></small>

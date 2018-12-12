@@ -36,8 +36,9 @@ public class Document{
 		Employee initiater = null;
 		Workflow lastWorkflow = null;
 		List<TimeAction> timeActions = null;
-		Map<String, Map<Integer, String>> daily = null;
-		Map<String, Map<Integer, Double>> dailyDbl = null;		
+		//
+		Map<JobType, Map<Integer, String>> daily = null;
+		Map<JobType, Map<Integer, Double>> dailyDbl = null;		
 		List<TimeBlock> timeBlocks = null;
 		List<String> warnings = new ArrayList<>();
 		JobTask job = null;
@@ -390,14 +391,10 @@ public class Document{
 						tl.setActiveOnly();
 						String back = tl.find();
 						if(back.equals("")){
-								Map<String, Map<Integer, String>> ones = tl.getDaily();
+								Map<JobType, Map<Integer, String>> ones = tl.getDaily();
 								if(ones != null && ones.size() > 0){
 										daily = ones;
 										dailyDbl = tl.getDailyDbl();
-										// }								
-										// Map<Integer, Double> ones = tl.getDaily();
-										// if(ones != null && ones.size() > 0){
-										// daily = ones;
 										dailyBlocks = tl.getDailyBlocks();
 										hourCodeTotals = tl.getHourCodeTotals();
 										hourCodeWeek1 = tl.getHourCodeWeek1();
@@ -426,11 +423,11 @@ public class Document{
 				prepareDaily(true);
 		}
 		
-		public Map<String, Map<Integer, String>> getDaily(){
-				return daily;
-		}
-		public Map<String, Map<Integer, Double>> getDailyDbl(){
+		public Map<JobType, Map<Integer, Double>> getDailyDbl(){
 				return dailyDbl;
+		}		
+		public Map<JobType, Map<Integer, String>> getDaily(){
+				return daily;
 		}		
 		
 		public List<TimeBlock> getTimeBlocks(){
@@ -804,11 +801,23 @@ public class Document{
 														list.add("0.00"); // nothing used
 												}
 												list.add(""+dfn.format(hrs_total)); // adjusted
-												if(accrual.hasPref_max_leval()){
-														if(hrs_total > accrual.getPref_max_level()){
-																String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO until this balance is reduced to no more than "+accrual.getPref_max_level()+" hours.";
-																if(!warnings.contains(str))
-																		warnings.add(str);
+												if(isUnionned()){
+														if(accrual.hasPref_max_leval()){
+																// union it is 40 instead of 10
+																if(hrs_total > accrual.getPref_max_level()*4){
+																		String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO or Sick time until this balance is reduced to no more than "+(accrual.getPref_max_level()*4)+" hours.";
+																		if(!warnings.contains(str))
+																				warnings.add(str);
+																}
+														}
+												}
+												else{
+														if(accrual.hasPref_max_leval()){
+																if(hrs_total > accrual.getPref_max_level()){
+																		String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO or Sick time until this balance is reduced to no more than "+accrual.getPref_max_level()+" hours.";
+																		if(!warnings.contains(str))
+																				warnings.add(str);
+																}
 														}
 												}
 												allAccruals.put(codeInfo, list);

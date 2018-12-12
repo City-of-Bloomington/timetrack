@@ -29,6 +29,8 @@ public class TimeBlock extends Block{
 		String action_by_id="", action_type=""; // for logs
 		// order_index is day order in the payperiod day list
 		// Mond=0, Tue=1, Wed=2, Thu=3, Fr=4, Sat=5, Sun=6, .. Sat=12, Sun=13
+		//
+		String job_id = "";// needed for display onley
 		final static Set<Integer> weekendSet = new HashSet<>(Arrays.asList(5,6,12,13));
 		Set<String> rangeDateSet = new HashSet<>();
 		int order_index=0, repeat_count=0;
@@ -44,61 +46,62 @@ public class TimeBlock extends Block{
 		Set<String> document_ids = null; // needed for employee with multiple jobs
 		String start_date = "", end_date="", job_name="";
 		String timeInfo = "";
-		// for clock_in
 		String errors = "";
 		public TimeBlock(
 										 String val,
 										 String val2,
+										 String val3, //4
 										 String val4,
-										 String val5,
 										 
+										 int val5,
 										 int val6,
 										 int val7,
 										 int val8,
-										 int val9,
-										 double val10,
+										 double val9,
 										 
+										 String val10,
 										 String val11,
-										 String val12,
-										 boolean val13,
-										 String val14
+										 boolean val12,
+										 String val13
 							 ){
-				super(val, val2, val4, val5, val6, val7, val8, val9, val10,
-							val11, val12, val13, val14);
+				super(val, val2, val3, val4, val5, val6, val7, val8, val9,
+							val10, val11, val12, val13);
 		}
     public TimeBlock(
 							 String val,
 							 String val2,
+							 String val3, // 4
 							 String val4,
-							 String val5,
-							 int val6,
+							 int val5,
 							 
+							 int val6,
 							 int val7,
 							 int val8,
-							 int val9,
-							 double val10,
+							 double val9,
+							 String val10,
+							 
 							 String val11,
+							 boolean val12,
+							 String val13,
+							 boolean val14,
+							 int val15,
 							 
-							 String val12,
-							 boolean val13,
-							 String val14,
-							 boolean val15,
-							 int val16,
-							 
+							 String val16,
 							 String val17,
 							 String val18,
 							 String val19,
 							 String val20
 							 ){
 				super(val, val2,
-							val4, val5, val6, val7, val8, val9, val10,
-							val11, val12, val13, val14);
-				setInactive(val15);
-				setOrder_index(val16);
-				setHour_code(val17);
-				setCode_desc(val18);
-				setNw_code(val19);
-				setJob_name(val20);
+							val3, val4, val5, val6, val7, val8, val9,
+							val10, val11, val12, val13);
+				setInactive(val14);
+				setOrder_index(val15);
+				setHour_code(val16);
+				setCode_desc(val17);
+				setNw_code(val18);
+				setJob_name(val19);
+				setJob_id(val20);
 		}
     public TimeBlock(String val){
 				super(val);
@@ -153,6 +156,9 @@ public class TimeBlock extends Block{
 		public int getOrder_index(){
 				return order_index;
 		}
+		public String getJob_id(){
+				return job_id; // for display only
+		}
     //
     // setters
     //
@@ -200,6 +206,11 @@ public class TimeBlock extends Block{
 				if(val != null)
 						action_type = val;
 		}
+		// for display only from TimeBlockList
+		public void setJob_id(String val){
+				if(val != null)
+						job_id = val;
+		}		
 		public void setRepeat_count(String val){
 				if(val != null && !val.equals("")){
 						try{

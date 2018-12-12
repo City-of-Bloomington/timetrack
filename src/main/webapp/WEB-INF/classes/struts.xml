@@ -176,6 +176,13 @@
 			<result name="input">/WEB-INF/jsp/benefitGroup.jsp</result>		
 			<result name="error">/WEB-INF/jsp/benefitGroup.jsp</result>
 			<result name="success">/WEB-INF/jsp/benefitGroup.jsp</result>
+		</action>
+		<action name="shift" 
+						class="in.bloomington.timer.ShiftAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/shift.jsp</result>		
+			<result name="error">/WEB-INF/jsp/shift.jsp</result>
+			<result name="success">/WEB-INF/jsp/shift.jsp</result>
 		</action>		
 		<action name="holiday" 
 						class="in.bloomington.timer.HolidayAction" 
@@ -326,7 +333,8 @@
 			<result name="input">/WEB-INF/jsp/salaryGroup.jsp</result>		
 			<result name="error">/WEB-INF/jsp/salaryGroup.jsp</result>
 			<result name="success">/WEB-INF/jsp/salaryGroup.jsp</result>
-		</action>		
+		</action>
+		
 		<action name="departmentEmployee" 
 						class="in.bloomington.timer.DepartmentEmployeeAction" 
 						method="execute">
@@ -369,6 +377,13 @@
 			<result name="error">/WEB-INF/jsp/group.jsp</result>
 			<result name="success">/WEB-INF/jsp/group.jsp</result>
 		</action>
+		<action name="groupShift" 
+						class="in.bloomington.timer.GroupShiftAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/groupShift.jsp</result>		
+			<result name="error">/WEB-INF/jsp/groupShift.jsp</result>
+			<result name="success">/WEB-INF/jsp/groupShift.jsp</result>
+		</action>		
 		<action name="jobTask" 
 						class="in.bloomington.timer.JobTaskAction" 
 						method="execute">

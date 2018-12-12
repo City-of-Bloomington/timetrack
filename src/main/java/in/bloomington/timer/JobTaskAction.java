@@ -29,6 +29,7 @@ public class JobTaskAction extends TopAction{
 		List<Position> positions = null;
 		List<Employee> employees = null;
 		List<Group> groups = null;
+		List<Type> departments = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -138,7 +139,21 @@ public class JobTaskAction extends TopAction{
 				}
 				return employees;
 		}		
-		
+		public List<Type> getDepartments(){
+				if(departments == null){
+						TypeList tl = new TypeList();
+						tl.setTable_name("departments");
+						tl.setActiveOnly();
+						String back = tl.find();
+						if(back.equals("")){
+								List<Type> ones = tl.getTypes();
+								if(ones != null && ones.size() > 0){
+										departments = ones;
+								}
+						}
+				}
+				return departments;
+		}				
 }
 
 
