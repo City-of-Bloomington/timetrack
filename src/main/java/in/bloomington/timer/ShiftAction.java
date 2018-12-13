@@ -22,6 +22,7 @@ public class ShiftAction extends TopAction{
 		//
 		Shift shift = null;
 		List<Shift> shifts = null;
+		List<GroupShift> groupShifts = null;
 		String shiftsTitle = "Current shifts";
 		public String execute(){
 				String ret = SUCCESS;
@@ -90,6 +91,28 @@ public class ShiftAction extends TopAction{
 						}
 				}
 				return shifts;
+		}
+		//
+		public List<GroupShift> getGroupShifts(){
+				if(groupShifts == null){
+						getShift();
+						if(!shift.getId().equals("")){
+								GroupShiftList gsl = new GroupShiftList();
+								gsl.setShift_id(shift.getId());
+								String back = gsl.find();
+								if(back.equals("")){
+										List<GroupShift> ones = gsl.getGroupShifts();
+										if(ones != null && ones.size() > 0){
+												groupShifts = ones;
+										}
+								}
+						}
+				}
+				return groupShifts;
+		}
+		public boolean hasGroupShifts(){
+				getGroupShifts();
+				return groupShifts != null && groupShifts.size() > 0;
 		}
 
 		

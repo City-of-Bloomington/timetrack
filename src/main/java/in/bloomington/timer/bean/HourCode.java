@@ -18,11 +18,11 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HourCode extends Type{
+public class HourCode{
 
 		static final long serialVersionUID = 700L;
 		static Logger logger = LogManager.getLogger(HourCode.class);
-
+		String id="", name = "", description="", inactive="", type="";
 		Accrual accrual = null;
 		AccrualWarning accrualWarning = null;
 		CodeRef codeRef = null;
@@ -38,32 +38,60 @@ public class HourCode extends Type{
     public HourCode(){
     }
     public HourCode(String val){
-				super(val);
+				setId(val);
     }
     public HourCode(String val, String val2){
-				super(val, val2);
+				setId(val);
+				setName(val2);
     }		
-    public HourCode(String val, String val2, String val3, String val4, String val5, boolean val6, boolean val7, String val8){
-				super(val, val2, val3, val7);
-				setVals(val4, val5, val6, val8);
+    public HourCode(String val, String val2, String val3, String val4, String val5, boolean val6, String val7, String val8, boolean val9){
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
     }
-    void setVals(String val,String val2, boolean val3, String val4){
-				setRecord_method(val);
-				setAccrual_id(val2);
-				setCount_as_regular_pay(val3);
-				setReg_default(val4);
-    }
-    void setVals(String val, String val2, String val3, String val4,String val5, boolean val6, boolean val7, String val8){
+    void setVals(String val,
+								 String val2,
+								 String val3,
+								 String val4,
+								 String val5,
+								 boolean val6,
+								 String val7,
+								 String val8,
+								 boolean val9								 
+								 ){
 				setId(val);
 				setName(val2);
 				setDescription(val3);
-				setVals(val4, val5, val6, val8);				
-				setInactive(val7);
-
-    }						
+				setRecord_method(val4);
+				setAccrual_id(val5);
+				setCount_as_regular_pay(val6);
+				setReg_default(val7);
+				setType(val8);
+				setInactive(val9);
+				
+    }
     //
     // getters
     //
+    public String getId(){
+				return id;
+    }
+    public String getName(){
+				return name;
+    }
+    public String getType(){
+				return type;
+    }		
+    public String getDescription(){
+				return description;
+    }		
+    public boolean getInactive(){
+				return !inactive.equals("");
+    }
+		public boolean isInactive(){
+				return !inactive.equals("");
+		}
+		public boolean isActive(){
+				return inactive.equals("");
+		}		
 		public String getRecord_method(){
 				if(record_method.equals("")){
 						return "Time";
@@ -96,6 +124,27 @@ public class HourCode extends Type{
     //
     // setters
     //
+    public void setId(String val){
+				if(val != null)
+						id = val;
+    }
+    public void setName(String val){
+				if(val != null)
+						name = val.trim();
+    }
+    public void setType(String val){
+				if(val != null)
+						type = val;
+    }		
+    public void setDescription(String val){
+				if(val != null){
+						description = val.trim();
+				}
+    }		
+    public void setInactive(boolean val){
+				if(val)
+						inactive = "y";
+    }				
     public void setRecord_method(String val){
 				if(val != null && !val.equals("-1"))
 						record_method = val;
@@ -131,6 +180,24 @@ public class HourCode extends Type{
 				}
 				return accrual;
 		}
+		public boolean isRegular(){
+				return type.equals("Regular");
+		}
+		public boolean isUsed(){
+				return type.equals("Used");
+		}
+		public boolean isEarned(){
+				return type.equals("Earned");
+		}
+		public boolean isUnpaid(){
+				return type.equals("Unpaid");
+		}
+		public boolean isOvertime(){
+				return type.equals("Overtime");
+		}
+		public boolean isOther(){
+				return type.equals("Other");
+		}		
 		public AccrualWarning getAccrualWarning(){
 				if(accrualWarning == null &&
 					 !id.equals("") &&
@@ -151,7 +218,6 @@ public class HourCode extends Type{
 				getAccrualWarning();
 				return accrualWarning != null;
 		}
-		@Override
 		public boolean equals(Object obj){
 				if(obj instanceof HourCode){
 						HourCode one =(HourCode)obj;
@@ -159,7 +225,6 @@ public class HourCode extends Type{
 				}
 				return false;				
 		}
-		@Override
 		public int hashCode(){
 				int seed = 29;
 				if(!id.equals("")){
@@ -194,14 +259,13 @@ public class HourCode extends Type{
 				return codeRef;
 		}
 		
-		@Override
 		public String doSelect(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select id,name,description,record_method,accrual_id,"+
-						" count_as_regular_pay,inactive,reg_default from hour_codes where id=? ";
+						" count_as_regular_pay,reg_default,type,inactive from hour_codes where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -219,8 +283,10 @@ public class HourCode extends Type{
 												rs.getString(4),
 												rs.getString(5),
 												rs.getString(6) != null,
-												rs.getString(7) != null,
-												rs.getString(8));
+												rs.getString(7),
+												rs.getString(8),
+												rs.getString(9) != null
+												);
 						}
 				}
 				catch(Exception ex){
@@ -232,13 +298,12 @@ public class HourCode extends Type{
 				}
 				return msg;
 		}
-		@Override
 		public String doSave(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " insert into hour_codes values(0,?,?,?,?, ?,?,?)";
+				String qq = " insert into hour_codes values(0,?,?,?,?, ?,?,?,?)";
 				if(name.equals("")){
 						msg = "Hour code name is required";
 						return msg;
@@ -301,13 +366,18 @@ public class HourCode extends Type{
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");
+						if(reg_default.equals(""))
+								reg_default = "1";
+						pstmt.setString(jj++, reg_default);
+						if(type.equals(""))
+								pstmt.setNull(jj++, Types.VARCHAR);
+						else
+								pstmt.setString(jj++, type);						
 						if(inactive.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");
-						if(reg_default.equals(""))
-								reg_default = "1";
-								pstmt.setString(jj++, reg_default);						
+
 				}
 				catch(Exception ex){
 						msg += " "+ex;
@@ -315,13 +385,13 @@ public class HourCode extends Type{
 				}
 				return msg;
 		}
-		@Override
+
 		public	String doUpdate(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,count_as_regular_pay=?, inactive=?,reg_default=? where id=?";
+				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,count_as_regular_pay=?, reg_default=?,type=?,inactive=? where id=?";
 				if(name.equals("")){
 						msg = "Hour code name is required";
 						return msg;
@@ -338,7 +408,7 @@ public class HourCode extends Type{
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						pstmt.setString(8, id);
+						pstmt.setString(9, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

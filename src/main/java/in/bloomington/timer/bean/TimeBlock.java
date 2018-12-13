@@ -394,6 +394,12 @@ public class TimeBlock extends Block{
 								return true;
 						}
 				}
+				else{ // update clock-in only
+						if(time_in_set && !time_out_set){
+								clock_in="y";
+								return true;
+						}
+				}
 				if((!time_in_set && time_out_set)) return false;
 				return ((time_in_set && time_out_set) || hours_set);
 		}

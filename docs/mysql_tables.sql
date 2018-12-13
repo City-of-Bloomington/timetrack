@@ -644,7 +644,7 @@ CREATE TABLE schedules (
 )engine=InnoDB;
 
 CREATE TABLE schedule_shifts (
-  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  id int unsigned NOT NULL AUTO_INCREMENT,
 	shedule_id int unsigned,
 	shift_id  int unsigned,
 	employee_id int unsigned,
@@ -686,7 +686,10 @@ alter table hour_code_conditions add foreign key(department_id) references depar
 alter table hour_code_conditions add foreign key(hour_code_id) references hour_codes(id);
 alter table hour_code_conditions add constraint unique_codes unique (hour_code_id,group_id,department_id,salary_group_id);
 
-alter table hour_codes add type enum("Regular","Used","Earned","Overtime","Unpaid");
+alter table hour_codes add type enum('Regular','Used','Earned','Overtime','Unpaid','Other');
+
+alter table hour_codes change column inactive inactive char(1) after type;
+
 
 
 

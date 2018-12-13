@@ -49,7 +49,10 @@
 				<label>Default Regular?:</label>
 				<s:radio name="hourcode.reg_default" value="%{hourcode.reg_default}" list="#{'0':'Yes','1':'No'}"/> (each salary group need only one default regular)
 			</div>
-
+			<div class="form-group">
+				<label>Type:</label>
+				<s:radio name="hourcode.type" value="%{hourcode.type}" list="#{'Regular':'Regular','Used':'Used','Earned':'Earned','Overtime':'Overtime','Unpaid':'Unpaid','Other':'Other'}"/> 
+			</div>			
 			<s:if test="hourcode.id != ''">
 				<div class="form-group">
 					<label>Inactive?:</label>
