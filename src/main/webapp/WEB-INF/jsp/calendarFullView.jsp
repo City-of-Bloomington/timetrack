@@ -1,4 +1,4 @@
-<div class="calendar view-only">
+<div class="calendar view-only <s:if test='hasJobTypes()'>mult-jobs</s:if>">
   <div class="daily-header">
     <div>Mon</div>
     <div>Tues</div>
@@ -60,7 +60,7 @@
             </s:if>
             <span><b><s:property value="timeInfo" /></b></span>
             <span><s:property value='job_name' /></span>
-						
+
 					</div>
         </s:if>
       </s:iterator>

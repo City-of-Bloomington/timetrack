@@ -1,4 +1,4 @@
-const timeClockForm = document.getElementById("form_id");
+const timeClockForm = document.querySelector(".time-clock-form");
 
 let clearFocusTimeClockInput = () => {
   let inputElement = document.getElementById("emp_id_code");
@@ -45,53 +45,55 @@ function showNextButton() {
   }
 }
 
-timeClockForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+if(timeClockForm){
+  timeClockForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  let request             = new XMLHttpRequest();
-  let url                 = APPLICATION_URL + "timeClock.action";
-  let timeClockFormData   = new FormData();
-  let action              = document.getElementById("form_id_action").value;
-  let timeClockTime       = document.getElementById("time_clock_id2").value;
-  let timeClockIdCodeVal  = document.getElementById("emp_id_code").value;
+    let request             = new XMLHttpRequest();
+    let url                 = APPLICATION_URL + "timeClock.action";
+    let timeClockFormData   = new FormData();
+    let action              = document.getElementById("form_id_action").value;
+    let timeClockTime       = document.getElementById("time_clock_id2").value;
+    let timeClockIdCodeVal  = document.getElementById("emp_id_code").value;
 
-  request.open("POST", url, true);
-  request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.open("POST", url, true);
+    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-  request.onreadystatechange = () => {
-    if (
-      request.readyState === 4 &&
-      request.status     === 200
-    ) {
-      let mainElement        = document.querySelector('main');
-      mainElement.innerHTML  = request.response;
+    request.onreadystatechange = () => {
+      if (
+        request.readyState === 4 &&
+        request.status     === 200
+      ) {
+        let mainElement        = document.querySelector('main');
+        mainElement.innerHTML  = request.response;
 
-      let timeClockWindowLocation = () => window.top.location = url;
-      let radioElmsLength = document.querySelectorAll('input[type=radio]').length;
+        let timeClockWindowLocation = () => window.top.location = url;
+        let radioElmsLength = document.querySelectorAll('input[type=radio]').length;
 
-      if(radioElmsLength >= 2) {
-        setTimeout(function(){timeClockWindowLocation()}, 10000);
-        showNextButton();
-      } else {
-        setTimeout(function(){timeClockWindowLocation()}, 10000);
+        if(radioElmsLength >= 2) {
+          setTimeout(function(){timeClockWindowLocation()}, 10000);
+          showNextButton();
+        } else {
+          setTimeout(function(){timeClockWindowLocation()}, 10000);
+        }
+
+        clearFocusTimeClockInput();
       }
+    };
 
-      clearFocusTimeClockInput();
-    }
-  };
+    timeClockFormData.append('action', action);
+    timeClockFormData.append('timeClock.time', timeClockTime);
+    timeClockFormData.append('timeClock.id_code', timeClockIdCodeVal);
 
-  timeClockFormData.append('action', action);
-  timeClockFormData.append('timeClock.time', timeClockTime);
-  timeClockFormData.append('timeClock.id_code', timeClockIdCodeVal);
+    // iterates over the formData
+    // for (let pair of timeClockFormData.entries()) {
+  //    console.log(pair[0]+ ', ' + pair[1]);
+    // }
 
-  // iterates over the formData
-  // for (let pair of timeClockFormData.entries()) {
-//    console.log(pair[0]+ ', ' + pair[1]);
-  // }
-
-  let queryString = new URLSearchParams(timeClockFormData).toString();
-  request.send(queryString);
-});
+    let queryString = new URLSearchParams(timeClockFormData).toString();
+    request.send(queryString);
+  });
+}
 
 function timeUpdate() {
   let btownTime    = moment().tz("America/Indiana/Indianapolis");
