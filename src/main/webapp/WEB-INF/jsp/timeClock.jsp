@@ -86,13 +86,11 @@
 			</s:if>
 
 			<s:else>
-
 				<script type="text/javascript">
 		    	setTimeout(function(){
 		    		window.top.location = "<s:property value='#application.url' />timeClock.action"
-		    	}, 3000); // wait 3 seconds
+		    	}, 10000);
 		    </script>
-
 		    <s:hidden name="timeClock.time" value="%{timeClock.time}" id="time_clock_id2" />
 				<s:textfield name="timeClock.id_code" size="10" maxlength="10" requiredLabel="true" required="true" id="emp_id_code" autofocus="autofocus" placeholder="Employee ID" />
 				<s:submit name="action" type="button" value="Submit" cssClass="button_link" />
@@ -102,163 +100,7 @@
 
 	<p class="testing"></p>
 	<p class="ip">IP Address: <s:property value="ipaddr" /></p>
-
-
 </div>
 
 <%@ include file="footer.jsp" %>
-<script type="text/javascript">
-	const timeClockForm 		= document.getElementById("form_id");
-
-	var inputElement = document.getElementById("emp_id_code");
-
-	if(inputElement != null || inputElement != undefined) {
-		inputElement.value = "";
-		inputElement.focus();
-		inputElement.addEventListener("blur", function(event){
-			if(inputElement.value.length == 0)
-				inputElement.focus();
-		});
-	}
-
-	timeClockForm.addEventListener("submit", function(e) {
-		// console.log("clicked!!");
-		// return false;
-
-		e.preventDefault();
-
-		const request = new XMLHttpRequest();
-    const url = APPLICATION_URL + "timeClock.action";
-
-    request.open("POST", url, true);
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    request.onreadystatechange = function () {
-      if (request.readyState === 4 && request.status === 200) {
-      	// document.body.innerHTML = request.response;
-      	timeClockIdCodeElem.value = "";
-      	document.querySelector('main').innerHTML = request.response;
-
-
-      	var processButton = document.querySelectorAll('#form_id_action')[0];
-				var radioElms 	  = document.querySelectorAll('input[type=radio]');
-				var radioCount    = radioElms.length;
-
-
-      	function showNextButton() {
-					function sendData() {
-				    var XHR = new XMLHttpRequest();
-				    var FD  = new FormData();
-
-				    XHR.addEventListener("error", function(event) {
-				      alert('Oops! Something went wrong, please try again.');
-				    });
-
-				    XHR.open("POST", "/timetrack/timeClock.action");
-				    XHR.send(FD);
-				  }
-
-					for (var i = 0; i < radioCount; i++) {
-			  		radioElms[i].onclick = function(){
-			  			processButton.classList.add("active");
-			  		};
-					}
-
-					processButton.onclick = function(e) {
-
-						var selectedJob = document.querySelectorAll('input[type=radio]:checked')[0];
-
-						if(!selectedJob){
-							e.preventDefault();
-							alert('Please select a job and try again.')
-						} else {
-							sendData();
-						}
-					}
-				}
-
-				if(radioCount >= 2) {
-					// alert("TimeClock has radios");
-					setTimeout(function(){
-						window.top.location = APPLICATION_URL + "timeClock.action"
-					}, 10000); // wait 10 seconds
-					showNextButton();
-				} else {
-					setTimeout(function(){
-						// alert('run the refresh');
-						window.top.location = APPLICATION_URL + "timeClock.action"
-					}, 3000); // wait 3 seconds
-				}
-
-
-      	var inputElement = document.getElementById("emp_id_code");
-				if(inputElement != null || inputElement != undefined) {
-					inputElement.value = "";
-					inputElement.focus();
-					inputElement.addEventListener("blur", function(event){
-						if(inputElement.value.length == 0)
-							inputElement.focus();
-					});
-				}
-
-        // console.log(request.response);
-      }
-    };
-
-    const timeClockFormData = new FormData();
-
-    var action   				    = document.getElementById("form_id_action").value;
-    // const action2 			    = document.getElementById("action2").value;
-    const timeClockTime     = document.getElementById("time_clock_id2").value;
-    let timeClockIdCodeVal   = document.getElementById("emp_id_code").value;
-    let timeClockIdCodeElem   = document.getElementById("emp_id_code");
-
-    timeClockFormData.append('action', action);
-    // timeClockFormData.append('action2', action2);
-    timeClockFormData.append('timeClock.time', timeClockTime);
-    timeClockFormData.append('timeClock.id_code', timeClockIdCodeVal);
-
-		// for (let pair of timeClockFormData.entries()) {
-  //   	console.log(pair[0]+ ', ' + pair[1]);
-		// }
-
-		const queryString = new URLSearchParams(timeClockFormData).toString()
-
-		// console.log(queryString);
-
-		request.send(queryString);
-
-
-	});
-
-	// console.log(timeClockForm);
-
-	function timeUpdate() {
-		var btownTime = moment().tz("America/Indiana/Indianapolis");
-		var now = moment();
-		var exp = moment(btownTime);
-		var bigTime = document.getElementsByClassName("time")[0];
-		var bigTimeAmPm = document.getElementsByClassName("a")[0];
-		var beforeNoon = btownTime.clone().hour(12).minute(0).second(0);
-		var isBeforeNoon = moment(btownTime).isBefore(beforeNoon);
-
-		if(bigTime != null || bigTime != undefined) {
-			bigTime.innerHTML = exp.format('h:mm');
-			bigTimeAmPm.innerHTML = exp.format('a').toUpperCase();
-			isBeforeNoon ? bigTimeAmPm.classList.add("am") : bigTimeAmPm.classList.add("pm");
-		}
-	}
-	setInterval(function() { timeUpdate(); }, 10);
-	timeUpdate();
-
-	function topTime() {
-		var btownTime = moment().tz("America/Indiana/Indianapolis");
-		var now = moment();
-		var exp = moment(btownTime);
-		var headingMetaElm = document.getElementById('meta');
-		var btownTime = moment().tz("America/Indiana/Indianapolis");
-		headingMetaElm.innerHTML = exp.format('MMMM Do YYYY, h:mm:ss a');
-	}
-	setInterval(function() { topTime(); }, 10);
-	topTime();
-</script>
+<script type="text/javascript" src="<s:property value='#application.url' />js/time-clock.js"></script>
