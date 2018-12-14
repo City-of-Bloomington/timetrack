@@ -148,7 +148,6 @@
 			</s:iterator>
 		</s:if>
 		<div class="approval-button-row">
-			<s:submit name="action" type="button" value="Submit" class="button"/>
 		</div>		
 	</s:if>
 </s:form>

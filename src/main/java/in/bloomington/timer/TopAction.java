@@ -244,7 +244,8 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				HttpServletRequest request = ServletActionContext.getRequest();				
 				String host_forward = request.getHeader("X-Forwarded-Host");
 				String host = request.getHeader("host");				
-				// String servlet_path = request.getServletPath();
+
+				// System.err.println(" host forward "+host_forward);				
 				if(host_forward != null){
 						if(host_forward.indexOf("/timetrack") == -1)
 								url = host_forward+"/timetrack/";

@@ -44,7 +44,7 @@ public class SearchEmployeeAction extends TopAction{
 												String emp_id = ones.get(0).getId();
 												try{
 														HttpServletResponse res = ServletActionContext.getResponse();
-														String str = url+"employee.action?id="+emp_id;
+														String str = "employee.action?id="+emp_id;
 														res.sendRedirect(str);
 														return super.execute();
 												}catch(Exception ex){

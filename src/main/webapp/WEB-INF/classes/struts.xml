@@ -37,11 +37,13 @@
 			<result name="login">/Login</result>	   
 		</action>
 
+		<!--
 		<action name="logout"
 						class="in.bloomington.timer.LogoutAction">
 			<result name="success">/WEB-INF/jsp/logoutPage.jsp</result>
 			<result name="error">/WEB-INF/jsp/logoutPage.jsp</result>
-		</action>		
+		</action>
+		-->
 		<action name="inform" 
 						class="in.bloomington.timer.InformAction" 
 						method="execute">

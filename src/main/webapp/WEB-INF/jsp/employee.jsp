@@ -141,6 +141,26 @@
 				<s:set var="jobTasksTitle" value="'Employee Jobs'" />
 				<%@ include file="jobTasks.jsp" %>
 			</s:if>
+			<s:if test="employee.canPayrollProcess()">
+				<s:set var="groupManagers" value="%{employee.processors}" />
+				<s:set var="groupManagersTitle" value="'Payroll Approver of Groups '" />
+				<%@ include file="groupManagers.jsp" %>
+			</s:if>			
+			<s:if test="employee.canApprove()">
+				<s:set var="groupManagers" value="%{employee.approvers}" />
+				<s:set var="groupManagersTitle" value="'Approver of Groups '" />
+				<%@ include file="groupManagers.jsp" %>
+			</s:if>
+			<s:if test="employee.canReview()">
+				<s:set var="groupManagers" value="%{employee.reviewers}" />
+				<s:set var="groupManagersTitle" value="'Review of Groups'" />
+				<%@ include file="groupManagers.jsp" %>
+			</s:if>
+			<s:if test="employee.canMaintain()">
+				<s:set var="groupManagers" value="%{employee.enterors}" />
+				<s:set var="groupManagersTitle" value="'Maintain of Groups'" />
+				<%@ include file="groupManagers.jsp" %>
+			</s:if>			
 		</s:if>
 	</s:else>
 </div>

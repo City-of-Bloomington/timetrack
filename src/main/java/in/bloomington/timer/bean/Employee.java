@@ -440,7 +440,18 @@ public class Employee implements Serializable{
 				}
 				return approvers != null && approvers.size() > 0;
 		}
-		
+		public List<GroupManager> getApprovers(){
+				return approvers;
+		}
+		public List<GroupManager> getProcessors(){
+				return processors;
+		}
+		public List<GroupManager> getReviewers(){
+				return reviewers;
+		}
+		public List<GroupManager> getEnterors(){
+				return enterors;
+		}		
 		public boolean canPayrollProcess(){
 				if(processors == null){
 						GroupManagerList gml = new GroupManagerList(id);

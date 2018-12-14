@@ -29,6 +29,19 @@ public class TimeClockAction extends TopAction{
 		String document_id="", date="";
 		String ip="";
 		List<TimeBlock> timeBlocks = null;
+		private static final String[] IP_HEADER_CANDIDATES = { 
+				"X-Forwarded-For",
+				"Proxy-Client-IP",
+				"WL-Proxy-Client-IP",
+				"HTTP_X_FORWARDED_FOR",
+				"HTTP_X_FORWARDED",
+				"HTTP_X_CLUSTER_CLIENT_IP",
+				"HTTP_CLIENT_IP",
+				"HTTP_FORWARDED_FOR",
+				"HTTP_FORWARDED",
+				"HTTP_VIA",
+				"REMOTE_ADDR" };
+		
 		//
 		public String execute(){
 				String ret = SUCCESS;
@@ -36,12 +49,29 @@ public class TimeClockAction extends TopAction{
 				prepareIps();
 				try{
 						HttpServletRequest req = ServletActionContext.getRequest();
-						ip = req.getRemoteAddr();
+						Enumeration<String> headerNames = req.getHeaderNames();
+						while (headerNames.hasMoreElements()) {
+								String headerName = headerNames.nextElement();
+								System.err.println("Header Name: " + headerName);
+								String headerValue = req.getHeader(headerName);
+								System.err.println(headerValue);
+						}							
+						// ip = req.getRemoteAddr();
+						for (String header : IP_HEADER_CANDIDATES) {
+								String ip2 = req.getHeader(header);
+								if (ip2 != null && ip2.length() != 0 && !"unknown".equalsIgnoreCase(ip2)) {
+										 ip = ip2;
+								}
+						}
+						if(ip.equals("")){
+								ip = req.getRemoteAddr();
+						}
 						if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
 								InetAddress inetAddress = InetAddress.getLocalHost();
 								String ipAddress = inetAddress.getHostAddress();
 								ip = ipAddress;
 						}
+						// System.err.println(" ip "+ip);
 				}catch(Exception ex){
 						logger.error(ex);
 				}

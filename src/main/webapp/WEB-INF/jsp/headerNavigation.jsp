@@ -43,7 +43,7 @@
             <s:if test="#session.user.isAdmin()">
               <a href="<s:property value='#application.url'/>settings.action">Settings</a>
             </s:if>
-            <a href="<s:property value='#application.url'/>logout.action">Logout</a>
+            <a href="<s:property value='#application.url'/>Logout">Logout</a>
           </div>
         </nav>
       </s:if>

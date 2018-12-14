@@ -31,6 +31,10 @@ public class DataEntryAction extends TopAction{
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
+		List<String> pages = null;
+		int page_size = 20;
+		int page_number = 1;
+		int total_records = 0;
 		Group group = null;
 		String[] document_ids = null;
 		public String execute(){
@@ -243,12 +247,15 @@ public class DataEntryAction extends TopAction{
 										dl.setGroup_id(one.getId());										
 								}
 						}
+						//dl.setPageSize(page_size);
+						//dl.setPageNumber(page_number);
 						String back = dl.find();
 						if(back.equals("")){
 								List<Document> ones = dl.getDocuments();
 								if(ones != null && ones.size() > 0){
 										documents = ones;
 								}
+								total_records = dl.getTotalRecords();
 						}
 				}
 				return documents;
@@ -281,7 +288,35 @@ public class DataEntryAction extends TopAction{
 				getNonDocEmps();
 				return nonDocEmps != null && nonDocEmps.size() > 0; 
 		}
-
+		public void setPageNumber(Integer val){
+				if(val != null)
+						page_number = val;
+		}
+		public void setPageSize(Integer val){
+				if(val != null)
+						page_size = val;
+		}
+		public boolean hasPages(){
+				getPages();
+				return pages != null && pages.size() > 0;
+		}
+		public List<String> getPages(){
+				if(pages == null){
+						int page_count = 0;
+						if(total_records > page_size){
+								page_count = total_records / page_size;
+								if(total_records % page_size > 0) page_count++;
+						}
+						// if one page, we do not bother
+						if(page_count > 1){
+								pages = new ArrayList<>();
+								for(int i=1;i<=page_count;i++){
+										pages.add(""+i);
+								}
+						}
+				}
+				return pages;
+		}
 }
 
 

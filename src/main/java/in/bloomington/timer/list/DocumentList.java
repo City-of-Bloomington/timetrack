@@ -26,6 +26,9 @@ public class DocumentList{
 				date="", job_id="";
 		Set<String> group_id_set = new HashSet<>();
 		String group_ids="";// for multiple groups
+		int page_size = 0;
+		int page_number = 1;
+		int total_records = 0;
 		List<Document> documents = null;
     public DocumentList(){
     }
@@ -65,6 +68,17 @@ public class DocumentList{
 		public List<Document> getDocuments(){
 				return documents;
 		}
+		public void setPageSize(Integer val){
+				if(val != null)
+						page_size = val;
+		}
+		public void setPageNumber(Integer val){
+				if(val != null)
+						page_number = val;
+		}
+		public int getTotalRecords(){
+				return total_records;
+		}
     //
     // getters
     //
@@ -73,6 +87,7 @@ public class DocumentList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
+				String qc = "select count(*) from time_documents d, employees e ";				
 				String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e ";
 				String qw = "d.employee_id=e.id ";
 				if(!employee_id.equals("")){
@@ -89,20 +104,24 @@ public class DocumentList{
 				}				
 				if(!date.equals("")){
 						qq += " join pay_periods pp on pp.id=d.pay_period_id ";
+						qc += " join pay_periods pp on pp.id=d.pay_period_id ";
 						if(!qw.equals("")) qw += " and ";						
 						qw += "pp.start_date <=? and pp.end_date >= ?";						
 				}
 				if(!department_id.equals("")){
 						qq += ", groups g, group_employees ge ";
+						qc += ", groups g, group_employees ge ";						
 						if(!qw.equals("")) qw += " and ";						
 						qw += "g.department_id=? and g.id=ge.group_id and ge.employee_id=d.employee_id ";
 				}
 				if(!group_ids.equals("")){
 						qq += ", jobs j";
+						qc += ", jobs j";						
 						if(!qw.equals("")) qw += " and ";									
 						qw += "d.job_id=j.id and j.group_id in ("+group_ids+")";
 				}
 				if(!qw.equals("")){
+						qc += " where "+qw;
 						qq += " where "+qw;
 				}
 				qq += " order by e.last_name,e.first_name ";
@@ -114,7 +133,7 @@ public class DocumentList{
 				}
 				logger.debug(qq);
 				try{
-						pstmt = con.prepareStatement(qq);
+						pstmt = con.prepareStatement(qc);
 						int jj=1;
 						if(!employee_id.equals("")){
 								pstmt.setString(jj++, employee_id);
@@ -134,18 +153,51 @@ public class DocumentList{
 								pstmt.setString(jj++, department_id);
 						}
 						rs = pstmt.executeQuery();
-						while(rs.next()){
-								if(documents == null)
-										documents = new ArrayList<>();
-							 Document one = new Document(
-																					 rs.getString(1),
-																					 rs.getString(2),
-																					 rs.getString(3),
-																					 rs.getString(4),
-																					 rs.getString(5),
-																					 rs.getString(6));
-							 if(!documents.contains(one))
-									 documents.add(one);
+						if(rs.next()){
+								total_records = rs.getInt(1);
+						}
+						Helper.databaseDisconnect(pstmt, rs);
+						
+						if(total_records > 0){
+								if(page_size > 0){
+										int offset = (page_number - 1) * page_size;
+										if(total_records > page_size){
+												qq += " limit "+offset+", "+page_size;
+										}
+								}
+								pstmt = con.prepareStatement(qq);
+								jj=1;
+								if(!employee_id.equals("")){
+										pstmt.setString(jj++, employee_id);
+								}
+								if(!pay_period_id.equals("")){
+										pstmt.setString(jj++, pay_period_id);
+								}
+								if(!job_id.equals("")){
+										pstmt.setString(jj++, job_id);
+								}						
+								if(!date.equals("")){
+										java.util.Date date_tmp = df.parse(date);
+										pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+										pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+								}
+								if(!department_id.equals("")){
+										pstmt.setString(jj++, department_id);
+								}
+								rs = pstmt.executeQuery();						
+								while(rs.next()){
+										if(documents == null)
+												documents = new ArrayList<>();
+										Document one = new Document(
+																								rs.getString(1),
+																								rs.getString(2),
+																								rs.getString(3),
+																								rs.getString(4),
+																								rs.getString(5),
+																								rs.getString(6));
+										if(!documents.contains(one))
+												documents.add(one);
+								}
 						}
 				}
 				catch(Exception ex){

@@ -46,7 +46,7 @@ public class SearchJobAction extends TopAction{
 												String job_id = ones.get(0).getId();
 												try{
 														HttpServletResponse res = ServletActionContext.getResponse();
-														String str = url+"jobTask.action?id="+job_id;
+														String str = "jobTask.action?id="+job_id;
 														res.sendRedirect(str);
 														return super.execute();
 												}catch(Exception ex){

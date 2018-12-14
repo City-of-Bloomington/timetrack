@@ -40,9 +40,22 @@ public class Login extends HttpServlet{
 						principal = (AttributePrincipal) req.getUserPrincipal();
 						username = principal.getName();
 				}
+				/*
+				Enumeration<String> headerNames = req.getHeaderNames();
+				while (headerNames.hasMoreElements()) {
+						String headerName = headerNames.nextElement();
+						System.err.println("Header Name: <em>" + headerName);
+						String headerValue = req.getHeader(headerName);
+						System.err.println(headerValue);
+				}
+				*/
+				/**
+					 <VirtualHost *:80>
+					 Redirect / https://tomcat2.bloomington.in.gov/
+					 </VirtualHost>
+				*/
 				String host_forward = req.getHeader("X-Forwarded-Host");
 				String host = req.getHeader("host");	
-				
 				Enumeration<String> values = req.getParameterNames();
 				while (values.hasMoreElements()) {
 						name = values.nextElement().trim();

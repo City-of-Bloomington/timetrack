@@ -678,7 +678,9 @@ CREATE TABLE schedule_shifts (
 alter table hour_code_conditions drop foreign key hour_code_conditions_ibfk_1;
 alter table hour_code_conditions drop foreign key hour_code_conditions_ibfk_2;
 alter table hour_code_conditions drop foreign key hour_code_conditions_ibfk_3;
+
 alter table hour_code_conditions drop index unique_codes;
+
 alter table hour_code_conditions add group_id int unsigned after salary_group_id ;
 alter table hour_code_conditions add foreign key(salary_group_id) references salary_groups(id);
 alter table hour_code_conditions add foreign key(group_id) references groups(id);

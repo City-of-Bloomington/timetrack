@@ -1,4 +1,4 @@
-<%@  include file="header.jsp" %>
+<%@  include file="headerMin.jsp" %>
   <div class="logout">
     <h1>Time Track </h1>
 

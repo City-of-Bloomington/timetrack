@@ -239,6 +239,9 @@ public class HourCode{
 				getCodeRef();
 				return codeRef != null;
 		}
+    public String toString(){
+				return name;
+    }		
 		//
 		// we need this to get the New World reference hour_codes
 		// for export purpose
@@ -265,7 +268,8 @@ public class HourCode{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select id,name,description,record_method,accrual_id,"+
-						" count_as_regular_pay,reg_default,type,inactive from hour_codes where id=? ";
+						" count_as_regular_pay,reg_default,type,inactive "+
+						" from hour_codes where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
