@@ -22,7 +22,6 @@ public class Shift{
 		String id="", name="", inactive="";
 		int start_hour=8, start_minute = 0, duration = 480; // minutes = 8 hrs
 		int start_minute_window = 0, minute_rounding = 0;
-		String prefered_earn_time = "";
 
     public Shift(){
 
@@ -38,8 +37,7 @@ public class Shift{
 								 int val5,
 								 int val6,
 								 int val7,
-								 String val8,
-								 boolean val9
+								 boolean val8
 								 ){
 				setId(val);
 				setName(val2);
@@ -48,8 +46,7 @@ public class Shift{
 				setDuration(val5);
 				setStartMinuteWindow(val6);
 				setMinuteRounding(val7);
-				setPreferedEarnTime(val8);
-				setInactive(val9);
+				setInactive(val8);
 
     }
 		
@@ -106,21 +103,6 @@ public class Shift{
     public int getMinuteRounding(){
 				return minute_rounding;
     }
-		public String getPreferedEarnTime(){
-				return prefered_earn_time;
-		}
-		public String getPreferedEarnTimeName(){
-				String ret = "";
-				if(!prefered_earn_time.equals("")){
-						if(prefered_earn_time.startsWith("Comp")){
-								ret = "Comp Time";
-						}
-						else{
-								ret = "Over Time";
-						}
-				}
-				return ret;
-		}		
     public boolean getInactive(){
 				return !inactive.equals("");
     }
@@ -223,10 +205,6 @@ public class Shift{
 				if(val != null)
 						minute_rounding = val.intValue();
     }
-		public void setPreferedEarnTime(String val){
-				if(val != null)
-						prefered_earn_time = val;
-		}
     public void setInactive(boolean val){
 				if(val)
 						inactive = "y";
@@ -240,7 +218,7 @@ public class Shift{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String qq = "select id,name,start_hour,start_minute,duration,"+
-						" start_minute_window,minute_rounding, prefered_earn_time,"+
+						" start_minute_window,minute_rounding,"+
 						" inactive "+
 						" from shifts where id=?";
 				con = UnoConnect.getConnection();
@@ -260,8 +238,7 @@ public class Shift{
 								duration = rs.getInt(5);
 								start_minute_window = rs.getInt(6);
 								minute_rounding = rs.getInt(7);
-								setPreferedEarnTime(rs.getString(8));
-								setInactive(rs.getString(9) != null);
+								setInactive(rs.getString(8) != null);
 						}
 						else{
 								back ="Record "+id+" Not found";
@@ -282,7 +259,7 @@ public class Shift{
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
-				String qq = " insert into shifts values(0,?,?,?,?, ?,?,?,null)";
+				String qq = " insert into shifts values(0,?,?,?,?, ?,?,null)";
 				if(name.equals("")){
 						msg = "Name is required";
 						return msg;
@@ -301,10 +278,6 @@ public class Shift{
 						pstmt.setInt(4, duration);
 						pstmt.setInt(5, start_minute_window);
 						pstmt.setInt(6, minute_rounding);
-						if(prefered_earn_time.equals(""))
-								pstmt.setNull(7, Types.VARCHAR);
-						else
-								pstmt.setString(7, prefered_earn_time);
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
@@ -331,7 +304,7 @@ public class Shift{
 				String msg="", str="";
 				String qq = " update shifts set name=?, start_hour=?,start_minute=?,"+
 						"duration=?,start_minute_window=?,minute_rounding=?,"+
-						"prefered_earn_time=?,inactive=? where id=?";
+						"inactive=? where id=?";
 				if(name.equals("")){
 						msg = "Earn code name is required";
 						return msg;
@@ -349,16 +322,12 @@ public class Shift{
 						pstmt.setInt(4, duration);
 						pstmt.setInt(5, start_minute_window);
 						pstmt.setInt(6, minute_rounding);
-						if(prefered_earn_time.equals(""))
-								pstmt.setNull(7, Types.VARCHAR);
-						else
-								pstmt.setString(7, prefered_earn_time);						
 						if(inactive.equals("")){
-								pstmt.setNull(8, Types.CHAR);
+								pstmt.setNull(7, Types.CHAR);
 						}
 						else
-								pstmt.setString(8, "y");								
-						pstmt.setString(9, id);
+								pstmt.setString(7, "y");								
+						pstmt.setString(8, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

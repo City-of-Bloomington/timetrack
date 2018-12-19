@@ -24,7 +24,6 @@
 			<li>Duration is total shift time in minutes, for example 8 hour shift is 480 minutes </li>
 			<li>Start minutes window is 0 for no window, or 15 for 15 minutes window </li>
 			<li>Time rounding is the multiple of minutes (0 for no rounding), 15 for rounding to 0, 15, 30, 45 etc</li>
-			<li>Prefered Earn Time, this is the compensatory method either 'Over Time' or 'Comp Time' if hours worked exceeds shift duration </li>
 		</ul>
 		<div class="width-one-half">
 			<s:if test="shift.id != ''">
@@ -59,10 +58,6 @@
 				<label>Time Rounding (minutes) </label>
 				<s:textfield name="shift.minuteRounding" value="%{shift.minuteRounding}" size="2" maxlength="2" />
 			</div>			
-			<div class="form-group">
-				<label>Prefered Earn Time </label>
-				<s:radio name="shift.preferedEarnTime" value="shift.preferedEarnTime" list="#{'CompTime':'Comp Time','OverTime':'Over Time'}" />
-			</div>
 			<div class="form-group">
 				<label>Inactive?</label>
 				<s:checkbox name="shift.inactive" value="%{shift.inactive}" fieldValue="true" />Yes

@@ -26,6 +26,8 @@ public class HourCodeList{
 		String employee_id = "", accrual_id="", group_id="";
 		boolean active_only = false , default_regular_only = false;
 		boolean current_only = false, related_to_accruals_only=false;
+		String type="";
+		boolean allEarnTypes = false;
     public HourCodeList(){
     }
     public HourCodeList(String val, String val2){
@@ -55,7 +57,14 @@ public class HourCodeList{
     public void setGroup_id(String val){
 				if(val != null && !val.equals("-1"))
 						group_id = val;
-    }		
+    }
+    public void setType(String val){
+				if(val != null && !val.equals("-1"))
+						type = val;
+    }
+		public void setEarnTypes(){
+				allEarnTypes = true;
+		}
 		public void setActiveOnly(){
 				active_only = true;
 		}
@@ -231,7 +240,15 @@ public class HourCodeList{
 						if(!accrual_id.equals("")){
 								if(!qw.equals("")) qw += " and "; 
 								qw += " e.accrual_id = ?  ";
-						}						
+						}
+						if(!type.equals("")){
+								if(!qw.equals("")) qw += " and "; 
+								qw += " e.type = ?  ";
+						}
+						if(allEarnTypes){
+								if(!qw.equals("")) qw += " and "; 
+								qw += " (e.type = 'Earned' or e.type ='Overtime')  ";
+						}
 						if(default_regular_only){
 								if(!qw.equals("")) qw += " and "; 
 								qw += " e.reg_default=0 "; // everything else is 1
@@ -249,7 +266,10 @@ public class HourCodeList{
 						}
 						if(!accrual_id.equals("")){
 								pstmt.setString(jj++, accrual_id);
-						}									
+						}
+						if(!type.equals("")){
+								pstmt.setString(jj++, type);
+						}
 						rs = pstmt.executeQuery();
 						hourCodes = new ArrayList<>();
 						while(rs.next()){

@@ -35,6 +35,7 @@ public class TimeBlockList{
 				clockInOnly = false, hasClockInAndOut = false;
 		double total_hours = 0.0, week1_flsa=0.0, week2_flsa=0.0;
 		double week1Total = 0, week2Total = 0;
+		String duration = "";
 		List<TimeBlock> timeBlocks = null;
 		Set<JobType> jobTypeSet = new HashSet<>();
 		Hashtable<Integer, List<TimeBlock>> blocks = new Hashtable<>();
@@ -97,6 +98,11 @@ public class TimeBlockList{
     public void setCode2(String val){
 				if(val != null)
 						code2 = val;
+    }
+		// hours duration for clock-in, clock-out 
+    public void setDuration(String val){
+				if(val != null)
+						duration = val;
     }		
 		public String getEmployee_id(){
 				return employee_id;
@@ -273,10 +279,12 @@ public class TimeBlockList{
 				}								
 				return jobNames;
 		}
+		/**
+			 create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    date_format(t.date,'%m/%d/%Y') date_formatted,                                  t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               c.accrual_id accrual_id,                                                        j.id job_id,                                                                    t.date date,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id                                                       from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id ;			 
+
+		 */
     //
-    // getters
-    //
-		public String find(){
+		public String findUsingJoin(){
 
 				prepareBlocks();
 				prepareHolidays();
@@ -502,6 +510,232 @@ public class TimeBlockList{
 				return msg;
 		}
 		/**
+		 * find using view
+		 *
+				select time_block_id,                                                           document_id,                                                                    hour_code_id,                                                                   date_formatted,                                                                 begin_hour,                                                                     begin_minute,                                                                   end_hour,                                                                       end_minute,                                                                      hours,                                                                         clock_in,                                                                       clock_out,                                                                       inactive,                                                                       order_id,                                                                       code_name,                                                                      code_description,                                                              nw_code_name,                                                                   job_name,                                                                       accrual_id,                                                                     job_id                                                                          from time_blocks_view v, department_employees de                                where inactive is null and de.employee_id=v.employee_id and de.department_id=1 
+		 
+		 */
+		public String find(){
+
+				prepareBlocks();
+				prepareHolidays();
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "select time_block_id,"+
+						"document_id,"+
+						"hour_code_id,"+
+						"date_formatted,"+
+						"begin_hour,"+
+						"begin_minute,"+
+						"end_hour,"+
+						"end_minute,"+
+						"hours,"+
+						"clock_in,"+
+						"clock_out,"+
+						"inactive,"+
+						"order_id,"+
+						"code_name,"+
+						"code_description,"+
+						"nw_code_name,"+
+						"job_name,"+
+						"accrual_id,"+
+						"job_id "+
+						// skip pay_period_id
+						// skip employee_id
+						// skip date
+						"from time_blocks_view v ";
+				String qw = "";
+				// ToDo
+				if(!department_id.equals("")){
+						qq += ", department_employees de ";
+						if(!qw.equals("")) qw += " and ";								
+						qw += "  de.employee_id=v.employee_id and de.department_id=? ";
+				}
+				if(!pay_period_id.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += "pay_period_id=? ";
+				}
+				if(!document_id.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += "document_id=? ";
+				}				
+				if(!employee_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "employee_id=? ";
+				}
+				if(!job_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "job_id=? ";
+				}				
+				if(!date_from.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "date >= ? ";
+				}
+				if(!date_to.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "date <= ? ";
+				}
+				if(!date.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "date = ? ";
+				}
+				if(!code.equals("") && !code2.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "(code_name like ? or code_name like ?)";
+				}
+				else if(!code.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "code_name like ? ";
+				}
+				if(clockInOnly){
+						if(!qw.equals("")) qw += " and ";
+						qw += " clock_in is not null and clock_out is null ";
+				}
+				else if(hasClockInAndOut){
+						if(!qw.equals("")) qw += " and ";
+						qw += " clock_in is not null and clock_out is not null ";
+				}
+				if(active_only){
+						if(!qw.equals("")) qw += " and ";
+						qw += " inactive is null ";
+				}
+				if(!qw.equals("")){
+						qq += " where "+qw;
+				}
+				qq += " order by date, begin_hour ";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						if(!department_id.equals("")){
+								pstmt.setString(jj++, department_id);
+						}										
+						if(!pay_period_id.equals("")){
+								pstmt.setString(jj++, pay_period_id);
+						}
+						if(!document_id.equals("")){
+								pstmt.setString(jj++, document_id);
+						}						
+						if(!employee_id.equals("")){
+								pstmt.setString(jj++, employee_id);
+						}
+						if(!job_id.equals("")){
+								pstmt.setString(jj++, job_id);
+						}						
+						if(!date_from.equals("")){
+								java.util.Date date_tmp = df.parse(date_from);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						}
+						if(!date_to.equals("")){
+								java.util.Date date_tmp = df.parse(date_to);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						}
+						if(!date.equals("")){
+								java.util.Date date_tmp = df.parse(date);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						}
+						if(!code.equals("") && !code2.equals("")){
+								pstmt.setString(jj++, code);
+								pstmt.setString(jj++, code2);								
+						}
+						else if(!code.equals("")){
+								pstmt.setString(jj++, code);
+						}						
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								double hrs = rs.getDouble(9);
+								int order_id = rs.getInt(13); // 15
+								int hr_code_id = rs.getInt(3);
+								String hr_code = rs.getString(14); 
+								String hr_code_desc = rs.getString(15); 
+								String job_name = rs.getString(17); // job name
+								String job_id = rs.getString(19);
+								String related_accrual_id = "";
+								str = rs.getString(18);
+								if(str != null && !str.equals("")){
+										related_accrual_id = str;
+								}
+								String date = rs.getString(4);
+								boolean isHoliday = isHoliday(date);
+								String holidayName = "";
+								if(isHoliday){
+										holidayName = getHolidayName(date);
+								}
+								if(hr_code_desc == null) hr_code_desc = "";
+								if(hr_code != null){
+										if(hr_code.indexOf("ONCALL") > -1){ // oncall35 id=17
+												hrs = 1.0;
+										}
+										else if(hr_code.indexOf("CO") > -1){ // Call Out id=16
+												if(hrs < 3.) hrs = 3;
+										}
+								}								
+								if(!dailyOnly){
+										if(timeBlocks == null)
+												timeBlocks = new ArrayList<>();
+										TimeBlock one =
+												new TimeBlock(rs.getString(1),
+																			rs.getString(2),
+																			rs.getString(3),
+																			rs.getString(4),
+																			rs.getInt(5),
+																			
+																			rs.getInt(6),
+																			rs.getInt(7),
+																			rs.getInt(8),
+																			hrs,
+																			rs.getString(10),
+																			
+																			rs.getString(11),
+																			isHoliday,
+																			holidayName,
+																			rs.getString(12) != null,
+																			rs.getInt(13),
+																			
+																			hr_code,
+																			rs.getString(15),
+																			rs.getString(16), 
+																			job_name,
+																			job_id 
+																			);
+										timeBlocks.add(one);
+										addToBlocks(order_id, one);
+										if(!related_accrual_id.equals("")){
+												addToUsedAccruals(order_id, hr_code_id, hrs);
+										}
+								}
+								if(hr_code.toLowerCase().indexOf("reg") > -1){
+										if(order_id < 7)
+												week1_flsa += hrs;
+										else
+												week2_flsa += hrs;
+								}
+								hr_code += ": "+hr_code_desc;
+								addToHourCodeTotals(order_id, hr_code_id, hr_code, hrs);
+								total_hours += hrs;
+								JobType jtype = new JobType(job_id, job_name);
+								addToDaily(jtype, order_id, hrs, hr_code);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+				}
+				return msg;
+		}		
+		
+		/**
 		 * this method is needed for employee with multiple jobs and find out
 		 * if they have clocked-in already but no clocked-out
 		 *
@@ -520,7 +754,7 @@ public class TimeBlockList{
 						" where "+
 						" t.clock_in is not null and t.clock_out is null "+
 						" and t.inactive is null "+
-						" and t.date = ? "+
+						" and (t.date = ? or t.date = ?)"+
 						" and d.pay_period_id=? "+
 						" and d.employee_id=? ";
 				con = UnoConnect.getConnection();
@@ -535,8 +769,11 @@ public class TimeBlockList{
 						String date = Helper.getToday();
 						java.util.Date date_tmp = df.parse(date);
 						pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
-						pstmt.setString(2, pay_period_id);
-						pstmt.setString(3, employee_id);
+						String date2 = Helper.getYesterday();
+						date_tmp = df.parse(date2);
+						pstmt.setDate(2, new java.sql.Date(date_tmp.getTime()));						
+						pstmt.setString(3, pay_period_id);
+						pstmt.setString(4, employee_id);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
 								document_id = rs.getString(1); 
@@ -552,10 +789,148 @@ public class TimeBlockList{
 				return msg;
 		}
 		/**
-			 select t.hour_code_id, sum(t.hours)                                             from time_blocks t,time_documents d                                             where t.document_id=d.id and t.inactive is null and                             t.date >= '2018-08-27' and d.employee_id=10                                      and t.date <= (select end_date from pay_periods p,time_documents d              where p.id=d.pay_period_id and d.id=310) and t.hour_code_id in                   (select id from hour_codes where accrual_id is not null)                        group by t.hour_code_id;
-			 
- 
-		 */
+		 * find time blocks for clock-in only
+		 * in today or yesterday with time duration of 12 hrs
+				select t.id,t.document_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.clock_in,t.clock_out,((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) tdif  from time_blocks t,time_documents d,pay_periods p                        where t.document_id=d.id and d.pay_period_id=p.id and d.id=1719                  and p.id = 547                                                                  and t.date >= '2018-12-16' and t.date <= '2018-12-17'                           and ((((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= 12.0                                                         and ((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0.) or                                                          (((hour(current_time()) + 12 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= 12.0                                                          and ((hour(current_time()) + 12+ minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0.) or                                                     (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= 12.0                                                           and ((hour(current_time()) + 24+ minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0.))                                                       and t.clock_in is not null and t.clock_out is null                              and t.inactive is null 
+				
+		 
+		 */ 
+		public String findTimeBlocksForClockIn(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg = "";
+				String qq = "select t.id,"+
+						" t.document_id,"+
+						"t.hour_code_id,"+
+						"date_format(t.date,'%m/%d/%Y'),"+
+						"t.begin_hour,"+
+						
+						"t.begin_minute,"+
+						"t.end_hour,"+
+						"t.end_minute,"+
+						"t.hours,"+
+						"t.clock_in,"+
+						
+						"t.clock_out"+
+							
+						" from time_blocks t,time_documents d,pay_periods p ";
+				String qw = " t.document_id=d.id and d.pay_period_id=p.id ";
+				if(!pay_period_id.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += "d.pay_period_id=? ";
+				}
+				if(!document_id.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += "t.document_id=? ";
+				}				
+				if(!employee_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "d.employee_id=? ";
+				}
+				if(!job_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "d.job_id=? ";
+				}				
+				if(!date_from.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "t.date >= ? ";
+				}
+				if(!date_to.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "t.date <= ? ";
+				}
+				if(clockInOnly){
+						if(!qw.equals("")) qw += " and ";
+						qw += " t.clock_in is not null and t.clock_out is null ";
+				}
+				if(!duration.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += " ((((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= ? "+
+								" and ((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0)  or "+
+								" (((hour(current_time()) + 12 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= ? "+
+								" and ((hour(current_time()) + 12 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0) or "+
+								" (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= ? "+
+								" and ((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0)) ";	
+				}
+				if(active_only){
+						if(!qw.equals("")) qw += " and ";
+						qw += " t.inactive is null ";
+				}
+				if(!qw.equals("")){
+						qq += " where "+qw;
+				}
+				// qq += " order by t.date, t.begin_hour ";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						if(!pay_period_id.equals("")){
+								pstmt.setString(jj++, pay_period_id);
+						}
+						if(!document_id.equals("")){
+								pstmt.setString(jj++, document_id);
+						}						
+						if(!employee_id.equals("")){
+								pstmt.setString(jj++, employee_id);
+						}
+						if(!job_id.equals("")){
+								pstmt.setString(jj++, job_id);
+						}						
+						if(!date_from.equals("")){
+								java.util.Date date_tmp = df.parse(date_from);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						}
+						if(!date_to.equals("")){
+								java.util.Date date_tmp = df.parse(date_to);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						}
+						if(!duration.equals("")){
+								pstmt.setString(jj++, duration);
+								pstmt.setString(jj++, duration);
+								pstmt.setString(jj++, duration);
+						}
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								if(timeBlocks == null)
+										timeBlocks = new ArrayList<>();
+								TimeBlock one =
+										new TimeBlock(rs.getString(1),
+																	rs.getString(2),
+																	rs.getString(3),
+																	rs.getString(4),
+																	rs.getInt(5),
+																	
+																	rs.getInt(6),
+																	rs.getInt(7),
+																	rs.getInt(8),
+																	rs.getDouble(9),
+																	rs.getString(10),
+																			
+																	rs.getString(11)
+																	);
+								if(!timeBlocks.contains(one)){
+										timeBlocks.add(one);
+								}
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+				}
+				return msg;
+				
+		}
+		//
 		public String findUsedAccruals(){
 
 				prepareBlocks();
@@ -687,41 +1062,7 @@ public class TimeBlockList{
 						usedWeeklyAccruals.put(week_id, map);		
 				}
 		}
-		/*
-		void addToDaily(String job_name, int order_id, double hrs, String hr_code){
-				double total = 0.;
-				if(daily.containsKey(job_name)){
-						Map<Integer, Double> map = daily.get(job_name);
-						// leaving space for total at index 7
-						if(order_id > 6) order_id = order_id + 1;
-						if(map.containsKey(order_id)){
-								total = map.get(order_id);
-								total += hrs;
-								double week_total = 0;
-								if(hr_code.indexOf("ONCALL") == -1){
-										if(order_id < 7){
-												week_total = map.get(7)+hrs; // total week1
-												map.put(7, week_total);
-												week1Total = week_total;
-										}
-										else{
-												week_total = map.get(15)+hrs; // total week2
-												map.put(15, week_total);
-												week2Total = week_total;
-										}
-								}
-						}
-						map.put(order_id, total);
-						daily.put(job_name, map);
-						
-				}
-				else{ // shis is not needed
-						Map<Integer, Double> map = new TreeMap<>();
-						map.put(order_id, hrs);
-						daily.put(job_name, map);												
-				}
-		}
-		*/
+		//
 		void addToDaily(JobType jtype, int order_id, double hrs, String hr_code){
 				double total = 0.;
 				try{

@@ -21,9 +21,12 @@
 
 			<div class="form-group">
 				<label>Code</label>
-				<s:select name="codeRef.code_id" value="%{codeRef.code_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Hour Code" />
+				<s:select name="codeRef.code_id" value="%{codeRef.code_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Hour Code" onchange="setCodeText(this)" />
 			</div>
-
+			<div class="form-group">
+				<label>Modified Code</label>
+				<s:textfield name="codeRef.code" value="%{codeRef.code}" id="code_id_name" />
+			</div>
 			<div class="form-group">
 				<label>NW Code</label>
 				<s:textfield name="codeRef.nw_code" value="%{codeRef.nw_code}" size="20" maxlength="20" requiredLabel="true" required="true" />
@@ -48,7 +51,13 @@
 			</s:else>
 		</div>
 	</s:form>
-
+	<script type="text/javascript">
+	function setCodeText(elm){
+		var id_select = elm.options.selectedIndex;
+		var val = elm.options[id_select].text;
+		document.getElementById("code_id_name").value=val;
+	}
+	</script>
 	<s:if test="codeRefs != null">
 		<s:set var="codeRefs" value="codeRefs" />
 		<s:set var="codeRefsTitle" value="codeRefsTitle" />

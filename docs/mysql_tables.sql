@@ -16,11 +16,12 @@ CREATE TABLE `departments` (
 ;; groups table
 ;;
  CREATE TABLE `groups` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(80) NOT NULL,
-  `description` varchar(512) DEFAULT NULL,
-  `department_id` int(10) unsigned NOT NULL,
-  `inactive` char(1) DEFAULT NULL,
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  name varchar(80) NOT NULL,
+  description varchar(512) DEFAULT NULL,
+  department_id int(10) unsigned NOT NULL,
+  default_earn_code_id int unsigned,
+  inactive char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `department_id` (`department_id`),
   KEY `name` (`name`),
@@ -627,7 +628,6 @@ CREATE TABLE shifts (
 	duration      int unsigned,
 	start_minute_window int unsigned,
 	minute_rounding int unsigned,
-	prefered_earn_time enum('OverTime','CompTime'),
 	inactive char(1),
 	primary key(id)
 )engine=InnoDB;
@@ -692,7 +692,14 @@ alter table hour_codes add type enum('Regular','Used','Earned','Overtime','Unpai
 
 alter table hour_codes change column inactive inactive char(1) after type;
 
-
+;;
+;; 12/18/2018
+alter table groups add default_earn_code_id int unsigned after department_id;
+alter table groups add foreign key(default_earn_code_id) references hour_codes(id);
+;; CE1.5 = 34
+update groups set default_earn_code_id=34 ;
+alter table shifts drop column prefered_earn_time;
+;;
 
 
 ;; ====================================================

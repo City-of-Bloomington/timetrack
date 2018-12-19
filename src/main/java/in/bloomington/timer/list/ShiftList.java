@@ -79,7 +79,7 @@ public class ShiftList{
 				String qq = "select g.id,g.name,g.start_hour,g.start_minute,"+
 						"g.duration,"+
 						"g.start_minute_window,"+						
-						"g.minute_rounding,g.prefered_earn_time,"+
+						"g.minute_rounding,"+
 						"g.inactive from shifts g ";
 				String qw = "";
 				if(!name.equals("")){
@@ -118,8 +118,7 @@ public class ShiftList{
 																			rs.getInt(5),
 																			rs.getInt(6),
 																			rs.getInt(7),
-																			rs.getString(8),
-																			rs.getString(9) != null);
+																			rs.getString(8) != null);
 								shifts.add(one);
 						}
 				}

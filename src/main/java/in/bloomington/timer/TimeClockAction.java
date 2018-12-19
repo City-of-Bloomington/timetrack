@@ -49,14 +49,6 @@ public class TimeClockAction extends TopAction{
 				prepareIps();
 				try{
 						HttpServletRequest req = ServletActionContext.getRequest();
-						Enumeration<String> headerNames = req.getHeaderNames();
-						while (headerNames.hasMoreElements()) {
-								String headerName = headerNames.nextElement();
-								System.err.println("Header Name: " + headerName);
-								String headerValue = req.getHeader(headerName);
-								System.err.println(headerValue);
-						}							
-						// ip = req.getRemoteAddr();
 						for (String header : IP_HEADER_CANDIDATES) {
 								String ip2 = req.getHeader(header);
 								if (ip2 != null && ip2.length() != 0 && !"unknown".equalsIgnoreCase(ip2)) {

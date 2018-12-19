@@ -50,7 +50,8 @@ public class GroupLocationList{
 				ResultSet rs = null;
 				String qq = "select t.id,t.group_id,t.location_id,"+
 						" l.ip_address,l.name,"+
-						" g.name,g.description,g.department_id,g.inactive "+
+						" g.name,g.description,g.department_id,g.default_earn_code,"+
+						" g.inactive "+
 						" from group_locations t "+
 						" left join locations l on l.id = t.location_id "+
 						" left join groups g on g.id = t.group_id";
@@ -87,7 +88,8 @@ public class GroupLocationList{
 																			rs.getString(6), // group
 																			rs.getString(7),
 																			rs.getString(8),
-																			rs.getString(9) != null
+																			rs.getString(9),
+																			rs.getString(10) != null
 																			);
 								if(!groupLocations.contains(one))
 										groupLocations.add(one);

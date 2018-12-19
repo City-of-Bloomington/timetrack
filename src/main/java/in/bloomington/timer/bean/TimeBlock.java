@@ -50,6 +50,23 @@ public class TimeBlock extends Block{
 		public TimeBlock(
 										 String val,
 										 String val2,
+										 String val3,
+										 String val4,
+										 int val5,
+										 int val6,
+										 int val7,
+										 int val8,
+										 double val9,
+										 String val10,
+										 String val11
+										 ){
+				super(val, val2, val3, val4, val5, val6, val7, val8, val9,
+							val10, val11);
+		}
+												 
+		public TimeBlock(
+										 String val,
+										 String val2,
 										 String val3, //4
 										 String val4,
 										 
@@ -413,7 +430,17 @@ public class TimeBlock extends Block{
 						return ret;
 				}
 				String am_pm = "AM";
-				if(e_hour > 24){
+				if(e_hour > 36){
+						e_hour -= 36;
+						overnight = true;
+						am_pm = "PM";
+				}
+				if(e_hour == 36){
+						e_hour = 12;
+						overnight = true;
+						am_pm = "PM";
+				}				
+				else if(e_hour > 24){
 						e_hour -= 24;
 						overnight = true;
 				}

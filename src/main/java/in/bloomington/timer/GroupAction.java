@@ -23,6 +23,7 @@ public class GroupAction extends TopAction{
 		Group group = null;
 		List<Group> groups = null;
 		List<GroupManager> groupManagers;
+		List<HourCode> hourCodes = null;
 		String groupsTitle = "Current groups";
 		List<Type> departments = null;
 		String department_id="";
@@ -119,19 +120,40 @@ public class GroupAction extends TopAction{
 		}
 		public List<GroupManager> getGroupManagers(){
 				//
-				getId();
-				GroupManagerList gml = new GroupManagerList();
-				gml.setGroup_id(id);
-				String back = gml.find();
-				if(back.equals("")){
-						List<GroupManager> ones = gml.getManagers();
-						if(ones != null && ones.size() > 0){
-								groupManagers = ones;
+				if(groupManagers == null){
+						getId();
+						GroupManagerList gml = new GroupManagerList();
+						gml.setGroup_id(id);
+						String back = gml.find();
+						if(back.equals("")){
+								List<GroupManager> ones = gml.getManagers();
+								if(ones != null && ones.size() > 0){
+										groupManagers = ones;
+								}
 						}
 				}
 				return groupManagers;
 		}
-		
+		/**
+			 select e.id,e.name,e.description,e.record_method,e.accrual_id,e.count_as_regular_pay,e.reg_default,e.type,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id  where  e.inactive is null  and  e.type = 'Earned' order by e.name
+
+
+		 */
+		public List<HourCode> getHourCodes(){
+				if(hourCodes == null){
+						HourCodeList gml = new HourCodeList();
+						gml.setEarnTypes();
+						gml.setCurrentOnly();
+						String back = gml.find();
+						if(back.equals("")){
+								List<HourCode> ones = gml.getHourCodes();
+								if(ones != null && ones.size() > 0){
+										hourCodes = ones;
+								}
+						}
+				}
+				return hourCodes;				
+		}
 }
 
 

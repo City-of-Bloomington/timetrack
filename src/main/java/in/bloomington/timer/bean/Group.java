@@ -15,61 +15,138 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Group extends Type{
+public class Group{
 
-    private String department_id="";
 		static Logger logger = LogManager.getLogger(Group.class);
 		static final long serialVersionUID = 1500L;
+		String id="", name="", description="", inactive="";
+		String department_id="";
+		//
+		// default_earn_code_id is needed when 
+		// employees work more than weekly or daily hours
+		String default_earn_code_id="";
 		Type department = null;
+		HourCode defaultEarnCode = null;
 		List<GroupEmployee> groupEmployees = null;
 		List<Employee> employees = null;
     List<GroupLocation> groupLocations = null;
     Set<String> ipSet = null;
 		
     public Group(){
-				setTable_name("groups");
     }		
     public Group(String val){
-				super(val);
-				setTable_name("groups");
+				setId(val);
     }
-		
+    public Group(String val,
+								 String val2
+								 ){
+				setId(val);
+				setName(val2);
+    }		
     public Group(String val,
 								 String val2,
 								 String val3,
 								 String val4,
-								 boolean val5
+								 String val5,
+								 boolean val6
 								 ){
-				super(val, val2, val3,val5);
+				setId(val);
+				setName(val2);
+				setDescription(val3);
 				setDepartment_id(val4);
+				setDefaultEacnCode_id(val5);
+				setInactive(val6);				
     }
-		
     public Group(String val,
 								 String val2,
 								 String val3,
 								 String val4,
-								 boolean val5,
-								 String val6
+								 String val5,
+								 boolean val6,
+								 String val7
 								 ){
-				super(val, val2, val3, val5);
+				setId(val);
+				setName(val2);
+				setDescription(val3);
 				setDepartment_id(val4);
-				if(val6 != null){
-						department = new Type(department_id, val6);
+				setDefaultEacnCode_id(val5);
+				setInactive(val6);
+				if(val7 != null && !val7.equals("")){
+						department = new Type(department_id, val7);
 				}
     }		
+		
     //
     // getters
     //
+    public String getId(){
+				return id;
+    }
+    public String getName(){
+				return name;
+    }
+    public String getDescription(){
+				return description;
+    }		
+    public boolean getInactive(){
+				return !inactive.equals("");
+    }
+		public boolean isInactive(){
+				return !inactive.equals("");
+		}
+		public boolean isActive(){
+				return inactive.equals("");
+		}		
 		public String getDepartment_id(){
 				return department_id;
     }
+		public String getDefaultEarnCode_id(){
+				return default_earn_code_id;
+		}
+		//ToDo
+		public String getDefaultEarnCodeName(){
+				String ret = "";
+				
+				return ret;
+		}				
     //
     // setters
     //
+    public void setId(String val){
+				if(val != null)
+						id = val;
+    }
+    public void setName(String val){
+				if(val != null)
+						name = val.trim();
+    }
+    public void setDescription(String val){
+				if(val != null){
+						description = val.trim();
+				}
+    }		
+    public void setInactive(boolean val){
+				if(val)
+						inactive = "y";
+    }				
     public void setDepartment_id (String val){
 				if(val != null && !val.equals("-1"))
 						department_id = val;
     }
+		public void setDefaultEacnCode_id(String val){
+				if(val != null && !val.equals("-1"))
+						default_earn_code_id = val;
+		}
+		public HourCode getDefaultEarnCode(){
+				if(defaultEarnCode == null && !default_earn_code_id.equals("")){
+						HourCode one = new HourCode(default_earn_code_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								defaultEarnCode = one;
+						}
+				}
+				return defaultEarnCode;
+		}
 		public boolean equals(Object o) {
 				if (o instanceof Group) {
 						Group c = (Group) o;
@@ -89,6 +166,10 @@ public class Group extends Type{
 				}
 				return seed;
 		}
+    public String toString(){
+				return name;
+    }
+		
 		public List<Employee> getEmployees(){
 				if(!id.equals("")){
 						EmployeeList ul = new EmployeeList();
@@ -163,14 +244,13 @@ public class Group extends Type{
 				return true; // when no group locations set yet;
     }
 		
-		@Override
 		public String doSelect(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.name,g.description,g.department_id,g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";
+				String qq = "select g.id,g.name,g.description,g.department_id,g.default_earn_code_id,g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				try{
@@ -182,8 +262,9 @@ public class Group extends Type{
 										setName(rs.getString(2));
 										setDescription(rs.getString(3));
 										setDepartment_id(rs.getString(4));
-										setInactive(rs.getString(5) != null);
-										str = rs.getString(6);
+										setDefaultEacnCode_id(rs.getString(5));
+										setInactive(rs.getString(6) != null);
+										str = rs.getString(7);
 										if(str != null){
 												department = new Type(department_id, str);
 										}
@@ -199,14 +280,14 @@ public class Group extends Type{
 				}
 				return msg;
 		}
-		@Override
+
 		public String doSave(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into groups values(0,?,?,?,null) ";
+				String qq = "insert into groups values(0,?,?,?,?,null) ";
 				if(name.equals("")){
 						msg = " name not set ";
 						return msg;
@@ -229,6 +310,11 @@ public class Group extends Type{
 						else
 								pstmt.setString(2, description);
 						pstmt.setString(3, department_id);
+						if(default_earn_code_id.equals(""))
+								pstmt.setNull(4, Types.INTEGER);
+						else
+								pstmt.setString(4, default_earn_code_id);
+						
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
@@ -248,7 +334,7 @@ public class Group extends Type{
 				}
 				return msg;
 		}
-		@Override
+
 		public String doUpdate(){
 				//
 				Connection con = null;
@@ -258,7 +344,7 @@ public class Group extends Type{
 				if(name.equals("")){
 						return " name not set ";
 				}
-				String qq = "update groups set name=?,description=?,department_id=?,inactive=? where id=? ";
+				String qq = "update groups set name=?,description=?,department_id=?,default_earn_code_id=?,inactive=? where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -272,14 +358,18 @@ public class Group extends Type{
 								pstmt.setNull(2, Types.VARCHAR);
 						else
 								pstmt.setString(2, description);								
-						pstmt.setString(3, department_id);								
+						pstmt.setString(3, department_id);
+						if(default_earn_code_id.equals(""))
+								pstmt.setNull(4, Types.INTEGER);
+						else
+								pstmt.setString(4, default_earn_code_id);						
 						if(inactive.equals("")){
-								pstmt.setNull(4, Types.CHAR);
+								pstmt.setNull(5, Types.CHAR);
 						}
 						else{
-								pstmt.setString(4,"y");
+								pstmt.setString(5,"y");
 						}
-						pstmt.setString(5, id);
+						pstmt.setString(6, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

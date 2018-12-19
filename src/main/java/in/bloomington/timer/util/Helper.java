@@ -510,6 +510,7 @@ public class Helper{
 
 				String day="",month="",year="";
 				GregorianCalendar cal = new GregorianCalendar(tzone, local);
+				
 				int mm =  (cal.get(Calendar.MONTH)+1);
 				int dd =   cal.get(Calendar.DATE);
 				year = ""+ cal.get(Calendar.YEAR);
@@ -519,6 +520,20 @@ public class Helper{
 				day += dd;
 				return month+"/"+day+"/"+year;
     }
+    public final static String getYesterday(){
+
+				String day="",month="",year="";
+				GregorianCalendar cal = new GregorianCalendar(tzone, local);
+				cal.add(Calendar.DAY_OF_MONTH, -1);
+				int mm =  (cal.get(Calendar.MONTH)+1);
+				int dd =   cal.get(Calendar.DATE);
+				year = ""+ cal.get(Calendar.YEAR);
+				if(mm < 10) month = "0";
+				month += mm;
+				if(dd < 10) day = "0";
+				day += dd;
+				return month+"/"+day+"/"+year;
+    }		
 		public final static int getCurrentYear(){
 				int year=2017;
 				GregorianCalendar cal = new GregorianCalendar(tzone, local);

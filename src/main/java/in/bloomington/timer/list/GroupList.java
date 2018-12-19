@@ -88,7 +88,7 @@ public class GroupList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.name,g.description,g.department_id,g.inactive,d.name from groups g left join departments d on d.id=g.department_id ";
+				String qq = "select g.id,g.name,g.description,g.department_id,g.default_earn_code_id,g.inactive,d.name from groups g left join departments d on d.id=g.department_id ";
 				String qw = "";
 				if(!department_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
@@ -147,8 +147,9 @@ public class GroupList{
 																		 rs.getString(2),
 																		 rs.getString(3),
 																		 rs.getString(4),
-																		 rs.getString(5) != null,
-																		 rs.getString(6));
+																		 rs.getString(5),
+																		 rs.getString(6) != null,
+																		 rs.getString(7));
 								groups.add(one);
 						}
 				}

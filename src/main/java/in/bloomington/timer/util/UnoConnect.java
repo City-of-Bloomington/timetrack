@@ -12,87 +12,94 @@ import java.text.*;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-// import javax.servlet.ServletRequestEvent;
-// import javax.servlet.ServletRequestListener;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
 import javax.servlet.annotation.WebListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 @WebListener
-public class UnoConnect implements ServletContextListener{
-		// public class UnoConnect implements ServletRequestListener{
-		boolean debug = false;
-		static String dbUrl = "", dbName="", dbUser="", dbPass="";
-		//
-		// we are using a single connect to MS sql server as were not
-		// able to create connection pools
-		//
-		private static int con_cnt = 0;
-		private static UnoConnect unoCon = null;
+public class UnoConnect implements ServletRequestListener{
 		static Logger logger = LogManager.getLogger(UnoConnect.class);
-		static Connection con = null;
-		/**
-     * Create a static method to get instance.
-     */
-    public static UnoConnect getInstance(){
-        if(unoCon == null){
-            unoCon = new UnoConnect();
-        }
-        return unoCon;
-    }
-
-		public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ServletContext ctx = servletContextEvent.getServletContext();
-    }
-		public void contextDestroyed(ServletContextEvent servletContextEvent) {
-				disconnect();
-    }
-		/**
-		public void requestInitialized(ServletRequestEvent event) {
-				// System.err.println(" new request ");
-    }			
-		public void requestDestroyed(ServletRequestEvent event) {
-				disconnect();
-    }
-		*/
-		public static Connection getConnection(){
-				boolean pass = false;
-				try{
-						Context initCtx = new InitialContext();
-						Context envCtx = (Context) initCtx.lookup("java:comp/env");
-						DataSource ds = (DataSource)envCtx.lookup("jdbc/MySQL_timer");
-						if(con == null || con.isClosed()){
-								for(int i=0;i<3;i++){				
-										con = ds.getConnection();
-										pass = testCon(con);
-										if(pass) break;										
-								}
-						}
+		static int con_cnt = 0;
+		private static class ThreadLocalConnection extends ThreadLocal {
+				Connection connection;
+				@Override
+				public Object initialValue() {
+						return null;
 				}
-				catch(Exception ex){
-						logger.error(ex);
-				}
-				return con;
-		}		
-		public void disconnect(){
-				try{
-						if(con != null && !con.isClosed()){
-								con.close();
-								con = null;
-								// System.err.println(" con closed "+con_cnt);
-								con_cnt--;
-						}
-				}catch(Exception ex){
-						System.err.println(ex);
-				}
-				finally{
-						if (con != null) {
-								try { con.close(); } catch (SQLException e) { ; }
-								con = null;
-						}
+				
+				@Override
+				public void remove() {
+						super.remove();
+						closeConnection();
 				}
 		}
+		private static ThreadLocalConnection conn = new ThreadLocalConnection();
+
+		public static Connection getConnection(){
+				Connection con = null;
+				con = (Connection) conn.get();
+				if(con == null){
+						boolean pass = false;
+						try{
+								Context initCtx = new InitialContext();
+								Context envCtx = (Context) initCtx.lookup("java:comp/env");
+								DataSource ds = (DataSource)envCtx.lookup("jdbc/MySQL_timer");
+								if(con == null || con.isClosed()){
+										for(int i=0;i<3;i++){				
+												con = ds.getConnection();
+												pass = testCon(con);
+												if(pass){
+														conn.set(con);
+														break;
+												}
+										}
+								}
+						}
+						catch(Exception ex){
+								logger.error(ex);
+						}
+				}
+				else{
+						// System.err.println(" using the same con "+con_cnt);
+				}
+				return (Connection) conn.get();
+	 }
+		public static void closeConnection() {
+				try{
+						if(conn.get() != null){
+								Connection con = (Connection)conn.get();
+								try{
+										if(con != null && !con.isClosed()){
+												// ((Connection)conn.get()).close();
+												con.close();
+												System.out.println("Removed Connection ..."+con_cnt);
+												con_cnt--;
+												con = null;
+												conn.set(null);
+										}
+										else{
+												con = null;
+												conn.set(null);
+										}
+								}catch(Exception ex){
+										System.err.println(ex);
+								}
+								finally{
+										conn.set(null);
+								}
+						}
+				}catch(Exception e){
+						System.err.println(e);
+				}
+		}
+		public void requestInitialized(ServletRequestEvent event) {
+				System.err.println(" new request ");
+    }			
+		public void requestDestroyed(ServletRequestEvent event) {
+				closeConnection();
+    }
 		static boolean testCon(Connection cc){
 				String qq = "select 1";
 				Statement stmt = null;
@@ -102,7 +109,7 @@ public class UnoConnect implements ServletContextListener{
 						rs = stmt.executeQuery(qq);
 						if(rs.next()){
 								con_cnt++;
-								// System.err.println(" con cnt "+con_cnt);								
+								System.err.println(" con cnt "+con_cnt);								
 								return true;
 						}
 				}

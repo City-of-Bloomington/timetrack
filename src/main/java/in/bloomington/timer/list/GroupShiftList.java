@@ -93,10 +93,10 @@ public class GroupShiftList{
 						" date_format(gs.expire_date,'%m/%d/%Y'),"+						
 						" gs.inactive, "+
 						// group
-						" g.name,g.description,g.department_id,g.inactive,d.name, "+
+						" g.name,g.description,g.department_id,g.default_earn_code,g.inactive,d.name, "+
 						// shift 
 						" s.name,s.start_hour,s.start_minute,s.duration,"+
-						" s.start_minute_window,s.minute_rounding, s.prefered_earn_time,"+
+						" s.start_minute_window,s.minute_rounding,"+
 						" s.inactive "+ 						
 						" from group_shifts gs, groups g,departments d, shifts s ";
 				String qw = "d.id=g.department_id and gs.group_id=g.id ";
@@ -161,17 +161,17 @@ public class GroupShiftList{
 																			rs.getString(7),
 																			rs.getString(8),
 																			rs.getString(9),
-																			rs.getString(10) != null,
-																			rs.getString(11),
+																			rs.getString(10),
+																			rs.getString(11) != null,
+																			rs.getString(12),
 
 																			rs.getString(3), // shift id
-																			rs.getString(12),
-																			rs.getInt(13),
+																			rs.getString(13),
 																			rs.getInt(14),
 																			rs.getInt(15),
 																			rs.getInt(16),
 																			rs.getInt(17),
-																			rs.getString(18),
+																			rs.getInt(18),
 																			rs.getString(19) != null
 																								);
 								groupShifts.add(one);

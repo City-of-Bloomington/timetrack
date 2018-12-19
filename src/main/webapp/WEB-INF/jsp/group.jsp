@@ -17,6 +17,9 @@
 			<s:set var="errors" value="%{errors}" />			
 			<%@ include file="errors.jsp" %>
 		</s:elseif>
+		<ul>
+			<li>Default Earn Code, this is the compensatory method either 'CE1.5 Comp Time' or 'OT1.5 Over Time' for certain groups such as union, if hours worked exceeds weekly or daily hours. </li>
+		</ul>
 		<div class="width-one-half">
 			<s:if test="group.id != ''">
 				<div class="form-group">
@@ -39,7 +42,10 @@
 				<label>Description</label>
 				<s:textarea name="group.description" value="%{group.description}" rows="5" cols="50" />
 			</div>
-
+			<div class="form-group">
+				<label>Default Earn Code</label>			
+				<s:select name="group.defaultEarnCode_id" value="%{group.defaultEarnCode_id}" list="hourCodes" listKey="id" listValue="codeInfo" headerKey="-1" headerValue="Pick Earn Code" />
+			</div>
 			<div class="form-group">
 				<label>Inactive?</label>
 				<s:checkbox name="group.inactive" value="%{group.inactive}" fieldValue="true" />Yes

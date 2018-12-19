@@ -41,91 +41,88 @@ public class Block{
     public Block(
 								 String val,
 								 String val2,
-								 // String val3,
+								 String val3,
 								 String val4,
-								 String val5,
+								 int val5,
 								 int val6,
 								 int val7,
 								 int val8,
-								 int val9,
-								 double val10,
-								 String val11,
-								 String val12
+								 double val9,
+								 String val10,
+								 String val11
 							 ){
-				setVals(val, val2, val4, val5, val6, val7, val8, val9, val10, val11, val12);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11);
 		}
     public Block(
 								 String val,
 								 String val2,
-								 // String val3,
+								 String val3,
 								 String val4,
-								 String val5,
+								 int val5,
 								 int val6,
 								 int val7,
 								 int val8,
-								 int val9,
-								 double val10,
+								 double val9,
+								 String val10,
 								 String val11,
-								 String val12,
-								 boolean val13,
-								 String val14
+								 boolean val12,
+								 String val13
 							 ){
-				setVals(val, val2, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13);
 		}
 		void setVals(
 								 String val,
 								 String val2,
-								 // String val3,
+								 String val3,
 								 String val4,
-								 String val5,
+								 int val5,
 								 int val6,
 								 int val7,
 								 int val8,
-								 int val9,
-								 double val10,
-								 String val11,
-								 String val12
+								 double val9,
+								 String val10,
+								 String val11
 							 ){								
 				setId(val);
 				setDocument_id(val2);
-				setHour_code_id(val4);
-				setDate(val5);
-				setBegin_hour(val6);
-				setBegin_minute(val7);
-				setEnd_hour(val8);
-				setEnd_minute(val9);				
-				setHours(""+val10);// ovt_pref was 11
-				setClock_in(val11);
-				setClock_out(val12);
+				setHour_code_id(val3);
+				setDate(val4);
+				setBegin_hour(val5);
+				setBegin_minute(val6);
+				setEnd_hour(val7);
+				setEnd_minute(val8);				
+				setHours(""+val9);// ovt_pref was 11
+				setClock_in(val10);
+				setClock_out(val11);
     }
 		void setVals(
 								 String val,
 								 String val2,
+								 String val3,
 								 String val4,
-								 String val5,
+								 int val5,
 								 int val6,
 								 int val7,
 								 int val8,
-								 int val9,
-								 double val10,
+								 double val9,
+								 String val10,
 								 String val11,
-								 String val12,
-								 boolean val13,
-								 String val14
+								 boolean val12,
+								 String val13
 							 ){								
 				setId(val);
 				setDocument_id(val2);
-				setHour_code_id(val4);
-				setDate(val5);
-				setBegin_hour(val6);
-				setBegin_minute(val7);
-				setEnd_hour(val8);
-				setEnd_minute(val9);				
-				setHours(""+val10);
-				setClock_in(val11);
-				setClock_out(val12);
-				setIsHoliday(val13);
-				setHolidayName(val14);
+				setHour_code_id(val3);
+				setDate(val4);
+				setBegin_hour(val5);
+				setBegin_minute(val6);
+				setEnd_hour(val7);
+				setEnd_minute(val8);				
+				setHours(""+val9);
+				setClock_in(val10);
+				setClock_out(val11);
+				setIsHoliday(val12);
+				setHolidayName(val13);
     }		
     public Block(String val){
 				setId(val);

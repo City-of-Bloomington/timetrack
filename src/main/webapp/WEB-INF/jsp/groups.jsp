@@ -5,6 +5,7 @@
 			<th>ID</th>
 			<th>Name</th>
 			<th>Department</th>
+			<th>Default Earn Code</th>			
 			<th>Description</th>
 			<th>Active?</th>
 		</tr>
@@ -15,6 +16,7 @@
 				<td><a href="<s:property value='#application.url' />group.action?id=<s:property value='id' />">Edit</a></td>
 				<td><s:property value="name" /></td>
 				<td><s:property value="department" /></td>
+				<td><s:property value="defaultEarnCode" /></td>
 				<td><s:property value="description" /></td>
 				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>

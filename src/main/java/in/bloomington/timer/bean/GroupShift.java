@@ -58,8 +58,9 @@ public class GroupShift{
 											String val02,
 											String val03,
 											String val04,
-											boolean val05,
-											String val06,
+											String val05,
+											boolean val06,
+											String val07,
 
 											String val11,
 											String val12,
@@ -68,8 +69,7 @@ public class GroupShift{
 											int val15,
 											int val16,
 											int val17,
-											String val18,
-											boolean val19
+											boolean val18
 											
 								 ){
 				setId(val);
@@ -78,9 +78,9 @@ public class GroupShift{
 				setStartDate(val4);
 				setExpireDate(val5);
 				setInactive(val6);
-				group = new Group(val01, val02, val03, val04, val05,val06);
+				group = new Group(val01, val02, val03, val04, val05,val06, val07);
 				shift = new Shift(val11, val12, val13, val14, val15, val16,
-													val17, val18, val19);
+													val17, val18);
 
     }		
 		

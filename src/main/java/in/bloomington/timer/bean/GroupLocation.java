@@ -58,16 +58,32 @@ public class GroupLocation{
 												 String val6, // group
 												 String val7,
 												 String val8,
-												 boolean val9
+												 String val9,
+												 boolean val10
 												 ){
-				//
-				// initialize
-				//
+				setVals(val, val2, val3,
+								val4, val5,
+								val6, val7, val8, val9, val10);
+		}
+		private void setVals(
+												 String val,
+												 String val2,
+												 String val3,
+												 
+												 String val4,
+												 String val5,
+												 
+												 String val6, // group
+												 String val7,
+												 String val8,
+												 String val9,
+												 boolean val10
+												 ){
 				setId(val);
 				setGroup_id(val2);
 				setLocation_id(val3);
 				location = new Location(val3, val4, val5);
-				group = new Group(val2, val6, val7, val8, val9);
+				group = new Group(val2, val6, val7, val8, val9, val10);
     }		
 		public int hashCode(){
 				int seed = 29;
@@ -143,8 +159,15 @@ public class GroupLocation{
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select id,group_id,location_id "+
-						"from group_locations where id=?";
+				String qq = "select t.id,t.group_id,t.location_id,"+
+						" l.ip_address,l.name,"+
+						" g.name,g.description,g.department_id,g.default_earn_code,"+
+						" g.inactive "+
+						" from group_locations t "+
+						" left join locations l on l.id = t.location_id "+
+						" left join groups g on g.id = t.group_id "+
+						" where t.id=? ";
+				
 				Connection con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
@@ -156,8 +179,18 @@ public class GroupLocation{
 						pstmt.setString(1,id);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
-								setGroup_id(rs.getString(2));
-								setLocation_id(rs.getString(3));
+								setVals(rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												
+												rs.getString(4), // location
+												rs.getString(5),
+												
+												rs.getString(6), // group
+												rs.getString(7),
+												rs.getString(8),
+												rs.getString(9),
+												rs.getString(10) != null);
 						}
 						else{
 								back ="Record "+id+" Not found";

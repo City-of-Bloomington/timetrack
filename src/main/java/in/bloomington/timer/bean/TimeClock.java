@@ -353,6 +353,7 @@ public class TimeClock {
 				//
 				String msg = "", hour_code_id = "1"; // 1:Reg, 14:TEMP
 				String date = Helper.getToday();
+				String yesterday = Helper.getYesterday();
 				if (id_code.equals("")) {
 						msg = "Employee ID code is required ";
 						return msg;
@@ -367,9 +368,7 @@ public class TimeClock {
 						return msg;
 				}
 				//
-				// find document, if non create one
-				//
-				// findEmployee();
+				// find document, if non create
 				// we need the employee job
 				if (job_id.equals("")) {
 						if (jobs.size() > 1 && job_id.equals("")) {
@@ -416,12 +415,18 @@ public class TimeClock {
 								tbl.setDocument_id(document.getId());
 								tbl.hasClockInOnly();
 								tbl.setActiveOnly();
-								tbl.setDate(date); // for today only
-								msg = tbl.find();
+								tbl.setDate_from(yesterday); // yesterday
+								tbl.setDate_to(date); // today
+								tbl.setDuration("12"); // last 12 hours
+								msg = tbl.findTimeBlocksForClockIn();
 								if (msg.equals("")) {
 										List<TimeBlock> tbs = tbl.getTimeBlocks();
 										if (tbs != null && tbs.size() > 0) {
 												timeBlock = tbs.get(0);
+												String date_old = timeBlock.getDate();
+												if(date_old.equals(yesterday)){
+														timeBlock.setOvernight(true);
+												}
 												timeBlock.setEnd_hour(time_hr);
 												timeBlock.setEnd_minute(time_min);
 												timeBlock.setClock_out("y");

@@ -8,7 +8,6 @@
 			<th>Duration</th>
 			<th>Start Minutes Window</th>
 			<th>Minutes Rounding</th>
-			<th>Prefered Earn Time</th>
 			<th>Active?</th>
 		</tr>
 	</thead>
@@ -21,7 +20,6 @@
 				<td><s:property value="duration" /></td>
 				<td><s:property value="startMinuteWindow" /></td>
 				<td><s:property value="minuteRounding" /></td>
-				<td><s:property value="preferedEarnTimeName" /></td>
 				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>
 		</s:iterator>
