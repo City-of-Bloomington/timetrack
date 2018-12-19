@@ -7,8 +7,8 @@
 /*! Note: this is a cherry-picked tweak of FN1, specifically for Time Track */
 
 /* Import Vars */
-@import 'colors';
-@import 'vars-mixins';
+@import '../scss/colors';
+@import '../scss/vars-mixins';
 
 /* Global */
 .timetrack {
@@ -274,20 +274,20 @@
 }
 
 /* Import Components */
-@import 'icons';
-@import 'helpers';
-@import 'normalize';
-@import 'alerts';
-@import 'buttons';
-@import 'header';
-@import 'dropdown';
-@import 'tabs';
-@import 'tables';
-@import 'forms';
-@import 'calendar';
-@import 'internal-pages';
-@import 'time-block';
-@import 'time-clock';
-@import 'modals';
-@import 'logout';
-@import 'customs';
+@import '../scss/icons';
+@import '../scss/helpers';
+@import '../scss/normalize';
+@import '../scss/alerts';
+@import '../scss/buttons';
+@import '../scss/header';
+@import '../scss/dropdown';
+@import '../scss/tabs';
+@import '../scss/tables';
+@import '../scss/forms';
+@import '../scss/calendar';
+@import '../scss/internal-pages';
+@import '../scss/time-block';
+@import '../scss/time-clock';
+@import '../scss/modals';
+@import '../scss/logout';
+@import '../scss/customs';

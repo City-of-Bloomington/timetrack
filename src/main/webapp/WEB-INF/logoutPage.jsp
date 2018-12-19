@@ -1,4 +1,4 @@
-<%@  include file="header.jsp" %>
+<%@  include file="jsp/header.jsp" %>
   <div class="logout">
     <h1>Time Track </h1>
 
@@ -6,4 +6,4 @@
 
     <a href="<s:property value='#application.url' />Login">Login</a>
   </div>
-<%@  include file="footer.jsp" %>
+<%@  include file="jsp/footer.jsp" %>
