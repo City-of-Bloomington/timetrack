@@ -8,6 +8,8 @@ package in.bloomington.timer;
 import java.util.*;
 import java.io.*;
 import java.text.*;
+import java.time.Instant;
+import java.time.Duration;
 import java.net.InetAddress; 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +24,11 @@ public class TimeClockAction extends TopAction{
 		static final long serialVersionUID = 4320L;	
 		static Logger logger = LogManager.getLogger(TimeClockAction.class);
 		DecimalFormat dFormat = new DecimalFormat("###.00");
-		Set<String> ipSet = null;
+		static final long period_length = 5L; // minutes
+		static Instant startTime = null;		
+		static Set<String> ipSet = null;
 		//
+
 		TimeClock timeClock = null;
 		String timeClocksTitle = "Time Clock Data";
 		String document_id="", date="";
@@ -169,16 +174,31 @@ public class TimeClockAction extends TopAction{
 						action = val;
 		}
 		private void prepareIps(){
-				LocationList ial = new LocationList();
-				String back = ial.find();
-				if(back.equals("")){
-						List<Location> ones = ial.getLocations();
-						if(ones != null && ones.size() > 0){
-								ipSet = new HashSet<>();
-								for(Location one:ones){
-										String str = one.getIp_address();
-										if(str != null)
-												ipSet.add(str);
+				boolean needUpdate = false;
+				if(startTime == null){
+						startTime =  Instant.now();
+				}
+				else {
+						Instant now = Instant.now();
+						long minutes = Duration.between(startTime, now).toMinutes();
+						if(minutes > period_length){
+								needUpdate = true;
+								startTime = now;
+						}
+				}
+				if(ipSet == null || needUpdate){
+						needUpdate = false;
+						LocationList ial = new LocationList();
+						String back = ial.find();
+						if(back.equals("")){
+								List<Location> ones = ial.getLocations();
+								if(ones != null && ones.size() > 0){
+										ipSet = new HashSet<>();
+										for(Location one:ones){
+												String str = one.getIp_address();
+												if(str != null)
+														ipSet.add(str);
+										}
 								}
 						}
 				}

@@ -134,11 +134,6 @@ public class GroupAction extends TopAction{
 				}
 				return groupManagers;
 		}
-		/**
-			 select e.id,e.name,e.description,e.record_method,e.accrual_id,e.count_as_regular_pay,e.reg_default,e.type,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id  where  e.inactive is null  and  e.type = 'Earned' order by e.name
-
-
-		 */
 		public List<HourCode> getHourCodes(){
 				if(hourCodes == null){
 						HourCodeList gml = new HourCodeList();

@@ -684,6 +684,12 @@ public class Helper{
 				out.close();
     }
 		public final static String getDateAfter(final String dt, final int days){
+				return getDateFrom(dt, days);
+		}
+		/**
+		 * find date from dt by adding (+days) or subtraction (-days)
+		 */
+		public final static String getDateFrom(final String dt, final int days){
 				String dt2 = "";
 				if(days == 0){
 						return dt;
@@ -714,7 +720,7 @@ public class Helper{
 				}
 				return dt2;
 
-		}
+		}		
 		// original date in mm/dd/yyyy or mm-dd-yyyy format
 		// returns date in yymmdd format
 		public final static String getYymmddDate(final String dt){

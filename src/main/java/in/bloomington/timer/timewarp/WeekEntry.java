@@ -34,6 +34,7 @@ public class WeekEntry{
 		boolean consolidated = false; // to avoid more than once consolidation
 		boolean handSpecial = false; 
 		List<HolidayWorkDay> holyWorkDays = null;
+		Department department = null;
 		//
 		// these are used for the yearend pay period where we need
 		// to split the hours of the week in two different years
@@ -51,21 +52,21 @@ public class WeekEntry{
 
     public WeekEntry(boolean deb,
 										 Profile val,
-										 boolean val2){ // HAND
+										 Department val3){ 
 				debug = deb;
 				setProfile(val);
-				setHandSpecial(val2);				
-				splitOne = new WeekSplit(debug, val);
-				splitTwo = new WeekSplit(debug, val);
+				setDepartment(val3);
+				splitOne = new WeekSplit(debug, val, val3);
+				splitTwo = new WeekSplit(debug, val, val3);
 
     }
     public WeekEntry(boolean deb,
 										 Profile val,
-										 boolean val2, //HAND
-										 int val3 // split day
+										 int val3, // split day
+										 Department val4
 										 ){
 				//
-				this(deb, val, val2);
+				this(deb, val, val4);
 				//
 				// if splitDay = 0 ignore, it just start of a new week
 				// day 7 is day 0 in next week (7 - 7 = 0)
@@ -83,6 +84,14 @@ public class WeekEntry{
     }
 		public void setHandSpecial(boolean val){
 				handSpecial = val;
+		}
+		void setDepartment(Department val){
+				if(val != null){
+						department = val;
+						if(department.isHand()){
+								setHandSpecial(true);
+						}
+				}
 		}
 		double getTotalHours(){
 				return total_hrs;

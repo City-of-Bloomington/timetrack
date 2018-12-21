@@ -43,6 +43,8 @@ public class PayPeriodProcessAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(!action.equals("") && !department_id.equals("")){
+						if(department == null)
+								getDepartment();
 						// utilities department
 						if(department_id.equals("36")) 
 								isUtil = true;
@@ -186,7 +188,8 @@ public class PayPeriodProcessAction extends TopAction{
 																						 isHand, // HAND flag
 																						 csvOutput,
 																						 isUtil,
-																						 job.getId());
+																						 job.getId(),
+																						 department);
 										msg = one.find();
 										if(!msg.equals("")){
 												if(msg.startsWith("No time")){
@@ -216,7 +219,8 @@ public class PayPeriodProcessAction extends TopAction{
 																				 holys,
 																				 isHand, // HAND flag
 																				 csvOutput,
-																				 isUtil);
+																				 isUtil,
+																				 department);
 								msg = one.find();
 								if(!msg.equals("")){
 										if(msg.startsWith("No time")){

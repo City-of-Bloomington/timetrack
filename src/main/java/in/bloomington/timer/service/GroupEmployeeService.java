@@ -22,7 +22,6 @@ public class GroupEmployeeService extends HttpServlet{
 
 		static final long serialVersionUID = 2200L;
 		static Logger logger = LogManager.getLogger(GroupEmployeeService.class);
-    String url="";
     boolean debug = false;
 		static EnvBean envBean = null;
 
@@ -50,14 +49,6 @@ public class GroupEmployeeService extends HttpServlet{
 				PrintWriter out = res.getWriter();
 				String name, value;
 				String group_id="";
-				boolean success = true;
-				HttpSession session = null;
-				if(url.equals("")){
-						url    = getServletContext().getInitParameter("url");
-						//
-						String str = getServletContext().getInitParameter("debug");
-						if(str.equals("true")) debug = true;
-				}
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
 				while (values.hasMoreElements()){
@@ -107,7 +98,6 @@ public class GroupEmployeeService extends HttpServlet{
 						json += "{\"id\":\""+one.getId()+"\",\"fullname\":\""+one.getFull_name()+"\"}";
 				}
 				json = "["+json+"]";
-				// System.err.println("json "+json);
 				return json;
 		}
 }

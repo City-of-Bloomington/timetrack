@@ -57,8 +57,8 @@ public class DepartmentEmployeeList{
 				String qq = "select de.id,de.employee_id,de.department_id,"+
 						" de.department2_id,"+
 						" date_format(de.effective_date,'%m/%d/%Y'),"+
-						" date_format(de.expire_date,'%m/%d/%Y'), "+
-						" expire_date < now() "+
+						" date_format(de.expire_date,'%m/%d/%Y') "+
+						// " expire_date < now() "+
 						" from department_employees de ";
 				if(!employee_id.equals("")){
 						qw += " de.employee_id=? ";
@@ -70,7 +70,7 @@ public class DepartmentEmployeeList{
 				if(!pay_period_id.equals("")){
 						qq += ", pay_periods pp ";
 						if(!qw.equals("")) qw += " and ";
-						qw += " de.effective_date <= pp.start_date and (de.expire_date is null or de.expire_date <= pp.end_date)";		
+						qw += " de.effective_date <= pp.start_date and (de.expire_date is null or de.expire_date >= pp.end_date) and pp.id=? ";		
 				}
 				if(active_only){
 						if(!qw.equals("")) qw += " and ";
@@ -95,6 +95,9 @@ public class DepartmentEmployeeList{
 						if(!department_id.equals("")){
 								pstmt.setString(jj++, department_id);
 								pstmt.setString(jj++, department_id);								
+						}
+						if(!pay_period_id.equals("")){
+								pstmt.setString(jj++, pay_period_id);
 						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
@@ -107,9 +110,9 @@ public class DepartmentEmployeeList{
 																			 rs.getString(3),
 																			 rs.getString(4),
 																			 rs.getString(5),
-																			 rs.getString(6),
-																			 rs.getString(7) == null);
-								departmentEmployees.add(one);
+																			 rs.getString(6));
+								if(!departmentEmployees.contains(one))
+										departmentEmployees.add(one);
 						}
 				}
 				catch(Exception ex){

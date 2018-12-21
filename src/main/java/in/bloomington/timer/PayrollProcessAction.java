@@ -40,11 +40,7 @@ public class PayrollProcessAction extends TopAction{
 		List<Employee> noDocNorSubmitEmps = null;		
 		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
-		
-		/*
-		 *
-		 url+"payrollProcess.action?action=PayrollOne&document_id=<s:property value='id' />"
-		 */		
+
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -97,7 +93,7 @@ public class PayrollProcessAction extends TopAction{
 						pay_period_id = val;
 		}
 		public void setGroup_id(String val){
-				if(val != null && !val.equals("-1"))		
+				if(val != null && !val.equals(""))		
 						group_id = val;
 		}
 		public void setDocument_ids(String[] vals){
@@ -110,7 +106,8 @@ public class PayrollProcessAction extends TopAction{
 		}		
 		public String getGroup_id(){
 				if(group_id.equals("")){
-						return "-1";
+						getGroup();
+						// return "-1";
 				}
 				return group_id;
 		}
@@ -122,13 +119,15 @@ public class PayrollProcessAction extends TopAction{
 				getGroups();
 				if(hasGroups()){
 						if(group == null && !group_id.equals("")){
-								Group one = new Group(group_id);
-								String back = one.doSelect();
-								if(back.equals("")){
-										group = one;
+								if(!group_id.equals("all")){
+										Group one = new Group(group_id);
+										String back = one.doSelect();
+										if(back.equals("")){
+												group = one;
+										}
 								}
 						}
-						else if(groups.size() == 1){
+						else if(groups.size() > 0){
 								group = groups.get(0);
 								group_id = group.getId();
 						}
@@ -244,7 +243,7 @@ public class PayrollProcessAction extends TopAction{
 						}
 						DocumentList dl = new DocumentList();
 						dl.setPay_period_id(pay_period_id);
-						if(!group_id.equals("")){
+						if(!group_id.equals("") && !group_id.equals("all")){
 								dl.setGroup_id(group_id);
 						}
 						else if(groups != null && groups.size() > 0){
@@ -265,7 +264,7 @@ public class PayrollProcessAction extends TopAction{
 		public List<Employee> getNonDocEmps(){
 				if(nonDocEmps == null){
 						EmployeeList empl = new EmployeeList();
-						if(!group_id.equals("")){
+						if(!group_id.equals("") && !group_id.equals("all")){
 								empl.setGroup_id(group_id);
 						}
 						else if(groups != null && groups.size() > 0){

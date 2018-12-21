@@ -29,6 +29,7 @@ public class PayPeriodProcess{
 		boolean twoDifferentYears = false;
 		boolean weekOneHasSplit = false;
 		boolean isUtil = false;
+		Department department = null;
 		static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		static DecimalFormat df = new DecimalFormat("#0.00");
 		static DecimalFormat df4 = new DecimalFormat("#0.0000");
@@ -67,7 +68,8 @@ public class PayPeriodProcess{
 														HolidayList val4,
 														boolean val5, // HAND flag
 														boolean val6,// csv flag
-														boolean val7){  // isUtil 
+														boolean val7,
+														Department val8){  // isUtil 
 				setEmployee(val);
 				setProfile(val2);
 				setPayPeriod(val3);
@@ -75,6 +77,7 @@ public class PayPeriodProcess{
 				setIsHand(val5);
 				setCsvOutuput(val6);
 				setIsUtil(val7);
+				setDepartment(val8);
 				//
 				// prepare the objects
 				//
@@ -88,7 +91,8 @@ public class PayPeriodProcess{
 														boolean val5, // HAND flag
 														boolean val6,// csv flag
 														boolean val7, // isUtil 
-														String val8){ //job_id
+														String val8,
+														Department val9){ //job_id
 				setEmployee(val);
 				setProfile(val2);
 				setPayPeriod(val3);
@@ -98,6 +102,7 @@ public class PayPeriodProcess{
 				setIsUtil(val7);
 				setJob_id(val8);
 				multipleJobs = true;
+				setDepartment(val9);
 				//
 				// prepare the objects
 				//
@@ -108,6 +113,17 @@ public class PayPeriodProcess{
 						employee = val;
 				}
 		}
+		public void setDepartment(Department val){
+				if(val != null){
+						department = val;
+						if(department.isHand()){
+								isHand = true;
+						}
+						else if(department.isUtilities()){
+								isUtil = true;
+						}
+				}
+		}		
 		public void setProfile(Profile val){
 				if(val != null){
 						profile = val;
@@ -151,17 +167,17 @@ public class PayPeriodProcess{
 						//
 						if(splitDay < 7){
 								weekOneHasSplit = true;
-								week1 = new WeekEntry(debug, profile, isHand, splitDay);
-								week2 = new WeekEntry(debug, profile, isHand);
+								week1 = new WeekEntry(debug, profile, splitDay, department);
+								week2 = new WeekEntry(debug, profile, department);
 						}
 						else{
-								week1 = new WeekEntry(debug, profile, isHand);
-								week2 = new WeekEntry(debug, profile, isHand, splitDay-7);
+								week1 = new WeekEntry(debug, profile, department);
+								week2 = new WeekEntry(debug, profile, splitDay-7, department);
 						}
 				}
 				else{
-						week1 = new WeekEntry(debug, profile, isHand);
-						week2 = new WeekEntry(debug, profile, isHand);
+						week1 = new WeekEntry(debug, profile, department);
+						week2 = new WeekEntry(debug, profile, department);
 				}
 		}
     //

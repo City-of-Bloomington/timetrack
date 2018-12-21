@@ -93,7 +93,7 @@ public class GroupShiftList{
 						" date_format(gs.expire_date,'%m/%d/%Y'),"+						
 						" gs.inactive, "+
 						// group
-						" g.name,g.description,g.department_id,g.default_earn_code,g.inactive,d.name, "+
+						" g.name,g.description,g.department_id,g.default_earn_code_id,g.inactive,d.name, "+
 						// shift 
 						" s.name,s.start_hour,s.start_minute,s.duration,"+
 						" s.start_minute_window,s.minute_rounding,"+

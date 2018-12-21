@@ -5,49 +5,53 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
+<div class="internal-page">
+	<s:form action="deptEmpChange" id="form_id" method="post">
+    <s:hidden name="action2" id="action2" value="" />
+    <s:hidden name="departmentEmployee.id" value="%{departmentEmployee.id}" />
+    <s:hidden name="departmentEmployee.employee_id" value="%{departmentEmployee.employee_id}" />
+    <s:hidden name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" />
+    <s:property value="%{departmentEmployee.employee.user}" />
+    <h1>Change Employee Department </h1>
+    <s:if test="hasMessages()">
+      <s:set var="messages" value="%{messages}" />
+      <%@ include file="messages.jsp" %>
+    </s:if>
+    <s:elseif test="hasErrors()">
+      <s:set var="errors" value="%{errors}" />
+      <%@ include file="errors.jsp" %>
+    </s:elseif>		
+    Note: To change the employee department pick the pay period where the
+    pay period start date will be the employee department start date. <br />
+    Then you will need to change employee group and job using the same effective pay period. <br />
 
-<s:form action="deptEmpChange" id="form_id" method="post">
-	<s:hidden name="action2" id="action2" value="" />
-	<s:hidden name="departmentEmployee.id" value="%{departmentEmployee.id}" />
-	<s:hidden name="departmentEmployee.employee_id" value="%{departmentEmployee.employee_id}" />
-	<s:hidden name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" />
-	<s:property value="%{departmentEmployee.employee.user}" />
-	<h3>Change Employee Department </h3>
-	Note: If the department is changed, the old department expire date will be the effective change date and the effective date for the new department will be the new effective change date. <br />
-	All employee old groups expire date will be set to the effecitve change date set below and you have to assign the employee to new groups in the new department.<br />
-  <s:if test="hasActionErrors()">
-		<div class="errors">
-      <s:actionerror/>
-	</div>
-  </s:if>
-  <s:elseif test="hasActionMessages()">
-		<div class="welcome">
-      <s:actionmessage/>
-		</div>
-  </s:elseif>
-	<dl class="fn1-output-field">
-		<dt>Employee</dt>
-		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee}" /></a></dd>
-	</dl>		
-	<dl class="fn1-output-field">
-		<dt>Old Department</dt>
-			<dd><a href="<s:property value='#application.url' />department.action?id=<s:property value='departmentEmployee.department_id' />" /><s:property value="%{departmentEmployee.department}" /></a></dd>
-	</dl>
-	<dl class="fn1-output-field">
-		<dt>New Department</dt>	
-		<dd><s:select name="departmentEmployee.new_department_id" value="%{departmentEmployee.new_department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" /></dd>
-	</dl>
-	<dl class="fn1-output-field">
-		<dt>Secondary Department</dt>	
-		<dd><s:select name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" /></dd>
-	</dl>	
-	<dl class="fn1-output-field">
-		<dt>Change Effective Date</dt>
-		<dd><s:textfield name="departmentEmployee.change_date" value="%{departmentEmployee.change_date}" size="10" maxlength="10" cssClass="date" required="true" /> (this will be expire date for old department and effective date for the new one)</dd>
-	</dl>
-	<s:submit name="action" type="button" value="Change Department" class="fn1-btn"/>		
-
-</s:form>
+    <div class="width-one-half">
+      <div class="form-group">
+        <label>Employee</label>
+        <a href="<s:property value='#application.url' />employee.action?id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee}" /></a>
+      </div>
+      <div class="form-group">
+        <label>Old Department</label>
+        <a href="<s:property value='#application.url' />department.action?id=<s:property value='departmentEmployee.department_id' />" /><s:property value="%{departmentEmployee.department}" /></a>
+      </div>
+      <div class="form-group">
+        <label>New Department</label>
+        <s:select name="departmentEmployee.new_department_id" value="%{departmentEmployee.new_department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" />
+      </div>
+      <div class="form-group">
+        <label>Secondary Department</label>
+        <<s:select name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" />
+      </div>
+      <div class="form-group">
+        <label>New Dept Effective Start Pay Period</label>
+        <s:select name="departmentEmployee.pay_period_id" value="%{departmentEmployee.pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Effective start pay period" />
+      </div>
+      <div class="button-group">
+        <s:submit name="action" type="button" value="Change Department" class="fn1-btn"/>
+      </div>
+    </div>
+  </s:form>
+</div>
 
 <%@  include file="footer.jsp" %>
 

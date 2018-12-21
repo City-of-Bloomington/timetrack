@@ -94,7 +94,7 @@ public class ApproveAction extends TopAction{
 						pay_period_id = val;
 		}
 		public void setGroup_id(String val){
-				if(val != null && !val.equals("-1"))		
+				if(val != null && !val.equals(""))		
 						group_id = val;
 		}
 		public void setDocument_ids(String[] vals){
@@ -107,7 +107,8 @@ public class ApproveAction extends TopAction{
 		}				
 		public String getGroup_id(){
 				if(group_id.equals("")){
-						return "-1";
+						// return "-1";
+						getGroup();
 				}
 				return group_id;
 		}
@@ -212,14 +213,16 @@ public class ApproveAction extends TopAction{
 				getGroups();
 				if(hasGroups()){
 						if(group == null && !group_id.equals("")){
-								Group one = new Group(group_id);
-								String back = one.doSelect();
-								if(back.equals("")){
-										group = one;
+								if(!group_id.equals("all")){
+										Group one = new Group(group_id);
+										String back = one.doSelect();
+										if(back.equals("")){
+												group = one;
+										}
 								}
 						}
-						else if(groups.size() == 1){
-								group = groups.get(0);
+						else if(groups.size() > 0){ // one or more
+								group = groups.get(0); // only one group is shown
 								group_id = group.getId();
 						}
 				}
@@ -278,7 +281,7 @@ public class ApproveAction extends TopAction{
 								}
 								DocumentList dl = new DocumentList();
 								dl.setPay_period_id(pay_period_id);
-								if(!group_id.equals("")){
+								if(!group_id.equals("") && !group_id.equals("all")){
 										dl.setGroup_id(group_id);
 								}
 								else if(groups != null && groups.size() > 0){
@@ -300,7 +303,7 @@ public class ApproveAction extends TopAction{
 		public List<Employee> getNonDocEmps(){
 				if(nonDocEmps == null){
 						EmployeeList empl = new EmployeeList();
-						if(!group_id.equals("")){
+						if(!group_id.equals("") && !group_id.equals("all")){
 								empl.setGroup_id(group_id);
 						}
 						else if(groups != null && groups.size() > 0){

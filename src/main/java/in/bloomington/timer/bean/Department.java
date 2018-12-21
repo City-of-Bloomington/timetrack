@@ -85,7 +85,16 @@ public class Department implements java.io.Serializable{
 		}
 		public boolean isActive(){
 				return inactive.equals("");
-		}		
+		}
+		public boolean isHand(){
+				return !name.equals("") && name.equals("HAND");
+		}
+		public boolean isSanitation(){
+				return !name.equals("") && name.equals("Sanitation");
+		}
+		public boolean isUtilities(){
+				return !name.equals("") && name.equals("Utilities");
+		}				
     //
     // setters
     //

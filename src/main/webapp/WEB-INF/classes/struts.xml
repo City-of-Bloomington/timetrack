@@ -351,6 +351,14 @@
 			<result name="error">/WEB-INF/jsp/deptEmpChage.jsp</result>
 			<result name="success">/WEB-INF/jsp/deptEmpChange.jsp</result>
 		</action>
+		<action name="jobChange" 
+						class="in.bloomington.timer.JobChangeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/jobChange.jsp</result>		
+			<result name="error">/WEB-INF/jsp/jobChage.jsp</result>
+			<result name="success">/WEB-INF/jsp/jobChange.jsp</result>
+			<result name="pickJob">/WEB-INF/jsp/jobsChange.jsp</result>			
+		</action>		
 		<action name="groupEmpChange" 
 						class="in.bloomington.timer.GroupEmployeeAction" 
 						method="execute">

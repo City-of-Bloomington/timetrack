@@ -23,9 +23,8 @@
 
 				<s:if test="hasMoreThanOneGroup()">
 					<label for="groupd_id"><strong>Group:&nbsp;</strong></label>
-					<s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="All" onchange="doRefresh()" />
+					<s:select name="group_id" value="%{group_id}" list="groups" listKey="id" listValue="name" headerKey="all" headerValue="All" onchange="doRefresh()" />
 				</s:if>
-
 				<s:else>
 					<strong>Group:&nbsp;</strong>
 					<s:property value="group" />

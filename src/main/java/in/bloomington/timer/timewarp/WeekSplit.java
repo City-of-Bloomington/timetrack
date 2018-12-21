@@ -29,9 +29,11 @@ public class WeekSplit{
 				over_time15 = 0, over_time20 = 0,
 				unpaid_hrs = 0,
 				over_time25 = 0;
+		double union_daily_hours = 8; // except Sanitaiton 10, delman 12
 		double st_weekly_hrs = 0;
 		double prof_hrs = 0, net_reg_hrs= 0;		
 		boolean consolidated = false;
+		Department department = null;
 		ArrayList<Hashtable<String, Double>> dailyArr = null;
 
 		// for HAND dept, multiple types of regular code are used
@@ -43,9 +45,10 @@ public class WeekSplit{
 		Hashtable<String, Double> hash = new Hashtable<String, Double>();
 		//
 
-    public WeekSplit(boolean deb, Profile val){
+    public WeekSplit(boolean deb, Profile val, Department val2){
 				debug = deb;
 				setProfile(val);
+				setDepartment(val2);
     }
     public void setProfile(Profile val){
 				if(val != null){
@@ -59,6 +62,14 @@ public class WeekSplit{
 						}						
 				}
     }
+		void setDepartment(Department val){
+				if(val != null){
+						department = val;
+						if(department.isSanitation()){
+								union_daily_hours = 10;
+						}
+				}
+		}		
 		double getRegularHours(){
 				return regular_hrs;
 		}
@@ -124,7 +135,7 @@ public class WeekSplit{
 										}
 								}
 								if(hours > 8.009){
-										dif_hrs = hours - 8;
+										dif_hrs = hours - union_daily_hours;
 										if(dif_hrs > 0.009)
 										if(jj == 6){
 												earned_time20 += dif_hrs;												

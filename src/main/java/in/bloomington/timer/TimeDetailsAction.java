@@ -77,6 +77,9 @@ public class TimeDetailsAction extends TopAction{
 						if(pay_period_id.equals("")){
 								getPayPeriod();
 						}
+						// added
+						getEmployee();
+						employee.setPay_period_id(pay_period_id);
 						dl.setPay_period_id(pay_period_id);
 						if(job_id.equals("")){
 								getJob();
@@ -109,6 +112,9 @@ public class TimeDetailsAction extends TopAction{
 										addError("Pay period not set ");								
 								}
 						}
+						// added
+						getEmployee();
+						employee.setPay_period_id(pay_period_id);						
 						if(job_id.equals("")){
 								getJob();
 								if(job_id.equals("")){
@@ -190,6 +196,13 @@ public class TimeDetailsAction extends TopAction{
 						if(back.equals("")){
 								document = one;
 								job_id = document.getJob_id();
+								// added
+								pay_period_id = document.getPay_period_id();
+								if(employee == null){
+										getEmployee();
+								}
+								employee.setPay_period_id(pay_period_id);
+								// end added
 						}
 				}
 				return document;
@@ -397,6 +410,31 @@ public class TimeDetailsAction extends TopAction{
 		}
 				
 }
+/**
+insert into group_managers values
+(0,80,175,3,'2017-07-01',null,null),
+(0,80,175,4,'2017-07-01',null,null),
+(0,81,175,4,'2017-07-01',null,null),
+(0,82,175,4,'2017-07-01',null,null),
+(0,83,175,4,'2017-07-01',null,null),
+(0,84,175,4,'2017-07-01',null,null);
+
+(0,116,175,3,'2017-07-01',null,null),
+(0,117,175,3,'2017-07-01',null,null),
+(0,118,175,3,'2017-07-01',null,null),
+(0,110,175,4,'2017-07-01',null,null),
+(0,111,175,4,'2017-07-01',null,null),
+(0,112,175,4,'2017-07-01',null,null),
+(0,113,175,4,'2017-07-01',null,null),
+(0,114,175,4,'2017-07-01',null,null),
+(0,115,175,4,'2017-07-01',null,null),
+(0,116,175,4,'2017-07-01',null,null),
+(0,117,175,4,'2017-07-01',null,null),
+(0,118,175,4,'2017-07-01',null,null);
+
+
+
+ */
 
 
 

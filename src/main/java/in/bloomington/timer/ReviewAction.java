@@ -29,7 +29,8 @@ public class ReviewAction extends TopAction{
 				department_id="", // needed to forward to timewarp
 				document_id=""; //for one only
 		
-		String workflow_id = ""; 
+		String workflow_id = "";
+		Group group = null;
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
 				nextPayPeriod=null, payPeriod = null;
 		List<Document> documents = null;
@@ -56,7 +57,7 @@ public class ReviewAction extends TopAction{
 						pay_period_id = val;
 		}
 		public void setGroup_id(String val){
-				if(val != null && !val.equals("-1"))		
+				if(val != null && !val.equals(""))		
 						group_id = val;
 		}
 		public void setDocument_ids(String[] vals){
@@ -69,7 +70,7 @@ public class ReviewAction extends TopAction{
 		}				
 		public String getGroup_id(){
 				if(group_id.equals("")){
-						return "-1";
+						getGroup();
 				}
 				return group_id;
 		}
@@ -181,6 +182,26 @@ public class ReviewAction extends TopAction{
 		public List<Group> getGroups(){
 				return groups;
 		}
+		public Group getGroup(){
+				
+				getGroups();
+				if(hasGroups()){
+						if(group == null && !group_id.equals("")){
+								if(!group_id.equals("all")){
+										Group one = new Group(group_id);
+										String back = one.doSelect();
+										if(back.equals("")){
+												group = one;
+										}
+								}
+						}
+						else if(groups.size() > 0){ // one or more
+								group = groups.get(0); // only one group is shown
+								group_id = group.getId();
+						}
+				}
+				return group;
+		}		
 		public String getPay_period_id(){
 				if(pay_period_id.equals("")){
 						PayPeriodList ppl = new PayPeriodList();
@@ -224,7 +245,7 @@ public class ReviewAction extends TopAction{
 								}
 								DocumentList dl = new DocumentList();
 								dl.setPay_period_id(pay_period_id);
-								if(!group_id.equals("")){
+								if(!group_id.equals("") && !group_id.equals("all")){
 										dl.setGroup_id(group_id);
 								}
 								else if(groups != null && groups.size() > 0){
@@ -246,7 +267,7 @@ public class ReviewAction extends TopAction{
 		public List<Employee> getNonDocEmps(){
 				if(nonDocEmps == null){
 						EmployeeList empl = new EmployeeList();
-						if(!group_id.equals("")){
+						if(!group_id.equals("") && !group_id.equals("all")){
 								empl.setGroup_id(group_id);
 						}
 						else if(groups != null && groups.size() > 0){

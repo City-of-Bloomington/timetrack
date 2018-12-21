@@ -35,7 +35,6 @@ public class GroupList{
 				if(val != null)
 						employee_id = val;
     }
-		
     public void setPay_period_id (String val){
 				if(val != null)
 						pay_period_id = val;
@@ -109,7 +108,7 @@ public class GroupList{
 								qw += " and gu.inactive is null ";
 						if(!pay_period_id.equals("")){
 								qq += ", pay_periods pp ";
-								qw +=	" and gu.start_date <= pp.start_date and (gu.expire_date is null or gu.expire_date > pp.start_date)";
+								qw +=	" and gu.effective_date <= pp.start_date and (gu.expire_date is null or gu.expire_date > pp.start_date)";
 						}
 				}
 				if(active_only){

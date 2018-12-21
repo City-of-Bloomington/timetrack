@@ -266,7 +266,7 @@ public class JobTaskList{
 						if(!pay_period_id.equals("")){
 								qq += ", pay_periods pp ";
 								if(!qw.equals("")) qw += " and ";
-								qw += " j.effective_date <= pp.start_date and (j.expire_date > ? or j.expire_date is null)";
+								qw += " j.effective_date <= pp.start_date and (j.expire_date >= pp.end_date or j.expire_date is null) and pp.id = ?";
 						}
 						if(!position_id.equals("")){
 								if(!qw.equals("")) qw += " and ";

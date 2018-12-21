@@ -26,6 +26,10 @@ public class JobTask implements Serializable{
 				salary_group_id="",
 				inactive="",
 				effective_date="", expire_date="", primary_flag="";
+		//
+		// for job change
+		String new_group_id = "", pay_period_id="";
+		//
 		String clock_time_required="";
     int weekly_regular_hours=40, comp_time_weekly_hours=40;
 		double comp_time_factor=1.0, holiday_comp_factor=1.0;
@@ -323,6 +327,14 @@ public class JobTask implements Serializable{
 						}catch(Exception ex){}
 				}
 		}
+    public void setNew_group_id(String val){
+				if(val != null && !val.equals("-1"))
+						new_group_id = val;
+    }
+    public void setPay_period_id(String val){
+				if(val != null && !val.equals("-1"))
+						pay_period_id = val;
+    }		
 		public String getName(){
 				getPosition();
 				if(position != null) {
@@ -742,6 +754,77 @@ public class JobTask implements Serializable{
 						doSelect();
 				}
 
+				return msg;
+		}
+		public String doChange(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				boolean add_group = false;
+				String qq = "update jobs set expire_date = ? where id = ?";
+				
+				if(pay_period_id.equals("")){
+						msg = "pay period is required";
+						return msg;
+				}
+				if(!group_id.equals(new_group_id)){
+						// a new group
+						add_group = true;
+				}
+				PayPeriod pp = new PayPeriod(pay_period_id);
+				msg = pp.doSelect();
+				String start_date = pp.getStart_date();
+				String old_expire_date = Helper.getDateFrom(start_date,-1);
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+								return msg;
+				}						
+				try{
+						pstmt = con.prepareStatement(qq);
+						java.util.Date date_tmp = df.parse(old_expire_date);
+						pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setString(2, id);				
+						pstmt.executeUpdate();
+						String old_group_id = group_id;
+						group_id = new_group_id;
+						id = "";
+						effective_date = start_date;
+						msg = doSave();
+						if(add_group){
+								// add employee to the new group
+								GroupEmployee ge = new GroupEmployee();
+								ge.setGroup_id(new_group_id);
+								ge.setEmployee_id(employee_id);
+								ge.setEffective_date(start_date);
+								msg = ge.doSave();
+								if(msg.equals("")){
+										// find the old employee group
+										GroupEmployeeList gel = new GroupEmployeeList();
+										gel.setGroup_id(old_group_id);
+										gel.setEmployee_id(employee_id);
+										gel.setActiveOnly();
+										msg = gel.find();
+										if(msg.equals("")){
+												List<GroupEmployee> ones = gel.getGroupEmployees();
+												if(ones != null && ones.size() > 0){
+														ge = ones.get(0);
+														ge.setExpire_date(old_expire_date);
+														ge.doUpdate();
+												}
+										}
+								}
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+				}						
 				return msg;
 		}
 		// we update job based on info we get from NW (if any)

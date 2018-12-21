@@ -43,7 +43,6 @@ public class DbEmployeeService extends HttpServlet{
 				throws ServletException, IOException {
 
 				String id = "";
-
 				//
 				String message="", action="";
 				res.setContentType("application/json");
@@ -52,10 +51,6 @@ public class DbEmployeeService extends HttpServlet{
 				String term ="", type="";
 				boolean success = true;
 				HttpSession session = null;
-				if(url.equals("")){
-						url    = getServletContext().getInitParameter("url");
-						//
-				}
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
 				while (values.hasMoreElements()){
@@ -108,7 +103,6 @@ public class DbEmployeeService extends HttpServlet{
 						json += "{\"id\":\""+one.getId()+"\",\"value\":\""+one.getFull_name()+"\",\"full_name\":\""+one.getFull_name()+"\"}";
 				}
 				json = "["+json+"]";
-				// System.err.println("json "+json);
 				return json;
 		}
 }

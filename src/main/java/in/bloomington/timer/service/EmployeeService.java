@@ -108,12 +108,11 @@ public class EmployeeService extends HttpServlet{
 		String writeJson(List<Employee> emps){
 				String json="";
 				for(Employee one:emps){
-						System.err.println(one.getFull_name());
+						// System.err.println(one.getFull_name());
 						if(!json.equals("")) json += ",";
 						json += "{\"id\":\""+one.getUsername()+"\",\"value\":\""+one.getFull_name()+"\",\"first_name\":\""+one.getFirst_name()+"\",\"fullname\":\""+one.getFull_name()+"\",\"username\":\""+one.getUsername()+"\",\"last_name\":\""+one.getLast_name()+"\",\"employee_number\":\""+one.getEmployee_number()+"\",\"id_code\":\""+one.getId_code()+"\",\"email\":\""+one.getEmail()+"\",\"department_id\":\""+one.getDepartment_id()+"\",\"group_id\":\""+one.getGroup_id()+"\"}";
 				}
 				json = "["+json+"]";
-				//	System.err.println("json "+json);
 				return json;
 		}
 

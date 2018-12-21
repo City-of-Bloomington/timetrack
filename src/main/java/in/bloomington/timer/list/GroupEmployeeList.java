@@ -76,7 +76,7 @@ select g.id,g.name,g.description,g.department_id,g.inactive,d.name from groups g
 				if(!pay_period_id.equals("")){
 						qq += ", pay_periods pp ";
 						if(!qw.equals("")) qw += " and ";
-						qw += " pp.id=? and pp.start_date > g.effective_date and (g.exire_date is null or g.expire_date > pp.start_date )";
+						qw += " pp.id=? and pp.start_date > g.effective_date and (g.expire_date is null or g.expire_date > pp.start_date )";
 				}
 				else if(current_only){
 						if(!qw.equals("")) qw += " and ";						
@@ -120,7 +120,8 @@ select g.id,g.name,g.description,g.department_id,g.inactive,d.name from groups g
 																									 rs.getString(4),
 																									 rs.getString(5),
 																									 rs.getString(6) != null);
-							 groupEmployees.add(one);
+							 if(!groupEmployees.contains(one))
+									 groupEmployees.add(one);
 						}
 				}
 				catch(Exception ex){

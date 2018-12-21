@@ -31,6 +31,7 @@ public class Employee implements Serializable{
 		// normally this date is pay period start date
 		String job_active_date = "", pay_period_id="", selected_job_id="";
 		// User user = null;
+		PayPeriod payPeriod  = null;
 		List<JobTask> jobs = null;
 		List<Group> groups = null;
 		List<GroupManager> approvers = null;
@@ -365,7 +366,21 @@ public class Employee implements Serializable{
 		}
 		public boolean isAdmin(){
 				return hasRole("Admin");
-		}		
+		}
+		void findPayPeriod(){
+				if(pay_period_id.equals("")){
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.currentOnly();
+						String back = ppl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = ppl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										PayPeriod one = ones.get(0);
+										pay_period_id = one.getId();
+								}
+						}
+				}
+		}
 		public List<Group> getGroups(){
 				if(groups == null && !id.equals("")){
 						GroupList gl = new GroupList(id);
@@ -508,11 +523,12 @@ public class Employee implements Serializable{
 		public Department getDepartment(){
 				if(department == null && !id.equals("")){
 						DepartmentEmployeeList del = new DepartmentEmployeeList(id);
+						if(pay_period_id.equals("")){
+								findPayPeriod();
+						}
 						if(!pay_period_id.equals("")){
 								del.setPay_period_id(pay_period_id);
 						}
-						else
-								del.setActiveOnly();
 						String back = del.find();
 						if(back.equals("")){
 								List<DepartmentEmployee> des = del.getDepartmentEmployees();
@@ -531,18 +547,16 @@ public class Employee implements Serializable{
 		public List<DepartmentEmployee> getDepartmentEmployees(){
 				if(departmentEmployees == null && !id.equals("")){
 						DepartmentEmployeeList del = new DepartmentEmployeeList(id);
-						// we want all
+						if(!pay_period_id.equals("")){
+								findPayPeriod();
+						}
+						del.setPay_period_id(pay_period_id);
 						String back = del.find();
 						if(back.equals("")){
 								List<DepartmentEmployee> des = del.getDepartmentEmployees();
 								if(des != null && des.size() > 0){
 										departmentEmployees = des;
-										for(DepartmentEmployee one:des){
-												if(one.isActive()){
-														departmentEmployee = one; // active one
-														break;
-												}
-										}
+										departmentEmployee = des.get(0); 
 								}
 						}
 				}
@@ -563,7 +577,10 @@ public class Employee implements Serializable{
 		public List<GroupEmployee> getGroupEmployees(){
 				if(groupEmployees == null && !id.equals("")){
 						GroupEmployeeList del = new GroupEmployeeList(id);
-						// we want all
+						if(!pay_period_id.equals("")){
+								findPayPeriod();
+						}
+						del.setPay_period_id(pay_period_id);
 						String back = del.find();
 						if(back.equals("")){
 								List<GroupEmployee> ones = del.getGroupEmployees();
@@ -638,6 +655,15 @@ public class Employee implements Serializable{
 		public boolean hasMultipleJobs(){
 				getJobs();
 				return jobs != null && jobs.size() > 1;
+		}
+		public boolean hasOneJobOnly(){
+				getJobs();
+				return jobs != null && jobs.size() == 1;
+		}
+		public JobTask getJob(){
+				if(hasOneJobOnly())
+						return jobs.get(0);
+				return null;
 		}
 		public boolean hasNoJob(){
 				getJobs();

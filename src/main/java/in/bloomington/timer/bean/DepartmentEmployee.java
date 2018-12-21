@@ -26,10 +26,12 @@ public class DepartmentEmployee{
 				effective_date="",
 				expire_date="",				
 				new_department_id="",
+				pay_period_id="", // for changing dept
 				change_date="";// change department
 		boolean active = true;
 		Department department = null, department2=null;
 		Employee employee = null;
+		PayPeriod payPeriod = null;
 		public DepartmentEmployee(){
     }
 		
@@ -41,18 +43,16 @@ public class DepartmentEmployee{
 															String val3,
 															String val4,
 															String val5,
-															String val6,
-															boolean val7
+															String val6
 															){
-				setVals(val, val2, val3, val4, val5, val6, val7);
+				setVals(val, val2, val3, val4, val5, val6);
     }
     void setVals(String val,
 								 String val2,
 								 String val3,
 								 String val4,
 								 String val5,
-								 String val6,
-								 boolean val7
+								 String val6
 								){
 				setId(val);
 				setEmployee_id(val2);
@@ -60,7 +60,7 @@ public class DepartmentEmployee{
 				setDepartment2_id(val4);
 				setEffective_date(val5);
 				setExpire_date(val6);
-				setActive(val7);
+				// setActive(val7);
     }
     //
     // getters
@@ -74,6 +74,11 @@ public class DepartmentEmployee{
 		public String getDepartment_id(){
 				return department_id;
     }
+		public String getPay_period_id(){
+				if(pay_period_id.equals(""))
+						return "-1";
+				return pay_period_id;
+    }		
 		public String getDepartment2_id(){
 				if(department2_id.equals(""))
 						return "-1";
@@ -93,9 +98,11 @@ public class DepartmentEmployee{
     public String getChange_date(){
 				return change_date;
     }
+		/*
 		public boolean isActive(){
 				return active;
 		}
+		*/
 		public boolean hasSecondaryDept(){
 				return !department2_id.equals("");
 		}
@@ -110,7 +117,10 @@ public class DepartmentEmployee{
 				if(val != null)
 						employee_id = val;
     }
-
+    public void setPay_period_id (String val){
+				if(val != null && !val.equals("-1"))
+						pay_period_id = val;
+    }
     public void setDepartment_id (String val){
 				if(val != null && !val.equals("-1"))
 						department_id = val;
@@ -135,9 +145,6 @@ public class DepartmentEmployee{
 				if(val != null)
 						expire_date = val;
     }
-		public void setActive(boolean val){
-				active = val;
-		}
 		public Department getDepartment(){
 				if(department == null && !department_id.equals("")){
 						Department dd = new Department(department_id);
@@ -174,6 +181,17 @@ public class DepartmentEmployee{
 				return employee;				
 
 		}
+		public PayPeriod getPayPeriod(){
+				if(payPeriod == null && !pay_period_id.equals("")){
+						PayPeriod dd = new PayPeriod(pay_period_id);
+						String back = dd.doSelect();
+						if(back.equals("")){
+								payPeriod = dd;
+						}
+				}
+				return payPeriod;				
+		}		
+		
 		public String toString(){
 				return id;
 		}
@@ -204,8 +222,8 @@ public class DepartmentEmployee{
 				String msg="", str="";
 				String qq = "select id,employee_id,department_id,department2_id,"+
 						" date_format(effective_date,'%m/%d/%Y'),"+
-						" date_format(expire_date,'%m/%d/%Y'), "+
-						" expire_date < now() "+
+						" date_format(expire_date,'%m/%d/%Y') "+
+						// " expire_date < now() "+
 						" from department_employees where ";
 				if(!id.equals("")){
 						qq += " id = ? ";
@@ -243,8 +261,7 @@ public class DepartmentEmployee{
 														rs.getString(3),
 														rs.getString(4),
 														rs.getString(5),
-														rs.getString(6),
-														rs.getString(7) == null);
+														rs.getString(6));
 								}
 								else{
 										msg = "Department Employee not found";
@@ -379,15 +396,20 @@ public class DepartmentEmployee{
 				}
 				if(new_department_id.equals("")){
 						return " new department id not set ";
-				}				
+				}
+				if(pay_period_id.equals("")){
+						return " pay period is required";
+				}
+				getPayPeriod();
+				String start_date = payPeriod.getStart_date();
+				String old_expire_date = Helper.getDateFrom(start_date,-1);
 				String qq = "update department_employees set expire_date=? where id=? ";
-				
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				try{
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
-								java.util.Date date_tmp = df.parse(change_date);
+								java.util.Date date_tmp = df.parse(old_expire_date);
 								pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
 								pstmt.setString(2, id);
 								pstmt.executeUpdate();
@@ -401,7 +423,7 @@ public class DepartmentEmployee{
 						Helper.databaseDisconnect(pstmt, rs);
 				}
 				if(msg.equals("")){
-						effective_date = change_date;
+						effective_date = start_date;
 						department_id = new_department_id;
 						id="";
 						msg = doSave();

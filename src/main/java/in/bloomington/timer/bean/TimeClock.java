@@ -19,6 +19,7 @@ public class TimeClock {
     static Logger logger = LogManager.getLogger(TimeClock.class);
     String id = "", id_code = "", time = "", document_id = "", time_in = "", time_out = "", job_id = "",
 				employee_id = "";
+		String time_clock_duration = "13"; // hrs
     Employee employee = null;
     PayPeriod currentPayPeriod = null;
     Document document = null;
@@ -417,7 +418,7 @@ public class TimeClock {
 								tbl.setActiveOnly();
 								tbl.setDate_from(yesterday); // yesterday
 								tbl.setDate_to(date); // today
-								tbl.setDuration("12"); // last 12 hours
+								tbl.setDuration(time_clock_duration);
 								msg = tbl.findTimeBlocksForClockIn();
 								if (msg.equals("")) {
 										List<TimeBlock> tbs = tbl.getTimeBlocks();

@@ -163,26 +163,6 @@ public class TimeBlockList{
 		public Map<JobType, Map<Integer, Double>> getDailyDbl(){
 				return daily;
 		}
-		/*
-		public Map<String, Map<Integer, Double>> getDailyDbl(){
-				return daily;
-		}
-		public Map<String, Map<Integer, String>> getDaily(){
-				Set<String> set = daily.keySet();
-				Map<String, Map<Integer, String>> mapd = new TreeMap<>();
-				for(String str:set){
-						Map<Integer, String> map2 = new TreeMap<>();
-						
-						Map<Integer, Double> map = daily.get(str);
-						for(int j=0;j<16;j++){ // 8 total week1, 15 total week2
-								double val = map.get(j);
-								map2.put(j, dfn.format(val));
-						}
-						mapd.put(str, map2);
-				}
-				return mapd;
-		}
-		*/
 		public Map<JobType, Map<Integer, String>> getDaily(){
 				Set<JobType> set = daily.keySet();
 				Map<JobType, Map<Integer, String>> mapd = new TreeMap<>();
@@ -791,8 +771,11 @@ public class TimeBlockList{
 		/**
 		 * find time blocks for clock-in only
 		 * in today or yesterday with time duration of 12 hrs
-				select t.id,t.document_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.clock_in,t.clock_out,((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) tdif  from time_blocks t,time_documents d,pay_periods p                        where t.document_id=d.id and d.pay_period_id=p.id and d.id=1719                  and p.id = 547                                                                  and t.date >= '2018-12-16' and t.date <= '2018-12-17'                           and ((((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= 12.0                                                         and ((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0.) or                                                          (((hour(current_time()) + 12 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= 12.0                                                          and ((hour(current_time()) + 12+ minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0.) or                                                     (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= 12.0                                                           and ((hour(current_time()) + 24+ minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0.))                                                       and t.clock_in is not null and t.clock_out is null                              and t.inactive is null 
-				
+		 *
+				select t.id,t.document_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.clock_in,t.clock_out,((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) tdif  from time_blocks t,time_documents d,pay_periods p                        where t.document_id=d.id and d.pay_period_id=p.id and d.id=1719                  and p.id = 547                                                                  and t.date >= '2018-12-20' and t.date <= '2018-12-21'                           and ((((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= 12.0                                                         and ((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0.) or                                                          (((hour(current_time()) + 12 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= 12.0                                                          and ((hour(current_time()) + 12+ minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0.) or                                                     (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= 12.0                                                           and ((hour(current_time()) + 24+ minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0.))                                                       and t.clock_in is not null and t.clock_out is null                              and t.inactive is null 
+
+				select t.id,t.document_id,t.hour_code_id,date_format(t.date,'%m/%d/%Y'),t.begin_hour,t.begin_minute,t.end_hour,t.end_minute,t.hours,t.clock_in,t.clock_out,((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) tdif,                                                                   ((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) tdif2,                                                                ((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) tdif4                                                               from time_blocks t,time_documents d,pay_periods p                               where t.document_id=d.id and d.pay_period_id=p.id and d.id=1719                  and p.id = 547                                                                  and t.date between '2018-12-20' and '2018-12-21'                            and (                                                                               (((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and 13.0 and t.date = '2018-12-21') or                                                (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and 13.0 and t.date='2018-12-20'))                                           and t.clock_in is not null and t.clock_out is null                              and t.inactive is null 
+								
 		 
 		 */ 
 		public String findTimeBlocksForClockIn(){
@@ -846,12 +829,9 @@ public class TimeBlockList{
 				}
 				if(!duration.equals("")){
 						if(!qw.equals("")) qw += " and ";						
-						qw += " ((((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= ? "+
-								" and ((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0)  or "+
-								" (((hour(current_time()) + 12 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= ? "+
-								" and ((hour(current_time()) + 12 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0) or "+
-								" (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) <= ? "+
-								" and ((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) > 0)) ";	
+						qw += " ((((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?) "+
+								"  or "+
+								" (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?)) ";
 				}
 				if(active_only){
 						if(!qw.equals("")) qw += " and ";
@@ -893,8 +873,11 @@ public class TimeBlockList{
 						}
 						if(!duration.equals("")){
 								pstmt.setString(jj++, duration);
+								java.util.Date date_tmp = df.parse(date_to);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 								pstmt.setString(jj++, duration);
-								pstmt.setString(jj++, duration);
+								date_tmp = df.parse(date_from);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));								
 						}
 						rs = pstmt.executeQuery();
 						while(rs.next()){

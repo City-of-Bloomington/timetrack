@@ -22,9 +22,8 @@ public class GroupService extends HttpServlet{
 
 		static final long serialVersionUID = 2210L;
 		static Logger logger = LogManager.getLogger(GroupService.class);
-    String url="";
-    boolean debug = false;
-		static EnvBean envBean = null;
+    static String url="";
+    static boolean debug = false;
 		
     public void doGet(HttpServletRequest req,
 											HttpServletResponse res)
@@ -46,15 +45,6 @@ public class GroupService extends HttpServlet{
 				PrintWriter out = res.getWriter();
 				String name, value;
 				String term ="", type="", department_id="";
-				boolean success = true;
-				HttpSession session = null;
-				if(url.equals("")){
-						url    = getServletContext().getInitParameter("url");
-						//
-						String str = getServletContext().getInitParameter("debug");
-						if(str.equals("true")) debug = true;
-
-				}
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
 				while (values.hasMoreElements()){
@@ -76,7 +66,6 @@ public class GroupService extends HttpServlet{
 				}
 				GroupList glist =  null;
 				List<Group> groups = null;
-				System.err.println(" dept id "+department_id);
 				if(!department_id.equals("")){
 						//
 						glist = new GroupList();
@@ -108,7 +97,7 @@ public class GroupService extends HttpServlet{
 						json += "{\"id\":\""+one.getId()+"\",\"name\":\""+one.getName()+"\"}";
 				}
 				json = "["+json+"]";
-				System.err.println(json);
+				// System.err.println(json);
 				return json;
 		}
 }

@@ -74,7 +74,7 @@ public class UnoConnect implements ServletRequestListener{
 										if(con != null && !con.isClosed()){
 												// ((Connection)conn.get()).close();
 												con.close();
-												System.out.println("Removed Connection ..."+con_cnt);
+												// System.out.println("Removed Connection ..."+con_cnt);
 												con_cnt--;
 												con = null;
 												conn.set(null);
@@ -95,7 +95,7 @@ public class UnoConnect implements ServletRequestListener{
 				}
 		}
 		public void requestInitialized(ServletRequestEvent event) {
-				System.err.println(" new request ");
+				// System.err.println(" new request ");
     }			
 		public void requestDestroyed(ServletRequestEvent event) {
 				closeConnection();
@@ -109,7 +109,7 @@ public class UnoConnect implements ServletRequestListener{
 						rs = stmt.executeQuery(qq);
 						if(rs.next()){
 								con_cnt++;
-								System.err.println(" con cnt "+con_cnt);								
+								// System.err.println(" con cnt "+con_cnt);								
 								return true;
 						}
 				}

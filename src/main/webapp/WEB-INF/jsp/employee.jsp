@@ -112,6 +112,12 @@
 					</s:if>
 					<s:else>
 						<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='employee.id' />" class="button"> Add Another Job</a>
+						<s:if test="employee.hasOneJobOnly()">
+							<a href="<s:property value='#application.url' />jobChange.action?related_employee_id=<s:property value='employee.id' />&id=<s:property value='employee.job.id' />" class="button">Change Job</a>
+						</s:if>
+						<s:else>
+							<a href="<s:property value='#application.url' />jobChange.action?related_employee_id=<s:property value='employee.id' />" class="button">Change Job</a>
+						</s:else>
 					</s:else>
 					<s:submit name="action" type="button" value="Save Changes" class="button"/>
 				</div>
