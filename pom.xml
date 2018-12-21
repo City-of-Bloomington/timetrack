@@ -5,7 +5,7 @@
 	<groupId>in.bloomington.timer</groupId>
 	<artifactId>timetrack</artifactId>
 	<packaging>war</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>Timetrack</name>
 	<url>https://github.com/City-of-Bloomington/timetrack</url>
 	<properties>
@@ -221,6 +221,47 @@
                     <outputStyle>nested</outputStyle>
                 </configuration>
             </plugin>
-		</plugins>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <sourceFile>${basedir}/src/main/webapp/css/main.css</sourceFile>
+                                    <destinationFile>${build.directory}/${artifactId}/css/main-${version}-${git.commit.id.abbrev}.css</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${basedir}/src/main/webapp/css/main.css.map</sourceFile>
+                                    <destinationFile>${build.directory}/${artifactId}/css/main-${version}-${git.commit.id.abbrev}.css.map</destinationFile>
+                                </fileSet>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.2.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${basedir}/.git</dotGitDirectory>
+                </configuration>
+            </plugin>
+      </plugins>
 	</build>
 </project>
