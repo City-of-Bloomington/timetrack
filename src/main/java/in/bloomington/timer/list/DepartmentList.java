@@ -169,6 +169,7 @@ public class DepartmentList{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
 		}
@@ -199,6 +200,7 @@ public class DepartmentList{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
 		}

@@ -191,6 +191,7 @@ public class EmployeeAccrual extends CommonInc{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -246,6 +247,7 @@ public class EmployeeAccrual extends CommonInc{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -284,6 +286,7 @@ public class EmployeeAccrual extends CommonInc{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				doSelect();
 				return msg;

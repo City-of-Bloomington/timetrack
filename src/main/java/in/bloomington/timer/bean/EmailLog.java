@@ -268,7 +268,8 @@ public class EmailLog{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);	
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
 		
@@ -312,7 +313,8 @@ public class EmailLog{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);									
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
 		}

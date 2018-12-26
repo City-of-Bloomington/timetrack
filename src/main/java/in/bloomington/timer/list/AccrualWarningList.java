@@ -105,6 +105,7 @@ public class AccrualWarningList{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
 		}

@@ -225,6 +225,7 @@ public class GroupEmployee extends CommonInc {
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
     }
@@ -267,6 +268,7 @@ public class GroupEmployee extends CommonInc {
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
     }
@@ -295,6 +297,7 @@ public class GroupEmployee extends CommonInc {
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				if(msg.equals("")){
 						id=""; effective_date=change_date;
@@ -349,6 +352,7 @@ public class GroupEmployee extends CommonInc {
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}		

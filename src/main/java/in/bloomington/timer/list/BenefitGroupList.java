@@ -70,6 +70,7 @@ public class BenefitGroupList{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
     }

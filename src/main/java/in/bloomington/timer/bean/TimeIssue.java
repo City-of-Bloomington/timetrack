@@ -182,7 +182,8 @@ public class TimeIssue{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
 		}
@@ -222,6 +223,7 @@ public class TimeIssue{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				if(msg.equals("")){
 						msg = doSelect();
@@ -256,6 +258,7 @@ public class TimeIssue{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				if(msg.equals("")){
 						msg = doSelect();

@@ -742,6 +742,7 @@ public class Employee implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -812,6 +813,7 @@ public class Employee implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				if(msg.equals(""))
 						msg = doSelect();
@@ -884,6 +886,7 @@ public class Employee implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -960,6 +963,7 @@ public class Employee implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}		
@@ -991,6 +995,7 @@ public class Employee implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}						

@@ -346,6 +346,7 @@ public class LeaveBlockLog{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -412,6 +413,7 @@ public class LeaveBlockLog{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}

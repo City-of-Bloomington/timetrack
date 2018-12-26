@@ -122,4 +122,11 @@ public class UnoConnect implements ServletRequestListener{
 				return false;
 		}
 
+    /**
+     * if want to go back for pooling we are going to need this
+     */
+    public static void databaseDisconnect(Connection con){
+	// nothing for now
+	
+    }
 }

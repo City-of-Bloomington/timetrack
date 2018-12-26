@@ -181,6 +181,7 @@ public class LeaveBlockList{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}								
 				return jobNames;
 		}
@@ -332,6 +333,7 @@ public class LeaveBlockList{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -417,6 +419,7 @@ public class LeaveBlockList{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}		

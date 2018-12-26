@@ -216,6 +216,7 @@ public class HourCodeCondition implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -269,6 +270,7 @@ public class HourCodeCondition implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -327,6 +329,7 @@ public class HourCodeCondition implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				if(msg.equals("")){
 						doSelect();

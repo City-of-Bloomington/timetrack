@@ -18,282 +18,284 @@ import in.bloomington.timer.bean.*;
 
 public class HourCodeList{
 
-		static final long serialVersionUID = 1000L;
-		static Logger logger = LogManager.getLogger(HourCodeList.class);
-		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		List<HourCode> hourCodes = null;
-		String department_id = "", salary_group_id="", effective_date_before="";
-		String employee_id = "", accrual_id="", group_id="";
-		boolean active_only = false , default_regular_only = false;
-		boolean current_only = false, related_to_accruals_only=false;
-		String type="";
-		boolean allEarnTypes = false;
+    static final long serialVersionUID = 1000L;
+    static Logger logger = LogManager.getLogger(HourCodeList.class);
+    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+    List<HourCode> hourCodes = null;
+    String department_id = "", salary_group_id="", effective_date_before="";
+    String employee_id = "", accrual_id="", group_id="";
+    boolean active_only = false , default_regular_only = false;
+    boolean current_only = false, related_to_accruals_only=false;
+    String type="";
+    boolean allEarnTypes = false;
     public HourCodeList(){
     }
     public HourCodeList(String val, String val2){
-				setDepartment_id(val);
-				setSalary_group_id(val2);
+	setDepartment_id(val);
+	setSalary_group_id(val2);
     }		
     public void setDepartment_id(String val){
-				if(val != null && !val.equals("-1"))
-						department_id = val;
+	if(val != null && !val.equals("-1"))
+	    department_id = val;
     }
     public void setSalary_group_id(String val){
-				if(val != null && !val.equals("-1"))
-						salary_group_id = val;
+	if(val != null && !val.equals("-1"))
+	    salary_group_id = val;
     }
     public void setEffective_date_before(String val){
-				if(val != null)
-						effective_date_before = val;
+	if(val != null)
+	    effective_date_before = val;
     }
     public void setEmployee_id(String val){
-				if(val != null && !val.equals("-1"))
-						employee_id = val;
+	if(val != null && !val.equals("-1"))
+	    employee_id = val;
     }
     public void setAccrual_id(String val){
-				if(val != null && !val.equals("-1"))
-						accrual_id = val;
+	if(val != null && !val.equals("-1"))
+	    accrual_id = val;
     }
     public void setGroup_id(String val){
-				if(val != null && !val.equals("-1"))
-						group_id = val;
+	if(val != null && !val.equals("-1"))
+	    group_id = val;
     }
     public void setType(String val){
-				if(val != null && !val.equals("-1"))
-						type = val;
+	if(val != null && !val.equals("-1"))
+	    type = val;
     }
-		public void setEarnTypes(){
-				allEarnTypes = true;
-		}
-		public void setActiveOnly(){
-				active_only = true;
-		}
-		public void setCurrentOnly(){
-				current_only = true;
-		}
-		public void relatedToAccrualsOnly(){
-				related_to_accruals_only = true;
-		}
-		public void setDefaultRegularOnly(){
-				default_regular_only = true; // needed for salary groups
-		}
-		public List<HourCode> getHourCodes(){
-				return hourCodes;
-		}
+    public void setEarnTypes(){
+	allEarnTypes = true;
+    }
+    public void setActiveOnly(){
+	active_only = true;
+    }
+    public void setCurrentOnly(){
+	current_only = true;
+    }
+    public void relatedToAccrualsOnly(){
+	related_to_accruals_only = true;
+    }
+    public void setDefaultRegularOnly(){
+	default_regular_only = true; // needed for salary groups
+    }
+    public List<HourCode> getHourCodes(){
+	return hourCodes;
+    }
     //
     // for user listing
     //
-		public String lookFor(){
-				String back = "";
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				Connection con = null;
-				if(employee_id.equals("") && (department_id.equals("") || salary_group_id.equals(""))){
-						back = " employee not set or salary group not set";
-				}
-				if(employee_id.equals("")){
-						if(department_id.equals("")){
-								back = " department not set ";
-								return back;
-						}
-						if(salary_group_id.equals("")){
-								back = " salary grop not set ";
-								return back;
-						}
-				}
-				//
-				// some hour codes are specific to certain departments
-				// other are for non-specified department
-				// 
-				String qq = "select count(*) from hour_code_conditions c where c.department_id=? ";
-				String qq2 = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.count_as_regular_pay,e.reg_default,e.type,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
-				String qw = "", msg="";
-				logger.debug(qq);
-				boolean setDept = false;
-				con = UnoConnect.getConnection();
-				if(con == null){
-						back = " Could not connect to DB ";
-						return back;
-				}				
-				try{
-						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, department_id);
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								int cnt = rs.getInt(1);
-								if(cnt > 0){
-										setDept = true;
-								}
-						}
-						if(current_only){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " e.inactive is null ";
-						}
-						else if(!effective_date_before.equals("")){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " c.date <= ? ";
-						}
-						if(!employee_id.equals("")){
-								qq +=" join jobs j on j.salary_group_id=c.salary_group_id ";
-								qq += " join department_employees de on de.employee_id=j.employee_id and c.department_id=de.department_id ";
-								if(!qw.equals("")) qw += " and "; 
-								qw += " j.employee_id = ? ";
-								qw += " and (j.group_id = c.group_id or c.grou_id is null)";
-						}
-						else{								
-								if(!department_id.equals("")){
-										if(!qw.equals("")) qw += " and "; 
-										qw += " (c.department_id = ? or c.department_id is null)";
-								}
-								if(!salary_group_id.equals("")){
-										if(!qw.equals("")) qw += " and "; 
-										qw += " c.salary_group_id = ? ";
-								}
-								if(!group_id.equals("")){
-										if(!qw.equals("")) qw += " and "; 
-										qw += " (c.group_id = ? or c.group_id is null)";
-								}								
-						}
-						if(!qw.equals("")){
-								qw = " where "+qw;
-						}
-						qw += " order by e.reg_default,e.name";
-						qq = qq2+qw;
-						logger.debug(qq);								
-						pstmt = con.prepareStatement(qq);
-						//
-						int jj=1;
-						if(current_only){
-						}
-						else if(!effective_date_before.equals("")){
-								java.util.Date date_tmp = df.parse(effective_date_before);
-								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-						}
-						if(!employee_id.equals("")){
-								pstmt.setString(jj++, employee_id);
-						}
-						else{
-								if(!department_id.equals("")){
-										pstmt.setString(jj++, department_id);
-								}
-								if(!salary_group_id.equals("")){
-										pstmt.setString(jj++, salary_group_id);
-								}
-						}
-						rs = pstmt.executeQuery();
-						hourCodes = new ArrayList<>();
-						while(rs.next()){
-								HourCode one = new HourCode(rs.getString(1),
-																						rs.getString(2),
-																						rs.getString(3),
-																						rs.getString(4),
-																						rs.getString(5),
-																						rs.getString(6) != null,
-																						rs.getString(7),
-																						rs.getString(8),
-																						rs.getString(9) != null);
-								if(!hourCodes.contains(one))
-											 hourCodes.add(one);
-						}
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-				}
-				return msg;
+    public String lookFor(){
+	String back = "";
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	Connection con = null;
+	if(employee_id.equals("") && (department_id.equals("") || salary_group_id.equals(""))){
+	    back = " employee not set or salary group not set";
+	}
+	if(employee_id.equals("")){
+	    if(department_id.equals("")){
+		back = " department not set ";
+		return back;
+	    }
+	    if(salary_group_id.equals("")){
+		back = " salary grop not set ";
+		return back;
+	    }
+	}
+	//
+	// some hour codes are specific to certain departments
+	// other are for non-specified department
+	// 
+	String qq = "select count(*) from hour_code_conditions c where c.department_id=? ";
+	String qq2 = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.count_as_regular_pay,e.reg_default,e.type,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
+	String qw = "", msg="";
+	logger.debug(qq);
+	boolean setDept = false;
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    back = " Could not connect to DB ";
+	    return back;
+	}				
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, department_id);
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		int cnt = rs.getInt(1);
+		if(cnt > 0){
+		    setDept = true;
 		}
+	    }
+	    if(current_only){
+		if(!qw.equals("")) qw += " and "; 
+		qw += " e.inactive is null ";
+	    }
+	    else if(!effective_date_before.equals("")){
+		if(!qw.equals("")) qw += " and "; 
+		qw += " c.date <= ? ";
+	    }
+	    if(!employee_id.equals("")){
+		qq +=" join jobs j on j.salary_group_id=c.salary_group_id ";
+		qq += " join department_employees de on de.employee_id=j.employee_id and c.department_id=de.department_id ";
+		if(!qw.equals("")) qw += " and "; 
+		qw += " j.employee_id = ? ";
+		qw += " and (j.group_id = c.group_id or c.grou_id is null)";
+	    }
+	    else{								
+		if(!department_id.equals("")){
+		    if(!qw.equals("")) qw += " and "; 
+		    qw += " (c.department_id = ? or c.department_id is null)";
+		}
+		if(!salary_group_id.equals("")){
+		    if(!qw.equals("")) qw += " and "; 
+		    qw += " c.salary_group_id = ? ";
+		}
+		if(!group_id.equals("")){
+		    if(!qw.equals("")) qw += " and "; 
+		    qw += " (c.group_id = ? or c.group_id is null)";
+		}								
+	    }
+	    if(!qw.equals("")){
+		qw = " where "+qw;
+	    }
+	    qw += " order by e.reg_default,e.name";
+	    qq = qq2+qw;
+	    logger.debug(qq);								
+	    pstmt = con.prepareStatement(qq);
+	    //
+	    int jj=1;
+	    if(current_only){
+	    }
+	    else if(!effective_date_before.equals("")){
+		java.util.Date date_tmp = df.parse(effective_date_before);
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    }
+	    if(!employee_id.equals("")){
+		pstmt.setString(jj++, employee_id);
+	    }
+	    else{
+		if(!department_id.equals("")){
+		    pstmt.setString(jj++, department_id);
+		}
+		if(!salary_group_id.equals("")){
+		    pstmt.setString(jj++, salary_group_id);
+		}
+	    }
+	    rs = pstmt.executeQuery();
+	    hourCodes = new ArrayList<>();
+	    while(rs.next()){
+		HourCode one = new HourCode(rs.getString(1),
+					    rs.getString(2),
+					    rs.getString(3),
+					    rs.getString(4),
+					    rs.getString(5),
+					    rs.getString(6) != null,
+					    rs.getString(7),
+					    rs.getString(8),
+					    rs.getString(9) != null);
+		if(!hourCodes.contains(one))
+		    hourCodes.add(one);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+    }
     //
     // for global listing (setting for example)
     //
-		public String find(){
-				String back = "";
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				Connection con = null;
-				//
-				// some hour codes are specific to certain departments
-				// other are for all department
-				// 
-				String qq = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.count_as_regular_pay,e.reg_default,e.type,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
-				String qw = "", msg="";
-				con = UnoConnect.getConnection();
-				if(con == null){
-						back = " Could not connect to DB ";
-						return back;
-				}							
-				try{
-						if(current_only){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " e.inactive is null ";
-						}
-						else if(!effective_date_before.equals("")){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " c.date <= ? ";
-						}
-						if(related_to_accruals_only){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " e.accrual_id is not null ";
-						}
-						if(!accrual_id.equals("")){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " e.accrual_id = ?  ";
-						}
-						if(!type.equals("")){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " e.type = ?  ";
-						}
-						if(allEarnTypes){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " (e.type = 'Earned' or e.type ='Overtime')  ";
-						}
-						if(default_regular_only){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " e.reg_default=0 "; // everything else is 1
-						}
-						if(!qw.equals("")){
-								qw = " where "+qw;
-						}
-						qw += " order by e.name";
-						qq += qw;
-						logger.debug(qq);
-						pstmt = con.prepareStatement(qq);
-						//
-						int jj=1;
-						if(current_only){
-						}
-						if(!accrual_id.equals("")){
-								pstmt.setString(jj++, accrual_id);
-						}
-						if(!type.equals("")){
-								pstmt.setString(jj++, type);
-						}
-						rs = pstmt.executeQuery();
-						hourCodes = new ArrayList<>();
-						while(rs.next()){
-								HourCode one = new HourCode(rs.getString(1),
-																						rs.getString(2),
-																						rs.getString(3),
-																						rs.getString(4),
-																						rs.getString(5),
-																						rs.getString(6) != null,
-																						rs.getString(7),
-																						rs.getString(8),
-																						rs.getString(9) != null);
-								if(!hourCodes.contains(one))
-										hourCodes.add(one);
-						}
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-				}
-				return msg;
-		}						
+    public String find(){
+	String back = "";
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	Connection con = null;
+	//
+	// some hour codes are specific to certain departments
+	// other are for all department
+	// 
+	String qq = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.count_as_regular_pay,e.reg_default,e.type,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
+	String qw = "", msg="";
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    back = " Could not connect to DB ";
+	    return back;
+	}							
+	try{
+	    if(current_only){
+		if(!qw.equals("")) qw += " and "; 
+		qw += " e.inactive is null ";
+	    }
+	    else if(!effective_date_before.equals("")){
+		if(!qw.equals("")) qw += " and "; 
+		qw += " c.date <= ? ";
+	    }
+	    if(related_to_accruals_only){
+		if(!qw.equals("")) qw += " and "; 
+		qw += " e.accrual_id is not null ";
+	    }
+	    if(!accrual_id.equals("")){
+		if(!qw.equals("")) qw += " and "; 
+		qw += " e.accrual_id = ?  ";
+	    }
+	    if(!type.equals("")){
+		if(!qw.equals("")) qw += " and "; 
+		qw += " e.type = ?  ";
+	    }
+	    if(allEarnTypes){
+		if(!qw.equals("")) qw += " and "; 
+		qw += " (e.type = 'Earned' or e.type ='Overtime')  ";
+	    }
+	    if(default_regular_only){
+		if(!qw.equals("")) qw += " and "; 
+		qw += " e.reg_default=0 "; // everything else is 1
+	    }
+	    if(!qw.equals("")){
+		qw = " where "+qw;
+	    }
+	    qw += " order by e.name";
+	    qq += qw;
+	    logger.debug(qq);
+	    pstmt = con.prepareStatement(qq);
+	    //
+	    int jj=1;
+	    if(current_only){
+	    }
+	    if(!accrual_id.equals("")){
+		pstmt.setString(jj++, accrual_id);
+	    }
+	    if(!type.equals("")){
+		pstmt.setString(jj++, type);
+	    }
+	    rs = pstmt.executeQuery();
+	    hourCodes = new ArrayList<>();
+	    while(rs.next()){
+		HourCode one = new HourCode(rs.getString(1),
+					    rs.getString(2),
+					    rs.getString(3),
+					    rs.getString(4),
+					    rs.getString(5),
+					    rs.getString(6) != null,
+					    rs.getString(7),
+					    rs.getString(8),
+					    rs.getString(9) != null);
+		if(!hourCodes.contains(one))
+		    hourCodes.add(one);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+    }						
 
 }

@@ -215,7 +215,8 @@ public class GroupShift{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
 		}
@@ -284,6 +285,7 @@ public class GroupShift{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -338,6 +340,7 @@ public class GroupShift{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}

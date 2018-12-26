@@ -629,6 +629,7 @@ public class TimeBlock extends Block{
 						}
 						finally{
 								Helper.databaseDisconnect(pstmt, rs);
+								UnoConnect.databaseDisconnect(con);
 						}												
 				}
 		}
@@ -761,6 +762,7 @@ public class TimeBlock extends Block{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}						
 				return msg;	
 		}
@@ -827,6 +829,7 @@ public class TimeBlock extends Block{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -1013,6 +1016,7 @@ public class TimeBlock extends Block{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}

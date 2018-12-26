@@ -129,33 +129,33 @@ public class HourCode{
 						id = val;
     }
     public void setName(String val){
-				if(val != null)
-						name = val.trim();
+	if(val != null)
+	    name = val.trim();
     }
     public void setType(String val){
-				if(val != null)
-						type = val;
+	if(val != null)
+	    type = val;
     }		
     public void setDescription(String val){
-				if(val != null){
-						description = val.trim();
-				}
+	if(val != null){
+	    description = val.trim();
+	}
     }		
     public void setInactive(boolean val){
-				if(val)
-						inactive = "y";
+	if(val)
+	    inactive = "y";
     }				
     public void setRecord_method(String val){
-				if(val != null && !val.equals("-1"))
-						record_method = val;
+	if(val != null && !val.equals("-1"))
+	    record_method = val;
     }
     public void setAccrual_id (String val){
-				if(val != null && !val.equals("-1"))
-						accrual_id = val;
+	if(val != null && !val.equals("-1"))
+	    accrual_id = val;
     }
     public void setReg_default(String val){
-				if(val != null && !val.equals("-1"))
-						reg_default = val;
+	if(val != null && !val.equals("-1"))
+	    reg_default = val;
     }		
     public void setCount_as_regular_pay (boolean val){
 				if(val)
@@ -299,6 +299,7 @@ public class HourCode{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -343,6 +344,7 @@ public class HourCode{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -421,6 +423,7 @@ public class HourCode{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}		

@@ -15,53 +15,54 @@ import in.bloomington.timer.bean.*;
 
 public class NotificationLogList{
 
-		static Logger logger = LogManager.getLogger(NotificationLogList.class);
-		static final long serialVersionUID = 3800L;
-		List<NotificationLog> logs = null;
+    static Logger logger = LogManager.getLogger(NotificationLogList.class);
+    static final long serialVersionUID = 3800L;
+    List<NotificationLog> logs = null;
 	
-		public NotificationLogList(){
-		}
-		public List<NotificationLog> getLogs(){
-				return logs;
-		}
+    public NotificationLogList(){
+    }
+    public List<NotificationLog> getLogs(){
+	return logs;
+    }
 
-		public String find(){
+    public String find(){
 		
-				String back = "";
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				Connection con = UnoConnect.getConnection();
-				String qq = "select id,receipiants,message,date_format(date,'%m/%d/%y %H:%i'),status,error_msg from notification_logs order by id desc limit 5 ";
-				if(con == null){
-						back = "Could not connect to DB";
-						return back;
-				}
-				try{
-						logger.debug(qq);
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
-						if(logs == null)
-								logs = new ArrayList<NotificationLog>();
-						while(rs.next()){
-								NotificationLog one =
-										new NotificationLog(rs.getString(1),
-																				rs.getString(2),
-																				rs.getString(3),
-																				rs.getString(4),
-																				rs.getString(5),
-																				rs.getString(6));
-								logs.add(one);
-						}
-				}
-				catch(Exception ex){
-						back += ex+" : "+qq;
-						logger.error(back);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-				}
-				return back;
-		}
+	String back = "";
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	Connection con = UnoConnect.getConnection();
+	String qq = "select id,receipiants,message,date_format(date,'%m/%d/%y %H:%i'),status,error_msg from notification_logs order by id desc limit 5 ";
+	if(con == null){
+	    back = "Could not connect to DB";
+	    return back;
+	}
+	try{
+	    logger.debug(qq);
+	    pstmt = con.prepareStatement(qq);
+	    rs = pstmt.executeQuery();
+	    if(logs == null)
+		logs = new ArrayList<NotificationLog>();
+	    while(rs.next()){
+		NotificationLog one =
+		    new NotificationLog(rs.getString(1),
+					rs.getString(2),
+					rs.getString(3),
+					rs.getString(4),
+					rs.getString(5),
+					rs.getString(6));
+		logs.add(one);
+	    }
+	}
+	catch(Exception ex){
+	    back += ex+" : "+qq;
+	    logger.error(back);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return back;
+    }
 }
 
 

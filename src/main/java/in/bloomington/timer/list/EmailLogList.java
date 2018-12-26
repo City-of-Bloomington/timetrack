@@ -85,7 +85,8 @@ public class EmailLogList extends CommonInc{
 						logger.error(ex);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);									
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;				
 		}

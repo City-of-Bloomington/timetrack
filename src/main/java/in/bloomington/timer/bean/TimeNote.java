@@ -135,7 +135,8 @@ public class TimeNote{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
 		}
@@ -175,6 +176,7 @@ public class TimeNote{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}

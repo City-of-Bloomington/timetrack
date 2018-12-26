@@ -254,7 +254,8 @@ public class AccrualWarning{
 						logger.error(back);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);			
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
 		}
@@ -298,6 +299,7 @@ public class AccrualWarning{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -366,6 +368,7 @@ public class AccrualWarning{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}		

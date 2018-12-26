@@ -16,120 +16,121 @@ import in.bloomington.timer.bean.*;
 
 public class ShiftList{
 
-		static final long serialVersionUID = 1600L;
-		static Logger logger = LogManager.getLogger(ShiftList.class);
-		String employee_id = "", group_id="";
-		String name="", id="";
-		boolean active_only = false, inactive_only=false;
-		List<Shift> shifts = null;
+    static final long serialVersionUID = 1600L;
+    static Logger logger = LogManager.getLogger(ShiftList.class);
+    String employee_id = "", group_id="";
+    String name="", id="";
+    boolean active_only = false, inactive_only=false;
+    List<Shift> shifts = null;
     public ShiftList(){
     }
     public ShiftList(String val){
-				setEmployee_id(val);
+	setEmployee_id(val);
     }
     public void setId (String val){
-				if(val != null)
-						id = val;
+	if(val != null)
+	    id = val;
     }		
     public void setEmployee_id (String val){
-				if(val != null)
-						employee_id = val;
+	if(val != null)
+	    employee_id = val;
     }
 		
-		public void setName(String val){
-				if(val != null)
-						name = val;
-		}
+    public void setName(String val){
+	if(val != null)
+	    name = val;
+    }
     public void setActive_status(String val){
-				if(val != null && !val.equals("-1")){
-						if(val.equals("Active"))
-								active_only = true;
-						else if(val.equals("Inactive"))
-								inactive_only = true;
-				}
+	if(val != null && !val.equals("-1")){
+	    if(val.equals("Active"))
+		active_only = true;
+	    else if(val.equals("Inactive"))
+		inactive_only = true;
+	}
     }		
-		public void setActiveOnly(){
-				active_only = true;
-		}
+    public void setActiveOnly(){
+	active_only = true;
+    }
 
-		public String getId(){
-				return id;
-		}		
-		public String getName(){
-				return name;
-		}
-		public List<Shift> getShifts(){
-				return shifts;
-		}
-		public String getActive_status(){
-				if(active_only)
-						return "Active";
-				else if(inactive_only)
-						return "Inactive";
-				return "-1";
-		}
+    public String getId(){
+	return id;
+    }		
+    public String getName(){
+	return name;
+    }
+    public List<Shift> getShifts(){
+	return shifts;
+    }
+    public String getActive_status(){
+	if(active_only)
+	    return "Active";
+	else if(inactive_only)
+	    return "Inactive";
+	return "-1";
+    }
     //
     // getters
     //
-		public String find(){
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				String msg="", str="";
-				String qq = "select g.id,g.name,g.start_hour,g.start_minute,"+
-						"g.duration,"+
-						"g.start_minute_window,"+						
-						"g.minute_rounding,"+
-						"g.inactive from shifts g ";
-				String qw = "";
-				if(!name.equals("")){
-						if(!qw.equals("")) qw += " and ";						
-						qw += "g.name like ? ";
-				}				
-				if(active_only){
-						if(!qw.equals("")) qw += " and ";
-						qw += " g.inactive is null ";
-				}
-				if(!qw.equals("")){
-						qq += " where "+qw;
-				}
-				con = UnoConnect.getConnection();
-				if(con == null){
-						msg = " Could not connect to DB ";
-						logger.error(msg);
-						return msg;
-				}
-				logger.debug(qq);
-				try{
-						pstmt = con.prepareStatement(qq);
-						int jj=1;
-						if(!name.equals("")){
-								pstmt.setString(jj++, "%"+name+"%");
-						}						
-						rs = pstmt.executeQuery();
-						while(rs.next()){
-								if(shifts == null)
-										shifts = new ArrayList<>();
-								Shift one = new Shift(
-																			rs.getString(1),
-																			rs.getString(2),
-																			rs.getInt(3),
-																			rs.getInt(4),
-																			rs.getInt(5),
-																			rs.getInt(6),
-																			rs.getInt(7),
-																			rs.getString(8) != null);
-								shifts.add(one);
-						}
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-				}
-				return msg;
-		}
+    public String find(){
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String msg="", str="";
+	String qq = "select g.id,g.name,g.start_hour,g.start_minute,"+
+	    "g.duration,"+
+	    "g.start_minute_window,"+						
+	    "g.minute_rounding,"+
+	    "g.inactive from shifts g ";
+	String qw = "";
+	if(!name.equals("")){
+	    if(!qw.equals("")) qw += " and ";						
+	    qw += "g.name like ? ";
+	}				
+	if(active_only){
+	    if(!qw.equals("")) qw += " and ";
+	    qw += " g.inactive is null ";
+	}
+	if(!qw.equals("")){
+	    qq += " where "+qw;
+	}
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    logger.error(msg);
+	    return msg;
+	}
+	logger.debug(qq);
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    int jj=1;
+	    if(!name.equals("")){
+		pstmt.setString(jj++, "%"+name+"%");
+	    }						
+	    rs = pstmt.executeQuery();
+	    while(rs.next()){
+		if(shifts == null)
+		    shifts = new ArrayList<>();
+		Shift one = new Shift(
+				      rs.getString(1),
+				      rs.getString(2),
+				      rs.getInt(3),
+				      rs.getInt(4),
+				      rs.getInt(5),
+				      rs.getInt(6),
+				      rs.getInt(7),
+				      rs.getString(8) != null);
+		shifts.add(one);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+    }
 
 }

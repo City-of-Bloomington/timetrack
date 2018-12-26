@@ -16,100 +16,101 @@ import in.bloomington.timer.bean.*;
 
 public class TimeBlockLogList{
 
-		static final long serialVersionUID = 3700L;
-		static Logger logger = LogManager.getLogger(TimeBlockLogList.class);
-		String document_id = "", id="", sortBy=" id desc ";
-		List<TimeBlockLog> timeBlockLogs = null;
+    static final long serialVersionUID = 3700L;
+    static Logger logger = LogManager.getLogger(TimeBlockLogList.class);
+    String document_id = "", id="", sortBy=" id desc ";
+    List<TimeBlockLog> timeBlockLogs = null;
     public TimeBlockLogList(){
     }
     public TimeBlockLogList(String val){
-				setDocument_id(val);
+	setDocument_id(val);
     }
     public void setId (String val){
-				if(val != null)
-						id = val;
+	if(val != null)
+	    id = val;
     }		
     public void setDocument_id (String val){
-				if(val != null)
-						document_id = val;
+	if(val != null)
+	    document_id = val;
     }
 
-		public void setSortby(String val){
-				if(val != null)
-						sortBy = val;
-		}
-		public List<TimeBlockLog> getTimeBlockLogs(){
-				return timeBlockLogs;
-		}
-		public String doIt(){
-				return "";
+    public void setSortby(String val){
+	if(val != null)
+	    sortBy = val;
+    }
+    public List<TimeBlockLog> getTimeBlockLogs(){
+	return timeBlockLogs;
+    }
+    public String doIt(){
+	return "";
 
-		}
+    }
 
     //
     // getters
     //
-		public String find(){
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				String msg="", qw="";
-				String qq = "select id,document_id,hour_code_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs ";
+    public String find(){
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String msg="", qw="";
+	String qq = "select id,document_id,hour_code_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs ";
 
-				if(!document_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
-						qw += " document_id = ? ";
-				}
-				if(!qw.equals("")){
-						qq += " where "+qw;
-				}
-				if(!sortBy.equals("")){
-						qq += " order by "+sortBy;
-				}
-				con = UnoConnect.getConnection();
-				if(con == null){
-						msg = " Could not connect to DB ";
-						logger.error(msg);
-						return msg;
-				}
-				logger.debug(qq);
-				try{
-						pstmt = con.prepareStatement(qq);
-						int jj=1;
-						if(!document_id.equals("")){
-								pstmt.setString(1, document_id);
-						}
-						rs = pstmt.executeQuery();
-						while(rs.next()){
-								if(timeBlockLogs == null)
-										timeBlockLogs = new ArrayList<>();
-							 TimeBlockLog one =
-									 new TimeBlockLog(rs.getString(1),
-																		rs.getString(2),
-																		rs.getString(3),
-																		rs.getString(4),
-																		rs.getInt(5),
-																		rs.getInt(6),
-																		rs.getInt(7),
-																		rs.getInt(8),
-																		rs.getDouble(9),
-																		rs.getString(10),
-																		rs.getString(11),
-																		rs.getString(12),
-																		rs.getString(13),
-																		rs.getString(14),
-																		rs.getString(15));
-							 timeBlockLogs.add(one);
-						}
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-				}
-				return msg;
-		}
+	if(!document_id.equals("")){
+	    if(!qw.equals("")) qw += " and ";
+	    qw += " document_id = ? ";
+	}
+	if(!qw.equals("")){
+	    qq += " where "+qw;
+	}
+	if(!sortBy.equals("")){
+	    qq += " order by "+sortBy;
+	}
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    logger.error(msg);
+	    return msg;
+	}
+	logger.debug(qq);
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    int jj=1;
+	    if(!document_id.equals("")){
+		pstmt.setString(1, document_id);
+	    }
+	    rs = pstmt.executeQuery();
+	    while(rs.next()){
+		if(timeBlockLogs == null)
+		    timeBlockLogs = new ArrayList<>();
+		TimeBlockLog one =
+		    new TimeBlockLog(rs.getString(1),
+				     rs.getString(2),
+				     rs.getString(3),
+				     rs.getString(4),
+				     rs.getInt(5),
+				     rs.getInt(6),
+				     rs.getInt(7),
+				     rs.getInt(8),
+				     rs.getDouble(9),
+				     rs.getString(10),
+				     rs.getString(11),
+				     rs.getString(12),
+				     rs.getString(13),
+				     rs.getString(14),
+				     rs.getString(15));
+		timeBlockLogs.add(one);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+    }
 
 }

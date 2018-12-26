@@ -270,6 +270,7 @@ public class Workflow implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
@@ -309,6 +310,7 @@ public class Workflow implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				msg += doSelect();
 				return msg;
@@ -356,6 +358,7 @@ public class Workflow implements Serializable{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}				
