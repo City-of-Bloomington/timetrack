@@ -385,6 +385,9 @@ public class Employee implements Serializable{
 				if(groups == null && !id.equals("")){
 						GroupList gl = new GroupList(id);
 						gl.setActiveOnly();
+						if(pay_period_id.equals("")){
+								findPayPeriod();
+						}
 						if(!pay_period_id.equals("")){
 								gl.setPay_period_id(pay_period_id);
 						}

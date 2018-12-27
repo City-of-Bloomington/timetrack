@@ -235,11 +235,11 @@
                             <fileSets>
                                 <fileSet>
                                     <sourceFile>${basedir}/src/main/webapp/css/main.css</sourceFile>
-                                    <destinationFile>${build.directory}/${artifactId}/css/main-${version}-${git.commit.id.abbrev}.css</destinationFile>
+                                    <destinationFile>${project.build.directory}/${project.artifactId}/css/main-${project.version}-${git.commit.id.abbrev}.css</destinationFile>
                                 </fileSet>
                                 <fileSet>
                                     <sourceFile>${basedir}/src/main/webapp/css/main.css.map</sourceFile>
-                                    <destinationFile>${build.directory}/${artifactId}/css/main-${version}-${git.commit.id.abbrev}.css.map</destinationFile>
+                                    <destinationFile>${project.build.directory}/${project.artifactId}/css/main-${project.version}-${git.commit.id.abbrev}.css.map</destinationFile>
                                 </fileSet>
                             </fileSets>
                         </configuration>

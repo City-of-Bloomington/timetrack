@@ -759,6 +759,12 @@ public class JobTask implements Serializable{
 
 				return msg;
 		}
+		/**
+		 *
+		 update time_documents set job_id=946 where job_id=856 and pay_period_id >=
+547;
+
+		 */
 		public String doChange(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -766,14 +772,26 @@ public class JobTask implements Serializable{
 				String msg="", str="";
 				boolean add_group = false;
 				String qq = "update jobs set expire_date = ? where id = ?";
-				
+				String qq2 = "update time_documents set job_id=? where job_id=? and pay_period_id >= ? ";
 				if(pay_period_id.equals("")){
 						msg = "pay period is required";
 						return msg;
 				}
+				if(new_group_id.equals("")){
+						msg = "group is required";
+						return msg;
+				}				
 				if(!group_id.equals(new_group_id)){
 						// a new group
 						add_group = true;
+				}
+				if(position_id.equals("")){
+						msg = "position is required";
+						return msg;
+				}
+				if(salary_group_id.equals("")){
+						msg = "salary group is required";
+						return msg;
 				}
 				PayPeriod pp = new PayPeriod(pay_period_id);
 				msg = pp.doSelect();
@@ -791,11 +809,22 @@ public class JobTask implements Serializable{
 						pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
 						pstmt.setString(2, id);				
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						String old_group_id = group_id;
+						String old_job_id = id;
 						group_id = new_group_id;
 						id = "";
 						effective_date = start_date;
 						msg = doSave();
+						qq = qq2;
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.setString(2, old_job_id);
+						pstmt.setString(3, pay_period_id);
+						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						//
 						if(add_group){
 								// add employee to the new group
 								GroupEmployee ge = new GroupEmployee();

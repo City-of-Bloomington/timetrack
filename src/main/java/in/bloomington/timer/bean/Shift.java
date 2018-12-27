@@ -163,7 +163,7 @@ public class Shift{
 										}
 										else{ // such as 8:30
 												if(hh == start_hour){
-														return (start_minute - mm) < start_minute_window;
+														return (start_minute - mm) > 0 && (start_minute - mm) < start_minute_window;
 												}
 										}
 								}
