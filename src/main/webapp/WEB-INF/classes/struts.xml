@@ -10,175 +10,174 @@
 
   <package name="default" extends="struts-default">
 
-		<!-- this is a global action that makes sure user is logged in -->
+    <!-- this is a global action that makes sure user is logged in -->
 		
-		<global-results>
+    <global-results>
       <result name="login" type="redirect">welcome.action</result>
-		</global-results>
-		
-		<action name="home">
-			<interceptor-ref name="defaultStack"></interceptor-ref>
-			<result>/Login</result>
-		</action>
-		<action name="index"> 
+    </global-results>
+    
+    <action name="home">
+      <interceptor-ref name="defaultStack"></interceptor-ref>
+      <result>/Login</result>
+    </action>
+    <action name="index"> 
       <result >/index.html</result>
     </action>				
-		<action name="settings"
-						class="in.bloomington.timer.SettingAction">
-			<result name="success">/WEB-INF/jsp/settings.jsp</result>
-			<result name="error">/Login</result>			
-			<result name="login">/Login</result>	 
-		</action>		
+    <action name="settings"
+	    class="in.bloomington.timer.SettingAction">
+      <result name="success">/WEB-INF/jsp/settings.jsp</result>
+      <result name="error">/Login</result>			
+      <result name="login">/Login</result>	 
+    </action>		
+    
+    <action name="welcome"
+	    class="in.bloomington.timer.WelcomeAction">
+      <result name="success">/WEB-INF/jsp/welcome.jsp</result>
+      <result name="error">/Login</result>			
+      <result name="login">/Login</result>	   
+    </action>
 
-		<action name="welcome"
-						class="in.bloomington.timer.WelcomeAction">
-			<result name="success">/WEB-INF/jsp/welcome.jsp</result>
-			<result name="error">/Login</result>			
-			<result name="login">/Login</result>	   
-		</action>
-
-		<!--
-		<action name="logout"
-						class="in.bloomington.timer.LogoutAction">
-			<result name="success">/WEB-INF/jsp/logoutPage.jsp</result>
-			<result name="error">/WEB-INF/jsp/logoutPage.jsp</result>
-		</action>
-		-->
-		<action name="inform" 
-						class="in.bloomington.timer.InformAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/inform.jsp</result>		
-			<result name="error">/WEB-INF/jsp/inform.jsp</result>
-			<result name="success">/WEB-INF/jsp/inform.jsp</result>
-			<result name="informSuccess">/WEB-INF/jsp/informSuccess.jsp</result>
-			<result name="logs">/WEB-INF/jsp/email_logs.jsp</result>			
-		</action>		
-		<action name="type" 
-						class="in.bloomington.timer.TypeAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/type.jsp</result>		
+    <action name="logout"
+	    class="in.bloomington.timer.LogoutAction">
+      <result name="success">/WEB-INF/jsp/logoutPage.jsp</result>
+      <result name="error">/WEB-INF/jsp/logoutPage.jsp</result>
+    </action>
+    
+    <action name="inform" 
+	    class="in.bloomington.timer.InformAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/inform.jsp</result>		
+      <result name="error">/WEB-INF/jsp/inform.jsp</result>
+      <result name="success">/WEB-INF/jsp/inform.jsp</result>
+      <result name="informSuccess">/WEB-INF/jsp/informSuccess.jsp</result>
+      <result name="logs">/WEB-INF/jsp/email_logs.jsp</result>			
+    </action>		
+    <action name="type" 
+	    class="in.bloomington.timer.TypeAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/type.jsp</result>		
 			<result name="error">/WEB-INF/jsp/type.jsp</result>
 			<result name="success">/WEB-INF/jsp/type.jsp</result>
-		</action>
-		<action name="location" 
-						class="in.bloomington.timer.LocationAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/location.jsp</result>		
-			<result name="error">/WEB-INF/jsp/location.jsp</result>
-			<result name="success">/WEB-INF/jsp/location.jsp</result>
-		</action>		
-		<action name="department" 
-						class="in.bloomington.timer.DeptAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/department.jsp</result>		
-			<result name="error">/WEB-INF/jsp/department.jsp</result>
-			<result name="success">/WEB-INF/jsp/department.jsp</result>
-		</action>
-		<action name="timeNote" 
-						class="in.bloomington.timer.TimeNoteAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/timeNote.jsp</result>		
-			<result name="error">/WEB-INF/jsp/timeNote.jsp</result>
-			<result name="success">/WEB-INF/jsp/timeNote.jsp</result>
-		</action>
-		<action name="timeIssue" 
-						class="in.bloomington.timer.TimeIssueAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/timeIssue.jsp</result>		
-			<result name="error">/WEB-INF/jsp/timeIssue.jsp</result>
-			<result name="success">/WEB-INF/jsp/timeIssue.jsp</result>
-		</action>
-		<action name="handleIssue" 
-						class="in.bloomington.timer.HandleIssueAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/handleIssue.jsp</result>		
-			<result name="error">/WEB-INF/jsp/handleIssue.jsp</result>
-			<result name="success">/WEB-INF/jsp/handleIssue.jsp</result>
-		</action>		
-		<action name="accrual" 
-						class="in.bloomington.timer.AccrualAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/accrual.jsp</result>		
-			<result name="error">/WEB-INF/jsp/accrual.jsp</result>
-			<result name="success">/WEB-INF/jsp/accrual.jsp</result>
-		</action>
-		<action name="accrualSchedule" 
-						class="in.bloomington.timer.AccrualScheduleAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/accrualSchedular.jsp</result>		
-			<result name="error">/WEB-INF/jsp/accrualSchedular.jsp</result>
-			<result name="success">/WEB-INF/jsp/accrualSchedular.jsp</result>
-		</action>
-		<action name="profileSchedule" 
-						class="in.bloomington.timer.ProfileScheduleAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/profileSchedular.jsp</result>		
-			<result name="error">/WEB-INF/jsp/profileSchedular.jsp</result>
-			<result name="success">/WEB-INF/jsp/profileSchedular.jsp</result>
-		</action>
-		<action name="employeesSchedule" 
-						class="in.bloomington.timer.CurrentEmployeesScheduleAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/employeesSchedular.jsp</result>		
-			<result name="error">/WEB-INF/jsp/employeesSchedular.jsp</result>
-			<result name="success">/WEB-INF/jsp/employeesSchedular.jsp</result>
-		</action>
-		<action name="empsUpdateSchedule" 
-						class="in.bloomington.timer.EmployeesUpdateScheduleAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>		
-			<result name="error">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
-			<result name="success">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
-		</action>				
-		<action name="notificationSchedule" 
-						class="in.bloomington.timer.NotificationScheduleAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/notificationSchedular.jsp</result>		
-			<result name="error">/WEB-INF/jsp/notificationSchedular.jsp</result>
-			<result name="success">/WEB-INF/jsp/notificationSchedular.jsp</result>
-		</action>
-		<action name="batchSchedule" 
-						class="in.bloomington.timer.BatchSubmitScheduleAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/batchSchedular.jsp</result>		
-			<result name="error">/WEB-INF/jsp/batchSchedular.jsp</result>
-			<result name="success">/WEB-INF/jsp/batchSchedular.jsp</result>
-		</action>		
-		<action name="accrualWarning" 
-						class="in.bloomington.timer.AccrualWarningAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/accrualWarning.jsp</result>		
-			<result name="error">/WEB-INF/jsp/accrualWarning.jsp</result>
-			<result name="success">/WEB-INF/jsp/accrualWarning.jsp</result>
-		</action>		
-		<action name="node" 
-						class="in.bloomington.timer.NodeAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/node.jsp</result>		
-			<result name="error">/WEB-INF/jsp/node.jsp</result>
-			<result name="success">/WEB-INF/jsp/node.jsp</result>
-		</action>
-		<action name="position" 
-						class="in.bloomington.timer.PositionAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/position.jsp</result>		
-			<result name="error">/WEB-INF/jsp/position.jsp</result>
-			<result name="success">/WEB-INF/jsp/position.jsp</result>
-		</action>		
-		<action name="codeRef" 
-						class="in.bloomington.timer.CodeRefAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/codeRef.jsp</result>		
-			<result name="error">/WEB-INF/jsp/codeRef.jsp</result>
-			<result name="success">/WEB-INF/jsp/codeRef.jsp</result>
-		</action>		
-		<action name="benefitGroup" 
-						class="in.bloomington.timer.BenefitGroupAction" 
-						method="execute">
-			<result name="input">/WEB-INF/jsp/benefitGroup.jsp</result>		
-			<result name="error">/WEB-INF/jsp/benefitGroup.jsp</result>
-			<result name="success">/WEB-INF/jsp/benefitGroup.jsp</result>
-		</action>
+    </action>
+    <action name="location" 
+	    class="in.bloomington.timer.LocationAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/location.jsp</result>		
+      <result name="error">/WEB-INF/jsp/location.jsp</result>
+      <result name="success">/WEB-INF/jsp/location.jsp</result>
+    </action>		
+    <action name="department" 
+	    class="in.bloomington.timer.DeptAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/department.jsp</result>		
+      <result name="error">/WEB-INF/jsp/department.jsp</result>
+      <result name="success">/WEB-INF/jsp/department.jsp</result>
+    </action>
+    <action name="timeNote" 
+	    class="in.bloomington.timer.TimeNoteAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/timeNote.jsp</result>		
+      <result name="error">/WEB-INF/jsp/timeNote.jsp</result>
+      <result name="success">/WEB-INF/jsp/timeNote.jsp</result>
+    </action>
+    <action name="timeIssue" 
+	    class="in.bloomington.timer.TimeIssueAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/timeIssue.jsp</result>		
+      <result name="error">/WEB-INF/jsp/timeIssue.jsp</result>
+      <result name="success">/WEB-INF/jsp/timeIssue.jsp</result>
+    </action>
+    <action name="handleIssue" 
+	    class="in.bloomington.timer.HandleIssueAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/handleIssue.jsp</result>		
+      <result name="error">/WEB-INF/jsp/handleIssue.jsp</result>
+      <result name="success">/WEB-INF/jsp/handleIssue.jsp</result>
+    </action>		
+    <action name="accrual" 
+	    class="in.bloomington.timer.AccrualAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/accrual.jsp</result>		
+      <result name="error">/WEB-INF/jsp/accrual.jsp</result>
+      <result name="success">/WEB-INF/jsp/accrual.jsp</result>
+    </action>
+    <action name="accrualSchedule" 
+	    class="in.bloomington.timer.AccrualScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/accrualSchedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/accrualSchedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/accrualSchedular.jsp</result>
+    </action>
+    <action name="profileSchedule" 
+	    class="in.bloomington.timer.ProfileScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/profileSchedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/profileSchedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/profileSchedular.jsp</result>
+    </action>
+    <action name="employeesSchedule" 
+	    class="in.bloomington.timer.CurrentEmployeesScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/employeesSchedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/employeesSchedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/employeesSchedular.jsp</result>
+    </action>
+    <action name="empsUpdateSchedule" 
+	    class="in.bloomington.timer.EmployeesUpdateScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
+    </action>				
+    <action name="notificationSchedule" 
+	    class="in.bloomington.timer.NotificationScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/notificationSchedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/notificationSchedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/notificationSchedular.jsp</result>
+    </action>
+    <action name="batchSchedule" 
+	    class="in.bloomington.timer.BatchSubmitScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/batchSchedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/batchSchedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/batchSchedular.jsp</result>
+    </action>		
+    <action name="accrualWarning" 
+	    class="in.bloomington.timer.AccrualWarningAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/accrualWarning.jsp</result>		
+      <result name="error">/WEB-INF/jsp/accrualWarning.jsp</result>
+      <result name="success">/WEB-INF/jsp/accrualWarning.jsp</result>
+    </action>		
+    <action name="node" 
+	    class="in.bloomington.timer.NodeAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/node.jsp</result>		
+      <result name="error">/WEB-INF/jsp/node.jsp</result>
+      <result name="success">/WEB-INF/jsp/node.jsp</result>
+    </action>
+    <action name="position" 
+	    class="in.bloomington.timer.PositionAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/position.jsp</result>		
+      <result name="error">/WEB-INF/jsp/position.jsp</result>
+      <result name="success">/WEB-INF/jsp/position.jsp</result>
+    </action>		
+    <action name="codeRef" 
+	    class="in.bloomington.timer.CodeRefAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/codeRef.jsp</result>		
+      <result name="error">/WEB-INF/jsp/codeRef.jsp</result>
+      <result name="success">/WEB-INF/jsp/codeRef.jsp</result>
+    </action>		
+    <action name="benefitGroup" 
+	    class="in.bloomington.timer.BenefitGroupAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/benefitGroup.jsp</result>		
+      <result name="error">/WEB-INF/jsp/benefitGroup.jsp</result>
+      <result name="success">/WEB-INF/jsp/benefitGroup.jsp</result>
+    </action>
 		<action name="shift" 
 						class="in.bloomington.timer.ShiftAction" 
 						method="execute">

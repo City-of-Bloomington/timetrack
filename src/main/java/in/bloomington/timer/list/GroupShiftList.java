@@ -174,7 +174,8 @@ public class GroupShiftList{
 						rs.getInt(18),
 						rs.getString(19) != null
 						);
-		groupShifts.add(one);
+		if(!groupShifts.contains(one))
+		    groupShifts.add(one);
 	    }
 	}
 	catch(Exception ex){

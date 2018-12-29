@@ -108,7 +108,7 @@ public class GroupList{
 		qw += " and gu.inactive is null ";
 	    if(!pay_period_id.equals("")){
 		qq += ", pay_periods pp ";
-		qw +=	" and gu.effective_date <= pp.start_date and (gu.expire_date is null or gu.expire_date > pp.start_date)";
+		qw +=	" and gu.effective_date <= pp.start_date and (gu.expire_date is null or gu.expire_date > pp.start_date) and pp.id=? ";
 	    }
 	}
 	if(active_only){
@@ -137,6 +137,9 @@ public class GroupList{
 	    if(!employee_id.equals("")){
 		pstmt.setString(jj++, employee_id);
 	    }
+	    if(!pay_period_id.equals("")){
+		pstmt.setString(jj++, pay_period_id);
+	    }	    
 	    rs = pstmt.executeQuery();
 	    while(rs.next()){
 		if(groups == null)
@@ -149,7 +152,8 @@ public class GroupList{
 				      rs.getString(5),
 				      rs.getString(6) != null,
 				      rs.getString(7));
-		groups.add(one);
+		if(!groups.contains(one))
+		    groups.add(one);
 	    }
 	}
 	catch(Exception ex){
