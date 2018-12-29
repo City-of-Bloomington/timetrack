@@ -1,8 +1,8 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
-	<s:form action="group" id="form_id" method="post" >
-		<s:hidden name="action2" id="action2" value="" />
-		<s:if test="group.id == ''">
+     	<s:form action="group" id="form_id" method="post" >
+	<s:hidden name="action2" id="action2" value="" />
+				<s:if test="group.id == ''">
 			<h1>New group</h1>
 		</s:if>
 		<s:else>
