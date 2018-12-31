@@ -68,6 +68,7 @@ public class TimeDetailsAction extends TopAction{
     //
     public String getDocument_id(){
 	//
+	System.err.println(" td get document_id ");
 	if(document_id.equals("")){
 	    DocumentList dl = new DocumentList();
 	    if(employee_id.equals("")){
@@ -77,9 +78,11 @@ public class TimeDetailsAction extends TopAction{
 	    if(pay_period_id.equals("")){
 		getPayPeriod();
 	    }
+	    System.err.println(" get emp ");
 	    getEmployee();
 	    employee.setPay_period_id(pay_period_id);
 	    dl.setPay_period_id(pay_period_id);
+	    System.err.println(" get job ");
 	    if(job_id.equals("")){
 		getJob();
 	    }
@@ -95,6 +98,7 @@ public class TimeDetailsAction extends TopAction{
 		}
 	    }
 	}
+	System.err.println(" timedetail first part ");
 	// 
 	// if we could not find, then we create a new one
 	//
@@ -111,6 +115,7 @@ public class TimeDetailsAction extends TopAction{
 		    addError("Pay period not set ");
 		}
 	    }
+	    System.err.println(" get emp 2 ");	    
 	    getEmployee();
 	    employee.setPay_period_id(pay_period_id);
 	    if(job_id.equals("")){
@@ -119,7 +124,9 @@ public class TimeDetailsAction extends TopAction{
 		    addError("Job not set ");
 		}
 	    }
+	    
 	    if(!job_id.equals("all")){
+		System.err.println(" create new doc ");	    
 		Document one = new Document(null, employee_id, pay_period_id, job_id, null, user.getId());
 		String back = one.doSave();
 		if(back.equals("")){
@@ -193,13 +200,11 @@ public class TimeDetailsAction extends TopAction{
 	    if(back.equals("")){
 		document = one;
 		job_id = document.getJob_id();
-		// added
 		pay_period_id = document.getPay_period_id();
 		if(employee == null){
 		    getEmployee();
 		}
 		employee.setPay_period_id(pay_period_id);
-		// end added
 	    }
 	}
 	return document;
