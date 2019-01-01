@@ -80,21 +80,23 @@ public class TimeDetailsAction extends TopAction{
 	    }
 	    System.err.println(" get emp ");
 	    getEmployee();
-	    employee.setPay_period_id(pay_period_id);
-	    dl.setPay_period_id(pay_period_id);
-	    System.err.println(" get job ");
-	    if(job_id.equals("")){
-		getJob();
-	    }
-	    if(!job_id.equals("all")){
-		dl.setJob_id(job_id);
-	    }
-	    String back = dl.find();
-	    if(back.equals("")){
-		List<Document> ones = dl.getDocuments();
-		if(ones != null && ones.size() > 0){
-		    document = ones.get(0);
-		    document_id = document.getId();
+	    if(hasEmployee()){
+		employee.setPay_period_id(pay_period_id);
+		dl.setPay_period_id(pay_period_id);
+		System.err.println(" get job ");
+		if(job_id.equals("")){
+		    getJob();
+		}
+		if(!job_id.equals("all")){
+		    dl.setJob_id(job_id);
+		}
+		String back = dl.find();
+		if(back.equals("")){
+		    List<Document> ones = dl.getDocuments();
+		    if(ones != null && ones.size() > 0){
+			document = ones.get(0);
+			document_id = document.getId();
+		    }
 		}
 	    }
 	}
@@ -117,21 +119,22 @@ public class TimeDetailsAction extends TopAction{
 	    }
 	    System.err.println(" get emp 2 ");	    
 	    getEmployee();
-	    employee.setPay_period_id(pay_period_id);
-	    if(job_id.equals("")){
-		getJob();
+	    if(hasEmployee()){
+		employee.setPay_period_id(pay_period_id);
 		if(job_id.equals("")){
-		    addError("Job not set ");
+		    getJob();
+		    if(job_id.equals("")){
+			addError("Job not set ");
+		    }
 		}
-	    }
-	    
-	    if(!job_id.equals("all")){
-		System.err.println(" create new doc ");	    
-		Document one = new Document(null, employee_id, pay_period_id, job_id, null, user.getId());
-		String back = one.doSave();
-		if(back.equals("")){
-		    document_id = one.getId();
-		    document = one;
+		if(!job_id.equals("all")){
+		    System.err.println(" create new doc ");	    
+		    Document one = new Document(null, employee_id, pay_period_id, job_id, null, user.getId());
+		    String back = one.doSave();
+		    if(back.equals("")){
+			document_id = one.getId();
+			document = one;
+		    }
 		}
 	    }
 	}
