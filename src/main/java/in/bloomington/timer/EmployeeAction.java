@@ -21,12 +21,15 @@ public class EmployeeAction extends TopAction{
 		static final long serialVersionUID = 1150L;	
 		static Logger logger = LogManager.getLogger(EmployeeAction.class);
 		//
+		static final String[] roles = {"Employee","Timewarp","FMLAReport","MPOReport","Admin"};
 		Employee employee = null;
 		DepartmentEmployee departmentEmployee = null; // for new employee
 		GroupEmployee groupEmployee = null; // for new employee
 		List<Employee> employees = null;
 		String employeesTitle = "Current Employees";
 		List<Type> departments = null;
+
+											
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -146,6 +149,9 @@ public class EmployeeAction extends TopAction{
 						}
 				}
 				return departments;
+		}
+		public String[] getRoles(){
+				return roles;
 		}
 }
 

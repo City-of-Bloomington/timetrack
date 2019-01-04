@@ -224,6 +224,9 @@ public class Profile extends CommonInc{
 								else if(payGrade > 6){ // 7,8,9,10
 										comp_time_after = 45;
 								}
+								else{ // for 6 or less
+										comp_time_after = 40; // default
+								}
 						}
 						else if(bGroup.isCedc()){
 								if(payGrade > 10){ // 11, 12

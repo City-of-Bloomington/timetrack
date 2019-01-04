@@ -22,9 +22,11 @@ public class Employee implements Serializable{
     static final long serialVersionUID = 1150L;		
     private String id="", inactive="",
 				id_code="", employee_number="", // both are unique
-				email="", role="",
+				email="", 
 				username="", // unique
 				full_name="", first_name="", last_name="";
+		String[] roles = {""};
+		Set<String> roleSet = new HashSet<>();
     // needed for saving
     String department_id="", group_id="";
     String group_ids = ""; // for new employee with multiple groups/jobs
@@ -117,7 +119,7 @@ public class Employee implements Serializable{
 				setId_code(val5);
 				setEmployee_number(val6);
 				setEmail(val7);
-				setRole(val8);
+				setRolesText(val8);
 				setInactive(val9);				
     }
     //
@@ -174,9 +176,19 @@ public class Employee implements Serializable{
     public String getLast_name(){
 				return last_name;
     }
-    public String getRole(){
-				return role;
+    public String[] getRoles(){
+				return roles;
     }
+		public String getRolesText(){
+				String ret = "";
+				if(!roleSet.isEmpty()){
+						for(String str:roleSet){
+								if(!ret.equals("")) ret += ", ";
+								ret += str;
+						}
+				}
+				return ret;
+		}
     public String getEmail(){
 				
 				return email;
@@ -227,9 +239,27 @@ public class Employee implements Serializable{
 				if(email.equals(""))
 						receive_email = false;
     }
-    public void setRole (String val){
-				if(val != null && !val.equals("-1"))
-						role = val;
+    public void setRolesText (String val){
+				if(val != null && !val.equals("")){
+						if(val.indexOf(",") > -1){
+								roles = val.split(",");
+								for(String str:roles){
+										roleSet.add(str);
+								}
+						}
+						else{
+								roles = new String[]{val};
+								roleSet.add(val);
+						}
+				}
+    }		
+    public void setRoles (String[] vals){
+				if(vals != null && vals.length > 0){
+						roles = vals;
+						for(String str:roles){
+								roleSet.add(str);
+						}
+				}
     }
     // needed for new employee
     public void setDepartment_id(String val){
@@ -356,11 +386,16 @@ public class Employee implements Serializable{
 						ret += ", email ="+email;
 				return ret;
     }
+		/*
     public boolean hasRole(String val){
 				return role.indexOf(val) > -1;
     }
+		*/
+    public boolean hasRole(String val){
+				return roleSet.contains(val);
+    }		
     public boolean hasNoRole(){
-				return role.equals("");
+				return roleSet.isEmpty();
     }
     public boolean isEmployee(){
 				return hasRole("Employee");
@@ -368,6 +403,15 @@ public class Employee implements Serializable{
     public boolean isAdmin(){
 				return hasRole("Admin");
     }
+    public boolean canRunTimewarp(){
+				return hasRole("Timewarp");
+    }
+    public boolean canRunFmlaReport(){
+				return hasRole("FMLAReport");
+    }
+    public boolean canRunMpoReport(){
+				return hasRole("MPOReport");
+    }		
     void findPayPeriod(){
 				if(pay_period_id.equals("")){
 						PayPeriodList ppl = new PayPeriodList();
@@ -705,7 +749,7 @@ public class Employee implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.role,e.inactive from employees e where ";
+				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.roles,e.inactive from employees e where ";
 				if(!id.equals("")){
 						qq += " e.id = ? ";
 				}
@@ -855,8 +899,13 @@ public class Employee implements Serializable{
 						if(email.equals(""))
 								getEmail();
 						pstmt.setString(jj++, email);
-						if(role.equals(""))
-								role = "Employee";
+						String role = "Employee";						
+						if(!roleSet.isEmpty()){
+								for(String str:roleSet){
+										if(!role.equals("")) role +=",";
+										role += str;
+								}
+						}
 						pstmt.setString(jj++, role);
 						if(id.equals("")) inactive = ""; // new record
 						if(inactive.equals(""))
@@ -875,7 +924,7 @@ public class Employee implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update employees set username=?,first_name=?,last_name=?,id_code=?, employee_number=?, email=?,role=?,inactive=? where id=?";
+				String qq = " update employees set username=?,first_name=?,last_name=?,id_code=?, employee_number=?, email=?,roles=?,inactive=? where id=?";
 				if(id.equals("")){
 						msg = "id is required";
 						return msg;

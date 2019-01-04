@@ -706,6 +706,17 @@ alter table shifts drop column prefered_earn_time;
 alter table shifts add end_minute_window int unsigned after start_minute_window;
 update shifts set end_minute_window=start_minute_window;
 ;;
+;; 1/4/19
+;; users table is not used anymore
+;;
+drop table users;
+;;
+;; update employees table to change role field to roles and type to varchar(256)
+;;
+;;
+alter table employees add roles varchar(256) after role;
+update employees set roles=role;
+alter table employees drop column role;
 
 
 ;; ====================================================

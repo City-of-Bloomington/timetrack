@@ -253,7 +253,7 @@ public class EmployeesImport{
 														bgroup = profile.getBenefitGroup();
 												}
 												Employee emp = new Employee();
-												emp.setRole("Employee");
+												emp.setRolesText("Employee");
 												emp.setEffective_date("07/01/2017");
 												emp.setEmployee_number(str);
 												str = record.get(2);
@@ -681,7 +681,7 @@ public class EmployeesImport{
 														bgroup = profile.getBenefitGroup();
 												}
 												Employee emp = new Employee();
-												emp.setRole("Employee");
+												emp.setRolesText("Employee");
 												emp.setEffective_date("07/01/2017");
 												emp.setEmployee_number(str);
 												str = record.get(2);

@@ -82,8 +82,8 @@
 			</s:if>
 
 			<div class="form-group">
-				<label>Role</label>
-				<s:select name="employee.role" value="%{employee.role}" list="#{'Employee':'Employee','Admin':'Admin'}" />
+				<label>Roles</label>
+				<s:checkboxlist key="employee.roles" list="roles" />
 			</div>
 
 			<div class="form-group">

@@ -46,6 +46,15 @@
       <s:if test="user.canPayrollProcess()">
         <a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>
       </s:if>
+      <s:if test="user.canRunFmlaReport()">
+        <a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA Report</a>
+      </s:if>
+      <s:if test="user.canRunMpoReport()">
+        <a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a>
+      </s:if>			
+      <s:if test="user.canRunTimewarp()">
+        <a href="<s:property value='#application.url'/>payperiodProcess.action">Timewarp</a>
+      </s:if>					
 
     </s:if>
   </div>

@@ -21,7 +21,7 @@
 				<td><s:property value="id_code" /></td>
 				<td><s:property value="employee_number" /></td>
 				<td><s:property value="email" /></td>
-				<td><s:property value="role" /></td>
+				<td><s:property value="rolesText" /></td>
 				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>
 		</s:iterator>

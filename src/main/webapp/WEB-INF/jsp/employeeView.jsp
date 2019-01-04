@@ -39,8 +39,8 @@
 		<label>Effective Date: </label>
 		<s:property value="employee.effective_date" /> <br /><br />
 		
-		<label>Role: </label>
-		<s:property value="employee.role" /> <br /><br />
+		<label>Roles: </label>
+		<s:property value="employee.rolesText" /> <br /><br />
 		
 		<label>Active? </label>
 		<s:if test="employee.inactive"> No </s:if><s:else>Yes</s:else> <br /><br />
