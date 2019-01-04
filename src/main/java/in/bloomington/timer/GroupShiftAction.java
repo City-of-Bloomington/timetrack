@@ -55,12 +55,25 @@ public class GroupShiftAction extends TopAction{
 								addMessage("Saved Successfully");			
 						}
 				}
+				else if(action.startsWith("Remove")){
+						back = groupShift.doSelect();
+						group_id = groupShift.getGroup_id();						
+						back = groupShift.doDelete();
+						id = "";
+						groupShift = new GroupShift();
+						groupShift.setGroup_id(group_id);
+						if(!back.equals("")){
+								addError(back);
+						}
+						else{
+								addMessage("Removed Successfully");			
+						}
+				}				
 				else{		
 						getGroupShift();
 						if(!id.equals("")){
 								back = groupShift.doSelect();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}
 								shift_id = groupShift.getShift_id();

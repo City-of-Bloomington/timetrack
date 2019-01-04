@@ -69,7 +69,8 @@ public class GroupShift{
 											int val15,
 											int val16,
 											int val17,
-											boolean val18
+											int val18,
+											boolean val19
 											
 								 ){
 				setId(val);
@@ -80,7 +81,7 @@ public class GroupShift{
 				setInactive(val6);
 				group = new Group(val01, val02, val03, val04, val05,val06, val07);
 				shift = new Shift(val11, val12, val13, val14, val15, val16,
-													val17, val18);
+													val17, val18, val19);
 
     }		
 		
@@ -344,5 +345,31 @@ public class GroupShift{
 				}
 				return msg;
 		}
+		public String doDelete(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = " delete from group_shifts where id=?";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}		
 
 }

@@ -31,6 +31,7 @@ public class PayrollProcessAction extends TopAction{
 		String workflow_id = "", document_id=""; 
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
 				nextPayPeriod = null, payPeriod = null;
+		String selected_group_id = "";
 		Group group = null;
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
@@ -81,6 +82,7 @@ public class PayrollProcessAction extends TopAction{
 								}
 						}
 				}
+				selected_group_id = obtainGroupIdFromSession();				
 				return ret;
 		}
 
@@ -95,6 +97,8 @@ public class PayrollProcessAction extends TopAction{
 		public void setGroup_id(String val){
 				if(val != null && !val.equals(""))		
 						group_id = val;
+				selected_group_id = group_id;
+				addGroupIdToSession(selected_group_id);
 		}
 		public void setDocument_ids(String[] vals){
 				if(vals != null)		
@@ -105,9 +109,10 @@ public class PayrollProcessAction extends TopAction{
 						document_id = val;
 		}		
 		public String getGroup_id(){
+				if(!selected_group_id.equals(""))
+						group_id = selected_group_id;
 				if(group_id.equals("")){
 						getGroup();
-						// return "-1";
 				}
 				return group_id;
 		}
@@ -362,7 +367,9 @@ public class PayrollProcessAction extends TopAction{
 														notApprovedEmps = new ArrayList<>();
 												notApprovedEmps.add(one.getEmployee());
 										}
-										else if(one.isApproved() || one.isProcessed()){
+										else if(one.isApproved() ||
+														one.isSubmitted() ||
+														one.isProcessed()){
 												continue;
 										}
 										else{

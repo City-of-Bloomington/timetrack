@@ -6,9 +6,9 @@
 			<th>Name</th>
 			<th>Start Hour:Minute</th>
 			<th>Duration</th>
-			<th>Start Minutes Window</th>
+			<th>Shift Start Minutes Window</th>
+			<th>Shift End Minutes Window</th>			
 			<th>Minutes Rounding</th>
-			<th>Active?</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -19,8 +19,8 @@
 				<td><s:property value="startHourMinute" /></td>
 				<td><s:property value="duration" /></td>
 				<td><s:property value="startMinuteWindow" /></td>
+				<td><s:property value="endMinuteWindow" /></td>				
 				<td><s:property value="minuteRounding" /></td>
-				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>
 		</s:iterator>
 	</tbody>

@@ -69,7 +69,11 @@
 			<s:set var="groupEmployeesTitle" value="'Group Members'" />
 			<%@ include file="groupEmployees.jsp" %>
 		</s:if>
-
+		<s:if test="group.hasGroupShifts()">
+			<s:set var="groupShifts" value="%{group.groupShifts}" />
+			<s:set var="groupShiftsTitle" value="'Group Shifts'" />
+			<%@ include file="groupShifts.jsp" %>
+		</s:if>
 		<s:if test="hasGroupManagers()">
 			<s:set var="groupManagers" value="%{groupManagers}" />
 			<s:set var="groupManagersTitle" value="'Group Managers'" />

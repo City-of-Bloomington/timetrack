@@ -21,7 +21,7 @@
 				<td><s:property value="date" /></td>
 				<td><s:if test="showBeginTime()"><s:property value="beginHourMinute" /></s:if>&nbsp;</td>
 				<td><s:if test="showEndTime()"><s:property value="endHourMinute" /></s:if>&nbsp;</td>
-				<td><s:if test="!isClockInOut()"><s:property value="hours" /></s:if>&nbsp;</td>
+				<td><s:if test="!isClockInOnly()"><s:property value="hours" /></s:if>&nbsp;</td>
 				<td><s:property value="action_type" /></td>
 				<td><s:property value="action_by" /></td>
 				<td><s:property value="action_time" /></td>

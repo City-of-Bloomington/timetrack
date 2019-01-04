@@ -67,15 +67,18 @@ public class TimeBlockLog extends Block{
 				return action_time;
     }
 		public boolean isClockInOut(){
-				return isClockIn() || isClockOut();
+				return isClockIn() && isClockOut();
 		}
+		public boolean isClockInOnly(){
+				return isClockIn() && !isClockOut();
+		}		
 		public boolean showBeginTime(){
 				getHourCode();
 				return !(action_type.equals("Delete") || hourCode.isRecordMethodHours());
 		}
 		public boolean showEndTime(){
-				getHourCode();				
-				return !(action_type.equals("Delete") || hourCode.isRecordMethodHours() || isClockIn());
+				getHourCode();
+				return !(action_type.equals("Delete") || hourCode.isRecordMethodHours() || isClockInOnly()) || isClockInOut();
 		}		
     //
     // setters
@@ -141,7 +144,7 @@ public class TimeBlockLog extends Block{
 												rs.getInt(5),
 												rs.getInt(6),
 												rs.getInt(7),
-														rs.getInt(8),
+												rs.getInt(8),
 												rs.getDouble(9),
 												rs.getString(10),
 												rs.getString(11));

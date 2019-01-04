@@ -6,12 +6,12 @@
  *
 	-->
 <h3>View Time Action: <s:property value="%{timeAction.id}" /></h3>
-<s:if test="hasActionErrors()">
+<s:if test="hasErrors()">
 	<div class="errors">
     <s:actionerror/>
 	</div>
 </s:if>
-<s:elseif test="hasActionMessages()">
+<s:elseif test="hasMessages()">
 	<div class="welcome">
     <s:actionmessage/>
 	</div>

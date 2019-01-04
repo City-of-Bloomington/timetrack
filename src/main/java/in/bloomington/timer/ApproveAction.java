@@ -29,7 +29,8 @@ public class ApproveAction extends TopAction{
 				department_id="", // needed to forward to timewarp
 				document_id=""; //for one only
 		
-		String workflow_id = ""; 
+		String workflow_id = "";
+		String selected_group_id = "";
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
 				nextPayPeriod=null, payPeriod = null;
 		Group group = null;
@@ -81,7 +82,8 @@ public class ApproveAction extends TopAction{
 										addMessage("Approved successfully");
 								}
 						}
-				}				
+				}
+				selected_group_id = obtainGroupIdFromSession();
 				return ret;
 		}
 
@@ -94,8 +96,11 @@ public class ApproveAction extends TopAction{
 						pay_period_id = val;
 		}
 		public void setGroup_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.equals("")){		
 						group_id = val;
+						selected_group_id = group_id;
+						addGroupIdToSession(selected_group_id);
+				}
 		}
 		public void setDocument_ids(String[] vals){
 				if(vals != null)		
@@ -106,8 +111,9 @@ public class ApproveAction extends TopAction{
 						document_id = val;
 		}				
 		public String getGroup_id(){
+				if(!selected_group_id.equals(""))
+						group_id = selected_group_id;
 				if(group_id.equals("")){
-						// return "-1";
 						getGroup();
 				}
 				return group_id;
@@ -370,7 +376,9 @@ public class ApproveAction extends TopAction{
 														notApprovedEmps = new ArrayList<>();
 												notApprovedEmps.add(one.getEmployee());
 										}
-										else if(one.isApproved() || one.isProcessed()){
+										else if(one.isApproved() ||
+														one.isSubmitted() ||
+														one.isProcessed()){
 												continue;
 										}
 										else{

@@ -57,56 +57,52 @@ public class InformAction extends TopAction{
 				}
 				else if(action.equals("Send")){
 						if(employee_ids != null){
-								String bcc = "", email_from="";
+								String to = "", email_from="";
+								getEmployee();
+								if(employee != null){
+										email_from = employee.getEmail();
+								}
 								getEmployees();
 								if(employees != null){
 										for(Employee one:employees){
-												if(!bcc.equals("")) bcc +=",";
-												bcc += one.getEmail();
+												to = one.getEmail();
+												MailHandle mail =
+														new MailHandle(mail_host,
+																					 to, 
+																					 email_from,
+																					 email_cc,
+																					 null, // bcc
+																					 subject,
+																					 text_message,
+																					 debug
+																					 );
+												//
+												if(activeMail){
+														back = mail.send();
+												}
+												else{
+														back = "email activity flag is turned off, if you need to send email this flag need to be turned on in your configuration file";
+												}
+												if(!back.equals("")){
+														addError(back);
+												}
+												else{
+														addMessage("Email send successfully");
+														ret = "informSuccess";
+												}
+												EmailLog elog = new EmailLog(debug,
+																										 user.getId(),
+																										 email_from,
+																										 to, // to
+																										 email_cc,
+																										 null,
+																										 subject,
+																										 text_message,
+																										 back,
+																										 type.equals("noSubmit")?"Approvers":"Processors");
+												back = elog.doSave();
 										}
 								}
-								if(!bcc.equals("")){
-										getEmployee();
-										if(employee != null){
-												email_from = employee.getEmail();
-										}
-										MailHandle mail =
-												new MailHandle(mail_host,
-																			 null, // to
-																			 email_from,
-																			 email_cc,
-																			 bcc,
-																			 subject,
-																			 text_message,
-																			 debug
-																			 );
-										//
-										if(activeMail){
-											  back = mail.send();
-												//	back = "email activity is commented out";
-										}
-										else{
-												back = "email activity flag is turned off, if you need to send email this flag need to be turned on in your configuration file";
-										}
-										if(!back.equals("")){
-												addError(back);
-										}
-										else{
-												addMessage("Email send successfully");
-												ret = "informSuccess";
-										}
-										EmailLog elog = new EmailLog(debug,
-																								 user.getId(),
-																								 email_from,
-																								 null, // to
-																								 email_cc,
-																								 bcc,
-																								 subject,
-																								 text_message,
-																								 back,
-																								 type.equals("noSubmit")?"Approvers":"Processors");
-										back = elog.doSave();
-								}								
 						}
 				}
 				else{

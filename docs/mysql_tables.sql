@@ -627,6 +627,7 @@ CREATE TABLE shifts (
 	start_minute  int unsigned,
 	duration      int unsigned,
 	start_minute_window int unsigned,
+	end_minute_window int unsigned,
 	minute_rounding int unsigned,
 	inactive char(1),
 	primary key(id)
@@ -699,6 +700,11 @@ alter table groups add foreign key(default_earn_code_id) references hour_codes(i
 ;; CE1.5 = 34
 update groups set default_earn_code_id=34 ;
 alter table shifts drop column prefered_earn_time;
+;;
+;;
+;; 1/2/2019
+alter table shifts add end_minute_window int unsigned after start_minute_window;
+update shifts set end_minute_window=start_minute_window;
 ;;
 
 

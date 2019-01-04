@@ -7,15 +7,15 @@
 	-->
 <s:form action="reportFmla" id="form_id" method="post" >
 	<h4>FMLA Report</h4>
-	<s:if test="hasActionErrors()">
+	<s:if test="hasErrors()">
 		<div class="errors">
-			<s:actionerror/>
+			<s:set var="errors" value="%{errors}" />			
+			<%@ include file="../errors.jsp" %>
 		</div>
 	</s:if>
-	<s:elseif test="hasActionMessages()">
-		<div class="welcome">
-			<s:actionmessage/>
-		</div>
+	<s:elseif test="hasMessages()">
+			<s:set var="messages" value="%{messages}" />			
+			<%@ include file="../messages.jsp" %>
 	</s:elseif>
 	<table width="100%" border="1">
 		<tr>

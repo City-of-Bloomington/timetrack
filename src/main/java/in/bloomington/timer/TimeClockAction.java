@@ -33,7 +33,6 @@ public class TimeClockAction extends TopAction{
 		String timeClocksTitle = "Time Clock Data";
 		String document_id="", date="";
 		String ip="";
-		List<TimeBlock> timeBlocks = null;
 		private static final String[] IP_HEADER_CANDIDATES = { 
 				"X-Forwarded-For",
 				"Proxy-Client-IP",
@@ -101,21 +100,20 @@ public class TimeClockAction extends TopAction{
 														addError(back);
 												}
 												else{
-														document_id = timeClock.getTimeBlock().getDocument_id();
-														date = timeClock.getTimeBlock().getDate();
+														// document_id = timeClock.getTimeBlock().getDocument_id();
+														// date = timeClock.getTimeBlock().getDate();
 														addMessage("Received Successfully");
 												}
 										}
 										catch(Exception ex){
 												logger.error(ex);
-												addError("Error");
+												addError("Error "+ex);
 												return ret;
 										}
 								}
 								else{
 										back = "Unrecognized location, check with ITS";
 										addError(back);
-										addActionError(back);
 								}
 						}
 				}				
@@ -135,37 +133,7 @@ public class TimeClockAction extends TopAction{
 						timeClock = val;
 				}
 		}
-		public List<TimeBlock> getTimeBlocks(){
-				if(timeBlocks == null){
-						if(!document_id.equals("") && !date.equals("")){
-								TimeBlockList tbl = new TimeBlockList();
-								tbl.setDocument_id(document_id);
-								tbl.setDate(date);
-								tbl.hasClockInAndOut(); //ignore clock-in only
-								String back = tbl.find();
-								if(back.equals("")){
-										List<TimeBlock> ones = tbl.getTimeBlocks();
-										if(ones != null && ones.size() > 1){
-												timeBlocks = ones;
-										}
-								}
-						}
-				}
-				return timeBlocks;
-		}
-		public boolean hasTimeBlocks(){
-				getTimeBlocks();
-				return timeBlocks != null && timeBlocks.size() > 0;
-		}
-		public String getTotalHours(){
-				double total = 0.;
-				if(timeBlocks != null && timeBlocks.size() > 0){
-						for(TimeBlock one:timeBlocks){
-								total += one.getHours();
-						}
-				}
-				return dFormat.format(total);
-		}
+
 		public String getTimeClocksTitle(){
 				return timeClocksTitle;
 		}

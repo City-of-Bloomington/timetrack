@@ -214,10 +214,6 @@ public class MpoReport{
 				if(ones != null && ones.size() > 0){
 						timeBlocks = ones;
 				}
-				else{
-						msg = "No match found";
-						return msg;
-				}
 				return msg;
 		}
 		public String findHoursByNameCode(){
@@ -239,7 +235,7 @@ public class MpoReport{
 				//
 				// using subquery
 				//
-				String qq = "select tt.name,tt.code,tt.empnum,sum(hours) "+
+				String qq = "select tt.name,tt.empnum,tt.code,sum(hours) "+
 						"from ( select "+
 						" concat_ws(' ',e.first_name,e.last_name) AS name,"+
 						" e.employee_number AS empnum,"+

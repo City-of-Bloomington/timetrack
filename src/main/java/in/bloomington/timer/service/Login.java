@@ -49,11 +49,6 @@ public class Login extends HttpServlet{
 						System.err.println(headerValue);
 				}
 				*/
-				/**
-					 <VirtualHost *:80>
-					 Redirect / https://tomcat2.bloomington.in.gov/
-					 </VirtualHost>
-				*/
 				String host_forward = req.getHeader("X-Forwarded-Host");
 				String host = req.getHeader("host");	
 				Enumeration<String> values = req.getParameterNames();
@@ -70,11 +65,9 @@ public class Login extends HttpServlet{
 				res.setContentType("text/html");
 				PrintWriter out = res.getWriter();
 				if(host_forward != null){
-						// System.err.println(" login host forward "+host_forward);
 						url = host_forward+"/timetrack/";
 				}
 				else if(host != null){
-						// System.err.println(" login host "+host);
 						if(host.indexOf("timetrack") > -1){
 								url = host;
 						}
@@ -113,13 +106,9 @@ public class Login extends HttpServlet{
 				}
 				if(username != null){
 						session = req.getSession();
-						// setCookie(req, res);
 						Employee user = getUser(username);
 						if(session != null){
 								if(user != null){
-										//
-										// first login, we have only one user
-										// if he is an admin, we add to session
 										//
 										session.setAttribute("user",user);
 										if(source.equals(""))

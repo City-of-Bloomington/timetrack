@@ -65,6 +65,7 @@
 				<div class="button-group">
 					<a href="<s:property value='#application.url' />groupShift.action" class="button">Assign another shift to a group </a>					
 					<s:submit name="action" type="button" value="Save Changes" class="button"/>
+					<s:submit name="action" type="button" value="Remove This Shift from Group" class="button"/>					
 				</div>
 			</s:else>
 		</div>

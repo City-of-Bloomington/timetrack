@@ -6,11 +6,15 @@
  *
 	-->
 <div class="homepage">
+	<s:if test="hasErrors()">
+		<s:set var="errors" value="%{errors}" />			
+		<%@ include file="errors.jsp" %>
+	</s:if>
 	<s:if test="!hasErrors()">
 		<s:if test="hasMessages()">
+			<s:set var="messages" value="%{messages}" />			
 			<%@ include file="messages.jsp" %>
 		</s:if>
-
 		<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
 			<div class="alert"><p><b>Note:</b> Time Details (View Only)</p></div>
 		</s:if>

@@ -22,7 +22,8 @@
 			<li>Start hour is something like 8, 9, 23 (24 hour format)</li>
 			<li>Start minute will be like 0,5,10,15, 30 etc </li>
 			<li>Duration is total shift time in minutes, for example 8 hour shift is 480 minutes </li>
-			<li>Start minutes window is 0 for no window, or 15 for 15 minutes window </li>
+			<li>Start shift minutes window is 0 for no window, or 15 for 15 start minutes window </li>
+			<li>End shift minutes window is 0 for no window, or 15 for 15 end minutes window </li>			
 			<li>Time rounding is the multiple of minutes (0 for no rounding), 15 for rounding to 0, 15, 30, 45 etc</li>
 		</ul>
 		<div class="width-one-half">
@@ -51,18 +52,17 @@
 				<s:textfield name="shift.duration" value="%{shift.duration}" size="3" maxlength="3" required="true" />
 			</div>
 			<div class="form-group">
-				<label>Start Minutes Window </label>
-				<s:textfield name="shift.startMinuteWindow" value="%{shift.startMinuteWindow}" size="3" maxlength="3" />
+				<label>Start Shift Minutes Window </label>
+				<s:textfield name="shift.startMinuteWindow" value="%{shift.startMinuteWindow}" size="2" maxlength="2" />
 			</div>
+			<div class="form-group">
+				<label>End Shift Minutes Window </label>
+				<s:textfield name="shift.endMinuteWindow" value="%{shift.endMinuteWindow}" size="2" maxlength="2" />
+			</div>			
 			<div class="form-group">
 				<label>Time Rounding (minutes) </label>
 				<s:textfield name="shift.minuteRounding" value="%{shift.minuteRounding}" size="2" maxlength="2" />
 			</div>			
-			<div class="form-group">
-				<label>Inactive?</label>
-				<s:checkbox name="shift.inactive" value="%{shift.inactive}" fieldValue="true" />Yes
-			</div>
-
 			<s:if test="shift.id == ''">
 				<s:submit name="action" type="button" value="Save" class="button"/>
 			</s:if>
