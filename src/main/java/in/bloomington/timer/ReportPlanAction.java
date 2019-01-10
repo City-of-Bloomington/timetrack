@@ -25,6 +25,7 @@ public class ReportPlanAction extends TopAction{
 		//
 		List<TimeBlock> timeBlocks = null;
 		List<WarpEntry> entries = null;
+		List<WarpEntry> dailyEntries = null;		
 		PlanReport report = null;
 		List<Integer> years = null;
 		String reportTitle = "Planning MPO Report ";
@@ -45,6 +46,14 @@ public class ReportPlanAction extends TopAction{
 										}
 								}
 								if(true){
+										List<WarpEntry> ones = report.getDailyEntries();
+										if(ones != null && ones.size() > 0){
+												dailyEntries = ones;
+												addMessage("Found "+ones.size()+" daily entries");
+										}										
+								}								
+								if(true){
+										/**
 										back = report.find();
 										if(!back.equals("")){
 												addError(back);
@@ -58,6 +67,7 @@ public class ReportPlanAction extends TopAction{
 														addMessage("No match found");
 												}
 										}
+										*/
 								}
 						}
 				}

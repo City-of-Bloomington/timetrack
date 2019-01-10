@@ -57,10 +57,17 @@
 </s:form>		
 <s:if test="action != ''">
 	<s:if test="report.hasEntries()">
+		<s:set var="hasEntries" value="'true'" />
+		<s:set var="reportTitle" value="reportTitle" />		
 		<s:set var="mapEntries" value="report.mapEntries" />
 		<s:set var="hoursSums" value="report.hoursSums" />
 		<s:set var="totalHours" value="report.totalHours" />
-		<s:set var="reportTitle" value="reportTitle" />
+	</s:if>
+	<s:if test="report.hasDailyEntries()">
+		<s:set var="hasDaily" value="'true'" />
+		<s:set var="dailyEntries" value="report.dailyEntries" />		
+	</s:if>
+	<s:if test="report.hasAnyEntries()">
 		<%@  include file="fmlaReport.jsp" %>
 	</s:if>
 </s:if>

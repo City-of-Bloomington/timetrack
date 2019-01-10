@@ -740,7 +740,7 @@ public class Helper{
 						if(dd.length() == 1){
 								dd = "0"+dd;
 						}
-						ret = yy+mm+dd;
+						ret = yy+"_"+mm+"_"+dd;
 						
 				}catch(Exception ex){
 						System.err.println(ex);

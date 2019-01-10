@@ -153,6 +153,9 @@ public class PayPeriodProcess{
     public void setCsvOutuput(boolean val){
 				csvOutput = val;
     }
+		public PayPeriod getPayPeriod(){
+				return payPeriod;
+		}
     public Employee getEmployee(){
 				return employee;
     }
@@ -185,9 +188,6 @@ public class PayPeriodProcess{
 				if(val != null){
 						payPeriod = val;
 						year = payPeriod.getStartYear();
-						//
-						// replace this with document getTimeActions 
-						// findStatus();
 				}
     }
 
@@ -234,7 +234,7 @@ public class PayPeriodProcess{
     public String getProfHrsCode(){
 				return profHrsCode;
     }
-    boolean hasProfHours(){
+    public boolean hasProfHours(){
 				return week1.getProfHours() + week2.getProfHours() > 0;
     }
     boolean hasTwoDifferentYears(){
@@ -243,9 +243,13 @@ public class PayPeriodProcess{
     boolean weekOneHasSplit(){
 				return weekOneHasSplit;
     }
-    double getProfHours(){
+    public double getProfHours(){
 				return week1.getProfHours() + week2.getProfHours();
     }
+		public String getProfHoursStr(){
+				double dd = week1.getProfHours() + week2.getProfHours();
+				return df.format(dd);
+		}
     //
     public void addToHash(String nw_code, double hours, Hashtable<String, Double> hval){
 				if(!nw_code.equals("") && hours > 0){
@@ -269,7 +273,80 @@ public class PayPeriodProcess{
 						hval.put(te.getNw_code(), te.getHours());
 				}
     }
-
+		public boolean hasNonRegularFirstPay(){
+				Hashtable<String, ArrayList<Double>> nreg = getNonRegularFirstPay();
+				return nreg != null && !nreg.isEmpty();
+		}
+		public boolean hasNonRegularSecondPay(){
+				Hashtable<String, ArrayList<Double>> nreg = getNonRegularSecondPay();
+				return nreg != null && !nreg.isEmpty();
+		}
+		
+		Hashtable<String, ArrayList<Double>> considerOnCall(Hashtable<String, Double> nreg){
+				Hashtable<String, ArrayList<Double>> nreg2  = new Hashtable<>();
+				if(!nreg.isEmpty()){
+						Set<String> keySet = nreg.keySet();
+						for(String key:keySet){
+								Double val = nreg.get(key);
+								if(val != null){
+										ArrayList<Double> lval = new ArrayList<>();
+										if(key.indexOf("ONCALL") == -1){
+												lval.add(val);
+										}
+										else{
+												int cnt = (int)(val.doubleValue());
+												for(int i=0;i<cnt;i++){
+														lval.add(new Double(1.0));
+												}
+										}
+										String key2=key;										
+										if(isUtil && csvOutput){
+												key2 = "u"+key;
+										}
+										nreg2.put(key2, lval);
+								}
+						}
+				}				
+				return nreg2;
+		}
+    public Hashtable<String, ArrayList<Double>> getNonRegularFirstPay(){
+				//
+				Hashtable<String, Double> nreg  = new Hashtable<>();
+				if(weekOneHasSplit){
+						 // week 1 split 1 only
+						nreg  =	getWeekSplitNonRegularHours(1, 1);
+				}
+				else{
+						// all week 1 plut split 1 from 2
+						nreg  =	getWeek1NonRegularHours(); 
+						Hashtable<String, Double> nreg2  =	getWeekSplitNonRegularHours(2, 1); // week 2 split 1
+						if(!nreg2.isEmpty())
+								mergeTwoHashes(nreg2, nreg);
+				}
+				return considerOnCall(nreg);
+    }
+    public Hashtable<String, ArrayList<Double>> getNonRegularSecondPay(){
+				Hashtable<String, Double> nreg  = new Hashtable<>();
+				if(weekOneHasSplit){
+						 // week 1 split 2 plus all week 2 
+						nreg  =	getWeekSplitNonRegularHours(1, 2);
+						Hashtable<String, Double> nreg2 =	getWeek2NonRegularHours();
+						if(!nreg2.isEmpty())
+								mergeTwoHashes(nreg2, nreg);						
+				}
+				else{
+						// all week 2 split 2 only
+						nreg  =	getWeekSplitNonRegularHours(2, 2); 
+				}
+				// prof hrs always goes in second pay period
+				if(hasProfHours()){
+						String dstr = getProfHoursStr();
+						Double dd = new Double(dstr);
+						nreg.put(profHrsCode, dd);
+				}
+				return considerOnCall(nreg);				
+				
+    }		
     public Hashtable<String, Double> getNonRegularHours(){
 				// return hash;
 				Hashtable<String, Double> reg1 = week1.getNonRegularHours();
@@ -302,6 +379,7 @@ public class PayPeriodProcess{
 						mergeTwoHashes(reg2, reg1);
 				return reg1;		
     }
+		
     public Hashtable<String, Double> getWeekSplitNonRegularHours(int week_no, int split_no){
 				WeekEntry week = null;		
 				if(week_no == 1)
@@ -328,43 +406,11 @@ public class PayPeriodProcess{
 				Hashtable<String, Double> w2all = week2.getAll();
 				if(!w2all.isEmpty())
 						mergeTwoHashes(w2all, all);
-				if(isUtil && csvOutput){
-						Hashtable<String, Double> all2 = new Hashtable<String, Double>();
-						Set<String> keySet = all.keySet();
-						for(String key:keySet){
-								Double val = all.get(key);
-								if(val != null){
-										all2.put("u"+key, val);
-								}
-						}
-						return all2;
-				}
 				return all;
     }
     public Hashtable<String, ArrayList<Double>> getAll2(){
-				Hashtable<String, Double> all2 = getAll();
-				Hashtable<String, ArrayList<Double>> all = new Hashtable<>();
-				if(!all2.isEmpty()){
-						Set<String> keySet = all2.keySet();
-						for(String key:keySet){
-								Double val = all2.get(key);
-								if(val != null){
-										ArrayList<Double> lval = new ArrayList<>();
-										if(key.indexOf("ONCALL") == -1){
-												lval.add(val);
-										}
-										else{
-												int cnt = (int)(val.doubleValue());
-												for(int i=0;i<cnt;i++){
-														lval.add(new Double(1.0));
-												}
-										}
-										all.put(key, lval);
-								}
-						}
-						
-				}
-				return all;
+				return considerOnCall(getAll());
+
     }		
     boolean hasWeek1ProfHours(){
 				return week1.getProfHours() > 0;
@@ -757,17 +803,6 @@ public class PayPeriodProcess{
     public boolean hasHandHash(){
 				getTwoWeekHandHash();
 				return handHash != null && handHash.size() > 0;
-    }
-    /**
-     * this function returns the status of submission for the given pay
-     * period, either saved, enroute, finalized
-     * Submitted, approved, finalized (payroll process approve)
-     * we call this timeActions 
-     */
-    void findStatus(){
-				// this is in 
-				// document getTimeActions()
-
     }
 
 }

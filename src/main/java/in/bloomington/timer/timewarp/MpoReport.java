@@ -37,6 +37,7 @@ public class MpoReport{
 		Map<String, List<WarpEntry>> mapEntries = null;
 		Hashtable<String, Double> hoursSums = null;
 		Hashtable<String, Double> amountsSums = null;
+		List<WarpEntry> dailyEntries = null; 
 		double totalHours =0, totalAmount=0;
 		String errors = "";
     public MpoReport(){
@@ -63,6 +64,9 @@ public class MpoReport{
 		}
 		public List<WarpEntry> getEntries(){
 				return entries;
+		}
+		public List<WarpEntry> getDailyEntries(){
+				return dailyEntries;
 		}
 		public String getStart_date(){
 				return start_date;
@@ -108,6 +112,12 @@ public class MpoReport{
 		}
 		public boolean hasEntries(){
 				return entries != null && entries.size() > 0;
+		}
+		public boolean hasDailyEntries(){
+				return dailyEntries != null && dailyEntries.size() > 0;
+		}
+		public boolean hasAnyEntries(){
+				return hasEntries() || hasDailyEntries();
 		}
     //
     // setters
@@ -175,17 +185,20 @@ public class MpoReport{
 		}				
 		String setProfiles(){
 				String msg="";
-				getBenefitGroups();
-				ProfileList pl = new ProfileList(end_date, dept_ref_id, benefitGroups); 
-				msg = pl.find();
-				List<Profile> ones = pl.getProfiles();
-				if(msg.equals("") && ones.size() > 0){
-						profiles = new Hashtable<String, Profile>(ones.size());
-						for(Profile one:ones){
+				if(profiles == null){
+						getBenefitGroups();
+						ProfileList pl = new ProfileList(end_date,
+																						 dept_ref_id,
+																						 benefitGroups); 
+						msg = pl.find();
+						List<Profile> ones = pl.getProfiles();
+						if(msg.equals("") && ones.size() > 0){
+								profiles = new Hashtable<String, Profile>(ones.size());
+								for(Profile one:ones){
 								String str = one.getEmployee_number();
-								// System.err.println(" mpo report "+str+" "+one);
 								if(str != null && !str.equals(""))
 										profiles.put(str, one);
+								}
 						}
 				}
 				return msg;
@@ -216,6 +229,104 @@ public class MpoReport{
 				}
 				return msg;
 		}
+		public String findHoursByDateAndCode(){
+				String msg = "";
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				//
+				// We are looking for Reg earn codes and its derivatives for
+				// planning department
+				//
+				setStartAndEndDates();
+				if(!ignoreProfiles){
+						msg = setProfiles();
+						if(!msg.equals("")){
+								return msg;
+						}
+				}
+				//
+				// using subquery
+				//
+				String qq = "select tt.name,tt.empnum,tt.date,tt.code,sum(hours) "+
+						"from (select "+
+						" concat_ws(' ',e.first_name,e.last_name) AS name,"+
+						" e.employee_number as empnum,"+
+						" t.date AS date,"+
+						" c.description AS code, "+												
+						" t.hours AS hours "+
+						" from time_blocks t "+
+						" join hour_codes c on t.hour_code_id=c.id "+						
+						" join time_documents d on d.id=t.document_id "+
+						" join pay_periods p on p.id=d.pay_period_id "+
+						" join department_employees de on de.employee_id=d.employee_id "+
+						" join employees e on d.employee_id=e.id "+
+						" where de.department_id = ? and t.inactive is null and "+
+						" p.start_date >= ? and p.end_date <= ? ";
+				if(!code2.equals("")){
+						qq += " and (c.name like ? or c.name like ?) ";
+				}
+				else{
+						qq += " and c.name like ? ";
+				}
+				qq += " ) tt ";
+				qq += " group by tt.name,tt.empnum,tt.code,tt.date ";
+				con = Helper.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(jj++, department_id);
+						java.util.Date date_tmp = dateFormat.parse(start_date);
+						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						date_tmp = dateFormat.parse(end_date);
+						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setString(jj++, code);
+						if(!code2.equals(""))
+								pstmt.setString(jj++, code2);
+						rs = pstmt.executeQuery();
+						jj=0;
+						while(rs.next()){
+								jj++;
+								double hourly_rate = 0;
+								if(!ignoreProfiles){
+										if(profiles != null){
+												String str = rs.getString(2);// emp_num;
+												if(profiles.containsKey(str)){
+														Profile pp = profiles.get(str);
+														hourly_rate = pp.getHourlyRate();
+												}
+										}
+								}
+								if(dailyEntries == null)
+										dailyEntries = new ArrayList<>();
+								WarpEntry one =
+										new WarpEntry(debug,
+																	rs.getString(1), // name
+																	rs.getString(2), // emp num
+																	rs.getString(4), // code
+																	rs.getString(3), // date
+																	rs.getDouble(5), // hours
+																	hourly_rate); // hourly rate
+								dailyEntries.add(one);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}						
+				return msg;
+		}		
 		public String findHoursByNameCode(){
 				String msg = "";
 				Connection con = null;

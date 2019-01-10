@@ -737,9 +737,13 @@ public class TimeBlockList{
 						" where "+
 						" t.clock_in is not null and t.clock_out is null "+
 						" and t.inactive is null "+
-						" and (t.date = ? or t.date = ?)"+
+						// " and (t.date = ? or t.date = ?)"+
 						" and d.pay_period_id=? "+
 						" and d.employee_id=? ";
+				qq += " and ";						
+				qq += " ((((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?) "+
+						"  or "+
+						" (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?)) ";
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -749,14 +753,16 @@ public class TimeBlockList{
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, pay_period_id);
+						pstmt.setString(2, employee_id);
+						pstmt.setString(3, duration);
 						String date = Helper.getToday();
 						java.util.Date date_tmp = df.parse(date);
-						pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setString(5, duration);						
 						String date2 = Helper.getYesterday();
 						date_tmp = df.parse(date2);
-						pstmt.setDate(2, new java.sql.Date(date_tmp.getTime()));						
-						pstmt.setString(3, pay_period_id);
-						pstmt.setString(4, employee_id);
+						pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));						
 						rs = pstmt.executeQuery();
 						if(rs.next()){
 								document_id = rs.getString(1); 
@@ -928,33 +934,19 @@ public class TimeBlockList{
 				String msg="", last_date="", // last accrual date
 						emp_id = "", end_date=""; // payPeriod end_date
 				//
-				// we assume all employee accruals are updated the day before
-				// any payperiod therefore we are concerned by the current
-				// pay period end date
 				//
 				// we find the last accrual carry over date given employee id
 				// and the end date of this pay period
 				//
-				String qq = " ";
-				/**
-					 qq = " select a.date,a.employee_id,p.end_date from employee_accruals a,                pay_periods p, time_documents d                                                 where d.employee_id=a.employee_id                                               and p.id = d.pay_period_id and a.date < p.start_date                            and d.id = ? order by a.date desc limit 1 ";
-				*/
 				// modified to handle multiple jobs
-				qq = " select a.date,p.end_date from employee_accruals a,                pay_periods p, time_documents d                                                 where d.employee_id=a.employee_id                                               and p.id = d.pay_period_id and a.date < p.start_date                            and d.employee_id = ? and d.pay_period_id = ? order by a.date desc limit 1 ";
-				
 				//
 				// find total accrual hours used  (PTO and other related
 				// hour codes) since last accrual carry over date
 				//
-				String qq2 = " select c.accrual_id, sum(t.hours)                                     from time_blocks t,time_documents d,hour_codes c                                 where t.document_id=d.id and t.inactive is null                                 and c.id=t.hour_code_id and c.inactive is null                                  and c.accrual_id is not null                                                    and t.date >= ? and d.employee_id=?                                             and t.date <= ? group by c.accrual_id";
-				
-				/**
-				 //
-				 // this addition will cause to add all the accrual used since
-				 // the last update, this could mean two pay period hours
-				 //
-				 (select p.end_date from pay_periods p,                                          time_documents d2 where p.id=d2.pay_period_id and d2.id=d.id)                   and t.hour_code_id in (select id from hour_codes where                          accrual_id is not null) group by c.accrual_id ";
-				*/				
+				String qq = " select c.accrual_id, sum(t.hours)                                     from time_blocks t,time_documents d,hour_codes c                                 where t.document_id=d.id and t.inactive is null                                 and c.id=t.hour_code_id and c.inactive is null                                  and c.accrual_id is not null                                                    and d.pay_period_id = ? and d.employee_id=?                                     group by c.accrual_id";
+				//
+				// we are looking for accrual used in this pap period only
+				//
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -964,19 +956,8 @@ public class TimeBlockList{
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, employee_id);
-						pstmt.setString(2, pay_period_id);
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								last_date = rs.getString(1); // accrual date
-								end_date = rs.getString(2); // end of pay period
-						}
-						qq = qq2;
-						logger.debug(qq);
-						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, last_date);
+						pstmt.setString(1, pay_period_id);
 						pstmt.setString(2, employee_id);
-						pstmt.setString(3, end_date);						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								int code_id = rs.getInt(1); // accrual_id now

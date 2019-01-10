@@ -20,7 +20,7 @@ public class TimeClock {
     String id = "", id_code = "", time = "", document_id = "",
 				time_in = "", time_out = "", job_id = "",
 				employee_id = "";
-    String time_clock_duration = "13"; // hrs
+    final static String time_clock_duration = "13"; // hrs
     Employee employee = null;
     PayPeriod currentPayPeriod = null;
     Document document = null;
@@ -223,8 +223,7 @@ public class TimeClock {
 				// if we could not find, then we create a new one
 				//
 				if (document == null) {
-						Document one = new Document(null, employee.getId(), currentPayPeriod.getId(), job_id, null,
-																				employee.getId());
+						Document one = new Document(null, employee.getId(), currentPayPeriod.getId(), job_id, null,	employee.getId());
 						String back = one.doSave();
 						if (back.equals("")) {
 								document = one;
@@ -307,6 +306,7 @@ public class TimeClock {
 						TimeBlockList tbl = new TimeBlockList();
 						tbl.setPay_period_id(currentPayPeriod.getId());
 						tbl.setEmployee_id(employee.getId());
+						tbl.setDuration(time_clock_duration);
 						String back = tbl.findDocumentForClockInOnly();
 						if (back.equals("")) {
 								// if we have clock-in, we can get the document

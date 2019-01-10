@@ -80,6 +80,7 @@ public class HandleNwAccrual{
 						if(emps != null && emps.size() > 0){
 								empHash = new Hashtable<>();
 								for(Employee one:emps){
+										// System.err.println(" emp "+one);
 										empHash.put(one.getEmployee_number(), one.getId());
 								}
 						}
@@ -168,6 +169,9 @@ public class HandleNwAccrual{
 										empa.setAccrual_id(""+3);
 										empa.setHours(cua);
 										msg += empa.doSaveOnly();										
+								}
+								else{
+										System.err.println(" emp num not found "+str2);
 								}
 						}
 				}

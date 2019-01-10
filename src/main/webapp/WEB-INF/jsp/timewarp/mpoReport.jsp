@@ -76,3 +76,22 @@
 		<td align="right">$<s:property value="#totalAmount" /></td>
 	</tr>
 </table>
+<s:if test="#hasDaily">
+	<table border="1" width="90%">
+		<caption>Hours Classified by Employeee, Date, Hour Codes</caption>
+		<tr>
+			<td align="center"><b>Employee</b></td>
+			<td align="center"><b>Date</b></td>		
+			<td align="center"><b>Hour Code</b></td>
+			<td align="center"><b>Hours</b></td>
+		</tr>
+		<s:iterator var="row" value="#dailyEntries">
+			<tr>
+				<td><s:property value="#row.fullname" /></td>
+				<td><s:property value="#row.date" /></td>
+				<td><s:property value="#row.code" /></td>
+				<td align="right"><s:property value="#row.hoursStr" /></td>
+			</tr>
+		</s:iterator>
+	</table>
+</s:if>

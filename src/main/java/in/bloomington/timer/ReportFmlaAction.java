@@ -28,12 +28,14 @@ public class ReportFmlaAction extends TopAction{
 		List<Department> depts = null;
 		FmlaReport report = null;
 		List<Integer> years = null;
+		List<WarpEntry> dailyEntries = null;
 		String reportTitle = "Fmla Report ";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(!action.equals("")){
-						back = report.findHoursByNameCode();						
+						back = report.findHoursByNameCode();
+						back += report.findHoursByDateAndCode();
 						if(!back.equals("")){
 								addError(back);
 						}
@@ -46,6 +48,14 @@ public class ReportFmlaAction extends TopAction{
 										}
 								}
 								if(true){
+										List<WarpEntry> ones = report.getDailyEntries();
+										if(ones != null && ones.size() > 0){
+												dailyEntries = ones;
+												addMessage("Found "+ones.size()+" daily entries");
+										}										
+								}
+								if(true){
+										/** 
 										back = report.find();
 										if(!back.equals("")){
 												addError(back);
@@ -59,6 +69,7 @@ public class ReportFmlaAction extends TopAction{
 														addMessage("No match found");
 												}
 										}
+										*/
 								}
 						}
 				}

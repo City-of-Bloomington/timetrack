@@ -214,7 +214,6 @@
 			<result name="success">/WEB-INF/jsp/timewarp/payperiodProcess.jsp</result>
 			<result name="csv">/WEB-INF/jsp/timewarp/payperiodProcessCsv.jsp</result>
 			<result name="handCsv">/WEB-INF/jsp/timewarp/payperiodProcessHandCsv.jsp</result>
-			<result name="endYearCsv">/WEB-INF/jsp/timewarp/payperiodProcessEndYearCsv.jsp</result>
 
 		</action>
 		<action name="reportHand" 
@@ -239,7 +238,7 @@
 			<result name="input">/WEB-INF/jsp/timewarp/reportFmla.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timewarp/reportFmla.jsp</result>
 			<result name="success">/WEB-INF/jsp/timewarp/reportFmla.jsp</result>
-			<result name="csv">/WEB-INF/jsp/timewarp/reportFmlaCsv.jsp</result>
+			<result name="csv">/WEB-INF/jsp/timewarp/fmlaReportCsv.jsp</result>
 		</action>		
 		<action name="dataEntry" 
 						class="in.bloomington.timer.DataEntryAction" 

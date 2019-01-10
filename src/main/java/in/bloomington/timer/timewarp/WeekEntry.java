@@ -21,7 +21,7 @@ public class WeekEntry{
 		static Logger logger = LogManager.getLogger(WeekEntry.class);		
 		Profile profile = null;
 		BenefitGroup bGroup = null;
-		
+    static DecimalFormat ndf = new DecimalFormat("#0.00");		
 		static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		
 		double total_hrs = 0, regular_hrs = 0,
@@ -52,27 +52,27 @@ public class WeekEntry{
 
     public WeekEntry(boolean deb,
 										 Profile val,
-										 Department val3){ 
+										 Department val2){ 
 				debug = deb;
 				setProfile(val);
-				setDepartment(val3);
-				splitOne = new WeekSplit(debug, val, val3);
-				splitTwo = new WeekSplit(debug, val, val3);
+				setDepartment(val2);
+				splitOne = new WeekSplit(debug, val, val2);
+				splitTwo = new WeekSplit(debug, val, val2);
 
     }
     public WeekEntry(boolean deb,
 										 Profile val,
-										 int val3, // split day
-										 Department val4
+										 int val2, // split day
+										 Department val3
 										 ){
 				//
-				this(deb, val, val4);
+				this(deb, val, val3);
 				//
 				// if splitDay = 0 ignore, it just start of a new week
 				// day 7 is day 0 in next week (7 - 7 = 0)
 				//
-				if(val3 > 0){  
-						splitDay = val3;
+				if(val2 > 0){  
+						splitDay = val2;
 				}
     }
     public void setProfile(Profile val){
@@ -115,7 +115,7 @@ public class WeekEntry{
 				try{
 						if(te != null){
 								// daySeq 0,1,2,3,4,5,6
-								if((te.getOrder_index()%7) <= splitDay){
+								if((te.getOrder_index()%7) < splitDay){
 										splitOne.add(te);
 								}
 								else{
@@ -395,7 +395,9 @@ public class WeekEntry{
 						}
 						else{
 								holy_earn_hrs = extra_hrs;
-						}						
+						}
+						String dstr = ndf.format(holy_earn_hrs);
+						holy_earn_hrs = (double)(new Double(dstr));
 						//
 						if(holy_earn_hrs > 0.009){
 								earned_time += holy_earn_hrs;
@@ -429,7 +431,7 @@ public class WeekEntry{
 																	"0", // no id for this record
 																	holyWorkDay.getEmployee_id(),
 																	holyWorkDay.getDate_to(), 
-																	""+holy_earn_hrs, // hours
+																	""+ndf.format(holy_earn_hrs), // hours
 																	code, // code
 																	code, // nw code
 																	code_desc, // code desc
@@ -491,14 +493,19 @@ public class WeekEntry{
 				if(profile.getCompTimeMultiple() > 1.0){
 						code = "CE1.5";
 				}
-				if(excess_hrs2 > 0.009) // avoid small values
+				if(excess_hrs2 > 0.009){ // avoid small values
+						String dstr = ndf.format(excess_hrs2);
+						excess_hrs2 = (double) (new Double(dstr));
 						addToEarnedHash(code, excess_hrs2);
+
+				}
 		}
 		public void createProfRecord(){
 				//
 				String code = "PROF HRS";		
 				if(prof_hrs > 0.009){
-						addToEarnedHash(code, prof_hrs);
+						String dstr = ndf.format(prof_hrs);
+						addToEarnedHash(code, new Double(dstr));
 				}
 		}	
 }

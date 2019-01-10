@@ -100,8 +100,6 @@ public class TimeClockAction extends TopAction{
 														addError(back);
 												}
 												else{
-														// document_id = timeClock.getTimeBlock().getDocument_id();
-														// date = timeClock.getTimeBlock().getDate();
 														addMessage("Received Successfully");
 												}
 										}

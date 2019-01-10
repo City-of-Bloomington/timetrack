@@ -59,6 +59,7 @@ public class Document{
     // week 1,2 / hour_code_id /hours
     Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = null;
     HolidayList holidays = null;
+		boolean accrualAdjusted = false;
     public Document(String val,
 										String val2,
 										String val3,
@@ -558,12 +559,6 @@ public class Document{
 						// now we adjust the totals see below
 						findHourCodeTotals();
 						findUsedAccruals();
-						if(usedAccrualTotals != null){
-								Set<Integer> set = usedAccrualTotals.keySet();
-								for(Integer key:set){
-										Double val = usedAccrualTotals.get(key);
-								}
-						}
 						adjustAccruals();
 						checkForWarnings();
 				}
@@ -771,58 +766,61 @@ public class Document{
     }
 		
     public void adjustAccruals(){
-				if(employeeAccruals != null && usedAccrualTotals != null){
-						for(EmployeeAccrual one: employeeAccruals){
-								String accrual_id = one.getAccrual_id();
-								Accrual accrual = one.getAccrual();
-								List<String> list = new ArrayList<>();
-								String accName = accrual.getName();
-								String accDesc = accrual.getDescription();
-								if(accDesc == null) accDesc="";
-								String codeInfo = accName+": "+accDesc;
-								//
-								if(accrual_id != null && !accrual_id.equals("")){
-										double hrs_total = one.getHours();
-										list.add(""+dfn.format(hrs_total));
-										try{
-												int cd_id = Integer.parseInt(accrual_id);
-												if(usedAccrualTotals.containsKey(cd_id)){
-														double hrs_used = usedAccrualTotals.get(cd_id);
-														list.add(""+dfn.format(hrs_used));
-														if(hrs_total > hrs_used){
-																hrs_total -= hrs_used;
+				if(!accrualAdjusted){
+						accrualAdjusted = true;
+						if(employeeAccruals != null && usedAccrualTotals != null){
+								for(EmployeeAccrual one: employeeAccruals){
+										String accrual_id = one.getAccrual_id();
+										Accrual accrual = one.getAccrual();
+										List<String> list = new ArrayList<>();
+										String accName = accrual.getName();
+										String accDesc = accrual.getDescription();
+										if(accDesc == null) accDesc="";
+										String codeInfo = accName+": "+accDesc;
+										//
+										if(accrual_id != null && !accrual_id.equals("")){
+												double hrs_total = one.getHours();
+												list.add(""+dfn.format(hrs_total));
+												try{
+														int cd_id = Integer.parseInt(accrual_id);
+														if(usedAccrualTotals.containsKey(cd_id)){
+																double hrs_used = usedAccrualTotals.get(cd_id);
+																list.add(""+dfn.format(hrs_used));
+																if(hrs_total > hrs_used){
+																		hrs_total -= hrs_used;
+																}
+																else{
+																		hrs_total = 0.0;
+																}
+																one.setHours(hrs_total);
 														}
 														else{
-																hrs_total = 0.0;
+																list.add("0.00"); // nothing used
 														}
-														one.setHours(hrs_total);
-												}
-												else{
-														list.add("0.00"); // nothing used
-												}
-												list.add(""+dfn.format(hrs_total)); // adjusted
-												if(isUnionned()){
-														if(accrual.hasPref_max_leval()){
-																// union it is 40 instead of 10
-																if(hrs_total > accrual.getPref_max_level()*4){
-																		String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO or Sick time until this balance is reduced to no more than "+(accrual.getPref_max_level()*4)+" hours.";
-																		if(!warnings.contains(str))
-																				warnings.add(str);
+														list.add(""+dfn.format(hrs_total)); // adjusted
+														if(isUnionned()){
+																if(accrual.hasPref_max_leval()){
+																		// union it is 40 instead of 10
+																		if(hrs_total > accrual.getPref_max_level()*4){
+																				String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO or Sick time until this balance is reduced to no more than "+(accrual.getPref_max_level()*4)+" hours.";
+																				if(!warnings.contains(str))
+																						warnings.add(str);
+																		}
 																}
 														}
-												}
-												else{
-														if(accrual.hasPref_max_leval()){
-																if(hrs_total > accrual.getPref_max_level()){
-																		String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO or Sick time until this balance is reduced to no more than "+accrual.getPref_max_level()+" hours.";
-																		if(!warnings.contains(str))
-																				warnings.add(str);
+														else{
+																if(accrual.hasPref_max_leval()){
+																		if(hrs_total > accrual.getPref_max_level()){
+																				String str = "Your "+accrual.getName()+": "+accrual.getDescription()+" balance is "+dfn.format(hrs_total)+" and currently exceeds the city target balance. Please use Comp Time Accrued instead of PTO or Sick time until this balance is reduced to no more than "+accrual.getPref_max_level()+" hours.";
+																				if(!warnings.contains(str))
+																						warnings.add(str);
+																		}
 																}
 														}
-												}
 												allAccruals.put(codeInfo, list);
-										}catch(Exception ex){
-												logger.error(ex);
+												}catch(Exception ex){
+														logger.error(ex);
+												}
 										}
 								}
 						}

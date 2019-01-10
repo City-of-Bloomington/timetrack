@@ -38,11 +38,11 @@ public class WeekSplit{
 
 		// for HAND dept, multiple types of regular code are used
 		// such as HOME_REG, HOUSE_REG, RENT_REG, etc
-		Hashtable<String, Double> regHash = new Hashtable<String, Double>();		
+		Hashtable<String, Double> regHash = new Hashtable<>();		
 		//
 		// for non regular code we use this hash such as PTO, CU, FMLA
 		//
-		Hashtable<String, Double> hash = new Hashtable<String, Double>();
+		Hashtable<String, Double> hash = new Hashtable<>();
 		//
 
     public WeekSplit(boolean deb, Profile val, Department val2){
@@ -122,18 +122,19 @@ public class WeekSplit{
 		// for unioned emps only
 		//
 		void computeDailyUnionEarnedTime(){
+				
 				for(int jj=0;jj<7;jj++){
-						double reg_hrs = 0, reg_2_hrs = 0, hours = 0, dif_hrs = 0;
+						double hours = 0, dif_hrs = 0;
 						Hashtable<String, Double> daily = dailyArr.get(jj);
 						Set<String> codes = daily.keySet();
 						if(codes  != null && codes.size() > 0){
 								for(String code:codes){
 										double hrs = daily.get(code).doubleValue();
 										if(code.equals("Reg")){
-												reg_hrs += hrs;
 												hours += hrs;
 										}
 								}
+								System.err.println(" Reg "+hours);
 								if(hours > 8.009){
 										dif_hrs = hours - union_daily_hours;
 										if(dif_hrs > 0.009)

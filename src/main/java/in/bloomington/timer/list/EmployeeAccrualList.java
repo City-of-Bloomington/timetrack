@@ -85,7 +85,7 @@ public class EmployeeAccrualList{
 						qq += " join time_documents d on d.employee_id=a.employee_id ";
 						qq += " join pay_periods p on p.id = d.pay_period_id ";						
 						if(!qw.equals("")) qw += " and "; // the last date
-						qw += " a.date = (select a2.date from employee_accruals a2 where a2.date < p.start_date and a2.employee_id=d.employee_id order by a2.date desc limit 1) ";
+						qw += " a.date = (select a2.date from employee_accruals a2 where a2.date <= p.end_date and a2.employee_id=d.employee_id order by a2.date desc limit 1) ";
 						qw += " and d.id = ? ";
 				}				
 				else if(!employee_id.equals("")){
@@ -99,7 +99,7 @@ public class EmployeeAccrualList{
 						else if(!pay_period_id.equals("")){
 								qq += ", pay_periods p ";
 								if(!qw.equals("")) qw += " and ";
-								qw += " p.id=? and a.date <= p.start_date ";
+								qw += " p.id=? and a.date <= p.end_date ";
 						}
 				}
 				else{

@@ -41,6 +41,14 @@ public class EmployeeAccrual extends CommonInc{
 				setHours(val3);
 				setDate(val4);
 				
+    }
+    public EmployeeAccrual(EmployeeAccrual val){
+				setId(val.getId());
+				setAccrual_id(val.getAccrual_id());
+				setEmployee_id(val.getEmployee_id());
+				setHours(val.getHours());
+				setDate(val.getDate());
+				setRelated_hour_code_id(val.getRelated_hour_code_id());
     }		
     public EmployeeAccrual(String val,
 													 String val2,
