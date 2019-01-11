@@ -134,7 +134,6 @@ public class WeekSplit{
 												hours += hrs;
 										}
 								}
-								System.err.println(" Reg "+hours);
 								if(hours > 8.009){
 										dif_hrs = hours - union_daily_hours;
 										if(dif_hrs > 0.009)

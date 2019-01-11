@@ -18,7 +18,8 @@ public class GroupList{
 
     static final long serialVersionUID = 1600L;
     static Logger logger = LogManager.getLogger(GroupList.class);
-    String employee_id = "", department_id="", pay_period_id="";
+    String employee_id = "", department_ids ="", department_id="",
+				pay_period_id="";
     String name="", id="";
     boolean active_only = false, inactive_only=false;
     List<Group> groups = null;
@@ -40,8 +41,15 @@ public class GroupList{
 						pay_period_id = val;
     }		
     public void setDepartment_id (String val){
-				if(val != null && !val.equals("-1"))
-						department_id = val;
+				if(val != null && !val.equals("-1")){
+						if(!department_id.equals("")){
+								department_id = val;
+						}
+						if(!department_ids.equals("")){
+								department_ids +=",";
+						}
+						department_ids += val;
+				}
     }
     public void setName(String val){
 				if(val != null)
@@ -89,9 +97,9 @@ public class GroupList{
 				String msg="", str="";
 				String qq = "select g.id,g.name,g.description,g.department_id,g.default_earn_code_id,g.inactive,d.name from groups g left join departments d on d.id=g.department_id ";
 				String qw = "";
-				if(!department_id.equals("")){
+				if(!department_ids.equals("")){
 						if(!qw.equals("")) qw += " and ";						
-						qw += "g.department_id=? ";
+						qw += "g.department_id in ("+department_ids+") ";
 				}
 				if(!name.equals("")){
 						if(!qw.equals("")) qw += " and ";						
@@ -128,8 +136,8 @@ public class GroupList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!department_id.equals("")){
-								pstmt.setString(jj++, department_id);
+						if(!department_ids.equals("")){
+								// pstmt.setString(jj++, department_ids);
 						}
 						if(!name.equals("")){
 								pstmt.setString(jj++, "%"+name+"%");

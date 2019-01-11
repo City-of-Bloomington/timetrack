@@ -19,8 +19,9 @@ public class GroupEmployeeAction extends TopAction{
 		static final long serialVersionUID = 2100L;	
 		static Logger logger = LogManager.getLogger(GroupEmployeeAction.class);
 		//
-		String group_id="", employee_id="", department_id="";
-		Employee employee = null;
+		String group_id="", employee_id="", department_id="",
+				department2_id="";
+		// Employee employee = null;
 		List<Group> groups = null;
 		GroupEmployee groupEmployee = null;
 		List<GroupEmployee> groupEmployees = null;
@@ -98,6 +99,9 @@ public class GroupEmployeeAction extends TopAction{
 						getEmployee();
 						if(employee != null){
 								department_id = employee.getDepartment_id();
+								if(employee.hasTwoDepartments()){
+										department2_id = employee.getDepartment2_id(); 
+								}
 						}
 				}
 				return department_id;
@@ -140,9 +144,16 @@ public class GroupEmployeeAction extends TopAction{
 						if(department_id.equals("")){
 								getDepartment_id();
 						}
+						getEmployee();
+						if(employee.hasTwoDepartments()){
+								department2_id = employee.getDepartment2_id();
+						}
 						GroupList tl = new GroupList();
 						if(!department_id.equals("")){
 								tl.setDepartment_id(department_id);
+								if(!department2_id.equals("")){
+										tl.setDepartment_id(department2_id);
+								}
 						}
 						tl.setActiveOnly();
 						String back = tl.find();

@@ -450,8 +450,8 @@ public class PayPeriodProcessAction extends TopAction{
 		// 
 		void prepareCsv(){
 				allCsvLines = new ArrayList<>();
-				String line  = ",,,,,,,,,,";
-				String line2 = ",,,,,,,,,,";
+				String line  = ",,,,,,,,,,,";
+				String line2 = ",,,,,,,,,,,";
 				for(PayPeriodProcess process:processes){
 						String csvLine = process.getEmployee().getEmployee_number()+",";
 						csvLine += process.getTwoWeekNetRegular()+",";
@@ -488,8 +488,8 @@ public class PayPeriodProcessAction extends TopAction{
 		}
 		void prepareEndYearCsv(){
 				allCsvLines = new ArrayList<>();
-				String line  = ",,,,,,,,,,";
-				String line2 = ",,,,,,,,,,";
+				String line  = ",,,,,,,,,,,";
+				String line2 = ",,,,,,,,,,,";
 				for(PayPeriodProcess process:processes){
 						if(process.getNetRegularHoursForFirstPay() > 0){
 								String csvLine = process.getEmployee().getEmployee_number()+",";
@@ -564,7 +564,7 @@ public class PayPeriodProcessAction extends TopAction{
 		// Not tested yet
 		void prepareHandCsv(){
 				allCsvLines = new ArrayList<>();
-				String line =",,,,", line2 =",,,,,";				
+				String line =",,,,", line2 =",,,,,,";				
 				for(PayPeriodProcess process:processes){
 						Hashtable<CodeRef, String> hash = process.getTwoWeekHandHash();
 						Set<CodeRef> keySet = hash.keySet();

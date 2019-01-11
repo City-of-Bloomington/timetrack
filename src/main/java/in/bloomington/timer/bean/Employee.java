@@ -29,6 +29,7 @@ public class Employee implements Serializable{
 		Set<String> roleSet = new HashSet<>();
     // needed for saving
     String department_id="", group_id="";
+		String department2_id = ""; // for people with two departments
     String group_ids = ""; // for new employee with multiple groups/jobs
     // normally this date is pay period start date
     String job_active_date = "", pay_period_id="", selected_job_id="";
@@ -324,6 +325,9 @@ public class Employee implements Serializable{
 						getDepartmentEmployees();
 						if(departmentEmployee != null){
 								department_id = departmentEmployee.getDepartment_id();
+								if(departmentEmployee.hasSecondaryDept()){
+										department2_id = departmentEmployee.getDepartment2_id();
+								}
 						}
 				}
 				return department_id;
@@ -630,9 +634,18 @@ public class Employee implements Serializable{
     public String getCurrentDepartment_id(){
 				if(hasActiveDepartment()){
 						department_id = departmentEmployee.getDepartment_id();
+						if(departmentEmployee.hasSecondaryDept())
+								department2_id = departmentEmployee.getDepartment2_id();
 				}
 				return department_id;
     }
+		public String getDepartment2_id(){
+				return department2_id;
+		}
+		public boolean hasTwoDepartments(){
+				getDepartment_id();
+				return !department_id.equals("") && !department2_id.equals("");
+		}
     public List<GroupEmployee> getGroupEmployees(){
 				if(groupEmployees == null && !id.equals("")){
 						GroupEmployeeList del = new GroupEmployeeList(id);

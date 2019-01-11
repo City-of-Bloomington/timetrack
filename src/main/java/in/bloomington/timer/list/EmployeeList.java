@@ -200,6 +200,10 @@ public class EmployeeList extends CommonInc{
 						if(!qw.equals("")) qw += " and ";
 						qw += " e.id_code = ? ";
 				}
+				else if(!employee_number.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " e.employee_number = ? ";
+				}				
 				else if(!employee_ids.equals("")){
 						if(!qw.equals("")) qw += " and ";
 						qw += " e.id  in ("+employee_ids+") ";
@@ -295,8 +299,11 @@ public class EmployeeList extends CommonInc{
 								pstmt.setString(jj++,id);
 						}
 						else if(!id_code.equals("")){
-								pstmt.setString(jj++,id_code);
+								pstmt.setString(jj++, id_code);
 						}
+						else if(!employee_number.equals("")){
+								pstmt.setString(jj++, employee_number);
+						}						
 						else if(!employee_ids.equals("")){
 								// nothing here
 						}						

@@ -135,7 +135,6 @@ public class TimeDetailsAction extends TopAction{
 										}
 								}
 								if(!job_id.equals("all")){
-										System.err.println(" create new doc ");	    
 										Document one = new Document(null, employee_id, pay_period_id, job_id, null, user.getId());
 										String back = one.doSave();
 										if(back.equals("")){
