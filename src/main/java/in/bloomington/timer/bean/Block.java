@@ -393,6 +393,12 @@ public class Block{
 		public boolean isClockInOnly(){
 				return isClockIn() && !isClockOut();
 		}
+		public boolean hasClockInOut(){
+				return isClockIn() && isClockOut();
+		}
+		public boolean hasNoClockInOut(){
+				return !(isClockIn() || isClockOut());
+		}
 		public boolean isToday(){
 				return date != null && date.equals(today);
 		}

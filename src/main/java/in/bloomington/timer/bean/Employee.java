@@ -234,7 +234,7 @@ public class Employee implements Serializable{
     }
     // sometimes in AD email is set as N/A
     public void setEmail(String val){
-				if(val != null && !val.equals("N/A")){
+				if(val != null && !val.equals("N/A") && !val.equals("")){
 						email = val.trim();
 				}
 				if(email.equals(""))
@@ -766,12 +766,12 @@ public class Employee implements Serializable{
 				if(!id.equals("")){
 						qq += " e.id = ? ";
 				}
-				else if(!username.equals("")){ // for login
-						qq += " e.username like ? ";		
-				}				
 				else if(!id_code.equals("")){ // for punch clock machines
 						qq += " e.id_code = ? ";		
 				}
+				else if(!username.equals("")){ // for login
+						qq += " e.username like ? ";		
+				}				
 				else{
 						msg = "Employee info can not be found as no employee id is set";
 						return msg;
@@ -784,11 +784,11 @@ public class Employee implements Serializable{
 								if(!id.equals("")){
 										pstmt.setString(1, id);
 								}
+								else if(!id_code.equals("")){
+										pstmt.setString(1, id_code);
+								}								
 								else if(!username.equals("")){
 										pstmt.setString(1, username);
-								}
-								else{
-										pstmt.setString(1, id_code);
 								}
 								rs = pstmt.executeQuery();
 								//
@@ -909,9 +909,12 @@ public class Employee implements Serializable{
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
 								pstmt.setString(jj++, employee_number);
-						if(email.equals(""))
-								getEmail();
-						pstmt.setString(jj++, email);
+						if(email.equals("")){
+								pstmt.setNull(jj++, Types.VARCHAR);
+						}
+						else{
+								pstmt.setString(jj++, email);
+						}
 						String role = "Employee";						
 						if(!roleSet.isEmpty()){
 								for(String str:roleSet){
@@ -1027,9 +1030,9 @@ public class Employee implements Serializable{
 						else
 								pstmt.setString(4, id_code);
 						if(email.equals(""))
-								getEmail();
-						pstmt.setString(5, email);						
-
+								pstmt.setNull(5, Types.VARCHAR);
+						else
+								pstmt.setString(5, email);						
 						pstmt.setString(6, employee_number);
 						pstmt.setString(7, id);
 						pstmt.executeUpdate();

@@ -206,7 +206,7 @@ public class WeekSplit{
 						else if(code_desc.indexOf("unpaid") > -1){
 								unpaid_hrs += hours;
 								if(daily.containsKey(code)){
-										hours +=  daily.get(code);
+										// hours +=  daily.get(code);
 								}											
 						}								
 						else if(code_desc.indexOf("accrue") > -1){

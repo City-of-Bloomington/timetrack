@@ -87,7 +87,7 @@ public class NotificationScheduleAction extends TopAction{
 								}
 						}
 						else {
-								pl.currentOnly();
+								pl.setPreviousOnly();
 								msg = pl.find();
 								if(msg.equals("")){
 										List<PayPeriod> ones = pl.getPeriods();

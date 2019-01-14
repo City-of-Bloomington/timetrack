@@ -269,6 +269,21 @@ public class BenefitGroup{
 		public boolean isFire(){
 				return fire;
 		}
+		public boolean isPoliceSworn(){
+				return policeSworn;
+		}
+		public boolean isPoliceDetective(){
+				return policeDetective;
+		}
+		public boolean isPoliceManagement(){
+				return policeManagement;
+		}
+		public boolean isFireSworn(){
+				return fireSworn;
+		}
+		public boolean isFireSworn5to8(){
+				return fireSworn5to8;
+		}		
     public void setFullTime(boolean val){
 				if(val){
 						fullTime = true;

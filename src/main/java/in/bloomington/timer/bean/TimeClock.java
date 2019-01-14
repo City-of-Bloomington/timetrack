@@ -119,7 +119,12 @@ public class TimeClock {
 				if (val != null)
 						id_code = val;
     }
-
+		public void setTime(String[] vals){
+				if(vals != null && vals.length > 0){
+						String val = vals[0];
+						setTime(val);
+				}
+		}
     public void setTime(String val) {
 				if (val != null) {
 						getEmployee(); 
@@ -178,6 +183,7 @@ public class TimeClock {
 								}
 						} catch (Exception ex) {
 								msg += " " + ex;
+								System.err.println("clock time split "+ex+" "+val);
 						}
 				}
 				return msg;
@@ -264,6 +270,9 @@ public class TimeClock {
 						if (back.equals("")) {
 								employee = one;
 								employee_id = employee.getId();
+						}
+						else{
+								System.err.println(" get employee error "+back+" ID code "+id_code);
 						}
 				}
 				if (employee != null) {

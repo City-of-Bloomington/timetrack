@@ -40,9 +40,9 @@ public class UnoConnect implements ServletRequestListener{
 		public static Connection getConnection(){
 				Connection con = null;
 				con = (Connection) conn.get();
-				if(con == null){
-						boolean pass = false;
-						try{
+				try{
+						if(con == null || con.isClosed()){
+								boolean pass = false;
 								Context initCtx = new InitialContext();
 								Context envCtx = (Context) initCtx.lookup("java:comp/env");
 								DataSource ds = (DataSource)envCtx.lookup("jdbc/MySQL_timer");
@@ -57,12 +57,12 @@ public class UnoConnect implements ServletRequestListener{
 										}
 								}
 						}
-						catch(Exception ex){
-								logger.error(ex);
+						else{
+								// System.err.println(" using the same con "+con_cnt);
 						}
 				}
-				else{
-						// System.err.println(" using the same con "+con_cnt);
+				catch(Exception ex){
+						logger.error(ex);
 				}
 				return (Connection) conn.get();
 	 }

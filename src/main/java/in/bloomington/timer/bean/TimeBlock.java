@@ -649,19 +649,16 @@ public class TimeBlock extends Block{
 				//
 				findAllDocumentsForPayPeriod();
 				double timeIn = begin_hour+begin_minute/60.;
-				double timeOut = end_hour+end_minute/60.;				
-				String qq = " select count(*) as tt from time_blocks t "+
+				double timeOut = end_hour+end_minute/60.;
+				String qq = " select t.id,t.hour_code_id from time_blocks t "+
 						" where t.document_id=? and t.date = ? and "+
 						"t.inactive is null and "+
 						" ((t.clock_in is null and t.clock_out is null) or "+
 						" (t.clock_in is not null and t.clock_out is not null)) ";
 				if(!id.equals("")){
 						qq += " and t.id <> ? "; // 5
-				}								
-				//
-				// looking for clock-in withoud clock-out being inbetween
-				// exist clock-in between the two times
-				String qq2 = " select count(*) as tt from time_blocks t "+
+				}
+				String qq2 = " select t.id,t.hour_code_id from time_blocks t "+
 						" where t.document_id=? and t.date = ? and "+
 						"t.inactive is null and "+
 						" t.clock_in is not null and t.clock_out is null ";
@@ -670,9 +667,10 @@ public class TimeBlock extends Block{
 				}								
 				qq2 += " and ? <= t.begin_hour+t.begin_minute/60. "+ 
 						" and ? >= t.begin_hour+t.begin_minute/60. ";
-
-				if((clock_in.equals("") && clock_out.equals(""))
-					 || (!clock_in.equals("") && !clock_out.equals(""))){				
+				//
+				//either non or both
+				//
+				if(hasNoClockInOut() || hasClockInOut()){
 						qq +=" and (((? > t.begin_hour+t.begin_minute/60. "+ // start in between
 								" and ? < t.end_hour+t.end_minute/60. "+
 								" ) or "+
@@ -694,14 +692,18 @@ public class TimeBlock extends Block{
 								msg = "Time IN is greater than time OUT";
 								return msg;
 						}
-						qq = " select sum(tt) from ("+qq+" union all "+qq2+") t2";
+						// final
+						qq = " select count(*) from ("+qq+" union all "+qq2+") t2 where t2.hour_code_id in (select id from hour_codes c where c.record_method='Time' )";
 						
 				}
-				else if(!clock_in.equals("")){				
+				else if(isClockIn()){	
 						qq +=" and (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
 								" and ? <= t.end_hour+t.end_minute/60.) ";
+						// final
+						qq = " select count(*) from ("+qq+") t2 where t2.hour_code_id in (select id from hour_codes c where c.record_method='Time' )";						
 						
 				}
+					 
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				if(con == null){

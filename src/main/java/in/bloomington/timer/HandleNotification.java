@@ -68,8 +68,10 @@ public class HandleNotification{
     }
     /**
      *
-     select e.first_name,e.last_name from time_documents d,employees e,jobs j where e.id=d.employee_id and e.inactive is null and j.employee_id=e.id and j.clock_time_required is null and j.inactive is null and d.pay_period_id = 543 and e.username not like 'admin' and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=543 and a.workflow_id=2) 
-			 
+     select e.first_name,e.last_name,d.id from time_documents d,employees e,jobs j where e.id=d.employee_id and e.inactive is null and j.employee_id=e.id and j.clock_time_required is null and j.inactive is null and d.pay_period_id = 549 and e.username not like 'admin' and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=549 and a.workflow_id=2) order by 1;
+
+       select e.id,e.username,e.first_name,e.last_name,e.email,d.id                      from time_documents d,                                                          employees e,                                                                    jobs j                                                                          where e.id=d.employee_id                                                        and e.inactive is null                                                          and j.employee_id=e.id                                                          and j.clock_time_required is null                                               and j.inactive is null                                                          and d.pay_period_id = 549                                                       and e.username not like 'admin'                                                 and e.email is not null  and e.email <> ''                                      and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=549 and a.workflow_id=2) order by 2; ";
+		 
     */
     //
     // find all the employees who have initiated document time but
@@ -85,19 +87,8 @@ public class HandleNotification{
 				// find all non clock employees that have documents for the
 				// specified pay_period_id but not submitted
 				//
-				String qq = " select e.id,e.username,e.first_name,e.last_name,e.email "+
-						" from time_documents d,"+
-						" employees e,"+
-						" jobs j "+
-						" where e.id=d.employee_id "+
-						" and e.inactive is null "+
-						" and j.employee_id=e.id "+
-						" and j.clock_time_required is null "+
-						" and j.inactive is null "+
-						" and d.pay_period_id = ? "+
-						" and e.username not like 'admin' "+  // exclude admin user
-						" and e.email is not null "+ // those who can receive emails
-						" and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=? and a.workflow_id=2) "; // initiated but not submitted for approval
+				String qq = " select e.id,e.username,e.first_name,e.last_name,e.email                from time_documents d,                                                          employees e,                                                                    jobs j                                                                          where e.id=d.employee_id                                                        and e.inactive is null                                                          and j.employee_id=e.id                                                          and j.clock_time_required is null                                               and j.inactive is null                                                          and d.pay_period_id = ?                                                         and e.username not like 'admin'                                                 and e.email is not null and e.email <> ''                                       and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=? and a.workflow_id=2) ";
+				// initiated but not submitted for approval
 				try{
 						con = Helper.getConnection();
 						if(con == null){
