@@ -135,6 +135,7 @@
       <result name="input">/WEB-INF/jsp/notificationSchedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/notificationSchedular.jsp</result>
       <result name="success">/WEB-INF/jsp/notificationSchedular.jsp</result>
+      <result name="logs">/WEB-INF/jsp/notificationLogs.jsp</result>			
     </action>
     <action name="batchSchedule" 
 	    class="in.bloomington.timer.BatchSubmitScheduleAction" 

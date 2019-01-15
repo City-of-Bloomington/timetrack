@@ -34,9 +34,9 @@ public class PayrollProcessAction extends TopAction{
 		String selected_group_id = "";
 		Group group = null;
 		List<Document> documents = null;
+		List<Document> notSubmittedDocs = null;		
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
-		List<Employee> notSubmittedEmps = null;
 		List<Employee> notApprovedEmps = null;
 		List<Employee> noDocNorSubmitEmps = null;		
 		boolean notSubmitAndApproveFlag = true;		
@@ -337,21 +337,13 @@ public class PayrollProcessAction extends TopAction{
 						}
 				}
 				return nextPayPeriod;
-		}					
-		public boolean hasNotSubmittedEmps(){
-				findNotSubmittedAndNotApprovedEmps();
-				return notSubmittedEmps != null && notSubmittedEmps.size() > 0;
-
 		}
 		public boolean hasNotApprovedEmps(){
 				findNotSubmittedAndNotApprovedEmps();				
 				return notApprovedEmps != null && notApprovedEmps.size() > 0;
 		}
 		public boolean needAction(){
-				return hasNotApprovedEmps() || hasNotSubmittedEmps() || hasNonDocEmps();
-		}
-		public List<Employee> getNotSubmittedEmps(){
-				return notSubmittedEmps;
+				return hasNotApprovedEmps() || hasNotSubmittedDocs() || hasNonDocEmps();
 		}
 		public List<Employee> getNotApprovedEmps(){
 				return notApprovedEmps;
@@ -378,9 +370,11 @@ public class PayrollProcessAction extends TopAction{
 														continue;
 												}
 												else{
-														if(notSubmittedEmps == null)
-																notSubmittedEmps = new ArrayList<>();
-														notSubmittedEmps.add(emp);
+														if(notSubmittedDocs == null)
+																notSubmittedDocs = new ArrayList<>();
+														if(!notSubmittedDocs.contains(one))
+																notSubmittedDocs.add(one);
+														
 												}
 										}
 								}
@@ -388,11 +382,18 @@ public class PayrollProcessAction extends TopAction{
 				}
 		}
 		public boolean hasNoDocNorSubmitEmps(){
-				return hasNotSubmittedEmps() || hasNonDocEmps();
+				return hasNotSubmittedDocs() || hasNonDocEmps();
 		}
 		public List<Employee> getNoDocNorSubmitEmps(){
 				return noDocNorSubmitEmps;
 		}
+		public boolean hasNotSubmittedDocs(){
+				findNotSubmittedAndNotApprovedEmps();
+				return notSubmittedDocs != null && notSubmittedDocs.size() > 0;
+		}
+		public List<Document> getNotSubmittedDocs(){
+				return notSubmittedDocs;
+		}				
 		public void setCheck_all(boolean val){
 				// will do nothing
 		}

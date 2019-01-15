@@ -17,7 +17,7 @@ public class NotificationLog{
 
 		static final long serialVersionUID = 3700L;	
 		static Logger logger = LogManager.getLogger(NotificationLog.class);
-    String id="", receipants="", message="",date="", status="", error_msg="";
+    String id="", receipiants="", message="",date="", status="", error_msg="";
 		//
 		public NotificationLog(String val){
 				//
@@ -27,7 +27,7 @@ public class NotificationLog{
 		public NotificationLog(String val, String val2,
 													 String val3, String val4
 													 ){
-				setRecipients(val);
+				setReceipiants(val);
 				setMessage(val2);
 				setStatus(val3);
 				setError_msg(val4);
@@ -37,7 +37,7 @@ public class NotificationLog{
 													 String val5, String val6													 
 													 ){
 				setId(val);
-				setRecipients(val2);
+				setReceipiants(val2);
 				setMessage(val3);
 				setDate(val4);
 				setStatus(val5);
@@ -52,12 +52,15 @@ public class NotificationLog{
     public String getMessage(){
 				return message;
     }
-    public String getReceipiantsn(){
-				return receipants;
+    public String getReceipiants(){
+				return receipiants;
     }		
+    public String getDateTime(){
+				return date; // date time
+    }
     public String getDate(){
 				return date;
-    }
+    }		
 		public String getStatus(){
 				return status;
     }
@@ -71,9 +74,9 @@ public class NotificationLog{
 				if(val != null)
 						id = val;
     }
-    public void setRecipients(String val){
+    public void setReceipiants(String val){
 				if(val != null)
-						receipants = val.trim();
+						receipiants = val.trim();
     }
     public void setMessage(String val){
 				if(val != null)
@@ -100,7 +103,7 @@ public class NotificationLog{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select id,receipiants,message,date_format(date,'%m/%d/%Y %h:%i'),status,error_msg "+
+				String qq = "select id,receipants,message,date_format(date,'%m/%d/%Y %h:%i'),status,error_msg "+
 						"from notification_logs where id=?";
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -113,7 +116,7 @@ public class NotificationLog{
 						pstmt.setString(1,id);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
-								setRecipients(rs.getString(2));
+								setReceipiants(rs.getString(2));
 								setMessage(rs.getString(3));
 								setDate(rs.getString(4));
 								setStatus(rs.getString(5));
@@ -146,7 +149,7 @@ public class NotificationLog{
 				}				
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, receipants);
+						pstmt.setString(1, receipiants);
 						pstmt.setString(2, message);
 						pstmt.setString(3, status);
 						if(error_msg.equals(""))

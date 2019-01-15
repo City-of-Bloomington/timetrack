@@ -76,15 +76,14 @@
 				</s:if>
 
 				<!-- these ifs below should only display if there are users within -->
-				<s:if test="hasNotSubmittedEmps()">
+				<s:if test="hasNotSubmittedDocs()">
 					<small class="status-tag not-submitted">Time Not Submitted</small>
 					<ul>
-						<s:iterator value="notSubmittedEmps" status="row" >
-							<li><s:property value="full_name" /><s:if test="!#row.last">,</s:if></li>
+						<s:iterator value="notSubmittedDocs" status="row" >
+							<li><a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" /><s:property value="employee" /></a>	<s:if test="!#row.last">,</s:if></li>
 						</s:iterator>
 					</ul>
-				</s:if>
-
+				</s:if>				
 				<s:if test="hasNotApprovedEmps()">
 					<small class="status-tag not-approved">Time Not Approved</small>
 					<ul>

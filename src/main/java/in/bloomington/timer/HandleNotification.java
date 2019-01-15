@@ -136,14 +136,6 @@ public class HandleNotification{
 						System.err.println(" no emps ");
 						return msg;
 				}
-				/**
-				String bcc_str = "";
-				for(Employee one:emps){
-						if(!bcc_str.equals("")) bcc_str += ",";
-						bcc_str += one.getFull_name()+"<"+one.getEmail()+">";
-				}
-				msg = compuseAndSend(bcc_str);
-				*/
 				String to_str = "";
 				for(Employee one:emps){
 						to_str = one.getFull_name()+"<"+one.getEmail()+">";
@@ -153,12 +145,7 @@ public class HandleNotification{
     }
     String compuseAndSend(String to_str){
 				String msg = "";
-				String body_text =
-						"This is a friendly reminder that today marks the beginning of a new pay period. Our records show you have not submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible. The timetrack system is available here: \n\n"+
-						"https://bloomington.in.gov/timetrack \n\n"+
-						"If you have any questions, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n"+
-						"Thank you\n\n"+
-						"City of Bloomington ITS\n";
+				String body_text ="This is an automated reminder from the Timetrack timekeeping system.\n\n                                                             Today marks the beginning of a new pay period. Our records show you have not submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible.\n\n                                                The timetrack system is available here:\n\n                                     https://bloomington.in.gov/timetrack                                            \n\n                                                                            If you have any questions or support needs, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n                Thank you,\n                                                                    City of Bloomington ITS\n                                                      \n\n";
 				Properties props = new Properties();
 				props.put("mail.smtp.host", mail_host);
 				
@@ -172,12 +159,11 @@ public class HandleNotification{
 						message.setRecipients(Message.RecipientType.TO, addrArray);
 						// message.setRecipients(Message.RecipientType.BCC, addrArray);
 						if(activeMail){
-								//disabled for now
 								Transport.send(message);
 								// System.err.println(" active mail is on, notification email not sent");
 						}
 						else{
-								logger.warn(" active mail is off, no email sent");
+								logger.warn(" active mail is turned off, no email sent");
 						}
 						//
 						// Success

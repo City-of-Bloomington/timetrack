@@ -28,11 +28,15 @@ public class NotificationScheduleAction extends TopAction{
 		QuartzMisc quartzMisc = null;
 		NotificationScheduler schedular = null;
 		String prev_date="", next_date="", pay_period_id="", date="";
+		List<NotificationLog> logs = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				prepareSchedular();				
-				if(action.equals("Schedule")){
+				if(action.equals("logs")){
+						ret = "logs";
+				}				
+				else if(action.equals("Schedule")){
+						prepareSchedular();
 						back = doClean();
 						if(!back.equals("")){
 								addError(back);
@@ -56,7 +60,8 @@ public class NotificationScheduleAction extends TopAction{
 								addError(""+ex);
 						}
 				}
-				else if(action.startsWith("Notify")){ 
+				else if(action.startsWith("Notify")){
+						prepareSchedular();
 						if(pay_period_id.equals("")){
 								addActionError("Pay period not selected");
 								addError("Pay period not selected");
@@ -174,8 +179,23 @@ public class NotificationScheduleAction extends TopAction{
 		public boolean hasPeriods(){
 				getPeriods();
 				return periods != null && periods.size() > 0;
-		}		
-		
+		}
+		public boolean hasLogs(){
+				getLogs();
+				return logs != null && logs.size() > 0;
+		}
+		public List<NotificationLog> getLogs(){
+				if(logs == null){
+						NotificationLogList nll = new NotificationLogList();
+						String back = nll.find();
+						if(back.equals("")){
+								List<NotificationLog> ones = nll.getLogs();
+								if(ones != null && ones.size() > 0)
+										logs = ones;
+						}
+				}
+				return logs;
+		}
 }
 
 

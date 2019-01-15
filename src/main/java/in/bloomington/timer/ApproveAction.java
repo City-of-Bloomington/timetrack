@@ -37,9 +37,9 @@ public class ApproveAction extends TopAction{
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
-		List<Employee> notSubmittedEmps = null;
 		List<Employee> notApprovedEmps = null;
-		List<Employee> noDocNorSubmitEmps = null;		
+		List<Employee> noDocNorSubmitEmps = null;
+		List<Document> notSubmittedDocs = null;
 		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
 		public String execute(){
@@ -344,13 +344,8 @@ public class ApproveAction extends TopAction{
 				getNonDocEmps();
 				return nonDocEmps != null && nonDocEmps.size() > 0; 
 		}
-		public boolean hasNotSubmittedEmps(){
-				findNotSubmittedAndNotApprovedEmps();
-				return notSubmittedEmps != null && notSubmittedEmps.size() > 0;
-
-		}
 		public boolean hasNoDocNorSubmitEmps(){
-				return hasNotSubmittedEmps() || hasNonDocEmps();
+				return hasNotSubmittedDocs() || hasNonDocEmps();
 		}
 		public List<Employee> getNoDocNorSubmitEmps(){
 				return noDocNorSubmitEmps;
@@ -359,12 +354,22 @@ public class ApproveAction extends TopAction{
 				findNotSubmittedAndNotApprovedEmps();				
 				return notApprovedEmps != null && notApprovedEmps.size() > 0;
 		}
-		public List<Employee> getNotSubmittedEmps(){
-				return notSubmittedEmps;
-		}
+
+		public List<Document> getNotSubmittedDocs(){
+				return notSubmittedDocs;
+		}		
 		public List<Employee> getNotApprovedEmps(){
 				return notApprovedEmps;
 		}
+		public boolean hasNoDocNorSubmitDocs(){
+				findNotSubmittedAndNotApprovedEmps();
+				return notSubmittedDocs != null && notSubmittedDocs.size() > 0;
+		}
+		public boolean hasNotSubmittedDocs(){
+				findNotSubmittedAndNotApprovedEmps();
+				return notSubmittedDocs != null && notSubmittedDocs.size() > 0;
+		}
+		
 		void findNotSubmittedAndNotApprovedEmps(){
 				if(notSubmitAndApproveFlag){
 						notSubmitAndApproveFlag = false; // to turn off
@@ -387,14 +392,10 @@ public class ApproveAction extends TopAction{
 														continue;
 												}
 												else{
-														if(notSubmittedEmps == null)
-																notSubmittedEmps = new ArrayList<>();
-														notSubmittedEmps.add(emp);
-														/*
-														if(noDocNorSubmitEmps == null)
-																noDocNorSubmitEmps = new ArrayList<>();
-														noDocNorSubmitEmps.add(emp);
-														*/
+														if(notSubmittedDocs == null)
+																notSubmittedDocs = new ArrayList<>();
+														if(!notSubmittedDocs.contains(one))
+																notSubmittedDocs.add(one);
 												}
 										}
 								}

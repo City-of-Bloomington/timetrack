@@ -36,11 +36,11 @@
 			</ul>
 			<h2>Audit</h2>
 			<ul>
+				<li><a href="<s:property value='#application.url'/>notificationSchedule.action?action=logs">Recent Automated Notification logs</a></li>				
 				<li><a href="<s:property value='#application.url'/>inform.action?action=logs">Approvers/Payroll Email Logs</a></li>
 				<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Entry History</a></li>
 			</ul>
 		</div>
-
 		<div class="width-one-half float-right">
 			<h2>Time Clock</h2>
 			<ul>
