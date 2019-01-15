@@ -17,91 +17,91 @@ import org.apache.logging.log4j.Logger;
 
 public class TimeActionAction extends TopAction{
 
-		static final long serialVersionUID = 4350L;	
-		static Logger logger = LogManager.getLogger(TimeActionAction.class);
-		//
-		TimeAction timeAction = null;
-		String timeActionsTitle = "Time Actions";
-		String document_id = "", workflow_id="";
-		String source = ""; // where we are coming from
-		//
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(action.startsWith("Submit")){
-						getTimeAction();
-						timeAction.setAction_by(user.getId());
-						back = timeAction.doSave();
-						if(!back.equals("")){
-								addError(back);
-						}
-						else{ // normally we return to TimeDetails
-								addMessage("Saved Successfully");
-						}
-				}				
-				else{		
-						getTimeAction();
-						if(!id.equals("")){
-								back = timeAction.doSelect();
-								if(!back.equals("")){
-										addError(back);
-								}
-								else{
-										document_id = timeAction.getDocument_id();
-										workflow_id = timeAction.getWorkflow_id();
-								}
-						}
-				}
-				if(!source.equals("")){
-						return source;
-				}
-				return ret;
+    static final long serialVersionUID = 4350L;	
+    static Logger logger = LogManager.getLogger(TimeActionAction.class);
+    //
+    TimeAction timeAction = null;
+    String timeActionsTitle = "Time Actions";
+    String document_id = "", workflow_id="";
+    String source = ""; // where we are coming from
+    //
+    public String execute(){
+	String ret = SUCCESS;
+	String back = doPrepare("timeAction");
+	if(action.startsWith("Submit")){
+	    getTimeAction();
+	    timeAction.setAction_by(user.getId());
+	    back = timeAction.doSave();
+	    if(!back.equals("")){
+		addError(back);
+	    }
+	    else{ // normally we return to TimeDetails
+		addMessage("Saved Successfully");
+	    }
+	}				
+	else{		
+	    getTimeAction();
+	    if(!id.equals("")){
+		back = timeAction.doSelect();
+		if(!back.equals("")){
+		    addError(back);
 		}
-		public TimeAction getTimeAction(){ 
-				if(timeAction == null){
-						timeAction = new TimeAction();
-						timeAction.setId(id);
-						timeAction.setDocument_id(document_id);
-						timeAction.setWorkflow_id(workflow_id);
-				}
-				return timeAction;
+		else{
+		    document_id = timeAction.getDocument_id();
+		    workflow_id = timeAction.getWorkflow_id();
 		}
-		public void setTimeAction(TimeAction val){
-				if(val != null){
-						timeAction = val;
-				}
-		}
+	    }
+	}
+	if(!source.equals("")){
+	    return source;
+	}
+	return ret;
+    }
+    public TimeAction getTimeAction(){ 
+	if(timeAction == null){
+	    timeAction = new TimeAction();
+	    timeAction.setId(id);
+	    timeAction.setDocument_id(document_id);
+	    timeAction.setWorkflow_id(workflow_id);
+	}
+	return timeAction;
+    }
+    public void setTimeAction(TimeAction val){
+	if(val != null){
+	    timeAction = val;
+	}
+    }
 
-		public String getTimeActionsTitle(){
-				return timeActionsTitle;
-		}
-		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
-						action = val;
-		}
-		public void setSource(String val){
-				if(val != null && !val.equals(""))		
-						source = val;
-		}		
-		//
-		// this is passed through the link
-		public String getDocument_id(){
-				if(document_id.equals("") && timeAction != null){
-						document_id = timeAction.getDocument_id();
-				}
-				return document_id;
-		}
-		public void setDocument_id(String val){
-				if(val != null && !val.equals(""))		
-						document_id = val;
-		}
-		public void setWorkflow_id(String val){
-				if(val != null && !val.equals(""))		
-						workflow_id = val;
-		}		
-		public String getWorkflow_id(){
-				return workflow_id;
-		}
+    public String getTimeActionsTitle(){
+	return timeActionsTitle;
+    }
+    public void setAction2(String val){
+	if(val != null && !val.equals(""))		
+	    action = val;
+    }
+    public void setSource(String val){
+	if(val != null && !val.equals(""))		
+	    source = val;
+    }		
+    //
+    // this is passed through the link
+    public String getDocument_id(){
+	if(document_id.equals("") && timeAction != null){
+	    document_id = timeAction.getDocument_id();
+	}
+	return document_id;
+    }
+    public void setDocument_id(String val){
+	if(val != null && !val.equals(""))		
+	    document_id = val;
+    }
+    public void setWorkflow_id(String val){
+	if(val != null && !val.equals(""))		
+	    workflow_id = val;
+    }		
+    public String getWorkflow_id(){
+	return workflow_id;
+    }
 }
 
 

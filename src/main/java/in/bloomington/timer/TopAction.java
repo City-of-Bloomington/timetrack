@@ -36,258 +36,259 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		
     String action="", id="", employee_id="";
     List<String> errors = new ArrayList<>(),
-				messages = new ArrayList<>();
+	messages = new ArrayList<>();
     Employee user = null;
     Employee employee = null;
     ServletContext ctx;
     Map<String, Object> sessionMap;
 
     public void setAction(String val){
-				if(val != null)
-						action = val;
+	if(val != null)
+	    action = val;
     }
     public void setAction2(String val){
-				if(val != null && !val.equals(""))
-						action = val;
+	if(val != null && !val.equals(""))
+	    action = val;
     }		
     public String getAction(){
-				return action;
+	return action;
     }
     public void setId(String val){
-				if(val != null)
-						id = val;
+	if(val != null)
+	    id = val;
     }
     public String getId(){
-				return id;
+	return id;
     }
     public Employee getUser(){
-				return user;
+	return user;
     }
     String doPrepare(String source){
-				String back = "", val="";
-				try{
-						if(url.equals("")){
-								val = ctx.getInitParameter("url");
-								if(val != null)
-										url = val;
-								val = ctx.getInitParameter("proxy_url");
-								if(val != null)
-										proxy_url = val;								
-								val = ctx.getInitParameter("server_path");
-								if(val != null)
-										server_path = val;
-								val = ctx.getInitParameter("mail_host");
-								if(val != null)
-										mail_host = val;
-						}
-						if(envBean == null){
-								envBean = new EnvBean();
-								val = ctx.getInitParameter("ldap_url");
-								if(val != null)
-										envBean.setUrl(val);
-								val = ctx.getInitParameter("ldap_principle");
-								if(val != null)
-										envBean.setPrinciple(val);
-								val = ctx.getInitParameter("ldap_password");
-								if(val != null)
-										envBean.setPassword(val);
-						}
-						val = ctx.getInitParameter("activeMail");
-						if(val != null && val.equals("true")){
-								activeMail = true;
-						}
-						if(sessionMap == null || sessionMap.get("user") == null){
-								//
-								// timeClock we do not need login
-								/**
-								if(source != null && !source.equals("timeClock.action")){
-										HttpServletResponse res = ServletActionContext.getResponse();
-										String str = "Login";								
-										if(source != null && !source.equals(""))
-												str += "?source="+source;
-										res.sendRedirect(str);
-										return super.execute();
-								}
-								*/
-						}
-						else{
-								user = (Employee)sessionMap.get("user");
-						}
-						if(sessionMap != null && sessionMap.containsKey("employee_id")){
-								Object obj = sessionMap.get("employee_id");
-								if(obj != null){
-										employee_id = (String) obj;
-								}
-						}
-						setUrls();
-						clearAll();
-				}catch(Exception ex){
-						logger.error(ex);
-				}
-				return back;
+	String back = "", val="";
+	try{
+	    if(url.equals("")){
+		val = ctx.getInitParameter("url");
+		if(val != null)
+		    url = val;
+		val = ctx.getInitParameter("proxy_url");
+		if(val != null)
+		    proxy_url = val;								
+		val = ctx.getInitParameter("server_path");
+		if(val != null)
+		    server_path = val;
+		val = ctx.getInitParameter("mail_host");
+		if(val != null)
+		    mail_host = val;
+	    }
+	    if(envBean == null){
+		envBean = new EnvBean();
+		val = ctx.getInitParameter("ldap_url");
+		if(val != null)
+		    envBean.setUrl(val);
+		val = ctx.getInitParameter("ldap_principle");
+		if(val != null)
+		    envBean.setPrinciple(val);
+		val = ctx.getInitParameter("ldap_password");
+		if(val != null)
+		    envBean.setPassword(val);
+	    }
+	    val = ctx.getInitParameter("activeMail");
+	    if(val != null && val.equals("true")){
+		activeMail = true;
+	    }
+	    if(sessionMap == null || sessionMap.get("user") == null){
+		//
+		// timeClock we do not need login
+		/**
+		   if(source != null && !source.equals("timeClock.action")){
+		   HttpServletResponse res = ServletActionContext.getResponse();
+		   String str = "Login";								
+		   if(source != null && !source.equals(""))
+		   str += "?source="+source;
+		   res.sendRedirect(str);
+		   return super.execute();
+		   }
+		*/
+	    }
+	    else{
+		user = (Employee)sessionMap.get("user");
+	    }
+	    if(sessionMap != null && sessionMap.containsKey("employee_id")){
+		Object obj = sessionMap.get("employee_id");
+		if(obj != null){
+		    employee_id = (String) obj;
+		}
+	    }
+	    setUrls();
+	    clearAll();
+	}catch(Exception ex){
+	    logger.error(ex);
+	}
+	return back;
     }
     String doPrepare(){
-				return doPrepare(null);
+	return doPrepare(null);
     }
     public void setEmployee_id(String val){
-				if(val != null && !val.equals("")){		
-						employee_id = val;
-						if(sessionMap != null){
-								sessionMap.put("employee_id", employee_id);
-						}
-				}
+	if(val != null && !val.equals("")){		
+	    employee_id = val;
+	    if(sessionMap != null){
+		sessionMap.put("employee_id", employee_id);
+	    }
+	}
     }
     public String getEmployee_id(){
-				if(employee_id.equals("")){
-						if(sessionMap != null && sessionMap.containsKey("employee_id")){
-								Object obj = sessionMap.get("employee_id");
-								if(obj != null){
-										employee_id = (String) obj;
-								}
-						}
-						else {
-								if(user != null){
-										String str = user.getId();
-										if(str != null && str.length() > 0){
-												setEmployee_id(str);
-										}
-								}
-						}
-				}
-				return employee_id;
+	if(employee_id.equals("")){
+	    if(sessionMap != null && sessionMap.containsKey("employee_id")){
+		Object obj = sessionMap.get("employee_id");
+		if(obj != null){
+		    employee_id = (String) obj;
+		}
+	    }
+	    else {
+		if(user != null){
+		    String str = user.getId();
+		    if(str != null && str.length() > 0){
+			setEmployee_id(str);
+		    }
+		}
+	    }
+	}
+	return employee_id;
     }
     public Employee getEmployee(){
-				if(employee_id.equals("")){
-						getEmployee_id();
-				}
-				if(!employee_id.equals("")){
-						Employee one = new Employee(employee_id);
-						String back = one.doSelect();
-						if(back.equals("")){
-								employee = one;
-						}
-				}				
-				if(employee == null){
-						if(user != null){
-								employee = user;
-								employee_id = user.getId();
-						}
-				}
-				return employee;
+	if(employee_id.equals("")){
+	    getEmployee_id();
+	}
+	if(!employee_id.equals("")){
+	    Employee one = new Employee(employee_id);
+	    String back = one.doSelect();
+	    if(back.equals("")){
+		employee = one;
+	    }
+	}				
+	if(employee == null){
+	    if(user != null){
+		employee = user;
+		employee_id = user.getId();
+	    }
+	}
+	return employee;
     }
     public boolean hasEmployee(){
-				getEmployee();
-				return employee != null;
+	getEmployee();
+	return employee != null;
     }
     public boolean isUserCurrentEmployee(){
-				if(user != null){
-						getEmployee();
-						return employee_id.equals(user.getId());
-				}
-				return false;
+	if(user != null){
+	    getEmployee();
+	    return employee_id.equals(user.getId());
+	}
+	return false;
     }
     // to change proxy employee back to main user
     void resetEmployee(){
-				if(user != null){
-						setEmployee_id(user.getId());
-						getEmployee();
-				}
+	if(user != null){
+	    setEmployee_id(user.getId());
+	    getEmployee();
+	}
     }
     @Override  
     public void setSession(Map<String, Object> map) {  
-				sessionMap=map;  
+	sessionMap=map;  
     }
     @Override  	
     public void setServletContext(ServletContext ctx) {  
         this.ctx = ctx;  
     }
     void addError(String str){
-				if(errors == null)
-						errors = new ArrayList<>();
-				if(str != null)
-						errors.add(str);
+	if(errors == null)
+	    errors = new ArrayList<>();
+	if(str != null)
+	    errors.add(str);
     }
     void addMessage(String str){
-				if(messages == null)
-						messages = new ArrayList<>();
-				if(str != null)
-						messages.add(str);
+	if(messages == null)
+	    messages = new ArrayList<>();
+	if(str != null)
+	    messages.add(str);
     }
     void clearAll(){
-				if(errors.size() > 0)
-						errors = new ArrayList<>();
-				if(messages.size() > 0)
-						messages = new ArrayList<>();
+	if(errors.size() > 0)
+	    errors = new ArrayList<>();
+	if(messages.size() > 0)
+	    messages = new ArrayList<>();
     }
     public boolean hasErrors(){
-				return errors != null && errors.size() > 0;
+	return errors != null && errors.size() > 0;
     }
     public List<String> getErrors(){
-				return errors;
+	return errors;
     }
     public String getErrorsAll(){
-				String ret = "";
-				if(hasErrors()){
-						for(String str:errors){
-								if(!ret.equals("")) ret += ", ";
-								ret += str;
-						}
-				}
-				return ret;
+	String ret = "";
+	if(hasErrors()){
+	    for(String str:errors){
+		if(!ret.equals("")) ret += ", ";
+		ret += str;
+	    }
+	}
+	return ret;
     }
     public boolean hasMessages(){
-				return messages != null && messages.size() > 0;
+	return messages != null && messages.size() > 0;
     }		
     public List<String> getMessages(){
-				return messages;
+	return messages;
     }
-		String obtainGroupIdFromSession(){
-				String val = "";
-				try{
-						if(sessionMap != null && sessionMap.containsKey("selected_group_id")){
-								Object obj = sessionMap.get("selected_group_id");
-								if(obj != null){
-										String str = (String) obj;
-										if(str != null)
-												val = str;
-								}
-						}
-				}catch(Exception ex){
-						System.err.println(ex);
-				}
-				return val;
+    String obtainGroupIdFromSession(){
+	String val = "";
+	try{
+	    if(sessionMap != null && sessionMap.containsKey("selected_group_id")){
+		Object obj = sessionMap.get("selected_group_id");
+		if(obj != null){
+		    String str = (String) obj;
+		    if(str != null)
+			val = str;
 		}
-		void addGroupIdToSession(String val){
-				if(val != null && !val.equals("")){
-						if(sessionMap != null){						
-								try{
-										sessionMap.put("selected_group_id", val);						
-								}catch(Exception ex){
-										System.err.println(ex);
-								}
-						}
-				}
-		}		
+	    }
+	}catch(Exception ex){
+	    System.err.println(ex);
+	}
+	return val;
+    }
+    void addGroupIdToSession(String val){
+	if(val != null && !val.equals("")){
+	    if(sessionMap != null){						
+		try{
+		    sessionMap.put("selected_group_id", val);						
+		}catch(Exception ex){
+		    System.err.println(ex);
+		}
+	    }
+	}
+    }		
     private void setUrls(){
-				HttpServletRequest request = ServletActionContext.getRequest();				
-				String host_forward = request.getHeader("X-Forwarded-Host");
-				String host = request.getHeader("host");				
+	HttpServletRequest request = ServletActionContext.getRequest();				
+	String host_forward = request.getHeader("X-Forwarded-Host");
+	String host = request.getHeader("host");				
 
-				// System.err.println(" host forward "+host_forward);				
-				if(host_forward != null){
-						if(host_forward.indexOf("/timetrack") == -1)
-								url = host_forward+"/timetrack/";
-						else
-								url = host_forward;
-				}
-				else if(host != null){
-						if(host.indexOf("timetrack") > -1){
-								url = host;
-						}
-						else{
-								url = host+"/timetrack/";
-						}
-				}
+	// System.err.println(" host forward "+host_forward);
+	
+	if(host_forward != null){
+	    if(host_forward.indexOf("/timetrack") == -1)
+		url = host_forward+"/timetrack/";
+	    else
+		url = host_forward;
+	}
+	else if(host != null){
+	    if(host.indexOf("timetrack") > -1){
+		url = host;
+	    }
+	    else{
+		url = host+"/timetrack/";
+	    }
+	}
     }
 		
 }

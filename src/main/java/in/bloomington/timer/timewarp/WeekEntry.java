@@ -16,496 +16,496 @@ import org.apache.logging.log4j.Logger;
 
 public class WeekEntry{
 
-		boolean debug = false;
-		static final long serialVersionUID = 160L;		
-		static Logger logger = LogManager.getLogger(WeekEntry.class);		
-		Profile profile = null;
-		BenefitGroup bGroup = null;
+    boolean debug = false;
+    static final long serialVersionUID = 160L;		
+    static Logger logger = LogManager.getLogger(WeekEntry.class);		
+    Profile profile = null;
+    BenefitGroup bGroup = null;
     static DecimalFormat ndf = new DecimalFormat("#0.00");		
-		static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		
-		double total_hrs = 0, regular_hrs = 0,
-				non_reg_hrs = 0, earn_time_used = 0,
-				earned_time = 0, unpaid_hrs = 0,
-				over_time15 = 0, over_time20=0, over_time25 = 0;
-		double st_weekly_hrs = 0; // default 40
-		double prof_hrs = 0, excess_hrs = 0, net_reg_hrs= 0;
-		TimeEntry holidayEarnedEntry = null; // we only have one per week
-		boolean consolidated = false; // to avoid more than once consolidation
-		boolean handSpecial = false; 
-		List<HolidayWorkDay> holyWorkDays = null;
-		Department department = null;
-		//
-		// these are used for the yearend pay period where we need
-		// to split the hours of the week in two different years
-		//
-		WeekSplit splitOne = null, splitTwo = null;
-		int splitDay = 7; // no split
-		//
-		// for non regular earn code we use this hash such as PTO, CU, FMLA
-		//
-		Hashtable<String, Double> hash = new Hashtable<String, Double>();
-		Hashtable<String, Double> earnedHash = new Hashtable<String, Double>();
-		//
-		// reg for hand Only 
-		Hashtable<String, Double> regHash = new Hashtable<String, Double>();		
-
+    static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+    
+    double total_hrs = 0, regular_hrs = 0,
+	non_reg_hrs = 0, earn_time_used = 0,
+	earned_time = 0, unpaid_hrs = 0,
+	over_time15 = 0, over_time20=0, over_time25 = 0;
+    double st_weekly_hrs = 0; // default 40
+    double prof_hrs = 0, excess_hrs = 0, net_reg_hrs= 0;
+    TimeEntry holidayEarnedEntry = null; // we only have one per week
+    boolean consolidated = false; // to avoid more than once consolidation
+    boolean handSpecial = false; 
+    List<HolidayWorkDay> holyWorkDays = null;
+    Department department = null;
+    //
+    // these are used for the yearend pay period where we need
+    // to split the hours of the week in two different years
+    //
+    WeekSplit splitOne = null, splitTwo = null;
+    int splitDay = 7; // no split
+    //
+    // for non regular earn code we use this hash such as PTO, CU, FMLA
+    //
+    Hashtable<String, Double> hash = new Hashtable<String, Double>();
+    Hashtable<String, Double> earnedHash = new Hashtable<String, Double>();
+    //
+    // reg for hand Only 
+    Hashtable<String, Double> regHash = new Hashtable<String, Double>();		
+    
     public WeekEntry(boolean deb,
-										 Profile val,
-										 Department val2){ 
-				debug = deb;
-				setProfile(val);
-				setDepartment(val2);
-				splitOne = new WeekSplit(debug, val, val2);
-				splitTwo = new WeekSplit(debug, val, val2);
+		     Profile val,
+		     Department val2){ 
+	debug = deb;
+	setProfile(val);
+	setDepartment(val2);
+	splitOne = new WeekSplit(debug, val, val2);
+	splitTwo = new WeekSplit(debug, val, val2);
 
     }
     public WeekEntry(boolean deb,
-										 Profile val,
-										 int val2, // split day
-										 Department val3
-										 ){
-				//
-				this(deb, val, val3);
-				//
-				// if splitDay = 0 ignore, it just start of a new week
-				// day 7 is day 0 in next week (7 - 7 = 0)
-				//
-				if(val2 > 0){  
-						splitDay = val2;
+		     Profile val,
+		     int val2, // split day
+		     Department val3
+		     ){
+	//
+	this(deb, val, val3);
+	//
+	// if splitDay = 0 ignore, it just start of a new week
+	// day 7 is day 0 in next week (7 - 7 = 0)
+	//
+	if(val2 > 0){  
+	    splitDay = val2;
 				}
     }
     public void setProfile(Profile val){
-				if(val != null){
-						profile = val;
-						bGroup = profile.getBenefitGroup();
-						st_weekly_hrs = profile.getStWeeklyHrs();
-				}
+	if(val != null){
+	    profile = val;
+	    bGroup = profile.getBenefitGroup();
+	    st_weekly_hrs = profile.getStWeeklyHrs();
+	}
     }
-		public void setHandSpecial(boolean val){
-				handSpecial = val;
+    public void setHandSpecial(boolean val){
+	handSpecial = val;
+    }
+    void setDepartment(Department val){
+	if(val != null){
+	    department = val;
+	    if(department.isHand()){
+		setHandSpecial(true);
+	    }
+	}
+    }
+    double getTotalHours(){
+	return total_hrs;
+    }
+    double getRegularHours(){
+	return regular_hrs;
+    }
+    double getEarnedTimeUsed(){
+	return earn_time_used;
+    }
+    public void setHolidayWorkDay(HolidayWorkDay val){
+	if(val != null){
+	    if(holyWorkDays == null){
+		holyWorkDays = new ArrayList<HolidayWorkDay>();
+	    }
+	    holyWorkDays.add(val);
+	}
+    }
+    //
+    public void add(TimeBlock te){
+	try{
+	    if(te != null){
+		// daySeq 0,1,2,3,4,5,6
+		if((te.getOrder_index()%7) < splitDay){
+		    splitOne.add(te);
 		}
-		void setDepartment(Department val){
-				if(val != null){
-						department = val;
-						if(department.isHand()){
-								setHandSpecial(true);
-						}
-				}
+		else{
+		    splitTwo.add(te);
 		}
-		double getTotalHours(){
-				return total_hrs;
+	    }
+	}catch(Exception ex){
+	    logger.error(ex);
+	}
+    }
+    //
+    // adding non regular hours except earned, such as PTO, H1,
+    //
+    public void addToHash(Hashtable<String, Double> tHash, String code, double val){
+	if(tHash.containsKey(code)){
+	    double hours = tHash.get(code).doubleValue();
+	    hours += val;
+	    tHash.put(code, hours);
+	}
+	else{
+	    tHash.put(code, val);
+	}
+    }
+    //		
+    // this is for holiday earned and other non CE codes
+    //
+    public void addToEarnedHash(TimeBlock te){
+	addToHash(earnedHash, te.getNw_code(), te.getHours());
+    }
+    public void addToEarnedHash(String code, double hrs){
+	if(code != null && hrs > 0)
+	    addToHash(earnedHash, code, hrs);
+    }		
+    //
+    public Hashtable<String, Double> getNonRegularHours(){
+	return hash;
+    }
+    
+    public Hashtable<String, Double> getEarnedHours(){
+	return earnedHash;
+    }
+    public Hashtable<String, Double> getRegularHash(){
+	return regHash;
+    }		
+    public Hashtable<String, Double> getAll(){
+	Hashtable<String, Double> all = new Hashtable<String, Double>();
+	if(!hash.isEmpty())
+	    all.putAll(hash);
+	if(!earnedHash.isEmpty())
+	    all.putAll(earnedHash);
+	if(handSpecial){
+	    all.putAll(regHash);
+	}
+	return all;
+    }
+    public void doCalculations(){
+	
+	splitOne.doCalculations();
+	splitTwo.doCalculations();
+	total_hrs = splitOne.getTotalHours()+splitTwo.getTotalHours();
+	regular_hrs = splitOne.getRegularHours()+splitTwo.getRegularHours();
+	//
+	// the following earned_time are the overtime for certain employees
+	earned_time = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
+	earn_time_used = splitOne.getEarnedTimeUsed()+splitTwo.getEarnedTimeUsed();
+	unpaid_hrs = splitOne.getUnpaidHrs()+splitTwo.getUnpaidHrs();
+	findHolidayEarned(); // if any				
+	findExessHours();
+	mergeHashtablesFromSplits();
+	findProfHours();
+	findNonRegularHrs();
+	findNetRegular();
+	//
+	if(handSpecial){ // special case for HAND dept
+	    //
+	    // this difference is caused by comp time earned and prof hours
+	    // we normally subtract these from regular hours
+	    // in HAND case we have multiple Reg hours (HOME_REG, HOUSE_REG, )
+	    // so we need to subtract it evenly from the bunch used in
+	    // this week
+	    if(regular_hrs > 0.01 && net_reg_hrs + 0.01 < regular_hrs){
+		double ratio = net_reg_hrs / regular_hrs; 
+		splitOne.adjustRegHashBy(ratio);
+		splitTwo.adjustRegHashBy(ratio);
+	    }
+	    mergeRegHashtablesFromSplits();
+	}
+    }
+    //
+    void mergeHashtablesFromSplits(){
+	//
+	// non regular hours
+	Hashtable<String, Double> table = splitOne.getNonRegularHours();
+	Hashtable<String, Double> table2 = splitTwo.getNonRegularHours();
+	if(!table.isEmpty())
+	    mergeWithHash(table, hash);
+	if(!table2.isEmpty())
+	    mergeWithHash(table2, hash);
+    }
+    // reg
+    void mergeRegHashtablesFromSplits(){
+	//
+	Hashtable<String, Double> table = splitOne.getRegularHash();
+	Hashtable<String, Double> table2 = splitTwo.getRegularHash();
+	if(!table.isEmpty())				
+	    mergeWithHash(table, regHash);
+	if(!table2.isEmpty())
+	    mergeWithHash(table2, regHash);
+	// to all
+	if(!hash.isEmpty())
+	    mergeWithHash(regHash, hash);				
+    }		
+    //
+    void mergeWithHash(Hashtable<String, Double> tFrom,
+		       Hashtable<String, Double> tTo){
+	if(tFrom != null && tFrom.size() > 0){
+	    Enumeration<String> keys = tFrom.keys();
+	    while(keys.hasMoreElements()){
+		String key = keys.nextElement();
+		Double val = tFrom.get(key);
+		addToHash(tTo, key, val);
+	    }
+	}
+    }
+    //
+    public double getProfHours(){
+	return prof_hrs;
+    }
+    public double getExessHours(){
+	return excess_hrs;
+    }
+    public void findProfHours(){
+	
+	prof_hrs = 0;				
+	if(bGroup != null){
+	    // for part time, temporary, or unioned employees
+	    if((bGroup.isTemporary() ||
+		bGroup.isUnioned())){
+		return; 
+	    }
+	    if(bGroup.isExempt() && profile.getCompTimeAfter() == 40){
+		return;
+	    }						
+	}
+	//
+	// everybody else
+	//
+	prof_hrs = total_hrs - st_weekly_hrs - earned_time - excess_hrs;//- unpaid_hrs;
+	if(prof_hrs < 0.009f){
+	    prof_hrs = 0;
+	}
+    }
+    boolean hasProfHours(){
+	return prof_hrs > 0.009;
+    }
+    boolean hasSplitDay(){
+	return splitDay < 7;
+    }
+    public double getNetRegular(){
+	return net_reg_hrs;
+    }
+    /**
+     * regular hours when added to non regular we get 40
+     */
+    public void findNetRegular(){
+	
+	net_reg_hrs = 0;
+	if(bGroup != null){
+	    if(bGroup.isTemporary()){
+		if(regular_hrs > 40){
+		    net_reg_hrs = 40;
 		}
-		double getRegularHours(){
-				return regular_hrs;
+		else{
+		    net_reg_hrs = regular_hrs;
 		}
-		double getEarnedTimeUsed(){
-				return earn_time_used;
+		return;
+	    }
+	    else if(bGroup.isUnioned()){
+		net_reg_hrs = regular_hrs - earned_time;
+		if(net_reg_hrs < 0.009f){
+		    net_reg_hrs = 0;
 		}
-		public void setHolidayWorkDay(HolidayWorkDay val){
-				if(val != null){
-						if(holyWorkDays == null){
-								holyWorkDays = new ArrayList<HolidayWorkDay>();
-						}
-						holyWorkDays.add(val);
-				}
+		return;
+	    }
+	}
+	net_reg_hrs = regular_hrs - earned_time - excess_hrs - prof_hrs;
+	//
+    }
+    //
+    public double getNonRegularHrs(){
+	
+	return non_reg_hrs;
+    }
+    public void findNonRegularHrs(){
+	
+	if(non_reg_hrs == 0){
+	    non_reg_hrs = splitOne.getNonRegularHrs() +
+		splitTwo.getNonRegularHrs();
+	}
+    }
+    /**
+     * find excess hours to add CE or OT earn codes for employees
+     * who work more than standard weekly hours, excluded unioned
+     * employees as these are handled daily
+     *
+     */
+    public void findExessHours(){
+	
+	excess_hrs = 0;
+	double netHours = total_hrs - earned_time;// -unpaid_hrs;
+	//
+	// for full time working less than 40 hrs
+	//
+	if(bGroup != null){
+	    if(bGroup.isTemporary()){
+		excess_hrs = netHours < 40 ? 0: netHours - 40;
+	    }
+	    else if(bGroup.isUnioned()){ // union AFCSME employee
+		excess_hrs = 1f;
+	    }
+	    else{
+		if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){
+		    excess_hrs = netHours - st_weekly_hrs;
+		}
+		else if(netHours > profile.getCompTimeAfter()){
+		    excess_hrs = netHours - profile.getCompTimeAfter();
+		}
+	    }
+	}
+    }
+    public boolean hasExessHours(){
+	return excess_hrs > 0.009f;
+    }
+    public boolean hasInsufficientTotalHours(){
+	boolean ret = false;
+	if(!bGroup.isTemporary()){
+	    if(total_hrs + 0.01 < st_weekly_hrs){
+		ret = true;
+	    }
+	}
+	return ret;
+    }
+    /**
+     * this method create the holiday earned hours
+     * and add the time to earned_time (if any)
+     */
+    private void findHolidayEarned(){
+	//
+	if(holyWorkDays == null) return;
+	//
+	double holy_earn_hrs = 0;
+	String code = "", code_desc = "";
+	double netHours = total_hrs - earned_time;
+	double extra_hrs = 0;
+	//
+	// for full time working less than 40 hrs
+	//
+	if(bGroup != null){
+	    if(bGroup.isTemporary()){
+		extra_hrs = netHours < 40 ? 0: netHours - 40;
+	    }
+	    else if(bGroup.isUnioned()){ // union AFSME employee
+		// compute daily see below
+	    }
+	    else{
+		if(netHours > st_weekly_hrs)
+		    extra_hrs = netHours - st_weekly_hrs;
+	    }
+	}
+	if(extra_hrs > 0.009){
+	    double holy_hours = 0;
+	    for(HolidayWorkDay one: holyWorkDays){
+		holy_hours += one.getHours();
+	    }
+	    if(extra_hrs >= holy_hours){
+		holy_earn_hrs = holy_hours;
+	    }
+	    else{
+		holy_earn_hrs = extra_hrs;
+	    }
+	    String dstr = ndf.format(holy_earn_hrs);
+	    holy_earn_hrs = (double)(new Double(dstr));
+	    //
+	    if(holy_earn_hrs > 0.009){
+		earned_time += holy_earn_hrs;
+		//
+		// create earn codes
+		if(bGroup != null && bGroup.isUnioned()){
+		    code = "HCE2.0";
+		    code_desc = "holiday comp earned 2.0";
+		}
+		else{
+		    if(profile.getHolidayTimeMultiple() > 1.5f){
+			code = "HCE2.0";
+			code_desc = "holiday comp earned 2.0";
+		    }
+		    else if(profile.getHolidayTimeMultiple() > 1.0){
+			code = "HCE1.5";
+			code_desc = "holiday comp earned 1.5";
+		    }
+		    else{
+			code = "HCE1.0";
+			code_desc = "holiday comp earned 1.0";
+		    }
 		}
 		//
-		public void add(TimeBlock te){
-				try{
-						if(te != null){
-								// daySeq 0,1,2,3,4,5,6
-								if((te.getOrder_index()%7) < splitDay){
-										splitOne.add(te);
-								}
-								else{
-										splitTwo.add(te);
-								}
-						}
-				}catch(Exception ex){
-						logger.error(ex);
-				}
-		}
+		// We need one obj to get date, principal_id, seq
+		// we pick the last
 		//
-		// adding non regular hours except earned, such as PTO, H1,
-		//
-		public void addToHash(Hashtable<String, Double> tHash, String code, double val){
-				if(tHash.containsKey(code)){
-						double hours = tHash.get(code).doubleValue();
-						hours += val;
-						tHash.put(code, hours);
-				}
-				else{
-						tHash.put(code, val);
-				}
-		}
-		//		
-		// this is for holiday earned and other non CE codes
-		//
-		public void addToEarnedHash(TimeBlock te){
-				addToHash(earnedHash, te.getNw_code(), te.getHours());
-		}
-		public void addToEarnedHash(String code, double hrs){
-				if(code != null && hrs > 0)
-						addToHash(earnedHash, code, hrs);
-		}		
-		//
-		public Hashtable<String, Double> getNonRegularHours(){
-				return hash;
-		}
+		HolidayWorkDay holyWorkDay = holyWorkDays.get(holyWorkDays.size() - 1);
+		holidayEarnedEntry  =
+		    new TimeEntry(debug,
+				  "0", // no id for this record
+				  holyWorkDay.getEmployee_id(),
+				  holyWorkDay.getDate_to(), 
+				  ""+ndf.format(holy_earn_hrs), // hours
+				  code, // code
+				  code, // nw code
+				  code_desc, // code desc
+				  ""+holyWorkDay.getSeq()); // seq day
 		
-		public Hashtable<String, Double> getEarnedHours(){
-				return earnedHash;
-		}
-		public Hashtable<String, Double> getRegularHash(){
-				return regHash;
-		}		
-		public Hashtable<String, Double> getAll(){
-				Hashtable<String, Double> all = new Hashtable<String, Double>();
-				if(!hash.isEmpty())
-						all.putAll(hash);
-				if(!earnedHash.isEmpty())
-						all.putAll(earnedHash);
-				if(handSpecial){
-						all.putAll(regHash);
-				}
-				return all;
-		}
-		public void doCalculations(){
-
-				splitOne.doCalculations();
-				splitTwo.doCalculations();
-				total_hrs = splitOne.getTotalHours()+splitTwo.getTotalHours();
-				regular_hrs = splitOne.getRegularHours()+splitTwo.getRegularHours();
-				//
-				// the following earned_time are the overtime for certain employees
-				earned_time = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
-				earn_time_used = splitOne.getEarnedTimeUsed()+splitTwo.getEarnedTimeUsed();
-				unpaid_hrs = splitOne.getUnpaidHrs()+splitTwo.getUnpaidHrs();
-				findHolidayEarned(); // if any				
-				findExessHours();
-				mergeHashtablesFromSplits();
-				findProfHours();
-				findNonRegularHrs();
-				findNetRegular();
-				//
-				if(handSpecial){ // special case for HAND dept
-						//
-						// this difference is caused by comp time earned and prof hours
-						// we normally subtract these from regular hours
-						// in HAND case we have multiple Reg hours (HOME_REG, HOUSE_REG, )
-						// so we need to subtract it evenly from the bunch used in
-						// this week
-						if(regular_hrs > 0.01 && net_reg_hrs + 0.01 < regular_hrs){
-								double ratio = net_reg_hrs / regular_hrs; 
-								splitOne.adjustRegHashBy(ratio);
-								splitTwo.adjustRegHashBy(ratio);
-						}
-						mergeRegHashtablesFromSplits();
-				}
-		}
-		//
-		void mergeHashtablesFromSplits(){
-				//
-				// non regular hours
-				Hashtable<String, Double> table = splitOne.getNonRegularHours();
-				Hashtable<String, Double> table2 = splitTwo.getNonRegularHours();
-				if(!table.isEmpty())
-						mergeWithHash(table, hash);
-				if(!table2.isEmpty())
-						mergeWithHash(table2, hash);
-		}
-		// reg
-		void mergeRegHashtablesFromSplits(){
-				//
-				Hashtable<String, Double> table = splitOne.getRegularHash();
-				Hashtable<String, Double> table2 = splitTwo.getRegularHash();
-				if(!table.isEmpty())				
-						mergeWithHash(table, regHash);
-				if(!table2.isEmpty())
-						mergeWithHash(table2, regHash);
-				// to all
-				if(!hash.isEmpty())
-						mergeWithHash(regHash, hash);				
-		}		
-		//
-		void mergeWithHash(Hashtable<String, Double> tFrom,
-											 Hashtable<String, Double> tTo){
-				if(tFrom != null && tFrom.size() > 0){
-						Enumeration<String> keys = tFrom.keys();
-						while(keys.hasMoreElements()){
-								String key = keys.nextElement();
-								Double val = tFrom.get(key);
-								addToHash(tTo, key, val);
-						}
-				}
-		}
-		//
-		public double getProfHours(){
-				return prof_hrs;
-		}
-		public double getExessHours(){
-				return excess_hrs;
-		}
-		public void findProfHours(){
-
-				prof_hrs = 0;				
-				if(bGroup != null){
-						// for part time, temporary, or unioned employees
-						if((bGroup.isTemporary() ||
-								bGroup.isUnioned())){
-								return; 
-						}
-						if(bGroup.isExempt() && profile.getCompTimeAfter() == 40){
-								return;
-						}						
-				}
-				//
-				// everybody else
-				//
-				prof_hrs = total_hrs - st_weekly_hrs - earned_time - excess_hrs;//- unpaid_hrs;
-				if(prof_hrs < 0.009f){
-						prof_hrs = 0;
-				}
-		}
-		boolean hasProfHours(){
-				return prof_hrs > 0.009;
-		}
-		boolean hasSplitDay(){
-				return splitDay < 7;
-		}
-		public double getNetRegular(){
-				return net_reg_hrs;
-		}
-		/**
-		 * regular hours when added to non regular we get 40
-		 */
-		public void findNetRegular(){
-
-				net_reg_hrs = 0;
-				if(bGroup != null){
-						if(bGroup.isTemporary()){
-								if(regular_hrs > 40){
-										net_reg_hrs = 40;
-								}
-								else{
-										net_reg_hrs = regular_hrs;
-								}
-								return;
-						}
-						else if(bGroup.isUnioned()){
-								net_reg_hrs = regular_hrs - earned_time;
-								if(net_reg_hrs < 0.009f){
-										net_reg_hrs = 0;
-								}
-								return;
-						}
-				}
-				net_reg_hrs = regular_hrs - earned_time - excess_hrs - prof_hrs;
-				//
-		}
-		//
-		public double getNonRegularHrs(){
-		
-				return non_reg_hrs;
-		}
-		public void findNonRegularHrs(){
-
-				if(non_reg_hrs == 0){
-						non_reg_hrs = splitOne.getNonRegularHrs() +
-								splitTwo.getNonRegularHrs();
-				}
-		}
-		/**
-		 * find excess hours to add CE or OT earn codes for employees
-		 * who work more than standard weekly hours, excluded unioned
-		 * employees as these are handled daily
-		 *
-		 */
-		public void findExessHours(){
-
-				excess_hrs = 0;
-				double netHours = total_hrs - earned_time;// -unpaid_hrs;
-				//
-				// for full time working less than 40 hrs
-				//
-				if(bGroup != null){
-						if(bGroup.isTemporary()){
-								excess_hrs = netHours < 40 ? 0: netHours - 40;
-						}
-						else if(bGroup.isUnioned()){ // union AFCSME employee
-								excess_hrs = 1f;
-						}
-						else{
-								if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){
-										excess_hrs = netHours - st_weekly_hrs;
-								}
-								else if(netHours > profile.getCompTimeAfter()){
-										excess_hrs = netHours - profile.getCompTimeAfter();
-								}
-						}
-				}
-		}
-		public boolean hasExessHours(){
-				return excess_hrs > 0.009f;
-		}
-		public boolean hasInsufficientTotalHours(){
-				boolean ret = false;
-				if(!bGroup.isTemporary()){
-						if(total_hrs + 0.01 < st_weekly_hrs){
-								ret = true;
-						}
-				}
-				return ret;
-		}
-		/**
-		 * this method create the holiday earned hours
-		 * and add the time to earned_time (if any)
-		 */
-		private void findHolidayEarned(){
-				//
-				if(holyWorkDays == null) return;
-				//
-				double holy_earn_hrs = 0;
-				String code = "", code_desc = "";
-				double netHours = total_hrs - earned_time;
-				double extra_hrs = 0;
-				//
-				// for full time working less than 40 hrs
-				//
-				if(bGroup != null){
-						if(bGroup.isTemporary()){
-								extra_hrs = netHours < 40 ? 0: netHours - 40;
-						}
-						else if(bGroup.isUnioned()){ // union AFSME employee
-								// compute daily see below
-						}
-						else{
-								if(netHours > st_weekly_hrs)
-										extra_hrs = netHours - st_weekly_hrs;
-						}
-				}
-				if(extra_hrs > 0.009){
-						double holy_hours = 0;
-						for(HolidayWorkDay one: holyWorkDays){
-								holy_hours += one.getHours();
-						}
-						if(extra_hrs >= holy_hours){
-								holy_earn_hrs = holy_hours;
-						}
-						else{
-								holy_earn_hrs = extra_hrs;
-						}
-						String dstr = ndf.format(holy_earn_hrs);
-						holy_earn_hrs = (double)(new Double(dstr));
-						//
-						if(holy_earn_hrs > 0.009){
-								earned_time += holy_earn_hrs;
-								//
-								// create earn codes
-								if(bGroup != null && bGroup.isUnioned()){
-										code = "HCE2.0";
-										code_desc = "holiday comp earned 2.0";
-								}
-								else{
-										if(profile.getHolidayTimeMultiple() > 1.5f){
-												code = "HCE2.0";
-												code_desc = "holiday comp earned 2.0";
-										}
-										else if(profile.getHolidayTimeMultiple() > 1.0){
-												code = "HCE1.5";
-												code_desc = "holiday comp earned 1.5";
-										}
-										else{
-												code = "HCE1.0";
-												code_desc = "holiday comp earned 1.0";
-										}
-								}
-								//
-								// We need one obj to get date, principal_id, seq
-								// we pick the last
-								//
-								HolidayWorkDay holyWorkDay = holyWorkDays.get(holyWorkDays.size() - 1);
-								holidayEarnedEntry  =
-										new TimeEntry(debug,
-																	"0", // no id for this record
-																	holyWorkDay.getEmployee_id(),
-																	holyWorkDay.getDate_to(), 
-																	""+ndf.format(holy_earn_hrs), // hours
-																	code, // code
-																	code, // nw code
-																	code_desc, // code desc
-																	""+holyWorkDay.getSeq()); // seq day
-								
-								addToEarnedHash(code, holy_earn_hrs);
-						}
-				}
-		}
-		public boolean hasHolidayEarned(){
-				return holidayEarnedEntry != null;
-		}
-		public TimeEntry getHolidayEarnedEntry(){
-				return holidayEarnedEntry;
-		}
-		/**
-		 * if the employee has excess hours, then depending on type of employement,
-		 * they may get CE, OT or PROF hours
-		 */
-		public void createEarnRecord(){
-				//
-				String code = "";
-				if(excess_hrs <= 0.009) return;				
-				if(bGroup != null){
-						if(bGroup.isTemporary()){
-								code = "OT1.5";	
-								addToEarnedHash(code, excess_hrs);								
-								return;
-						}
-						else if(bGroup.isUnioned()){
-								// it is already done because we handle it daily
-								return;
-						}
-				}
-				//
-				// this should work for full time or part time with benefit
-				//
-				code = "CE1.0";
-				//
-				// we want to keep excess_hrs as we may need it
-				// for other stuff
-				//
-				double excess_hrs2 = excess_hrs;
-				if(st_weekly_hrs < 40){ // for those who have starndard hours < 40
-						double dif = 40 - st_weekly_hrs;								
-						if(excess_hrs2 > dif && dif > 0){
-								addToEarnedHash(code, dif);
-								excess_hrs2 -= dif;
-						}
-						else{
-								addToEarnedHash(code, excess_hrs2);
-								excess_hrs2 = 0;
-						}
-				}
-				//
-				// second level for those in if above
-				// for hours after 40
-				//
-				if(profile.getCompTimeMultiple() > 1.0){
-						code = "CE1.5";
-				}
-				if(excess_hrs2 > 0.009){ // avoid small values
-						String dstr = ndf.format(excess_hrs2);
-						excess_hrs2 = (double) (new Double(dstr));
-						addToEarnedHash(code, excess_hrs2);
-
-				}
-		}
-		public void createProfRecord(){
-				//
-				String code = "PROF HRS";		
-				if(prof_hrs > 0.009){
-						String dstr = ndf.format(prof_hrs);
-						addToEarnedHash(code, new Double(dstr));
-				}
-		}	
+		addToEarnedHash(code, holy_earn_hrs);
+	    }
+	}
+    }
+    public boolean hasHolidayEarned(){
+	return holidayEarnedEntry != null;
+    }
+    public TimeEntry getHolidayEarnedEntry(){
+	return holidayEarnedEntry;
+    }
+    /**
+     * if the employee has excess hours, then depending on type of employement,
+     * they may get CE, OT or PROF hours
+     */
+    public void createEarnRecord(){
+	//
+	String code = "";
+	if(excess_hrs <= 0.009) return;				
+	if(bGroup != null){
+	    if(bGroup.isTemporary()){
+		code = "OT1.5";	
+		addToEarnedHash(code, excess_hrs);								
+		return;
+	    }
+	    else if(bGroup.isUnioned()){
+		// it is already done because we handle it daily
+		return;
+	    }
+	}
+	//
+	// this should work for full time or part time with benefit
+	//
+	code = "CE1.0";
+	//
+	// we want to keep excess_hrs as we may need it
+	// for other stuff
+	//
+	double excess_hrs2 = excess_hrs;
+	if(st_weekly_hrs < 40){ // for those who have starndard hours < 40
+	    double dif = 40 - st_weekly_hrs;								
+	    if(excess_hrs2 > dif && dif > 0){
+		addToEarnedHash(code, dif);
+		excess_hrs2 -= dif;
+	    }
+	    else{
+		addToEarnedHash(code, excess_hrs2);
+		excess_hrs2 = 0;
+	    }
+	}
+	//
+	// second level for those in if above
+	// for hours after 40
+	//
+	if(profile.getCompTimeMultiple() > 1.0){
+	    code = "CE1.5";
+	}
+	if(excess_hrs2 > 0.009){ // avoid small values
+	    String dstr = ndf.format(excess_hrs2);
+	    excess_hrs2 = (double) (new Double(dstr));
+	    addToEarnedHash(code, excess_hrs2);
+	    
+	}
+    }
+    public void createProfRecord(){
+	//
+	String code = "PROF HRS";		
+	if(prof_hrs > 0.009){
+	    String dstr = ndf.format(prof_hrs);
+	    addToEarnedHash(code, new Double(dstr));
+	}
+    }	
 }
