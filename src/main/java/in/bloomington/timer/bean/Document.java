@@ -1131,6 +1131,8 @@ public class Document{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
+				String qqs = "select id from time_documents where employee_id=? "+
+						" and pay_period_id=? and job_id=? ";
 				String qq = "insert into time_documents values(0,?,?,?,now(),?) ";
 				if(employee_id.equals("")){
 						msg = " employee ID not set ";
@@ -1152,18 +1154,29 @@ public class Document{
 				con = UnoConnect.getConnection();				
 				try{
 						if(con != null){
-								pstmt = con.prepareStatement(qq);
+								pstmt = con.prepareStatement(qqs);
 								pstmt.setString(1, employee_id);
 								pstmt.setString(2, pay_period_id);
 								pstmt.setString(3, job_id);
-								pstmt.setString(4, initiated_by);
-								pstmt.executeUpdate();
-						}
-						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								id = rs.getString(1);
+								rs = pstmt.executeQuery();
+								if(rs.next()){
+										id = rs.getString(1);
+								}
+								else{
+										Helper.databaseDisconnect(pstmt, rs);
+										pstmt = con.prepareStatement(qq);
+										pstmt.setString(1, employee_id);
+										pstmt.setString(2, pay_period_id);
+										pstmt.setString(3, job_id);
+										pstmt.setString(4, initiated_by);
+										pstmt.executeUpdate();
+										qq = "select LAST_INSERT_ID()";
+										pstmt = con.prepareStatement(qq);
+										rs = pstmt.executeQuery();
+										if(rs.next()){
+												id = rs.getString(1);
+										}
+								}
 						}
 						//
 						// we look for first workflow 

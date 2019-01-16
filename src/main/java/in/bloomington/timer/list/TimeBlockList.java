@@ -168,11 +168,15 @@ public class TimeBlockList{
 				Map<JobType, Map<Integer, String>> mapd = new TreeMap<>();
 				for(JobType str:set){
 						Map<Integer, String> map2 = new TreeMap<>();
-						
 						Map<Integer, Double> map = daily.get(str);
 						for(int j=0;j<16;j++){ // 8 total week1, 15 total week2
-								double val = map.get(j);
-								map2.put(j, dfn.format(val));
+								if(map.containsKey(j)){
+										double val = map.get(j);
+										map2.put(j, dfn.format(val));
+								}
+								else{
+										map2.put(j, dfn.format("0"));
+								}
 						}
 						mapd.put(str, map2);
 				}

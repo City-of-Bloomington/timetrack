@@ -24,6 +24,7 @@
 				<li><a href="<s:property value='#application.url'/>hourcode.action">Hour Codes</a></li>
 				<li><a href="<s:property value='#application.url'/>hourcodeCondition.action">Hour Code Restrictions</a></li>
 				<li><a href="<s:property value='#application.url'/>codeRef.action">Hour Code Cross Reference</a></li>
+				<li><a href="<s:property value='#application.url'/>contribute.action"">Hour Code Accraul Contributers</a></li>				
 				<li><a href="<s:property value='#application.url'/>holiday.action">Holidays</a></li>				
 				<li><a href="<s:property value='#application.url'/>group.action">Groups</a></li>
 				<li><a href="<s:property value='#application.url'/>jobTask.action">Jobs</a></li>				

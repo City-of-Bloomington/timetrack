@@ -390,11 +390,6 @@ public class Employee implements Serializable{
 						ret += ", email ="+email;
 				return ret;
     }
-		/*
-    public boolean hasRole(String val){
-				return role.indexOf(val) > -1;
-    }
-		*/
     public boolean hasRole(String val){
 				return roleSet.contains(val);
     }		

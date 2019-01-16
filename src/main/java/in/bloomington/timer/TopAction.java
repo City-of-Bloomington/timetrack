@@ -193,6 +193,14 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 						getEmployee();
 				}
     }
+		/*
+		void setDataBaseServerInfo(){
+				DataBaseInfo dbi = new DataBaseInfo();
+				dbl.setProxyUrl(proxy_url);
+				dbl.setActiveMail(activeMail);
+				dbl.doUpdate();
+		}
+		*/
     @Override  
     public void setSession(Map<String, Object> map) {  
 				sessionMap=map;  

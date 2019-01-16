@@ -67,9 +67,7 @@
 			<div class="view-only">
 				<%@ include file="dailySummary.jsp" %>
 			</div>
-			
-
-				<div class="d-flex">
+			<div class="d-flex">
 					<s:if test="showAllJobs()">					
 						<s:if test="mjdoc.hasHourCodeWeek1()">
 							<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek1" />
@@ -103,8 +101,19 @@
 						</s:if>
 					</s:else>
 			</div>
-
-			<%@ include file="accrualSummary.jsp" %>
+      <ul>
+        <li>
+          <strong>Available Accruals</strong> <s:property value="document.employeeAccrualsShort" />
+        </li>
+        <s:if test="document.hasJob()">
+          <li>
+            <strong>Weekly Standard Work Hrs: </strong> <s:property value="document.job.weekly_regular_hours" />
+          </li>
+          <li>
+            <strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="document.job.comp_time_weekly_hours" />
+          </li>
+        </s:if>
+      </ul>
 			<%@ include file="timeIssues.jsp" %>
 
 			<%@ include file="timeActions.jsp" %>

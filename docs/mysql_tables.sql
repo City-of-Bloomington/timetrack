@@ -717,6 +717,10 @@ drop table users;
 alter table employees add roles varchar(256) after role;
 update employees set roles=role;
 alter table employees drop column role;
+;;
+;; 1/16/2019
+;;
+	CREATE TABLE accrual_contributes (			                                        id int(10) unsigned NOT NULL AUTO_INCREMENT,                                    name varchar(80) not null,                                                      accrual_id int unsigned not null,		                                            hour_code_id int unsigned not null,                                             factor decimal(3,1),                                                            primary key(id),                                                                foreign key(accrual_id) references accruals(id),	                              foreign key(hour_code_id) references hour_codes(id)                             )Engine=InnoDB;
 
 
 ;; ====================================================

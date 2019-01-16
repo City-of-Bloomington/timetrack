@@ -101,6 +101,13 @@
       <result name="error">/WEB-INF/jsp/accrual.jsp</result>
       <result name="success">/WEB-INF/jsp/accrual.jsp</result>
     </action>
+    <action name="contribute" 
+	    class="in.bloomington.timer.AccrualContributeAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/accrual_contribute.jsp</result>		
+      <result name="error">/WEB-INF/jsp/accrual_contribute.jsp</result>
+      <result name="success">/WEB-INF/jsp/accrual_contribute.jsp</result>
+    </action>		
     <action name="accrualSchedule" 
 	    class="in.bloomington.timer.AccrualScheduleAction" 
 	    method="execute">

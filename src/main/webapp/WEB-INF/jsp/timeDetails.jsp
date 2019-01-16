@@ -143,8 +143,24 @@
 					</s:if>
 				</s:else>
 			</div>
-
-			<%@ include file="accrualSummary.jsp" %>
+			<s:if test="document.isProcessed()">
+				<ul>
+					<li>
+						<strong>Available Accruals</strong> <s:property value="document.employeeAccrualsShort" />
+					</li>
+					<s:if test="document.hasJob()">
+						<li>
+							<strong>Weekly Standard Work Hrs: </strong> <s:property value="document.job.weekly_regular_hours" />
+						</li>
+						<li>
+							<strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="document.job.comp_time_weekly_hours" />
+						</li>
+					</s:if>
+				</ul>
+			</s:if>
+			<s:else>
+				<%@ include file="accrualSummary.jsp" %>
+			</s:else>
 			<%@ include file="timeIssues.jsp" %>
 
 			<%@ include file="timeActions.jsp" %>

@@ -15,6 +15,7 @@ import javax.activation.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
+import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,20 +27,28 @@ public class HandleNotification{
     static Logger logger = LogManager.getLogger(HandleNotification.class);
     String date="", dept_id="", pay_period_id="";
     List<Employee> emps = null;
+		
     public HandleNotification(String val, String val2, boolean val3){
 				setPay_period_id(val);
 				setMail_host(val2);
-				if(val3)
-						setActiveMail();
+				setActiveMailFlag();
     }
     public HandleNotification(PayPeriod val, String val2, boolean val3){
 				if(val != null){
 						setPay_period_id(val.getId()); 
 				}
-				setMail_host(val2);				
-				if(val3)
-						setActiveMail();				
+				setMail_host(val2);
+				setActiveMailFlag();
     }
+		void setActiveMailFlag(){
+				ServletContext ctx = SingleContextHolder.getContext();
+				if(ctx != null){
+						String val = ctx.getInitParameter("activeMail");
+						if(val != null && val.equals("true")){
+								activeMail = true;
+						}
+				}
+		}
     void setActiveMail(){
 				activeMail = true;
     }
@@ -47,7 +56,7 @@ public class HandleNotification{
 				if(val != null){		
 						mail_host = val;
 				}
-    }		
+    }
     //
     // setters
     //
@@ -145,7 +154,14 @@ public class HandleNotification{
     }
     String compuseAndSend(String to_str){
 				String msg = "";
-				String body_text ="This is an automated reminder from the Timetrack timekeeping system.\n\n                                                             Today marks the beginning of a new pay period. Our records show you have not submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible.\n\n                                                The timetrack system is available here:\n\n                                     https://bloomington.in.gov/timetrack                                            \n\n                                                                            If you have any questions or support needs, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n                Thank you,\n                                                                    City of Bloomington ITS\n                                                      \n\n";
+				String body_text ="This is an automated reminder from the Timetrack timekeeping system.\n\n";
+				body_text +=" Today marks the beginning of a new pay period. Our records show you have not submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible.\n\n";
+				body_text += " The timetrack system is available here:\n\n";
+				body_text += " https://bloomington.in.gov/timetrack\n";
+				body_text +=" \n\n";
+				body_text +=" If you have any questions or support needs, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n                Thank you,\n";
+				body_text +=" City of Bloomington ITS\n";
+				body_text +="\n\n";
 				Properties props = new Properties();
 				props.put("mail.smtp.host", mail_host);
 				
@@ -161,14 +177,14 @@ public class HandleNotification{
 						if(activeMail){
 								Transport.send(message);
 								// System.err.println(" active mail is on, notification email not sent");
+								NotificationLog nlog = new NotificationLog(to_str, body_text, "Success",null);
+								nlog.doSave();
 						}
 						else{
 								logger.warn(" active mail is turned off, no email sent");
 						}
 						//
 						// Success
-						NotificationLog nlog = new NotificationLog(to_str, body_text, "Success",null);
-						nlog.doSave();
 				}
 				catch (MessagingException mex){
 						//
