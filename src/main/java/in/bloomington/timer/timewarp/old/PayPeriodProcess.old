@@ -41,6 +41,7 @@ public class PayPeriodProcess{
     HolidayList holyList = null;
     int year = 2017, splitDay = 14; // default 14 no split
     String status = "No data";
+    String job_id = "", job_name="";
     CodeRefList codeRefList = null;
     // for HAND only
     Hashtable<CodeRef, String> handHash = null;
@@ -55,7 +56,6 @@ public class PayPeriodProcess{
 		
     boolean isHand = false; // HAND dept has special treatment
     boolean multipleJobs = false;
-		JobTask job = null;
     //		
     // two week entries for display purpose
     //
@@ -68,16 +68,18 @@ public class PayPeriodProcess{
 														Profile val2,
 														PayPeriod val3,
 														HolidayList val4,
-														JobTask val5,
-														Department val6,
-														boolean val7){
+														boolean val5, // HAND flag
+														boolean val6,// csv flag
+														boolean val7,
+														Department val8){  // isUtil 
 				setEmployee(val);
 				setProfile(val2);
 				setPayPeriod(val3);
 				setHolidayList(val4);
-				setJob(val5);
-				setDepartment(val6);				
-				setCsvOutuput(val7);
+				setIsHand(val5);
+				setCsvOutuput(val6);
+				setIsUtil(val7);
+				setDepartment(val8);
 				//
 				// prepare the objects
 				//
@@ -88,20 +90,23 @@ public class PayPeriodProcess{
 														Profile val2,
 														PayPeriod val3,
 														HolidayList val4,
-														JobTask val5,
-														Department val6,
-														boolean val7, // csv
-														boolean val8){ // multi
-														
+														boolean val5, // HAND flag
+														boolean val6,// csv flag
+														boolean val7, // isUtil 
+														String val8,
+														Department val9){ //job_id
 				setEmployee(val);
 				setProfile(val2);
 				setPayPeriod(val3);
 				setHolidayList(val4);
-				setJob(val5);
-				setDepartment(val6);				
-				setCsvOutuput(val7);
-				if(val8)
-						multipleJobs = true;
+				setIsHand(val5);
+				setCsvOutuput(val6);
+				setIsUtil(val7);
+				setJob_id(val8);
+				multipleJobs = true;
+				setDepartment(val9);
+				//
+				// prepare the objects
 				//
 				setWeekEntries();
     }		
@@ -140,10 +145,9 @@ public class PayPeriodProcess{
     public void setIsHand(boolean val){
 				isHand = val;
     }
-    public void setJob(JobTask val){
-				if(val != null){
-						job = val;
-				}
+    public void setJob_id(String val){
+				if(val != null)
+						job_id = val;
     }
     public void setIsUtil(boolean val){
 				isUtil = val;
@@ -151,11 +155,6 @@ public class PayPeriodProcess{
     public void setCsvOutuput(boolean val){
 				csvOutput = val;
     }
-		public String getJob_name(){
-				if(job != null)
-						return job.getName();
-				return "";
-		}
     public PayPeriod getPayPeriod(){
 				return payPeriod;
     }
@@ -173,23 +172,17 @@ public class PayPeriodProcess{
 						//
 						if(splitDay < 7){
 								weekOneHasSplit = true;
-								week1 = new WeekEntry(debug, profile, department,
-																			job,
-																			splitDay);
-								week2 = new WeekEntry(debug, profile, department,
-																			job);
+								week1 = new WeekEntry(debug, profile, splitDay, department);
+								week2 = new WeekEntry(debug, profile, department);
 						}
 						else{
-								week1 = new WeekEntry(debug, profile, department,
-																			job);
-								week2 = new WeekEntry(debug, profile, department,
-																			job,
-																			splitDay-7);
+								week1 = new WeekEntry(debug, profile, department);
+								week2 = new WeekEntry(debug, profile, splitDay-7, department);
 						}
 				}
 				else{
-						week1 = new WeekEntry(debug, profile, department, job);
-						week2 = new WeekEntry(debug, profile, department, job);
+						week1 = new WeekEntry(debug, profile, department);
+						week2 = new WeekEntry(debug, profile, department);
 				}
     }
     //
@@ -452,7 +445,19 @@ public class PayPeriodProcess{
     public boolean hasMultipleJobs(){
 				return multipleJobs;
     }
-
+    public String getJob_name(){
+				if(!job_id.equals("") && job_name.equals("")){
+						JobTask job = new JobTask(job_id);
+						String back = job.doSelect();
+						if(back.equals("")){
+								Position pos = job.getPosition();
+								if(pos != null){
+										job_name = pos.getAlias();
+								}
+						}
+				}
+				return job_name;
+    }
     public double getWeek1ProfHours(){
 				return week1.getProfHours();
     }
@@ -466,14 +471,16 @@ public class PayPeriodProcess{
     String findDocument(){
 				String back = "";
 				if(document == null){
-						if(employee == null || payPeriod == null || job == null){
-								back = " no employee, pay period or job are set";
+						if(employee == null && payPeriod == null){
+								back = " no employee or/and pay period set";
 								return back;
 						}
 						DocumentList dl = new DocumentList();
 						dl.setEmployee_id(employee.getId());
 						dl.setPay_period_id(payPeriod.getId());
-						dl.setJob_id(job.getId());
+						if(!job_id.equals("")){
+								dl.setJob_id(job_id);
+						}
 						back = dl.find();
 						if(back.equals("")){
 								List<Document> ones = dl.getDocuments();

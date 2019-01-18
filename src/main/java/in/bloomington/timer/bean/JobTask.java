@@ -60,7 +60,8 @@ public class JobTask implements Serializable{
 									 String val16,
 									 String val17,
 									 String val18,
-									 boolean val19
+									 String val19,
+									 boolean val20
 									 ){
 				
 				setVals(val,
@@ -81,7 +82,8 @@ public class JobTask implements Serializable{
 								val16,
 								val17,
 								val18,
-								val19);
+								val19,
+								val20);
     }
     public JobTask(String val,
 									 String val2,
@@ -104,8 +106,9 @@ public class JobTask implements Serializable{
 									 String val16,
 									 String val17,
 									 String val18,
-									 boolean val19,
-									 String val20
+									 String val19,
+									 boolean val20,
+									 String val21
 									 ){
 				setVals(val,
 								val2,
@@ -125,9 +128,10 @@ public class JobTask implements Serializable{
 								val16,
 								val17,
 								val18,
-								val19);
+								val19,
+								val20);
 				
-				setEmployee_number(val20);
+				setEmployee_number(val21);
 
     }
     private void setVals(String val,
@@ -149,7 +153,8 @@ public class JobTask implements Serializable{
 												 String val16,
 												 String val17,
 												 String val18,
-												 boolean val19
+												 String val19,
+												 boolean val20
 												 
 												 ){
 				setId(val);
@@ -168,7 +173,7 @@ public class JobTask implements Serializable{
 				setHourlyRateDbl(val14);				
 				setInactive(val15);
 				if(!salary_group_id.equals("")){
-						salaryGroup = new SalaryGroup(salary_group_id, val16,val17,val18, val19);
+						salaryGroup = new SalaryGroup(salary_group_id, val16,val17,val18, val19, val20);
 				}
 
     }
@@ -551,7 +556,8 @@ public class JobTask implements Serializable{
 						"j.clock_time_required, "+
 						"j.hourly_rate,"+
 						"j.inactive, "+
-						"g.name,g.description,g.default_regular_id,g.inactive "+
+						"g.name,g.description,g.default_regular_id,"+
+						"g.excess_culculation,g.inactive "+
 						" from jobs j "+
 						" left join salary_groups g on g.id=j.salary_group_id "+
 						" where j.id =? ";
@@ -585,7 +591,8 @@ public class JobTask implements Serializable{
 												rs.getString(16),
 												rs.getString(17),
 												rs.getString(18),
-												rs.getString(19) != null
+												rs.getString(19),
+												rs.getString(20) != null
 												);
 						}
 				}

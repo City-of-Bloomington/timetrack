@@ -6,6 +6,7 @@
 			<th>Name</th>
 			<th>Description</th>
 			<th>Default Regular Code</th>
+			<th>Excess Culculation Type</th>
 			<th>Inactive?</th>
 		</tr>
 	</thead>
@@ -16,6 +17,7 @@
 				<td><s:property value="name" /></td>
 				<td><s:property value="description" /></td>
 				<td><s:property value="defaultRegularCode" /></td>
+				<td><s:property value="excess_culculation" /></td>
 				<td><s:if test="inactive">Yes</s:if><s:else>No</s:else></td>
 			</tr>
 		</s:iterator>

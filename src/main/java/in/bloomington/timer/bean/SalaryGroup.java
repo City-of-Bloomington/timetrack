@@ -17,7 +17,9 @@ public class SalaryGroup{
 
 		static final long serialVersionUID = 2750L;	
 		static Logger logger = LogManager.getLogger(SalaryGroup.class);
-    String id="", name="", description="", inactive="", default_regular_id="";
+    String id="", name="", description="", inactive="",
+				default_regular_id="";
+		String excess_culculation="Weekly"; // Weekly, Daily, Pay Period
 		HourCode defaultRegularCode = null;
 		//
 		public SalaryGroup(){
@@ -34,12 +36,14 @@ public class SalaryGroup{
 				setId(val);
 				setName(val2);
     }
-		public SalaryGroup(String val, String val2, String val3, String val4, boolean val5){
+		public SalaryGroup(String val, String val2, String val3, String val4,
+											 String val5, boolean val6){
 				setId(val);
 				setName(val2);
 				setDescription(val3);
 				setDefault_regular_id(val4);
-				setInactive(val5);
+				setExcess_culculation(val5);
+				setInactive(val6);
     }		
 		public boolean equals(Object obj){
 				if(obj instanceof SalaryGroup){
@@ -73,7 +77,9 @@ public class SalaryGroup{
 		public String getDefault_regular_id(){
 				return default_regular_id;
 		}
-				
+    public String getExcess_culculation(){
+				return excess_culculation;
+    }				
     public boolean getInactive(){
 				return !inactive.equals("");
     }
@@ -112,7 +118,16 @@ public class SalaryGroup{
 		}
 		public boolean isFireSworn5x8(){
 				return name.equals("FIRE SWORN 5X8");
-		}		
+		}
+		public boolean isExcessCulculationDaily(){
+				return excess_culculation.equals("Daily");
+		}
+		public boolean isExcessCulculationWeekly(){
+				return excess_culculation.equals("Weekly");
+		}
+		public boolean isExcessCulculationPayPeriod(){
+				return excess_culculation.equals("Pay Period");
+		}
 		//
 		// all groups are leave elegible except temp workers
 		//
@@ -130,6 +145,10 @@ public class SalaryGroup{
 				if(val != null)
 						name = val.trim();
     }
+    public void setExcess_culculation(String val){
+				if(val != null)
+						excess_culculation = val;
+    }		
     public void setDescription(String val){
 				if(val != null)
 						description = val.trim();
@@ -165,7 +184,8 @@ public class SalaryGroup{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select id,name,description,default_regular_id,inactive "+
+				String qq = "select id,name,description,default_regular_id,"+
+						"excess_culculation,inactive "+
 						"from salary_groups where id=?";
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -181,7 +201,8 @@ public class SalaryGroup{
 								setName(rs.getString(2));
 								setDescription(rs.getString(3));
 								setDefault_regular_id(rs.getString(4));
-								setInactive(rs.getString(5) != null);
+								setExcess_culculation(rs.getString(5));								
+								setInactive(rs.getString(6) != null);
 						}
 						else{
 								back ="Record "+id+" Not found";
@@ -203,7 +224,7 @@ public class SalaryGroup{
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
-				String qq = " insert into salary_groups values(0,?,?,?,?)";
+				String qq = " insert into salary_groups values(0,?,?,?,?,?)";
 				if(name.equals("")){
 						msg = "Earn code name is required";
 						return msg;
@@ -250,7 +271,12 @@ public class SalaryGroup{
 								pstmt.setString(jj++, description);
 						if(default_regular_id.equals(""))
 								default_regular_id = "1"; // Reg hour code
-						pstmt.setString(jj++, default_regular_id);						
+						pstmt.setString(jj++, default_regular_id);
+						if(excess_culculation.equals("")){
+								pstmt.setNull(jj++, Types.VARCHAR);
+						}
+						else
+								pstmt.setString(jj++, excess_culculation);
 						if(inactive.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
 						else
@@ -267,7 +293,7 @@ public class SalaryGroup{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update salary_groups set name=?, description=?,default_regular_id=?,inactive=? where id=?";
+				String qq = " update salary_groups set name=?, description=?,default_regular_id=?,excess_culculation=?, inactive=? where id=?";
 				if(name.equals("")){
 						msg = "Earn code name is required";
 						return msg;
@@ -280,7 +306,7 @@ public class SalaryGroup{
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						pstmt.setString(5, id);
+						pstmt.setString(6, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

@@ -29,12 +29,8 @@ public class WeekSplit{
 				over_time15 = 0, over_time20 = 0,
 				unpaid_hrs = 0,
 				over_time25 = 0;
-    double st_weekly_hrs = 40,
-				comp_weekly_hrs = 0,
-				comp_factor = 1,
-				holiday_factor = 1;
-		HourCode defaultEarnCode = null;
-		double daily_hrs = 8; // except Sanitaiton 10, delman 12
+		double union_daily_hours = 8; // except Sanitaiton 10, delman 12
+		double st_weekly_hrs = 0;
 		double prof_hrs = 0, net_reg_hrs= 0;		
 		boolean consolidated = false;
 		Department department = null;
@@ -48,19 +44,11 @@ public class WeekSplit{
 		//
 		Hashtable<String, Double> hash = new Hashtable<>();
 		//
-		JobTask job = null;
-		SalaryGroup salaryGroup = null;
-		Group group = null;
-		Shift shift = null;		
 
-    public WeekSplit(boolean deb,
-										 Profile val,
-										 Department val2,
-										 JobTask val3){
+    public WeekSplit(boolean deb, Profile val, Department val2){
 				debug = deb;
 				setProfile(val);
 				setDepartment(val2);
-				setJob(val3);
     }
     public void setProfile(Profile val){
 				if(val != null){
@@ -78,31 +66,10 @@ public class WeekSplit{
 				if(val != null){
 						department = val;
 						if(department.isSanitation()){
-								daily_hrs = 10;
+								union_daily_hours = 10;
 						}
 				}
-		}
-		void setJob(JobTask val){
-				if(val != null){
-						job = val;
-						salaryGroup = job.getSalaryGroup();
-						st_weekly_hrs = job.getWeekly_regular_hours();
-						comp_weekly_hrs = job.getComp_time_weekly_hours();
-						comp_factor = job.getComp_time_factor();
-						holiday_factor = job.getHoliday_comp_factor();
-						group  = job.getGroup();
-						if(group != null){
-								if(group.hasShift()){
-										shift = group.getShift();
-										double dd = shift.getDuration()/60.;
-										if(dd > 0){
-												daily_hrs = dd;
-										}
-								}
-								defaultEarnCode = group.getDefaultEarnCode();
-						}
-				}
-		}
+		}		
 		double getRegularHours(){
 				return regular_hrs;
 		}
@@ -110,41 +77,39 @@ public class WeekSplit{
 		void add(TimeBlock te){
 				//
 				if(te != null){
-						HourCode hrCode = te.getHourCode();
+						String code = te.getHour_code();
 						String nw_code = te.getNw_code();
+						String code_desc = te.getCode_desc().toLowerCase();
 						double hours = te.getHours();
 						
-						if(salaryGroup != null && salaryGroup.isUnionned()){
+						if(bGroup != null && bGroup.isUnioned()){
 								addToDaily(te);
 						}
 						else{
-								if(hrCode.isRegular()){ // Reg or Temp
-										String code = hrCode.getName();
+								if(code.equals("Reg") ||
+									 code.endsWith("REG") ||
+									 code.startsWith("TEMP")){
 										regular_hrs += hours;
 										total_hrs += hours;																					
 										// needed for HAND dept Only, we are using original code
 										// not nw_code
 										addToHash(regHash, code, hours);
 								}
-								else{
-										if(hrCode.isUsed()){
-												// if(code_desc.indexOf("used") > -1){
+								else{ 
+										if(code_desc.indexOf("used") > -1){
 												earn_time_used += hours;
 												total_hrs += hours;
 										}
-										else if(hrCode.isUnpaid()){
-												// else if(code_desc.indexOf("unpaid") > -1){
+										else if(code_desc.indexOf("unpaid") > -1){
 												unpaid_hrs += hours;
 										}
-										else if(hrCode.isEarned()){										
-												// else if(code_desc.indexOf("accrue") > -1){
+										else if(code_desc.indexOf("accrue") > -1){
 												unpaid_hrs += hours;
 										}
-										else if(hrCode.isOvertime()){												
-												// else if(code_desc.indexOf("overtime") > -1){
+										else if(code_desc.indexOf("overtime") > -1){
 												unpaid_hrs += hours;
 										}										
-										else{ // other
+										else{
 												non_reg_hrs += hours;
 												total_hrs += hours;
 										}
@@ -154,9 +119,10 @@ public class WeekSplit{
 				}
 		}		
 		//
-		// for union or similar
+		// for unioned emps only
 		//
 		void computeDailyUnionEarnedTime(){
+				
 				for(int jj=0;jj<7;jj++){
 						double hours = 0, dif_hrs = 0;
 						Hashtable<String, Double> daily = dailyArr.get(jj);
@@ -169,7 +135,7 @@ public class WeekSplit{
 										}
 								}
 								if(hours > 8.009){
-										dif_hrs = hours - daily_hrs;
+										dif_hrs = hours - union_daily_hours;
 										if(dif_hrs > 0.009)
 										if(jj == 6){
 												earned_time20 += dif_hrs;												
@@ -182,55 +148,133 @@ public class WeekSplit{
 				}
 		}
 		//
-		// for union or similar 
+		// for unioned only
 		//
-		void addToDaily(TimeBlock te){
+		void addToDaily(TimeEntry te){
 				//
-				int jj = te.getOrder_index() % 7;
-				HourCode hrCode = te.getHourCode();
-				String code = te.getNw_code();
-				// String code = hrCode.getName(); // only here we need our hour_code
-				// if(nw_code.equals("")) nw_code = code;
+				int jj = te.getDaySeq() % 7;
+				String code = te.getEarn_code(); // only here we
+				String code_desc = te.getEarn_code_desc().toLowerCase();
+				
 				double hours = te.getHours();
 				double prev_hours = 0, dif_hrs = 0;
 				Hashtable<String, Double> daily = dailyArr.get(jj);
-				if(hrCode.isRegular()){
+				if(code.indexOf("Reg") > -1 || code.indexOf("REG") > -1){
 						regular_hrs += hours;
-						total_hrs += hours;
+						total_hrs += hours;									
 						if(daily.containsKey(code)){
-							 hours += daily.get(code).doubleValue();
+								prev_hours = daily.get(code).doubleValue();
+								hours += prev_hours;
 						}
 				}
 				else{ // non regular such On Call, or CO Call Out
 						//
-						if(hrCode.isOnCall()){
+						if(code.indexOf("ONCALL") > -1){ //oncall35: one time = $35 only
+								hours = 1.0f;
+								unpaid_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}
+						}
+						else if(code.indexOf("CO") > -1){ // call out (if < 3 ==> 3)
+								if(hours  < 3.0f){
+										hours = 3.0f;
+								}
+								total_hrs += hours;			
+								non_reg_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}								
+						}
+						else if(code.indexOf("COSH") > -1){ //call out holiday(if < 3 ==> 3)
+								if(hours  < 3.0f){
+										hours = 3.0f;
+								}
+								total_hrs += hours;			
+								non_reg_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}								
+						}						
+						else if(code_desc.indexOf("used") > -1){
+								earn_time_used += hours;
+								total_hrs += hours;											
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}											
+						}
+						else if(code_desc.indexOf("unpaid") > -1){
+								unpaid_hrs += hours;
+								if(daily.containsKey(code)){
+										// hours +=  daily.get(code);
+								}											
+						}								
+						else if(code_desc.indexOf("accrue") > -1){
+								unpaid_hrs += hours;
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}											
+						}						
+						else{ // any thing else such as holidays
+								non_reg_hrs += hours;
+								total_hrs += hours;								
+								if(daily.containsKey(code)){
+										hours +=  daily.get(code);
+								}								
+						}
+				}
+
+				daily.put(code, hours);
+				dailyArr.set(jj, daily);
+				//
+		}
+		void addToDaily(TimeBlock te){
+				//
+				int jj = te.getOrder_index() % 7;
+				String code = te.getHour_code(); // only here we need our hour_code
+				String code2 = code.toLowerCase();
+				String code_desc = te.getCode_desc().toLowerCase();
+				double hours = te.getHours();
+				double prev_hours = 0, dif_hrs = 0;
+				Hashtable<String, Double> daily = dailyArr.get(jj);
+				if(code2.indexOf("reg") > -1){
+						regular_hrs += hours;
+						if(daily.containsKey(code)){
+								prev_hours = daily.get(code).doubleValue();
+								hours += prev_hours;
+						}
+						total_hrs += hours;						
+				}
+				else{ // non regular such On Call, or CO Call Out
+						//
+						if(code.indexOf("ONCALL") > -1){
 								// hours do not count
 								unpaid_hrs += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}
 						}						
-						else if(hrCode.isCallOut()){ // call out (if < 3 ==> 3)
+						else if(code.indexOf("CO") > -1){ // call out (if < 3 ==> 3)
 								non_reg_hrs += hours;// hours are taken care off in timeblock
 								total_hrs += hours;																		
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}
 						}
-						else if(hrCode.isUsed()){
+						else if(code_desc.indexOf("used") > -1){
 								earn_time_used += hours;
 								total_hrs += hours;								
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}											
 						}
-						else if(hrCode.isEarned()){
+						else if(code_desc.indexOf("accrue") > -1){
 								unpaid_hrs += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}											
 						}
-						else if(hrCode.isOvertime()){
+						else if(code_desc.indexOf("overtime") > -1){
 								unpaid_hrs += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
@@ -244,6 +288,7 @@ public class WeekSplit{
 								}								
 						}
 				}
+
 				daily.put(code, hours);
 				dailyArr.set(jj, daily);
 				//
@@ -290,25 +335,7 @@ public class WeekSplit{
 		public void findNetRegular(){
 
 				net_reg_hrs = 0;
-				if(salaryGroup != null){
-						if(salaryGroup.isTemporary()){
-								if(regular_hrs > 40){
-										net_reg_hrs = 40;
-								}
-								else{
-										net_reg_hrs = regular_hrs;
-								}
-								return;
-						}
-						else if(salaryGroup.isUnionned()){
-								net_reg_hrs = regular_hrs - earned_time;
-								if(net_reg_hrs < 0.009){
-										net_reg_hrs = 0;
-								}
-								return;
-						}
-				}
-				else if(bGroup != null){
+				if(bGroup != null){
 						if(bGroup.isTemporary()){
 								if(regular_hrs > 40){
 										net_reg_hrs = 40;
@@ -341,9 +368,7 @@ public class WeekSplit{
 		 */
 		void consolidateDaily(){
 				
-				if(consolidated ||
-					 (salaryGroup !=null && !salaryGroup.isUnionned())) return;
-				// else if (bGroup != null && !bGroup.isUnioned()) return;
+				if(consolidated || (bGroup != null && !bGroup.isUnioned())) return;
 				//
 				// we need to add earn_time hours if any for union people
 				// who did not choose to select overtime or earned time
@@ -363,28 +388,14 @@ public class WeekSplit{
 						}
 				}
 				if(earned_time15 > 0.009){
-						if(defaultEarnCode != null && defaultEarnCode.isOvertime()){
-								String code = "OT1.5";
-								addToHash(hash, code, earned_time15);
-								earned_time += earned_time15;
-						}
-						else{
-								String code = "CE1.5";
-								addToHash(hash, code, earned_time15);
-								earned_time += earned_time15;
-						}
+						String code = "CE1.5";
+						addToHash(hash, code, earned_time15);
+						earned_time += earned_time15;
 				}
 				if(earned_time20 > 0.009){
-						if(defaultEarnCode != null && defaultEarnCode.isOvertime()){
-								String code = "OT2.0";
-								addToHash(hash, code, earned_time15);
-								earned_time += earned_time15;
-						}
-						else{
-								String code = "CE2.0"; 
-								addToHash(hash, code, earned_time20);
-								earned_time += earned_time20;
-						}
+						String code = "CE2.0"; 
+						addToHash(hash, code, earned_time20);
+						earned_time += earned_time20;
 				}				
 				consolidated = true;
 		}

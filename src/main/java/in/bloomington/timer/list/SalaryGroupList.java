@@ -25,75 +25,77 @@ public class SalaryGroupList{
     public SalaryGroupList(){
     }
     public List<SalaryGroup> getSalaryGroups(){
-	return salaryGroups;
+				return salaryGroups;
     }
 		
     public void setName(String val){
-	if(val != null)
-	    name = val;
+				if(val != null)
+						name = val;
     }
     public void setActiveOnly(){
-	active_only = true;
+				active_only = true;
     }
     public void setSortBy(String val){
-	if(val != null)
-	    sortBy = val;
+				if(val != null)
+						sortBy = val;
     }
     public String find(){
 		
-	String back = "";
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	Connection con = UnoConnect.getConnection();
-	String qq = "select t.id,t.name,t.description,t.default_regular_id,t.inactive from salary_groups t ";
-	if(con == null){
-	    back = "Could not connect to DB";
-	    return back;
-	}
-	String qw = "";
-	try{
-	    if(!name.equals("")){
-		if(!qw.equals("")) qw += " and ";
-		qw += " t.name like ? ";
-	    }
-	    if(active_only){
-		if(!qw.equals("")) qw += " and ";
-		qw += " t.inactive is null ";
-	    }
-	    if(!qw.equals("")){
-		qq += " where "+qw;
-	    }
-	    if(!sortBy.equals("")){
-		qq += " order by "+sortBy;
-	    }
-	    logger.debug(qq);
-	    pstmt = con.prepareStatement(qq);
-	    if(!name.equals("")){
-		pstmt.setString(1,"%"+name+"%");
-	    }						
-	    rs = pstmt.executeQuery();
-	    if(salaryGroups == null)
-		salaryGroups = new ArrayList<SalaryGroup>();
-	    while(rs.next()){
-		SalaryGroup one =
-		    new SalaryGroup(rs.getString(1),
-				    rs.getString(2),
-				    rs.getString(3),
-				    rs.getString(4),
-				    rs.getString(5)!=null);
-		if(!salaryGroups.contains(one))
-		    salaryGroups.add(one);
-	    }
-	}
-	catch(Exception ex){
-	    back += ex+" : "+qq;
-	    logger.error(back);
-	}
-	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return back;
+				String back = "";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				Connection con = UnoConnect.getConnection();
+				String qq = "select t.id,t.name,t.description,t.default_regular_id,"+
+						"t.excess_culculation,t.inactive from salary_groups t ";
+				if(con == null){
+						back = "Could not connect to DB";
+						return back;
+				}
+				String qw = "";
+				try{
+						if(!name.equals("")){
+								if(!qw.equals("")) qw += " and ";
+								qw += " t.name like ? ";
+						}
+						if(active_only){
+								if(!qw.equals("")) qw += " and ";
+								qw += " t.inactive is null ";
+						}
+						if(!qw.equals("")){
+								qq += " where "+qw;
+						}
+						if(!sortBy.equals("")){
+								qq += " order by "+sortBy;
+						}
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						if(!name.equals("")){
+								pstmt.setString(1,"%"+name+"%");
+						}						
+						rs = pstmt.executeQuery();
+						if(salaryGroups == null)
+								salaryGroups = new ArrayList<SalaryGroup>();
+						while(rs.next()){
+								SalaryGroup one =
+										new SalaryGroup(rs.getString(1),
+																		rs.getString(2),
+																		rs.getString(3),
+																		rs.getString(4),
+																		rs.getString(5),
+																		rs.getString(6)!=null);
+								if(!salaryGroups.contains(one))
+										salaryGroups.add(one);
+						}
+				}
+				catch(Exception ex){
+						back += ex+" : "+qq;
+						logger.error(back);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return back;
     }
 }
 

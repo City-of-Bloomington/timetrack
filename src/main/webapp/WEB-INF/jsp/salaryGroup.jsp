@@ -37,6 +37,10 @@
 				(Each salary group need one default regular hour code)
 			</div>
 			<div class="form-group">
+				<label>Excess Culculation Type</label>
+				<s:radio name="salaryGroup.excess_culculation" value="%{salaryGroup.excess_culculation}"  list="excessTypes" />
+			</div>			
+			<div class="form-group">
 				<label>Inactive?</label>
 				<s:checkbox name="salaryGroup.inactive" value="%{salaryGroup.inactive}" fieldValue="true" />Yes
 			</div>

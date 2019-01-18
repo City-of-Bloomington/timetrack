@@ -181,10 +181,11 @@ public class PayPeriodProcessAction extends TopAction{
 																						 profile,
 																						 payPeriod,
 																						 holys,
-																						 job,
-																						 department,
+																						 isHand, // HAND flag
 																						 csvOutput,
-																						 true); // multi job
+																						 isUtil,
+																						 job.getId(),
+																						 department);
 										msg = one.find();
 										if(!msg.equals("")){
 												if(msg.startsWith("No time")){
@@ -207,15 +208,15 @@ public class PayPeriodProcessAction extends TopAction{
 								}
 						}
 						else{ // one job
-								JobTask job = emp.getJob();
 								PayPeriodProcess one =
 										new PayPeriodProcess(emp,
 																				 profile,
 																				 payPeriod,
 																				 holys,
-																				 job,
-																				 department,
-																				 csvOutput);
+																				 isHand, // HAND flag
+																				 csvOutput,
+																				 isUtil,
+																				 department);
 								msg = one.find();
 								if(!msg.equals("")){
 										if(msg.startsWith("No time")){

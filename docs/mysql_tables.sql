@@ -720,8 +720,20 @@ alter table employees drop column role;
 ;;
 ;; 1/16/2019
 ;;
-	CREATE TABLE accrual_contributes (			                                        id int(10) unsigned NOT NULL AUTO_INCREMENT,                                    name varchar(80) not null,                                                      accrual_id int unsigned not null,		                                            hour_code_id int unsigned not null,                                             factor decimal(3,1),                                                            primary key(id),                                                                foreign key(accrual_id) references accruals(id),	                              foreign key(hour_code_id) references hour_codes(id)                             )Engine=InnoDB;
+	CREATE TABLE accrual_contributes (			                                        id int(10) unsigned NOT NULL AUTO_INCREMENT,                                    name varchar(80) not null,                                                     accrual_id int unsigned not null,		                                          hour_code_id int unsigned not null,                                            factor decimal(3,1),                                                           primary key(id),                                                               foreign key(accrual_id) references accruals(id),	                              foreign key(hour_code_id) references hour_codes(id)                            )Engine=InnoDB;
 
+;;
+;; 1/17/2019
+;;
+alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Unpaid','Other','On Call','Call Out');
+;;
+alter table salary_groups add excess_culculation enum('Weekly','Daily','Pay Period','Other') default 'Weekly' after default_regular_id;
+
+;; modify salary groups
+;; union: Daily
+;; police (all): Daily
+;; fire Sworn:Pay Period
+;; fire 8x5: Other
 
 ;; ====================================================
 ;; 

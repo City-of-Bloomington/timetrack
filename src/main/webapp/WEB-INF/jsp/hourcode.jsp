@@ -51,7 +51,7 @@
 			</div>
 			<div class="form-group">
 				<label>Type:</label>
-				<s:radio name="hourcode.type" value="%{hourcode.type}" list="#{'Regular':'Regular','Used':'Used','Earned':'Earned','Overtime':'Overtime','Unpaid':'Unpaid','Other':'Other'}"/> 
+				<s:radio name="hourcode.type" value="%{hourcode.type}" list="types" />
 			</div>			
 			<s:if test="hourcode.id != ''">
 				<div class="form-group">

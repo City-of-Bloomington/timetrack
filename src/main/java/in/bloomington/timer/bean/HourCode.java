@@ -29,7 +29,7 @@ public class HourCode{
     private String 
 				record_method="Time", // time or hours
 				accrual_id ="",
-     		// each salary group can have only one reg_default set to 0
+		// each salary group can have only one reg_default set to 0
 				reg_default="", // 0 for default, 1 for others
 				count_as_regular_pay=""; // char Yes/No flag
 
@@ -129,33 +129,33 @@ public class HourCode{
 						id = val;
     }
     public void setName(String val){
-	if(val != null)
-	    name = val.trim();
+				if(val != null)
+						name = val.trim();
     }
     public void setType(String val){
-	if(val != null)
-	    type = val;
+				if(val != null)
+						type = val;
     }		
     public void setDescription(String val){
-	if(val != null){
-	    description = val.trim();
-	}
+				if(val != null){
+						description = val.trim();
+				}
     }		
     public void setInactive(boolean val){
-	if(val)
-	    inactive = "y";
+				if(val)
+						inactive = "y";
     }				
     public void setRecord_method(String val){
-	if(val != null && !val.equals("-1"))
-	    record_method = val;
+				if(val != null && !val.equals("-1"))
+						record_method = val;
     }
     public void setAccrual_id (String val){
-	if(val != null && !val.equals("-1"))
-	    accrual_id = val;
+				if(val != null && !val.equals("-1"))
+						accrual_id = val;
     }
     public void setReg_default(String val){
-	if(val != null && !val.equals("-1"))
-	    reg_default = val;
+				if(val != null && !val.equals("-1"))
+						reg_default = val;
     }		
     public void setCount_as_regular_pay (boolean val){
 				if(val)
@@ -195,6 +195,12 @@ public class HourCode{
 		public boolean isOvertime(){
 				return type.equals("Overtime");
 		}
+		public boolean isOnCall(){
+				return type.equals("On Call");
+		}
+		public boolean isCallOut(){
+				return type.equals("Call Out");
+		}				
 		public boolean isOther(){
 				return type.equals("Other");
 		}		

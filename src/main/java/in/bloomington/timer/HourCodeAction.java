@@ -25,6 +25,7 @@ public class HourCodeAction extends TopAction{
 		List<HourCode> hourcodes = null;
 		String hourcodesTitle = "Current hour codes";
 		List<Type> accruals = null;
+		String[] types = new String[]{"Regular","Used","Earned","Overtime","Unpaid","On Call","Call Out","Other"}; 
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -107,6 +108,9 @@ public class HourCodeAction extends TopAction{
 						}
 				}
 				return accruals;
+		}
+		public String[] getTypes(){
+				return types;
 		}
 
 }

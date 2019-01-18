@@ -23,6 +23,7 @@ public class SalaryGroupAction extends TopAction{
 		//
 		SalaryGroup salaryGroup = null;
 		List<HourCode> hourCodes = null;
+		final static String[] excess_types = {"Weekly","Daily","Pay Period","Other"};
 		String salaryGroupsTitle = "Workflow Actions";
 		public String execute(){
 				String ret = SUCCESS;
@@ -105,6 +106,9 @@ public class SalaryGroupAction extends TopAction{
 						}
 				}
 				return hourCodes;
+		}
+		public String[] getExcessTypes(){
+				return excess_types;
 		}
 		
 }

@@ -30,7 +30,8 @@ public class Group{
     List<GroupEmployee> groupEmployees = null;
     List<Employee> employees = null;
     List<GroupLocation> groupLocations = null;
-		List<GroupShift> groupShifts = null;		
+		List<GroupShift> groupShifts = null;
+		Shift shift = null;
     Set<String> ipSet = null;
 		
     public Group(){
@@ -222,6 +223,12 @@ public class Group{
 		public List<GroupShift> getGroupShifts(){
 				return groupShifts;
 		}
+		public boolean hasShift(){
+				return hasGroupShifts();
+		}
+		public Shift getShift(){
+				return shift;
+		}
 		void findShifts(){
 				GroupShiftList del = new GroupShiftList();
 				del.setGroup_id(id);
@@ -230,6 +237,9 @@ public class Group{
 						List<GroupShift> ones = del.getGroupShifts();
 						if(ones != null && ones.size() > 0){
 								groupShifts = ones;
+						}
+						if(groupShifts != null && groupShifts.size() > 0){
+								shift = groupShifts.get(0).getShift();
 						}
 				}
 		}

@@ -301,6 +301,9 @@ public class TimeBlock extends Block{
 								if(val2.indexOf(":") > -1){
 										dd = val2.split(":");
 								}
+								else if(val2.indexOf(";") > -1){
+										dd = val2.split(";");
+								}								
 								else if(val2.length() >= 3){
 										// no colon, time format hmm, or hhmm
 										if(val2.length() == 3){ // 3 digits
