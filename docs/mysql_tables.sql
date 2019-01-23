@@ -730,10 +730,11 @@ alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Un
 alter table salary_groups add excess_culculation enum('Weekly','Daily','Pay Period','Other') default 'Weekly' after default_regular_id;
 
 ;; modify salary groups
+;;;====================
 ;; union: Daily
 ;; police (all): Daily
 ;; fire Sworn:Pay Period
-;; fire 8x5: Other
+;; fire 8x5: Other (they use oncall instead)
 
 ;; ====================================================
 ;; 

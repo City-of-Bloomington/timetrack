@@ -25,7 +25,7 @@ public class ProfileList{
     Hashtable<String, BenefitGroup> bgroups = null;
     PayPeriod payPeriod = null;
     String end_date = null; // for planning when looking for date range
-    String selected_dept_ref = "";
+    String selected_dept_ref = "", employee_number="";
     String deptRefs = null;
     List<Profile> profiles = null;
     //
@@ -94,6 +94,11 @@ public class ProfileList{
 						end_date = val;
 				}
     }
+		public void setEmployeeNumber(String val){
+				if(val != null){
+					 employee_number = val;
+				}
+		}
     public List<Profile> getProfiles(){
 				return profiles;
     }
@@ -108,15 +113,6 @@ public class ProfileList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", back="", date = null;
-				if(payPeriod != null){
-						date = payPeriod.getEnd_date();
-				}
-				else if(!end_date.equals("")){
-						date = end_date;
-				}
-				if(date == null){
-						date = Helper.getToday();
-				}
 				// using current date
 				String qq = "select p.JobTitle, e.EmployeeNumber, p.* "+
 						" from hr.vwEmployeeJobWithPosition p, "+
@@ -124,7 +120,7 @@ public class ProfileList{
 						" where e.EmployeeId = p.EmployeeID "+
 						" and getdate() between EffectiveDate and EffectiveEndDate "+
 						" and getdate() between PositionDetailESD and PositionDetailEED "+
-						" and e.EmployeeNumber = '1886' "+
+						" and e.EmployeeNumber = ? "+
 						" order by e.employeenumber ";
 				con = SingleConnect.getNwConnection();
 				if(con == null){
@@ -136,20 +132,21 @@ public class ProfileList{
 						if(debug)
 								logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, employee_number);
 						rs = pstmt.executeQuery();
 						ResultSetMetaData rsmd = rs.getMetaData();
 						int columnCount = rsmd.getColumnCount();
 						// The column count starts from 1
+						/*
 						for (int i = 1; i <= columnCount; i++ ) {
 								String str = rsmd.getColumnName(i);
 								System.err.println(i+" "+str);
 						}
-						/*
-							while(rs.next()){
-
-
-							}
 						*/
+						while(rs.next()){
+								String str = rs.getString(1);
+								System.err.println(" job "+str);
+						}
 				}
 				catch(Exception ex){
 						back += ex;
@@ -157,7 +154,6 @@ public class ProfileList{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
-						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
     }
@@ -422,7 +418,6 @@ public class ProfileList{
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
-						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
     }

@@ -7,6 +7,7 @@ package in.bloomington.timer.bean;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.sql.*;
@@ -751,6 +752,90 @@ public class Employee implements Serializable{
 						one.getId_code().equals(id_code) &&
 						one.getEmployee_number().equals(employee_number);
     }
+		/**
+		 * find job titles from New World app
+		 * current employee only
+		 */
+		/*
+			// list of the fields
+1 JobTitle
+2 EmployeeNumber
+3 EmployeeJobID
+4 EffectiveDate
+5 EffectiveEndDate
+6 EmployeeID
+7 GradeId
+8 GradeType
+9 GradeStepId
+10 CycleHours
+11 DailyHours
+12 DepartmentId
+13 RateAmount
+14 PositionId
+15 JobId
+16 JobTitle
+17 PositionDetailESD
+18 PositionDetailEED
+19 IsPrimaryJob
+20 JobEventReasonId
+21 PositionNumber
+		*/
+		public List<String> findJobTitlesFromNW(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", back="", date = null;
+				List<String> jobTitles = new ArrayList<>();
+				// using current date
+				String qq = "select p.JobTitle, e.EmployeeNumber, p.* "+
+						" from hr.vwEmployeeJobWithPosition p, "+
+						" hr.employee e "+
+						" where e.EmployeeId = p.EmployeeID "+
+						" and getdate() between EffectiveDate and EffectiveEndDate "+
+						" and getdate() between PositionDetailESD and PositionDetailEED "+
+						// " and e.EmployeeNumber = ? "+
+						" and p.departmentID in (30,36) "+ // 39 parks
+						" order by e.employeenumber ";
+				// p.departmentID in ();
+				con = SingleConnect.getNwConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return null;
+				}
+				try{
+						pstmt = con.prepareStatement(qq);
+						
+						// pstmt.setString(1, employee_number);
+						rs = pstmt.executeQuery();
+						/*
+						ResultSetMetaData rsmd = rs.getMetaData();
+						int columnCount = rsmd.getColumnCount();
+						// The column count starts from 1
+						for (int i = 1; i <= columnCount; i++ ) {
+								String str = rsmd.getColumnName(i);
+								System.err.println(i+" "+str);
+						}
+						*/
+						while(rs.next()){
+								String str = rs.getString(1);
+								String str2 = rs.getString(2); // emp number
+								// String str3 = rs.getString(7); // grade Id
+								// String str4 = rs.getString(11); // daily hours
+								str = str2+" "+str;
+								if(!jobTitles.contains(str))
+										jobTitles.add(str);
+						}
+				}
+				catch(Exception ex){
+						back += ex;
+						logger.error(ex+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+				}
+				return jobTitles;
+		}
     public String doSelect(){
 				//
 				Connection con = null;

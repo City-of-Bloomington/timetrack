@@ -4,7 +4,6 @@
 		<s:hidden name="action2" id="action2" value="" />
 		<s:if test="employee.id == ''">
 			<h1>New Employee</h1>
-			<s:hidden name="employee.group_id" value="" id="group_id" />
 		</s:if>
 		<s:else>
 			<h1>Employee <s:property value="employee.full_name" /></h1>
@@ -25,7 +24,6 @@
 					<s:property value="%{employee.id}" />
 				</div>
 			</s:if>
-
 			<s:if test="employee.id == ''">
 				<div class="form-group">
 					<label>Full Name</label>
@@ -80,7 +78,6 @@
 					<s:textfield name="employee.effective_date" value="" size="10" maxlength="10" cssClass="date" />
 				</div>
 			</s:if>
-
 			<div class="form-group">
 				<label>Roles</label>
 				<s:checkboxlist key="employee.roles" list="roles" />

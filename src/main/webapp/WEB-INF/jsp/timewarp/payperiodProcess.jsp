@@ -49,7 +49,13 @@
 
 <s:if test="action != ''">
 	<h1><s:property value="department" /> Employees</h1>
-
+	<s:if test="hasEmpsWithNoEmpNum()">
+		<p>The following employees Do not have employee number and will not be imported <br />
+			You may add their employees' number and run this process again.
+		</p>
+		<s:set var="employees" value="empsWithNoEmpNum" />
+		<%@ include file="../employees.jsp" %>
+	</s:if>
 	<s:if test="hasProcesses()">
 			<table width="100%">
 				<tr>

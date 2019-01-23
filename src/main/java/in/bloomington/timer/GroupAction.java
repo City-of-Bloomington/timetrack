@@ -36,6 +36,7 @@ public class GroupAction extends TopAction{
 								addError(back);
 						}
 						else{
+								id = group.getId();
 								addMessage("Added Successfully");
 						}
 				}				
@@ -46,7 +47,8 @@ public class GroupAction extends TopAction{
 								addError(back);								
 						}
 						else{
-								addMessage("Added Successfully");
+								id = group.getId();
+								addMessage("Updated Successfully");
 						}
 				}
 				else{		
@@ -121,7 +123,6 @@ public class GroupAction extends TopAction{
 		public List<GroupManager> getGroupManagers(){
 				//
 				if(groupManagers == null){
-						getId();
 						GroupManagerList gml = new GroupManagerList();
 						gml.setGroup_id(id);
 						String back = gml.find();

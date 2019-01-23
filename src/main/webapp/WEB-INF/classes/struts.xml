@@ -59,6 +59,13 @@
 			<result name="error">/WEB-INF/jsp/type.jsp</result>
 			<result name="success">/WEB-INF/jsp/type.jsp</result>
     </action>
+    <action name="jobTitles" 
+	    class="in.bloomington.timer.JobTitlesAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/job_titles.jsp</result>		
+			<result name="error">/WEB-INF/jsp/job_titles.jsp</result>
+			<result name="success">/WEB-INF/jsp/job_titles.jsp</result>
+    </action>		
     <action name="location" 
 	    class="in.bloomington.timer.LocationAction" 
 	    method="execute">

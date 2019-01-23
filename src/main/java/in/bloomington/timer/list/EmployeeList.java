@@ -33,7 +33,8 @@ public class EmployeeList extends CommonInc{
 				employee_ids = "", // comma separated
 				no_document_for_payperiod_id="";
     Set<String> group_id_set = new HashSet<>();
-    boolean active_only = false, inactive_only = false, hasEmployeeNumber=false;
+    boolean active_only = false, inactive_only = false,
+				hasEmployeeNumber=false, hasNoEmployeeNumber=false;
     boolean includeAllDirectors = false;
     boolean used_time_track = false; // since last two weeks
     List<Employee> employees = null;
@@ -159,6 +160,9 @@ public class EmployeeList extends CommonInc{
     public void setUsedTimeTrack(){
 				used_time_track = true;
     }
+		public void setHasNoEmployeeNumber(){
+				hasNoEmployeeNumber = true;
+		}
     public List<Employee> getEmployees(){
 				return employees;
     }
@@ -249,6 +253,10 @@ public class EmployeeList extends CommonInc{
 						if(hasEmployeeNumber){ // related to previous one
 								if(!qw.equals("")) qw += " and ";								
 								qw += " e.employee_number is not null";
+						}
+						else if(hasNoEmployeeNumber){
+								if(!qw.equals("")) qw += " and ";								
+								qw += " e.employee_number is null";
 						}
 						if(!group_ids.equals("")){
 								qq += ", group_employees ge ";

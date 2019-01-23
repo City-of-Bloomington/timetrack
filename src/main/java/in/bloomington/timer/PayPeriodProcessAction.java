@@ -39,6 +39,7 @@ public class PayPeriodProcessAction extends TopAction{
     List<Employee> employees = null, noDataEmployees;
     List<PayPeriodProcess> processes = null;
     List<String> allCsvLines = null;
+		List<Employee> empsWithNoEmpNum = null;
     HolidayList holys = null;
     public String execute(){
 				String ret = SUCCESS;
@@ -167,11 +168,17 @@ public class PayPeriodProcessAction extends TopAction{
 				for(Employee emp:employees){
 						String emp_num = emp.getEmployee_number();
 						Profile profile = null;
-						if(!emp_num.equals("") && profMap.containsKey(emp_num)){
-								profile = profMap.get(emp_num);
+						if(!emp_num.equals("")){
+								if(profMap.containsKey(emp_num)){
+										profile = profMap.get(emp_num);
+								}
+								else{
+										continue;
+								}
 						}
 						emp.setPay_period_id(pay_period_id);
-						System.err.println(" emp "+emp.getFull_name());				    System.err.println(" profile "+profile);
+						System.err.println(" emp "+emp.getFull_name());
+						System.err.println(" profile "+profile);
 						if(emp.hasMultipleJobs()){
 								List<JobTask> jobs = emp.getJobs();
 								// loop over jobs
@@ -191,7 +198,8 @@ public class PayPeriodProcessAction extends TopAction{
 														if(noDataEmployees == null){
 																noDataEmployees = new ArrayList<>();
 														}
-														noDataEmployees.add(emp);
+														if(!noDataEmployees.contains(emp))
+																noDataEmployees.add(emp);
 												}
 												else{
 														if(!back.equals("")) back +=", ";
@@ -315,6 +323,26 @@ public class PayPeriodProcessAction extends TopAction{
 				}
 				return profiles;
     }
+    public List<Employee> getEmpsWithNoEmpNum(){
+				if(empsWithNoEmpNum == null){
+						getDepartment();
+						if(department != null){
+								EmployeeList el = new EmployeeList();
+								el.setDepartment_id(department.getId());
+								el.setPay_period_id(pay_period_id);
+								el.setHasNoEmployeeNumber();
+								el.setActiveOnly();
+								String back = el.find();
+								if(back.equals("")){
+										List<Employee> ones = el.getEmployees();
+										if(ones != null && ones.size() > 0){
+												empsWithNoEmpNum = ones;
+										}
+								}
+						}
+				}
+				return empsWithNoEmpNum;
+    }		
     public List<Employee> getEmployees(){
 				if(employees == null){
 						getDepartment();
@@ -422,6 +450,10 @@ public class PayPeriodProcessAction extends TopAction{
     public List<String> getCsvLines(){
 				return allCsvLines; 
     }
+		public boolean hasEmpsWithNoEmpNum(){
+				getEmpsWithNoEmpNum();
+				return empsWithNoEmpNum != null && empsWithNoEmpNum.size() > 0;
+		}
     /**
      * prepare the list of csv lines to add to csv file
      */
