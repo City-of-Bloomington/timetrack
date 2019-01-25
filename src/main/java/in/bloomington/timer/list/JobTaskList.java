@@ -22,7 +22,8 @@ public class JobTaskList{
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     List<JobTask> jobTasks = null;
     boolean active_only = false, current_only = false, inactive_only=false,
-				clock_time_required = false, clock_time_not_required=false;
+				clock_time_required = false, clock_time_not_required=false,
+				not_expired = false, non_temp_emp = false;
     String salary_group_id="", employee_id="", pay_period_id="";
     String id="", effective_date = "", which_date="j.effective_date",
 				date_from="", date_to="", position_id="", employee_name="",
@@ -127,7 +128,6 @@ public class JobTaskList{
     public String getSalary_group_id(){
 				if(salary_group_id.equals(""))
 						return "-1";
-
 				return salary_group_id;
     }
     public String getGroup_id(){
@@ -174,6 +174,12 @@ public class JobTaskList{
 				return "-1";
 
     }
+		public void setNotExpired(){
+				not_expired = true;
+		}
+		public void setNonTemp(){
+				non_temp_emp = true;
+		}
     public List<Group> getGroups(){
 				if(groups == null){
 						if(!department_id.equals("")){
@@ -235,6 +241,10 @@ public class JobTaskList{
 				else if(inactive_only){
 						qw += " j.inactive is not null ";
 				}
+				if(not_expired){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.expire_date is null "; 						
+				}
 				if(current_only){
 						if(!qw.equals("")) qw += " and ";
 						qw += " j.effective_date < now() and (j.expire_date > now() or j.exire_date is null) ";
@@ -251,6 +261,10 @@ public class JobTaskList{
 						if(!salary_group_id.equals("")){
 								if(!qw.equals("")) qw += " and ";
 								qw += " j.salary_group_id = ? ";
+						}
+						else if(non_temp_emp){
+								if(!qw.equals("")) qw += " and ";
+								qw += " j.salary_group_id <> 3 "; // Temp salary is 3
 						}
 						if(!employee_id.equals("")){
 								if(!qw.equals("")) qw += " and ";

@@ -63,22 +63,25 @@ public class HandleJobTitleUpdate{
 			 for(String str:set){
 					 Set<String> sst = empJobs.get(str);
 					 if(empNwJobs.containsKey(str)){
-							 jj++;
 							 Set<String> sst2 = empNwJobs.get(str);
-							 // System.err.println(jj+" found "+str+" "+sst+" "+sst2);
+							 // System.err.println(jj+" found "+str+" TT:"+sst+" NW:"+sst2);
 							 for(String str2:sst){
 									 if(!sst2.contains(str2)){
-											 System.err.println(str+" job not found in NW "+str2);
+											 System.err.println(jj+" - "+str+" job not found in NW "+str2);
+											 jj++;
+											 
 									 }
 							 }
 							 for(String str2:sst2){
 									 if(!sst.contains(str2)){
-											 System.err.println(str+" job not found in TT "+str2);
+											 System.err.println(jj+" - "+str+" job not found in TT "+str2);
+											 jj++;
+
 									 }
 							 }
 					 }
 					 else{
-							 System.err.println(jj2+" not found "+str+" "+sst);
+							 // System.err.println(jj2+" not found "+str+" "+sst);
 							 jj2++;
 					 }
 			 }
@@ -90,9 +93,8 @@ public class HandleJobTitleUpdate{
 					 Set<String> sst = empNwJobs.get(str);
 					 System.err.println(jj+" "+str+" "+sst);
 					 jj++;
-			 }			 
+			 }
 			 */
-			 // System.err.println(empNwJobs);				
 			 return msg;
 		}
 		String findEmployeeJobs(){
@@ -101,7 +103,7 @@ public class HandleJobTitleUpdate{
 				ResultSet rs = null;
 				String msg = "";
 				String qq = "select e.employee_number,"+
-						" upper(p.name) "+
+						" p.name "+
 						" from jobs j, positions p,employees e ";
 				String qw = " where p.id=j.position_id and j.employee_id=e.id ";
 				qw += " and j.expire_date is null ";
@@ -153,13 +155,72 @@ public class HandleJobTitleUpdate{
 				}
 				return msg;						
 		}
+		/**
+			 select           
+			 e.EmployeeNumber               as employeeNum,
+			 e.EmployeeName                 as name,
+			 e.LastName                     as lastname,
+			 e.FirstName                    as firstname,
+			 x.Title                        as xtitle,
+			 job.JobTitle                   as title,
+			 job.DepartmentId               as job_department_id,
+			 e.OrgStructureDescconcatenated as department,   
+			 e.DepartmentId                 as employee_department_id,
+			 e.xGroupCodeDesc               as benefitGroup,
+			 udf.ValString                  as username,
+			 job.CycleHours/2               as weeklyHours,
+			 e.*                                   
+			 from HR.vwEmployeeInformation     e                                   
+			 join HR.vwEmployeeJobWithPosition job on e.EmployeeId=job.EmployeeId
+			 and GETDATE() between job.EffectiveDate     and job.EffectiveEndDate
+			 and GETDATE() between job.PositionDetailESD and job.PositionDetailEED
+			 left join COB.jobTitleCrosswalk   x    on job.JobTitle=x.Code
+			 join HR.EmployeeName          n    on e.EmployeeId=n.EmployeeId
+			 and GETDATE() between   n.EffectiveDate     and   n.EffectiveEndDate
+			 left join dbo.UDFEntry    udf  on n.EmployeeNameId=udf.AttachedFKey and udf.UDFAttributeID=52 and udf.TableID=66                                   
+			 where e.vsEmploymentStatusId=258
+			 and e.DepartmentId = 39
+			 order by e.OrgStructureDescconcatenated, e.employeename;
+//
+// modified
+//
+			 select           
+			 e.EmployeeNumber               as employeeNum,
+			 e.EmployeeName                 as name,
+			 e.LastName                     as lastname,
+			 e.FirstName                    as firstname,
+			 x.Title                        as xtitle,
+			 job.JobTitle                   as title,
+			 e.xGroupCodeDesc               as benefitGroup,
+			 job.CycleHours/2               as weeklyHours,
+			 from HR.vwEmployeeInformation     e                                   
+			 join HR.vwEmployeeJobWithPosition job on e.EmployeeId=job.EmployeeId
+			 and GETDATE() between job.EffectiveDate     and job.EffectiveEndDate
+			 and GETDATE() between job.PositionDetailESD and job.PositionDetailEED
+			 left join COB.jobTitleCrosswalk   x    on job.JobTitle=x.Code
+			 join HR.EmployeeName  n  on e.EmployeeId=n.EmployeeId
+			 and GETDATE() between  n.EffectiveDate  and   n.EffectiveEndDate
+			 where e.vsEmploymentStatusId=258
+			 and e.DepartmentId = 39
+			 order by e.employeename, e.EmployeeName,job.JobTitle
+
+			 
+
+
+
+		 */
 		public String findNWJobs(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="";
 				// using current date
-				String qq = "select e.EmployeeNumber,p.JobTitle "+
+				String qq = "select e.EmployeeNumber,                                                        e.EmployeeName,                                                                 e.LastName,                                                                     e.FirstName,                                                                    x.Title,                                                                      job.JobTitle,                                                                     e.xGroupCodeDesc,                                                             job.CycleHours/2                             from HR.vwEmployeeInformation     e                                             join HR.vwEmployeeJobWithPosition job on e.EmployeeId=job.EmployeeId            and GETDATE() between job.EffectiveDate     and job.EffectiveEndDate            and GETDATE() between job.PositionDetailESD and job.PositionDetailEED           left join COB.jobTitleCrosswalk   x    on job.JobTitle=x.Code                   join HR.EmployeeName  n  on e.EmployeeId=n.EmployeeId                           and GETDATE() between  n.EffectiveDate  and   n.EffectiveEndDate                where e.vsEmploymentStatusId=258 ";
+				qq += " and e.departmentID in ("+dept_ref+") "; 				
+				qq += "order by e.employeename, job.JobTitle ";
+				
+				/**
+					 String qq = "select e.EmployeeNumber,p.JobTitle "+
 						" from hr.vwEmployeeJobWithPosition p, "+
 						" hr.employee e "+
 						" where e.EmployeeId = p.EmployeeID "+
@@ -167,8 +228,8 @@ public class HandleJobTitleUpdate{
 						" and getdate() between PositionDetailESD and PositionDetailEED ";
 						// " and e.EmployeeNumber = ? "+
 				qq += " and p.departmentID in ("+dept_ref+") "; 
-				qq += " order by e.employeenumber ";
-				// p.departmentID in ();
+				qq += " order by e.employeenumber ";						
+						*/
 				con = SingleConnect.getNwConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -182,7 +243,7 @@ public class HandleJobTitleUpdate{
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								String str = rs.getString(1); // emp number
-								String str2 = rs.getString(2).toUpperCase(); 
+								String str2 = rs.getString(6).trim(); //title
 								if(str != null){
 										if(empNwJobs.containsKey(str)){
 												Set<String> set = empNwJobs.get(str);

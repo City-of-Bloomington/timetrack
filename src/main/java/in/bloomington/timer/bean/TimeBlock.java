@@ -680,7 +680,7 @@ public class TimeBlock extends Block{
 								" (? > t.begin_hour+t.begin_minute/60. "+ // end in between
 								" and ? < t.end_hour+t.end_minute/60. "+
 								" ) or ";
-								//
+								// remove =
 						qq +=" (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
 								" and ? <= t.end_hour+t.end_minute/60. "+
 								" )) or ";
@@ -699,9 +699,9 @@ public class TimeBlock extends Block{
 						qq = " select count(*) from ("+qq+" union all "+qq2+") t2 where t2.hour_code_id in (select id from hour_codes c where c.record_method='Time' )";
 						
 				}
-				else if(isClockIn()){	
-						qq +=" and (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
-								" and ? <= t.end_hour+t.end_minute/60.) ";
+				else if(isClockIn()){	// remove =
+						qq +=" and (? > t.begin_hour+t.begin_minute/60. "+ // start in between
+								" and ? < t.end_hour+t.end_minute/60.) ";
 						// final
 						qq = " select count(*) from ("+qq+") t2 where t2.hour_code_id in (select id from hour_codes c where c.record_method='Time' )";						
 						

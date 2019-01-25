@@ -727,12 +727,14 @@ public class TimeBlockList{
      * if they have clocked-in already but no clocked-out
      *
      */
-    public String findDocumentForClockInOnly(){
+    public String findDocumentForClockInOnly(int time_hr, int time_min){
 
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
+				double dd_time = time_hr+(time_min/60.);
+				Double dd_time2 = dd_time+24;
 				String qq = "select "+
 						" t.document_id "+
 						" from time_blocks t "+
@@ -741,13 +743,12 @@ public class TimeBlockList{
 						" where "+
 						" t.clock_in is not null and t.clock_out is null "+
 						" and t.inactive is null "+
-						// " and (t.date = ? or t.date = ?)"+
 						" and d.pay_period_id=? "+
 						" and d.employee_id=? ";
 				qq += " and ";						
-				qq += " ((((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?) "+
+				qq += " ((("+dd_time+" - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?) "+
 						"  or "+
-						" (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?)) ";
+						" (("+dd_time2+" - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?)) ";
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -792,11 +793,13 @@ public class TimeBlockList{
 								
 		 
     */ 
-    public String findTimeBlocksForClockIn(){
+    public String findTimeBlocksForClockIn(int time_hr, int time_min){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg = "";
+				double dd_time = time_hr+time_min/60.;
+				double dd_time2 = dd_time+24;
 				String qq = "select t.id,"+
 						" t.document_id,"+
 						"t.hour_code_id,"+
@@ -842,10 +845,10 @@ public class TimeBlockList{
 						qw += " t.clock_in is not null and t.clock_out is null ";
 				}
 				if(!duration.equals("")){
-						if(!qw.equals("")) qw += " and ";						
-						qw += " ((((hour(current_time()) + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?) "+
-								"  or "+
-								" (((hour(current_time()) + 24 + minute(current_time())/60.) - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?)) ";
+						if(!qw.equals("")) qw += " and ";
+						qw += " ((("+dd_time+" - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?) "+
+						"  or "+
+								" (("+dd_time2+" - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?)) ";
 				}
 				if(active_only){
 						if(!qw.equals("")) qw += " and ";

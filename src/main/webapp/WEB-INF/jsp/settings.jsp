@@ -64,10 +64,11 @@
 			</ul>
 			<h2>Reports</h2>
 			<ul>
-				<li><a href="<s:property value='#application.url'/>activeEmployees.action">Active Employees Report</a></li>								
-				<li><a href="<s:property value='#application.url'/>reportHand.action">HAND MPO Report</a></li>
-				<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a></li>
-				<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA Report</a></li>
+				<li><a href="<s:property value='#application.url'/>activeEmployees.action">Active Employees</a></li>								
+				<li><a href="<s:property value='#application.url'/>reportHand.action">HAND MPO</a></li>
+				<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO</a></li>
+				<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA</a></li>
+				<li><a href="<s:property value='#application.url'/>parksJobReport.action">Parks Jobs</a></li>				
 			</ul>			
 			<h2>Employee Data Import</h2>
 			<ul>

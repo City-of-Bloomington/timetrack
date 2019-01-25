@@ -493,6 +493,13 @@ public class Helper{
 				String time = timeFormat.format(cal.getTime());
 				return time;
 		}
+		public final static int[] getCurrentTimeArr(){
+				Calendar cal = Calendar.getInstance();
+				int hh =  cal.get(Calendar.HOUR_OF_DAY); // in 24 format
+				int mm =  cal.get(Calendar.MINUTE);				
+				int[] time_arr = new int[]{hh,mm};
+				return time_arr;
+		}		
 
     public final static String getToday(Calendar cal){
 

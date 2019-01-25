@@ -136,9 +136,14 @@ public class Shift{
     public boolean hasRoundedMinute(){
 				return minute_rounding > 0;
     }
-    public boolean hasWindows(){
-				return start_minute_window > 0 || end_minute_window > 0;
-    }		
+
+		public boolean hasClockInWindow(){
+				return start_minute_window > 0;
+		}		
+		public boolean hasClockOutWindow(){
+				return end_minute_window > 0;
+		}
+		
 		void setEndHourMinute(){
 				if(duration  > 0){
 						end_hour = start_hour+(duration/60);
@@ -212,63 +217,54 @@ public class Shift{
     // if badge at 7:50 val = 10, 10 < 15 ==> true
     // if badge at 7:35 val = 25, 25 is not < 15 ==> false
     //
-    // for shif that starts at 8:30 
-    public boolean isMinuteWithin(String clockInTime){
-				if(clockInTime.indexOf(":") > -1){
-						try{
-								String val[] = clockInTime.split(":");
-								if(val != null && val.length == 2){
-										int hh = -1, mm = -1;
-										hh = Integer.parseInt(val[0]);
-										mm = Integer.parseInt(val[1]);
-										if(start_minute == 0){ //such as 8:00
-												if(hh+1 == start_hour){
-														return (60 - mm) < start_minute_window;
-												}
-										}
-										else{ // such as 8:30
-												if(hh == start_hour){
-														return (start_minute - mm) > 0 && (start_minute - mm) < start_minute_window;
-												}
-										}
-								}
-						}catch(Exception ex){
-								System.err.println(ex);
-						}
+    // for shif that starts at 8:30
 
-				}
-				return false;
-    }
-    public boolean isClockOutMinuteWithin(String clockTime){
-				if(clockTime.indexOf(":") > -1){
-						try{
-								boolean added = false;
-								String val[] = clockTime.split(":");
-								if(val != null && val.length == 2){
-										int hh = -1, mm = -1;
-										hh = Integer.parseInt(val[0]);
-										mm = Integer.parseInt(val[1]);
-										if(end_hour > 24){ // over night
-												hh += 24;
-												added = true;
-										}
-										if(hh == end_hour){										
-												if(mm > end_minute){
-														// such 17:40  compare to 17:30
-														return (mm - end_minute) <= end_minute_window;
-												}
-										}
-										else if( hh == end_hour+1){
-												// such as 18:05 compate to 17:45 (end hour/end minute)
-												return (60 - end_minute)+ mm <= end_minute_window;
+    public boolean isMinuteWithin(int[] clockInTime){
+				if(start_minute_window > 0){
+						if(clockInTime != null && clockInTime.length == 2){
+								int hh = -1, mm = -1;								
+								hh = clockInTime[0];
+								mm = clockInTime[1];
+								if(start_minute == 0){ //such as 8:00
+										if(hh+1 == start_hour){
+												return (60 - mm) < start_minute_window;
 										}
 								}
-						}catch(Exception ex){
-								System.err.println(ex);
+								else{ // such as 8:30
+										if(hh == start_hour){
+												return (start_minute - mm) > 0 && (start_minute - mm) < start_minute_window;
+										}
+								}
 						}
+						return false;
 				}
-				return false;
-    }		
+				return true;
+    }
+
+    public boolean isClockOutMinuteWithin(int[] clockTime){
+				if(end_minute_window > 0){
+						if(clockTime != null && clockTime.length == 2){
+								int hh = -1, mm = -1;
+								hh = clockTime[0];
+								mm = clockTime[1];
+								if(end_hour > 24){ // over night
+										hh += 24;
+								}
+								if(hh == end_hour){										
+										if(mm > end_minute){
+												// such 17:40  compare to 17:30
+												return (mm - end_minute) <= end_minute_window;
+										}
+								}
+								else if( hh == end_hour+1){
+										// such as 18:05 compate to 17:45 (end hour/end minute)
+										return (60 - end_minute)+ mm <= end_minute_window;
+								}
+						}
+						return false;
+				}
+				return true;
+    }				
     //
     // setters
     //

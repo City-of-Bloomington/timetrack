@@ -125,20 +125,24 @@ public class TimeClock {
 						setTime(val);
 				}
 		}
+		/**
     public void setTime(String val) {
 				if (val != null) {
 						getEmployee(); 
 						time = Helper.getCurrentTime();
+						int[] timeArr = Helper.getCurrentTimeArr();
+						time_hr = timeArr[0];
+						time_min = timeArr[1];
 						if(shift != null){
 								if(shift.hasWindows()){
 										if(!hasClockIn()){
-												if(shift.isMinuteWithin(time)){
+												if(shift.isMinuteWithin(timeArr)){
 														time_min = shift.getStartMinute();
 														time_hr = shift.getStartHour();
 														return;
 												}
 										}else {
-												if(shift.isClockOutMinuteWithin(time)){
+												if(shift.isClockOutMinuteWithin(timeArr)){
 														time_hr = shift.getEndHour();
 														time_min = shift.getEndMinute();
 														return;
@@ -146,7 +150,6 @@ public class TimeClock {
 										}
 								}
 								if(shift.hasRoundedMinute()){
-										splitTime(time);
 										int mm = shift.getRoundedMinute(time_min);
 										if(mm == 60){
 												time_hr += 1;
@@ -156,37 +159,77 @@ public class TimeClock {
 												time_min = mm;
 										}
 								}
-								else{
-										splitTime(time);
-								}
-						}
-						else{
-								splitTime(time);
 						}
 				}
     }
-
+		*/
+    public void setTime(String val) {
+				if (val != null) {
+						getEmployee();
+						if(!hasClockIn()){								
+								return; // already taken care of
+						}						
+						time = Helper.getCurrentTime();
+						int[] timeArr = Helper.getCurrentTimeArr();
+						time_hr = timeArr[0];
+						time_min = timeArr[1];
+						if(shift != null){
+								// needed when clock out within
+								// start time window
+								if(shift.hasClockInWindow()){
+										if(shift.isMinuteWithin(timeArr)){
+												time_min = shift.getStartMinute();
+												time_hr = shift.getStartHour();
+												return;
+										}
+								}								
+								if(shift.hasClockOutWindow()){
+										if(shift.isClockOutMinuteWithin(timeArr)){
+												time_hr = shift.getEndHour();
+												time_min = shift.getEndMinute();
+												return;
+										}
+								}
+								if(shift.hasRoundedMinute()){
+										int mm = shift.getRoundedMinute(time_min);
+										if(mm == 60){
+												time_hr += 1;
+												time_min = 0;
+										}
+										else{
+												time_min = mm;
+										}
+								}
+						}
+				}
+    }		
+		private void setTimeAsIfClockIn(){
+				getEmployee(); 
+				int[] timeArr = Helper.getCurrentTimeArr();
+				time_hr = timeArr[0];
+				time_min  = timeArr[1];
+				if(shift != null){
+						if(shift.hasClockInWindow()){
+								if(shift.isMinuteWithin(timeArr)){
+										time_min = shift.getStartMinute();
+										time_hr = shift.getStartHour();
+										return;
+								}
+						}
+						if(shift.hasRoundedMinute()){
+								int mm = shift.getRoundedMinute(time_min);
+								if(mm == 60){
+										time_hr += 1;
+										time_min = 0;
+								}
+								else{
+										time_min = mm;
+								}
+						}
+				}
+		}
     public TimeBlock getTimeBlock() {
 				return timeBlock;
-    }
-
-    private String splitTime(String val) {
-				String msg = "";
-				if (val != null && val.indexOf(":") > 0) {
-						try {
-								String str_arr[] = val.split(":");
-								if (str_arr != null && str_arr.length == 2) {
-										time_hr = Integer.parseInt(str_arr[0]);
-										time_min = Integer.parseInt(str_arr[1]);
-								} else {
-										msg = "Invalid time " + val;
-								}
-						} catch (Exception ex) {
-								msg += " " + ex;
-								System.err.println("clock time split "+ex+" "+val);
-						}
-				}
-				return msg;
     }
 
     public PayPeriod getCurrentPayPeriod() {
@@ -244,8 +287,6 @@ public class TimeClock {
 				}
 				return job;
     }
-
-
     //
     public boolean hasMultipleJobs() {
 				findJobs();
@@ -311,18 +352,22 @@ public class TimeClock {
     // find if hasClockIn
     public boolean hasClockIn(){
 				if(!hasClockIn){
+						setTimeAsIfClockIn();
 						getCurrentPayPeriod();
 						TimeBlockList tbl = new TimeBlockList();
 						tbl.setPay_period_id(currentPayPeriod.getId());
 						tbl.setEmployee_id(employee.getId());
 						tbl.setDuration(time_clock_duration);
-						String back = tbl.findDocumentForClockInOnly();
+						String back = tbl.findDocumentForClockInOnly(time_hr, time_min);
 						if (back.equals("")) {
 								// if we have clock-in, we can get the document
 								document = tbl.getDocument();
 								if (document != null) {
 										job_id = document.getJob_id();
 										hasClockIn = true;
+								}
+								else{
+										// System.err.println(" no doc for clock in found ");
 								}
 						}
 				}
@@ -437,7 +482,7 @@ public class TimeClock {
 								tbl.setDate_from(yesterday); // yesterday
 								tbl.setDate_to(date); // today
 								tbl.setDuration(time_clock_duration);
-								msg = tbl.findTimeBlocksForClockIn();
+								msg = tbl.findTimeBlocksForClockIn(time_hr, time_min);
 								if (msg.equals("")) {
 										List<TimeBlock> tbs = tbl.getTimeBlocks();
 										if (tbs != null && tbs.size() > 0) {
