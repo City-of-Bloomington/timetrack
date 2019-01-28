@@ -31,6 +31,9 @@ public class HandleJobTitleUpdate{
 		Hashtable<String, Set<String>> empJobs = null;
 		// NW employee jobs
 		Hashtable<String, Set<String>> empNwJobs = null;
+		Hashtable<String, Set<String>> empJobNotInTT = null;
+		Hashtable<String, Set<String>> empJobNotInNW = null;		
+				
     public HandleJobTitleUpdate(EnvBean val){
 				if(val != null)
 						envBean = val;
@@ -50,7 +53,23 @@ public class HandleJobTitleUpdate{
 				if(val != null){		
 						dept_ref = val;
 				}
-    }		
+    }
+		/**
+		 * jobs not in Timetrack but not in New World
+		 */
+		/*
+		public Hashtable<String, <Set<String>> getEmployeeJobsNotInNW(){
+				return empJobNotInNW;
+		}
+		*/
+		/**
+		 * jobs not in New World but not in TimeTrack
+		 */
+		/*
+		public Hashtable<String, <Set<String>> getEmployeeJobsNotInTT(){
+				return empJobNotInTT;
+		}
+		*/
 		//
    public String process(){
 			 findEmployeeJobs();
@@ -58,6 +77,8 @@ public class HandleJobTitleUpdate{
 			 String msg = "", status="Success", errors="";
 			 System.err.println(" TimeTrack Jobs");
 			 // System.err.println(empJobs);
+			 empJobNotInNW = new Hashtable<>();
+			 empJobNotInTT = new Hashtable<>();
 			 Set<String> set = empJobs.keySet();
 			 int jj=1, jj2=1;
 			 for(String str:set){
@@ -68,14 +89,30 @@ public class HandleJobTitleUpdate{
 							 for(String str2:sst){
 									 if(!sst2.contains(str2)){
 											 System.err.println(jj+" - "+str+" job not found in NW "+str2);
-											 jj++;
-											 
+
+											 if(empJobNotInNW.containsKey(str)){
+													 Set<String> tempSet = empJobNotInNW.get(str);
+													 tempSet.add(str2);
+											 }
+											 else{
+													 Set<String> tempSet = new HashSet<>();
+													 tempSet.add(str2);
+													 empJobNotInNW.put(str, tempSet);
+											 }
 									 }
 							 }
 							 for(String str2:sst2){
 									 if(!sst.contains(str2)){
 											 System.err.println(jj+" - "+str+" job not found in TT "+str2);
-											 jj++;
+											 if(empJobNotInTT.containsKey(str)){
+													 Set<String> tempSet = empJobNotInTT.get(str);
+													 tempSet.add(str2);
+											 }
+											 else{
+													 Set<String> tempSet = new HashSet<>();
+													 tempSet.add(str2);
+													 empJobNotInTT.put(str, tempSet);
+											 }
 
 									 }
 							 }
@@ -219,17 +256,6 @@ public class HandleJobTitleUpdate{
 				qq += " and e.departmentID in ("+dept_ref+") "; 				
 				qq += "order by e.employeename, job.JobTitle ";
 				
-				/**
-					 String qq = "select e.EmployeeNumber,p.JobTitle "+
-						" from hr.vwEmployeeJobWithPosition p, "+
-						" hr.employee e "+
-						" where e.EmployeeId = p.EmployeeID "+
-						" and getdate() between EffectiveDate and EffectiveEndDate "+
-						" and getdate() between PositionDetailESD and PositionDetailEED ";
-						// " and e.EmployeeNumber = ? "+
-				qq += " and p.departmentID in ("+dept_ref+") "; 
-				qq += " order by e.employeenumber ";						
-						*/
 				con = SingleConnect.getNwConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -238,7 +264,6 @@ public class HandleJobTitleUpdate{
 				}
 				try{
 						pstmt = con.prepareStatement(qq);
-						// pstmt.setString(1, employee_number);
 						empNwJobs = new Hashtable<>();
 						rs = pstmt.executeQuery();
 						while(rs.next()){

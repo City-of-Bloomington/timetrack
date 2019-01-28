@@ -14,15 +14,15 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobDataMap;
-import javax.servlet.ServletContext;
-import org.apache.struts2.util.ServletContextAware;  
+// import javax.servlet.ServletContext;
+// import org.apache.struts2.util.ServletContextAware;  
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NotificationJob implements Job, ServletContextAware{
+public class NotificationJob implements Job{
 
     boolean debug = true;
 		static final long serialVersionUID = 55L;		
@@ -30,14 +30,9 @@ public class NotificationJob implements Job, ServletContextAware{
 		boolean activeMail = false;
 		String mail_host = "";
 		PayPeriod lastPayPeriod = null;
-    ServletContext ctx = null;		
 		public NotificationJob(){
 
 		}
-    @Override  	
-    public void setServletContext(ServletContext ctx) {  
-        this.ctx = ctx;  
-    }		
 		public void execute(JobExecutionContext context)
         throws JobExecutionException {
 				
@@ -78,6 +73,7 @@ public class NotificationJob implements Job, ServletContextAware{
 								lastPayPeriod = ones.get(0);
 						}
 				}
+				/*
 				if(ctx != null){
 						System.err.println(" Notification job using context ");
 						String val = ctx.getInitParameter("activeMail");
@@ -85,23 +81,20 @@ public class NotificationJob implements Job, ServletContextAware{
 								activeMail = true;
 						}
 				}
+				*/
 		}
 		public void doDestroy() {
 				lastPayPeriod = null;
-				ctx = null;
 		}	    
     public void doWork(){
-				System.err.println("Notification Job active mail: "+activeMail);
-				if(activeMail){
-						if(lastPayPeriod != null){
-								HandleNotification handle = new
-										HandleNotification(lastPayPeriod,
-																			 mail_host,
-																			 activeMail);
-								String msg = handle.process();
-								if(!msg.equals(""))
-										logger.error(msg);
-						}
+				if(lastPayPeriod != null){
+						HandleNotification handle = new
+								HandleNotification(lastPayPeriod,
+																	 mail_host,
+																	 activeMail);
+						String msg = handle.process();
+						if(!msg.equals(""))
+								logger.error(msg);
 				}
 		}
 

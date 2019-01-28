@@ -1,5 +1,5 @@
-<h1><s:property value="#jobsTitle" /></h1>
 <table class="width-full">
+	<caption><s:property value="#jobsTitle" /></caption>
 	<thead>
 		<tr>
 			<th>ID</th>

@@ -23,7 +23,7 @@ public class DocumentList{
     static Logger logger = LogManager.getLogger(DocumentList.class);
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     String employee_id = "", department_id="", pay_period_id="",
-	date="", job_id="";
+				date="", job_id="";
     Set<String> group_id_set = new HashSet<>();
     String group_ids="";// for multiple groups
     int page_size = 0;
@@ -33,179 +33,182 @@ public class DocumentList{
     public DocumentList(){
     }
     public DocumentList(String val){
-	setEmployee_id(val);
+				setEmployee_id(val);
     }		
     public void setEmployee_id (String val){
-	if(val != null && !val.equals("-1"))
-	    employee_id = val;
+				if(val != null && !val.equals("-1"))
+						employee_id = val;
     }
     public void setPay_period_id (String val){
-	if(val != null && !val.equals("-1"))
-	    pay_period_id = val;
+				if(val != null && !val.equals("-1"))
+						pay_period_id = val;
     }		
     public void setDepartment_id (String val){
-	if(val != null && !val.equals("-1"))
-	    department_id = val;
+				if(val != null && !val.equals("-1"))
+						department_id = val;
     }
     public void setJob_id (String val){
-	if(val != null && !val.equals("-1"))
-	    job_id = val;
+				if(val != null && !val.equals("-1"))
+						job_id = val;
     }		
     public void setGroup_id (String val){
-	if(val != null && !val.equals("-1")){
-	    if(!group_id_set.contains(val)){
-		if(!group_ids.equals(""))
-		    group_ids += ",";
-		group_ids += val;
-		group_id_set.add(val);
-	    }
-	}
+				if(val != null && !val.equals("-1")){
+						if(!group_id_set.contains(val)){
+								if(!group_ids.equals(""))
+										group_ids += ",";
+								group_ids += val;
+								group_id_set.add(val);
+						}
+				}
     }
     public void setDate(String val){
-	if(val != null)
-	    date = val;
+				if(val != null)
+						date = val;
     }		
     public List<Document> getDocuments(){
-	return documents;
+				return documents;
     }
     public void setPageSize(Integer val){
-	if(val != null)
-	    page_size = val;
+				if(val != null)
+						page_size = val;
     }
     public void setPageNumber(Integer val){
-	if(val != null)
-	    page_number = val;
+				if(val != null)
+						page_number = val;
     }
     public int getTotalRecords(){
-	return total_records;
+				return total_records;
     }
     //
     // getters
     //
     public String find(){
-	Connection con = null;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	String msg="", str="";
-	String qc = "select count(*) from time_documents d, employees e,pay_periods pp,jobs j ";				
-	String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e,pay_periods pp,jobs j ";
-	String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id and j.effective_date <= pp.start_date and (j.expire_date is null or j.expire_date >= pp.end_date) ";
-	boolean periodTbl = false;
-	if(!employee_id.equals("")){
-	    if(!qw.equals("")) qw += " and ";
-	    qw += "d.employee_id=? ";
-	}
-	if(!pay_period_id.equals("")){
-	    if(!qw.equals("")) qw += " and ";
-	    qw += "d.pay_period_id=? ";
-	}
-	if(!job_id.equals("")){
-	    if(!qw.equals("")) qw += " and ";						
-	    qw += "d.job_id=? ";
-	}				
-	if(!date.equals("")){
-	    if(!qw.equals("")) qw += " and ";
-	    qw += "pp.start_date <= ? and pp.end_date >= ?";
-	}
-	if(!department_id.equals("")){
-	    qq += ", groups g, group_employees ge ";
-	    qc += ", groups g, group_employees ge ";
-	    if(!qw.equals("")) qw += " and ";
-	    qw += "ge.effective_date <= pp.start_date and (ge.expire_date is null or ge.expire_date >= pp.end_date) "; 
-	    qw += " and g.department_id=? and g.id=ge.group_id and ge.employee_id=d.employee_id ";
-	}
-	if(!group_ids.equals("")){
-	    if(!qw.equals("")) qw += " and ";
-	    qw += "j.group_id in ("+group_ids+")";
-	}
-	if(!qw.equals("")){
-	    qc += " where "+qw;
-	    qq += " where "+qw;
-	}
-	qq += " order by e.last_name,e.first_name ";
-	con = UnoConnect.getConnection();
-	if(con == null){
-	    msg = " Could not connect to DB ";
-	    logger.error(msg);
-	    return msg;
-	}
-	logger.debug(qq);
-	try{
-	    pstmt = con.prepareStatement(qc);
-	    int jj=1;
-	    if(!employee_id.equals("")){
-		pstmt.setString(jj++, employee_id);
-	    }
-	    if(!pay_period_id.equals("")){
-		pstmt.setString(jj++, pay_period_id);
-	    }
-	    if(!job_id.equals("")){
-		pstmt.setString(jj++, job_id);
-	    }						
-	    if(!date.equals("")){
-		java.util.Date date_tmp = df.parse(date);
-		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-	    }
-	    if(!department_id.equals("")){
-		pstmt.setString(jj++, department_id);
-	    }
-	    rs = pstmt.executeQuery();
-	    if(rs.next()){
-		total_records = rs.getInt(1);
-	    }
-	    Helper.databaseDisconnect(pstmt, rs);
-	    if(total_records > 0){
-		if(page_size > 0){
-		    int offset = (page_number - 1) * page_size;
-		    if(total_records > page_size){
-			qq += " limit "+offset+", "+page_size;
-		    }
-		}
-		pstmt = con.prepareStatement(qq);
-		jj=1;
-		if(!employee_id.equals("")){
-		    pstmt.setString(jj++, employee_id);
-		}
-		if(!pay_period_id.equals("")){
-		    pstmt.setString(jj++, pay_period_id);
-		}
-		if(!job_id.equals("")){
-		    pstmt.setString(jj++, job_id);
-		}						
-		if(!date.equals("")){
-		    java.util.Date date_tmp = df.parse(date);
-		    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-		    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-		}
-		if(!department_id.equals("")){
-		    pstmt.setString(jj++, department_id);
-		}
-		rs = pstmt.executeQuery();						
-		while(rs.next()){
-		    if(documents == null)
-			documents = new ArrayList<>();
-		    Document one = new Document(
-						rs.getString(1),
-						rs.getString(2),
-						rs.getString(3),
-						rs.getString(4),
-						rs.getString(5),
-						rs.getString(6));
-		    if(!documents.contains(one))
-			documents.add(one);
-		}
-	    }
-	}
-	catch(Exception ex){
-	    msg += " "+ex;
-	    logger.error(msg+":"+qq);
-	}
-	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return msg;
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qc = "select count(*) from time_documents d, employees e,pay_periods pp,jobs j ";				
+				String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e,pay_periods pp,jobs j ";
+				/*
+				String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id and j.effective_date <= pp.start_date and (j.expire_date is null or j.expire_date >= pp.end_date) ";
+				*/
+				String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id ";				
+				boolean periodTbl = false;
+				if(!employee_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "d.employee_id=? ";
+				}
+				if(!pay_period_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "d.pay_period_id=? ";
+				}
+				if(!job_id.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += "d.job_id=? ";
+				}				
+				if(!date.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "pp.start_date <= ? and pp.end_date >= ?";
+				}
+				if(!department_id.equals("")){
+						qq += ", groups g, group_employees ge ";
+						qc += ", groups g, group_employees ge ";
+						if(!qw.equals("")) qw += " and ";
+						qw += "ge.effective_date <= pp.start_date and (ge.expire_date is null or ge.expire_date >= pp.end_date) "; 
+						qw += " and g.department_id=? and g.id=ge.group_id and ge.employee_id=d.employee_id ";
+				}
+				if(!group_ids.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += "j.group_id in ("+group_ids+")";
+				}
+				if(!qw.equals("")){
+						qc += " where "+qw;
+						qq += " where "+qw;
+				}
+				qq += " order by e.last_name,e.first_name ";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qc);
+						int jj=1;
+						if(!employee_id.equals("")){
+								pstmt.setString(jj++, employee_id);
+						}
+						if(!pay_period_id.equals("")){
+								pstmt.setString(jj++, pay_period_id);
+						}
+						if(!job_id.equals("")){
+								pstmt.setString(jj++, job_id);
+						}						
+						if(!date.equals("")){
+								java.util.Date date_tmp = df.parse(date);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						}
+						if(!department_id.equals("")){
+								pstmt.setString(jj++, department_id);
+						}
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								total_records = rs.getInt(1);
+						}
+						Helper.databaseDisconnect(pstmt, rs);
+						if(total_records > 0){
+								if(page_size > 0){
+										int offset = (page_number - 1) * page_size;
+										if(total_records > page_size){
+												qq += " limit "+offset+", "+page_size;
+										}
+								}
+								pstmt = con.prepareStatement(qq);
+								jj=1;
+								if(!employee_id.equals("")){
+										pstmt.setString(jj++, employee_id);
+								}
+								if(!pay_period_id.equals("")){
+										pstmt.setString(jj++, pay_period_id);
+								}
+								if(!job_id.equals("")){
+										pstmt.setString(jj++, job_id);
+								}						
+								if(!date.equals("")){
+										java.util.Date date_tmp = df.parse(date);
+										pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+										pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+								}
+								if(!department_id.equals("")){
+										pstmt.setString(jj++, department_id);
+								}
+								rs = pstmt.executeQuery();						
+								while(rs.next()){
+										if(documents == null)
+												documents = new ArrayList<>();
+										Document one = new Document(
+																								rs.getString(1),
+																								rs.getString(2),
+																								rs.getString(3),
+																								rs.getString(4),
+																								rs.getString(5),
+																								rs.getString(6));
+										if(!documents.contains(one))
+												documents.add(one);
+								}
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
     }
 
 }

@@ -113,7 +113,7 @@ public class GroupManagerList{
 				if(!pay_period_id.equals("")){
 						qq += ", pay_periods pp ";
 						if(!qw.equals("")) qw += " and ";
-						qw += " pp.id=? and pp.start_date > gm.start_date and (gm.expire_date is null or gm.expire_date > pp.start_date)";
+						qw += " pp.id=? and pp.start_date >= gm.start_date and (gm.expire_date is null or gm.expire_date > pp.start_date)";
 				}
 				if(approversOnly){
 						if(!qw.equals("")) qw += " and ";						

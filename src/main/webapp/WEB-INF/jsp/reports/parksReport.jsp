@@ -6,8 +6,9 @@
  *
 	-->
 <div class="internal-page container clearfix settings">
-	<h1>Parks Jobs Report</h1>
+	<h1>Parks Employees and Jobs Report</h1>
 	<div class="width-one-half float-left">
+		
 		<s:form action="parksJobReport" id="form_id" method="post" >
 			<s:if test="hasMessages()">
 				<s:set var="messages" value="messages" />			
@@ -36,15 +37,15 @@
 					<td><s:submit name="action" type="button" value="Submit"/></td>
 				</tr>
 			</table>
-		</s:form>		
-		<s:if test="action != ''">
-			<s:if test="hasJobs()">
-				<s:set var="jobs" value="jobs" />
-				<s:set var="jobsTitle" value="reportTitle" />
-				<%@  include file="../jobsShort.jsp" %>
-			</s:if>
+		</s:form>
+	</div>		
+	<s:if test="action != ''">
+		<s:if test="hasJobs()">
+			<s:set var="jobs" value="jobs" />
+			<s:set var="jobsTitle" value="reportTitle" />
+			<%@  include file="../jobsShort.jsp" %>
 		</s:if>
-		<%@ include file="../footer.jsp" %>
-	</div>
+	</s:if>
+	<%@ include file="../footer.jsp" %>
 </div>
 

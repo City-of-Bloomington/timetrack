@@ -43,10 +43,15 @@ public class HandleNotification{
 		void setActiveMailFlag(){
 				ServletContext ctx = SingleContextHolder.getContext();
 				if(ctx != null){
+						System.err.println(" ctx is Ok");				
 						String val = ctx.getInitParameter("activeMail");
 						if(val != null && val.equals("true")){
 								activeMail = true;
 						}
+						System.err.println(" activeMail "+activeMail);										
+				}
+				else{
+						System.err.println(" ctx is null, could not retreive activeMail flag ");
 				}
 		}
     void setActiveMail(){
@@ -142,14 +147,19 @@ public class HandleNotification{
 				}
 				if(emps == null || emps.size() < 1){
 						msg = "No employee to process";
-						System.err.println(" no emps ");
+						System.err.println(" Notification: no employees found ");
 						return msg;
 				}
 				String to_str = "";
-				for(Employee one:emps){
-						to_str = one.getFull_name()+"<"+one.getEmail()+">";
-						msg = compuseAndSend(to_str);
-				}				
+				if(activeMail){
+						for(Employee one:emps){
+								to_str = one.getFull_name()+"<"+one.getEmail()+">";
+								msg = compuseAndSend(to_str);
+						}
+				}
+				else{
+						System.err.println(" active mail is turned off, no email sent");
+				}
 				return msg;
     }
     String compuseAndSend(String to_str){
@@ -174,17 +184,9 @@ public class HandleNotification{
 						InternetAddress[] addrArray = InternetAddress.parse(to_str);
 						message.setRecipients(Message.RecipientType.TO, addrArray);
 						// message.setRecipients(Message.RecipientType.BCC, addrArray);
-						if(activeMail){
-								Transport.send(message);
-								// System.err.println(" active mail is on, notification email not sent");
-								NotificationLog nlog = new NotificationLog(to_str, body_text, "Success",null);
-								nlog.doSave();
-						}
-						else{
-								logger.warn(" active mail is turned off, no email sent");
-						}
-						//
-						// Success
+						Transport.send(message);
+						NotificationLog nlog = new NotificationLog(to_str, body_text, "Success",null);
+						nlog.doSave();
 				}
 				catch (MessagingException mex){
 						//

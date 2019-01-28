@@ -68,7 +68,7 @@
 				<li><a href="<s:property value='#application.url'/>reportHand.action">HAND MPO</a></li>
 				<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO</a></li>
 				<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA</a></li>
-				<li><a href="<s:property value='#application.url'/>parksJobReport.action">Parks Jobs</a></li>				
+				<li><a href="<s:property value='#application.url'/>parksJobReport.action">Parks Employee Jobs</a></li>				
 			</ul>			
 			<h2>Employee Data Import</h2>
 			<ul>

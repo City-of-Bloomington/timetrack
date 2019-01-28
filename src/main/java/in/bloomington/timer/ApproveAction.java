@@ -46,7 +46,7 @@ public class ApproveAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				resetEmployee();
-				if(action.equals("Approve")){
+				if(action.equals("Approve") && user != null){
 						if(document_ids != null){
 								for(String doc_id:document_ids){
 										TimeAction one =
@@ -66,7 +66,7 @@ public class ApproveAction extends TopAction{
 								}
 						}
 				}
-				else if(action.equals("ApproveOne")){
+				else if(action.equals("ApproveOne") && user != null){
 						if(document_id != null && user != null){
 								TimeAction one =
 										new TimeAction(CommonInc.default_approve_workflow_id,
