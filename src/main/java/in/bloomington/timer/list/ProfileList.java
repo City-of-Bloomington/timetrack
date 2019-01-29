@@ -356,7 +356,7 @@ public class ProfileList{
 									 && str2 != null
 									 && bgroups.containsKey(str2)){
 										bg = bgroups.get(str2);
-										System.err.println(jj+" "+str10+" bg code "+str2+" :"+str11);
+										// System.err.println(jj+" "+str10+" bg code "+str2+" :"+str11);
 										jj++;
 								}
 								else{
@@ -396,7 +396,7 @@ public class ProfileList{
 										}
 										prev_id = str;
 										if(prevProfile != null){ // for the first time
-												System.err.println(" prof list "+str5+" "+str10+" "+fstr9);
+												// System.err.println(" prof list "+str5+" "+str10+" "+fstr9);
 												profiles.add(prevProfile);
 										}
 										prevProfile = pp;

@@ -85,11 +85,8 @@ public class HandleJobTitleUpdate{
 					 Set<String> sst = empJobs.get(str);
 					 if(empNwJobs.containsKey(str)){
 							 Set<String> sst2 = empNwJobs.get(str);
-							 // System.err.println(jj+" found "+str+" TT:"+sst+" NW:"+sst2);
 							 for(String str2:sst){
 									 if(!sst2.contains(str2)){
-											 System.err.println(jj+" - "+str+" job not found in NW "+str2);
-
 											 if(empJobNotInNW.containsKey(str)){
 													 Set<String> tempSet = empJobNotInNW.get(str);
 													 tempSet.add(str2);
@@ -103,7 +100,6 @@ public class HandleJobTitleUpdate{
 							 }
 							 for(String str2:sst2){
 									 if(!sst.contains(str2)){
-											 System.err.println(jj+" - "+str+" job not found in TT "+str2);
 											 if(empJobNotInTT.containsKey(str)){
 													 Set<String> tempSet = empJobNotInTT.get(str);
 													 tempSet.add(str2);
@@ -118,20 +114,29 @@ public class HandleJobTitleUpdate{
 							 }
 					 }
 					 else{
-							 // System.err.println(jj2+" not found "+str+" "+sst);
 							 jj2++;
 					 }
 			 }
-			 /*
-			 System.err.println(" New World Jobs");
-			 Set<String> set2 = empNwJobs.keySet();
-			 jj=1;
-			 for(String str:set2){
-					 Set<String> sst = empNwJobs.get(str);
-					 System.err.println(jj+" "+str+" "+sst);
-					 jj++;
+			 System.err.println(" Jobs in NW but not in TT ");			 
+			 if(!empJobNotInTT.isEmpty()){
+					 Set<String> sst = empJobNotInTT.keySet();
+					 jj=1;
+					 for(String str:sst){
+							 Set<String> set2 = empJobNotInTT.get(str);
+							 System.err.println(jj+" "+str+" "+set2);
+							 jj++;
+					 }
 			 }
-			 */
+			 System.err.println(" Jobs in TT but not in NW ");			 
+			 if(!empJobNotInNW.isEmpty()){
+					 Set<String> sst = empJobNotInNW.keySet();
+					 jj=1;
+					 for(String str:sst){
+							 Set<String> set2 = empJobNotInNW.get(str);
+							 System.err.println(jj+" "+str+" "+set2);
+							 jj++;
+					 }
+			 }			 
 			 return msg;
 		}
 		String findEmployeeJobs(){
@@ -169,6 +174,9 @@ public class HandleJobTitleUpdate{
 						while(rs.next()){
 								String str = rs.getString(1); //  employee_number
 								String str2 = rs.getString(2); // job title
+								if(str2.indexOf("-") > -1){
+										str2=str2.replace('-',' ');
+								}
 								if(str != null && !str.equals("")){
 										if(empJobs.containsKey(str)){
 												Set<String> jobSet = empJobs.get(str);
@@ -269,6 +277,9 @@ public class HandleJobTitleUpdate{
 						while(rs.next()){
 								String str = rs.getString(1); // emp number
 								String str2 = rs.getString(6).trim(); //title
+								if(str2.indexOf("-") > -1){
+										str2 = str2.replace('-',' ');
+								}
 								if(str != null){
 										if(empNwJobs.containsKey(str)){
 												Set<String> set = empNwJobs.get(str);

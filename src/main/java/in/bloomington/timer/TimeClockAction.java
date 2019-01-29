@@ -75,6 +75,7 @@ public class TimeClockAction extends TopAction{
 						if(ipSet != null){
 								if(ipSet.contains(ip)){
 										try{
+												timeClock.setIp(ip);
 												if(!timeClock.hasEmployee()){
 														back = "Unrecognized Employee ID: "+timeClock.getId_code();
 														addError(back);

@@ -31,6 +31,7 @@ public class TimeClock {
     HourCode defaultRegularCode = null;
     boolean new_docuemnt = false;
     int time_hr = -1, time_min = -1; // hour, minute of clock
+		String ip = ""; // for debug;
     TimeBlock timeBlock = new TimeBlock();
     boolean hasClockIn = false;
     //
@@ -119,6 +120,10 @@ public class TimeClock {
 				if (val != null)
 						id_code = val;
     }
+		public void setIp(String val){
+				if (val != null)
+						ip = val;
+		}
 		public void setTime(String[] vals){
 				if(vals != null && vals.length > 0){
 						String val = vals[0];
@@ -313,7 +318,7 @@ public class TimeClock {
 								employee_id = employee.getId();
 						}
 						else{
-								System.err.println(" get employee error "+back+" ID code "+id_code);
+								System.err.println(" get employee error "+back+" ID code "+id_code+" ip:"+ip);
 						}
 				}
 				if (employee != null) {

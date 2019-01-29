@@ -148,7 +148,7 @@ public class Login extends HttpServlet{
 						Employee one = new Employee(null, username);
 						String back = one.doSelect();
 						if(!back.equals("")){
-								message += back;
+								message += back+": "+username;
 								logger.error(message);
 						}
 						else{
