@@ -140,10 +140,10 @@
 							</li>
 							<s:if test="hasJob()">
 								<li>
-									<strong>Weekly Standard Work Hrs: </strong> <s:property value="job.weekly_regular_hours" />
+									<strong>Weekly Standard Work Hours: </strong> <s:property value="job.weekly_regular_hours" />
 								</li>
 								<li>
-									<strong>Weekly Compt Time Earned After Hrs: </strong> <s:property value="job.comp_time_weekly_hours" />
+									<strong>Weekly Comp Time Earned After Hours: </strong> <s:property value="job.comp_time_weekly_hours" />
 								</li>
 							</s:if>
 						</ul>
