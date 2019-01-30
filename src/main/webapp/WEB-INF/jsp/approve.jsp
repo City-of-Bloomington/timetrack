@@ -116,7 +116,7 @@
                 </s:else>
               </s:if>
               <s:elseif test="isApproved()">
-                <small class="status-tag approved">Approved</small>
+                <small class="status-tag approved">Time Approved</small>
               </s:elseif>
 
               <s:elseif test="!isApproved()">

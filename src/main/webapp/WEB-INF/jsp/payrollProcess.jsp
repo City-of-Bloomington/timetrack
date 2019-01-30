@@ -83,7 +83,7 @@
 							<li><a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" /><s:property value="employee" /></a>	<s:if test="!#row.last">,</s:if></li>
 						</s:iterator>
 					</ul>
-				</s:if>				
+				</s:if>
 				<s:if test="hasNotApprovedEmps()">
 					<small class="status-tag not-approved">Time Not Approved</small>
 					<ul>
@@ -117,7 +117,7 @@
 							</s:if>
 
 							<s:elseif test="isApproved()">
-								<small class="status-tag approved">Approved</small>
+								<small class="status-tag approved">Payroll Approved</small>
 							</s:elseif>
 
 							<s:elseif test="!isApproved()">
