@@ -17,6 +17,7 @@
 				<s:iterator var="one" value="%{timeClock.jobs}">
 					<div class="card">
 						<input type="radio"
+									 class="job-radios"
 									 name="timeClock.job_id"
 								   id="<s:property value='%{#one.name}' />"
 								   value="<s:property value='%{#one.id}' />" />
@@ -34,9 +35,3 @@
 </div>
 <%@ include file="footer.jsp" %>
 <script type="text/javascript" src="<s:property value='#application.url' />js/time-clock.js"></script>
-<script type="text/javascript">
-	setTimeout(function(){
-  	window.top.location = "/timetrack/timeClock.action"
-  }, 10000);
-	showNextButton();
-</script>
