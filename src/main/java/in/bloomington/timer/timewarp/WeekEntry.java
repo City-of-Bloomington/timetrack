@@ -507,7 +507,7 @@ public class WeekEntry{
 						// System.err.println(" group "+group);
 						// System.err.println(" default h cod "+defaultEarnCode);
 						if(defaultEarnCode != null && defaultEarnCode.isOvertime()){
-								code ="OT1.5";
+								code ="OT1.0";
 						}
 						else if(comp_factor > 1.0){
 								code = "CE1.5";

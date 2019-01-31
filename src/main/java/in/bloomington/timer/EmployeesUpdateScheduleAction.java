@@ -49,7 +49,6 @@ public class EmployeesUpdateScheduleAction extends TopAction{
 														prev_date = "No Previous date found";
 												next_date = quartzMisc.getNextScheduleDate();
 										}
-										addActionMessage("Scheduled Successfully");
 										addMessage("Scheduled Successfully");										
 								}
 						}catch(Exception ex){
@@ -64,7 +63,6 @@ public class EmployeesUpdateScheduleAction extends TopAction{
 								addError(back);
 						}
 						else{
-								addActionMessage("Submitted Successfully");
 								addMessage("Submitted Successfully");								
 						}
 				}

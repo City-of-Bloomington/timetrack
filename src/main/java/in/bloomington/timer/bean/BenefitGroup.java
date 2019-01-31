@@ -179,6 +179,7 @@ public class BenefitGroup{
 				}
 		}
     public void setSalary_group_name(){
+				// System.err.println(" name "+name);
 				if(name.indexOf("TEMP") > -1){
 						salary_group_name = "Temp";
 						temporary = true;
@@ -229,12 +230,6 @@ public class BenefitGroup{
 						afscme = true;
 						unioned = true;
 				}
-				else if(name.indexOf("POLICE SWORN") > -1){
-						policeSworn = true;
-						fullTime = true;
-						police = true;
-						salary_group_name = "Police Sworn";
-				}
 				else if(name.indexOf("POLICE SWORN DET") > -1){
 						policeDetective = true;
 						fullTime = true;
@@ -247,17 +242,23 @@ public class BenefitGroup{
 						police = true;
 						salary_group_name = "Police Sworn Mgt";
 				}
-				else if(name.indexOf("FIRE SWORN") > -1){
-						fireSworn = true;
+				else if(name.indexOf("POLICE SWORN") > -1){
+						policeSworn = true;
 						fullTime = true;
-						fire = true;
-						salary_group_name = "Fire Sworn";
+						police = true;
+						salary_group_name = "Police Sworn";
 				}
 				else if(name.indexOf("FIRE SWORN 5X8") > -1){
 						fireSworn5to8 = true;
 						fullTime = true;
 						fire = true;
 						salary_group_name = "Fire Sworn 5X8";
+				}				
+				else if(name.indexOf("FIRE SWORN") > -1){
+						fireSworn = true;
+						fullTime = true;
+						fire = true;
+						salary_group_name = "Fire Sworn";
 				}
 				else{
 						// System.err.println(" Unknown Salary group for "+name);

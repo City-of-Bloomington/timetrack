@@ -728,6 +728,12 @@ alter table employees drop column role;
 alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Unpaid','Other','On Call','Call Out');
 ;;
 alter table salary_groups add excess_culculation enum('Weekly','Daily','Pay Period','Other') default 'Weekly' after default_regular_id;
+;;
+;; 1/31/2019
+;;
+alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Unpaid','Other','On Call','Call Out','Monetary');
+update hour_codes set type='Monetary' where type='On Call';
+alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Unpaid','Other','Call Out','Monetary');
 
 ;; modify salary groups
 ;;;====================

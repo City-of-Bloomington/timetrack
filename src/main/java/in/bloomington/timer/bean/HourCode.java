@@ -196,8 +196,12 @@ public class HourCode{
 				return type.equals("Overtime");
 		}
 		public boolean isOnCall(){
-				return type.equals("On Call");
+				// return type.equals("On Call");
+				return type.equals("Nonetary");
 		}
+		public boolean isMonetary(){
+				return type.equals("Nonetary");
+		}		
 		public boolean isCallOut(){
 				return type.equals("Call Out");
 		}				

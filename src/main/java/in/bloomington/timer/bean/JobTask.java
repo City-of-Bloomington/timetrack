@@ -428,9 +428,6 @@ public class JobTask implements Serializable{
 				if(bGroup.isTemporary()){
 						new_salary_group_id = "3";
 				}
-				else if(bGroup.isUnioned()){
-						new_salary_group_id = "4";
-				}
 				else if(bGroup.isPartTime()){
 						if(bGroup.isExempt()){
 								new_salary_group_id = "5";
@@ -438,12 +435,6 @@ public class JobTask implements Serializable{
 						else{
 								new_salary_group_id = "11";
 						}
-				}
-				else if(bGroup.isNonExempt()){
-						new_salary_group_id = "2";
-				}
-				else if(bGroup.isExempt()){
-						new_salary_group_id = "1";
 				}
 				else if(bGroup.isPoliceSworn()){
 						new_salary_group_id = "6";
@@ -459,7 +450,16 @@ public class JobTask implements Serializable{
 				}
 				else if(bGroup.isFireSworn5to8()){
 						new_salary_group_id = "10";
-				}				
+				}
+				else if(bGroup.isNonExempt()){
+						new_salary_group_id = "2";
+				}
+				else if(bGroup.isExempt()){
+						new_salary_group_id = "1";
+				}
+				else if(bGroup.isUnioned()){
+						new_salary_group_id = "4";
+				}
 				if(!new_salary_group_id.equals("")){
 						if(!salary_group_id.equals(new_salary_group_id)){
 								salary_group_id = new_salary_group_id;

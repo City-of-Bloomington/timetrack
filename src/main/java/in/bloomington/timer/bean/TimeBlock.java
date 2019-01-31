@@ -798,7 +798,8 @@ public class TimeBlock extends Block{
 								String hrCode = rs.getString(15);
 								double hrs = rs.getDouble(9);
 								if(hrCode != null){
-										if(hrCode.indexOf("ONCALL") > -1){
+										if(hrCode.indexOf("ONCALL") > -1 ||
+											 hrCode.indexOf("FRP") > -1){ // reassignment Fire
 												hrs = 1.0;
 										}
 										else if(hrCode.indexOf("CO") > -1){ // Call Out

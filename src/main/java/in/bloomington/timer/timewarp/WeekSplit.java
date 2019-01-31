@@ -203,7 +203,7 @@ public class WeekSplit{
 				}
 				else{ // non regular such On Call, or CO Call Out
 						//
-						if(hrCode.isOnCall()){
+						if(hrCode.isMonetary()){
 								// hours do not count
 								unpaid_hrs += hours;
 								if(daily.containsKey(code)){

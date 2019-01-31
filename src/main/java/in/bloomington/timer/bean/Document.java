@@ -208,6 +208,13 @@ public class Document{
 				getTimeActions();
 				return timeActions != null && timeActions.size() > 0;
     }
+    public boolean hasAccruals(){
+				getSalaryGroup();
+				if(salaryGroup != null && !salaryGroup.getName().equals("Temp")){
+						return true;
+				}
+				return false;
+    }		
     public boolean hasLastTimeAction(){
 				getLastTimeAction();
 				return lastTimeAcion != null;

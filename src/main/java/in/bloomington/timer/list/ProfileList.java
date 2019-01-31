@@ -357,6 +357,7 @@ public class ProfileList{
 									 && bgroups.containsKey(str2)){
 										bg = bgroups.get(str2);
 										// System.err.println(jj+" "+str10+" bg code "+str2+" :"+str11);
+										// System.err.println(" bg "+bg);
 										jj++;
 								}
 								else{

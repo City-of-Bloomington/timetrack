@@ -83,15 +83,8 @@ public class PayPeriodList{
 						limit = val;
     }
     //
-    // getters
+    // find
     //
-    /*
-      select p2.id,date_format(p2.start_date,'%m/%d/%Y'), date_format(p2.end_date,'%m/%d/%Y'), year(p2.start_date),month(p2.start_date),day(p2.start_date),year(p2.end_date),month(p2.end_date),day(p2.end_date) from pay_periods p2, time_documents d where d.pay_period_id=p2.id and d.employee_id=116 and p2.start_date > date_sub(curdate(), interval 90 day) and p2.start_date < curdate();
-			
-      select p.id,date_format(p.start_date,'%m/%d/%Y'), date_format(p.end_date,'%m/%d/%Y'), year(p.start_date),month(p.start_date),day(p.start_date),year(p.end_date),month(p.end_date),day(p.end_date),datediff(p.end_date,p.start_date) from pay_periods p  where ((datediff('2018-11-25', p.start_date) > 6 and datediff(p.end_date, '2018-11-25') > -1)  or ((p.start_date <= date_sub('2018-11-25', interval 14 day)) and (p.end_date >= date_sub('2018-11-25', interval 14 day))))  order by id desc  limit 1
-
-			
-    */
     public String find(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -114,7 +107,7 @@ public class PayPeriodList{
 				String qw = "";
 				String qo = " order by id desc ";
 				if(currentOnly){
-						qw = " p.start_date <= now() and p.end_date >= now() ";
+						qw = " p.start_date <= curdate() and p.end_date >= curdate() ";
 				}
 				else if(nextOnly){
 						qw = " p.start_date <= date_add(curdate(), interval 14 day) and p.end_date >= date_add(curdate(), interval 14 day) ";
@@ -131,10 +124,10 @@ public class PayPeriodList{
 						}
 				}
 				else if(avoidFuturePeriods){
-						qw = " p.start_date <= now() ";
+						qw = " p.start_date <= curdate() ";
 				}
 				else if(lastPayPeriod){
-						qw = " p.end_date < now() ";
+						qw = " p.end_date < curdate() ";
 						qo += " limit 1 ";
 				}
 				else if(approveSuitable){
