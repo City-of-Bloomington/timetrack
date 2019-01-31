@@ -135,9 +135,11 @@
 						</h1>
 
 						<ul>
-							<li>
-								<strong>Available Accruals</strong> <s:property value="employeeAccrualsShort" />
-							</li>
+							<s:if test="hasAccruals()">
+								<li>
+									<strong>Available Accruals:</strong> <s:property value="employeeAccrualsShort" />
+								</li>
+							</s:if>
 							<s:if test="hasJob()">
 								<li>
 									<strong>Weekly Standard Work Hours: </strong> <s:property value="job.weekly_regular_hours" />

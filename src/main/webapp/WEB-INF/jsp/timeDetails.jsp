@@ -7,12 +7,12 @@
 	-->
 <div class="homepage">
 	<s:if test="hasErrors()">
-		<s:set var="errors" value="%{errors}" />			
+		<s:set var="errors" value="%{errors}" />
 		<%@ include file="errors.jsp" %>
 	</s:if>
 	<s:if test="!hasErrors()">
 		<s:if test="hasMessages()">
-			<s:set var="messages" value="%{messages}" />			
+			<s:set var="messages" value="%{messages}" />
 			<%@ include file="messages.jsp" %>
 		</s:if>
 		<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
@@ -100,7 +100,7 @@
 					<%@ include file="warnings.jsp" %>
 				</s:if>
 			</s:if>
-			<s:else>			
+			<s:else>
 				<s:if test="document.hasWarnings()">
 					<s:set var="warnings" value="document.warnings" />
 					<%@ include file="warnings.jsp" %>
@@ -116,7 +116,7 @@
 						<s:set var="whichWeek" value="'week-one'" />
 						<%@ include file="weeklySummary.jsp" %>
 					</s:if>
-					
+
 					<s:if test="mjdoc.hasHourCodeWeek2()">
 						<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek2" />
 						<s:set var="weekTotal" value="mjdoc.week2Total" />
@@ -133,7 +133,7 @@
 						<s:set var="whichWeek" value="'week-one'" />
 						<%@ include file="weeklySummary.jsp" %>
 					</s:if>
-					
+
 					<s:if test="document.hasHourCodeWeek2()">
 						<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
 						<s:set var="weekTotal" value="document.week2Total" />
@@ -145,9 +145,11 @@
 			</div>
 			<s:if test="document.isProcessed()">
 				<ul>
-					<li>
-						<strong>Available Accruals</strong> <s:property value="document.employeeAccrualsShort" />
-					</li>
+					<s:if test="hasAccruals()">
+						<li>
+							<strong>Available Accruals</strong> <s:property value="document.employeeAccrualsShort" />
+						</li>
+					</s:if>
 					<s:if test="document.hasJob()">
 						<li>
 							<strong>Weekly Standard Work Hrs: </strong> <s:property value="document.job.weekly_regular_hours" />

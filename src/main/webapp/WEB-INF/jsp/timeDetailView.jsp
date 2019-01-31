@@ -21,13 +21,13 @@
 			<s:set var="daily" value="mjdoc.daily" />
 			<s:set var="payPeriodTotal" value="mjdoc.payPeriodTotal" />
 		</s:if>
-		<s:else>		
+		<s:else>
 			<s:set var="dailyBlocks" value="document.dailyBlocks" />
 			<s:set var="daily" value="document.daily" />
 			<s:set var="payPeriodTotal" value="document.payPeriodTotal" />
 		</s:else>
 		<%@ include file="calendarFullView.jsp" %>
-		
+
 		<div class="container-with-padding">
 			<div class="calendar-summary-controls m-b-40">
 				<a class="button pay-notes" data-doc-id="<s:property value='%{document.id}' />">Add Pay Period Note</a>
@@ -63,12 +63,12 @@
 					<%@ include file="warnings.jsp" %>
 				</s:if>
 			</s:else>
-			
+
 			<div class="view-only">
 				<%@ include file="dailySummary.jsp" %>
 			</div>
 			<div class="d-flex">
-					<s:if test="showAllJobs()">					
+					<s:if test="showAllJobs()">
 						<s:if test="mjdoc.hasHourCodeWeek1()">
 							<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek1" />
 							<s:set var="weekTotal" value="mjdoc.week1Total" />
@@ -102,9 +102,11 @@
 					</s:else>
 			</div>
       <ul>
-        <li>
-          <strong>Available Accruals</strong> <s:property value="document.employeeAccrualsShort" />
-        </li>
+      	<s:if test="hasAccruals()">
+	        <li>
+	          <strong>Available Accruals:</strong> <s:property value="document.employeeAccrualsShort" />
+	        </li>
+	      </s:if>
         <s:if test="document.hasJob()">
           <li>
             <strong>Weekly Standard Work Hrs: </strong> <s:property value="document.job.weekly_regular_hours" />
