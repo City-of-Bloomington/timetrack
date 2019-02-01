@@ -19,7 +19,7 @@ public class DepartmentEmployeeList{
 		String employee_id = "", department_id="", pay_period_id="";
 		static final long serialVersionUID = 600L;
 		static Logger logger = LogManager.getLogger(DepartmentEmployeeList.class);
-		boolean active_only = false;
+		boolean active_only = false, no_expire_date=false;
 		List<DepartmentEmployee> departmentEmployees = null;
     public DepartmentEmployeeList(){
     }
@@ -43,6 +43,9 @@ public class DepartmentEmployeeList{
 		public void setActiveOnly(){
 				active_only = true;
 		}
+		public void setNoExpireDate(){
+				no_expire_date = true;
+		}		
 		public List<DepartmentEmployee> getDepartmentEmployees(){
 				return departmentEmployees;
 		}
@@ -58,7 +61,6 @@ public class DepartmentEmployeeList{
 						" de.department2_id,"+
 						" date_format(de.effective_date,'%m/%d/%Y'),"+
 						" date_format(de.expire_date,'%m/%d/%Y') "+
-						// " expire_date < now() "+
 						" from department_employees de ";
 				if(!employee_id.equals("")){
 						qw += " de.employee_id=? ";
@@ -72,10 +74,15 @@ public class DepartmentEmployeeList{
 						if(!qw.equals("")) qw += " and ";
 						qw += " de.effective_date <= pp.start_date and (de.expire_date is null or de.expire_date >= pp.end_date) and pp.id=? ";		
 				}
-				if(active_only){
+				if(no_expire_date){
+						if(!qw.equals("")) qw += " and ";
+						qw += " de.effective_date < now() and de.expire_date is null";		
+				}				
+				else if(active_only){
 						if(!qw.equals("")) qw += " and ";
 						qw += " de.effective_date < now() and (de.expire_date is null or de.expire_date > now())";		
 				}
+
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";

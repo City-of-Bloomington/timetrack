@@ -7,7 +7,9 @@ package in.bloomington.timer;
 import java.io.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
@@ -22,49 +24,44 @@ public class JobTitlesAction extends TopAction{
 		static Logger logger = LogManager.getLogger(JobTitlesAction.class);
 		//
 		String jobsTitle = "New World Job Titles";
-		Employee emp = null;
-		String employee_number = "";
 		List<String> jobTitles = null;
-
+		Hashtable<Employee, Set<JobTask>> empJobCanDelete = null;
+		Hashtable<Employee, Set<JobTask>> empJobNeedUpdate = null;		
+		Hashtable<Employee, Set<JobTask>> empNotInNW = null;
+		String[] del_jobs = null;
+		String[] del_emps = null;		
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(action.equals("")){
 						HandleJobTitleUpdate hjtl = new HandleJobTitleUpdate();
 						back = hjtl.process();
-						/*
-						getEmp();
-						List<String> ones = emp.findJobTitlesFromNW();
-						if(ones != null && ones.size() > 0){
-								jobTitles = ones;
-						}
-						*/
-				}				
+						empJobCanDelete = hjtl.getEmpJobCanDelete();
+						empJobNeedUpdate = hjtl.getEmpJobNeedUpdate();
+						empNotInNW = hjtl.getEmpNotInNW();
+						System.err.println(" emp not nw "+empNotInNW.size());
+				}
+				else {
+						// do delete or update here
+
+				}
 				return ret;
 		}
-		public Employee getEmp(){
-				if(emp == null){
-						emp = new Employee();
-						emp.setEmployee_number(employee_number);
+
+    public void setDel_jobs(String[] vals){
+				if(vals != null){		
+						del_jobs = vals;
 				}
-				return emp;
-						
-		}
-		public void setEmp(Employee val){
-				if(val != null){
-						emp = val;
+    }
+    public void setDel_emps(String[] vals){
+				if(vals != null){		
+						del_emps = vals;
 				}
-		}
+    }		
 		public String getJobsTitle(){
 				return jobsTitle;
 		}
-		public void setEmployeeNumber(String val){
-				if(val != null && !val.equals(""))		
-						employee_number = val;
-		}
-		public String getEmployeeNumber(){
-				return employee_number;
-		}
+
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;
@@ -75,7 +72,26 @@ public class JobTitlesAction extends TopAction{
 		public boolean hasJobTitles(){
 				return jobTitles != null && jobTitles.size() > 0;
 		}
+		public Hashtable<Employee, Set<JobTask>> getEmpJobCanDelete(){
+				return empJobCanDelete;
+		}
+		public Hashtable<Employee, Set<JobTask>> getEmpJobNeedUpdate(){
+				return empJobNeedUpdate;
+		}		
+		public Hashtable<Employee, Set<JobTask>> getEmpNotFoundNewWorld(){
+				return empNotInNW;
+		}
 
+		public boolean hasEmpNotFoundNewWorld(){
+				return empNotInNW != null && !empNotInNW.isEmpty();
+		}
+		public boolean hasEmpJobCanDelete(){
+				return empJobCanDelete != null && !empJobCanDelete.isEmpty();
+		}
+		public boolean hasEmpJobNeedUpdate(){
+				return empJobCanDelete != null && !empJobNeedUpdate.isEmpty();
+		}				
+		
 }
 
 

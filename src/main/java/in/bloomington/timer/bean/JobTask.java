@@ -348,7 +348,10 @@ public class JobTask implements Serializable{
 				return "";
     }
     public String toString(){
-
+				String str = getName();
+				if(str != null && !str.equals("")){
+						return str;
+				}
 				return id;
     }
     public boolean equals(Object o) {
@@ -951,7 +954,7 @@ public class JobTask implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "delete jobs where id=? ";
+				String qq = "delete from jobs where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -972,6 +975,17 @@ public class JobTask implements Serializable{
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
-    }		
+    }
+		public boolean checkIfJobIsUsed(){
+				if(id.equals("")) return false;
+				DocumentList dl = new DocumentList();
+				dl.setJob_id(id);
+				String back = dl.find();
+				if(back.equals("")){
+						List<Document> ones = dl.getDocuments();
+						return ones != null && ones.size() > 0;
+				}
+				return false;
+		}
 
 }

@@ -7,6 +7,7 @@ package in.bloomington.timer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.*;
+import java.util.Set;
 import java.sql.*;
 import java.text.*;
 import javax.mail.*;
@@ -28,12 +29,15 @@ public class HandleJobTitleUpdate{
 		// Parks
 		String department_id="5", dept_ref = "39"; // department reference to New World app
 		// employee_number, jobs list
-		Hashtable<String, Set<String>> empJobs = null;
+		Hashtable<Employee, Set<JobTask>> empJobs = new Hashtable<>();
 		// NW employee jobs
-		Hashtable<String, Set<String>> empNwJobs = null;
+		Hashtable<String, Set<String>> empNwJobs = new Hashtable<>();
 		Hashtable<String, Set<String>> empJobNotInTT = null;
-		Hashtable<String, Set<String>> empJobNotInNW = null;		
-				
+		Hashtable<Employee, Set<JobTask>> empJobNotInNW = null;		
+		Hashtable<Employee, Set<JobTask>> empNotInNW = null;
+		Hashtable<Employee, Set<JobTask>> empJobCanDelete = null;
+		Hashtable<Employee, Set<JobTask>> empJobNeedUpdate = null;
+
     public HandleJobTitleUpdate(EnvBean val){
 				if(val != null)
 						envBean = val;
@@ -57,148 +61,129 @@ public class HandleJobTitleUpdate{
 		/**
 		 * jobs not in Timetrack but not in New World
 		 */
-		/*
-		public Hashtable<String, <Set<String>> getEmployeeJobsNotInNW(){
-				return empJobNotInNW;
+
+		public Hashtable<Employee, Set<JobTask>> getEmpJobCanDelete(){
+				return empJobCanDelete;
 		}
-		*/
-		/**
-		 * jobs not in New World but not in TimeTrack
-		 */
-		/*
-		public Hashtable<String, <Set<String>> getEmployeeJobsNotInTT(){
-				return empJobNotInTT;
+		public Hashtable<Employee, Set<JobTask>> getEmpJobNeedUpdate(){
+				return empJobNeedUpdate;
 		}
-		*/
-		//
+		public Hashtable<Employee, Set<JobTask>> getEmpNotInNW(){
+				return empNotInNW;
+		}		
+		public boolean hasEmpJobCanDelete(){
+				return empJobCanDelete != null && !empJobCanDelete.isEmpty();
+		}
+		public boolean hasEmpJobNeedUpdate(){
+				return empJobCanDelete != null && !empJobNeedUpdate.isEmpty();
+		}		
+		public boolean hasEmployeeNotInNW(){
+				return empNotInNW != null && !empNotInNW.isEmpty();
+		}		
    public String process(){
 			 findEmployeeJobs();
 			 findNWJobs();
 			 String msg = "", status="Success", errors="";
 			 System.err.println(" TimeTrack Jobs");
-			 // System.err.println(empJobs);
 			 empJobNotInNW = new Hashtable<>();
 			 empJobNotInTT = new Hashtable<>();
-			 Set<String> set = empJobs.keySet();
-			 int jj=1, jj2=1;
-			 for(String str:set){
-					 Set<String> sst = empJobs.get(str);
-					 if(empNwJobs.containsKey(str)){
-							 Set<String> sst2 = empNwJobs.get(str);
-							 for(String str2:sst){
-									 if(!sst2.contains(str2)){
-											 if(empJobNotInNW.containsKey(str)){
-													 Set<String> tempSet = empJobNotInNW.get(str);
-													 tempSet.add(str2);
+			 empJobCanDelete = new Hashtable<>();
+			 empJobNeedUpdate = new Hashtable<>();
+			 empNotInNW = new Hashtable<>();
+			 Set<Employee> set = empJobs.keySet();
+			 int jj=1;
+			 for(Employee emp:set){
+					 Set<JobTask> jset = empJobs.get(emp);
+					 String emp_num = emp.getEmployee_number();
+					 if(emp_num == null || emp_num.equals("")) continue;
+					 if(empNwJobs.containsKey(emp_num)){
+							 Set<String> sst2 = empNwJobs.get(emp_num);
+							 for(JobTask job:jset){
+									 String job_name = job.getName();
+									 if(job_name.indexOf("-") > -1){
+											 job_name=job_name.replace('-',' ');
+									 }									 
+									 if(!sst2.contains(job_name)){
+											 if(empJobNotInNW.containsKey(emp)){
+													 Set<JobTask> tempSet = empJobNotInNW.get(emp);
+													 tempSet.add(job);
 											 }
 											 else{
-													 Set<String> tempSet = new HashSet<>();
-													 tempSet.add(str2);
-													 empJobNotInNW.put(str, tempSet);
+													 Set<JobTask> tempSet = new HashSet<>();
+													 tempSet.add(job);
+													 empJobNotInNW.put(emp, tempSet);
 											 }
-									 }
-							 }
-							 for(String str2:sst2){
-									 if(!sst.contains(str2)){
-											 if(empJobNotInTT.containsKey(str)){
-													 Set<String> tempSet = empJobNotInTT.get(str);
-													 tempSet.add(str2);
-											 }
-											 else{
-													 Set<String> tempSet = new HashSet<>();
-													 tempSet.add(str2);
-													 empJobNotInTT.put(str, tempSet);
-											 }
-
 									 }
 							 }
 					 }
 					 else{
-							 jj2++;
-					 }
-			 }
-			 System.err.println(" Jobs in NW but not in TT ");			 
-			 if(!empJobNotInTT.isEmpty()){
-					 Set<String> sst = empJobNotInTT.keySet();
-					 jj=1;
-					 for(String str:sst){
-							 Set<String> set2 = empJobNotInTT.get(str);
-							 System.err.println(jj+" "+str+" "+set2);
-							 jj++;
+							 empNotInNW.put(emp, jset);
 					 }
 			 }
 			 System.err.println(" Jobs in TT but not in NW ");			 
 			 if(!empJobNotInNW.isEmpty()){
-					 Set<String> sst = empJobNotInNW.keySet();
+					 Set<Employee> empSet = empJobNotInNW.keySet();
 					 jj=1;
-					 for(String str:sst){
-							 Set<String> set2 = empJobNotInNW.get(str);
-							 System.err.println(jj+" "+str+" "+set2);
-							 jj++;
+					 for(Employee emp:empSet){
+							 Set<JobTask> set2 = empJobNotInNW.get(emp);
+							 Iterator<JobTask> itr = set2.iterator(); 
+							 while (itr.hasNext()){
+									 JobTask job = itr.next();
+									 if(!job.checkIfJobIsUsed()){
+											 System.err.println(jj+" "+emp+" job "+job+" deleted");
+											 jj++;
+											 if(empJobCanDelete.containsKey(emp)){
+													 Set<JobTask> tempSet = empJobCanDelete.get(emp);
+													 tempSet.add(job);
+											 }
+											 else{
+													 Set<JobTask> tempSet = new HashSet<>();
+													 tempSet.add(job);
+													 empJobCanDelete.put(emp, tempSet);
+											 }
+											 // itr.remove();
+											 // job.doDelete();
+									 }
+									 else{
+											 System.err.println(jj+" "+emp+" job "+job+" is used ");
+											 jj++;
+											 if(empJobNeedUpdate.containsKey(emp)){
+													 Set<JobTask> tempSet = empJobNeedUpdate.get(emp);
+													 tempSet.add(job);
+											 }
+											 else{
+													 Set<JobTask> tempSet = new HashSet<>();
+													 tempSet.add(job);
+													 empJobNeedUpdate.put(emp, tempSet);
+											 }											 
+									 }
+							 }
 					 }
-			 }			 
+			 }
 			 return msg;
 		}
 		String findEmployeeJobs(){
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				String msg = "";
-				String qq = "select e.employee_number,"+
-						" p.name "+
-						" from jobs j, positions p,employees e ";
-				String qw = " where p.id=j.position_id and j.employee_id=e.id ";
-				qw += " and j.expire_date is null ";
-				if(!department_id.equals("")){
-						qq += ", department_employees d ";
-						qw += " and d.employee_id=e.id and d.department_id=? ";
-						qw += " and d.expire_date is null ";
-				}
-				qq += qw;
-				qq += " order by e.employee_number";
-				logger.debug(qq);
-				con = UnoConnect.getConnection();
-				if(con == null){
-						msg = " Could not connect to DB ";
-						logger.error(msg);
-						return msg;
-				}
-				try{
-						pstmt = con.prepareStatement(qq);
-						int jj=1;				
-						if(!department_id.equals("")){
-								pstmt.setString(jj++, department_id);
-						}
-						rs = pstmt.executeQuery();
-						empJobs = new Hashtable<>();
-						while(rs.next()){
-								String str = rs.getString(1); //  employee_number
-								String str2 = rs.getString(2); // job title
-								if(str2.indexOf("-") > -1){
-										str2=str2.replace('-',' ');
-								}
-								if(str != null && !str.equals("")){
-										if(empJobs.containsKey(str)){
-												Set<String> jobSet = empJobs.get(str);
-												jobSet.add(str2);
-										}
-										else{
-												Set<String> jobSet = new HashSet<>();
-												jobSet.add(str2);
-												empJobs.put(str, jobSet);
+				DepartmentEmployeeList dempl = new DepartmentEmployeeList();
+				dempl.setDepartment_id("5");
+				dempl.setNoExpireDate();
+				String back = dempl.find();
+				if(back.equals("")){
+						List<DepartmentEmployee> ones = dempl.getDepartmentEmployees();
+						if(ones != null && ones.size() > 0){
+								for(DepartmentEmployee demp:ones){
+										Employee emp = demp.getEmployee();
+										List<JobTask> jobs = emp.getJobs();
+										if(jobs != null && jobs.size() > 0){
+												Set<JobTask> jset = new HashSet<>();
+												for(JobTask job:jobs){
+														jset.add(job);
+												}
+												empJobs.put(emp, jset);
 										}
 								}
 						}
 				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-						UnoConnect.databaseDisconnect(con);
-				}
-				return msg;						
+				return back;
 		}
 		/**
 			 select           

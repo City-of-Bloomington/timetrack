@@ -89,9 +89,6 @@ public class DocumentList{
 				String msg="", str="";
 				String qc = "select count(*) from time_documents d, employees e,pay_periods pp,jobs j ";				
 				String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e,pay_periods pp,jobs j ";
-				/*
-				String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id and j.effective_date <= pp.start_date and (j.expire_date is null or j.expire_date >= pp.end_date) ";
-				*/
 				String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id ";				
 				boolean periodTbl = false;
 				if(!employee_id.equals("")){
