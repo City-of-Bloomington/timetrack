@@ -24,6 +24,7 @@ public class SearchEmployeeAction extends TopAction{
 		String employeesTitle = "Current Employees";
 		List<Employee> employees = null;
 		List<Type> departments = null;
+		String department_id = "";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -54,9 +55,16 @@ public class SearchEmployeeAction extends TopAction{
 										}
 								}
 								else{
-										addActionMessage("No match found");
 										addMessage("No match found");
 								}
+						}
+				}
+				else{
+						getUser();
+						if(user != null && !user.isAdmin()){
+								String val = user.getDepartment_id();
+								if(val != null)
+										department_id = val;
 						}
 				}
 				getEmplst();
@@ -74,7 +82,16 @@ public class SearchEmployeeAction extends TopAction{
 						emplst = val;
 				}
 		}
-
+		// needed for auto  complete and limit the user
+		// to his/her department
+		
+		public String getDepartment_id(){
+				return department_id;
+		}
+		public void setDepartment_id(String val){
+				if(val != null)
+						department_id = val;
+		}
 		public String getEmployeeTitle(){
 				return employeesTitle;
 		}

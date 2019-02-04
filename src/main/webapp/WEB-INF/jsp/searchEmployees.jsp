@@ -2,6 +2,8 @@
 <div class="internal-page">
 	<s:form action="searchEmployees" id="form_id" method="post">
 		<s:hidden name="action2" id="action2" value="" />
+  	<input type="hidden" name="department_id" id="department_id"
+							value="<s:property value='department_id' />"  />
 		<h1>Employee Search</h1>
 
 	  <%@ include file="strutMessages.jsp" %>

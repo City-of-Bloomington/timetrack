@@ -24,6 +24,7 @@ public class JobTaskList{
     boolean active_only = false, current_only = false, inactive_only=false,
 				clock_time_required = false, clock_time_not_required=false,
 				not_expired = false, non_temp_emp = false;
+		boolean avoid_recent_jobs = false; // jobs are recent if entered within 14 days
     String salary_group_id="", employee_id="", pay_period_id="";
     String id="", effective_date = "", which_date="j.effective_date",
 				date_from="", date_to="", position_id="", employee_name="",
@@ -122,6 +123,9 @@ public class JobTaskList{
     public void setCurrentOnly(){
 				active_only = true;
     }
+		public void setAvoidRecentJobs(){
+				avoid_recent_jobs = true;
+		}
     public String getId(){
 				return id;
     }
@@ -211,17 +215,19 @@ public class JobTaskList{
 						"j.salary_group_id,"+
 						"j.employee_id,"+
 						"j.group_id,"+
-						"date_format(j.effective_date,'%m/%d/%Y'),"+
 						
+						"date_format(j.effective_date,'%m/%d/%Y'),"+
 						"date_format(j.expire_date,'%m/%d/%Y'),"+
 						"j.primary_flag,"+
 						"j.weekly_regular_hours,"+
 						"j.comp_time_weekly_hours,"+
-						"j.comp_time_factor,"+
 						
+						"j.comp_time_factor,"+
 						"j.holiday_comp_factor,"+
 						"j.clock_time_required,"+
 						"j.hourly_rate,"+
+						"date_format(j.added_date,'%m/%d/%Y'),"+
+						
 						"j.inactive,  "+
 						
 						"g.name,g.description,g.default_regular_id,"+
@@ -249,6 +255,10 @@ public class JobTaskList{
 						if(!qw.equals("")) qw += " and ";
 						qw += " j.effective_date < now() and (j.expire_date > now() or j.exire_date is null) ";
 				}
+				if(avoid_recent_jobs){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.added_date < date_add(curdate(),INTERVAL 10 DAY) ";
+				}				
 				if(clock_time_required){
 						if(!qw.equals("")) qw += " and ";
 						qw += " j.clock_time_required is not null ";
@@ -357,12 +367,13 @@ public class JobTaskList{
 																rs.getDouble(12),
 																rs.getString(13) != null,
 																rs.getDouble(14),
-																rs.getString(15) != null,
-																rs.getString(16),
+																rs.getString(15),
+																rs.getString(16) != null,
 																rs.getString(17),
 																rs.getString(18),
 																rs.getString(19),
-																rs.getString(20) != null
+																rs.getString(20),
+																rs.getString(21) != null
 																);
 							 
 								if(!jobTasks.contains(one))
@@ -389,17 +400,19 @@ public class JobTaskList{
 						"j.salary_group_id,"+
 						"j.employee_id,"+
 						"j.group_id,"+
-						"date_format(j.effective_date,'%m/%d/%Y'),"+
 						
+						"date_format(j.effective_date,'%m/%d/%Y'),"+
 						"date_format(j.expire_date,'%m/%d/%Y'),"+
 						"j.primary_flag,"+
 						"j.weekly_regular_hours,"+
 						"j.comp_time_weekly_hours,"+
-						"j.comp_time_factor,"+
 						
+						"j.comp_time_factor,"+
 						"j.holiday_comp_factor,"+
 						"j.clock_time_required,"+
 						"j.hourly_rate,"+
+						"date_format(j.added_date,'%m/%d/%Y'),"+
+						
 						"j.inactive,  "+
 						"g.name,g.description,g.default_regular_id,"+
 						"g.excess_culculation,g.inactive,"+
@@ -441,13 +454,14 @@ public class JobTaskList{
 																rs.getDouble(12),
 																rs.getString(13) != null,
 																rs.getDouble(14),
-																rs.getString(15) != null,
-																rs.getString(16),
+																rs.getString(15),																
+																rs.getString(16) != null,
 																rs.getString(17),
 																rs.getString(18),
 																rs.getString(19),
-																rs.getString(20) != null,
-																rs.getString(21)
+																rs.getString(20),
+																rs.getString(21) != null,
+																rs.getString(22)
 																);
 								if(!jobTasks.contains(one))
 										jobTasks.add(one);

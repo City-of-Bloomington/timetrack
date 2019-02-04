@@ -22,7 +22,7 @@ public class JobTask implements Serializable{
     private String id="",
 				employee_id="", group_id="",
 				employee_number="", // needed for update from nw
-				position_id="",
+				position_id="", added_date="",
 				salary_group_id="",
 				inactive="",
 				effective_date="", expire_date="", primary_flag="";
@@ -55,13 +55,15 @@ public class JobTask implements Serializable{
 									 double val12,
 									 boolean val13,
 									 double val14,
-									 boolean val15,
+									 String val15,									 
+									 boolean val16,
 									 
-									 String val16,
-									 String val17,
-									 String val18,
-									 String val19,
-									 boolean val20
+									 String val21,
+									 String val22,
+									 String val23,
+									 String val24,
+
+									 boolean val25
 									 ){
 				
 				setVals(val,
@@ -80,10 +82,11 @@ public class JobTask implements Serializable{
 								val14,
 								val15,
 								val16,
-								val17,
-								val18,
-								val19,
-								val20);
+								val21,
+								val22,
+								val23,
+								val24,
+								val25);
     }
     public JobTask(String val,
 									 String val2,
@@ -101,14 +104,15 @@ public class JobTask implements Serializable{
 									 double val12,
 									 boolean val13,
 									 double val14,
-									 boolean val15,
+									 String val15,
+									 boolean val16,
 									 
-									 String val16,
-									 String val17,
-									 String val18,
-									 String val19,
-									 boolean val20,
-									 String val21
+									 String val21,
+									 String val22,
+									 String val23,
+									 String val24,
+									 boolean val25,
+									 String val26
 									 ){
 				setVals(val,
 								val2,
@@ -126,12 +130,14 @@ public class JobTask implements Serializable{
 								val14,
 								val15,
 								val16,
-								val17,
-								val18,
-								val19,
-								val20);
+								
+								val21,
+								val22,
+								val23,
+								val24,
+								val25);
 				
-				setEmployee_number(val21);
+				setEmployee_number(val26);
 
     }
     private void setVals(String val,
@@ -148,13 +154,14 @@ public class JobTask implements Serializable{
 												 double val12,
 												 boolean val13,
 												 double val14,
-												 boolean val15,												 
+												 String val15,
+												 boolean val16,												 
 
-												 String val16,
-												 String val17,
-												 String val18,
-												 String val19,
-												 boolean val20
+												 String val21,
+												 String val22,
+												 String val23,
+												 String val24,
+												 boolean val25
 												 
 												 ){
 				setId(val);
@@ -170,10 +177,11 @@ public class JobTask implements Serializable{
 				setComp_time_factor(val11);
 				setHoliday_comp_factor(val12);
 				setClock_time_required(val13);
-				setHourlyRateDbl(val14);				
-				setInactive(val15);
+				setHourlyRateDbl(val14);
+				setAdded_date(val15);
+				setInactive(val16);
 				if(!salary_group_id.equals("")){
-						salaryGroup = new SalaryGroup(salary_group_id, val16,val17,val18, val19, val20);
+						salaryGroup = new SalaryGroup(salary_group_id, val21,val22,val23, val24, val25);
 				}
 
     }
@@ -207,6 +215,9 @@ public class JobTask implements Serializable{
     }
     public String getExpire_date(){
 				return expire_date;
+    }
+    public String getAdded_date(){
+				return added_date;
     }		
     public boolean getPrimary_flag(){
 				if(id.equals(""))
@@ -292,6 +303,10 @@ public class JobTask implements Serializable{
     public void setExpire_date(String val){
 				if(val != null)
 						expire_date = val;
+    }
+    public void setAdded_date(String val){
+				if(val != null)
+						added_date = val;
     }		
     public void setInactive(boolean val){
 				if(val)
@@ -558,6 +573,8 @@ public class JobTask implements Serializable{
 						"j.holiday_comp_factor,"+
 						"j.clock_time_required, "+
 						"j.hourly_rate,"+
+						"date_format(j.added_date,'%m/%d/%Y'),"+
+						
 						"j.inactive, "+
 						"g.name,g.description,g.default_regular_id,"+
 						"g.excess_culculation,g.inactive "+
@@ -588,14 +605,15 @@ public class JobTask implements Serializable{
 												rs.getDouble(11),
 												rs.getDouble(12),
 												rs.getString(13) != null,
-												rs.getDouble(14),														
-												rs.getString(15) != null,
+												rs.getDouble(14),
+												rs.getString(15),
+												rs.getString(16) != null,
 												
-												rs.getString(16),
 												rs.getString(17),
 												rs.getString(18),
 												rs.getString(19),
-												rs.getString(20) != null
+												rs.getString(20),
+												rs.getString(21) != null
 												);
 						}
 				}
@@ -616,7 +634,7 @@ public class JobTask implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into jobs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,null) ";
+				String qq = "insert into jobs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,now(),null) ";
 				if(employee_id.equals("")){
 						msg = " employee_id not set ";
 						return msg;

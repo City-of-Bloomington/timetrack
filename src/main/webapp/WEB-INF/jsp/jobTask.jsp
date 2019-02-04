@@ -124,18 +124,21 @@
 			<label>Holiday Comp Multiple Factor </label>
 			<s:textfield name="jobTask.holiday_comp_factor" value="%{jobTask.holiday_comp_factor}" size="3" maxlength="3" required="true" />(normally 1.5 for non-exempt and 1 for  exempt)
 		</div>
-
-		<s:if test="jobTask.id != ''">
-			<div class="form-group">
-				<label>Inactive?</label>
-				<s:checkbox name="jobTask.inactive" value="%{jobTask.inactive}" fieldValue="true" />Yes
-			</div>
-		</s:if>
-
-		<s:if test="jobTask.id == ''">
-			<s:submit name="action" type="button" value="Save" class="button"/>
-		</s:if>
-
+		
+	</div>
+	<s:if test="jobTask.id != ''">
+		<div class="form-group">
+			<label>Added Date </label>
+			<s:property value="jobTask.added_date" />
+		</div>
+		<div class="form-group">
+			<label>Inactive?</label>
+			<s:checkbox name="jobTask.inactive" value="%{jobTask.inactive}" fieldValue="true" />Yes
+		</div>
+	</s:if>
+	<s:if test="jobTask.id == ''">
+		<s:submit name="action" type="button" value="Save" class="button"/>
+	</s:if>
 		<s:else>
 			<div class="button-group">
 				<a href="<s:property value='#application.url' />jobTask.action" class="button">New Job</a>

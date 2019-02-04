@@ -20,6 +20,7 @@ public class DepartmentEmployeeList{
 		static final long serialVersionUID = 600L;
 		static Logger logger = LogManager.getLogger(DepartmentEmployeeList.class);
 		boolean active_only = false, no_expire_date=false;
+		boolean emp_active_only = false;
 		List<DepartmentEmployee> departmentEmployees = null;
     public DepartmentEmployeeList(){
     }
@@ -43,6 +44,9 @@ public class DepartmentEmployeeList{
 		public void setActiveOnly(){
 				active_only = true;
 		}
+		public void setEmployeeActiveOnly(){
+				emp_active_only = true;
+		}		
 		public void setNoExpireDate(){
 				no_expire_date = true;
 		}		
@@ -76,13 +80,17 @@ public class DepartmentEmployeeList{
 				}
 				if(no_expire_date){
 						if(!qw.equals("")) qw += " and ";
-						qw += " de.effective_date < now() and de.expire_date is null";		
+						qw += " de.effective_date < curdate() and de.expire_date is null";		
 				}				
 				else if(active_only){
 						if(!qw.equals("")) qw += " and ";
-						qw += " de.effective_date < now() and (de.expire_date is null or de.expire_date > now())";		
+						qw += " de.effective_date < curdate() and (de.expire_date is null or de.expire_date > curdate())";		
 				}
-
+				if(emp_active_only){
+						qq += ", employees e ";
+						if(!qw.equals("")) qw += " and ";						
+						qw += " e.id=de.employee_id and e.inactive is null ";
+				}
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";

@@ -403,6 +403,9 @@ public class Employee implements Serializable{
     public boolean isAdmin(){
 				return hasRole("Admin");
     }
+    public boolean isHrAdmin(){
+				return hasRole("HrAdmin");
+    }
     public boolean canRunTimewarp(){
 				return hasRole("Timewarp");
     }
@@ -411,6 +414,12 @@ public class Employee implements Serializable{
     }
     public boolean canRunMpoReport(){
 				return hasRole("MPOReport");
+    }
+    public boolean canRunParkReport(){
+				return hasRole("ParkReport");
+    }		
+    public boolean canRunTargetEmployee(){
+				return hasRole("TargetEmployee");
     }		
     void findPayPeriod(){
 				if(pay_period_id.equals("")){

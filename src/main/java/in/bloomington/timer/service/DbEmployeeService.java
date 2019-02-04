@@ -48,7 +48,7 @@ public class DbEmployeeService extends HttpServlet{
 				res.setContentType("application/json");
 				PrintWriter out = res.getWriter();
 				String name, value;
-				String term ="", type="";
+				String term ="", type="", department_id="";
 				boolean success = true;
 				HttpSession session = null;
 				Enumeration<String> values = req.getParameterNames();
@@ -63,6 +63,9 @@ public class DbEmployeeService extends HttpServlet{
 						else if (name.equals("type")) {
 								type = value;
 						}
+						else if (name.equals("department_id")) {
+								department_id = value;
+						}						
 						else if (name.equals("action")){
 								action = value;
 						}
@@ -75,6 +78,7 @@ public class DbEmployeeService extends HttpServlet{
 				if(term.length() > 1){
 						//
 						empList = new EmployeeList();
+						empList.setDepartment_id(department_id);
 						empList.setName(term);
 						String back = empList.find();
 						if(back.equals("")){

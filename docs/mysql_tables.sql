@@ -741,6 +741,15 @@ alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Un
 ;; police (all): Daily
 ;; fire Sworn:Pay Period
 ;; fire 8x5: Other (they use oncall instead)
+;;
+;;
+
+;; 2/4/2019
+;;
+;; alter table jobs add added_date date after hourly_rate;
+;; update jobs set added_date = effective_date;
+;;
+
 
 ;; ====================================================
 ;; 

@@ -3,32 +3,6 @@ var icons = {
     header:"ui-icon-circle-plus",
     activeHeader:"ui-icon-circle-minus"
 };
-// function setCurTime(id){
-//  date = new Date;
-
-//  h = date.getHours();
-//   if(h<10){
-//     h = "0"+h;
-//   }
-
-//   m = date.getMinutes();
-//   if(m<10){
-//     m = "0"+m;
-//   }
-
-//   s = date.getSeconds();
-//  if(s<10)
-//    s="0"+s;
-
-//  result = ''+h+':'+m;
-//  result2 = ''+h+':'+m+':'+s;
-
-//   document.getElementById(id).innerHTML = result2;
-//   document.getElementById(id+"2").value = result;
-
-//   setTimeout('setCurTime("'+id+'");','1000');
-//   return true;
-// };
 
 $("#selection_id").change(function() {
     $("#action2").val("refresh");
@@ -73,7 +47,7 @@ $("#emp_name").autocomplete({
         }
     }
     })
-$("#employee_name").autocomplete({
+$("#employee_name2").autocomplete({
     source: APPLICATION_URL + "DbEmployeeService?format=json",
     minLength: 2,
     dataType:"json",
@@ -85,6 +59,19 @@ $("#employee_name").autocomplete({
         }
     }
     })
+$("#employee_name").autocomplete({
+    source: APPLICATION_URL + "DbEmployeeService?format=json&department_id="+$("#department_id").val(),
+    minLength: 2,
+    dataType:"json",
+    delay: 100,
+    select: function( event, ui ) {
+        if(ui.item){
+            $("#employee_name").val(ui.item.full_name);
+            $("#employee_id").val(ui.item.id);
+        }
+    }
+    })
+
 jQuery(function ($) {
     var launcherClick = function(e)  {
             var openMenus   = $('.menuLinks.open'),

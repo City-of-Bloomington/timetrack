@@ -21,7 +21,8 @@ public class SwitchAction extends TopAction{
 		static final long serialVersionUID = 1150L;	
 		static Logger logger = LogManager.getLogger(SwitchAction.class);
 		//
-		String new_employee_id = "", document_id="", source="";
+		String new_employee_id = "", document_id="", source="",
+				department_id="";
 		// Employee employee = null;
 		String employeesTitle = "Current Employees";
 		public String execute(){
@@ -54,12 +55,22 @@ public class SwitchAction extends TopAction{
 								}
 						}
 				}
+				else {
+						getUser();
+						if(user != null && !(user.isAdmin() || user.isHrAdmin())){
+								String val = user.getDepartment_id();
+								if(val != null)
+										department_id = val;
+						}
+				}
 				return ret;
 		}
 		public String getEmployeesTitle(){
 				return employeesTitle;
 		}
-
+		public String getDepartment_id(){
+				return department_id;
+		}
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;
@@ -76,6 +87,10 @@ public class SwitchAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						document_id = val;
 		}
+		public void setDepartment_id(String val){
+				if(val != null && !val.equals(""))		
+						department_id = val;
+		}		
 		public void setSource(String val){
 				if(val != null && !val.equals(""))		
 					 source = val;

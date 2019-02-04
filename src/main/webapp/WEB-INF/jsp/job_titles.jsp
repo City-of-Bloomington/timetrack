@@ -15,8 +15,8 @@
 						<s:set var="blockSet" value="#block.value" />
 						<s:iterator var="two" value="#blockSet">
 							<tr>
-								<td><s:set var="blockKey" value="#block.key" />	</td>
-								<td><input type="checkbox" name="del_jobs" value='<s:property value="#two.id" />' /> </td>
+								<td><s:property value="#blockKey" /> </td>								
+								<td><input type="checkbox" name="del_jobs" value='<s:property value="#two.id" />' /> <s:property value="#two.id" /> </td>
 								<td><s:property value="#two.name" /></td>								
 							</tr>
 						</s:iterator>

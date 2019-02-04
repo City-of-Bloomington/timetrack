@@ -164,8 +164,9 @@ public class HandleJobTitleUpdate{
 		}
 		String findEmployeeJobs(){
 				DepartmentEmployeeList dempl = new DepartmentEmployeeList();
-				dempl.setDepartment_id("5");
+				dempl.setDepartment_id("5"); // parks
 				dempl.setNoExpireDate();
+				dempl.setEmployeeActiveOnly();
 				String back = dempl.find();
 				if(back.equals("")){
 						List<DepartmentEmployee> ones = dempl.getDepartmentEmployees();
