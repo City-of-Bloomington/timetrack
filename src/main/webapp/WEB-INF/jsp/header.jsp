@@ -46,8 +46,9 @@
       <s:if test="user.canPayrollProcess()">
         <a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>
       </s:if>
-      <s:if test="user.canRunFmlaReport()">
+      <s:if test="user.isHrAdmin()">
         <a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA Report</a>
+        <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>				
       </s:if>
       <s:if test="user.canRunMpoReport()">
         <a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a>

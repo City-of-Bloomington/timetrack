@@ -26,7 +26,7 @@ public class ReportParkAction extends TopAction{
 		String outputType = "html";
 		String employmentType = ""; // All, Full Time, Temp
 		List<JobTask> jobs = null;
-		String reportTitle = "Parks Current Employees and Jobs ";
+		String jobsTitle = "Parks Current Employee Jobs ";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -55,8 +55,8 @@ public class ReportParkAction extends TopAction{
 				return outputType;
 		}
 
-		public String getReportTitle(){
-				return reportTitle;
+		public String getJobsTitle(){
+				return jobsTitle;
 		}
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
@@ -71,7 +71,7 @@ public class ReportParkAction extends TopAction{
 		}		
 		// needed only for csv output
 		public String getFileName(){
-				String filename="parks_jobs_report_"+Helper.getToday().replace("/","_")+".csv";
+				String filename="parks_jobs_"+Helper.getToday().replace("/","_")+".csv";
 				return filename;
 		}
 		public String getEmploymentType(){
@@ -92,9 +92,12 @@ public class ReportParkAction extends TopAction{
 				jtl.setNotExpired();
 				if(employmentType.startsWith("Temp")){
 						jtl.setSalary_group_id("3");
+						jobsTitle = jobsTitle+" (Temp)";
+						
 				}
 				else if(employmentType.startsWith("Non Temp")){
 						jtl.setNonTemp();
+						jobsTitle = jobsTitle+" (Full Time)";						
 				}
 				back = jtl.find();
 				if(back.equals("")){

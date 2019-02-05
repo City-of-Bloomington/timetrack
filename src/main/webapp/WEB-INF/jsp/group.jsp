@@ -43,8 +43,8 @@
 				<s:textarea name="group.description" value="%{group.description}" rows="5" cols="50" />
 			</div>
 			<div class="form-group">
-				<label>Default Earn Code</label>			
-				<s:select name="group.defaultEarnCode_id" value="%{group.defaultEarnCode_id}" list="hourCodes" listKey="id" listValue="codeInfo" headerKey="-1" headerValue="Pick Earn Code" />
+				<label>Excess Hours Calculation Method</label>			
+				<s:radio name="group.excessHoursCalculationMethod" value="%{group.excessHoursCalculationMethod}" list="excessHoursCalculationMethods" />
 			</div>
 			<div class="form-group">
 				<label>Inactive?</label>

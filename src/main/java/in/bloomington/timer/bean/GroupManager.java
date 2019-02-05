@@ -22,7 +22,7 @@ public class GroupManager implements Serializable{
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     private String id="", group_id="", employee_id="", wf_node_id="",
 				employee_id2 = "", wf_node_id2="", // for second assignment
-				inactive="",
+				inactive="", primary="",
 				start_date="", expire_date="";
 		List<Employee> employees = null;
 		Group group = null;
@@ -36,7 +36,8 @@ public class GroupManager implements Serializable{
 												String val5,
 												String val6,
 												boolean val7,
-												String val8
+												boolean val8,
+												String val9
 									 ){
 				setId(val);
 				setGroup_id(val2);
@@ -44,9 +45,10 @@ public class GroupManager implements Serializable{
 				setWf_node_id(val4);
 				setStart_date(val5);
 				setExpire_date(val6);
-				setInactive(val7);
-				if(val8 != null){
-						node = new Node(wf_node_id, val8);
+				setPrimary(val7);
+				setInactive(val8);
+				if(val9 != null){
+						node = new Node(wf_node_id, val9);
 				}
     }
     public GroupManager(String val){
@@ -91,6 +93,12 @@ public class GroupManager implements Serializable{
 		public boolean getInactive(){
 				return !inactive.equals("");
     }
+		public boolean getPrimary(){
+				return !primary.equals("");
+    }
+		public boolean isPrimary(){
+				return !primary.equals("");
+		}
 		public String getId(){
 				return id;
     }
@@ -146,6 +154,10 @@ public class GroupManager implements Serializable{
 				if(val)
 						inactive="y";
     }
+    public void setPrimary (boolean val){
+				if(val)
+						primary="y";
+    }		
     public void setWf_node_id(String val){
 				if(val != null && !val.equals("-1"))
 						wf_node_id = val;
@@ -236,7 +248,7 @@ public class GroupManager implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select gm.id,gm.group_id,gm.employee_id,gm.wf_node_id,date_format(gm.start_date,'%m/%d/%Y'),date_format(gm.expire_date,'%m/%d/%Y'),gm.inactive,wn.name from group_managers gm join workflow_nodes wn on wn.id=gm.wf_node_id where gm.id =? ";
+				String qq = "select gm.id,gm.group_id,gm.employee_id,gm.wf_node_id,date_format(gm.start_date,'%m/%d/%Y'),date_format(gm.expire_date,'%m/%d/%Y'),gm.primary_flag,gm.inactive,wn.name from group_managers gm join workflow_nodes wn on wn.id=gm.wf_node_id where gm.id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -253,8 +265,9 @@ public class GroupManager implements Serializable{
 								setWf_node_id(rs.getString(4));
 								setStart_date(rs.getString(5));
 								setExpire_date(rs.getString(6));
-								setInactive(rs.getString(7) != null);
-								node = new Node(wf_node_id, rs.getString(8));
+								setPrimary(rs.getString(7) != null);
+								setInactive(rs.getString(8) != null);
+								node = new Node(wf_node_id, rs.getString(9));
 						}
 				}
 				catch(Exception ex){
@@ -275,7 +288,7 @@ public class GroupManager implements Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select count(*) from group_managers gm where gm.group_id=? and gm.employee_id=? and gm.wf_node_id=? and gm.inactive is null and gm.expire_date is null";
-				String qq2 = "insert into group_managers values(0,?,?,?,?,null,null) ";
+				String qq2 = "insert into group_managers values(0,?,?,?,?,?,null,null) ";
 				if(employee_id.equals("") || group_id.equals("") || wf_node_id.equals("")){
 						msg = " group, employee or role not set ";
 						return msg;
@@ -313,6 +326,10 @@ public class GroupManager implements Serializable{
 								}
 								java.util.Date date_tmp = df.parse(start_date);
 								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+								if(primary.equals(""))
+										pstmt.setNull(5, Types.CHAR);
+								else
+										pstmt.setString(5, "y");
 								pstmt.executeUpdate();
 								//
 								// secnod record
@@ -321,6 +338,10 @@ public class GroupManager implements Serializable{
 										pstmt.setString(2, employee_id2);
 										pstmt.setString(3, wf_node_id2);
 										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+										if(primary.equals(""))
+												pstmt.setNull(5, Types.CHAR);
+										else
+												pstmt.setString(5, "y");										
 										pstmt.executeUpdate();
 								}
 								Helper.databaseDisconnect(pstmt, rs);
@@ -358,7 +379,7 @@ public class GroupManager implements Serializable{
 				if(id.equals("")){
 						return " id not set ";
 				}
-				String qq = "update group_managers set start_date=?,expire_date=?,inactive=? where id=? ";
+				String qq = "update group_managers set start_date=?,expire_date=?,primary_flag=?,inactive=? where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -379,13 +400,19 @@ public class GroupManager implements Serializable{
 								date_tmp = df.parse(expire_date);
 								pstmt.setDate(2, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(inactive.equals("")){
+						if(primary.equals("")){
 								pstmt.setNull(3, Types.CHAR);
 						}
 						else{
 								pstmt.setString(3,"y");
 						}
-						pstmt.setString(4, id);
+						if(inactive.equals("")){
+								pstmt.setNull(4, Types.CHAR);
+						}
+						else{
+								pstmt.setString(4,"y");
+						}						
+						pstmt.setString(5, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

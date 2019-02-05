@@ -44,11 +44,15 @@
 		<dd><s:textfield name="groupManager.start_date" value="%{groupManager.start_date}" size="10" maxlength="10" required="true" cssClass="date" />* </dd>
 	</dl>
 	<dl class="fn1-output-field">
+		<dt>Primary? </dt>
+		<dd><s:checkbox name="groupManager.primary" value="%{groupManager.primary}"  /> </dd>
+	</dl>
+	<dl class="fn1-output-field">
 		<dt>Expire Date </dt>
 		<dd><s:textfield name="groupManager.expire_date" value="%{groupManager.expire_date}" size="10" maxlength="10" cssClass="date" /> </dd>
 	</dl>
 	<dl class="fn1-output-field">
-		<dt>Inactive </dt>
+		<dt>Inactive? </dt>
 		<dd><s:checkbox name="groupManager.inactive" value="%{groupManager.inactive}"  /> (check to dissable)</dd>
 	</dl>
 	<s:submit name="action" type="button" value="Save Changes" class="fn1-btn"/>

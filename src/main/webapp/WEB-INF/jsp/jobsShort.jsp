@@ -2,9 +2,9 @@
 	<caption><s:property value="#jobsTitle" /></caption>
 	<thead>
 		<tr>
-			<th>ID</th>
+			<th>Job ID</th>
 			<th>Employee</th>			
-			<th>Job</th>
+			<th>Job Title</th>
 			<th>Salary Group</th>
 			<th>Group</th>
 		</tr>

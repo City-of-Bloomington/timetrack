@@ -45,6 +45,7 @@ public class WeekEntry{
 		Group group = null;
 		Shift shift = null;
 		HourCode defaultEarnCode = null;
+		String excess_hours_calculation_method = "";
     //
     // these are used for the yearend pay period where we need
     // to split the hours of the week in two different years
@@ -123,7 +124,7 @@ public class WeekEntry{
 												daily_hrs = dd;
 										}
 								}
-								defaultEarnCode = group.getDefaultEarnCode();
+								excess_hours_calculation_method = group.getExcessHoursCalculationMethod();
 						}
 				}
 		}		
@@ -476,11 +477,14 @@ public class WeekEntry{
 								return;
 						}
 				}
+				if(excess_hours_calculation_method.equals("Donation")){
+						return;
+				}
 				//
 				// this should work for full time or part time with benefit
 				//
 				code = "CE1.0";
-				if(defaultEarnCode != null && defaultEarnCode.isOvertime()){
+				if(excess_hours_calculation_method.equals("Monetary")){
 						code ="OT1.0";
 				}
 				//

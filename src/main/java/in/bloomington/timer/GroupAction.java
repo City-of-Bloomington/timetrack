@@ -26,6 +26,9 @@ public class GroupAction extends TopAction{
 		List<HourCode> hourCodes = null;
 		String groupsTitle = "Current groups";
 		List<Type> departments = null;
+		// for excess hour calculation types
+		// either CE1.0, OT1.0 or (Donation) ignore
+		String[] excess_hours_calculation_methods={"Monetary","Earn Time","Donation"};
 		String department_id="";
 		public String execute(){
 				String ret = SUCCESS;
@@ -149,6 +152,10 @@ public class GroupAction extends TopAction{
 						}
 				}
 				return hourCodes;				
+		}
+		//
+		public String[] getExcessHoursCalculationMethods(){
+				return excess_hours_calculation_methods;
 		}
 }
 

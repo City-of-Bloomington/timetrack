@@ -20,7 +20,7 @@ CREATE TABLE `departments` (
   name varchar(80) NOT NULL,
   description varchar(512) DEFAULT NULL,
   department_id int(10) unsigned NOT NULL,
-  default_earn_code_id int unsigned,
+	excess_hours_calculation_method enum('Earn Time','Monetary','Donation'),
   inactive char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `department_id` (`department_id`),
@@ -748,7 +748,13 @@ alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Un
 ;;
 ;; alter table jobs add added_date date after hourly_rate;
 ;; update jobs set added_date = effective_date;
+;; alter table groups add excess_hours_calculation_method enum('Earn Time','Monetary','Donation') default 'Earn Time' after department_id;
+;; update groups set excess_hours_calculation_method='Monetary' where default_earn_code_id=43;
+;; alter table groups drop foreign key groups_ibfk_2;
+;; alter table groups drop column default_earn_code_id;
+;; alter table group_managers add primary_flag char(1) after expire_date;
 ;;
+
 
 
 ;; ====================================================

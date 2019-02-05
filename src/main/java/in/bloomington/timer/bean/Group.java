@@ -24,7 +24,7 @@ public class Group{
     //
     // default_earn_code_id is needed when 
     // employees work more than weekly or daily hours
-    String default_earn_code_id="";
+		String excess_hours_calculation_method = "Earn Time";
     Type department = null;
     HourCode defaultEarnCode = null;
     List<GroupEmployee> groupEmployees = null;
@@ -56,7 +56,7 @@ public class Group{
 				setName(val2);
 				setDescription(val3);
 				setDepartment_id(val4);
-				setDefaultEarnCode_id(val5);
+				setExcessHoursCalculationMethod(val5);
 				setInactive(val6);				
     }
     public Group(String val,
@@ -71,7 +71,7 @@ public class Group{
 				setName(val2);
 				setDescription(val3);
 				setDepartment_id(val4);
-				setDefaultEarnCode_id(val5);
+				setExcessHoursCalculationMethod(val5);
 				setInactive(val6);
 				if(val7 != null && !val7.equals("")){
 						department = new Type(department_id, val7);
@@ -102,15 +102,9 @@ public class Group{
     public String getDepartment_id(){
 				return department_id;
     }
-    public String getDefaultEarnCode_id(){
-				return default_earn_code_id;
-    }
-    //ToDo
-    public String getDefaultEarnCodeName(){
-				String ret = "";
-				
-				return ret;
-    }				
+		public String getExcessHoursCalculationMethod(){
+				return excess_hours_calculation_method;
+		}
     //
     // setters
     //
@@ -135,20 +129,11 @@ public class Group{
 				if(val != null && !val.equals("-1"))
 						department_id = val;
     }
-    public void setDefaultEarnCode_id(String val){
-				if(val != null && !val.equals("-1"))
-						default_earn_code_id = val;
-    }
-    public HourCode getDefaultEarnCode(){
-				if(defaultEarnCode == null && !default_earn_code_id.equals("")){
-						HourCode one = new HourCode(default_earn_code_id);
-						String back = one.doSelect();
-						if(back.equals("")){
-								defaultEarnCode = one;
-						}
-				}
-				return defaultEarnCode;
-    }
+
+		public void setExcessHoursCalculationMethod(String val){
+				if(val != null)
+						excess_hours_calculation_method = val;
+		}
     public boolean equals(Object o) {
 				if (o instanceof Group) {
 						Group c = (Group) o;
@@ -280,7 +265,8 @@ public class Group{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.name,g.description,g.department_id,g.default_earn_code_id,g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";
+				String qq = "select g.id,g.name,g.description,g.department_id,"+
+						"g.excess_hours_calculation_method,g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				try{
@@ -292,7 +278,7 @@ public class Group{
 										setName(rs.getString(2));
 										setDescription(rs.getString(3));
 										setDepartment_id(rs.getString(4));
-										setDefaultEarnCode_id(rs.getString(5));
+										setExcessHoursCalculationMethod(rs.getString(5));
 										setInactive(rs.getString(6) != null);
 										str = rs.getString(7);
 										if(str != null){
@@ -341,11 +327,10 @@ public class Group{
 						else
 								pstmt.setString(2, description);
 						pstmt.setString(3, department_id);
-						if(default_earn_code_id.equals(""))
+						if(excess_hours_calculation_method.equals(""))
 								pstmt.setNull(4, Types.INTEGER);
 						else
-								pstmt.setString(4, default_earn_code_id);
-						
+								pstmt.setString(4, excess_hours_calculation_method);
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
@@ -376,7 +361,7 @@ public class Group{
 				if(name.equals("")){
 						return " name not set ";
 				}
-				String qq = "update groups set name=?,description=?,department_id=?,default_earn_code_id=?,inactive=? where id=? ";
+				String qq = "update groups set name=?,description=?,department_id=?,excess_hours_calculation_method=?,inactive=? where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -391,10 +376,10 @@ public class Group{
 						else
 								pstmt.setString(2, description);								
 						pstmt.setString(3, department_id);
-						if(default_earn_code_id.equals(""))
+						if(excess_hours_calculation_method.equals(""))
 								pstmt.setNull(4, Types.INTEGER);
 						else
-								pstmt.setString(4, default_earn_code_id);						
+								pstmt.setString(4, excess_hours_calculation_method);
 						if(inactive.equals("")){
 								pstmt.setNull(5, Types.CHAR);
 						}

@@ -8,7 +8,6 @@
 <div class="internal-page container clearfix settings">
 	<h1>Parks Employees and Jobs Report</h1>
 	<div class="width-one-half float-left">
-		
 		<s:form action="parksJobReport" id="form_id" method="post" >
 			<s:if test="hasMessages()">
 				<s:set var="messages" value="messages" />			

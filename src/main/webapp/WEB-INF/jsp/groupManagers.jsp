@@ -7,6 +7,7 @@
 			<th>Employee</th>
 			<th>Workflow Action</th>
 			<th>Start Date</th>
+			<th>Primary</th>						
 			<th>Expire Date</th>
 			<th>Active?</th>
 		</tr>
@@ -19,6 +20,7 @@
 				<td><s:property value="employee" /></td>
 				<td><s:property value="node" /></td>
 				<td><s:property value="start_date" /></td>
+				<td><s:if  test="primary">Yes</s:if><s:else>No</s:else></td>
 				<td><s:property value="expire_date" /></td>
 				<td><s:if  test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>
