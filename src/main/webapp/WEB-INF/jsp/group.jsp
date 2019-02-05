@@ -18,7 +18,7 @@
 			<%@ include file="errors.jsp" %>
 		</s:elseif>
 		<ul>
-			<li>Default Earn Code, this is the compensatory method either 'CE1.5 Comp Time' or 'OT1.5 Over Time' for certain groups such as union, if hours worked exceeds weekly or daily hours. </li>
+			<li>Excess Hours Calculation Method is the compensatory method either 'Earn Time' such as 'CE1.1 Comp Time' or Monetary such as 'OT1.0' for certain groups such as union, if hours worked exceeds weekly, daily or pay period hours. The Donation is for groups that do not earn either. </li>
 		</ul>
 		<div class="width-one-half">
 			<s:if test="group.id != ''">

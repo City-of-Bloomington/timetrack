@@ -756,7 +756,7 @@ alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Un
 ;;
 
 
-
+;;
 ;; ====================================================
 ;; 
 ;; Leave Management (in progress started on 10/01/2018)
