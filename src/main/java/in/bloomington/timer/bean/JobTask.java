@@ -6,6 +6,7 @@ package in.bloomington.timer.bean;
  */
 import java.io.Serializable;
 import java.util.List;
+import java.util.ArrayList;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
@@ -994,6 +995,80 @@ public class JobTask implements Serializable{
 				}
 				return msg;
     }
+    public String doDeleteJobAndDoc(){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "select a.id from time_actions a,time_documents d where a.document_id=d.id and d.job_id=?";
+				String qd = "delete from time_actions where id=? ";
+				String qq2 = "select d.id from time_documents d where d.job_id=? ";
+				String qd2 = "delete from time_documents where id=? ";				
+				String qd3 = "delete from jobs where id=? ";				
+				List<String> action_ids = new ArrayList<>();
+				List<String> doc_ids = new ArrayList<>();
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+						return msg;
+				}
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								str = rs.getString(1);
+								action_ids.add(str);
+						}
+						Helper.databaseDisconnect(pstmt, rs);						
+						if(action_ids.size()> 0){
+								qq = qd;
+								logger.debug(qq);
+								pstmt = con.prepareStatement(qq);
+								for(String a_id:action_ids){
+										pstmt.setString(1, a_id);
+										pstmt.executeUpdate();
+								}
+								Helper.databaseDisconnect(pstmt, rs);
+						}
+						qq = qq2;
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								str = rs.getString(1);
+								doc_ids.add(str);
+						}
+						Helper.databaseDisconnect(pstmt, rs);
+						if(doc_ids.size() > 0){
+								qq = qd2;
+								logger.debug(qq);
+								pstmt = con.prepareStatement(qq);
+								for(String doc_id:doc_ids){
+										pstmt.setString(1, doc_id);
+										pstmt.executeUpdate();
+								}
+								Helper.databaseDisconnect(pstmt, rs);								
+						}
+						qq = qd3;
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);						
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+    }		
 		public boolean checkIfJobIsUsed(){
 				if(id.equals("")) return false;
 				DocumentList dl = new DocumentList();
@@ -1004,6 +1079,39 @@ public class JobTask implements Serializable{
 						return ones != null && ones.size() > 0;
 				}
 				return false;
+		}
+		public boolean checkIfJobHasTimeBlccks(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				int cnt = 0;
+				String qq = "select count(*) "+
+						" from time_blocks t,time_documents d "+
+						" where t.document_id=d.id and d.job_id=? ";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+						return true;
+				}
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								cnt = rs.getInt(1);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}				
+				return cnt > 0;
 		}
 
 }

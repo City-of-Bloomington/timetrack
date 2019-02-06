@@ -269,6 +269,7 @@ public class TimeBlockList{
 
     */
     //
+		/*
     public String findUsingJoin(){
 
 				prepareBlocks();
@@ -495,6 +496,7 @@ public class TimeBlockList{
 				}
 				return msg;
     }
+		*/
     /**
      * find using view
      *

@@ -29,33 +29,45 @@ public class JobTitlesAction extends TopAction{
 		Hashtable<Employee, Set<JobTask>> empJobNeedUpdate = null;		
 		Hashtable<Employee, Set<JobTask>> empNotInNW = null;
 		String[] del_jobs = null;
-		String[] del_emps = null;		
+		String[] exp_jobs = null;		
+		String[] exp_emps = null;		
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(action.equals("")){
-						HandleJobTitleUpdate hjtl = new HandleJobTitleUpdate();
-						back = hjtl.process();
-						empJobCanDelete = hjtl.getEmpJobCanDelete();
-						empJobNeedUpdate = hjtl.getEmpJobNeedUpdate();
-						empNotInNW = hjtl.getEmpNotInNW();
-						System.err.println(" emp not nw "+empNotInNW.size());
-				}
-				else {
+				if(!action.equals("")){
 						// do delete or update here
-
-				}
+						if(del_jobs != null){
+								for(String jb:del_jobs){
+										JobTask job = new JobTask(jb);
+										back = job.doDeleteJobAndDoc();
+										System.err.println(back+" del "+jb);
+								}
+						}
+				}						
+				HandleJobTitleUpdate hjtl = new HandleJobTitleUpdate();
+				back = hjtl.process();
+				empJobCanDelete = hjtl.getEmpJobCanDelete();
+				empJobNeedUpdate = hjtl.getEmpJobNeedUpdate();
+				empNotInNW = hjtl.getEmpNotInNW();
+				// System.err.println(" emp not nw "+empNotInNW.size());
 				return ret;
 		}
-
+		// del jobs not in NW and not used
     public void setDel_jobs(String[] vals){
 				if(vals != null){		
 						del_jobs = vals;
 				}
     }
-    public void setDel_emps(String[] vals){
+		// certain jobs are not in NW but are used
+    public void setExp_jobs(String[] vals){
 				if(vals != null){		
-						del_emps = vals;
+						exp_jobs = vals;
+				}
+    }
+		// emp not in NW 
+    public void setExp_emps(String[] vals){
+				if(vals != null){		
+						exp_emps = vals;
 				}
     }		
 		public String getJobsTitle(){

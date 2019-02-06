@@ -92,6 +92,13 @@ public class HandleJobTitleUpdate{
 			 empNotInNW = new Hashtable<>();
 			 Set<Employee> set = empJobs.keySet();
 			 int jj=1;
+			 /*
+			 Set<String> keySet = empNwJobs.keySet();
+			 for(String str:keySet){
+					 Set<String> sst2 = empNwJobs.get(str);
+					 System.err.println(str+" "+sst2);
+			 }
+			 */
 			 for(Employee emp:set){
 					 Set<JobTask> jset = empJobs.get(emp);
 					 String emp_num = emp.getEmployee_number();
@@ -129,8 +136,7 @@ public class HandleJobTitleUpdate{
 							 Iterator<JobTask> itr = set2.iterator(); 
 							 while (itr.hasNext()){
 									 JobTask job = itr.next();
-									 if(!job.checkIfJobIsUsed()){
-											 System.err.println(jj+" "+emp+" job "+job+" deleted");
+									 if(!job.checkIfJobHasTimeBlccks()){
 											 jj++;
 											 if(empJobCanDelete.containsKey(emp)){
 													 Set<JobTask> tempSet = empJobCanDelete.get(emp);
@@ -141,8 +147,6 @@ public class HandleJobTitleUpdate{
 													 tempSet.add(job);
 													 empJobCanDelete.put(emp, tempSet);
 											 }
-											 // itr.remove();
-											 // job.doDelete();
 									 }
 									 else{
 											 System.err.println(jj+" "+emp+" job "+job+" is used ");
