@@ -755,6 +755,14 @@ alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Un
 ;; alter table group_managers add primary_flag char(1) after expire_date;
 ;;
 
+;;
+;; 2/8/2019
+;;
+;; alter table employees add added_date date after roles;
+;; update employees e set e.added_date=(select d.effective_date from department_employees d where d.employee_id=e.id limit 1);
+
+
+
 
 ;;
 ;; ====================================================

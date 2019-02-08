@@ -28,7 +28,6 @@ public class EmployeeAction extends TopAction{
 		List<Employee> employees = null;
 		String employeesTitle = "Current Employees";
 		List<Type> departments = null;
-
 											
 		public String execute(){
 				String ret = SUCCESS;

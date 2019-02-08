@@ -18,16 +18,18 @@ import in.bloomington.timer.bean.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class JobTitlesAction extends TopAction{
+public class JobInterventionAction extends TopAction{
 
 		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(JobTitlesAction.class);
+		static Logger logger = LogManager.getLogger(JobInterventionAction.class);
 		//
 		String jobsTitle = "New World Job Titles";
 		List<String> jobTitles = null;
 		Hashtable<Employee, Set<JobTask>> empJobCanDelete = null;
 		Hashtable<Employee, Set<JobTask>> empJobNeedUpdate = null;		
 		Hashtable<Employee, Set<JobTask>> empNotInNW = null;
+		String pay_period_id = "";
+		PayPeriod payPeriod = null;
 		String[] del_jobs = null;
 		String[] exp_jobs = null;		
 		String[] exp_emps = null;		
@@ -35,13 +37,48 @@ public class JobTitlesAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(!action.equals("")){
+						JobTask job = new JobTask();
 						// do delete or update here
 						if(del_jobs != null){
-								for(String jb:del_jobs){
-										JobTask job = new JobTask(jb);
-										back = job.doDeleteJobAndDoc();
-										System.err.println(back+" del "+jb);
+								back = job.doDeleteJobAndDoc(del_jobs);
+								if(!back.equals("")){
+										addError(back);
 								}
+						}
+						if(exp_jobs != null){
+								getPayPeriod();
+								String date = payPeriod.getEnd_date();
+								System.err.println(" date "+date);
+								back = job.doExpireJobs(exp_jobs, date);
+								if(!back.equals("")){
+										addError(back);
+								}
+						}
+						if(exp_emps != null){
+								getPayPeriod();
+								String date = payPeriod.getEnd_date();
+								List<String> job_ids = new ArrayList<>();
+								for(String emp_id:exp_emps){
+										Employee emp = new Employee(emp_id);
+										emp.setPay_period_id(pay_period_id);
+										List<GroupEmployee> grpEmps = emp.getGroupEmployees();
+										List<JobTask> jobs = emp.getJobs();
+										DepartmentEmployee de = emp.getDepartmentEmployee();
+										if(de != null){
+												de.setExpire_date(date);
+												back = de.doUpdate();
+										}
+										for(GroupEmployee ge:grpEmps){
+												ge.setExpire_date(date);
+												back += ge.doUpdate();
+										}
+										for(JobTask jj:jobs){
+												jj.setExpire_date(date);
+												back += jj.doUpdate();
+										}
+								}
+								System.err.println(" date "+date);
+
 						}
 				}						
 				HandleJobTitleUpdate hjtl = new HandleJobTitleUpdate();
@@ -102,7 +139,32 @@ public class JobTitlesAction extends TopAction{
 		}
 		public boolean hasEmpJobNeedUpdate(){
 				return empJobCanDelete != null && !empJobNeedUpdate.isEmpty();
-		}				
+		}
+    public PayPeriod getPayPeriod(){
+				//
+				if(payPeriod == null){
+						if(!pay_period_id.equals("")){
+								PayPeriod pp = new PayPeriod(pay_period_id);
+								String back = pp.doSelect();
+								if(back.equals("")){
+										payPeriod = pp;
+										pay_period_id = payPeriod.getId();
+								}
+						}
+						else{
+								PayPeriodList ppl = new PayPeriodList();
+								ppl.setLastPayPeriod(); 
+								String back = ppl.find();
+								if(back.equals("")){
+										List<PayPeriod> ones = ppl.getPeriods();
+										if(ones != null && ones.size() > 0){
+												payPeriod = ones.get(0);
+										}
+								}
+						}
+				}
+				return payPeriod;
+    }		
 		
 }
 

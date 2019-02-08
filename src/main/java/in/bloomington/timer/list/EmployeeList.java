@@ -31,10 +31,11 @@ public class EmployeeList extends CommonInc{
 				employee_number="",  exclude_name="",
 				pay_period_id="",
 				employee_ids = "", // comma separated
-				no_document_for_payperiod_id="";
+				no_document_for_payperiod_id="", added_status="";
     Set<String> group_id_set = new HashSet<>();
     boolean active_only = false, inactive_only = false,
 				hasEmployeeNumber=false, hasNoEmployeeNumber=false;
+		boolean exclude_recent_records = false, recent_records_only=false;
     boolean includeAllDirectors = false;
     boolean used_time_track = false; // since last two weeks
     List<Employee> employees = null;
@@ -69,6 +70,11 @@ public class EmployeeList extends CommonInc{
 						return "-1";
 				return group_id;
     }
+    public String getAdded_status(){
+				if(added_status.equals(""))
+						return "-1";
+				return added_status;
+    }		
     public String getDepartment_id(){
 				if(department_id.equals(""))
 						return "-1";
@@ -146,11 +152,21 @@ public class EmployeeList extends CommonInc{
 				if(val != null && !val.equals("-1")){
 						if(val.equals("Active"))
 								active_only = true;
-						else if(val.equals("Inactive")){
+						else{
 								inactive_only = true;
 						}
 				}
     }
+		public void setAdded_status(String val){
+				if(val != null && !val.equals("-1")){
+						added_status = val;
+						if(val.equals("Recent"))
+								recent_records_only = true;
+						else{
+								exclude_recent_records = true;
+						}
+				}
+		}
     public void includeAllDirectors(){
 				includeAllDirectors = true;
     }
@@ -163,6 +179,13 @@ public class EmployeeList extends CommonInc{
 		public void setHasNoEmployeeNumber(){
 				hasNoEmployeeNumber = true;
 		}
+		// avoid record added within last two weeks
+		public void excludeRecentRecords(){
+				exclude_recent_records = true;
+		}
+		public void recentRecordsOnly(){
+				recent_records_only = true;
+		}		
     public List<Employee> getEmployees(){
 				return employees;
     }
@@ -194,7 +217,7 @@ public class EmployeeList extends CommonInc{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.roles,e.inactive from employees e ";				
+				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive from employees e ";				
 				String qw = "";
 				if(!id.equals("")){
 						if(!qw.equals("")) qw += " and ";
@@ -279,7 +302,14 @@ public class EmployeeList extends CommonInc{
 						if(used_time_track){
 								if(!qw.equals("")) qw += " and ";								
 								qw += " e.id in (select employee_id from time_documents where initiated > (NOW() - INTERVAL 14 DAY)) ";
-
+						}
+						if(exclude_recent_records){
+								if(!qw.equals("")) qw += " and ";								
+								qw += " e.added_date < (NOW() - INTERVAL 14 DAY) ";
+						}
+						else if(recent_records_only){
+								if(!qw.equals("")) qw += " and ";								
+								qw += " e.added_date >= (NOW() - INTERVAL 14 DAY) ";
 						}
 						if(active_only){
 								if(!qw.equals("")) qw += " and ";
@@ -360,7 +390,8 @@ public class EmployeeList extends CommonInc{
 																 rs.getString(6),
 																 rs.getString(7),
 																 rs.getString(8),
-																 rs.getString(9) != null
+																 rs.getString(9),
+																 rs.getString(10) != null
 																 );
 								if(!employees.contains(employee))
 										employees.add(employee);

@@ -72,12 +72,14 @@
 					<option value="-1">Pick a group</option>
 				</select>(To pick a group you need to pick a department first)					
 				</div>
+			</s:if>				
+			<s:else>
 				<div class="form-group">
-					<!-- butcherad: we need an input group style for such -->
-					<label>Effective Date</label>
-					<s:textfield name="employee.effective_date" value="" size="10" maxlength="10" cssClass="date" />
+					<label>Added Date</label>
+					<s:property value="employee.added_date" />
 				</div>
-			</s:if>
+			</s:else>
+
 			<div class="form-group">
 				<label>Roles</label>
 				<s:checkboxlist key="employee.roles" list="roles" />

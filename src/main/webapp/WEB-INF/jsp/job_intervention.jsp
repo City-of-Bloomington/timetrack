@@ -1,6 +1,6 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
-	<s:form action="jobTitles" id="form_id" method="post">
+	<s:form action="jobIntervention" id="form_id" method="post">
 		<h1>Parks Employee Job Titles</h1>
 		<p>Some of the following job titles are not found in NW for some
 			reason, such as typo, or missing portion of job title.</p>

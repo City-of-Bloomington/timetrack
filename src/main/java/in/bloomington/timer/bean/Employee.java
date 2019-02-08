@@ -26,6 +26,7 @@ public class Employee implements Serializable{
 				email="", 
 				username="", // unique
 				full_name="", first_name="", last_name="";
+		String added_date = "";
 		String[] roles = {""};
 		Set<String> roleSet = new HashSet<>();
     // needed for saving
@@ -99,10 +100,11 @@ public class Employee implements Serializable{
 										String val6,
 										String val7,
 										String val8,
-										boolean val9
+										String val9,
+										boolean val10
 										){
 				setVals(val, val2, val3, val4, val5, val6,
-								val7, val8, val9);
+								val7, val8, val9, val10);
     }
     void setVals(String val,
 								 String val2,
@@ -112,7 +114,8 @@ public class Employee implements Serializable{
 								 String val6,
 								 String val7,
 								 String val8,
-								 boolean val9
+								 String val9,
+								 boolean val10
 								 ){
 				setId(val);
 				setUsername(val2);
@@ -122,7 +125,8 @@ public class Employee implements Serializable{
 				setEmployee_number(val6);
 				setEmail(val7);
 				setRolesText(val8);
-				setInactive(val9);				
+				setAdded_date(val9);
+				setInactive(val10);				
     }
     //
     // getters
@@ -178,6 +182,9 @@ public class Employee implements Serializable{
     public String getLast_name(){
 				return last_name;
     }
+		public String getAdded_date(){
+				return added_date;
+		}
     public String[] getRoles(){
 				return roles;
     }
@@ -229,6 +236,10 @@ public class Employee implements Serializable{
 				if(val != null)
 						last_name = val.trim();
     }
+    public void setAdded_date(String val){
+				if(val != null)
+						added_date = val;
+    }		
     // for auto complete
     public void setFull_name(String val){
 
@@ -257,9 +268,13 @@ public class Employee implements Serializable{
     }		
     public void setRoles (String[] vals){
 				if(vals != null && vals.length > 0){
-						roles = vals;
-						for(String str:roles){
+						for(String str:vals){
 								roleSet.add(str);
+						}						
+						roles = new String[roleSet.size()];
+						int j=0;
+						for(String str:roleSet){
+								roles[j++] = str;
 						}
 				}
     }
@@ -636,6 +651,12 @@ public class Employee implements Serializable{
 				}
 				return false;
     }
+		public DepartmentEmployee getDepartmentEmployee(){
+				if(hasActiveDepartment()){
+						return departmentEmployee;
+				}
+				return null;
+		}
     public String getCurrentDepartment_id(){
 				if(hasActiveDepartment()){
 						department_id = departmentEmployee.getDepartment_id();
@@ -851,7 +872,7 @@ public class Employee implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.roles,e.inactive from employees e where ";
+				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive from employees e where ";
 				if(!id.equals("")){
 						qq += " e.id = ? ";
 				}
@@ -890,7 +911,8 @@ public class Employee implements Serializable{
 														rs.getString(6),
 														rs.getString(7),
 														rs.getString(8),
-														rs.getString(9) != null);
+														rs.getString(9),
+														rs.getString(10) != null);
 								}
 								else{
 										msg = "Employee not found";
@@ -926,7 +948,7 @@ public class Employee implements Serializable{
 						msg = "Could not connect to DB ";
 						return msg;
 				}
-				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,?)";
+				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,now(),?)";
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
@@ -1057,6 +1079,7 @@ public class Employee implements Serializable{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
+				doSelect();
 				return msg;
     }
     public String doUpdateDeptGroupInfo(){

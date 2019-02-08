@@ -59,12 +59,12 @@
 			<result name="error">/WEB-INF/jsp/type.jsp</result>
 			<result name="success">/WEB-INF/jsp/type.jsp</result>
     </action>
-    <action name="jobTitles" 
-	    class="in.bloomington.timer.JobTitlesAction" 
+    <action name="jobIntervention" 
+	    class="in.bloomington.timer.JobInterventionAction" 
 	    method="execute">
-      <result name="input">/WEB-INF/jsp/job_titles.jsp</result>		
-			<result name="error">/WEB-INF/jsp/job_titles.jsp</result>
-			<result name="success">/WEB-INF/jsp/job_titles.jsp</result>
+      <result name="input">/WEB-INF/jsp/job_intervention.jsp</result>		
+			<result name="error">/WEB-INF/jsp/job_intervention.jsp</result>
+			<result name="success">/WEB-INF/jsp/job_intervention.jsp</result>
     </action>		
     <action name="location" 
 	    class="in.bloomington.timer.LocationAction" 
@@ -221,13 +221,14 @@
 			<result name="error">/WEB-INF/jsp/payperiods.jsp</result>
 			<result name="success">/WEB-INF/jsp/payperiods.jsp</result>
 		</action>
-		<action name="payperiodProcess" 
-						class="in.bloomington.timer.PayPeriodProcessAction" 
+		<action name="timewarp" 
+						class="in.bloomington.timer.TimewarpAction" 
 						method="execute">
-			<result name="input">/WEB-INF/jsp/timewarp/payperiodProcess.jsp</result>		
-			<result name="error">/WEB-INF/jsp/timewarp/payperiodProcess.jsp</result>
-			<result name="success">/WEB-INF/jsp/timewarp/payperiodProcess.jsp</result>
-			<result name="csv">/WEB-INF/jsp/timewarp/payperiodProcessCsv.jsp</result>
+			<result name="input">/WEB-INF/jsp/timewarp/timewarp.jsp</result>		
+			<result name="error">/WEB-INF/jsp/timewarp/timewarp.jsp</result>
+			<result name="success">/WEB-INF/jsp/timewarp/timewarp.jsp</result>
+			<result name="single">/WEB-INF/jsp/timewarp/timewarpDept.jsp</result>			
+			<result name="csv">/WEB-INF/jsp/timewarp/timewarpCsv.jsp</result>
 			<result name="handCsv">/WEB-INF/jsp/timewarp/payperiodProcessHandCsv.jsp</result>
 
 		</action>

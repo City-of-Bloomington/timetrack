@@ -36,8 +36,8 @@
 			<s:property value="employee.department" /> <br /><br />
 		</s:if>
 		
-		<label>Effective Date: </label>
-		<s:property value="employee.effective_date" /> <br /><br />
+		<label>Added Date: </label>
+		<s:property value="employee.added_date" /> <br /><br />
 		
 		<label>Roles: </label>
 		<s:property value="employee.rolesText" /> <br /><br />

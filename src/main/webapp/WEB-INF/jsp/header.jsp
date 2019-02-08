@@ -53,17 +53,17 @@
       <s:if test="user.canRunMpoReport()">
         <a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a>
       </s:if>			
-      <s:if test="user.canRunTimewarp()">
-        <a href="<s:property value='#application.url'/>payperiodProcess.action">Timewarp</a>
-      </s:if>
 			<s:if test="user.canRunParkReport()">
 				<a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
-				<a href="<s:property value='#application.url'/>jobTitles.action"> Jobs Need Intervention</a>				
+				<a href="<s:property value='#application.url'/>jobIntervention.action">Jobs Need Intervention</a>				
 				<a href="<s:property value='#application.url'/>parksJobReport.action">Current Employee Jobs</a>
 			</s:if>
       <s:elseif test="user.canRunTargetEmployee()">
         <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
       </s:elseif>
+      <s:if test="user.canRunTimewarp()">
+        <a href="<s:property value='#application.url'/>timewarp.action?type=single">Timewarp</a>
+      </s:if>
     </s:if>
   </div>
 

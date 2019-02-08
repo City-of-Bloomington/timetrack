@@ -995,13 +995,21 @@ public class JobTask implements Serializable{
 				}
 				return msg;
     }
-    public String doDeleteJobAndDoc(){
+    public String doDeleteJobAndDoc(String[] job_ids){
 				//
+				String msg="", str="";
 				Connection con = null;
 				PreparedStatement pstmt = null;
+				PreparedStatement pstmt2 = null;
+				PreparedStatement pstmt3 = null;
+				PreparedStatement pstmt4 = null;
+				PreparedStatement pstmt5 = null;
 				ResultSet rs = null;
-				String msg="", str="";
-				String qq = "select a.id from time_actions a,time_documents d where a.document_id=d.id and d.job_id=?";
+				if(job_ids == null || job_ids.length < 1){
+						return msg;
+				}
+				String q = "select a.id from time_actions a,time_documents d where a.document_id=d.id and d.job_id=?";				
+				String qq = "";
 				String qd = "delete from time_actions where id=? ";
 				String qq2 = "select d.id from time_documents d where d.job_id=? ";
 				String qd2 = "delete from time_documents where id=? ";				
@@ -1015,56 +1023,56 @@ public class JobTask implements Serializable{
 						return msg;
 				}
 				try{
-						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, id);
-						rs = pstmt.executeQuery();
-						while(rs.next()){
-								str = rs.getString(1);
-								action_ids.add(str);
-						}
-						Helper.databaseDisconnect(pstmt, rs);						
-						if(action_ids.size()> 0){
-								qq = qd;
-								logger.debug(qq);
-								pstmt = con.prepareStatement(qq);
-								for(String a_id:action_ids){
-										pstmt.setString(1, a_id);
-										pstmt.executeUpdate();
+						pstmt = con.prepareStatement(q);
+						pstmt2 = con.prepareStatement(qd);
+						pstmt3 = con.prepareStatement(qq2);
+						pstmt4 = con.prepareStatement(qd2);
+						pstmt5 = con.prepareStatement(qd3);
+						//
+						for(String j_id:job_ids){
+								qq = q;
+								pstmt.setString(1, j_id);
+								rs = pstmt.executeQuery();
+								while(rs.next()){
+										str = rs.getString(1);
+										action_ids.add(str);
 								}
-								Helper.databaseDisconnect(pstmt, rs);
-						}
-						qq = qq2;
-						logger.debug(qq);
-						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, id);
-						rs = pstmt.executeQuery();
-						while(rs.next()){
-								str = rs.getString(1);
-								doc_ids.add(str);
-						}
-						Helper.databaseDisconnect(pstmt, rs);
-						if(doc_ids.size() > 0){
-								qq = qd2;
-								logger.debug(qq);
-								pstmt = con.prepareStatement(qq);
-								for(String doc_id:doc_ids){
-										pstmt.setString(1, doc_id);
-										pstmt.executeUpdate();
+								if(action_ids.size()> 0){
+										qq = qd;
+										logger.debug(qq);
+										for(String a_id:action_ids){
+												pstmt2.setString(1, a_id);
+												pstmt2.executeUpdate();
+										}
 								}
-								Helper.databaseDisconnect(pstmt, rs);								
+								qq = qq2;
+								logger.debug(qq);
+								pstmt3.setString(1, j_id);
+								rs = pstmt3.executeQuery();
+								while(rs.next()){
+										str = rs.getString(1);
+										doc_ids.add(str);
+								}
+								if(doc_ids.size() > 0){
+										qq = qd2;
+										logger.debug(qq);
+										for(String doc_id:doc_ids){
+												pstmt4.setString(1, doc_id);
+												pstmt4.executeUpdate();
+										}
+								}
+								qq = qd3;
+								logger.debug(qq);
+								pstmt5.setString(1, j_id);
+								pstmt5.executeUpdate();
 						}
-						qq = qd3;
-						logger.debug(qq);
-						pstmt = con.prepareStatement(qq);						
-						pstmt.setString(1, id);
-						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
 						msg += " "+ex;
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3, pstmt4,pstmt5);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -1112,6 +1120,47 @@ public class JobTask implements Serializable{
 						UnoConnect.databaseDisconnect(con);
 				}				
 				return cnt > 0;
+		}
+		public String doExpireJobs(String[] job_ids, String date){
+				String msg="", str="";
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;				
+				if(job_ids == null || job_ids.length < 1){
+						msg = "no job list provided";
+						return msg;
+				}
+				if(date == null || date.equals("")){
+						msg = "No date is set ";
+						return msg;
+				}
+				String qq = "update jobs set expire_date=? where id=? ";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB";
+						return msg;
+				}
+				try{
+						pstmt = con.prepareStatement(qq);
+						java.util.Date date_tmp = df.parse(date);
+						java.sql.Date sqlDate = new java.sql.Date(date_tmp.getTime());
+						for(String j_id:job_ids){
+								System.err.println(" exp job "+j_id+" on "+date);
+								pstmt.setDate(1, sqlDate);
+								pstmt.setString(2, j_id);
+								pstmt.executeUpdate();
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}							
+				return msg;
 		}
 
 }

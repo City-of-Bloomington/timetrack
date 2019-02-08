@@ -25,7 +25,8 @@ public class HandleJobTitleUpdate{
 		static final long serialVersionUID = 53L;
 		static Logger logger = LogManager.getLogger(HandleJobTitleUpdate.class);
 		EnvBean envBean = null;
-		String date="";
+		String date="", pay_period_id="";
+		PayPeriod payPeriod = null;
 		// Parks
 		String department_id="5", dept_ref = "39"; // department reference to New World app
 		// employee_number, jobs list
@@ -167,6 +168,7 @@ public class HandleJobTitleUpdate{
 			 return msg;
 		}
 		String findEmployeeJobs(){
+				getPayPeriod();
 				DepartmentEmployeeList dempl = new DepartmentEmployeeList();
 				dempl.setDepartment_id("5"); // parks
 				dempl.setNoExpireDate();
@@ -177,6 +179,7 @@ public class HandleJobTitleUpdate{
 						if(ones != null && ones.size() > 0){
 								for(DepartmentEmployee demp:ones){
 										Employee emp = demp.getEmployee();
+										emp.setPay_period_id(pay_period_id);
 										List<JobTask> jobs = emp.getJobs();
 										if(jobs != null && jobs.size() > 0){
 												Set<JobTask> jset = new HashSet<>();
@@ -291,5 +294,32 @@ public class HandleJobTitleUpdate{
 						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return msg;
-		}		
+		}
+    public PayPeriod getPayPeriod(){
+				//
+				if(payPeriod == null){
+						if(!pay_period_id.equals("")){
+								PayPeriod pp = new PayPeriod(pay_period_id);
+								String back = pp.doSelect();
+								if(back.equals("")){
+										payPeriod = pp;
+										pay_period_id = payPeriod.getId();
+								}
+						}
+						else{
+								PayPeriodList ppl = new PayPeriodList();
+								ppl.currentOnly(); 
+								String back = ppl.find();
+								if(back.equals("")){
+										List<PayPeriod> ones = ppl.getPeriods();
+										if(ones != null && ones.size() > 0){
+												payPeriod = ones.get(0);
+												pay_period_id = payPeriod.getId();
+										}
+								}
+						}
+				}
+				return payPeriod;
+    }		
+		
 }

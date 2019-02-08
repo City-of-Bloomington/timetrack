@@ -18,10 +18,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-public class PayPeriodProcessAction extends TopAction{
+public class TimewarpAction extends TopAction{
 
     static final long serialVersionUID = 4320L;	
-    static Logger logger = LogManager.getLogger(PayPeriodProcessAction.class);
+    static Logger logger = LogManager.getLogger(TimewarpAction.class);
     DecimalFormat df = new DecimalFormat("###.00");
     //
     PayPeriod payPeriod = null, currentPayPeriod=null;
@@ -30,6 +30,7 @@ public class PayPeriodProcessAction extends TopAction{
     String timeBlocksTitle = "TimeWarp";
     String pay_period_id = "";
     String department_id = "";
+		String type=""; // for custom
     String source="", outputType="html";
     boolean isHand = false, csvOutput = false, isUtil = false;
     Hashtable<String, Profile> profMap = null;
@@ -71,6 +72,14 @@ public class PayPeriodProcessAction extends TopAction{
 												ret = "csv";
 										}
 								}
+								if(type.equals("single")){ // one department
+										ret = "single";
+								}
+						}
+				}
+				else{
+						if(type.equals("single")){ // one department
+								ret = "single";
 						}
 				}
 				return ret;
@@ -82,13 +91,27 @@ public class PayPeriodProcessAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						action = val;
     }
+    public void setType(String val){
+				if(val != null && !val.equals(""))		
+						type = val;
+    }		
     public void setDepartment_id(String val){
 				if(val != null && !val.equals("-1"))		
 						department_id = val;
     }
     public String getDepartment_id(){
-				if(department_id.equals(""))
-						return "-1";
+				if(user != null ){
+						if(user.isAdmin()){
+								if(department_id.equals(""))
+										return "-1";
+						}
+						else{
+								department = user.getDepartment();
+								if(department != null){
+										department_id = department.getId();
+								}
+						}
+				}				
 				return department_id;
     }
     public void setPay_period_id(String val){

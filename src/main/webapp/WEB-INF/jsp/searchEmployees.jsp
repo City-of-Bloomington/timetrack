@@ -48,10 +48,13 @@
 				(To pick a group you need to pick a department first)
 				</s:else>
 			</div>
-
+			<div class="form-group">
+				<label>Added Date</label>
+				<s:radio name="emplst.added_status" value="%{emplst.added_status}" list="#{'-1':'All','Recent':'Recent (Within 14 days)','Old':'Old (More than 14 days)'}"/>				
+			</div>
 			<div class="form-group">
 				<label>Active?</label>
-				<s:radio name="emplst.active_status" value="%{emplst.active_status}" list="#{'-1':'All','Active':'Active only','Inactive':'Inactive only'}"/>
+				<s:radio name="emplst.activeStatus" value="%{emplst.activeStatus}" list="#{'-1':'All','Active':'Active only','Inactive':'Inactive only'}"/>
 			</div>
 			
 			<div class="button-group">

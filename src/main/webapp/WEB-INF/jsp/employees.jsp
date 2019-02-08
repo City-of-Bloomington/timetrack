@@ -9,6 +9,7 @@
 			<th>Employee #</th>
 			<th>Email</th>
 			<th>Role</th>
+			<th>Added Date</th>			
 			<th>Active?</th>
 		</tr>
 	</thead>
@@ -22,6 +23,7 @@
 				<td><s:property value="employee_number" /></td>
 				<td><s:property value="email" /></td>
 				<td><s:property value="rolesText" /></td>
+				<td><s:property value="added_date" /></td>				
 				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>
 		</s:iterator>

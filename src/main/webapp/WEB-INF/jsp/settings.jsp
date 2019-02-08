@@ -59,7 +59,7 @@
 			</ul>
 			<h2>Timewarp</h2>
 			<ul>
-				<li><a href="<s:property value='#application.url'/>payperiodProcess.action">Pay Period Process</a></li>
+				<li><a href="<s:property value='#application.url'/>timewarp.action">Timewarp</a></li>
 			</ul>
 			<h2>Reports</h2>
 			<ul>
@@ -68,7 +68,7 @@
 				<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO</a></li>
 				<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA</a></li>
 				<li><a href="<s:property value='#application.url'/>parksJobReport.action">Parks Employee Jobs</a></li>
-				<li><a href="<s:property value='#application.url'/>jobTitles.action">Parks Employee Jobs Need Intervention</a></li>				
+				<li><a href="<s:property value='#application.url'/>jobIntervention.action">Parks Jobs Need Intervention</a></li>				
 			</ul>			
 			<h2>Employee Data Import</h2>
 			<ul>

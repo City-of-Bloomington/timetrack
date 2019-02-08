@@ -44,7 +44,7 @@ public class WeekEntry{
 		SalaryGroup salaryGroup = null;
 		Group group = null;
 		Shift shift = null;
-		HourCode defaultEarnCode = null;
+		// HourCode defaultEarnCode = null;
 		String excess_hours_calculation_method = "";
     //
     // these are used for the yearend pay period where we need
@@ -405,6 +405,7 @@ public class WeekEntry{
 				String code = "";
 				double netHours = total_hrs - earned_time;
 				double extra_hrs = 0;
+				System.err.println(" net hours "+netHours);
 				//
 				// for full time working less than 40 hrs
 				//
@@ -412,7 +413,7 @@ public class WeekEntry{
 						if(salaryGroup.isTemporary()){
 								extra_hrs = netHours < 40 ? 0: netHours - 40;
 						}
-						else if(!salaryGroup.isExcessCulculationDaily()){
+						else if(salaryGroup.isExcessCulculationDaily()){
 								// union, police,
 								// compute daily see below
 						}
@@ -467,7 +468,7 @@ public class WeekEntry{
 				if(excess_hrs <= critical_small) return;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
-								code = "OT1.0";	
+								code = "OT1.5";	// no CE1.5 for temp
 								addToEarnedHash(code, excess_hrs);								
 								return;
 						}
@@ -484,9 +485,6 @@ public class WeekEntry{
 				// this should work for full time or part time with benefit
 				//
 				code = "CE1.0";
-				if(excess_hours_calculation_method.equals("Monetary")){
-						code ="OT1.0";
-				}
 				//
 				// we want to keep excess_hrs as we may need it
 				// for other stuff
@@ -508,18 +506,20 @@ public class WeekEntry{
 				// for hours after 40
 				//
 				if(excess_hrs2 > critical_small){ 
-						// System.err.println(" group "+group);
-						// System.err.println(" default h cod "+defaultEarnCode);
-						if(defaultEarnCode != null && defaultEarnCode.isOvertime()){
+						if(excess_hours_calculation_method.equals("Monetary")){
 								code ="OT1.0";
+								if(comp_factor > 1.0){
+										code = "OT1.5";
+								}
 						}
-						else if(comp_factor > 1.0){
-								code = "CE1.5";
+						else{ // Earn time
+								if(comp_factor > 1.0){
+										code = "CE1.5";
+								}
 						}
 						String dstr = ndf.format(excess_hrs2);
 						excess_hrs2 = (double) (new Double(dstr));
-						addToEarnedHash(code, excess_hrs2);
-	    
+						addToEarnedHash(code, excess_hrs2);								
 				}
     }
     public void createProfRecord(){

@@ -437,7 +437,39 @@ public class Helper{
 								con = null;
 						}
 				}
-    }		
+    }
+    public final static void databaseDisconnect(ResultSet rs,
+																								Statement... stmt) {
+				try {
+						if(rs != null) rs.close();
+						rs = null;
+						if(stmt != null){
+								for(Statement one:stmt){
+										if(one != null)
+												one.close();
+										one = null;
+								}
+						}
+				}
+				catch (Exception e) {
+						e.printStackTrace();
+				}
+				finally{
+						if (rs != null) {
+								try { rs.close(); } catch (SQLException e) { }
+								rs = null;
+						}
+						if (stmt != null) {
+								try {
+										for(Statement one:stmt){										
+												if(one != null)
+														one.close(); 
+												one = null;
+										}
+								} catch (SQLException e) { }
+						}
+				}
+    }				
     /**
      * Write the number in bbbb.bb format needed for currency.
      *
