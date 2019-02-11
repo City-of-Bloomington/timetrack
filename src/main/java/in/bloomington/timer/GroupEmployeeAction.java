@@ -19,10 +19,11 @@ public class GroupEmployeeAction extends TopAction{
 		static final long serialVersionUID = 2100L;	
 		static Logger logger = LogManager.getLogger(GroupEmployeeAction.class);
 		//
-		String group_id="", employee_id="", department_id="",
+		String group_id="", emp_id="", department_id="",
 				department2_id="";
-		// Employee employee = null;
+		Employee emp = null;
 		List<Group> groups = null;
+		List<PayPeriod> payPeriods = null;
 		GroupEmployee groupEmployee = null;
 		List<GroupEmployee> groupEmployees = null;
 		String groupEmployeesTitle = "Group Members";
@@ -32,13 +33,11 @@ public class GroupEmployeeAction extends TopAction{
 				if(action.equals("Save")){
 						back = groupEmployee.doSave();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
 								group_id = groupEmployee.getGroup_id();
-								employee_id = groupEmployee.getEmployee_id();
-								addActionMessage("Saved Successfully");
+								emp_id = groupEmployee.getEmployee_id();
 								addMessage("Saved Successfully");								
 						}
 				}				
@@ -46,12 +45,10 @@ public class GroupEmployeeAction extends TopAction{
 						back = groupEmployee.doUpdate();
 						if(!back.equals("")){
 								addError(back);
-								addActionError(back);
 						}
 						else{
 								group_id = groupEmployee.getGroup_id();
-								employee_id = groupEmployee.getEmployee_id();
-								addActionMessage("Saved Successfully");
+								emp_id = groupEmployee.getEmployee_id();
 								addMessage("Saved Successfully");			
 						}
 				}
@@ -59,10 +56,8 @@ public class GroupEmployeeAction extends TopAction{
 						back = groupEmployee.doChange();
 						if(!back.equals("")){
 								addError(back);
-								addActionError(back);
 						}
 						else{
-								addActionMessage("Changed Successfully");
 								addMessage("Changed Successfully");			
 						}
 				}				
@@ -71,10 +66,9 @@ public class GroupEmployeeAction extends TopAction{
 						if(!id.equals("")){
 								back = groupEmployee.doSelect();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}
-								employee_id = groupEmployee.getEmployee_id();
+								emp_id = groupEmployee.getEmployee_id();
 								group_id = groupEmployee.getGroup_id();
 						}
 				}
@@ -83,7 +77,7 @@ public class GroupEmployeeAction extends TopAction{
 		public GroupEmployee getGroupEmployee(){ 
 				if(groupEmployee == null){
 						groupEmployee = new GroupEmployee(id);
-						groupEmployee.setEmployee_id(employee_id);
+						groupEmployee.setEmployee_id(emp_id);
 						groupEmployee.setGroup_id(group_id);
 				}		
 				return groupEmployee;
@@ -95,26 +89,26 @@ public class GroupEmployeeAction extends TopAction{
 				}
 		}
 		public String getDepartment_id(){
-				if(department_id.equals("") && !employee_id.equals("")){
-						getEmployee();
-						if(employee != null){
-								department_id = employee.getDepartment_id();
-								if(employee.hasTwoDepartments()){
-										department2_id = employee.getDepartment2_id(); 
+				if(department_id.equals("") && !emp_id.equals("")){
+						getEmp();
+						if(emp != null){
+								department_id = emp.getDepartment_id();
+								if(emp.hasTwoDepartments()){
+										department2_id = emp.getDepartment2_id(); 
 								}
 						}
 				}
 				return department_id;
 		}
-		public Employee getEmployee(){
-				if(employee == null && !employee_id.equals("")){
-						Employee one = new Employee(employee_id);
-						String back = one.doSelect();
+		public Employee getEmp(){
+				if(emp == null && !emp_id.equals("")){
+						Employee ee = new Employee(emp_id);
+						String back = ee.doSelect();
 						if(back.equals("")){
-								employee = one;
+								emp = ee;
 						}
 				}
-				return employee;
+				return emp;
 		}
 		public String getGroupEmployeesTitle(){
 				return groupEmployeesTitle;
@@ -128,9 +122,9 @@ public class GroupEmployeeAction extends TopAction{
 				if(val != null && !val.equals("-1"))		
 						group_id = val;
 		}
-		public void setEmployee_id(String val){
+		public void setEmp_id(String val){
 				if(val != null && !val.equals("-1"))		
-						employee_id = val;
+						emp_id = val;
 		}
 		public void setDepartment_id(String val){
 				if(val != null && !val.equals("-1"))		
@@ -144,7 +138,7 @@ public class GroupEmployeeAction extends TopAction{
 						if(department_id.equals("")){
 								getDepartment_id();
 						}
-						getEmployee();
+						getEmp();
 						if(employee.hasTwoDepartments()){
 								department2_id = employee.getDepartment2_id();
 						}
@@ -173,6 +167,10 @@ public class GroupEmployeeAction extends TopAction{
 		public List<GroupEmployee> getGroupEmployees(){
 				if(groupEmployees == null){
 						GroupEmployeeList gel = new GroupEmployeeList();
+						if(group_id.equals("")){
+								getGroupEmployee();
+								group_id = groupEmployee.getGroup_id();
+						}
 						gel.setGroup_id(group_id);
 						String back = gel.find();
 						if(back.equals("")){
@@ -184,7 +182,21 @@ public class GroupEmployeeAction extends TopAction{
 				}
 				return groupEmployees;
 		}
-		
+		public List<PayPeriod> getPayPeriods(){
+				if(payPeriods == null){
+						PayPeriodList tl = new PayPeriodList();
+						tl.setTwoPeriodsAheadOnly();
+						tl.setLimit("5");
+						String back = tl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = tl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										payPeriods = ones;
+								}
+						}
+				}
+				return payPeriods;
+		}		
 
 }
 

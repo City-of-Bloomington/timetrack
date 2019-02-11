@@ -23,9 +23,10 @@ public class GroupEmployee extends CommonInc {
 				inactive="", id="";
 		// to change group
 		//
-		String new_group_id="", change_date="";
+		String new_group_id="", change_date="", change_pay_period_id="";
 		Group group = null;
 		Employee employee = null;
+		PayPeriod payPeriod = null, changePayPeriod=null;
 		//
 		public GroupEmployee(){
 				super();
@@ -109,10 +110,19 @@ public class GroupEmployee extends CommonInc {
 				if(val != null)
 						expire_date = val;
 		}
+		/*
 		public void setChange_date(String val){
 				if(val != null)
 						change_date = val;
-		}		
+		}
+		*/
+		public void setChange_pay_period_id(String val){
+				if(val != null && !val.equals("-1"))
+						change_pay_period_id = val;
+		}
+		public String getChange_pay_period_id(){
+				return change_pay_period_id;
+		}
 		public void setInactive(boolean val){
 				if(val)
 						inactive = "y";
@@ -229,6 +239,27 @@ public class GroupEmployee extends CommonInc {
 				}
 				return msg;
     }
+		public boolean hasOneGroupOnly(){
+				GroupEmployeeList gel = new GroupEmployeeList();
+				gel.setEmployee_id(employee_id);
+				getPayPeriod(); // current only
+				gel.setPay_period_id(payPeriod.getId()); 
+				String back = gel.find();
+				if(back.equals("")){
+						List<GroupEmployee> ones = gel.getGroupEmployees();
+						return ones != null && ones.size() == 1;
+				}
+				return false;
+		}
+		public boolean hasOneJobOnly(){
+				getEmployee();
+				getPayPeriod();
+				if(employee != null){
+						if(employee != null)
+								employee.setPay_period_id(payPeriod.getId());
+				}
+				return employee != null && employee.hasOneJobOnly();
+		}
 		//
     public String doUpdate(){
 				String msg = "";
@@ -244,7 +275,10 @@ public class GroupEmployee extends CommonInc {
 				}			
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, group_id);														
+						if(new_group_id.equals("")){
+								new_group_id = group_id;
+						}
+						pstmt.setString(1, new_group_id);														
 						pstmt.setString(2, employee_id);
 						java.util.Date date_tmp = df.parse(effective_date);
 						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
@@ -270,9 +304,63 @@ public class GroupEmployee extends CommonInc {
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
+				if(!group_id.equals(new_group_id)){
+						checkEmployeeJobGroup();
+				}
 				return msg;
     }
+		public PayPeriod getPayPeriod(){
+				//
+				if(payPeriod == null){
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.currentOnly();
+						String back = ppl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = ppl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										payPeriod = ones.get(0);
+								}
+						}
+				}
+				return payPeriod;
+		}
+		public PayPeriod getChangePayPeriod(){
+				//
+				if(changePayPeriod == null && !change_pay_period_id.equals("")){
+						PayPeriod pp = new PayPeriod(change_pay_period_id);
+						String back = pp.doSelect();
+						if(back.equals("")){
+								changePayPeriod = pp;
+						}
+				}
+				return changePayPeriod;
+		}		
+		/**
+		 * if employee has one group only then we can change jobs group,
+		 * this happens when an employee was assigned to a wrong group
+		 * and we want to assign him to the right one, to preserve old
+		 * date we are not changing the dates on employee group or job
+		 */
+		void checkEmployeeJobGroup(){
+				getEmployee();
+				if(employee != null){
+						if(payPeriod != null)
+								employee.setPay_period_id(payPeriod.getId());
+						List<JobTask> jobs = employee.getJobs();
+						for(JobTask job:jobs){
+								// change jobs that are linked to the old group only
+								if(job.getGroup_id().equals(group_id)){
+										job.setGroup_id(new_group_id);
+										job.doUpdate();
+								}
+						}
+				}
+				group_id = new_group_id;
+		}
     public String doChange(){
+				getChangePayPeriod();
+				String date = changePayPeriod.getStart_date();
+				String exp_date = Helper.getDateFrom(date, -1); // one day before
 				String msg = "";
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -286,7 +374,7 @@ public class GroupEmployee extends CommonInc {
 				}			
 				try{
 						pstmt = con.prepareStatement(qq);
-						java.util.Date date_tmp = df.parse(change_date);
+						java.util.Date date_tmp = df.parse(exp_date);
 						pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
 						pstmt.setString(2, id);
 						pstmt.executeUpdate();
@@ -300,12 +388,32 @@ public class GroupEmployee extends CommonInc {
 						UnoConnect.databaseDisconnect(con);
 				}
 				if(msg.equals("")){
-						id=""; effective_date=change_date;
-						group_id = new_group_id;
-						msg = doSave();
+						msg = doExpireRelatedGroupJobs();
 				}
 				return msg;
-    }		
+    }
+		String doExpireRelatedGroupJobs(){
+				getEmployee();
+				getChangePayPeriod();
+				String date = changePayPeriod.getStart_date();
+				String exp_date = Helper.getDateFrom(date, -1);
+				if(employee != null){
+						if(payPeriod != null){
+								employee.setPay_period_id(payPeriod.getId());
+						}
+						List<JobTask> jobs = employee.getJobs();
+						for(JobTask job:jobs){
+								if(job.getGroup_id().equals(group_id)){
+										job.setExpire_date(exp_date);
+										job.doUpdate();
+								}
+						}
+				}
+				id = "";
+				effective_date=date;
+				group_id = new_group_id;
+				return doSave();
+		}
 		public String doSelect(){
 				//
 				Connection con = null;

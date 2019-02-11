@@ -7,11 +7,14 @@
 			<h1>Add Employee to a Group</h1>
 		</s:if>
 		<s:else>
-			<h1>Edit Employee Group </h1>
+			<h1>Edit/Change Employee Group </h1>
+			<ul>
+				<li>If you want to change employee group and the related job to
+					a new group, pick the new group from the list and hit 'Save Changes'</li>
+				<li>If you want to change the employee group to a new group but keep the old group related job then click on 'Change Group' button</li>
+			</ul>
 			<s:hidden id="groupEmployee.id" name="groupEmployee.id" value="%{groupEmployee.id}" />
-			<s:if test="groupEmployee.hasTimeData()">
-				<s:hidden id="groupEmployee.id" name="groupEmployee.group_id" value="%{groupEmployee.group_id}" />
-			</s:if>
+			<s:hidden id="groupEmployee.id" name="groupEmployee.group_id" value="%{groupEmployee.group_id}" />
 		</s:else>
 
 	  <%@ include file="strutMessages.jsp" %>
@@ -21,18 +24,10 @@
 				<label>Employee</label>
 				<a href="<s:property value='#application.url' />employee.action?id=<s:property value='groupEmployee.employee_id' />" /><s:property value="%{groupEmployee.employee}" /></a>
 			</div>
-
 			<div class="form-group">
 				<label>Group</label>
-				<s:if test="groupEmployee.hasTimeData()">
-					<s:property value="groupEmployee.group" />
-				</s:if>
-
-				<s:else>
-					<s:select name="groupEmployee.group_id" value="%{groupEmployee.group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Group" />
-				</s:else>
+				<s:select name="groupEmployee.new_group_id" value="%{groupEmployee.group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Group" />
 			</div>
-
 			<div class="form-group">
 				<label>Effective Date</label>
 				<s:textfield name="groupEmployee.effective_date" value="%{groupEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" />
@@ -54,9 +49,7 @@
 
 			<s:else>
 				<div class="button-group">
-					<s:if test="groupEmployee.hasTimeData()">
-						<a href="<s:property value='#application.url' />groupEmpChange.action?id=<s:property value='groupEmployee.id' />" class="button"> Change Employee Group</a>
-					</s:if>
+					<a href="<s:property value='#application.url' />groupEmpChange.action?id=<s:property value='groupEmployee.id' />" class="button"> Change Employee Group</a>
 					<s:submit name="action" type="button" value="Save Changes" class="button"/>
 				</div>
 			</s:else>

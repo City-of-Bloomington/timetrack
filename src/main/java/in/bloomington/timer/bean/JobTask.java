@@ -809,12 +809,7 @@ public class JobTask implements Serializable{
 
 				return msg;
     }
-    /**
-     *
-     update time_documents set job_id=946 where job_id=856 and pay_period_id >=
-     547;
-
-    */
+		//
     public String doChange(){
 				Connection con = null;
 				PreparedStatement pstmt = null;

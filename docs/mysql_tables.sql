@@ -760,8 +760,16 @@ alter table hour_codes modify type enum('Regular','Used','Earned','Overtime','Un
 ;;
 ;; alter table employees add added_date date after roles;
 ;; update employees e set e.added_date=(select d.effective_date from department_employees d where d.employee_id=e.id limit 1);
-
-
+;;
+;;
+;; 2/11/2019
+alter table group_employees drop foreign key group_employees_ibfk_1;
+alter table group_employees drop foreign key group_employees_ibfk_2;
+alter table group_employees drop index group_id;
+;;
+alter table group_employees add foreign key(group_id) references groups(id);
+alter table group_employees add foreign key(employee_id) references employees(id);
+alter table group_employees add unique(group_id,employee_id, effective_date);
 
 
 ;;

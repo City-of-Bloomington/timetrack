@@ -11,6 +11,14 @@
 	<s:hidden id="groupEmployee.id" name="groupEmployee.id" value="%{groupEmployee.id}" />
 	<s:hidden id="groupEmployee.group_id" name="groupEmployee.group_id" value="%{groupEmployee.group_id}" />			
 	<h3>Change Employee Group </h3>
+	<ul>
+		<li>When an employee group is changed to another one,
+			the old group will be set to expire on the day before the
+			pay period selected for effective date for the new group.</li>
+		<li>All related group related jobs will be expired as well to the same
+			group expire date set above.</li>
+		<li>Then you need to add new job(s) to the new group</li>
+	</ul>
   <s:if test="hasActionErrors()">
 		<div class="errors">
       <s:actionerror/>
@@ -23,7 +31,7 @@
   </s:elseif>
 	<dl class="fn1-output-field">
 		<dt>Employee</dt>
-		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='groupEmployee.employee_id' />" /><s:property value="%{groupEmployee.employee.user}" /></a></dd>
+		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='groupEmployee.employee_id' />" /><s:property value="%{groupEmployee.employee}" /></a></dd>
 	</dl>			
 	<dl class="fn1-output-field">
 		<dt>Old Group</dt>
@@ -34,8 +42,9 @@
 			<dd><s:select name="groupEmployee.new_group_id" value="%{groupEmployee.new_group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick A Group" /></dd>
 	</dl>
 	<dl class="fn1-output-field">
-		<dt>Change Date</dt>
-		<dd><s:textfield name="groupEmployee.change_date" value="%{groupEmployee.change_date}" size="10" maxlength="10" cssClass="date" required="true" /> </dd>
+		<dt>New Group Effective Start Pay Period</dt>
+		<dd><s:select name="groupEmployee.change_pay_period_id" value="" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Effective start pay period" />
+    </dd>
 	</dl>
 	<s:submit name="action" type="button" value="Change Group" class="fn1-btn"/>
 </s:form>
