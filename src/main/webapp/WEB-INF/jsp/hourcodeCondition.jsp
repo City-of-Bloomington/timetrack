@@ -68,6 +68,10 @@
 				<s:submit name="action" type="button" value="Save Changes" />
 			</div>
 		</s:else>
+			<div class="button-group">
+				<a href="<s:property value='#application.url' />searchConditions.action?" class="button">Search Hour Code Restrictions</a>
+				<s:submit name="action" type="button" value="Save Changes" />
+			</div>		
 	</s:form>
 
 	<s:if test="hasConditions()">

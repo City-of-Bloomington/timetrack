@@ -32,7 +32,7 @@ public class HourCode{
 		// each salary group can have only one reg_default set to 0
 				reg_default="", // 0 for default, 1 for others
 				count_as_regular_pay=""; // char Yes/No flag
-
+		private double default_monetary_amount=0.0;
 		private String timeUsed="", timeEarned="", unpaid="";
 
     public HourCode(){
@@ -107,14 +107,25 @@ public class HourCode{
 		public boolean isRecordMethodHours(){
 				return record_method.equals("Hours");
 		}
+		public boolean isRecordMethodMonetary(){
+				return record_method.equals("Monetary");
+		}		
 		public boolean isAccrualRelated(){
 				return !accrual_id.equals("");
 		}
+		// probably not used
 		public boolean getCount_as_regular_pay(){
 				if(count_as_regular_pay.equals("") && id.equals(""))
 						return true;
 				return !count_as_regular_pay.equals("");
     }
+		public double getDefaultMonetaryAmount(){
+				return default_monetary_amount;
+		}
+		public void setDefaultMonetaryAmount(Double val){
+				if(val != null)
+						default_monetary_amount = val;
+		}
 		//
 		// id-Time, id-Hours
 		// needed for js

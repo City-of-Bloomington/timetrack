@@ -21,6 +21,7 @@ public class DepartmentList{
 		String name = ""; // for service
 		String deptRefs = "";
 		boolean active_only = false, hasRefIds = false; // all
+		boolean ignoreSpecialDepts = false;
 		/*
 			// Department ID's in New World app, needed
 			// to find current employee in each department
@@ -107,6 +108,12 @@ public class DepartmentList{
 		public void hasRefIds(){
 				hasRefIds = true;
 		}
+		/**
+		 * we ignore the made up departments such as City Directors, Training
+		 */
+		public void ignoreSpecialDepts(){
+				ignoreSpecialDepts = true;
+		}
 		public String find(){
 		
 				String back = "";
@@ -135,6 +142,10 @@ public class DepartmentList{
 						if(hasRefIds){
 								if(!qw.equals("")) qw += " and ";
 								qw += " t.ref_id is not null ";
+						}
+						if(ignoreSpecialDepts){
+								if(!qw.equals("")) qw += " and ";
+								qw += " not t.id in (18,41) ";
 						}
 						if(!qw.equals("")){
 								qq += " where "+qw;

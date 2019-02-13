@@ -28,101 +28,108 @@ public class HourCodeConditionList{
     public HourCodeConditionList(){
     }
     public List<HourCodeCondition> getConditions(){
-	return conditions;
+				return conditions;
     }
     public void setActiveOnly(){
-	active_only = true;
+				active_only = true;
     }
     public void setHour_code_id (String val){
-	if(val != null)
-	    hour_code_id = val;
+				if(val != null && !val.equals("-1"))
+						hour_code_id = val;
     }
     public void setDepartment_id(String val){
-	if(val != null)
-	    department_id = val;
+				if(val != null && !val.equals("-1"))
+						department_id = val;
     }
     public void setSalary_group_id(String val){
-	if(val != null)
-	    salary_group_id = val;
+				if(val != null && !val.equals("-1"))
+						salary_group_id = val;
     }
     public void setGroup_id(String val){
-	if(val != null)
-	    group_id = val;
+				if(val != null && !val.equals("-1"))
+						group_id = val;
     }		
     //
     // getters
     //
     public String find(){
-	Connection con = null;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	String msg="", qw="";
-	String qq = "select g.id,g.hour_code_id,g.department_id,g.salary_group_id,g.group_id,date_format(g.date,'%m/%d/%Y'),g.inactive from hour_code_conditions g left join hour_codes e on e.id=g.hour_code_id  ";
-	logger.debug(qq);
-	if(active_only){
-	    qw += " g.inactive is null ";
-	}
-	if(!department_id.equals("")){
-	    if(!qw.equals("")) qw += " and ";
-	    qw += " (g.department_id = ? or g.department_id is null)";
-	}
-	if(!salary_group_id.equals("")){
-	    if(!qw.equals("")) qw += " and ";
-	    qw += " (g.salary_group_id = ? or g.salary_group_id is null)";
-	}
-	if(!group_id.equals("")){
-	    if(!qw.equals("")) qw += " and ";
-	    qw += " (g.group_id = ? or g.group_id is null)";
-	}				
-	if(!qw.equals("")){
-	    qq += " where "+qw;
-	}
-	qq += " order by e.name ";
-	con = UnoConnect.getConnection();
-	if(con == null){
-	    msg = " Could not connect to DB ";
-	    logger.error(msg);
-	    return msg;
-	}
-	logger.debug(qq);
-	try{
-	    pstmt = con.prepareStatement(qq);
-	    int jj=1;
-	    if(!department_id.equals("")){
-		pstmt.setString(jj++, department_id);
-	    }
-	    if(!salary_group_id.equals("")){
-		pstmt.setString(jj++, salary_group_id);								
-	    }
-	    if(!group_id.equals("")){
-		pstmt.setString(jj++, group_id);								
-	    }						
-	    rs = pstmt.executeQuery();
-	    while(rs.next()){
-		if(conditions == null)
-		    conditions = new ArrayList<>();
-		HourCodeCondition one =
-		    new HourCodeCondition(
-					  rs.getString(1),
-					  rs.getString(2),
-					  rs.getString(3),
-					  rs.getString(4),
-					  rs.getString(5),
-					  rs.getString(6),
-					  rs.getString(7) != null);
-		if(!conditions.contains(one))
-		    conditions.add(one);
-	    }
-	}
-	catch(Exception ex){
-	    msg += " "+ex;
-	    logger.error(msg+":"+qq);
-	}
-	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return msg;
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", qw="";
+				String qq = "select g.id,g.hour_code_id,g.department_id,g.salary_group_id,g.group_id,date_format(g.date,'%m/%d/%Y'),g.inactive from hour_code_conditions g left join hour_codes e on e.id=g.hour_code_id  ";
+				logger.debug(qq);
+				if(active_only){
+						qw += " g.inactive is null ";
+				}
+				if(!department_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " (g.department_id = ? or g.department_id is null)";
+				}
+				if(!salary_group_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " (g.salary_group_id = ? or g.salary_group_id is null)";
+				}
+				if(!group_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " (g.group_id = ? or g.group_id is null)";
+				}
+				if(!hour_code_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " g.hour_code_id = ?";
+				}				
+				if(!qw.equals("")){
+						qq += " where "+qw;
+				}
+				qq += " order by e.name ";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						if(!department_id.equals("")){
+								pstmt.setString(jj++, department_id);
+						}
+						if(!salary_group_id.equals("")){
+								pstmt.setString(jj++, salary_group_id);								
+						}
+						if(!group_id.equals("")){
+								pstmt.setString(jj++, group_id);								
+						}
+						if(!hour_code_id.equals("")){
+								pstmt.setString(jj++, hour_code_id);								
+						}						
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								if(conditions == null)
+										conditions = new ArrayList<>();
+								HourCodeCondition one =
+										new HourCodeCondition(
+																					rs.getString(1),
+																					rs.getString(2),
+																					rs.getString(3),
+																					rs.getString(4),
+																					rs.getString(5),
+																					rs.getString(6),
+																					rs.getString(7) != null);
+								if(!conditions.contains(one))
+										conditions.add(one);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
     }
 
 }

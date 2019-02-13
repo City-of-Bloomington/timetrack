@@ -493,10 +493,8 @@ public class TimeBlock extends Block{
 		}
 		public String getTimeInfoNextLine(){
 				String ret = "";
-				if(!isHourType()){
-						if(!isClockInOnly()){
-								ret += " "+getHours()+" "+getHour_code();
-						}
+				if(hasNextLine()){
+						ret += " "+getHours()+" "+getHour_code();
 				}
 				return ret;
 		}
@@ -504,17 +502,22 @@ public class TimeBlock extends Block{
 				if(hourCode == null){
 						getHourCode();
 				}
-				return !isHourType() && !isClockInOnly();
+				return !isHourType() && !isClockInOnly() && !isMonetaryType();
 		}
-		
 		public boolean isHourType(){
 				getHourCode();
 				if(hourCode != null){
-						String str = hourCode.getRecord_method();
-						return str.equals("Hours");
+						return hourCode.isRecordMethodHours();
 				}
 				return false;// default is Time
 		}
+		public boolean isMonetaryType(){
+				getHourCode();
+				if(hourCode != null){
+						return hourCode.isRecordMethodMonetary();
+				}
+				return false;// default is Time
+		}		
 		
 		@Override
 		public boolean equals(Object o) {

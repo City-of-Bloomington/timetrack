@@ -176,13 +176,23 @@ public class BenefitGroup{
 		public void setSalary_group_name(String val){
 				if(val != null){
 						salary_group_name = val;
+						if(val.equals("Exempt")){
+								exempt = true;
+								nonExempt = false;
+						}
 				}
 		}
     public void setSalary_group_name(){
 				// System.err.println(" name "+name);
 				if(name.indexOf("TEMP") > -1){
-						salary_group_name = "Temp";
-						temporary = true;
+						if(name.indexOf("BEN") > -1){
+								salary_group_name = "Temp W/Ben";
+								temporary = true;
+						}
+						else{
+								salary_group_name = "Temp";
+								temporary = true;
+						}
 				}
 				else if(name.indexOf("PART") > -1){
 						// NON-U RPARTnx, NON-U RPARTx

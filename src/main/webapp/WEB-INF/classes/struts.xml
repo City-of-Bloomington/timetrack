@@ -6,7 +6,7 @@
 <struts>
   <constant name="struts.devMode" value="true" />
   <constant name="struts.ui.theme" value="simple" />
-  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*" />
+  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*" />
 
   <package name="default" extends="struts-default">
 
@@ -429,6 +429,13 @@
 			<result name="input">/WEB-INF/jsp/searchGroups.jsp</result>		
 			<result name="error">/WEB-INF/jsp/searchGroups.jsp</result>
 			<result name="success">/WEB-INF/jsp/searchGroups.jsp</result>
+		</action>
+		<action name="searchConditions" 
+						class="in.bloomington.timer.SearchHourCodeConditionsAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/searchConditions.jsp</result>		
+			<result name="error">/WEB-INF/jsp/searchConditions.jsp</result>
+			<result name="success">/WEB-INF/jsp/searchConditions.jsp</result>
 		</action>		
 		<action name="searchJobs" 
 						class="in.bloomington.timer.SearchJobAction" 

@@ -5,7 +5,7 @@
 			<th>ID</th>
 			<th>Name</th>
 			<th>Department</th>
-			<th>Excess Hours Calculation Tethod</th>			
+			<th>Excess Hours Calculation Method</th>			
 			<th>Description</th>
 			<th>Active?</th>
 		</tr>

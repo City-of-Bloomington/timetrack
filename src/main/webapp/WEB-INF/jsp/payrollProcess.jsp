@@ -40,7 +40,7 @@
 		    <a href="<s:property value='#application.url' />payrollProcess.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
 		  </div>
 
-			<a href="<s:property value='#application.url' />timewarp.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit" class="button">More Details</a>
+			<a href="<s:property value='#application.url' />timewarp.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit&type=single" class="button">More Details</a>
 
 			<s:if test="needAction()">
 				<a href="<s:property value='#application.url' />inform.action?group_ids=<s:iterator value='groups' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noApprove&source=payrollProcess&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Approvers</a>

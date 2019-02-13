@@ -96,7 +96,7 @@ public class SalaryGroup{
 				return name.equals("Non-Exempt");
 		}		
 		public boolean isTemporary(){
-				return name.equals("Temp");
+				return name.indexOf("Temp") > -1; // for Temp and Temp W/Ben
 		}
 		public boolean isPartTime(){
 				return name.equals("Part Time");

@@ -18,10 +18,10 @@ import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 
 
-public class GroupService extends HttpServlet{
+public class DepartmentService extends HttpServlet{
 
 		static final long serialVersionUID = 2210L;
-		static Logger logger = LogManager.getLogger(GroupService.class);
+		static Logger logger = LogManager.getLogger(DepartmentService.class);
     static String url="";
     static boolean debug = false;
 		
@@ -64,19 +64,16 @@ public class GroupService extends HttpServlet{
 								// System.err.println(name+" "+value);
 						}
 				}
-				GroupList glist =  null;
-				List<Group> groups = null;
-				if(!department_id.equals("")){
-						//
-						glist = new GroupList();
-						glist.setDepartment_id(department_id);
-						String back = glist.find();
-						if(back.equals("")){
-								groups = glist.getGroups();
-						}
+				DepartmentList dlist =  null;
+				List<Department> departments = null;
+				dlist = new DepartmentList();
+				dlist.ignoreSpecialDepts(); //ignore City Directors, Training
+				String back = dlist.find();
+				if(back.equals("")){
+						departments = dlist.getDepartments();
 				}
-				if(groups != null && groups.size() > 0){
-						String json = writeJson(groups);
+				if(departments != null && departments.size() > 0){
+						String json = writeJson(departments);
 						out.println(json);
 				}
 				else{
@@ -93,11 +90,11 @@ public class GroupService extends HttpServlet{
 		 * @param type unused
 		 * @return The json string
 		 */
-		String writeJson(List<Group> groups){
+		String writeJson(List<Department> departments){
 				String json="";
-				for(Group one:groups){
+				for(Department one:departments){
 						if(!json.equals("")) json += ",";
-						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getName()+"\"}";
+						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getName()+"\",\"ldap_name\":\""+one.getLdap_name()+"\"}";
 				}
 				json = "["+json+"]";
 				// System.err.println(json);

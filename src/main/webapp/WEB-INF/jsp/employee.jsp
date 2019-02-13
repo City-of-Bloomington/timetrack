@@ -101,10 +101,10 @@
 						<a href="<s:property value='#application.url' />departmentEmployee.action?employee_id=<s:property value='employee.id' />" class="button">Add Employee to Department</a>
 					</s:if>
 					<s:if test="!employee.hasActiveGroup()">
-						<a href="<s:property value='#application.url' />groupEmployee.action?employee_id=<s:property value='employee.id' />&department_id=<s:property value='employee.department_id' />" class="button"> Add Employee to a Group</a>
+						<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='employee.id' />&department_id=<s:property value='employee.department_id' />" class="button"> Add Employee to a Group</a>
 					</s:if>
 					<s:else>
-						<a href="<s:property value='#application.url' />groupEmployee.action?employee_id=<s:property value='employee.id' />&department_id=<s:property value='employee.department_id' />" class="button"> Add Employee to Another Group</a>
+						<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='employee.id' />&department_id=<s:property value='employee.department_id' />" class="button"> Add Employee to Another Group</a>
 					</s:else>
 					<s:if test="employee.hasNoJob()">
 						<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='employee.id' />" class="button"> Add A Job</a>

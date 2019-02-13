@@ -188,6 +188,10 @@ public class PayPeriod{
 				int days = findDateDiffWithDate(today);
 				return days >= 14;
 		}
+		public boolean isTodayFirstDayOfPayPeriod(){
+				String today = Helper.getToday();
+				return start_date.equals(today);
+		}
 		/*
 		 * for the end of the year, the pay period is divided
 		 * into two ranges from (start_date, to 12/31/first year)

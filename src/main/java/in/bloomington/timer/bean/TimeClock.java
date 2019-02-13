@@ -22,7 +22,7 @@ public class TimeClock {
 				employee_id = "";
     final static String time_clock_duration = "13"; // hrs
     Employee employee = null;
-    PayPeriod currentPayPeriod = null;
+    PayPeriod currentPayPeriod = null, previousPayPeriod = null;
     Document document = null;
     List<JobTask> jobs = null;
     JobTask job = null;
@@ -130,44 +130,6 @@ public class TimeClock {
 						setTime(val);
 				}
 		}
-		/**
-    public void setTime(String val) {
-				if (val != null) {
-						getEmployee(); 
-						time = Helper.getCurrentTime();
-						int[] timeArr = Helper.getCurrentTimeArr();
-						time_hr = timeArr[0];
-						time_min = timeArr[1];
-						if(shift != null){
-								if(shift.hasWindows()){
-										if(!hasClockIn()){
-												if(shift.isMinuteWithin(timeArr)){
-														time_min = shift.getStartMinute();
-														time_hr = shift.getStartHour();
-														return;
-												}
-										}else {
-												if(shift.isClockOutMinuteWithin(timeArr)){
-														time_hr = shift.getEndHour();
-														time_min = shift.getEndMinute();
-														return;
-												}										
-										}
-								}
-								if(shift.hasRoundedMinute()){
-										int mm = shift.getRoundedMinute(time_min);
-										if(mm == 60){
-												time_hr += 1;
-												time_min = 0;
-										}
-										else{
-												time_min = mm;
-										}
-								}
-						}
-				}
-    }
-		*/
     public void setTime(String val) {
 				if (val != null) {
 						getEmployee();
@@ -251,14 +213,26 @@ public class TimeClock {
 				}				
 				return currentPayPeriod;
     }
-
+    public PayPeriod getPreviousPayPeriod() {
+				if (previousPayPeriod == null) {
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.setLastPayPeriod();
+						String back = ppl.find();
+						if (back.equals("")) {
+								List<PayPeriod> ones = ppl.getPeriods();
+								if (ones != null && ones.size() > 0) {
+										previousPayPeriod = ones.get(0);
+								}
+						}
+				}				
+				return previousPayPeriod;
+    }		
     public Document getDocument(){
 				if(document == null)
 						findDocument();
 				return document;
     }
     //
-    // called from prepareObjects
     void findDocument() {
 				if (document == null) {
 						DocumentList dl = new DocumentList();
@@ -373,6 +347,25 @@ public class TimeClock {
 								}
 								else{
 										// System.err.println(" no doc for clock in found ");
+								}
+						}
+						if(document == null &&
+							 currentPayPeriod.isTodayFirstDayOfPayPeriod()){
+								//
+								// needed for overnight clock out on the last day of payperiod
+								//
+								if(currentPayPeriod.isTodayFirstDayOfPayPeriod()){
+										getPreviousPayPeriod();
+										tbl.setPay_period_id(previousPayPeriod.getId());
+										back = tbl.findDocumentForClockInOnly(time_hr, time_min);
+										if (back.equals("")) {
+												// if we have clock-in, we can get the document
+												document = tbl.getDocument();
+												if (document != null) {
+														job_id = document.getJob_id();
+														hasClockIn = true;
+												}
+										}
 								}
 						}
 				}

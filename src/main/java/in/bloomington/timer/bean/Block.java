@@ -25,14 +25,15 @@ public class Block{
 				hour_code_id="",
 				clock_in="", clock_out="", holidayName="";
 		String date = ""; // the user pick date, needed for PTO, Holiday etc
-		double hours = 0.0;
+		double hours = 0.0, amount = 0.0; // for dollar value
 		int begin_hour = 0, begin_minute=0, end_hour=0, end_minute=0;
 		HourCode hourCode = null;
 		CodeRef codeRef = null;
 		JobTask jobTask = null;
 		Document document = null;
 		boolean hourCodeSet = false, isHoliday=false;
-		boolean time_in_set = false, time_out_set=false, hours_set=false;
+		boolean time_in_set = false, time_out_set=false, hours_set=false,
+				amount_set=false;
 		//
 		// this flag needed for clock machines
 		// when the managers change the clock in time but not clock out
@@ -91,7 +92,7 @@ public class Block{
 				setBegin_minute(val6);
 				setEnd_hour(val7);
 				setEnd_minute(val8);				
-				setHours(""+val9);// ovt_pref was 11
+				setHoursDbl(val9);
 				setClock_in(val10);
 				setClock_out(val11);
     }
@@ -118,7 +119,7 @@ public class Block{
 				setBegin_minute(val6);
 				setEnd_hour(val7);
 				setEnd_minute(val8);				
-				setHours(""+val9);
+				setHoursDbl(val9);
 				setClock_in(val10);
 				setClock_out(val11);
 				setIsHoliday(val12);
@@ -135,11 +136,6 @@ public class Block{
 		public String getId(){
 				return id;
     }
-		/*
-    public String getJob_id(){
-				return job_id;
-    }
-		*/
     public String getDocument_id(){
 				return document_id;
     }
@@ -215,6 +211,15 @@ public class Block{
     public double getHours(){
 				return hours;
     }
+    public double getAmount(){
+				return amount;
+    }
+    public String getAmountStr(){
+				if(amount == 0.0){
+						return "";
+				}
+				return ""+amount;
+    }		
     public String getHoursStr(){
 				if(hours == 0.0){
 						return "";
@@ -291,7 +296,11 @@ public class Block{
     }
     public void setEnd_minute(int val){
 				end_minute = val;
-    }		
+    }
+		public void setHoursDbl(Double val){
+				if(val != null)
+						hours = val;
+		}
     public void setHours(String val){
 				if(val != null && !val.equals("")){
 						try{
@@ -305,6 +314,19 @@ public class Block{
 						hours_set = false;
 				}
     }
+    public void setAmount(String val){
+				if(val != null && !val.equals("")){
+						try{
+								amount = Double.parseDouble(val);
+								amount_set = true;
+						}catch(Exception ex){
+
+						}
+				}
+				else{
+						amount_set = false;
+				}
+    }		
     public void setClock_in(String val){
 				if(val != null)
 						clock_in = val;

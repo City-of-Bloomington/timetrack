@@ -40,7 +40,9 @@ public class LoginFilter implements Filter {
 				if(session == null || session.getAttribute("user") == null){
 						// these are our exludes
 						if(uri.indexOf("timeClock") > -1 ||
-							 uri.indexOf("PickJob") > -1 ||	// clockPickJob						 
+							 uri.indexOf("PickJob") > -1 ||	// clockPickJob
+							 uri.indexOf("GroupService") > -1 ||	
+							 uri.indexOf("DepartmentService") > -1 ||	
 							 uri.matches(".*(css|jpg|png|gif|js)$") ||							 
 							 uri.indexOf("Login") > -1){
 								chain.doFilter(request, response);

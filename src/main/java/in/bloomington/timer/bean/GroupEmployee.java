@@ -179,6 +179,9 @@ public class GroupEmployee extends CommonInc {
 						addError(msg);
 						return msg;
 				}
+				if(group_id.equals("") && !new_group_id.equals("")){
+						group_id = new_group_id;
+				}
 				if(group_id.equals("")){
 						msg = "group not set ";
 						addError(msg);

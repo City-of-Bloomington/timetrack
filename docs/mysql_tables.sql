@@ -770,8 +770,17 @@ alter table group_employees drop index group_id;
 alter table group_employees add foreign key(group_id) references groups(id);
 alter table group_employees add foreign key(employee_id) references employees(id);
 alter table group_employees add unique(group_id,employee_id, effective_date);
-
-
+;;
+;;
+;; 2/12/2019
+;; for certain hour_codes we can use monetary value instead of time and hours
+;; we are using amount for dollar value
+;;
+alter table time_blocks add amount decimal(6,2) default 0 after hours;
+alter table hour_codes modify record_method enum('Time','Hours','Monetary');
+alter table hour_codes drop column count_as_regular_pay;
+alter table hour_codes add default_monetary_amount decimal(6,2) default 0 after type;
+;;
 ;;
 ;; ====================================================
 ;; 

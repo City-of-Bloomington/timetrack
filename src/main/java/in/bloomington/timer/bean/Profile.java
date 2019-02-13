@@ -217,6 +217,11 @@ public class Profile extends CommonInc{
 						if(bGroup.isExemptSpecial()){ // prob not used any more
 								// use the defaults, 40, 1
 						}
+						else if(bGroup.isTemporary()){
+								st_weekly_hrs = 20;
+								comp_time_after = 40;
+								comp_time_multiple = 1.5;
+						}
 						else if(bGroup.isExempt()){
 								if(payGrade > 10){ // 11, 12
 										comp_time_after = 50; // hours per week
@@ -242,9 +247,15 @@ public class Profile extends CommonInc{
 								comp_time_after = 50;
 								comp_time_multiple = 0;
 						}
-						else if(bGroup.isFire()){
-								comp_time_after = 50;
-								comp_time_multiple = 0;
+						else if(bGroup.isFireSworn()){
+								st_weekly_hrs = 48;// minimum
+								comp_time_after = 106;
+								comp_time_multiple = 1.5;
+						}
+						else if(bGroup.isFireSworn5to8()){
+								st_weekly_hrs = 40;
+								comp_time_after = 40;
+								comp_time_multiple = 1;
 						}						
 						else{ // non exempt
 								comp_time_multiple = 1.5;
