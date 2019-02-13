@@ -771,8 +771,42 @@ alter table group_employees add foreign key(group_id) references groups(id);
 alter table group_employees add foreign key(employee_id) references employees(id);
 alter table group_employees add unique(group_id,employee_id, effective_date);
 ;;
+;; 2/13/2019
 ;;
-;; 2/12/2019
+CREATE TABLE department_shifts (
+  id int unsigned NOT NULL AUTO_INCREMENT primary key,
+	name varchar(80) not null,
+	department_id int unsigned not null,
+	foreign key(department_id) references departments(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE shift_employees (
+  id int unsigned NOT NULL AUTO_INCREMENT primary key,
+	shift_id int unsigned not null,
+	employee_id int unsigned not null,
+	foreign key(shift_id) references department_shifts(id),
+	foreign key(employee_id) references employees(id)	
+) ENGINE=InnoDB;
+
+CREATE TABLE shift_times (
+  id int unsigned NOT NULL AUTO_INCREMENT primary key,
+	shift_id int unsigned not null,
+	pay_period_id int unsigned not null,
+	start_time varchar(5),
+	end_time varchar(5),
+	dates varchar(256),
+	added_by_id int unsigned not null,
+	added_time datetime,
+	foreign key(shift_id) references department_shifts(id),
+	foreign key(pay_period_id) references pay_periods(id),
+	foreign key(added_by_id) references employees(id)
+	) ENGINE=InnoDB;
+;;
+;;
+;;	
+
+;; postpone the following for later
+;; 
 ;; for certain hour_codes we can use monetary value instead of time and hours
 ;; we are using amount for dollar value
 ;;
