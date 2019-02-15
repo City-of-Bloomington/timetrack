@@ -62,6 +62,10 @@
 			<ul>
 				<li><a href="<s:property value='#application.url'/>timewarp.action">Timewarp</a></li>
 			</ul>
+			<h2>Shift Times</h2>
+			<ul>
+				<li><a href="<s:property value='#application.url'/>shiftTime.action">Employee Shift Times</a></li>
+			</ul>			
 			<h2>Reports</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>activeEmployees.action">Active Employees</a></li>								

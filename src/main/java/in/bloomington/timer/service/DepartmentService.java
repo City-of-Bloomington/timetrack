@@ -47,15 +47,13 @@ public class DepartmentService extends HttpServlet{
 				String term ="", type="", department_id="";
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
+				/*
 				while (values.hasMoreElements()){
 						name = values.nextElement().trim();
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
 						if (name.equals("term")) { // this is what jquery sends
 								term = value;
-						}
-						else if (name.equals("department_id")) {
-								department_id = value;
 						}
 						else if (name.equals("action")){
 								action = value;
@@ -64,6 +62,7 @@ public class DepartmentService extends HttpServlet{
 								// System.err.println(name+" "+value);
 						}
 				}
+				*/
 				DepartmentList dlist =  null;
 				List<Department> departments = null;
 				dlist = new DepartmentList();

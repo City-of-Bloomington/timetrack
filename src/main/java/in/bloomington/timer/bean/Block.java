@@ -39,6 +39,19 @@ public class Block{
 		// when the managers change the clock in time but not clock out
 		boolean time_in_changed=false, time_out_changed = false;
 		String today = Helper.getToday();
+    public Block( // for save
+								 String val,
+								 String val2,
+								 String val3,
+								 int val4,
+								 int val5,
+								 int val6,
+								 int val7,
+								 double val8
+							 ){
+				setVals(val, val2, val3, val4, val5, val6, val7, val8);
+		}		
+		
     public Block(
 								 String val,
 								 String val2,
@@ -71,6 +84,25 @@ public class Block{
 							 ){
 				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13);
 		}
+		void setVals(
+								 String val,
+								 String val2,
+								 String val3,
+								 int val4,
+								 int val5,
+								 int val6,
+								 int val7,
+								 double val8
+							 ){								
+				setDocument_id(val);
+				setHour_code_id(val2);
+				setDate(val3);
+				setBegin_hour(val4);
+				setBegin_minute(val5);
+				setEnd_hour(val6);
+				setEnd_minute(val7);				
+				setHoursDbl(val8);
+    }		
 		void setVals(
 								 String val,
 								 String val2,

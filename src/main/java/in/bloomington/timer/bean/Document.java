@@ -76,6 +76,17 @@ public class Document{
 				fillWarningMap();
 
     }
+		// new record
+    public Document(String val,
+										String val2,
+										String val3,
+										String val4
+										){
+				setEmployee_id(val);				
+				setPay_period_id(val2);
+				setJob_id(val3);
+				setInitiated_by(val4);
+    }		
     public Document(String val){
 				setId(val);
 				fillWarningMap();
@@ -1132,7 +1143,10 @@ public class Document{
     //
     // save only, no updates
     //
-    public String doSave(){
+		public String doSave(){
+				return findOrSave();
+		}
+    public String findOrSave(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -1177,21 +1191,22 @@ public class Document{
 										pstmt.setString(3, job_id);
 										pstmt.setString(4, initiated_by);
 										pstmt.executeUpdate();
+										Helper.databaseDisconnect(pstmt, rs);
 										qq = "select LAST_INSERT_ID()";
 										pstmt = con.prepareStatement(qq);
 										rs = pstmt.executeQuery();
 										if(rs.next()){
 												id = rs.getString(1);
 										}
+										//
+										// we look for first workflow 
+										//
+										Workflow wf = findFirstWorkFlow();
+										if(wf != null){
+												TimeAction ta = new TimeAction(wf.getId(), id, initiated_by);
+												msg = ta.doSave();
+										}										
 								}
-						}
-						//
-						// we look for first workflow 
-						//
-						Workflow wf = findFirstWorkFlow();
-						if(wf != null){
-								TimeAction ta = new TimeAction(wf.getId(), id, initiated_by);
-								msg = ta.doSave();
 						}
 				}
 				catch(Exception ex){

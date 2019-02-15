@@ -47,6 +47,10 @@
     <servlet>
       <servlet-name>DepartmentService</servlet-name>
       <servlet-class>in.bloomington.timer.service.DepartmentService</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>JobTitleService</servlet-name>
+      <servlet-class>in.bloomington.timer.service.JobTitleService</servlet-class>
     </servlet>		
   <servlet-mapping>
     <servlet-name>Logout</servlet-name>
@@ -71,6 +75,10 @@
 	<servlet-mapping>
     <servlet-name>DbEmployeeService</servlet-name>
     <url-pattern>/DbEmployeeService</url-pattern>
+  </servlet-mapping>
+	<servlet-mapping>
+    <servlet-name>JobTitleService</servlet-name>
+    <url-pattern>/JobTitleService</url-pattern>
   </servlet-mapping>	
 	<filter>
     <filter-name>CAS Authentication Filter</filter-name>

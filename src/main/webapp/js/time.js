@@ -136,7 +136,20 @@ $('#department_id_change').change(function() {
         alert(status+" "+err);
     });
 })
-
+$('#start_date_id').change(function() {
+    var val = $(this).val();
+		var all_dates = $("#all_dates_id").val();
+		if(all_dates.trim() != ''){
+				if(all_dates.indexOf(val) == -1){
+						all_dates += ", "+val;
+						$("#all_dates_id").val(all_dates);
+				}
+		}
+		else{
+				$("#all_dates_id").val(val);
+		}
+		$(this).val('');
+})
 
 /**
  * toggle input of time-in, time-out or hours depending

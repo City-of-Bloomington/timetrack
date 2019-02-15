@@ -18,7 +18,9 @@ public class GroupList{
 
     static final long serialVersionUID = 1600L;
     static Logger logger = LogManager.getLogger(GroupList.class);
-    String employee_id = "", department_ids ="", department_id="",
+    String employee_id = "",
+				department_ids ="",
+				department_id="",
 				pay_period_id="";
     String name="", id="";
     boolean active_only = false, inactive_only=false;
@@ -137,7 +139,7 @@ public class GroupList{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
 						if(!department_ids.equals("")){
-								// pstmt.setString(jj++, department_ids);
+
 						}
 						if(!name.equals("")){
 								pstmt.setString(jj++, "%"+name+"%");

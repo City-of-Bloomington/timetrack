@@ -51,11 +51,14 @@ public class GroupService extends HttpServlet{
 						name = values.nextElement().trim();
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
-						if (name.equals("term")) { // this is what jquery sends
-								term = value;
-						}
-						else if (name.equals("department_id")) {
-								department_id = value;
+						if (name.equals("department_id")) {
+								if(value != null && !value.equals("")){
+										try{
+												Integer.parseInt(value);
+												department_id = value;										
+										}catch(Exception ex){
+										}
+								}
 						}
 						else if (name.equals("action")){
 								action = value;
@@ -87,10 +90,9 @@ public class GroupService extends HttpServlet{
     }
 
 		/**
-		 * Creates a JSON array string for a list of users
+		 * Creates a JSON array string for a list
 		 *
-		 * @param users The users
-		 * @param type unused
+		 * @param list of objects
 		 * @return The json string
 		 */
 		String writeJson(List<Group> groups){
@@ -100,7 +102,6 @@ public class GroupService extends HttpServlet{
 						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getName()+"\"}";
 				}
 				json = "["+json+"]";
-				// System.err.println(json);
 				return json;
 		}
 }

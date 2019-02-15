@@ -47,6 +47,18 @@ public class TimeBlock extends Block{
 		String start_date = "", end_date="", job_name="";
 		String timeInfo = "";
 		String errors = "";
+    public TimeBlock( // for save
+										 String val,
+										 String val2,
+										 String val3,
+										 int val4,
+										 int val5,
+										 int val6,
+										 int val7,
+										 double val8
+											){
+				super(val, val2, val3, val4, val5, val6, val7, val8);
+		}
 		public TimeBlock(
 										 String val,
 										 String val2,
@@ -67,7 +79,7 @@ public class TimeBlock extends Block{
 		public TimeBlock(
 										 String val,
 										 String val2,
-										 String val3, //4
+										 String val3, 
 										 String val4,
 										 
 										 int val5,
@@ -404,7 +416,8 @@ public class TimeBlock extends Block{
 				//
 				// for clock-in only
 				if(id.equals("")){
-						if(start_date.equals(end_date)){
+						System.err.println(" start_date "+start_date+" date "+date);
+						if(start_date.equals(end_date) && !start_date.equals("")){
 								if(!date.equals(start_date)){
 										date = start_date;
 								}
@@ -709,7 +722,6 @@ public class TimeBlock extends Block{
 						qq = " select count(*) from ("+qq+") t2 where t2.hour_code_id in (select id from hour_codes c where c.record_method='Time' )";						
 						
 				}
-					 
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				if(con == null){
@@ -1064,7 +1076,9 @@ public class TimeBlock extends Block{
 								return msg;
 				}
 				else{
-						date = start_date;
+						if(date.equals("")){
+								date = start_date;
+						}
 						if(date.equals(""))
 								date = today;
 						rangeDateSet.add(date); // one date

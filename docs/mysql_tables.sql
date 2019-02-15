@@ -773,31 +773,20 @@ alter table group_employees add unique(group_id,employee_id, effective_date);
 ;;
 ;; 2/13/2019
 ;;
-CREATE TABLE department_shifts (
-  id int unsigned NOT NULL AUTO_INCREMENT primary key,
-	name varchar(80) not null,
-	department_id int unsigned not null,
-	foreign key(department_id) references departments(id)
-) ENGINE=InnoDB;
-
-CREATE TABLE shift_employees (
-  id int unsigned NOT NULL AUTO_INCREMENT primary key,
-	shift_id int unsigned not null,
-	employee_id int unsigned not null,
-	foreign key(shift_id) references department_shifts(id),
-	foreign key(employee_id) references employees(id)	
-) ENGINE=InnoDB;
 
 CREATE TABLE shift_times (
   id int unsigned NOT NULL AUTO_INCREMENT primary key,
-	shift_id int unsigned not null,
 	pay_period_id int unsigned not null,
+	group_id int unsigned not null,
+	default_hour_code_id int unsigned not null,
 	start_time varchar(5),
 	end_time varchar(5),
-	dates varchar(256),
+	dates varchar(512),
 	added_by_id int unsigned not null,
 	added_time datetime,
-	foreign key(shift_id) references department_shifts(id),
+	processed char(1),
+	foreign key(group_id) references groups(id),
+	foreign key(default_hour_code_id) references hour_codes(id),			
 	foreign key(pay_period_id) references pay_periods(id),
 	foreign key(added_by_id) references employees(id)
 	) ENGINE=InnoDB;

@@ -6,7 +6,7 @@
 <struts>
   <constant name="struts.devMode" value="true" />
   <constant name="struts.ui.theme" value="simple" />
-  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*" />
+  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*,/JobTitleService*" />
 
   <package name="default" extends="struts-default">
 
@@ -199,7 +199,14 @@
 			<result name="input">/WEB-INF/jsp/shift.jsp</result>		
 			<result name="error">/WEB-INF/jsp/shift.jsp</result>
 			<result name="success">/WEB-INF/jsp/shift.jsp</result>
-		</action>		
+		</action>
+		<action name="shiftTime" 
+						class="in.bloomington.timer.ShiftTimeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/shiftTime.jsp</result>		
+			<result name="error">/WEB-INF/jsp/shiftTime.jsp</result>
+			<result name="success">/WEB-INF/jsp/shiftTime.jsp</result>
+		</action>				
 		<action name="holiday" 
 						class="in.bloomington.timer.HolidayAction" 
 						method="execute">

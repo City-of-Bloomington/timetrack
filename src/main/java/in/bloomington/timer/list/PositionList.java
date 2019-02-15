@@ -17,8 +17,8 @@ public class PositionList{
 
     static Logger logger = LogManager.getLogger(PositionList.class);
     static final long serialVersionUID = 3800L;
-    String sortBy="t.name"; 
-    String name = ""; 
+    String sortBy="p.name"; 
+    String name = "", group_id="", department_id=""; 
     boolean active_only = false; // all
     boolean exact_match = false;
     List<Position> positions = null;
@@ -26,85 +26,110 @@ public class PositionList{
     public PositionList(){
     }
     public List<Position> getPositions(){
-	return positions;
+				return positions;
     }
 		
     public void setName(String val){
-	if(val != null)
-	    name = val;
+				if(val != null)
+						name = val;
     }
+    public void setGroup_id(String val){
+				if(val != null && !val.equals("-1"))
+						group_id = val;
+    }
+    public void setDepartment_id(String val){
+				if(val != null && !val.equals("-1"))
+						department_id = val;
+    }		
     public void setActiveOnly(){
-	active_only = true;
+				active_only = true;
     }
     public void setExactMatch(){
-	exact_match = true;
+				exact_match = true;
     }
     public void setSortBy(String val){
-	if(val != null)
-	    sortBy = val;
+				if(val != null)
+						sortBy = val;
     }
     public String find(){
 		
-	String back = "";
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	Connection con = UnoConnect.getConnection();
-	String qq = "select t.id,t.name,t.alias,t.description,t.inactive from positions t ";
-	if(con == null){
-	    back = "Could not connect to DB";
-	    return back;
-	}
-	String qw = "";
-	try{
-	    if(!name.equals("")){
-		if(!qw.equals("")) qw += " and ";
-		qw += " (t.name like ? or t.alias like ?) ";
-	    }
-	    if(active_only){
-		if(!qw.equals("")) qw += " and ";
-		qw += " t.inactive is null ";
-	    }
-	    if(!qw.equals("")){
-		qq += " where "+qw;
-	    }
-	    if(!sortBy.equals("")){
-		qq += " order by "+sortBy;
-	    }
-	    logger.debug(qq);
-	    pstmt = con.prepareStatement(qq);
-	    if(!name.equals("")){
-		if(exact_match){
-		    pstmt.setString(1, name);
-		    pstmt.setString(2, name);
-		}
-		else{
-		    pstmt.setString(1,"%"+name+"%");
-		    pstmt.setString(2,"%"+name+"%");										
-		}
-	    }
-	    rs = pstmt.executeQuery();
-	    if(positions == null)
-		positions = new ArrayList<Position>();
-	    while(rs.next()){
-		Position one =
-		    new Position(rs.getString(1),
-				 rs.getString(2),
-				 rs.getString(3),
-				 rs.getString(4),
-				 rs.getString(5)!=null );
-		if(!positions.contains(one))
-		    positions.add(one);
-	    }
-	}
-	catch(Exception ex){
-	    back += ex+" : "+qq;
-	    logger.error(back);
-	}
-	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return back;
+				String back = "";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				Connection con = UnoConnect.getConnection();
+				String qq = "select distinct(p.id),p.name,p.alias,p.description,p.inactive from positions p ";
+				if(con == null){
+						back = "Could not connect to DB";
+						return back;
+				}
+				String qw = "";
+				try{
+						if(!name.equals("")){
+								if(!qw.equals("")) qw += " and ";
+								qw += " (p.name like ? or p.alias like ?) ";
+						}
+						if(active_only){
+								if(!qw.equals("")) qw += " and ";
+								qw += " p.inactive is null ";
+						}
+						if(!group_id.equals("")){
+								qq += ", jobs j ";
+								if(!qw.equals("")) qw += " and ";								
+								qw += " j.position_id=p.id and j.group_id=? ";
+						}
+						else if(!department_id.equals("")){
+								qq += ", jobs j, groups g ";
+								if(!qw.equals("")) qw += " and ";								
+								qw += " j.position_id=p.id and j.group_id=g.id and g.department_id=? ";
+						}
+						if(!qw.equals("")){
+								qq += " where "+qw;
+						}
+						if(!sortBy.equals("")){
+								qq += " order by "+sortBy;
+						}
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						if(!name.equals("")){
+								if(exact_match){
+										pstmt.setString(jj++, name);
+										pstmt.setString(jj++, name);
+								}
+								else{
+										pstmt.setString(jj++,"%"+name+"%");
+										pstmt.setString(jj++,"%"+name+"%");										
+								}
+						}
+						if(!group_id.equals("")){
+								pstmt.setString(jj++, group_id);
+						}
+						else if(!department_id.equals("")){
+								pstmt.setString(jj++, department_id);								
+						}						
+						rs = pstmt.executeQuery();
+						if(positions == null)
+								positions = new ArrayList<Position>();
+						while(rs.next()){
+								Position one =
+										new Position(rs.getString(1),
+																 rs.getString(2),
+																 rs.getString(3),
+																 rs.getString(4),
+																 rs.getString(5)!=null );
+								if(!positions.contains(one))
+										positions.add(one);
+						}
+				}
+				catch(Exception ex){
+						back += ex+" : "+qq;
+						logger.error(back);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return back;
     }
 }
 

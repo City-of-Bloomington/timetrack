@@ -12,19 +12,19 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.ArrayList;
 import java.util.List;
-import in.bloomington.timer.*;
-import in.bloomington.timer.bean.*;
-import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import in.bloomington.timer.list.*;
+import in.bloomington.timer.bean.*;
 
-public class GroupEmployeeService extends HttpServlet{
 
-		static final long serialVersionUID = 2200L;
-		static Logger logger = LogManager.getLogger(GroupEmployeeService.class);
-    boolean debug = false;
-		static EnvBean envBean = null;
+public class JobTitleService extends HttpServlet{
 
+		static final long serialVersionUID = 2210L;
+		static Logger logger = LogManager.getLogger(JobTitleService.class);
+    static String url="";
+    static boolean debug = false;
+		
     public void doGet(HttpServletRequest req,
 											HttpServletResponse res)
 				throws ServletException, IOException {
@@ -32,8 +32,6 @@ public class GroupEmployeeService extends HttpServlet{
     }
 
     /**
-     * Generates the Group form and processes view, add, update and delete operations.
-     *
      * @param req The request input stream
      * @param res The response output stream
      */
@@ -41,21 +39,28 @@ public class GroupEmployeeService extends HttpServlet{
 											 HttpServletResponse res)
 				throws ServletException, IOException {
 
-				String id = "";
-
 				//
 				String message="", action="";
 				res.setContentType("application/json");
 				PrintWriter out = res.getWriter();
 				String name, value;
-				String group_id="";
+				String term ="", type="", department_id="", group_id="";
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
 				while (values.hasMoreElements()){
 						name = values.nextElement().trim();
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
-						if (name.equals("group_id")) {
+						if (name.equals("department_id")) {
+								if(value != null && !value.equals("")){
+										try{
+												Integer.parseInt(value);
+												department_id = value;										
+										}catch(Exception ex){
+										}
+								}
+						}
+						else if (name.equals("group_id")) {
 								if(value != null && !value.equals("")){
 										try{
 												Integer.parseInt(value);
@@ -63,47 +68,55 @@ public class GroupEmployeeService extends HttpServlet{
 										}catch(Exception ex){
 										}
 								}
+						}						
+						else if (name.equals("action")){
+								action = value;
 						}
 						else{
-								System.err.println(name+" "+value);
+								// System.err.println(name+" "+value);
 						}
 				}
-				EmployeeList employeeList =  null;
-				List<Employee> employees = null;
-				if(!group_id.equals("")){
+				PositionList plist =  null;
+				List<Position> positions = null;
+				if(!department_id.equals("") || !group_id.equals("")){
 						//
-						employeeList = new EmployeeList();
-						employeeList.setActiveOnly();
-						employeeList.setGroup_id(group_id);
-						String back = employeeList.find();
+						plist = new PositionList();
+						if(!department_id.equals("")){
+								plist.setDepartment_id(department_id);
+						}
+						if(!group_id.equals("")){
+								plist.setGroup_id(group_id);
+						}
+						String back = plist.find();
 						if(back.equals("")){
-								employees = employeeList.getEmployees();
+								positions = plist.getPositions();
 						}
 				}
-				if(employees != null && employees.size() > 0){
-						String json = writeJson(employees);
+				if(positions != null && positions.size() > 0){
+						String json = writeJson(positions);
 						out.println(json);
 				}
 				else{
-						out.println("[]"); // empty array
+						out.println("[]"); // empty
 				}
 				out.flush();
 				out.close();
     }
 
 		/**
-		 * Creates a JSON array string for a list of employees
+		 * Creates a JSON array string for a list 
 		 *
-		 * @param employees The employees
+		 * @param list of objects
 		 * @return The json string
 		 */
-		String writeJson(List<Employee> employees){
+		String writeJson(List<Position> positions){
 				String json="";
-				for(Employee one:employees){
+				for(Position one:positions){
 						if(!json.equals("")) json += ",";
-						json += "{\"id\":\""+one.getId()+"\",\"fullname\":\""+one.getFull_name()+"\"}";
+						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getName()+"\"}";
 				}
 				json = "["+json+"]";
+				// System.err.println(json);
 				return json;
 		}
 }

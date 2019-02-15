@@ -41,10 +41,24 @@ public class LoginFilter implements Filter {
 						// these are our exludes
 						if(uri.indexOf("timeClock") > -1 ||
 							 uri.indexOf("PickJob") > -1 ||	// clockPickJob
-							 uri.indexOf("GroupService") > -1 ||	
-							 uri.indexOf("DepartmentService") > -1 ||	
 							 uri.matches(".*(css|jpg|png|gif|js)$") ||							 
 							 uri.indexOf("Login") > -1){
+								chain.doFilter(request, response);
+						}
+						else if(uri.indexOf("GroupService") > -1 ||
+										uri.indexOf("DepartmentService") > -1 ||
+										uri.indexOf("JobTitleService") > -1){							 
+								/*
+								String str = req.getHeader("Origin");
+								System.err.println(" origin "+str);									
+								if(str != null)
+										res.setHeader("Access-Control-Allow-Origin", str);
+								else
+										res.setHeader("Access-Control-Allow-Origin", "*");
+								res.setHeader("Access-Control-Allow-Methods","PUT,POST,GET");
+								res.setHeader("Access-Control-Max-Age","3600");
+								res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+								*/
 								chain.doFilter(request, response);
 						}
 						else if(!(uri.matches(".*(css|jpg|png|gif|js)$"))){
