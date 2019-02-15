@@ -416,7 +416,6 @@ public class TimeBlock extends Block{
 				//
 				// for clock-in only
 				if(id.equals("")){
-						System.err.println(" start_date "+start_date+" date "+date);
 						if(start_date.equals(end_date) && !start_date.equals("")){
 								if(!date.equals(start_date)){
 										date = start_date;
