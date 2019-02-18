@@ -27,6 +27,7 @@ public class Employee implements Serializable{
 				username="", // unique
 				full_name="", first_name="", last_name="";
 		String added_date = "";
+		String effective_date = ""; // for new record
 		String[] roles = {""};
 		Set<String> roleSet = new HashSet<>();
     // needed for saving
@@ -221,6 +222,7 @@ public class Employee implements Serializable{
 				if(val != null)
 						employee_number = val.trim();
     }
+
     public void setUsername (String val){
 				if(val != null){
 						username = val.trim();
@@ -290,6 +292,7 @@ public class Employee implements Serializable{
     }
     public void setEffective_date(String val){
 				if(val != null){
+						effective_date = val;
 						if(departmentEmployee == null){
 								departmentEmployee = new DepartmentEmployee();
 						}
@@ -964,11 +967,13 @@ public class Employee implements Serializable{
 								}
 								if(departmentEmployee != null){
 										departmentEmployee.setEmployee_id(id);
+										departmentEmployee.setEffective_date(effective_date);
 										msg = departmentEmployee.doSave();
 								}
 								if(!group_id.equals("")){
 										if(groupEmployee != null){
 												groupEmployee.setEmployee_id(id);
+												groupEmployee.setEffective_date(effective_date);
 												msg = groupEmployee.doSave();
 										}
 								}
@@ -984,6 +989,7 @@ public class Employee implements Serializable{
 														groupEmployee = new GroupEmployee();
 														groupEmployee.setGroup_id(str2);
 														groupEmployee.setEmployee_id(id);
+														groupEmployee.setEffective_date(effective_date);
 														msg = groupEmployee.doSave();
 												}
 										}

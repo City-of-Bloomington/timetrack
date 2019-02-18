@@ -370,6 +370,9 @@ public class WeekEntry{
 						else if(salaryGroup.isUnionned()){ // union AFCSME employee
 								excess_hrs = 1f;
 						}
+						else if(salaryGroup.isFireSworn()){
+								excess_hrs = netHours - comp_weekly_hrs;
+						}
 						else{
 								if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){
 										excess_hrs = netHours - st_weekly_hrs;
@@ -417,6 +420,9 @@ public class WeekEntry{
 								// union, police,
 								// compute daily see below
 						}
+						else if(salaryGroup.isFireSworn()){
+								// ignore
+						}						
 						else{
 								if(netHours > st_weekly_hrs)
 										extra_hrs = netHours - st_weekly_hrs;
@@ -472,6 +478,11 @@ public class WeekEntry{
 								addToEarnedHash(code, excess_hrs);								
 								return;
 						}
+						if(salaryGroup.isFireSworn()){ // NW takes care of this
+								// code = "FIRE FLSA";	 pay period not weekly
+								// addToEarnedHash(code, excess_hrs);								
+								return;
+						}						
 						else if(!salaryGroup.isExcessCulculationWeekly()){
 								// we are interested in weekly only for now
 								// anything else we ignore here

@@ -7,6 +7,11 @@
 			<th>Job Title</th>
 			<th>Salary Group</th>
 			<th>Group</th>
+			
+			<th>Changes</th>
+			<th>Effective Date</th>
+			<th>ID card #</th>
+			<th>Employee NW #</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -16,7 +21,11 @@
 				<td><s:property value="employee" /></td>				
 				<td><s:property value="position" /></td>
 				<td><s:property value="salaryGroup" /></td>
-				<td><s:property value="group" /></a></td>					
+				<td><s:property value="group" /></a></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
 			</tr>
 		</s:iterator>
 	</tbody>

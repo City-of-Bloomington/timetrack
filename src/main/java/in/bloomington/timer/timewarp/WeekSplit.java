@@ -164,11 +164,12 @@ public class WeekSplit{
 						if(codes  != null && codes.size() > 0){
 								for(String code:codes){
 										double hrs = daily.get(code).doubleValue();
-										if(code.equals("Reg")){
+										if(code.equals("Reg") || code.indexOf("REG") > -1){
 												hours += hrs;
 										}
 								}
 								if(hours > 8.009){
+										
 										dif_hrs = hours - daily_hrs;
 										if(dif_hrs > 0.009)
 										if(jj == 6){

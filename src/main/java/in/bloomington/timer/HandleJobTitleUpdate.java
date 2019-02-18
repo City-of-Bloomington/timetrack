@@ -253,7 +253,7 @@ public class HandleJobTitleUpdate{
 				ResultSet rs = null;
 				String msg="";
 				// using current date
-				String qq = "select e.EmployeeNumber,                                                        e.EmployeeName,                                                                 e.LastName,                                                                     e.FirstName,                                                                    x.Title,                                                                      job.JobTitle,                                                                     e.xGroupCodeDesc,                                                             job.CycleHours/2                             from HR.vwEmployeeInformation     e                                             join HR.vwEmployeeJobWithPosition job on e.EmployeeId=job.EmployeeId            and GETDATE() between job.EffectiveDate     and job.EffectiveEndDate            and GETDATE() between job.PositionDetailESD and job.PositionDetailEED           left join COB.jobTitleCrosswalk   x    on job.JobTitle=x.Code                   join HR.EmployeeName  n  on e.EmployeeId=n.EmployeeId                           and GETDATE() between  n.EffectiveDate  and   n.EffectiveEndDate                where e.vsEmploymentStatusId=258 ";
+				String qq = "select e.EmployeeNumber,                                                        e.EmployeeName,                                                                 e.LastName,                                                                     e.FirstName,                                                                    x.Title,                                                                      job.JobTitle,                                                                     e.xGroupCodeDesc,                                                             job.CycleHours/2,                                                               job.RateAmount                                                                  from HR.vwEmployeeInformation     e                                             join HR.vwEmployeeJobWithPosition job on e.EmployeeId=job.EmployeeId            and GETDATE() between job.EffectiveDate     and job.EffectiveEndDate            and GETDATE() between job.PositionDetailESD and job.PositionDetailEED           left join COB.jobTitleCrosswalk   x    on job.JobTitle=x.Code                   join HR.EmployeeName  n  on e.EmployeeId=n.EmployeeId                           and GETDATE() between  n.EffectiveDate  and   n.EffectiveEndDate                where e.vsEmploymentStatusId=258 ";
 				qq += " and e.departmentID in ("+dept_ref+") "; 				
 				qq += "order by e.employeename, job.JobTitle ";
 				
@@ -270,6 +270,8 @@ public class HandleJobTitleUpdate{
 						while(rs.next()){
 								String str = rs.getString(1); // emp number
 								String str2 = rs.getString(6).trim(); //title
+								// String str3 = rs.getString(9); // rate
+								// System.err.println(str+" rate: "+str3);
 								if(str2.indexOf("-") > -1){
 										str2 = str2.replace('-',' ');
 								}

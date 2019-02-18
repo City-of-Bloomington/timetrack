@@ -107,12 +107,12 @@
 
 		<div class="form-group">
 			<label>Weekly Reg Hours </label>
-			<s:textfield name="jobTask.weekly_regular_hours" value="%{jobTask.weekly_regular_hours}" size="2" maxlength="2" required="true" />(normally 40)
+			<s:textfield name="jobTask.weekly_regular_hours" value="%{jobTask.weekly_regular_hours}" size="3" maxlength="3" required="true" />(normally 40)
 		</div>
 
 		<div class="form-group">
 			<label>Comp Time Weekly Hours </label>
-			<s:textfield name="jobTask.comp_time_weekly_hours" value="%{jobTask.comp_time_weekly_hours}" size="2" maxlength="2" required="true" />(normally 40 for non-exempt and 45 for exempt)
+			<s:textfield name="jobTask.comp_time_weekly_hours" value="%{jobTask.comp_time_weekly_hours}" size="3" maxlength="3" required="true" />(normally 40 for non-exempt)
 		</div>
 
 		<div class="form-group">

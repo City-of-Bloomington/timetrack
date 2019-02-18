@@ -60,7 +60,12 @@
 				<label>Email</label>
 				<s:textfield name="employee.email" size="30" value="%{employee.email}" id="email_id" />
 			</div>
-
+			<s:if test="employee.id == ''">
+				<div class="form-group">
+					<label>Effective Date</label>
+					<s:textfield name="employee.effective_date" size="10" value="" cssClass="date"  />
+				</div>
+			</s:if>
 			<s:if test="employee.id == ''">
 				<div class="form-group">
 					<label>Department</label>

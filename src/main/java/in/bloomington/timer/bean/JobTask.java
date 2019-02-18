@@ -443,8 +443,14 @@ public class JobTask implements Serializable{
 				int new_weekly_regular_hours = (int) weekly_hrs;
 				int new_comp_time_weekly_hours = (int) comp_after;
 				String new_salary_group_id = "";
-
-				if(bGroup.isTemporary()){
+				//
+				if(bGroup.isFireSworn()){
+						new_salary_group_id = "9";
+				}
+				if(bGroup.isTempWithBen()){
+						new_salary_group_id = "12";
+				}
+				else if(bGroup.isTemporary()){
 						new_salary_group_id = "3";
 				}
 				else if(bGroup.isPartTime()){

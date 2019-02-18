@@ -235,11 +235,7 @@ public class ProfileList{
 						" (SELECT  "+
 						" E.EmployeeId, "+  
 						" E.EmployeeNumber, "+ 
-						" ISNULL(Jobs.DepartmentId, -1) AS DepartmentId, "+  
-						" O.OrgStructureDescconcatenated, "+
-						" Jobs.BenefitGroupId, "+ 
-						" GH.xGroupCodeDesc, "+
-						" CASE WHEN Jobs.Title IS NULL THEN P.PositionNumberMasked + ' - ' + PD.PositionTitle ELSE Jobs.Title END AS PositionTitle,  "+
+						" ISNULL(Jobs.DepartmentId, -1) AS DepartmentId,umberMasked + ' - ' + PD.PositionTitle ELSE Jobs.Title END AS PositionTitle,  "+
 						" P.PositionNumberMasked, "+ 
 						" EE.vsEmploymentStatusId, "+
 						" VSE1.Description AS EmploymentStatus, "+
