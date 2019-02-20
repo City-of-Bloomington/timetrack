@@ -18,10 +18,10 @@ import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 
 
-public class JobTitleService extends HttpServlet{
+public class GroupManagerService extends HttpServlet{
 
 		static final long serialVersionUID = 2210L;
-		static Logger logger = LogManager.getLogger(JobTitleService.class);
+		static Logger logger = LogManager.getLogger(GroupService.class);
     static String url="";
     static boolean debug = false;
 		
@@ -44,23 +44,14 @@ public class JobTitleService extends HttpServlet{
 				res.setContentType("application/json");
 				PrintWriter out = res.getWriter();
 				String name, value;
-				String term ="", type="", department_id="", group_id="";
+				String term ="", type="", group_id="";
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
 				while (values.hasMoreElements()){
 						name = values.nextElement().trim();
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
-						if (name.equals("department_id")) {
-								if(value != null && !value.equals("")){
-										try{
-												Integer.parseInt(value);
-												department_id = value;										
-										}catch(Exception ex){
-										}
-								}
-						}
-						else if (name.equals("group_id")) {
+						if (name.equals("group_id")) {
 								if(value != null && !value.equals("")){
 										try{
 												Integer.parseInt(value);
@@ -68,7 +59,7 @@ public class JobTitleService extends HttpServlet{
 										}catch(Exception ex){
 										}
 								}
-						}						
+						}
 						else if (name.equals("action")){
 								action = value;
 						}
@@ -76,25 +67,19 @@ public class JobTitleService extends HttpServlet{
 								// System.err.println(name+" "+value);
 						}
 				}
-				JobTaskList jlist = null;
-				List<JobTask> jobs = null;
-				if(!department_id.equals("") || !group_id.equals("")){
+				GroupManagerList glist =  null;
+				List<GroupManager> managers = null;
+				if(!group_id.equals("")){
 						//
-						jlist = new JobTaskList();
-						if(!department_id.equals("")){
-								jlist.setDepartment_id(department_id);
-						}
-						if(!group_id.equals("")){
-								jlist.setGroup_id(group_id);
-						}
-						jlist.setCurrentOnly();
-						String back = jlist.find();
+						glist = new GroupManagerList();
+						glist.setGroup_id(group_id);
+						String back = glist.find();
 						if(back.equals("")){
-								jobs = jlist.getJobs();
+								managers = glist.getManagers();
 						}
 				}
-				if(jobs != null && jobs.size() > 0){
-						String json = writeJson(jobs);
+				if(managers != null && managers.size() > 0){
+						String json = writeJson(managers);
 						out.println(json);
 				}
 				else{
@@ -105,16 +90,16 @@ public class JobTitleService extends HttpServlet{
     }
 
 		/**
-		 * Creates a JSON array string for a list 
+		 * Creates a JSON array string for a list
 		 *
 		 * @param list of objects
 		 * @return The json string
 		 */
-		String writeJson(List<JobTask> jobs){
+		String writeJson(List<GroupManager> ones){
 				String json="";
-				for(JobTask one:jobs){
+				for(GroupManager one:ones){
 						if(!json.equals("")) json += ",";
-						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getPosition()+"\",\"salaryGroup\":\""+one.getSalaryGroup()+"\",\"clockInRequired\":\""+one.getClock_time_required()+"\"}";
+						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getEmployee()+"\",\"email\":\""+one.getEmployee().getEmail()+"\",\"workflow\":\""+one.getNode()+"\"}";
 				}
 				json = "["+json+"]";
 				return json;

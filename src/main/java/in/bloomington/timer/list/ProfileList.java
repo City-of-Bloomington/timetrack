@@ -235,15 +235,19 @@ public class ProfileList{
 						" (SELECT  "+
 						" E.EmployeeId, "+  
 						" E.EmployeeNumber, "+ 
-						" ISNULL(Jobs.DepartmentId, -1) AS DepartmentId,umberMasked + ' - ' + PD.PositionTitle ELSE Jobs.Title END AS PositionTitle,  "+
+						" ISNULL(Jobs.DepartmentId, -1) AS DepartmentId, "+  
+						" O.OrgStructureDescconcatenated, "+
+						" Jobs.BenefitGroupId, "+ 
+						" GH.xGroupCodeDesc, "+
+						" CASE WHEN Jobs.Title IS NULL THEN P.PositionNumberMasked + ' - ' + PD.PositionTitle ELSE Jobs.Title END AS PositionTitle,  "+
 						" P.PositionNumberMasked, "+ 
 						" EE.vsEmploymentStatusId, "+
-						" VSE1.Description AS EmploymentStatus, "+
+						" VSE1.[Description] AS EmploymentStatus, "+
 						" SUBSTRING(ED.EmployeeSSN, 1, 3) + '-' + SUBSTRING(ED.EmployeeSSN, 4, 2) + '-' + SUBSTRING(ED.EmployeeSSN, 6, 4) AS EmployeeSSN, "+
 						" EN.FirstName, "+ 
 						" EN.MiddleName, "+
 						" EN.LastName, "+
-						" EN.LastName +  ', ' + EN.FirstName + CASE WHEN EN.MiddleName IS NOT NULL AND LEN(EN.MiddleName) > 0 THEN ' ' + EN.MiddleName ELSE '' END + CASE WHEN VSE2.Description IS NOT NULL THEN ' ' + VSE2.Description ELSE '' END AS EmployeeName, "+
+						" EN.LastName +  ', ' + EN.FirstName + CASE WHEN EN.MiddleName IS NOT NULL AND LEN(EN.MiddleName) > 0 THEN ' ' + EN.MiddleName ELSE '' END + CASE WHEN VSE2.[Description] IS NOT NULL THEN ' ' + VSE2.[Description] ELSE '' END AS EmployeeName, "+
 						" CASE WHEN EA.EmployeeAddressId IS NULL OR Jobs.EmployeeJobId IS NULL THEN 1 ELSE 0 END AS Pending, "+
 						" E.ProcessStatus "+
 						" FROM HR.Employee E "+ 
@@ -301,6 +305,7 @@ public class ProfileList{
 						" and ejp.PositionDetailEED >= '"+date+"' "+
 						" and ejp.PositionDetailESD <= '"+date+"' "+
 						" and ejp.IsPrimaryJob = 1 ";
+				
 				//" and (ejp.jobEventReasonId is null or ejp.jobEventReasonId in(2,5))";
 				// one dept may be with one or multiple refs				
 				if(!selected_dept_ref.equals("")){

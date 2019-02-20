@@ -183,6 +183,9 @@ public class HourCodeList{
 								if(!salary_group_id.equals("")){
 										pstmt.setString(jj++, salary_group_id);
 								}
+								if(!group_id.equals("")){
+										pstmt.setString(jj++, group_id);
+								}								
 						}
 						rs = pstmt.executeQuery();
 						hourCodes = new ArrayList<>();

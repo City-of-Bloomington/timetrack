@@ -45,10 +45,10 @@ public class LoginFilter implements Filter {
 							 uri.indexOf("Login") > -1){
 								chain.doFilter(request, response);
 						}
-						else if(uri.indexOf("GroupService") > -1 ||
-										uri.indexOf("DepartmentService") > -1 ||
-										uri.indexOf("JobTitleService") > -1){							 
+						else if(uri.indexOf("Service") > -1){
 								/*
+									// handled by apache
+									//
 								String str = req.getHeader("Origin");
 								System.err.println(" origin "+str);									
 								if(str != null)

@@ -8,8 +8,8 @@ response.setHeader("Content-Disposition","inline; filename="+str);
 response.setContentType("application/csv");
 %>
 <s:property value="jobsTitle" />,,,,
-Employee,Job Title,Salary Group,Group,Changes,Effective Date,ID card #,Employee NW #
-<s:iterator var="row" value="jobs"><s:property value="employee" />,<s:property value="position" />,<s:property value="salaryGroup" />,<s:property value="group" />,,,,
+Employee,Job Title,Salary Group,Group,ID card #,Employee NW #,Change,Effective Date
+<s:iterator var="row" value="jobs">"<s:property value='employee.nameLastFirst' />",<s:property value="position" />,<s:property value="salaryGroup" />,<s:property value="group" />,<s:property value="employee.id_code" />,<s:property value="employee.employee_number" />,,
 </s:iterator>
 	
 

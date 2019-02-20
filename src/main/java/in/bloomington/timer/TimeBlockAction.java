@@ -23,7 +23,7 @@ public class TimeBlockAction extends TopAction{
 		//
 		TimeBlock timeBlock = null;
 		String timeBlocksTitle = "Time Block Entry";
-		String document_id = "";
+		String document_id = "", group_id="";
 		String date = "";
 		int order_index = 0;
 		Employee employee = null;
@@ -176,6 +176,9 @@ public class TimeBlockAction extends TopAction{
 										if(employee != null){
 												department = employee.getDepartment();
 										}
+										JobTask job = document.getJob();
+										if(job != null)
+												group_id = job.getGroup_id();
 								}
 						}
 				}
@@ -208,6 +211,7 @@ public class TimeBlockAction extends TopAction{
 								if(department != null){
 										ecl.setDepartment_id(department.getId());
 								}
+								ecl.setGroup_id(group_id);
 								ecl.setActiveOnly();
 								String back = ecl.lookFor();
 								if(back.equals("")){

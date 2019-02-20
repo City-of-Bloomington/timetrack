@@ -177,6 +177,12 @@ public class Employee implements Serializable{
 				}
 				return full_name;
     }
+    public String getNameLastFirst(){
+				String ret = last_name;
+				if(!ret.equals("")) ret += ", ";
+				ret += first_name;
+				return ret;
+    }		
     public String getFirst_name(){
 				return first_name;
     }

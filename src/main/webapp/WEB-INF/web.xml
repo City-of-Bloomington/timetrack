@@ -45,6 +45,10 @@
       <servlet-class>in.bloomington.timer.service.GroupService</servlet-class>
     </servlet>
     <servlet>
+      <servlet-name>GroupManagerService</servlet-name>
+      <servlet-class>in.bloomington.timer.service.GroupManagerService</servlet-class>
+    </servlet>		
+    <servlet>
       <servlet-name>DepartmentService</servlet-name>
       <servlet-class>in.bloomington.timer.service.DepartmentService</servlet-class>
     </servlet>
@@ -68,6 +72,10 @@
     <servlet-name>GroupService</servlet-name>
     <url-pattern>/GroupService</url-pattern>
   </servlet-mapping>
+	<servlet-mapping>
+    <servlet-name>GroupManagerService</servlet-name>
+    <url-pattern>/GroupManagerService</url-pattern>
+  </servlet-mapping>	
 	<servlet-mapping>
     <servlet-name>DepartmentService</servlet-name>
     <url-pattern>/DepartmentService</url-pattern>
