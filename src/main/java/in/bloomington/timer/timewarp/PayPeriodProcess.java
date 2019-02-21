@@ -129,6 +129,9 @@ public class PayPeriodProcess{
 								if(bgroup.isTemporary()){
 										regCode = "TEMP";
 								}
+								else if(bgroup.isFireSworn()){
+										regCode = "FIRE REG";
+								}
 						}
 				}
     }

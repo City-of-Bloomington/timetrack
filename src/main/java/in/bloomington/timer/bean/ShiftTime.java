@@ -319,7 +319,7 @@ public class ShiftTime{
 								msg = tb.doSave();
 						}
 						jj++;
-						if(jj > 2) break;
+						// if(jj > 2) break;
 				}
 				if(msg.equals("")){
 						msg = doUpdateProcessed();

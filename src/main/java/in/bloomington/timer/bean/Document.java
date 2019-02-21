@@ -59,7 +59,8 @@ public class Document{
     // week 1,2 / hour_code_id /hours
     Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = null;
     HolidayList holidays = null;
-		boolean accrualAdjusted = false;
+		boolean accrualAdjusted = false, warning_flag_set=false,
+				need_warning = true;
     public Document(String val,
 										String val2,
 										String val3,
@@ -221,7 +222,8 @@ public class Document{
     }
     public boolean hasAccruals(){
 				getSalaryGroup();
-				if(salaryGroup != null && !salaryGroup.getName().equals("Temp")){
+				if(salaryGroup != null &&
+					 !salaryGroup.isTemporary()){
 						return true;
 				}
 				return false;
@@ -906,8 +908,11 @@ public class Document{
 				}
     }
     private void checkForWarnings(){
-				checkForWarningsAfter();
-				checkForWarningsBefore();
+				setWarningFlag();
+				if(need_warning){
+						checkForWarningsAfter();
+						checkForWarningsBefore();
+				}
     }
     // after submission
     private void checkForWarningsAfter(){
@@ -1065,9 +1070,25 @@ public class Document{
 						}
 				}
     }
-
+		private void setWarningFlag(){
+				if(!warning_flag_set){
+						warning_flag_set = true;
+						getSalaryGroup();
+						getJob();
+						Group group = null;
+						if(job != null){
+								group = job.getGroup();
+						}
+						if(salaryGroup != null &&
+							 salaryGroup.isFireSworn5x8() &&
+							 (group.getName().indexOf("Admin BC") > -1)){
+								need_warning = false;
+						}
+				}
+		}
     public boolean hasWarnings(){
-				return warnings.size() > 0;
+				setWarningFlag();
+				return need_warning && warnings.size() > 0;
     }
     public List<String> getWarnings(){
 				return warnings;

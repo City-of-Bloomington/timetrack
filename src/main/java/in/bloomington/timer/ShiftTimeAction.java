@@ -28,6 +28,7 @@ public class ShiftTimeAction extends TopAction{
 		List<PayPeriod> payPeriods = null;
 		String department_id = "", group_id="";
 		String shiftsTitle = "Current shift times";
+		Department department = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -104,6 +105,15 @@ public class ShiftTimeAction extends TopAction{
 						department_id = val;
 				}
 		}
+		public boolean hasDepartment(){
+				return !department_id.equals("");
+		}
+		public String getDepartment_id(){
+				if(department_id.equals("")){
+						return "-1";
+				}
+				return department_id;
+		}		
 		public void setDate(String val){
 
 		}		
@@ -131,6 +141,11 @@ public class ShiftTimeAction extends TopAction{
 				return shifts;
 		}
 		//
+		// if department Id is set
+		public boolean hasGroups(){
+				getGroups();
+				return groups != null  && groups.size() > 0;
+		}
 		public List<Group> getGroups(){
 				if(groups == null){
 						if(!department_id.equals("")){
@@ -146,6 +161,16 @@ public class ShiftTimeAction extends TopAction{
 						}
 				}
 				return groups;
+		}
+		public Department getDepartment(){
+				if(department == null && !department_id.equals("")){
+						Department one = new Department(department_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								department = one;
+						}
+				}
+				return department;
 		}
 		public List<Department> getDepartments(){
 				if(departments == null){

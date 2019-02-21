@@ -441,6 +441,9 @@ public class Employee implements Serializable{
     }
     public boolean canRunParkReport(){
 				return hasRole("ParkReport");
+    }
+    public boolean canRunFireReport(){
+				return hasRole("FireReport");
     }		
     public boolean canRunTargetEmployee(){
 				return hasRole("TargetEmployee");

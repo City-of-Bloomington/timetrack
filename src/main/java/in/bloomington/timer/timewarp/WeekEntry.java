@@ -111,8 +111,14 @@ public class WeekEntry{
 				if(val != null){
 						job = val;
 						salaryGroup = job.getSalaryGroup();
-						st_weekly_hrs = job.getWeekly_regular_hours();
-						comp_weekly_hrs = job.getComp_time_weekly_hours();
+						if(salaryGroup.isFireSworn()){
+								st_weekly_hrs = 48;
+								comp_weekly_hrs = 53;
+						}
+						else{
+								st_weekly_hrs = job.getWeekly_regular_hours();
+								comp_weekly_hrs = job.getComp_time_weekly_hours();
+						}
 						comp_factor = job.getComp_time_factor();
 						holiday_factor = job.getHoliday_comp_factor();
 						group  = job.getGroup();
@@ -371,7 +377,7 @@ public class WeekEntry{
 								excess_hrs = 1f;
 						}
 						else if(salaryGroup.isFireSworn()){
-								excess_hrs = netHours - comp_weekly_hrs;
+								// excess_hrs = netHours - comp_weekly_hrs;
 						}
 						else{
 								if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){

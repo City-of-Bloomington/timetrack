@@ -86,8 +86,14 @@ public class WeekSplit{
 				if(val != null){
 						job = val;
 						salaryGroup = job.getSalaryGroup();
-						st_weekly_hrs = job.getWeekly_regular_hours();
-						comp_weekly_hrs = job.getComp_time_weekly_hours();
+						if(salaryGroup.isFireSworn()){
+								st_weekly_hrs = 48;
+								comp_weekly_hrs = 53;
+						}
+						else{
+								st_weekly_hrs = job.getWeekly_regular_hours();
+								comp_weekly_hrs = job.getComp_time_weekly_hours();
+						}
 						comp_factor = job.getComp_time_factor();
 						holiday_factor = job.getHoliday_comp_factor();
 						group  = job.getGroup();
@@ -307,6 +313,13 @@ public class WeekSplit{
 										net_reg_hrs = 0;
 								}
 								return;
+						}
+						else if(salaryGroup.isFireSworn()){
+								net_reg_hrs = regular_hrs - earned_time;
+								if(net_reg_hrs < 0.009){
+										net_reg_hrs = 0;
+								}
+								return;								
 						}
 				}
 				else if(bGroup != null){

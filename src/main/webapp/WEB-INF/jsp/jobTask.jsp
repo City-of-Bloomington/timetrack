@@ -52,7 +52,7 @@
 
 		<div class="form-group">
 			<label>Salary Group</label>
-			<s:select name="jobTask.salary_group_id" value="%{jobTask.salary_group_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Salary Group" required="true" />
+			<s:select name="jobTask.salary_group_id" value="%{jobTask.salary_group_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Salary Group" required="true" id="job_salary_group_change" />
 		</div>
 		<s:if test="jobTask.employee_id == ''">
 			<div class="form-group">
@@ -102,12 +102,12 @@
 
 		<div class="form-group">
 			<label>Clock Time Required?</label>
-			<s:checkbox name="jobTask.clock_time_required" value="%{jobTask.clock_time_required}" fieldValue="true" />Yes (Employees who are required to use punch clock)
+			<s:checkbox name="jobTask.clock_time_required" value="%{jobTask.clock_time_required}" fieldValue="true" id="clock_required_id" />Yes (Employees who are required to use punch clock)
 		</div>
 
 		<div class="form-group">
 			<label>Weekly Reg Hours </label>
-			<s:textfield name="jobTask.weekly_regular_hours" value="%{jobTask.weekly_regular_hours}" size="3" maxlength="3" required="true" />(normally 40)
+			<s:textfield name="jobTask.weekly_regular_hours" value="%{jobTask.weekly_regular_hours}" size="3" maxlength="3" required="true" id="weekly_hrs_id" />(normally 40)
 		</div>
 
 		<div class="form-group">
@@ -117,12 +117,12 @@
 
 		<div class="form-group">
 			<label>Comp Time Multiple Factor </label>
-			<s:textfield name="jobTask.comp_time_factor" value="%{jobTask.comp_time_factor}" size="3" maxlength="3" required="true" />(normally 1.5 for non-exempt and 1 for exempt)
+			<s:textfield name="jobTask.comp_time_factor" value="%{jobTask.comp_time_factor}" size="3" maxlength="3" required="true" id="comp_factor_id" />(normally 1.5 for non-exempt and 1 for exempt)
 		</div>
 
 		<div class="form-group">
 			<label>Holiday Comp Multiple Factor </label>
-			<s:textfield name="jobTask.holiday_comp_factor" value="%{jobTask.holiday_comp_factor}" size="3" maxlength="3" required="true" />(normally 1.5 for non-exempt and 1 for  exempt)
+			<s:textfield name="jobTask.holiday_comp_factor" value="%{jobTask.holiday_comp_factor}" size="3" maxlength="3" required="true" id="holiday_factor_id" />(normally 1.5 for non-exempt and 1 for  exempt)
 		</div>
 		
 	</div>

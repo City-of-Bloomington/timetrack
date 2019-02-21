@@ -2,6 +2,9 @@
 <div class="internal-page">
 	<s:form action="shiftTime" id="form_id" method="post" >
 		<s:hidden name="action2" id="action2" value="" />
+		<s:if test="hasDepartment()">
+			<s:hidden name="department_id" value="%{department_id}" />
+		</s:if>
 		<s:if test="shift.id == ''">
 			<h1>New Shift Times</h1>
 		</s:if>
@@ -18,11 +21,15 @@
 			<%@ include file="errors.jsp" %>
 		</s:elseif>		
 		<ul>
-			<li>Pick the department</li>
+			<li>Pick the department, if not already set</li>
 			<li>Pick the group from the list</li>
 			<li>Pick pay period</li>
 			<li>Set start time and end time in hh:mm format using 24 hours </li>
-			<li>Added dates one at a time </li>
+			<li>For example if shift start time is 7 AM you would enter 07:00 in Start Time box</li>
+			<li>For shift end time in the after noon such as 4:30 pm, you enter 16:30 in End Time box.</li>
+			<li>If shift end time is 7 AM next day you would enter 31:00 in End Time box</li>
+			<li>Add dates one at a time, the dates will copied to the lower textbox </li>
+			<li>If you mistakenly added a date, removed from textbox below, just make sure to keep a comma in between dates</li>
 			<li>Save or Save Changes</li>
 			<li>After you 'Save' or 'Save Changes' make sure there is not any error reported in top of the page</li>
 			<li>If there is any error, please fix it and click on 'Save' or 'Save Changes' again</li>
@@ -36,23 +43,27 @@
 				</div>
 			</s:if>
 			<s:if test="shift.id == ''">
-			<div class="form-group">
-				<label>Department </label>
-				<s:select name="department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />
-			</div>
 				<div class="form-group">
-					<label>Group </label>
-					<select name="shift.group_id" value="" id="group_id_set"  disabled="disabled"/>
-					<option value="-1">Pick a group</option>
-				</select>(To pick a group you need to pick a department first)				
+					<label>Department </label>
+					<s:if test="hasDepartment()">
+						<s:property value="department" />
+					</s:if>
+					<s:else>
+						<s:select name="department_id" value="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />
+					</s:else>
 				</div>
 			</s:if>
-			<s:else>
-				<div class="form-group">
-					<label>Group </label>
-					<s:select name="shift.group_id" value="%{shift.group_id}" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick a Group" />
-				</div>
-			</s:else>
+			<div class="form-group">
+				<label>Group </label>
+				<s:if test="hasGroups()">
+					<s:select name="shift.group_id" value="" id="group_id_set"  list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick a group" />
+				</s:if>
+				<s:else>
+					<select name="shift.group_id" value="" id="group_id_set"  disabled="disabled">
+						<option value="-1">Pick a group</option>
+					</select>(To pick a group you need to pick a department first)
+				</s:else>
+			</div>
 			<div class="form-group">
 				<label>Pay Period </label>
 					<s:select name="shift.pay_period_id" value="%{shift.pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick Pay Period" />

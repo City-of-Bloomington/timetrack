@@ -136,6 +136,16 @@ $('#department_id_change').change(function() {
         alert(status+" "+err);
     });
 })
+$('#job_salary_group_change').change(function() {
+    var $option = $(this).find('option:selected');
+    var sel_name = $option.text();
+		if(sel_name == 'Temp'){
+				$("#weekly_hrs_id").val("20");
+				$("#comp_factor_id").val("1.5");
+				$("#holiday_factor_id").val("1.5");
+				$("#clock_required_id").attr('checked', true);				
+		}
+})
 $('#start_date_id').change(function() {
     var val = $(this).val();
 		var all_dates = $("#all_dates_id").val();

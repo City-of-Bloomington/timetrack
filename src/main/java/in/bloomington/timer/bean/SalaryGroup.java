@@ -105,19 +105,19 @@ public class SalaryGroup{
 				return name.equals("Union");
 		}
 		public boolean isPoliceSworn(){
-				return name.equals("POLICE SWORN");
+				return name.equals("Police Sworn");
 		}
 		public boolean isPoliceDetective(){
-				return name.equals("POLICE SWORN DET");
+				return name.equals("Police Sworn Det");
 		}
 		public boolean isPoliceManagement(){
-				return name.equals("POLICE SWORN MGT");
+				return name.equals("Police Sworn Mgt");
 		}
 		public boolean isFireSworn(){
-				return name.equals("FIRE SWORN");
+				return name.equals("Fire Sworn");
 		}
 		public boolean isFireSworn5x8(){
-				return name.equals("FIRE SWORN 5X8");
+				return name.equals("Fire Sworn 5x8");
 		}
 		public boolean isExcessCulculationDaily(){
 				return excess_culculation.equals("Daily");
