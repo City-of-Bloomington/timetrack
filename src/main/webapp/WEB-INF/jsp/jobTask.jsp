@@ -149,9 +149,4 @@
 	</div>
 </s:form>
 
-<s:if test="hasJobTasks()">
-	<s:set var="jobTasks" value="jobTasks" />
-	<s:set var="jobTasksTitle" value="jobTasksTitle" />
-	<%@ include file="jobTasks.jsp" %>
-</s:if>
 <%@ include file="footer.jsp" %>

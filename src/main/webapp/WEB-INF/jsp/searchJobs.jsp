@@ -3,8 +3,14 @@
 	<s:form action="searchJobs" id="form_id" method="post" >
 		<s:hidden name="action2" id="action2" value="" />
 		<h3>Search Jobs</h3>
-
-	  <%@ include file="strutMessages.jsp" %>
+		<s:if test="hasMessages()">
+			<s:set var="messages" value="messages" />			
+			<%@ include file="messages.jsp" %>
+		</s:if>
+		<s:elseif test="hasErrors()">
+			<s:set var="errors" value="errors" />			
+			<%@ include file="errors.jsp" %>
+		</s:elseif>
 
 	  <p>For employee field you can use key words of first name or last name to pick from the auto complete list.</p>
 
@@ -72,7 +78,6 @@
 			</div>
 		</div>
 	</s:form>
-
 	<s:if test="hasJobs()">
 		<s:set var="jobTasks" value="jobs" />
 		<s:set var="jobsTitle" value="jobsTitle" />

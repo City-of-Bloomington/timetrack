@@ -5,14 +5,19 @@
   	<input type="hidden" name="department_id" id="department_id"
 							value="<s:property value='department_id' />"  />
 		<h1>Employee Search</h1>
-
-	  <%@ include file="strutMessages.jsp" %>
+		<s:if test="hasMessages()">
+			<s:set var="messages" value="messages" />			
+			<%@ include file="messages.jsp" %>
+		</s:if>
+		<s:elseif test="hasErrors()">
+			<s:set var="errors" value="errors" />			
+			<%@ include file="errors.jsp" %>
+		</s:elseif>
 	  <div class="width-one-half">			
 			<div class="form-group">
 				<label>ID</label>
 				<s:textfield name="emplst.id" value="%{emplst.id}" size="10" id="employee_id" />
 			</div>
-		
 			<div class="form-group">
 				<label>Name</label>
 				<s:textfield name="emplst.name" value="%{emplst.name}" size="30" id="employee_name" /><br />
@@ -63,10 +68,10 @@
 			</div>
 		</div>
 	</s:form>
-
-	<s:if test="employees != null && employees.size() > 0">
-		<s:set var="employees" value="%{employees}" />
-		<s:set var="employeesTitle" value="employeesTitle" />
-		<%@ include file="employees.jsp" %>
-	</s:if>
+</div>
+<s:if test="employees != null && employees.size() > 0">
+	<s:set var="employees" value="%{employees}" />
+	<s:set var="employeesTitle" value="employeesTitle" />
+	<%@ include file="employees.jsp" %>
+</s:if>
 <%@ include file="footer.jsp" %>

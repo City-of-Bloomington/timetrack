@@ -128,15 +128,7 @@
 			</s:else>
 		</div>
 	</s:form>
-
-	<s:if test="employee.id == ''">
-		<s:if test="employees != null && employees.size() > 0">
-			<s:set var="employees" value="%{employees}" />
-			<s:set var="employeesTitle" value="employeesTitle" />
-			<%@ include file="employees.jsp" %>
-		</s:if>
-	</s:if>
-	<s:else>
+	<s:if test="employee.id != ''">
 		<s:if test="employee.hasDepartment()">
 			<s:set var="departmentEmployees" value="%{employee.departmentEmployees}" />
 			<s:set var="departmentEmployeesTitle" value="'Employee Department'" />
@@ -172,6 +164,6 @@
 				<%@ include file="groupManagers.jsp" %>
 			</s:if>			
 		</s:if>
-	</s:else>
+	</s:if>
 </div>
 <%@ include file="footer.jsp" %>
