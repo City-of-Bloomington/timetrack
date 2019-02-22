@@ -379,6 +379,9 @@ public class WeekEntry{
 						else if(salaryGroup.isFireSworn()){
 								// excess_hrs = netHours - comp_weekly_hrs;
 						}
+						else if(salaryGroup.isFireSworn5x8()){
+								// excess_hrs = netHours - comp_weekly_hrs;
+						}						
 						else{
 								if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){
 										excess_hrs = netHours - st_weekly_hrs;
@@ -427,6 +430,9 @@ public class WeekEntry{
 								// compute daily see below
 						}
 						else if(salaryGroup.isFireSworn()){
+								// ignore
+						}
+						else if(salaryGroup.isFireSworn5x8()){
 								// ignore
 						}						
 						else{

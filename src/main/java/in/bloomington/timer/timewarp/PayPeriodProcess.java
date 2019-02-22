@@ -130,7 +130,7 @@ public class PayPeriodProcess{
 										regCode = "TEMP";
 								}
 								else if(bgroup.isFireSworn()){
-										regCode = "FIRE REG";
+										regCode = "REG FIRE";
 								}
 						}
 				}

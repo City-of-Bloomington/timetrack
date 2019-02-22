@@ -247,12 +247,12 @@
 			<result name="success">/WEB-INF/jsp/reports/reportHand.jsp</result>
 			<result name="csv">/WEB-INF/jsp/reports/reportHandCsv.jsp</result>
 		</action>
-		<action name="parksJobReport" 
-						class="in.bloomington.timer.ReportParkAction" 
+		<action name="jobsReport" 
+						class="in.bloomington.timer.ReportJobAction" 
 						method="execute">
-			<result name="input">/WEB-INF/jsp/reports/parksReport.jsp</result>		
-			<result name="error">/WEB-INF/jsp/reports/parksReport.jsp</result>
-			<result name="success">/WEB-INF/jsp/reports/parksReport.jsp</result>
+			<result name="input">/WEB-INF/jsp/reports/jobsReport.jsp</result>		
+			<result name="error">/WEB-INF/jsp/reports/jobsReport.jsp</result>
+			<result name="success">/WEB-INF/jsp/reports/jobsReport.jsp</result>
 			<result name="csv">/WEB-INF/jsp/reports/jobsReportCsv.jsp</result>
 		</action>		
 		<action name="reportPlan" 

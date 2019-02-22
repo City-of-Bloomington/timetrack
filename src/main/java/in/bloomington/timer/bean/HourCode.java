@@ -207,11 +207,10 @@ public class HourCode{
 				return type.equals("Overtime");
 		}
 		public boolean isOnCall(){
-				// return type.equals("On Call");
-				return type.equals("Nonetary");
+				return type.equals("Monetary");
 		}
 		public boolean isMonetary(){
-				return type.equals("Nonetary");
+				return type.equals("Monetary");
 		}		
 		public boolean isCallOut(){
 				return type.equals("Call Out");

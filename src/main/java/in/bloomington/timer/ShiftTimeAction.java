@@ -24,8 +24,8 @@ public class ShiftTimeAction extends TopAction{
 		List<ShiftTime> shifts = null;
 		List<Group> groups = null;
 		List<HourCode> hourCodes = null;
-		List<Department> departments = null;
 		List<PayPeriod> payPeriods = null;
+		List<Department> departments = null;
 		String department_id = "", group_id="";
 		String shiftsTitle = "Current shift times";
 		Department department = null;

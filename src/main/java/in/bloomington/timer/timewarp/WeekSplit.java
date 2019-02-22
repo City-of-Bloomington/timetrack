@@ -119,7 +119,6 @@ public class WeekSplit{
 						HourCode hrCode = te.getHourCode();
 						String nw_code = te.getNw_code();
 						double hours = te.getHours();
-						
 						if(salaryGroup != null && salaryGroup.isUnionned()){
 								addToDaily(te);
 						}
@@ -134,22 +133,21 @@ public class WeekSplit{
 								}
 								else{
 										if(hrCode.isUsed()){
-												// if(code_desc.indexOf("used") > -1){
 												earn_time_used += hours;
 												total_hrs += hours;
 										}
 										else if(hrCode.isUnpaid()){
-												// else if(code_desc.indexOf("unpaid") > -1){
 												unpaid_hrs += hours;
 										}
 										else if(hrCode.isEarned()){										
-												// else if(code_desc.indexOf("accrue") > -1){
 												unpaid_hrs += hours;
 										}
 										else if(hrCode.isOvertime()){												
-												// else if(code_desc.indexOf("overtime") > -1){
 												unpaid_hrs += hours;
-										}										
+										}
+										else if(hrCode.isMonetary()){												
+												unpaid_hrs += hours;
+										}
 										else{ // other
 												non_reg_hrs += hours;
 												total_hrs += hours;
@@ -242,7 +240,7 @@ public class WeekSplit{
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}											
-						}						
+						}
 						else{ // any thing else such as holidays
 								non_reg_hrs += hours;
 								total_hrs += hours;									
@@ -321,6 +319,13 @@ public class WeekSplit{
 								}
 								return;								
 						}
+						else if(salaryGroup.isFireSworn5x8()){
+								net_reg_hrs = regular_hrs - earned_time;
+								if(net_reg_hrs < 0.009){
+										net_reg_hrs = 0;
+								}
+								return;								
+						}						
 				}
 				else if(bGroup != null){
 						if(bGroup.isTemporary()){

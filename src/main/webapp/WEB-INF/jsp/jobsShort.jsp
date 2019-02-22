@@ -7,8 +7,8 @@
 			<th>Job Title</th>
 			<th>Salary Group</th>
 			<th>Group</th>
-			<th>ID card #</th>
 			<th>Employee NW #</th>
+			<th>ID card #</th>
 			<th>Changes</th>
 			<th>Effective Date</th>
 		</tr>

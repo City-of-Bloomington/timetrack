@@ -59,7 +59,7 @@
 			<s:if test="user.canRunParkReport()">
 				<a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
 				<a href="<s:property value='#application.url'/>jobIntervention.action">Jobs Need Intervention</a>				
-				<a href="<s:property value='#application.url'/>parksJobReport.action">Current Employee Jobs</a>
+				<a href="<s:property value='#application.url'/>jobsReport.action?department_id=5">Current Employee Jobs</a>
 			</s:if>
       <s:elseif test="user.canRunTargetEmployee()">
         <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>

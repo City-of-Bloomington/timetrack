@@ -66,7 +66,7 @@ public class JobTaskList{
     }
     public void setEmployee_name(String val){
 				// for auto_complete
-    }		
+    }
     public void setDepartment_id(String val){
 				if(val != null && !val.equals("-1"))
 						department_id = val;
@@ -106,8 +106,10 @@ public class JobTaskList{
 		
     public void setActive_status(String val){
 				if(val != null && !val.equals("-1")){
-						if(val.equals("Active")) 
+						if(val.equals("Active")) {
 								active_only = true;
+								setNotExpired();
+						}
 						else if(val.equals("Inactive"))
 								inactive_only = true;
 				}
@@ -230,10 +232,13 @@ public class JobTaskList{
 						
 						"j.inactive,  "+
 						
-						"g.name,g.description,g.default_regular_id,"+
-						"g.excess_culculation,g.inactive "+
+						"sg.name,sg.description,sg.default_regular_id,"+
+						"sg.excess_culculation,sg.inactive, "+
+						"p.name "+ // position name
 						" from jobs j ";
-				qq += " join salary_groups g on g.id=j.salary_group_id ";
+				qq += " join salary_groups sg on sg.id=j.salary_group_id "+
+						" join groups g on j.group_id=g.id "+
+						" join positions p on j.position_id=p.id ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -298,9 +303,12 @@ public class JobTaskList{
 								qw += " j.position_id = ? ";
 						}
 						if(!department_id.equals("")){
-								qq += " inner join department_employees de on de.employee_id=j.employee_id ";
+								qq += " inner join department_employees de on de.employee_id=j.employee_id and g.department_id=de.department_id";
 								if(!qw.equals("")) qw += " and ";
 								qw += " de.department_id = ? ";
+								if(current_only){
+										qw += " and (de.expire_date >= now() or de.expire_date is null) ";
+								}
 						}
 						if(!date_from.equals("")){
 								if(!qw.equals("")) qw += " and ";
@@ -313,7 +321,7 @@ public class JobTaskList{
 						if(!qw.equals("")){
 								qq += " where "+qw;
 						}
-						// System.err.println(qq);
+						qq += " order by p.name ";
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
@@ -373,7 +381,8 @@ public class JobTaskList{
 																rs.getString(18),
 																rs.getString(19),
 																rs.getString(20),
-																rs.getString(21) != null
+																rs.getString(21) != null, 
+																rs.getString(22) // position name
 																);
 							 
 								if(!jobTasks.contains(one))
@@ -414,12 +423,14 @@ public class JobTaskList{
 						"date_format(j.added_date,'%m/%d/%Y'),"+
 						
 						"j.inactive,  "+
-						"g.name,g.description,g.default_regular_id,"+
-						"g.excess_culculation,g.inactive,"+
+						" sg.name,sg.description,sg.default_regular_id,"+
+						" sg.excess_culculation,sg.inactive,"+
+						" p.name, "+
 						" e.employee_number "+
 						" from jobs j,employees e, "+
-						" salary_groups g ";
-				qq += " where g.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null "+
+						" salary_groups sg, "+
+						" positions p ";
+				qq += " where g.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null and j.position_id=p.id "+
 						" and e.inactive is null ";
 				// active only
 				qq += " and j.inactive is null ";
@@ -461,7 +472,8 @@ public class JobTaskList{
 																rs.getString(19),
 																rs.getString(20),
 																rs.getString(21) != null,
-																rs.getString(22)
+																rs.getString(22),
+																rs.getString(23)
 																);
 								if(!jobTasks.contains(one))
 										jobTasks.add(one);

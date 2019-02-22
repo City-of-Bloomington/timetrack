@@ -54,7 +54,7 @@ $("#employee_name2").autocomplete({
     delay: 100,
     select: function( event, ui ) {
         if(ui.item){
-            $("#employee_name").val(ui.item.full_name);
+            $("#employee_name2").val(ui.item.full_name);
             $("#employee_id").val(ui.item.id);
         }
     }

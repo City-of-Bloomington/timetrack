@@ -6,7 +6,7 @@
  *
 	-->
 <div class="internal-page container clearfix settings">
-	<h1>Parks Employees and Jobs Report</h1>
+	<h1>Employees and Jobs Report</h1>
 	<div class="width-one-half float-left">
 		<ul>
 			<li>From this list you can create a csv file</li>
@@ -23,7 +23,10 @@
 				<li>Employee NW #, is the New World employee number (check with HR)</li>
 				<li>Effective date should 'ALWAYS' be the first day of a pay period</li>
 		</ul>
-		<s:form action="parksJobReport" id="form_id" method="post" >
+		<s:form action="jobsReport" id="form_id" method="post" >
+			<s:if test="hasDepartment()">
+				<s:hidden name="department_id" value="%{department_id}" />
+			</s:if>
 			<s:if test="hasMessages()">
 				<s:set var="messages" value="messages" />			
 				<%@ include file="../messages.jsp" %>
@@ -32,25 +35,26 @@
 				<s:set var="errors" value="errors" />			
 				<%@ include file="../errors.jsp" %>
 			</s:elseif>
-			<table class="width-full">
-				<tr>
-					<td align="center">
-						<table width="90%" border="0">
-							<tr>
-								<td>Employment Type </td>
-								<td><s:select name="employmentType" value="%{employmentType}" list="#{'-1':'All','Temp':'Temp Employee Only','Non Temp':'All Others'}" /> </td>
-							</tr>
-							<tr>
-								<td>Output Type:</td>				
-								<td><s:radio name="outputType" value="%{outputType}" list="#{'html':'Web page format','csv':'CSV format'}" /></td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td><s:submit name="action" type="button" value="Submit"/></td>
-				</tr>
-			</table>
+			<div class="form-group">
+				<label>Department</label>
+				<s:if test="hasDepartment()">
+					<s:property value="department" />
+				</s:if>
+				<s:else>
+					<s:select name="department_id" value="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" />					
+				</s:else>
+			</div>
+			<div class="form-group">
+				<label>Employment Type</label>
+				<s:select name="employmentType" value="%{employmentType}" list="#{'-1':'All','Temp':'Temp Employee Only','Non Temp':'All Others'}" />
+			</div>
+			<div class="form-group">			
+				<label>Output Type:</label>				
+				<s:radio name="outputType" value="%{outputType}" list="#{'html':'Web page format','csv':'CSV format'}" />
+			</div>
+			<div class="button-group">
+				<s:submit name="action" type="button" value="Submit"/>
+			</div>
 		</s:form>
 	</div>		
 	<s:if test="action != ''">

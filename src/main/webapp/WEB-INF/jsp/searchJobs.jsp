@@ -17,7 +17,7 @@
 		<div class="width-one-half">
 			<div class="form-group">
 				<label>Employee Name</label>
-				<s:textfield name="joblst.employee_name" value="%{joblst.employee_name}" id="employee_name" size="20" /><br />
+				<s:textfield name="joblst.employee_name" value="%{joblst.employee_name}" id="employee_name2" size="20" /><br />
 				ID:<s:textfield name="joblst.employee_id" value="%{joblst.employee_id}" id="employee_id" size="6" maxlength="6" />
 			</div>
 			<div class="form-group">

@@ -17,16 +17,19 @@ import in.bloomington.timer.timewarp.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ReportParkAction extends TopAction{
+public class ReportJobAction extends TopAction{
 
 		static final long serialVersionUID = 1800L;	
-		static Logger logger = LogManager.getLogger(ReportParkAction.class);
+		static Logger logger = LogManager.getLogger(ReportJobAction.class);
 		static final int startYear = 2017; // 
 		//
 		String outputType = "html";
 		String employmentType = ""; // All, Full Time, Temp
 		List<JobTask> jobs = null;
-		String jobsTitle = "Parks Current Employee Jobs ";
+		List<Department> departments = null;
+		Department department = null;
+		String department_id = ""; // parks=5		
+		String jobsTitle = "Current Employee Jobs ";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -71,7 +74,12 @@ public class ReportParkAction extends TopAction{
 		}		
 		// needed only for csv output
 		public String getFileName(){
-				String filename="parks_jobs_"+Helper.getToday().replace("/","_")+".csv";
+				getDepartment();
+				String filename = "";
+				if(department != null){
+						filename = department.getName().replace(' ','_');
+				}
+				filename +="_jobs_"+Helper.getToday().replace(' ','_')+".csv";
 				return filename;
 		}
 		public String getEmploymentType(){
@@ -83,11 +91,53 @@ public class ReportParkAction extends TopAction{
 				if(val != null && !val.equals("-1")){
 						employmentType = val; // salary_group_id = 3 for Temp
 				}
-		}		
+		}
+		public void setDepartment_id(String val){
+				if(val != null && !val.equals("-1")){
+						department_id = val;
+				}
+		}
+		public boolean hasDepartment(){
+				return !department_id.equals("");
+		}
+		public String getDepartment_id(){
+				if(department_id.equals("")){
+						return "-1";
+				}
+				return department_id;
+		}				
+		public Department getDepartment(){
+				if(department == null && !department_id.equals("")){
+						Department one = new Department(department_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								department = one;
+						}
+				}
+				return department;
+		}
+		public List<Department> getDepartments(){
+				if(departments == null){
+						DepartmentList gsl = new DepartmentList();
+						gsl.ignoreSpecialDepts();
+						String back = gsl.find();
+						if(back.equals("")){
+								List<Department> ones = gsl.getDepartments();
+								if(ones != null && ones.size() > 0){
+										departments = ones;
+								}
+						}
+				}
+				return departments;
+		}				
 		public String findJobs(){
 				String back = "";
+				if(department_id.equals("")){
+						back ="You need to pick a department";
+						return back;
+				}
 				JobTaskList jtl = new JobTaskList();
-				jtl.setDepartment_id("5"); // parks department only
+				jtl.setDepartment_id(department_id); // parks department only
 				jtl.setActiveOnly();
 				jtl.setNotExpired();
 				if(employmentType.startsWith("Temp")){
