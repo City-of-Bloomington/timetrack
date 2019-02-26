@@ -1,4 +1,4 @@
-package in.bloomington.timer.timewarp;
+package in.bloomington.timer.report;
 /**
  * @copyright Copyright (C) 2014-2016 City of Bloomington, Indiana. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
@@ -14,15 +14,16 @@ import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
 
-public class PlanReport extends MpoReport{
+public class HandReport extends MpoReport{
 
-		static Logger logger = LogManager.getLogger(PlanReport.class);
-    public PlanReport(){
+		static Logger logger = LogManager.getLogger(HandReport.class);
+    public HandReport(){
 				super();
-				dept="Planning & Transportation";
-				department_id="7";  
-				dept_ref_id="25,31"; // planning & engineering
-				code="%_MP_%";
+				dept="HAND";
+				department_id="3";  
+				dept_ref_id="27"; // HAND 27
+				code="%_REG";
+				code2="TEMP_%";
     }	
 		
 }

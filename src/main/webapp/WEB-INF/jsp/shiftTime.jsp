@@ -56,7 +56,7 @@
 			<div class="form-group">
 				<label>Group </label>
 				<s:if test="hasGroups()">
-					<s:select name="shift.group_id" value="" id="group_id_set"  list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick a group" />
+					<s:select name="shift.group_id" value="%{shift.group_id}" id="group_id_set"  list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick a group" />
 				</s:if>
 				<s:else>
 					<select name="shift.group_id" value="" id="group_id_set"  disabled="disabled">
@@ -106,7 +106,12 @@
 						<s:submit name="action" type="button" value="Save Changes" class="button"/>
 						<s:submit name="action" type="button" value="Process" class="button"/>
 					</s:if>
-					<a href="<s:property value='#application.url'/>shiftTime.action" class="button">New Shift Times</a> 
+					<s:if test="hasDepartment()">
+						<a href="<s:property value='#application.url'/>shiftTime.action?department_id=<s:property value='department_id' />" class="button">New Shift Times</a>
+					</s:if>
+					<s:else>
+						<a href="<s:property value='#application.url'/>shiftTime.action" class="button">New Shift Times</a>
+					</s:else>
 				</div>
 			</s:else>
 		</div>

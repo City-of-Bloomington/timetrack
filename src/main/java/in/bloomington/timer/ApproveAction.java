@@ -34,6 +34,7 @@ public class ApproveAction extends TopAction{
 		PayPeriod currentPayPeriod=null, previousPayPeriod=null,
 				nextPayPeriod=null, payPeriod = null;
 		Group group = null;
+		Department department = null;
 		List<Document> documents = null;
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
@@ -410,6 +411,26 @@ public class ApproveAction extends TopAction{
 						findDepartment();
 				}
 				return department_id;
+		}
+		public void setDepartment_id(String val){
+				if(val != null && !val.equals("-1")){
+						department_id = val;
+				}
+		}		
+		public Department getDepartment(){
+				if(department == null){
+						if(department_id.equals("")){
+								findDepartment();
+						}
+						if(!department_id.equals("")){
+								Department dd = new Department(department_id);
+								String back = dd.doSelect();
+								if(back.equals("")){
+										department = dd;
+								}
+						}
+				}
+				return department;
 		}
 		void findDepartment(){
 				// to do

@@ -530,9 +530,6 @@ public class TimeBlockList{
 						"job_name,"+
 						"accrual_id,"+
 						"job_id "+
-						// skip pay_period_id
-						// skip employee_id
-						// skip date
 						"from time_blocks_view v ";
 				String qw = "";
 				// ToDo
@@ -1143,5 +1140,15 @@ public class TimeBlockList{
 						}
 				}
     }
+		/*
+
+       create or replace view time_block_sum_view as
+
+
+			 select concat_ws(' - ',date_format(p.start_date, '%m/%d'), date_format(p.end_date,'%m/%d')) date_range,                                                         concat_ws(', ',e.last_name,e.first_name) full_name,                             ps.name job_name,                                                               c.name hour_code,			                                                         sum(t.hours) hours                                                              from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join employees e on e.id=d.employee_id                                          join department_employees de on de.employee_id=e.id                             where                                                                           t.inactive is null                                                              and ((t.clock_in is not null and t.clock_out is not null) or (t.clock_in is null and t.clock_out is null))                                                       and de.department_id=1                                                          and p.start_date >= '2019-02-11'                                                and p.end_date <= '2019-02-25'                                                  group by date_range,full_name,job_name,hour_code                                order by date_range,full_name,job_name,hour_code
+
+
+
+		 */
 		
 }

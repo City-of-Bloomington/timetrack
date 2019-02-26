@@ -8,6 +8,7 @@
 <s:form action="timewarp" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="source" value="source" />
+	<s:hidden name="type" value="single" />	
 	<s:hidden name="department_id" value="%{department_id}" />
 	<input type="hidden" name="type" value="single" />	
 	<s:if test="hasActionErrors()">

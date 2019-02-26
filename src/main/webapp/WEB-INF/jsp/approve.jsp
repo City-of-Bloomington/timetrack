@@ -45,9 +45,7 @@
       <s:if test="hasNoDocNorSubmitEmps()">
         <a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a>
       </s:if>
-
       <hr />
-
       <div class="form-group">
 				<label for="check_all"><strong>Select all approve eligible individuals.</strong></label>
         <small class="status-tag approval-ready select-all">

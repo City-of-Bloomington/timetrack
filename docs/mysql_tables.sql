@@ -793,11 +793,9 @@ CREATE TABLE shift_times (
 ;;
 ;;
 ;;	2/18/2019
-;; update fire sworn weekly hours to 48, comp time weely to 106
+;; update fire sworn weekly hours to 48, comp time weely to 53
 ;;
 update jobs set weekly_regular_hours=48, comp_time_weekly_hours=106 where salary_group_id=9;
-
-
 
 
 ;; postpone the following for later

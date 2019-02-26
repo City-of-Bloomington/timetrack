@@ -100,15 +100,17 @@ public class TimewarpAction extends TopAction{
 						department_id = val;
     }
     public String getDepartment_id(){
-				if(user != null ){
-						if(user.isAdmin()){
-								if(department_id.equals(""))
-										return "-1";
-						}
-						else{
-								department = user.getDepartment();
-								if(department != null){
-										department_id = department.getId();
+				if(department_id.equals("")){
+						if(user != null ){
+								if(user.isAdmin()){
+										if(department_id.equals(""))
+												return "-1";
+								}
+								else{
+										department = user.getDepartment();
+										if(department != null){
+												department_id = department.getId();
+										}
 								}
 						}
 				}				

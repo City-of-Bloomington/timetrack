@@ -1,4 +1,4 @@
-package in.bloomington.timer.timewarp;
+package in.bloomington.timer.report;
 /**
  * @copyright Copyright (C) 2014-2016 City of Bloomington, Indiana. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
+import in.bloomington.timer.timewarp.WarpEntry;
 
 public class MpoReport{
 

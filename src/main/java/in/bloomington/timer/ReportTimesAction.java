@@ -13,7 +13,7 @@ import org.apache.struts2.ServletActionContext;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.util.*;
-import in.bloomington.timer.timewarp.*;
+import in.bloomington.timer.report.TimesReport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,30 +24,60 @@ public class ReportTimesAction extends TopAction{
 		static final int startYear = 2017; // 
 		//
 		String outputType = "html";
-		List<TimeBlock> blocks = null;
 		List<Department> departments = null;
 		Department department = null;
+		TimesReport report = null;
+		List<Integer> years = null;
 		String department_id = ""; // parks=5		
-		String timesTitle = "Employee Time Blocks ";
+		String timesTitle = "Employee Pay Period Times ";
+		Map<String, Set<String>> empJobs = null;
+		Map<String, Set<String>> empCodes = null;
+		Map<String, Map<String, Map<String, Map<String, String>>>> times = null;
+		// Date-Range  Emp-Name     job        code        hours
+		List<String> datesList = null;
+		List<String[]> arrAll = null;		
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(!action.equals("")){
-						back = findBlocks();						
+						back = report.find();						
 						if(!back.equals("")){
 								addError(back);
 						}
 						else{
-								if(blocks != null && blocks.size() > 0){
-										addMessage("Found "+blocks.size()+" time blocks");
-								}										
+								/*
+								empJobs = report.getEmpJobs();
+								empCodes = report.getEmpCodes();
+								datesList = report.getDatesList();
+								times = report.geTimes();
+								*/
+								outputType = report.getType();
+								arrAll = report.getArrAll();
+								if(arrAll == null && arrAll.size() == 0){
+										addMessage("No records found");
+								}
 						}
 						if(outputType.equals("csv")){
 								return "csv";
-						}						
+						}
+				}
+				else{
+						getReport();
 				}
 				return ret;
 		}
+		public TimesReport getReport(){ 
+				if(report == null){
+						report = new TimesReport();
+				}		
+				return report;
+		}
+
+		public void setReport(TimesReport val){
+				if(val != null){
+						report = val;
+				}
+		}		
 		public void setOutputType(String val){
 				if(val != null && !val.equals("-1")){
 						outputType = val;
@@ -56,7 +86,16 @@ public class ReportTimesAction extends TopAction{
 		public String getOutputType(){
 				return outputType;
 		}
-
+		public List<Integer> getYears(){
+				if(years == null){
+						int currentYear = Helper.getCurrentYear();
+						years = new ArrayList<>();
+						for(int yy=startYear;yy <= currentYear;yy++){
+								years.add(yy);
+						}
+				}
+				return years;
+		}
 		public String getTimesTitle(){
 				return timesTitle;
 		}
@@ -64,13 +103,7 @@ public class ReportTimesAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						action = val;
 		}
-		// 
-		public List<TimeBlock> getBlocks(){
-				return blocks;
-		}
-		public boolean hasBlocks(){
-				return blocks != null && blocks.size() > 0;
-		}		
+		//
 		// needed only for csv output
 		public String getFileName(){
 				getDepartment();
@@ -81,19 +114,7 @@ public class ReportTimesAction extends TopAction{
 				filename +="_times_"+Helper.getToday().replace(' ','_')+".csv";
 				return filename;
 		}
-		/*
-		public String getEmploymentType(){
-				if(employmentType.equals(""))
-						return "-1";
-				return employmentType;
-		}
-			
-		public void setEmploymentType(String val){
-				if(val != null && !val.equals("-1")){
-						employmentType = val; // salary_group_id = 3 for Temp
-				}
-		}
-		*/
+
 		public void setDepartment_id(String val){
 				if(val != null && !val.equals("-1")){
 						department_id = val;
@@ -132,35 +153,16 @@ public class ReportTimesAction extends TopAction{
 				}
 				return departments;
 		}				
-		public String findBlocks(){
-				String back = "";
-				if(department_id.equals("")){
-						back ="You need to pick a department";
-						return back;
-				}
-				/*
-				JobTaskList jtl = new JobTaskList();
-				jtl.setDepartment_id(department_id); // parks department only
-				jtl.setActiveOnly();
-				jtl.setNotExpired();
-				if(employmentType.startsWith("Temp")){
-						jtl.setSalary_group_id("3");
-						jobsTitle = jobsTitle+" (Temp)";
-						
-				}
-				else if(employmentType.startsWith("Non Temp")){
-						jtl.setNonTemp();
-						jobsTitle = jobsTitle+" (Full Time)";						
-				}
-				back = jtl.find();
-				if(back.equals("")){
-						List<JobTask> ones = jtl.getJobs();
-						if(ones != null && ones.size() > 0)
-								jobs = ones;
-				}
-				*/
-				return back;
+		public String getDateRange(){
+				String str = report.getStart_date()+" - "+report.getEnd_date();
+				return str;
 		}
+		public List<String[]> getArrAll(){
+				return arrAll;
+		}
+		public boolean hasData(){
+				return arrAll != null && !arrAll.isEmpty();
+		}		
 }
 
 
