@@ -248,6 +248,13 @@ public class EmployeeList extends CommonInc{
 								if(!qw.equals("")) qw += " and ";
 								qw += " e.username like ? ";
 						}
+						if(!no_document_for_payperiod_id.equals("") || 
+							 (!pay_period_id.equals("") && (!department_id.equals("") ||
+																							!group_id.equals("")))){
+								qq += ", pay_periods pd ";
+								if(!qw.equals("")) qw += " and ";								
+								qw += " pd.id=? ";
+						}
 						if(!department_id.equals("")){
 								qq += ", department_employees de ";
 								if(!qw.equals("")) qw += " and ";
@@ -262,8 +269,7 @@ public class EmployeeList extends CommonInc{
 										qw += " (de.department_id = ? or de.department2_id=?)";
 								}
 								if(!pay_period_id.equals("")){
-										qq += ", pay_periods pd ";
-										qw += " and pd.id=? and de.effective_date <= pd.start_date ";
+										qw += " and de.effective_date <= pd.start_date ";
 										qw += " and (de.expire_date is null or de.expire_date >= pd.end_date )";
 								}
 						}
@@ -271,7 +277,7 @@ public class EmployeeList extends CommonInc{
 								qq += " join department_employees de on de.employee_id=e.id ";
 								qq += " join departments dd on de.department_id=dd.id or de.department2_id=dd.id ";
 								if(!qw.equals("")) qw += " and ";
-								qw += " dd.ref_id in (?) ";
+								qw += " dd.ref_id in ("+dept_ref_id+") ";
 						}
 						if(hasEmployeeNumber){ // related to previous one
 								if(!qw.equals("")) qw += " and ";								
@@ -285,6 +291,11 @@ public class EmployeeList extends CommonInc{
 								qq += ", group_employees ge ";
 								if(!qw.equals("")) qw += " and ";
 								qw += " ge.employee_id=e.id and ge.group_id in ("+group_ids+") ";
+								if(!pay_period_id.equals("") ||
+									 !no_document_for_payperiod_id.equals("")){
+										qw += " and ge.effective_date <= pd.start_date ";
+										qw += " and (ge.expire_date is null or ge.expire_date >= pd.end_date )";
+								}
 						}
 						if(!exclude_group_id.equals("")){
 								if(!qw.equals("")) qw += " and ";
@@ -292,7 +303,7 @@ public class EmployeeList extends CommonInc{
 						}
 						if(!no_document_for_payperiod_id.equals("")){
 								if(!qw.equals("")) qw += " and ";
-								qw += " e.id not in (select td.employee_id from time_documents td where td.pay_period_id = ?)";						
+								qw += " e.id not in (select td.employee_id from time_documents td where td.pay_period_id = pd.id)";						
 						}
 						if(!groupManager_id.equals("")){
 								qq += ", group_managers gm ";
@@ -324,6 +335,7 @@ public class EmployeeList extends CommonInc{
 						qq += " where "+qw;
 				qq += " order by e.last_name,e.first_name ";
 				String back = "";
+						
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -357,21 +369,23 @@ public class EmployeeList extends CommonInc{
 								if(!username.equals("")){ // for auto_complete 
 										pstmt.setString(jj++,username+"%");
 								}
+								if(!no_document_for_payperiod_id.equals("")){
+										pstmt.setString(jj++, no_document_for_payperiod_id);
+								}
+								else if(!pay_period_id.equals("") &&
+												(!department_id.equals("") ||
+												 !group_id.equals(""))){
+										pstmt.setString(jj++, pay_period_id);
+								}
 								if(!department_id.equals("")){
 										pstmt.setString(jj++, department_id);
 										pstmt.setString(jj++, department_id);
-										if(!pay_period_id.equals("")){
-												pstmt.setString(jj++, pay_period_id);
-										}
-								}
-								if(!dept_ref_id.equals("")){
-										pstmt.setString(jj++, dept_ref_id);
 								}
 								if(!exclude_group_id.equals("")){
 										pstmt.setString(jj++, exclude_group_id);
 								}
 								if(!no_document_for_payperiod_id.equals("")){
-										pstmt.setString(jj++, no_document_for_payperiod_id);
+										// pstmt.setString(jj++, no_document_for_payperiod_id);
 								}
 								if(!groupManager_id.equals("")){
 										pstmt.setString(jj++, groupManager_id);

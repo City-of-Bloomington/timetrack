@@ -20,7 +20,7 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Document{
+public class Document implements Serializable{
 
     boolean debug = false;
     static Logger logger = LogManager.getLogger(Document.class);

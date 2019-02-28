@@ -45,15 +45,16 @@
 			<s:if test="needAction()">
 				<a href="<s:property value='#application.url' />inform.action?group_ids=<s:iterator value='groups' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noApprove&source=payrollProcess&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Approvers</a>
 			</s:if>
+			<s:if test="hasNotProcessedEmps()">
+				<hr />
 
-			<hr />
-
-			<div class="form-group">
-				<label for="check_all"><strong>Select all approve eligible individuals.</strong></label>
-				<small class="status-tag approval-ready select-all">
-					<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
-				</small>
-			</div>
+				<div class="form-group">
+					<label for="check_all"><strong>Select all approve eligible individuals.</strong></label>
+					<small class="status-tag approval-ready select-all">
+						<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
+					</small>
+				</div>
+			</s:if>
 		</div>
 
 		<hr />
@@ -167,11 +168,14 @@
 			</s:iterator>
 		</s:if>
 
-		<div class="approval-button-row">
-			<s:if test="isUserCurrentEmployee()">
-				<s:submit name="action" type="button" value="Payroll Approve" class="button"/>
-			</s:if>
-		</div>
+		<s:if test="hasNotProcessedEmps()">
+			<div class="approval-button-row">
+			
+				<s:if test="isUserCurrentEmployee()">
+					<s:submit name="action" type="button" value="Payroll Approve" class="button"/>
+				</s:if>
+			</div>
+		</s:if>
 	</s:if>
 </s:form>
 <%@ include file="footer.jsp" %>

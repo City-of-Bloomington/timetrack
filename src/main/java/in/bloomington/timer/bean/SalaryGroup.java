@@ -4,6 +4,7 @@ package in.bloomington.timer.bean;
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
+import java.io.Serializable;
 import java.sql.*;
 import javax.naming.*;
 import javax.naming.directory.*;
@@ -13,7 +14,7 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SalaryGroup{
+public class SalaryGroup implements Serializable{
 
 		static final long serialVersionUID = 2750L;	
 		static Logger logger = LogManager.getLogger(SalaryGroup.class);

@@ -47,6 +47,14 @@
     <servlet>
       <servlet-name>GroupManagerService</servlet-name>
       <servlet-class>in.bloomington.timer.service.GroupManagerService</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>ManagerService</servlet-name>
+      <servlet-class>in.bloomington.timer.service.GroupManagerService</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>PositionService</servlet-name>
+      <servlet-class>in.bloomington.timer.service.PositionService</servlet-class>
     </servlet>		
     <servlet>
       <servlet-name>DepartmentService</servlet-name>
@@ -75,6 +83,14 @@
 	<servlet-mapping>
     <servlet-name>GroupManagerService</servlet-name>
     <url-pattern>/GroupManagerService</url-pattern>
+  </servlet-mapping>
+	<servlet-mapping>
+    <servlet-name>ManagerService</servlet-name>
+    <url-pattern>/ManagerService</url-pattern>
+  </servlet-mapping>
+	<servlet-mapping>
+    <servlet-name>PositionService</servlet-name>
+    <url-pattern>/PositionService</url-pattern>
   </servlet-mapping>	
 	<servlet-mapping>
     <servlet-name>DepartmentService</servlet-name>

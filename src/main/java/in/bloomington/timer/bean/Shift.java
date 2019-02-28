@@ -15,7 +15,7 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Shift{
+public class Shift implements Serializable{
 
     static Logger logger = LogManager.getLogger(Shift.class);
     static final long serialVersionUID = 1500L;

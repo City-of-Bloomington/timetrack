@@ -18,10 +18,10 @@ import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 
 
-public class GroupManagerService extends HttpServlet{
+public class PositionService extends HttpServlet{
 
 		static final long serialVersionUID = 2210L;
-		static Logger logger = LogManager.getLogger(GroupService.class);
+		static Logger logger = LogManager.getLogger(PositionService.class);
     static String url="";
     static boolean debug = false;
 		
@@ -44,14 +44,23 @@ public class GroupManagerService extends HttpServlet{
 				res.setContentType("application/json");
 				PrintWriter out = res.getWriter();
 				String name, value;
-				String term ="", type="", group_id="";
+				String term ="", type="", department_id="", group_id="";
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
 				while (values.hasMoreElements()){
 						name = values.nextElement().trim();
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
-						if (name.equals("group_id")) {
+						if (name.equals("department_id")) {
+								if(value != null && !value.equals("")){
+										try{
+												Integer.parseInt(value);
+												department_id = value;										
+										}catch(Exception ex){
+										}
+								}
+						}
+						else if (name.equals("group_id")) {
 								if(value != null && !value.equals("")){
 										try{
 												Integer.parseInt(value);
@@ -59,7 +68,7 @@ public class GroupManagerService extends HttpServlet{
 										}catch(Exception ex){
 										}
 								}
-						}
+						}						
 						else if (name.equals("action")){
 								action = value;
 						}
@@ -67,20 +76,27 @@ public class GroupManagerService extends HttpServlet{
 								// System.err.println(name+" "+value);
 						}
 				}
-				GroupManagerList glist =  null;
-				List<GroupManager> managers = null;
-				if(!group_id.equals("")){
+				PositionList plist =  null;
+				List<Position> positions = null;
+				if(!department_id.equals("")){
 						//
-						glist = new GroupManagerList();
-						glist.setGroup_id(group_id);
-						glist.excludeReviewers();
-						String back = glist.find();
+						plist = new PositionList();
+						plist.setDepartment_id(department_id);
+						String back = plist.find();
 						if(back.equals("")){
-								managers = glist.getManagers();
+								positions = plist.getPositions();
 						}
 				}
-				if(managers != null && managers.size() > 0){
-						String json = writeJson(managers);
+				else if(!group_id.equals("")){
+						plist = new PositionList();
+						plist.setGroup_id(group_id);
+						String back = plist.find();
+						if(back.equals("")){
+							 positions = plist.getPositions();
+						}
+				}
+				if(positions != null && positions.size() > 0){
+						String json = writeJson(positions);
 						out.println(json);
 				}
 				else{
@@ -96,11 +112,11 @@ public class GroupManagerService extends HttpServlet{
 		 * @param list of objects
 		 * @return The json string
 		 */
-		String writeJson(List<GroupManager> ones){
+		String writeJson(List<Position> positions){
 				String json="";
-				for(GroupManager one:ones){
+				for(Position one:positions){
 						if(!json.equals("")) json += ",";
-						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getEmployee()+"\",\"email\":\""+one.getEmployee().getEmail()+"\",\"workflow\":\""+one.getNode()+"\"}";
+						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getName()+"\"}";
 				}
 				json = "["+json+"]";
 				return json;

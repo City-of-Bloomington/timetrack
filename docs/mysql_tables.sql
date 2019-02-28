@@ -397,7 +397,7 @@ CREATE TABLE `time_blocks` (
   `begin_minute` int(11) DEFAULT NULL,
   `end_hour` int(11) DEFAULT NULL,
   `end_minute` int(11) DEFAULT NULL,
-  `hours` decimal(5,2) DEFAULT NULL,
+  `hours` decimal(5,2) DEFAULT 0,
   `clock_in` char(1) DEFAULT NULL,
   `clock_out` char(1) DEFAULT NULL,
   `inactive` char(1) DEFAULT NULL,
@@ -796,6 +796,38 @@ CREATE TABLE shift_times (
 ;; update fire sworn weekly hours to 48, comp time weely to 53
 ;;
 update jobs set weekly_regular_hours=48, comp_time_weekly_hours=106 where salary_group_id=9;
+;;
+;;
+;; 2/27/2019
+;;
+CREATE TABLE tmwrp_runs (
+  id int unsigned NOT NULL AUTO_INCREMENT primary key,
+	pay_period_id int unsigned not null,
+	department_id int unsigned not null,
+	run_time datetime,
+	status enum('Error','Success'),
+	error_text varchar(1024),
+	foreign key(pay_period_id) references pay_periods(id),
+	foreign key(department_id) references departments(id)
+	) ENGINE=InnoDB;
+
+CREATE TABLE tmwrp_blocks (
+  id int unsigned NOT NULL AUTO_INCREMENT primary key,
+	run_id int unsigned not null,
+	document_id int unsigned not null,
+	hour_code_id int unsigned not null,
+	hours decimal (6,2) default 0,
+	amount decimal (6,2) default 0,
+	apply_date date,
+	addition_type enum('Daily','Weekly','Cycle'),
+	foreign key(document_id) references time_documents(id),
+	foreign key(hour_code_id) references hour_codes(id),
+	foreign key(run_id) references tmwrp_runs(id)			
+	) ENGINE=InnoDB;
+
+
+
+
 
 
 ;; postpone the following for later
@@ -803,10 +835,19 @@ update jobs set weekly_regular_hours=48, comp_time_weekly_hours=106 where salary
 ;; for certain hour_codes we can use monetary value instead of time and hours
 ;; we are using amount for dollar value
 ;;
+alter table hour_codes modify reg_default char(1);
+update hour_codes set reg_default='y' where reg_default='0';
+update hour_codes set reg_default=null where reg_default='1';
+
 alter table time_blocks add amount decimal(6,2) default 0 after hours;
 alter table hour_codes modify record_method enum('Time','Hours','Monetary');
 alter table hour_codes drop column count_as_regular_pay;
 alter table hour_codes add default_monetary_amount decimal(6,2) default 0 after type;
+
+
+
+
+
 ;;
 ;;
 ;; ====================================================

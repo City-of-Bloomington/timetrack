@@ -17,7 +17,7 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 //
-public class PayPeriod{
+public class PayPeriod implements Serializable{
 
 		static final long serialVersionUID = 2900L;
 		static Logger logger = LogManager.getLogger(PayPeriod.class);

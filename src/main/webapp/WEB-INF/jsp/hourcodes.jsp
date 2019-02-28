@@ -8,7 +8,6 @@
 			<th>Recoding Method</th>
 			<th>Related Accrual</th>
 			<th>Type</th>
-			<th>Count as Regular</th>
 			<th>Default Regular</th>
 			<th>Active?</th>
 		</tr>
@@ -21,8 +20,7 @@
 				<td><s:property value="record_method" /></td>
 				<td><s:if test="accrual_id != ''"><s:property value="accrual" /></s:if><s:else>&nbsp;</s:else></td>
 				<td><s:property value="type" /></td>				
-				<td><s:if test="count_as_regular_pay">Yes</s:if><s:else>No</s:else></td>
-				<td><s:if test="reg_default==0">Yes</s:if><s:else>No</s:else></td>
+				<td><s:if test="reg_default">Yes</s:if><s:else>No</s:else></td>
 				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>
 		</s:iterator>

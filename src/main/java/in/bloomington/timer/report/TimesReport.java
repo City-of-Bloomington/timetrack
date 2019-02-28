@@ -30,12 +30,14 @@ public class TimesReport{
 		String dept_ref_id="";
 		String code="";
 		String code2="";
+		String employmentType = ""; // All, Full Time, Temp		
 		Map<String, Set<String>> empJobs = null;
 		Map<String, Set<String>> empCodes = null;
 		Map<String, Map<String, Map<String, Map<String, String>>>> times = null;
 		// Date-Range  Emp-Name     job        code        hours
 		List<String> datesList = null;
 		List<String[]> arrAll = null;
+		Department department = null;
 		String errors = "";
     public TimesReport(){
 				
@@ -65,11 +67,33 @@ public class TimesReport{
 		public String getType(){
 				return type;
 		}
+		public boolean hasDepartment(){
+				return !department_id.equals("");
+		}
 		public String getDepartment_id(){
 				if(department_id.equals(""))  return "-1";
 				return department_id;
 		}		
-		
+		public void setEmploymentType(String val){
+				if(val != null && !val.equals("-1")){
+						employmentType = val; // salary_group_id = 3 for Temp
+				}
+		}
+		public String getEmploymentType(){
+				if(employmentType.equals(""))
+						return "-1";
+				return employmentType;
+		}
+		public Department getDepartment(){
+				if(department == null && !department_id.equals("")){
+						Department one = new Department(department_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								department = one;
+						}
+				}
+				return department;
+		}
     //
     // setters
     //
@@ -212,7 +236,14 @@ public class TimesReport{
 				// We are looking for Reg earn codes and its derivatives for
 				// planning department
 				//
-				String qq = "select concat_ws(' - ',date_format(p.start_date, '%m/%d'), date_format(p.end_date,'%m/%d')) date_range,                                                     concat_ws(', ',e.last_name,e.first_name) full_name,                             ps.name job_name,                                                               c.name hour_code,			                                                         sum(t.hours) hours                                                              from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join employees e on e.id=d.employee_id                                          join department_employees de on de.employee_id=e.id                             where                                                                           t.inactive is null                                                              and ((t.clock_in is not null and t.clock_out is not null) or (t.clock_in is null and t.clock_out is null))                                                       and de.department_id=?                                                          and p.start_date >= ?                                                           and p.end_date <= ?                                                          group by date_range,full_name,job_name,hour_code                                order by date_range,full_name,job_name,hour_code ";
+				String qq = "select concat_ws(' - ',date_format(p.start_date, '%m/%d'), date_format(p.end_date,'%m/%d')) date_range,                                                     concat_ws(', ',e.last_name,e.first_name) full_name,                             ps.name job_name,                                                               c.name hour_code,			                                                         sum(t.hours) hours                                                              from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join employees e on e.id=d.employee_id                                          join department_employees de on de.employee_id=e.id                             where                                                                           t.inactive is null                                                              and ((t.clock_in is not null and t.clock_out is not null) or (t.clock_in is null and t.clock_out is null))                                                       and de.department_id=?                                                          and p.start_date >= ?                                                           and p.end_date <= ?   ";
+				if(employmentType.startsWith("Temp")){
+						qq += " and j.salary_group_id=3 ";
+				}
+				else if(employmentType.indexOf("Other") > -1){ 
+						qq += " and j.salary_group_id <> 3 ";
+				}
+				qq += "group by date_range,full_name,job_name,hour_code                                order by date_range,full_name,job_name,hour_code ";
 				con = UnoConnect.getConnection();				
 				if(con == null){
 						msg = " Could not connect to DB ";

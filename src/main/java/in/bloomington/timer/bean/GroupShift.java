@@ -16,7 +16,7 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class GroupShift{
+public class GroupShift implements Serializable{
 
 		static Logger logger = LogManager.getLogger(GroupShift.class);
 		static final long serialVersionUID = 1500L;

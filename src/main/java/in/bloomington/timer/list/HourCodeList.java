@@ -161,7 +161,7 @@ public class HourCodeList{
 						if(!qw.equals("")){
 								qw = " where "+qw;
 						}
-						qw += " order by e.reg_default,e.name";
+						qw += " order by e.name";
 						qq = qq2+qw;
 						logger.debug(qq);								
 						pstmt = con.prepareStatement(qq);
@@ -196,11 +196,17 @@ public class HourCodeList{
 																						rs.getString(4),
 																						rs.getString(5),
 																						rs.getString(6) != null,
-																						rs.getString(7),
+																						rs.getString(7) != null,
 																						rs.getString(8),
 																						rs.getString(9) != null);
-								if(!hourCodes.contains(one))
-										hourCodes.add(one);
+								if(one.isRegDefault()){
+										if(!hourCodes.contains(one))
+												hourCodes.add(0, one);
+								}
+								else{
+										if(!hourCodes.contains(one))
+												hourCodes.add(one);
+								}
 						}
 				}
 				catch(Exception ex){
@@ -263,7 +269,7 @@ public class HourCodeList{
 						}
 						if(default_regular_only){
 								if(!qw.equals("")) qw += " and "; 
-								qw += " e.reg_default=0 "; // everything else is 1
+								qw += " e.reg_default is not null "; 
 						}
 						if(!qw.equals("")){
 								qw = " where "+qw;
@@ -294,7 +300,7 @@ public class HourCodeList{
 																						rs.getString(4),
 																						rs.getString(5),
 																						rs.getString(6) != null,
-																						rs.getString(7),
+																						rs.getString(7) != null,
 																						rs.getString(8),
 																						rs.getString(9) != null);
 								if(!hourCodes.contains(one))

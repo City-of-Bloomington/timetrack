@@ -27,10 +27,10 @@ public class HourCode{
 		AccrualWarning accrualWarning = null;
 		CodeRef codeRef = null;
     private String 
-				record_method="Time", // time or hours
+				record_method="Time", // Time, Hours, Monetary
 				accrual_id ="",
 		// each salary group can have only one reg_default set to 0
-				reg_default="", // 0 for default, 1 for others
+				reg_default="", // y for default, null for others
 				count_as_regular_pay=""; // char Yes/No flag
 		private double default_monetary_amount=0.0;
 		private String timeUsed="", timeEarned="", unpaid="";
@@ -44,7 +44,7 @@ public class HourCode{
 				setId(val);
 				setName(val2);
     }		
-    public HourCode(String val, String val2, String val3, String val4, String val5, boolean val6, String val7, String val8, boolean val9){
+    public HourCode(String val, String val2, String val3, String val4, String val5, boolean val6, boolean val7, String val8, boolean val9){
 				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
     }
     void setVals(String val,
@@ -53,7 +53,7 @@ public class HourCode{
 								 String val4,
 								 String val5,
 								 boolean val6,
-								 String val7,
+								 boolean val7,
 								 String val8,
 								 boolean val9								 
 								 ){
@@ -101,9 +101,12 @@ public class HourCode{
 		public String getAccrual_id(){
 				return accrual_id;
     }
-		public String getReg_default(){
-				return reg_default;
+		public boolean getReg_default(){
+				return !reg_default.equals("");
     }
+		public boolean isRegDefault(){
+				return !reg_default.equals("");
+    }		
 		public boolean isRecordMethodHours(){
 				return record_method.equals("Hours");
 		}
@@ -164,9 +167,9 @@ public class HourCode{
 				if(val != null && !val.equals("-1"))
 						accrual_id = val;
     }
-    public void setReg_default(String val){
-				if(val != null && !val.equals("-1"))
-						reg_default = val;
+    public void setReg_default(boolean val){
+				if(val)
+						reg_default = "y";
     }		
     public void setCount_as_regular_pay (boolean val){
 				if(val)
@@ -307,7 +310,7 @@ public class HourCode{
 												rs.getString(4),
 												rs.getString(5),
 												rs.getString(6) != null,
-												rs.getString(7),
+												rs.getString(7) != null,
 												rs.getString(8),
 												rs.getString(9) != null
 												);
@@ -377,9 +380,6 @@ public class HourCode{
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else{
-								if(description.length() > 1){
-										description = description.substring(0,1).toUpperCase()+description.substring(1).toLowerCase();
-								}
 								pstmt.setString(jj++, description);
 
 						}
@@ -393,8 +393,9 @@ public class HourCode{
 						else
 								pstmt.setString(jj++, "y");
 						if(reg_default.equals(""))
-								reg_default = "1";
-						pstmt.setString(jj++, reg_default);
+								pstmt.setNull(jj++, Types.CHAR);
+						else
+								pstmt.setString(jj++, "y");						
 						if(type.equals(""))
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else

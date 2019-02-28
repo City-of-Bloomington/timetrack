@@ -45,12 +45,6 @@ public class ReportTimesAction extends TopAction{
 								addError(back);
 						}
 						else{
-								/*
-								empJobs = report.getEmpJobs();
-								empCodes = report.getEmpCodes();
-								datesList = report.getDatesList();
-								times = report.geTimes();
-								*/
 								outputType = report.getType();
 								arrAll = report.getArrAll();
 								if(arrAll == null && arrAll.size() == 0){
@@ -69,6 +63,7 @@ public class ReportTimesAction extends TopAction{
 		public TimesReport getReport(){ 
 				if(report == null){
 						report = new TimesReport();
+						report.setDepartment_id(department_id);
 				}		
 				return report;
 		}
@@ -90,7 +85,7 @@ public class ReportTimesAction extends TopAction{
 				if(years == null){
 						int currentYear = Helper.getCurrentYear();
 						years = new ArrayList<>();
-						for(int yy=startYear;yy <= currentYear;yy++){
+						for(int yy=currentYear;yy >= startYear;yy--){
 								years.add(yy);
 						}
 				}

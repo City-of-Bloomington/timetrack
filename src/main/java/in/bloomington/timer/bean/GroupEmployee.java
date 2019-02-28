@@ -4,6 +4,7 @@ package in.bloomington.timer.bean;
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
+import java.io.Serializable;
 import java.sql.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -14,7 +15,7 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class GroupEmployee extends CommonInc {
+public class GroupEmployee extends CommonInc implements Serializable{
 
 		static final long serialVersionUID = 2000L;
 		static Logger logger = LogManager.getLogger(GroupEmployee.class);

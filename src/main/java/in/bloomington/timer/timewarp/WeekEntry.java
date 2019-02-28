@@ -92,7 +92,6 @@ public class WeekEntry{
     public void setProfile(Profile val){
 				if(val != null){
 						profile = val;
-						// bGroup = profile.getBenefitGroup();
 						st_weekly_hrs = profile.getStWeeklyHrs();
 				}
     }

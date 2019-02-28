@@ -352,7 +352,7 @@ public class ApproveAction extends TopAction{
 				return noDocNorSubmitEmps;
 		}
 		public boolean hasNotApprovedEmps(){
-				findNotSubmittedAndNotApprovedEmps();				
+				findNotSubmittedAndNotApprovedEmps();
 				return notApprovedEmps != null && notApprovedEmps.size() > 0;
 		}
 
@@ -372,32 +372,32 @@ public class ApproveAction extends TopAction{
 		}
 		
 		void findNotSubmittedAndNotApprovedEmps(){
-				if(notSubmitAndApproveFlag){
-						notSubmitAndApproveFlag = false; // to turn off
-						getNonDocEmps();
-						if(hasDocuments()){
-								for(Document one:documents){
-										if(one.canBeApproved()){
-												if(notApprovedEmps == null)
-														notApprovedEmps = new ArrayList<>();
+				notSubmitAndApproveFlag = false; // to turn off
+				getNonDocEmps();
+				if(hasDocuments()){
+						for(Document one:documents){
+								boolean canApprove = one.canBeApproved();
+								if(canApprove){
+										if(notApprovedEmps == null)
+												notApprovedEmps = new ArrayList<>();
+										if(!notApprovedEmps.contains(one.getEmployee()))
 												notApprovedEmps.add(one.getEmployee());
-										}
-										else if(one.isApproved() ||
-														one.isSubmitted() ||
-														one.isProcessed()){
+								}
+								else if(one.isApproved() ||
+												one.isSubmitted() ||
+												one.isProcessed()){
+										continue;
+								}
+								else{
+										Employee emp = one.getEmployee();
+										if(nonDocEmps != null && nonDocEmps.contains(emp)){
 												continue;
 										}
 										else{
-												Employee emp = one.getEmployee();
-												if(nonDocEmps != null && nonDocEmps.contains(emp)){
-														continue;
-												}
-												else{
-														if(notSubmittedDocs == null)
-																notSubmittedDocs = new ArrayList<>();
-														if(!notSubmittedDocs.contains(one))
-																notSubmittedDocs.add(one);
-												}
+												if(notSubmittedDocs == null)
+														notSubmittedDocs = new ArrayList<>();
+												if(!notSubmittedDocs.contains(one))
+														notSubmittedDocs.add(one);
 										}
 								}
 						}

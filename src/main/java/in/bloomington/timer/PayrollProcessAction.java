@@ -38,7 +38,8 @@ public class PayrollProcessAction extends TopAction{
 		List<PayPeriod> payPeriods = null;
 		List<Employee> nonDocEmps = null;
 		List<Employee> notApprovedEmps = null;
-		List<Employee> noDocNorSubmitEmps = null;		
+		List<Employee> noDocNorSubmitEmps = null;
+		List<Employee> notProcessedEmps = null;		
 		boolean notSubmitAndApproveFlag = true;		
 		String[] document_ids = null;
 
@@ -342,6 +343,10 @@ public class PayrollProcessAction extends TopAction{
 				findNotSubmittedAndNotApprovedEmps();				
 				return notApprovedEmps != null && notApprovedEmps.size() > 0;
 		}
+		public boolean hasNotProcessedEmps(){
+				findNotSubmittedAndNotApprovedEmps();				
+				return notProcessedEmps != null && notProcessedEmps.size() > 0;
+		}		
 		public boolean needAction(){
 				return hasNotApprovedEmps() || hasNotSubmittedDocs() || hasNonDocEmps();
 		}
@@ -349,33 +354,39 @@ public class PayrollProcessAction extends TopAction{
 				return notApprovedEmps;
 		}
 		void findNotSubmittedAndNotApprovedEmps(){
-				if(notSubmitAndApproveFlag){
-						notSubmitAndApproveFlag = false; // to turn off
-						getNonDocEmps();
-						if(hasDocuments()){
-								for(Document one:documents){
-										if(one.canBeApproved()){
-												if(notApprovedEmps == null)
-														notApprovedEmps = new ArrayList<>();
+				// if(notSubmitAndApproveFlag){
+				//	notSubmitAndApproveFlag = false; // to turn off
+				getNonDocEmps();
+				if(hasDocuments()){
+						for(Document one:documents){
+								if(one.canBeApproved()){
+										if(notApprovedEmps == null)
+												notApprovedEmps = new ArrayList<>();
+										if(!notApprovedEmps.contains(one.getEmployee()))
 												notApprovedEmps.add(one.getEmployee());
-										}
-										else if(one.isApproved() ||
-														one.isSubmitted() ||
-														one.isProcessed()){
+								}
+								else if(one.canBeProcessed()){
+										if(notProcessedEmps == null)
+												notProcessedEmps = new ArrayList<>();
+										if(!notProcessedEmps.contains(one.getEmployee()))
+												notProcessedEmps.add(one.getEmployee());
+								}
+								else if(one.isApproved() ||
+												one.isSubmitted() ||
+												one.isProcessed()){
+										continue;
+								}
+								else{
+										Employee emp = one.getEmployee();
+										if(nonDocEmps != null && nonDocEmps.contains(emp)){
 												continue;
 										}
 										else{
-												Employee emp = one.getEmployee();
-												if(nonDocEmps != null && nonDocEmps.contains(emp)){
-														continue;
-												}
-												else{
-														if(notSubmittedDocs == null)
-																notSubmittedDocs = new ArrayList<>();
-														if(!notSubmittedDocs.contains(one))
-																notSubmittedDocs.add(one);
-														
-												}
+												if(notSubmittedDocs == null)
+														notSubmittedDocs = new ArrayList<>();
+												if(!notSubmittedDocs.contains(one))
+														notSubmittedDocs.add(one);
+												
 										}
 								}
 						}

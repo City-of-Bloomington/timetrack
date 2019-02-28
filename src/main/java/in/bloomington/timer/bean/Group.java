@@ -15,7 +15,7 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Group{
+public class Group implements Serializable{
 
     static Logger logger = LogManager.getLogger(Group.class);
     static final long serialVersionUID = 1500L;

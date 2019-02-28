@@ -109,16 +109,17 @@ public class ReportFmlaAction extends TopAction{
 		public List<TimeBlock> getTimeBlocks(){
 				return timeBlocks;
 		}
+
 		public List<Integer> getYears(){
 				if(years == null){
 						int currentYear = Helper.getCurrentYear();
 						years = new ArrayList<>();
-						for(int yy=startYear;yy <= currentYear;yy++){
+						for(int yy=currentYear;yy >= startYear;yy--){
 								years.add(yy);
 						}
 				}
 				return years;
-		}
+		}				
 		
 		// needed only for csv output
 		public String getFileName(){

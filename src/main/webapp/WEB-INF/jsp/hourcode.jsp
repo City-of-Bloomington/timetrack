@@ -39,15 +39,9 @@
 				<label>Related Accrual:</label>
 				<s:select name="hourcode.accrual_id" value="%{hourcode.accrual_id}" list="accruals" listKey="id" listValue="name" headerKey="-1" headerValue="Pick related accrual" />
 			</div>
-
-			<div class="form-group">
-				<label>Count as regular pay?:</label>
-				<s:checkbox name="hourcode.count_as_regular_pay" value="%{hourcode.count_as_regular_pay}" /> Yes
-			</div>
-
 			<div class="form-group">
 				<label>Default Regular?:</label>
-				<s:radio name="hourcode.reg_default" value="%{hourcode.reg_default}" list="#{'0':'Yes','1':'No'}"/> (each salary group need only one default regular)
+				<s:checkbox name="hourcode.reg_default" value="%{hourcode.reg_default}" /> Yes	(each salary group need only one default regular)
 			</div>
 			<div class="form-group">
 				<label>Type:</label>

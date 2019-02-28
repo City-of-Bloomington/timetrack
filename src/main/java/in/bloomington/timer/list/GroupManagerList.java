@@ -22,7 +22,7 @@ public class GroupManagerList{
     String group_ids = "", wf_node_id="";
     String execludeManager_id = ""; // employee_id
     boolean active_only = false,approversOnly=false,
-				processorsOnly=false,
+				processorsOnly=false, exclude_reviewers = false,
 				reviewersOnly=false, timeMaintainOnly = false;
     List<GroupManager> managers = null;
     public GroupManagerList(){
@@ -71,6 +71,9 @@ public class GroupManagerList{
     public void setTimeMaintainerOnly(){
 				timeMaintainOnly = true;
     }
+		public void excludeReviewers(){
+				exclude_reviewers = true;
+		}
     public void execludeManager_id(String val){
 				if(val != null)
 						execludeManager_id = val;
@@ -109,6 +112,10 @@ public class GroupManagerList{
 				if(!execludeManager_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
 						qw += " gm.employee_id <> ?";
+				}
+				if(exclude_reviewers){
+						if(!qw.equals("")) qw += " and ";
+						qw += " gm.wf_node_id <> 6";
 				}
 				if(!pay_period_id.equals("")){
 						qq += ", pay_periods pp ";

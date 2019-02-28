@@ -111,12 +111,12 @@ public class ReportPlanAction extends TopAction{
 				if(years == null){
 						int currentYear = Helper.getCurrentYear();
 						years = new ArrayList<>();
-						for(int yy=startYear;yy <= currentYear;yy++){
+						for(int yy=currentYear;yy >= startYear;yy--){
 								years.add(yy);
 						}
 				}
 				return years;
-		}
+		}		
 		// needed only for csv output
 		public String getFileName(){
 				String filename="planning_mpo_report_"+report.getEnd_date().replace("/","_")+".csv";
