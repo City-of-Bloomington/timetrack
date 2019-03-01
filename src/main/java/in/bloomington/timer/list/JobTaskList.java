@@ -25,6 +25,7 @@ public class JobTaskList{
 				clock_time_required = false, clock_time_not_required=false,
 				not_expired = false, non_temp_emp = false;
 		boolean avoid_recent_jobs = false; // jobs are recent if entered within 14 days
+		boolean include_future = false;
     String salary_group_id="", employee_id="", pay_period_id="";
     String id="", effective_date = "", which_date="j.effective_date",
 				date_from="", date_to="", position_id="", employee_name="",
@@ -186,6 +187,9 @@ public class JobTaskList{
 		public void setNonTemp(){
 				non_temp_emp = true;
 		}
+		public void setIncludeFuture(){
+				include_future = true;
+		}
     public List<Group> getGroups(){
 				if(groups == null){
 						if(!department_id.equals("")){
@@ -206,6 +210,7 @@ public class JobTaskList{
 				getGroups();
 				return groups != null && groups.size() > 0;
     }
+		
     //
     public String find(){
 				Connection con = null;
@@ -258,7 +263,7 @@ public class JobTaskList{
 				}
 				if(current_only){
 						if(!qw.equals("")) qw += " and ";
-						qw += " j.effective_date < now() and (j.expire_date > now() or j.exire_date is null) ";
+						qw += " j.effective_date <= curdate() and (j.expire_date >= curdate() or j.exire_date is null) ";
 				}
 				if(avoid_recent_jobs){
 						if(!qw.equals("")) qw += " and ";
@@ -272,57 +277,62 @@ public class JobTaskList{
 						if(!qw.equals("")) qw += " and ";
 						qw += " j.clock_time_required is null ";
 				}
+				if(include_future){
+						if(!qw.equals("")) qw += " and ";						
+						qw += " (j.expire_date > curdate() or j.expire_date is null) ";
+				}
+				if(!salary_group_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.salary_group_id = ? ";
+				}
+				else if(non_temp_emp){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.salary_group_id <> 3 "; // Temp salary is 3
+				}
+				if(!employee_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.employee_id = ? ";
+				}
+				if(!group_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.group_id = ? ";
+				}						
+				if(!effective_date.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.effective_date <= ? and (j.expire_date > ? or j.expire_date is null)";
+				}
+				if(!pay_period_id.equals("")){
+						qq += ", pay_periods pp ";
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.effective_date <= pp.start_date and (j.expire_date >= pp.end_date or j.expire_date is null) and pp.id = ?";
+				}
+				if(!position_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.position_id = ? ";
+				}
+				if(!department_id.equals("")){
+						qq += " inner join department_employees de on de.employee_id=j.employee_id and g.department_id=de.department_id";
+						if(!qw.equals("")) qw += " and ";
+						qw += " de.department_id = ? ";
+						if(current_only){
+								qw += " and (de.expire_date >= now() or de.expire_date is null) ";
+						}
+				}
+				if(!date_from.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += which_date+" >= ? ";
+				}
+				if(!date_to.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += which_date+" <= ? ";
+				}						
+				if(!qw.equals("")){
+						qq += " where "+qw;
+				}
+				qq += " order by p.name ";
+				logger.debug(qq);
 				try{
-						if(!salary_group_id.equals("")){
-								if(!qw.equals("")) qw += " and ";
-								qw += " j.salary_group_id = ? ";
-						}
-						else if(non_temp_emp){
-								if(!qw.equals("")) qw += " and ";
-								qw += " j.salary_group_id <> 3 "; // Temp salary is 3
-						}
-						if(!employee_id.equals("")){
-								if(!qw.equals("")) qw += " and ";
-								qw += " j.employee_id = ? ";
-						}
-						if(!group_id.equals("")){
-								if(!qw.equals("")) qw += " and ";
-								qw += " j.group_id = ? ";
-						}						
-						if(!effective_date.equals("")){
-								if(!qw.equals("")) qw += " and ";
-								qw += " j.effective_date <= ? and (j.expire_date > ? or j.expire_date is null)";
-						}
-						if(!pay_period_id.equals("")){
-								qq += ", pay_periods pp ";
-								if(!qw.equals("")) qw += " and ";
-								qw += " j.effective_date <= pp.start_date and (j.expire_date >= pp.end_date or j.expire_date is null) and pp.id = ?";
-						}
-						if(!position_id.equals("")){
-								if(!qw.equals("")) qw += " and ";
-								qw += " j.position_id = ? ";
-						}
-						if(!department_id.equals("")){
-								qq += " inner join department_employees de on de.employee_id=j.employee_id and g.department_id=de.department_id";
-								if(!qw.equals("")) qw += " and ";
-								qw += " de.department_id = ? ";
-								if(current_only){
-										qw += " and (de.expire_date >= now() or de.expire_date is null) ";
-								}
-						}
-						if(!date_from.equals("")){
-								if(!qw.equals("")) qw += " and ";
-								qw += which_date+" >= ? ";
-						}
-						if(!date_to.equals("")){
-								if(!qw.equals("")) qw += " and ";
-								qw += which_date+" <= ? ";
-						}						
-						if(!qw.equals("")){
-								qq += " where "+qw;
-						}
-						qq += " order by p.name ";
-						logger.debug(qq);
+						
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
 						if(!salary_group_id.equals("")){

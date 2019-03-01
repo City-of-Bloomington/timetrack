@@ -24,6 +24,7 @@ public class GroupList{
 				pay_period_id="";
     String name="", id="";
     boolean active_only = false, inactive_only=false;
+		boolean include_future = false;
     List<Group> groups = null;
     public GroupList(){
     }
@@ -89,6 +90,9 @@ public class GroupList{
 						return "Inactive";
 				return "-1";
     }
+		public void setIncludeFuture(){
+				include_future = true;
+		}
     //
     // getters
     //
@@ -107,7 +111,9 @@ public class GroupList{
 						if(!qw.equals("")) qw += " and ";						
 						qw += "g.name like ? ";
 				}				
-				if(!employee_id.equals("") || !pay_period_id.equals("")){
+				if(!employee_id.equals("")
+					 || include_future
+					 || !pay_period_id.equals("")){
 						qq += ", group_employees gu ";						
 						if(!qw.equals("")) qw += " and ";
 						qw += " g.id=gu.group_id ";
@@ -116,7 +122,11 @@ public class GroupList{
 						}
 						if(active_only)
 								qw += " and gu.inactive is null ";
-						if(!pay_period_id.equals("")){
+						if(include_future){
+								if(!qw.equals("")) qw += " and ";								
+								qw +=	" (gu.expire_date is null or gu.expire_date >= curdate())";
+						}
+						else if(!pay_period_id.equals("")){
 								qq += ", pay_periods pp ";
 								qw +=	" and gu.effective_date <= pp.start_date and (gu.expire_date is null or gu.expire_date > pp.start_date) and pp.id=? ";
 						}
@@ -147,7 +157,7 @@ public class GroupList{
 						if(!employee_id.equals("")){
 								pstmt.setString(jj++, employee_id);
 						}
-						if(!pay_period_id.equals("")){
+						if(!include_future && !pay_period_id.equals("")){
 								pstmt.setString(jj++, pay_period_id);
 						}	    
 						rs = pstmt.executeQuery();

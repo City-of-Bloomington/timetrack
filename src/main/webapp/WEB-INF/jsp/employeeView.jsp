@@ -47,11 +47,11 @@
 	</div>		
 	<div class="button-group">
 		<a href="<s:property value='#application.url' />employee.action?action=Edit&id=<s:property value='id' />" class="button">Edit</a> 
-		<s:if test="!employee.hasDepartment()">
+		<s:if test="!employee.hasDepartments()">
 			<a href="<s:property value='#application.url' />departmentEmployee.action?employee_id=<s:property value='employee.id' />" class="button">Add Employee to Department</a>
 		</s:if>
 		<s:else>
-			<s:if test="!employee.hasActiveGroup()">
+			<s:if test="!employee.hasGroupEmployees()">
 				<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='employee.id' />&department_id=<s:property value='employee.department_id' />" class="button"> Add Employee to a Group</a>
 				</s:if>
 				<s:if test="employee.hasNoJob()">
@@ -59,17 +59,17 @@
 				</s:if>
 		</s:else>
 	</div>
-	<s:if test="employee.hasDepartment()">
+	<s:if test="employee.hasDepartments()">
 		<s:set var="departmentEmployees" value="%{employee.departmentEmployees}" />
 		<s:set var="departmentEmployeesTitle" value="'Employee Department'" />
 		<%@ include file="departmentEmployees.jsp" %>
-		<s:if test="employee.hasGroup()">
+		<s:if test="employee.hasGroupEmployees()">
 			<s:set var="groupEmployees" value="%{employee.groupEmployees}" />
 			<s:set var="groupEmployeesTitle" value="'Employee Group'" />
 			<%@ include file="groupEmployees.jsp" %>
 		</s:if>
-		<s:if test="employee.hasJobs()">
-			<s:set var="jobTasks" value="%{employee.jobs}" />
+		<s:if test="employee.hasAllJobs()">
+			<s:set var="jobTasks" value="%{employee.allJobs}" />
 			<s:set var="jobTasksTitle" value="'Employee Jobs'" />
 			<%@ include file="jobTasks.jsp" %>
 		</s:if>

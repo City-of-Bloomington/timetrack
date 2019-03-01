@@ -22,13 +22,14 @@ public class PayPeriodList{
     static final long serialVersionUID = 3000L;
     static Logger logger = LogManager.getLogger(PayPeriodList.class);
     String date = "", year="", id="", employee_id="", limit="";
-    String next_to_id = "", previous_to_id="";
+    String next_to_id = "", previous_to_id="", order_by= " id desc ";
     boolean currentOnly = false,
 				twoPeriodsAheadOnly=false,
 				lastPayPeriod=false, previousOnly=false, nextOnly=false;
     boolean avoidFuturePeriods = false;
     boolean approveSuitable = false;
     List<PayPeriod> periods = null;
+		List<Integer> years = null;
     public PayPeriodList(){
     }
     public PayPeriodList(String val){
@@ -82,6 +83,13 @@ public class PayPeriodList{
 				if(val != null)
 						limit = val;
     }
+		public List<Integer> getYears(){
+				return years;
+		}
+		public void setOrderBy(String val){
+				if(val != null)
+						order_by = val;
+		}
     //
     // find
     //
@@ -105,7 +113,7 @@ public class PayPeriodList{
 						"datediff(p2.end_date,p2.start_date) "+
 						"from pay_periods p2 ";
 				String qw = "";
-				String qo = " order by id desc ";
+				String qo = " order by "+order_by;
 				if(currentOnly){
 						qw = " p.start_date <= curdate() and p.end_date >= curdate() ";
 				}
@@ -138,7 +146,7 @@ public class PayPeriodList{
 						qo += " limit 1 ";
 				}				
 				else if(!year.equals("")){
-						qw = " year(p.start_year) = ? ";
+						qw = " (year(p.start_date) = ? or year(p.end_date) = ?) ";
 				}
 				else if(!previous_to_id.equals("")){
 						qw = " p.id < ? ";
@@ -146,8 +154,7 @@ public class PayPeriodList{
 				}
 				else if(!next_to_id.equals("")){
 						qw = " p.id > ? ";
-						qo = " order by id asc ";
-						qo += " limit 1 ";
+						qo = " order by id asc limit 1 ";
 				}				
 				if(!qw.equals("")){
 						qq += " where "+qw;
@@ -170,17 +177,19 @@ public class PayPeriodList{
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
+						int jj=1;
 						if(!currentOnly && !year.equals("")){
-								pstmt.setString(1, year);
+								pstmt.setString(jj++, year);
+								pstmt.setString(jj++, year);								
 						}
 						if(twoPeriodsAheadOnly && !employee_id.equals("")){
-								pstmt.setString(1, employee_id);
+								pstmt.setString(jj++, employee_id);
 						}
 						else if(!previous_to_id.equals("")){
-								pstmt.setString(1, previous_to_id);								
+								pstmt.setString(jj++, previous_to_id);								
 						}
 						else if(!next_to_id.equals("")){
-								pstmt.setString(1, next_to_id);			
+								pstmt.setString(jj++, next_to_id);			
 						}								
 						rs = pstmt.executeQuery();
 						while(rs.next()){
@@ -210,5 +219,41 @@ public class PayPeriodList{
 				}
 				return msg;
     }
+		public String findYearList(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "select "+
+						"distinct year(start_date) year "+
+						"from pay_periods order by year ";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								int year = rs.getInt(1);
+								if(years == null) years = new ArrayList<>();
+								years.add(year);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}
+		
 
 }

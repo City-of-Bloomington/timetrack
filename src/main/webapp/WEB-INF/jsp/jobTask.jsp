@@ -5,9 +5,6 @@
 	<s:if test="jobTask.id == ''">
 		<s:if test="jobTask.employee_id != ''">
 			<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />			
-			<s:if test="jobTask.employee.hasOneGroupOnly()">
-				<s:hidden name="jobTask.group_id" value="%{jobTask.employee.group_id}" />
-			</s:if>
 		</s:if>
 		<h1>New job</h1>
 		<s:if test="jobTask.employee_id == ''">
@@ -69,20 +66,12 @@
 		<s:else>
 			<div class="form-group">
 				<label>Group</label>
-				<s:if test="jobTask.hasNoGroup()">
-					<s:if test="jobTask.employee.hasMultipleGroups()">
-						<s:select name="jobTask.group_id" value="%{jobTask.group_id}" list="jobTask.employee.groups"  listKey="id" listValue="name" headerKey="-1" headerValue="Pick a group" />
-					</s:if>
-					<s:elseif test="jobTask.employee.hasOneGroupOnly()">
-						<s:property value="%{jobTask.employee.group}" />
-					</s:elseif>					
-					<s:else>
-						<s:property value="%{jobTask.group}" />
-					</s:else>
+				<s:if test="jobTask.hasGroup()">
+					<s:property value="jobTask.group" />
 				</s:if>
-				<s:else>
-					<s:property value="%{jobTask.group}" />
-				</s:else>
+				<s:elseif test="jobTask.hasAllGroups()">
+					<s:select name="jobTask.group_id" value="%{jobTask.group_id}" list="jobTask.allGroups"  listKey="id" listValue="name" headerKey="-1" headerValue="Pick a group" />
+				</s:elseif>
 			</div>
 		</s:else>
 		<div class="form-group">

@@ -20,6 +20,7 @@ public class GroupEmployeeList{
     static Logger logger = LogManager.getLogger(GroupEmployeeList.class);
     String employee_id = "", group_id="", pay_period_id="";
     boolean active_only = false, current_only=false;
+		boolean include_future = false;
     List<GroupEmployee> groupEmployees = null;
     public GroupEmployeeList(){
     }
@@ -51,13 +52,9 @@ public class GroupEmployeeList{
     public List<GroupEmployee> getGroupEmployees(){
 				return groupEmployees;
     }
-    //
-    /*						
-									select g.id,g.name,g.description,g.department_id,g.inactive,d.name from groups g
-									left join departments d on d.id=g.department_id, group_employees gu where g.id=gu.group_id  and gu.employee_id=9 and gu.inactive is null  and  g.inactive is null
-    */
-    //
-    // getters
+		public void setIncludeFuture(){
+				include_future = true;
+		}						
     //
     public String find(){
 				Connection con = null;
@@ -80,7 +77,11 @@ public class GroupEmployeeList{
 				}
 				else if(current_only){
 						if(!qw.equals("")) qw += " and ";						
-						qw += " g.effective_date <= now() and (g.expire_date is null or g.expire_date > now())";
+						qw += " g.effective_date <= curdate() and (g.expire_date is null or g.expire_date >= curdate())";
+				}
+				else if(include_future){
+						if(!qw.equals("")) qw += " and ";						
+						qw += " (g.expire_date is null or g.expire_date >= curdate())";
 				}
 				if(active_only){
 						if(!qw.equals("")) qw += " and ";

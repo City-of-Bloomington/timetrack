@@ -21,6 +21,7 @@ public class DepartmentEmployeeList{
 		static Logger logger = LogManager.getLogger(DepartmentEmployeeList.class);
 		boolean active_only = false, no_expire_date=false;
 		boolean emp_active_only = false;
+		boolean include_future = false;
 		List<DepartmentEmployee> departmentEmployees = null;
     public DepartmentEmployeeList(){
     }
@@ -53,6 +54,9 @@ public class DepartmentEmployeeList{
 		public List<DepartmentEmployee> getDepartmentEmployees(){
 				return departmentEmployees;
 		}
+		public void setIncludeFuture(){
+				include_future = true;
+		}		
     //
     // getters
     //
@@ -73,7 +77,11 @@ public class DepartmentEmployeeList{
 						if(!qw.equals("")) qw += " and ";
 						qw += " (de.department_id=? or de.department2_id=?)";
 				}
-				if(!pay_period_id.equals("")){
+				if(include_future){
+						if(!qw.equals("")) qw += " and ";
+						qw += " de.expire_date is null "; 						
+				}
+				else if(!pay_period_id.equals("")){
 						qq += ", pay_periods pp ";
 						if(!qw.equals("")) qw += " and ";
 						qw += " de.effective_date <= pp.start_date and (de.expire_date is null or de.expire_date >= pp.end_date) and pp.id=? ";		
@@ -111,7 +119,7 @@ public class DepartmentEmployeeList{
 								pstmt.setString(jj++, department_id);
 								pstmt.setString(jj++, department_id);								
 						}
-						if(!pay_period_id.equals("")){
+						if(!include_future && !pay_period_id.equals("")){
 								pstmt.setString(jj++, pay_period_id);
 						}						
 						rs = pstmt.executeQuery();

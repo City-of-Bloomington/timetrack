@@ -40,6 +40,7 @@ public class JobTask implements Serializable{
     Position position = null;
     Employee employee = null;
     Group group = null;
+		List<Group> allGroups = null; // all employee groups
     public JobTask(String val,
 									 String val2,
 									 String val3,
@@ -244,6 +245,9 @@ public class JobTask implements Serializable{
     }
     public boolean hasNoGroup(){
 				return group_id.equals("");
+    }
+    public boolean hasGroup(){
+				return !group_id.equals("");
     }		
     public boolean getInactive(){
 				return !inactive.equals("");
@@ -414,15 +418,45 @@ public class JobTask implements Serializable{
 				return salaryGroup;
     }
     public Group getGroup(){
-				if(!group_id.equals("") && group == null){
-						Group one = new Group(group_id);
-						String back = one.doSelect();
-						if(back.equals("")){
-								group = one;
+				if(group == null){
+						if(!group_id.equals("")){
+								Group one = new Group(group_id);
+								String back = one.doSelect();
+								if(back.equals("")){
+										group = one;
+								}
 						}
 				}
 				return group;
-    }		
+    }
+		void findAllGroups(){
+				if(id.equals("") && !employee_id.equals("")){
+						if(allGroups == null){
+								GroupEmployeeList gel = new GroupEmployeeList();
+								gel.setEmployee_id(employee_id);
+								gel.setIncludeFuture();
+								String back = gel.find();
+								if(back.equals("")){
+										List<GroupEmployee> ones = gel.getGroupEmployees();
+										if(ones != null){
+												for(GroupEmployee one:ones){
+														Group gg = one.getGroup();
+														if(allGroups == null)
+																allGroups = new ArrayList<>();
+														allGroups.add(gg);
+												}
+										}
+								}
+						}
+				}
+		}
+		public boolean hasAllGroups(){
+				findAllGroups();
+				return allGroups != null && allGroups.size() > 0;
+		}
+		public List<Group> getAllGroups(){
+				return allGroups;
+		}
     public Position getPosition(){
 				if(!position_id.equals("") && position == null){
 						Position one = new Position(position_id);

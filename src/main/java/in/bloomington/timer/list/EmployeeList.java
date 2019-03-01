@@ -36,7 +36,7 @@ public class EmployeeList extends CommonInc{
     boolean active_only = false, inactive_only = false,
 				hasEmployeeNumber=false, hasNoEmployeeNumber=false;
 		boolean exclude_recent_records = false, recent_records_only=false;
-    boolean includeAllDirectors = false;
+    boolean includeAllDirectors = false, include_future = false;
     boolean used_time_track = false; // since last two weeks
     List<Employee> employees = null;
     List<Group> groups = null;
@@ -211,7 +211,10 @@ public class EmployeeList extends CommonInc{
     public void setExclude_name(String val){
 				if(val != null)
 						exclude_name = val;
-    }		
+    }
+		public void setIncludeFuture(){
+				include_future = true; // no need already taken care of
+		}				
     public String find(){
 				//
 				Connection con = null;

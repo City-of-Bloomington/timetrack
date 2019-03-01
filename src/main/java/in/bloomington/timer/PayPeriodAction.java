@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import in.bloomington.timer.util.Helper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,15 +26,28 @@ public class PayPeriodAction extends TopAction{
 		String pay_period_id="";
 		PayPeriod currentPayPeriod = null;
 		List<PayPeriod> payPeriods = null;
+		static List<Integer> years = null;
+		int year = Helper.getCurrentYear();
+		
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
+				if(!action.equals("")){
+						getPayPeriods();
+				}
 				return ret;
 		}
 
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;
+		}
+		public void setYear(Integer val){
+				if(val != null && (val != -1))		
+						year = val;
+		}
+		public Integer getYear(){
+				return year;
 		}
 		public void setPay_period_id(String val){
 				if(val != null && !val.equals("-1"))		
@@ -63,6 +77,8 @@ public class PayPeriodAction extends TopAction{
 		public List<PayPeriod> getPayPeriods(){
 				if(payPeriods == null){
 						PayPeriodList tl = new PayPeriodList();
+						tl.setYear(""+year);
+						tl.setOrderBy(" id asc ");
 						String back = tl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = tl.getPeriods();
@@ -76,7 +92,19 @@ public class PayPeriodAction extends TopAction{
 		public boolean hasPayPeriods(){
 				getPayPeriods();
 				return payPeriods != null && payPeriods.size() > 0;
-				
+		}
+		public List<Integer> getYears(){
+				if(years == null){
+						PayPeriodList ppl = new PayPeriodList();
+						String back = ppl.findYearList();
+						if(back.equals("")){
+								years = ppl.getYears();
+						}
+						else{
+								addError(back);
+						}
+				}
+				return years;
 		}
 
 

@@ -29,10 +29,11 @@ public class TimewarpAction extends TopAction{
     List<PayPeriod> payPeriods = null;		
     String timeBlocksTitle = "TimeWarp";
     String pay_period_id = "";
-    String department_id = "";
+    String department_id = "", group_id="";
 		String type=""; // for custom
     String source="", outputType="html";
     boolean isHand = false, csvOutput = false, isUtil = false;
+		List<Group> groups = null;
     Hashtable<String, Profile> profMap = null;
     List<Department> departments = null;
     List<Profile> profiles = null;
@@ -56,7 +57,15 @@ public class TimewarpAction extends TopAction{
 						back = doProcess();
 						if(!back.equals("")){
 								addError(back);
-						}	    
+						}
+						if(processes == null || processes.size() == 0){
+								back = "No records found";
+								addMessage(back);
+								if(type.equals("single")){ // one department
+										ret = "single";
+								}
+								return ret;
+						}
 						if(true){
 								if(csvOutput){
 										prepareCsvs();
@@ -147,6 +156,15 @@ public class TimewarpAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						source = val;
     }
+		public void setGroup_id(String val){
+				if(val != null && !val.equals("-1") && !val.equals("all"))
+						group_id = val;
+		}
+		public String getGroup_id(){
+				if(group_id.equals(""))
+						return "-1";
+				return group_id;
+		}
     public String getPay_period_id(){
 				if(pay_period_id.equals("")){
 						getPayPeriod();
@@ -357,6 +375,9 @@ public class TimewarpAction extends TopAction{
 								el.setPay_period_id(pay_period_id);
 								el.setHasNoEmployeeNumber();
 								el.setActiveOnly();
+								if(!group_id.equals("")){
+										el.setGroup_id(group_id);
+								}
 								String back = el.find();
 								if(back.equals("")){
 										List<Employee> ones = el.getEmployees();
@@ -377,7 +398,9 @@ public class TimewarpAction extends TopAction{
 								el.setDepartment_id(department.getId());
 								el.setPay_period_id(pay_period_id);
 								el.setHasEmployeeNumber();
-								// el.setActiveOnly();
+								if(!group_id.equals("")){
+										el.setGroup_id(group_id);
+								}
 								String back = el.find();
 								if(back.equals("")){
 										List<Employee> ones = el.getEmployees();
@@ -395,6 +418,27 @@ public class TimewarpAction extends TopAction{
     public List<Employee> getNoDataEmployees(){
 				return noDataEmployees;
     }
+		public List<Group> getGroups(){
+				findGroups();
+				return groups;
+		}
+		public boolean hasGroups(){
+				findGroups();
+				return groups != null && groups.size() > 0;
+		}
+		void findGroups(){
+				if(groups == null && !department_id.equals("")){
+						GroupList gl = new GroupList();
+						gl.setDepartment_id(department_id);
+						gl.setPay_period_id(pay_period_id);
+						String back = gl.find();
+						if(back.equals("")){
+								List<Group> ones = gl.getGroups();
+								if(ones != null && ones.size() > 0)
+										groups = ones;
+						}
+				}
+		}
     public PayPeriod getPayPeriod(){
 				//
 				// if pay period is not set, we look for previous one
@@ -619,20 +663,22 @@ public class TimewarpAction extends TopAction{
     // Not tested yet
     void prepareHandCsv(){
 				allCsvLines = new ArrayList<>();
-				String line =",,,,,", line2 =",,,,,,";				
-				for(PayPeriodProcess process:processes){
-						Hashtable<CodeRef, String> hash = process.getTwoWeekHandHash();
-						if(hash != null && !hash.isEmpty()){
-								Set<CodeRef> keySet = hash.keySet();
-								for(CodeRef key:keySet){
-										String dd = hash.get(key);
-										String csvLine = process.getEmployee().getEmployee_number()+",";
-										csvLine += dd+","+key.getNw_code()+",";
-										csvLine += payPeriod.getEnd_date()+",";
-										csvLine += line;
-										csvLine += key.getGl_value()+",";
-										csvLine += line2;
-										allCsvLines.add(csvLine);
+				String line =",,,,,", line2 =",,,,,,";
+				if(processes != null && processes.size() > 0){
+						for(PayPeriodProcess process:processes){
+								Hashtable<CodeRef, String> hash = process.getTwoWeekHandHash();
+								if(hash != null && !hash.isEmpty()){
+										Set<CodeRef> keySet = hash.keySet();
+										for(CodeRef key:keySet){
+												String dd = hash.get(key);
+												String csvLine = process.getEmployee().getEmployee_number()+",";
+												csvLine += dd+","+key.getNw_code()+",";
+												csvLine += payPeriod.getEnd_date()+",";
+												csvLine += line;
+												csvLine += key.getGl_value()+",";
+												csvLine += line2;
+												allCsvLines.add(csvLine);
+										}
 								}
 						}
 				}

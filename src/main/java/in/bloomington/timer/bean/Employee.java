@@ -39,6 +39,7 @@ public class Employee implements Serializable{
     // User user = null;
     PayPeriod payPeriod  = null;
     List<JobTask> jobs = null;
+		List<JobTask> allJobs = null;		
     List<Group> groups = null;
     List<GroupManager> approvers = null;
     List<GroupManager> processors = null;
@@ -482,6 +483,7 @@ public class Employee implements Serializable{
 				}
 				return groups;
     }
+
     public boolean hasGroups(){
 				getGroups();
 				return groups != null && groups.size() > 0;
@@ -642,10 +644,13 @@ public class Employee implements Serializable{
     public List<DepartmentEmployee> getDepartmentEmployees(){
 				if(departmentEmployees == null && !id.equals("")){
 						DepartmentEmployeeList del = new DepartmentEmployeeList(id);
+						del.setIncludeFuture();
+						/*
 						if(!pay_period_id.equals("")){
 								findPayPeriod();
 						}
 						del.setPay_period_id(pay_period_id);
+						*/
 						String back = del.find();
 						if(back.equals("")){
 								List<DepartmentEmployee> des = del.getDepartmentEmployees();
@@ -658,7 +663,7 @@ public class Employee implements Serializable{
 				return departmentEmployees;
     }
     public boolean hasActiveDepartment(){
-				if(hasDepartments()){
+				if(hasDepartment()){
 						return departmentEmployee != null;
 				}
 				return false;
@@ -684,13 +689,20 @@ public class Employee implements Serializable{
 				getDepartment_id();
 				return !department_id.equals("") && !department2_id.equals("");
 		}
+		public boolean hasGroupEmployees(){
+				getGroupEmployees(); // include future
+				return groupEmployees != null && groupEmployees.size() > 0;
+		}
     public List<GroupEmployee> getGroupEmployees(){
 				if(groupEmployees == null && !id.equals("")){
 						GroupEmployeeList del = new GroupEmployeeList(id);
+						del.setIncludeFuture();
+						/*
 						if(!pay_period_id.equals("")){
 								findPayPeriod();
 						}
 						del.setPay_period_id(pay_period_id);
+						*/
 						String back = del.find();
 						if(back.equals("")){
 								List<GroupEmployee> ones = del.getGroupEmployees();
@@ -758,6 +770,31 @@ public class Employee implements Serializable{
 				}
 				return jobs;
     }
+		public boolean hasAllJobs(){
+				getAllJobs();
+				return allJobs != null && allJobs.size() > 0;
+		}
+    public List<JobTask> getAllJobs(){
+				if(!id.equals("") && allJobs == null){
+						JobTaskList jtl = new JobTaskList();
+						jtl.setEmployee_id(id);
+						jtl.setIncludeFuture();
+						/*
+						if(!pay_period_id.equals("")){
+								jtl.setPay_period_id(pay_period_id);
+						}
+						*/
+						String back = jtl.find();
+						if(back.equals("")){
+								List<JobTask> ones = jtl.getJobs();
+								if(ones != null && ones.size() > 0){
+										allJobs = ones;
+								}
+						}
+				}
+				return allJobs;
+    }		
+		
     public boolean hasJobs(){
 				getJobs();
 				return jobs != null && jobs.size() > 0;
@@ -776,8 +813,8 @@ public class Employee implements Serializable{
 				return null;
     }
     public boolean hasNoJob(){
-				getJobs();
-				return jobs == null || jobs.size() == 0;
+				getAllJobs();
+				return allJobs == null || allJobs.size() == 0;
     }
     public boolean isLeaveEligible(){
 				JobTask job = null;				
