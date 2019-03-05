@@ -179,9 +179,21 @@ $('#hour_code_select').change(function() {
         $('#div_time_out').hide();
         $('#div_overnight').hide();
     }
+    else if(val.indexOf('Monetary') > -1){
+        $('#div_monetary').show();
+        $('#monetary_change').attr('tabindex',5);
+        $('#div_hours').hide();				
+        $('#time_in').attr('tabindex',-1);
+        $('#time_out').attr('tabindex',-1);
+        $('#time_overnight').attr('tabindex',-1);
+        $('#div_time_in').hide();
+        $('#div_time_out').hide();
+        $('#div_overnight').hide();
+    }		
     else{
         $('#div_hour_change').val(0);
         $('#div_hours').hide();
+        $('#div_monetary').hide();				
         $('#div_time_in').show();
         $('#div_time_out').show();
         $('#div_overnight').show();

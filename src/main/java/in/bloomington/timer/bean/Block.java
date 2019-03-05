@@ -47,9 +47,10 @@ public class Block{
 								 int val5,
 								 int val6,
 								 int val7,
-								 double val8
+								 double val8,
+								 double val9
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
 		}		
 		
     public Block(
@@ -62,10 +63,11 @@ public class Block{
 								 int val7,
 								 int val8,
 								 double val9,
-								 String val10,
-								 String val11
+								 double val10,
+								 String val11,
+								 String val12
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11,val12);
 		}
     public Block(
 								 String val,
@@ -77,12 +79,13 @@ public class Block{
 								 int val7,
 								 int val8,
 								 double val9,
-								 String val10,
+								 double val10,
 								 String val11,
-								 boolean val12,
-								 String val13
+								 String val12,
+								 boolean val13,
+								 String val14
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14);
 		}
 		void setVals(
 								 String val,
@@ -92,7 +95,8 @@ public class Block{
 								 int val5,
 								 int val6,
 								 int val7,
-								 double val8
+								 double val8,
+								 Double val9
 							 ){								
 				setDocument_id(val);
 				setHour_code_id(val2);
@@ -102,6 +106,7 @@ public class Block{
 				setEnd_hour(val6);
 				setEnd_minute(val7);				
 				setHoursDbl(val8);
+				setAmountDbl(val9);
     }		
 		void setVals(
 								 String val,
@@ -113,8 +118,9 @@ public class Block{
 								 int val7,
 								 int val8,
 								 double val9,
-								 String val10,
-								 String val11
+								 double val10,
+								 String val11,
+								 String val12
 							 ){								
 				setId(val);
 				setDocument_id(val2);
@@ -125,8 +131,9 @@ public class Block{
 				setEnd_hour(val7);
 				setEnd_minute(val8);				
 				setHoursDbl(val9);
-				setClock_in(val10);
-				setClock_out(val11);
+				setAmountDbl(val10);
+				setClock_in(val11);
+				setClock_out(val12);
     }
 		void setVals(
 								 String val,
@@ -138,10 +145,11 @@ public class Block{
 								 int val7,
 								 int val8,
 								 double val9,
-								 String val10,
+								 double val10,
 								 String val11,
-								 boolean val12,
-								 String val13
+								 String val12,
+								 boolean val13,
+								 String val14
 							 ){								
 				setId(val);
 				setDocument_id(val2);
@@ -152,10 +160,11 @@ public class Block{
 				setEnd_hour(val7);
 				setEnd_minute(val8);				
 				setHoursDbl(val9);
-				setClock_in(val10);
-				setClock_out(val11);
-				setIsHoliday(val12);
-				setHolidayName(val13);
+				setAmountDbl(val10);
+				setClock_in(val11);
+				setClock_out(val12);
+				setIsHoliday(val13);
+				setHolidayName(val14);
     }		
     public Block(String val){
 				setId(val);
@@ -277,12 +286,6 @@ public class Block{
 				if(val != null)
 						id = val;
     }
-		/*
-    public void setJob_id (String val){
-				if(val != null)
-						job_id = val;
-    }
-		*/
     public void setDocument_id (String val){
 				if(val != null && !val.equals("-1"))
 						document_id = val;
@@ -333,6 +336,10 @@ public class Block{
 				if(val != null)
 						hours = val;
 		}
+		public void setAmountDbl(Double val){
+				if(val != null)
+						amount = val;
+		}		
     public void setHours(String val){
 				if(val != null && !val.equals("")){
 						try{

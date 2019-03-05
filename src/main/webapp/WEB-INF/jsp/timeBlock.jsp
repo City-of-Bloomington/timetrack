@@ -72,8 +72,12 @@
 				<label>Hours</label>
 				<s:textfield name="timeBlock.hours" value="%{timeBlock.hoursStr}" maxlength="5" id="hour_change" placeholder="(dd.dd)" />
 			</div>
+			<div id="div_amount" style="display:none;" class="form-group">
+				<label>Amount</label>
+				$<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
+			</div>			
 		</s:if>
-		<s:else>
+		<s:elseif test="timeBlock.isHourType()">
 			<div id="div_time_in" style="display:none;" class="form-group">
 				<label>Start Time</label>
 				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" placeholder="(hh:mm) AM/PM" />
@@ -90,23 +94,39 @@
 				<label>Hours</label>
 				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" placeholder="(dd.dd)" />
 			</div>
+			<div id="div_amount" style="display:none;" class="form-group">
+				<label>Amount</label>
+				$<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
+			</div>						
+		</s:elseif>		
+		<s:else>
+			<div id="div_time_in" style="display:none;" class="form-group">
+				<label>Start Time</label>
+				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" placeholder="(hh:mm) AM/PM" />
+			</div>
+			<div id="div_time_out" style="display:none;" class="form-group">
+				<label>End Time</label>
+				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hh:mm) AM/PM" />
+			</div>
+			<div id="div_overnight" style="display:none;" class="form-group">
+				<label>Overnight Shift</label>
+				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" id="time_overnight" />
+			</div>
+			<div id="div_hours" style="display:none"  class="form-group">
+				<label>Hours</label>
+				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" placeholder="(dd.dd)" />
+			</div>
+			<div id="div_amount" class="form-group">
+				<label>Amount</label>
+				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
+			</div>					
 		</s:else>
-
 		<s:if test="timeBlock.id == ''">
 			<div class="form-group">
 				<label>Include Weekend</label>
 				<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}"  />
 			</div>
 		</s:if>
-		<!-- <div class="button-group">
-		<s:if test="timeBlock.id == ''">
-		<s:submit name="action" type="submit" value="Save" class="button" id="time-block-submit" />
-		</s:if>
-		<s:else>
-		<s:submit name="action" type="submit" value="Save Changes" class="button" id="time-block-submit" />
-		</s:else>
-		<a class="button" href="#" onclick="javascript:window.close('', '_blank', '')" >Cancel</a>
-		</div> -->
 	</s:form>
 </div>
 

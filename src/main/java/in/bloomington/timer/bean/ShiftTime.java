@@ -313,7 +313,8 @@ public class ShiftTime{
 																						 begin_minute,
 																						 end_hour,
 																						 end_minute,
-																						 hours
+																						 hours,
+																						 0.0 // amount
 																						 );
 								tb.setAction_by_id(added_by_id); // for logs
 								msg = tb.doSave();

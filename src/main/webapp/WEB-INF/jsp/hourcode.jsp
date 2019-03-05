@@ -32,7 +32,7 @@
 
 			<div class="form-group">
 				<label>Recording Method:</label>
-				<s:radio name="hourcode.record_method" value="%{hourcode.record_method}" list="#{'Time':'Time','Hours':'Hours'}" />
+				<s:radio name="hourcode.record_method" value="%{hourcode.record_method}" list="#{'Time':'Time','Hours':'Hours','Monetary':'Monetary'}" />
 			</div>
 
 			<div class="form-group">
@@ -46,6 +46,10 @@
 			<div class="form-group">
 				<label>Type:</label>
 				<s:radio name="hourcode.type" value="%{hourcode.type}" list="types" />
+			</div>
+			<div class="form-group">
+				<label>Default Monetary Amount:</label>
+				$<s:textfield name="hourcode.defaultMonetaryAmount" value="%{hourcode.defaultMonetaryAmount}" size="8" maxlength="8" /> (for fixed amount hour codes such as ONCALL)
 			</div>			
 			<s:if test="hourcode.id != ''">
 				<div class="form-group">

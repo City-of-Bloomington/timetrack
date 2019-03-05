@@ -110,7 +110,7 @@ public class HourCodeList{
 				// other are for non-specified department
 				// 
 				String qq = "select count(*) from hour_code_conditions c where c.department_id=? ";
-				String qq2 = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.count_as_regular_pay,e.reg_default,e.type,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
+				String qq2 = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.reg_default,e.type,e.default_monetary_amount,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
 				String qw = "", msg="";
 				logger.debug(qq);
 				boolean setDept = false;
@@ -196,8 +196,8 @@ public class HourCodeList{
 																						rs.getString(4),
 																						rs.getString(5),
 																						rs.getString(6) != null,
-																						rs.getString(7) != null,
-																						rs.getString(8),
+																						rs.getString(7),
+																						rs.getDouble(8),
 																						rs.getString(9) != null);
 								if(one.isRegDefault()){
 										if(!hourCodes.contains(one))
@@ -231,7 +231,7 @@ public class HourCodeList{
 				// some hour codes are specific to certain departments
 				// other are for all department
 				// 
-				String qq = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.count_as_regular_pay,e.reg_default,e.type,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
+				String qq = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.reg_default,e.type,e.default_monetary_amount,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
 				String qw = "", msg="";
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -300,8 +300,8 @@ public class HourCodeList{
 																						rs.getString(4),
 																						rs.getString(5),
 																						rs.getString(6) != null,
-																						rs.getString(7) != null,
-																						rs.getString(8),
+																						rs.getString(7),
+																						rs.getDouble(8),
 																						rs.getString(9) != null);
 								if(!hourCodes.contains(one))
 										hourCodes.add(one);

@@ -461,9 +461,14 @@ public class TimeClock {
 								// System.err.println(" new docment, now save ");
 								// if this is a new document ,this means this first entry
 								// in this pay period, so will consider as clock_in
-								timeBlock = new TimeBlock(null, document.getId(), hour_code_id, date,
+								timeBlock = new TimeBlock(null,
+																					document.getId(),
+																					hour_code_id,
+																					date,
 
-																					time_hr, time_min, 0, 0, 0, 
+																					time_hr,
+																					time_min,
+																					0, 0, 0, 0, 
 
 																					"y", null, false, null);
 								timeBlock.setAction_type("ClockIn");
@@ -496,9 +501,13 @@ public class TimeClock {
 												timeBlock.setAction_by_id(employee_id);
 												msg = timeBlock.doUpdate();
 										} else { // it is a clock-in
-												timeBlock = new TimeBlock(null, document.getId(), hour_code_id, date,
+												timeBlock = new TimeBlock(null,
+																									document.getId(),
+																									hour_code_id,
+																									date,
 
-																									time_hr, time_min, 0, 0, 0, 
+																									time_hr, time_min,
+																									0, 0, 0, 0, 
 
 																									"y", null, false, null);
 												timeBlock.setAction_type("ClockIn");

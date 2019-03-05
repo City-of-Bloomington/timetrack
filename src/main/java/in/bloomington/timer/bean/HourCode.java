@@ -23,6 +23,7 @@ public class HourCode{
 		static final long serialVersionUID = 700L;
 		static Logger logger = LogManager.getLogger(HourCode.class);
 		String id="", name = "", description="", inactive="", type="";
+
 		Accrual accrual = null;
 		AccrualWarning accrualWarning = null;
 		CodeRef codeRef = null;
@@ -30,8 +31,7 @@ public class HourCode{
 				record_method="Time", // Time, Hours, Monetary
 				accrual_id ="",
 		// each salary group can have only one reg_default set to 0
-				reg_default="", // y for default, null for others
-				count_as_regular_pay=""; // char Yes/No flag
+				reg_default=""; // y for default, null for others
 		private double default_monetary_amount=0.0;
 		private String timeUsed="", timeEarned="", unpaid="";
 
@@ -44,7 +44,15 @@ public class HourCode{
 				setId(val);
 				setName(val2);
     }		
-    public HourCode(String val, String val2, String val3, String val4, String val5, boolean val6, boolean val7, String val8, boolean val9){
+    public HourCode(String val,
+										String val2,
+										String val3,
+										String val4,
+										String val5,
+										boolean val6,
+										String val7,
+										Double val8,
+										boolean val9){
 				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
     }
     void setVals(String val,
@@ -53,8 +61,8 @@ public class HourCode{
 								 String val4,
 								 String val5,
 								 boolean val6,
-								 boolean val7,
-								 String val8,
+								 String val7,
+								 Double val8,
 								 boolean val9								 
 								 ){
 				setId(val);
@@ -62,9 +70,9 @@ public class HourCode{
 				setDescription(val3);
 				setRecord_method(val4);
 				setAccrual_id(val5);
-				setCount_as_regular_pay(val6);
-				setReg_default(val7);
-				setType(val8);
+				setReg_default(val6);
+				setType(val7);
+				setDefaultMonetaryAmount(val8);
 				setInactive(val9);
 				
     }
@@ -116,12 +124,6 @@ public class HourCode{
 		public boolean isAccrualRelated(){
 				return !accrual_id.equals("");
 		}
-		// probably not used
-		public boolean getCount_as_regular_pay(){
-				if(count_as_regular_pay.equals("") && id.equals(""))
-						return true;
-				return !count_as_regular_pay.equals("");
-    }
 		public double getDefaultMonetaryAmount(){
 				return default_monetary_amount;
 		}
@@ -171,10 +173,6 @@ public class HourCode{
 				if(val)
 						reg_default = "y";
     }		
-    public void setCount_as_regular_pay (boolean val){
-				if(val)
-						count_as_regular_pay = "y";
-    }
 		public String getCodeInfo(){
 				String ret = name;
 				if(!description.equals("")){
@@ -291,7 +289,7 @@ public class HourCode{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select id,name,description,record_method,accrual_id,"+
-						" count_as_regular_pay,reg_default,type,inactive "+
+						" reg_default,type,default_monetary_amount,inactive "+
 						" from hour_codes where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
@@ -310,8 +308,8 @@ public class HourCode{
 												rs.getString(4),
 												rs.getString(5),
 												rs.getString(6) != null,
-												rs.getString(7) != null,
-												rs.getString(8),
+												rs.getString(7),
+												rs.getDouble(8),
 												rs.getString(9) != null
 												);
 						}
@@ -381,17 +379,12 @@ public class HourCode{
 						}
 						else{
 								pstmt.setString(jj++, description);
-
 						}
 						pstmt.setString(jj++, record_method);
 						if(accrual_id.equals(""))
 								pstmt.setNull(jj++, Types.INTEGER);
 						else
 								pstmt.setString(jj++, accrual_id);						
-						if(count_as_regular_pay.equals(""))
-								pstmt.setNull(jj++, Types.CHAR);
-						else
-								pstmt.setString(jj++, "y");
 						if(reg_default.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
 						else
@@ -399,7 +392,8 @@ public class HourCode{
 						if(type.equals(""))
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
-								pstmt.setString(jj++, type);						
+								pstmt.setString(jj++, type);
+						pstmt.setDouble(jj++, default_monetary_amount);
 						if(inactive.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
 						else
@@ -418,7 +412,7 @@ public class HourCode{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,count_as_regular_pay=?, reg_default=?,type=?,inactive=? where id=?";
+				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,reg_default=?,type=?,default_monetary_amount=?,inactive=? where id=?";
 				if(name.equals("")){
 						msg = "Hour code name is required";
 						return msg;
