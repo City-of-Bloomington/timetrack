@@ -67,9 +67,11 @@
 			<hr class="m-b-40" />
 			<s:if test="hasMultipleJobs()">
 				<s:set var="payPeriodTotal" value="mjdoc.payPeriodTotal" />
+				<s:set var="payPeriodAmount" value="mjdoc.payPeriodAmount" />
 				<s:set var="daily" value="mjdoc.daily" />
 				<s:set var="week1Total" value="mjdoc.week1Total" />
 				<s:set var="week2Total" value="mjdoc.week2Total" />
+				
 				<s:if test="document.isUnionned()">
 					<s:set var="unionned" value="'true'" />
 					<s:set var="week1Flsa" value="mjdoc.week1_flsa" />
@@ -81,6 +83,7 @@
 			</s:if>
 			<s:else>
 				<s:set var="payPeriodTotal" value="document.payPeriodTotal" />
+				<s:set var="payPeriodAmount" value="document.payPeriodAmount" />
 				<s:set var="daily" value="document.daily" />
 				<s:set var="week1Total" value="document.week1Total" />
 				<s:set var="week2Total" value="document.week2Total" />
@@ -114,6 +117,10 @@
 						<s:set var="weekTotal" value="mjdoc.week1Total" />
 						<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
 						<s:set var="whichWeek" value="'week-one'" />
+						<s:if test="mjdoc.hasAmountCodeWeek1()">
+							<s:set var="weeklyAmountCodes" value="mjdoc.amountCodeWeek1" />
+							<s:set var="weekAmountTotal" value="mjdoc.week1AmountTotal" />
+						</s:if>						
 						<%@ include file="weeklySummary.jsp" %>
 					</s:if>
 
@@ -122,23 +129,35 @@
 						<s:set var="weekTotal" value="mjdoc.week2Total" />
 						<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
 						<s:set var="whichWeek" value="'week-two'" />
+						<s:if test="mjdoc.hasAmountCodeWeek2()">
+							<s:set var="weeklyAmountCodes" value="mjdoc.amountCodeWeek2" />
+							<s:set var="weekAmountTotal" value="mjdoc.week2AmountTotal" />
+						</s:if>												
 						<%@ include file="weeklySummary.jsp" %>
 					</s:if>
 				</s:if>
 				<s:else>
 					<s:if test="document.hasHourCodeWeek1()">
 						<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
-						<s:set var="weekTotal" value="document.week1Total" />
-						<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
+						<s:set var="weekHourTotal" value="document.week1Total" />
+						<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
 						<s:set var="whichWeek" value="'week-one'" />
+						<s:if test="document.hasAmountCodeWeek1()">
+							<s:set var="weeklyAmountCodes" value="document.amountCodeWeek1" />
+							<s:set var="weekAmountTotal" value="document.week1AmountTotal" />
+						</s:if>
 						<%@ include file="weeklySummary.jsp" %>
 					</s:if>
 
 					<s:if test="document.hasHourCodeWeek2()">
 						<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
-						<s:set var="weekTotal" value="document.week2Total" />
-						<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
+						<s:set var="weekHourTotal" value="document.week2Total" />
+						<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
 						<s:set var="whichWeek" value="'week-two'" />
+						<s:if test="document.hasAmountCodeWeek2()">
+							<s:set var="weeklyAmountCodes" value="document.amountCodeWeek2" />
+							<s:set var="weekAmountTotal" value="document.week2AmountTotal" />
+						</s:if>						
 						<%@ include file="weeklySummary.jsp" %>
 					</s:if>
 				</s:else>

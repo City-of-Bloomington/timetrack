@@ -420,6 +420,9 @@ public class TimeBlock extends Block{
 				//
 				// for clock-in only
 				if(id.equals("")){
+						if(isMonetaryType()){
+								return amount > 0;
+						}
 						if(start_date.equals(end_date) && !start_date.equals("")){
 								if(!date.equals(start_date)){
 										date = start_date;
@@ -429,6 +432,7 @@ public class TimeBlock extends Block{
 								clock_in="y";
 								return true;
 						}
+						
 				}
 				else{ // update clock-in only
 						if(time_in_set && !time_out_set){

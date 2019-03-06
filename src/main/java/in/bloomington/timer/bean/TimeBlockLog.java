@@ -77,11 +77,16 @@ public class TimeBlockLog extends Block{
 		}		
 		public boolean showBeginTime(){
 				getHourCode();
-				return !(action_type.equals("Delete") || hourCode.isRecordMethodHours());
+				return !(action_type.equals("Delete") ||
+								 hourCode.isRecordMethodMonetary() ||
+								 hourCode.isRecordMethodHours());
 		}
 		public boolean showEndTime(){
 				getHourCode();
-				return !(action_type.equals("Delete") || hourCode.isRecordMethodHours() || isClockInOnly()) || isClockInOut();
+				return !(action_type.equals("Delete") ||
+								 hourCode.isRecordMethodMonetary() ||
+								 hourCode.isRecordMethodHours() || isClockInOnly())
+						|| isClockInOut();
 		}		
     //
     // setters

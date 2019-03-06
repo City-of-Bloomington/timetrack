@@ -31,6 +31,7 @@ public class Document implements Serializable{
 				initiated="",initiated_by="", selected_job_id="";
     private String job_id="";
     double week1Total = 0, week2Total = 0, week1_flsa=0, week2_flsa=0;
+		double week1AmountTotal=0,week2AmountTotal=0;
     PayPeriod payPeriod = null;
     Employee employee = null;
     Employee initiater = null;
@@ -45,10 +46,15 @@ public class Document implements Serializable{
     List<JobTask> jobs = null;
     SalaryGroup salaryGroup = null;
     Map<String, List<String>> allAccruals = new TreeMap<>();
-    Map<Integer, Double> hourCodeTotals = null;
     Map<Integer, Double> usedAccrualTotals = null;
+    Map<Integer, Double> hourCodeTotals = null;
     Map<String, Double> hourCodeWeek1 = null;
     Map<String, Double> hourCodeWeek2 = null;
+		
+		Map<Integer, Double> amountCodeTotals = null; 
+    Map<String, Double> amountCodeWeek1 = null;
+    Map<String, Double> amountCodeWeek2 = null;
+		
     Map<Integer, List<TimeBlock>> dailyBlocks = null;
     List<EmployeeAccrual> employeeAccruals = null;
     List<TimeNote> timeNotes = null;
@@ -420,6 +426,10 @@ public class Document implements Serializable{
 										hourCodeTotals = tl.getHourCodeTotals();
 										hourCodeWeek1 = tl.getHourCodeWeek1();
 										hourCodeWeek2 = tl.getHourCodeWeek2();
+										//
+										amountCodeTotals = tl.getAmountCodeTotals();
+										amountCodeWeek1 = tl.getAmountCodeWeek1();
+										amountCodeWeek2 = tl.getAmountCodeWeek2();
 										List<TimeBlock> ones2 = tl.getTimeBlocks();
 										if(ones2 != null && ones2.size() > 0){
 												timeBlocks = ones2;
@@ -428,7 +438,9 @@ public class Document implements Serializable{
 										week1_flsa = tl.getWeek1_flsa();
 										week2_flsa = tl.getWeek2_flsa();
 										week1Total = tl.getWeek1Total();
-										week2Total = tl.getWeek2Total();										
+										week2Total = tl.getWeek2Total();
+										week1AmountTotal = tl.getWeek1AmountTotal();
+										week2AmountTotal = tl.getWeek2AmountTotal();
 								}
 						}
 						if(includeEmptyBlocks){
@@ -472,11 +484,29 @@ public class Document implements Serializable{
     }
     public double getWeek2TotalDbl(){
 				return week2Total;
-    }		
+    }
+    public String getWeek1AmountTotal(){
+				return ""+dfn.format(week1AmountTotal);
+    }
+    public String getWeek2AmountTotal(){
+				return ""+dfn.format(week2AmountTotal);
+    }
+    public double getWeek1AmountTotalDbl(){
+				return week1AmountTotal;
+    }
+    public double getWeek2AmountTotalDbl(){
+				return week2AmountTotal;
+    }
+		// total hours
     public String getPayPeriodTotal(){
 				double ret = week1Total+week2Total;
 				return ""+dfn.format(ret);
     }
+		// total amount
+    public String getPayPeriodAmount(){
+				double ret = week1AmountTotal+week2AmountTotal;
+				return ""+dfn.format(ret);
+    }		
     // we need at least one job to find some info
     // about the employee
     public JobTask getJobTask(){
@@ -742,6 +772,12 @@ public class Document implements Serializable{
     public boolean hasHourCodeWeek2(){
 				return hourCodeWeek2 != null && hourCodeWeek2.size() > 0;
     }
+    public boolean hasAmountCodeWeek1(){
+				return amountCodeWeek1 != null && amountCodeWeek1.size() > 0;
+    }
+    public boolean hasAmountCodeWeek2(){
+				return amountCodeWeek2 != null && amountCodeWeek2.size() > 0;
+    }		
     public Map<Integer, List<TimeBlock>> getDailyBlocks(){
 				if(dailyBlocks == null){
 						prepareDaily();
@@ -756,7 +792,13 @@ public class Document implements Serializable{
     }
     public Map<String, Double> getHourCodeWeek2Dbl(){
 				return hourCodeWeek2;
-    }		
+    }
+    public Map<String, Double> getAmountCodeWeek1Dbl(){
+				return amountCodeWeek1;
+    }
+    public Map<String, Double> getAmountCodeWeek2Dbl(){
+				return amountCodeWeek2;
+    }
     // change double to string for formating purpose
     public Map<String, String> getHourCodeWeek1(){
 				Map<String, String> map2 = new TreeMap<>();
@@ -769,7 +811,6 @@ public class Document implements Serializable{
 				}
 				return map2;
     }
-    // change double to string for formating purpose
     public Map<String, String> getHourCodeWeek2(){
 				Map<String, String> map2 = new TreeMap<>();
 				if(hasHourCodeWeek2()){
@@ -781,6 +822,29 @@ public class Document implements Serializable{
 				}
 				return map2;
     }
+    public Map<String, String> getAmountCodeWeek1(){
+				Map<String, String> map2 = new TreeMap<>();
+				if(hasAmountCodeWeek1()){
+						Set<String> keys = amountCodeWeek1.keySet();
+						for(String key:keys){
+								double val = amountCodeWeek1.get(key);
+								map2.put(key, dfn.format(val));
+						}
+				}
+				return map2;
+    }
+    public Map<String, String> getAmountCodeWeek2(){
+				Map<String, String> map2 = new TreeMap<>();
+				if(hasAmountCodeWeek2()){
+						Set<String> keys = amountCodeWeek2.keySet();
+						for(String key:keys){
+								double val = amountCodeWeek2.get(key);
+								map2.put(key, dfn.format(val));
+						}
+				}
+				return map2;
+    }		
+		
     public Map<String, List<String>> getAllAccruals(){
 				return allAccruals;
     }

@@ -43,7 +43,23 @@ public class HourCode{
     public HourCode(String val, String val2){
 				setId(val);
 				setName(val2);
-    }		
+    }
+		// used in time block list
+		public HourCode(String code_id,
+										String code_name,
+										String code_desc,
+										String record_method,
+										String related_accrual_id,
+										String code_type,
+										double default_amount){
+				setId(code_id);
+				setName(code_name);
+				setDescription(code_desc);
+				setRecord_method(record_method);
+				setAccrual_id(related_accrual_id);
+				setType(code_type);
+				setDefaultMonetaryAmount(default_amount);
+		}
     public HourCode(String val,
 										String val2,
 										String val3,

@@ -35,6 +35,7 @@ public class MultiJobDoc{
     private String employee_id="", pay_period_id="";
 		private String job_id="";
 		double week1Total = 0, week2Total = 0, week1_flsa=0, week2_flsa=0;
+		double week1AmountTotal=0,week2AmountTotal=0;		
 		PayPeriod payPeriod = null;
 		Employee employee = null;
 		JobTask job = null; // we need one of the jobs to get more info
@@ -50,9 +51,14 @@ public class MultiJobDoc{
 		SalaryGroup salaryGroup = null;
 		Map<String, List<String>> allAccruals = new TreeMap<>();
 		Map<Integer, Double> hourCodeTotals = null;
-		Map<Integer, Double> usedAccrualTotals = null;
 		Map<String, Double> hourCodeWeek1 = null;
 		Map<String, Double> hourCodeWeek2 = null;
+		//
+		Map<Integer, Double> amountCodeTotals = null; 
+    Map<String, Double> amountCodeWeek1 = null;
+    Map<String, Double> amountCodeWeek2 = null;
+		
+		Map<Integer, Double> usedAccrualTotals = null;
 		Map<Integer, List<TimeBlock>> dailyBlocks = null;
 		List<EmployeeAccrual> employeeAccruals = null;
 		List<TimeNote> timeNotes = null;
@@ -329,69 +335,138 @@ public class MultiJobDoc{
 												}
 										}
 										// hourCodeWeek1
-										Map<String, Double> hrw1 = doc.getHourCodeWeek1Dbl();
-										if(hrw1 != null && hrw1.size() > 0){
-												if(hourCodeWeek1 == null){
-														hourCodeWeek1 = hrw1;
+										if(true){
+												Map<String, Double> hrw1 = doc.getHourCodeWeek1Dbl();
+												if(hrw1 != null && hrw1.size() > 0){
+														if(hourCodeWeek1 == null){
+																hourCodeWeek1 = hrw1;
+														}
+														else{
+																Set<String> all = new HashSet<>();
+																Set<String> set = hourCodeWeek1.keySet();
+																Set<String> set2 = hrw1.keySet();
+																if(set != null && set.size() > 0){
+																		for(String key:set){
+																				all.add(key);
+																		}
+																}														
+																if(set2 != null && set2.size() > 0){
+																		for(String key:set2){
+																				all.add(key);
+																		}
+																}
+																for(String key:all){
+																		double dd = 0;
+																		if(hourCodeWeek1.containsKey(key)){
+																				dd = hourCodeWeek1.get(key);
+																		}
+																		if(hrw1.containsKey(key)){
+																				dd += hrw1.get(key);
+																		}
+																		hourCodeWeek1.put(key, dd);
+																}
+														}
 												}
-												else{
-														Set<String> all = new HashSet<>();
-														Set<String> set = hourCodeWeek1.keySet();
-														Set<String> set2 = hrw1.keySet();
-														if(set != null && set.size() > 0){
-																for(String key:set){
-																		all.add(key);
-																}
-														}														
-														if(set2 != null && set2.size() > 0){
-																for(String key:set2){
-																		all.add(key);
-																}
+												Map<String, Double> hrw2 = doc.getHourCodeWeek2Dbl();
+												if(hrw2 != null && hrw2.size() > 0){
+														if(hourCodeWeek2 == null){
+																hourCodeWeek2 = hrw2;
 														}
-														for(String key:all){
-																double dd = 0;
-																if(hourCodeWeek1.containsKey(key)){
-																		dd = hourCodeWeek1.get(key);
+														else{
+																Set<String> all = new HashSet<>();
+																Set<String> set = hourCodeWeek2.keySet();
+																Set<String> set2 = hrw2.keySet();
+																if(set != null && set.size() > 0){
+																		for(String key:set){
+																				all.add(key);
+																		}
+																}														
+																if(set2 != null && set2.size() > 0){
+																		for(String key:set2){
+																				all.add(key);
+																		}
 																}
-																if(hrw1.containsKey(key)){
-																		dd += hrw1.get(key);
+																
+																for(String key:all){
+																		double dd = 0;
+																		if(hourCodeWeek2.containsKey(key)){
+																				dd = hourCodeWeek2.get(key);
+																		}
+																		if(hrw2.containsKey(key)){
+																				dd += hrw2.get(key);
+																		}
+																		hourCodeWeek2.put(key, dd);
 																}
-																hourCodeWeek1.put(key, dd);
-														}
+														}												
 												}
 										}
-										Map<String, Double> hrw2 = doc.getHourCodeWeek2Dbl();
-										if(hrw1 != null && hrw2.size() > 0){
-												if(hourCodeWeek2 == null){
-														hourCodeWeek2 = hrw2;
+										// amountCodeWeek1
+										if(true){
+												Map<String, Double> hrw1 = doc.getAmountCodeWeek1Dbl();
+												if(hrw1 != null && hrw1.size() > 0){
+														if(amountCodeWeek1 == null){
+																amountCodeWeek1 = hrw1;
+														}
+														else{
+																Set<String> all = new HashSet<>();
+																Set<String> set = amountCodeWeek1.keySet();
+																Set<String> set2 = hrw1.keySet();
+																if(set != null && set.size() > 0){
+																		for(String key:set){
+																				all.add(key);
+																		}
+																}														
+																if(set2 != null && set2.size() > 0){
+																		for(String key:set2){
+																				all.add(key);
+																		}
+																}
+																for(String key:all){
+																		double dd = 0;
+																		if(amountCodeWeek1.containsKey(key)){
+																				dd = amountCodeWeek1.get(key);
+																		}
+																		if(hrw1.containsKey(key)){
+																				dd += hrw1.get(key);
+																		}
+																		amountCodeWeek1.put(key, dd);
+																}
+														}
 												}
-												else{
-														Set<String> all = new HashSet<>();
-														Set<String> set = hourCodeWeek2.keySet();
-														Set<String> set2 = hrw2.keySet();
-														if(set != null && set.size() > 0){
-																for(String key:set){
-																		all.add(key);
-																}
-														}														
-														if(set2 != null && set2.size() > 0){
-																for(String key:set2){
-																		all.add(key);
-																}
+												Map<String, Double> hrw2 = doc.getAmountCodeWeek2Dbl();
+												if(hrw1 != null && hrw2.size() > 0){
+														if(amountCodeWeek2 == null){
+																amountCodeWeek2 = hrw2;
 														}
-														
-														for(String key:all){
-																double dd = 0;
-																if(hourCodeWeek2.containsKey(key)){
-																		dd = hourCodeWeek2.get(key);
+														else{
+																Set<String> all = new HashSet<>();
+																Set<String> set = amountCodeWeek2.keySet();
+																Set<String> set2 = hrw2.keySet();
+																if(set != null && set.size() > 0){
+																		for(String key:set){
+																				all.add(key);
+																		}
+																}														
+																if(set2 != null && set2.size() > 0){
+																		for(String key:set2){
+																				all.add(key);
+																		}
 																}
-																if(hrw2.containsKey(key)){
-																		dd += hrw2.get(key);
+																
+																for(String key:all){
+																		double dd = 0;
+																		if(amountCodeWeek2.containsKey(key)){
+																				dd = amountCodeWeek2.get(key);
+																		}
+																		if(hrw2.containsKey(key)){
+																				dd += hrw2.get(key);
+																		}
+																		amountCodeWeek2.put(key, dd);
 																}
-																hourCodeWeek2.put(key, dd);
-														}
-												}												
+														}												
+												}
 										}
+										//
 										Map<Integer, Map<Integer, Double>> usedWkAccruals = doc.getUsedWeeklyAccruals();
 										if(usedWkAccruals != null && !usedWkAccruals.isEmpty()){
 												if(usedWeeklyAccruals == null){
@@ -432,6 +507,8 @@ public class MultiJobDoc{
 										}
 										week1Total += doc.getWeek1TotalDbl();
 										week2Total += doc.getWeek2TotalDbl();
+										week1AmountTotal += doc.getWeek1AmountTotalDbl();
+										week2AmountTotal += doc.getWeek2AmountTotalDbl();
 										week1_flsa += doc.getWeek1_flsaDbl();
 										week2_flsa += doc.getWeek2_flsaDbl();
 										List<TimeBlock> tbs = doc.getTimeBlocks();
@@ -464,11 +541,22 @@ public class MultiJobDoc{
 		public String getWeek2Total(){
 				return ""+dfn.format(week2Total);
 		}
+    public String getWeek1AmountTotal(){
+				return ""+dfn.format(week1AmountTotal);
+    }
+    public String getWeek2AmountTotal(){
+				return ""+dfn.format(week2AmountTotal);
+    }		
 		public String getPayPeriodTotal(){
 				double ret = 0;
 				ret = week1Total+week2Total;
 				return ""+dfn.format(ret);
 		}
+		public String getPayPeriodAmount(){
+				double ret = 0;
+				ret = week1AmountTotal+week2AmountTotal;
+				return ""+dfn.format(ret);
+		}		
 		public SalaryGroup getSalaryGroup(){
 				if(salaryGroup == null){
 						getJobs();
@@ -555,6 +643,12 @@ public class MultiJobDoc{
 		public boolean hasHourCodeWeek2(){
 				return hourCodeWeek2 != null && hourCodeWeek2.size() > 0;
 		}
+    public boolean hasAmountCodeWeek1(){
+				return amountCodeWeek1 != null && amountCodeWeek1.size() > 0;
+    }
+    public boolean hasAmountCodeWeek2(){
+				return amountCodeWeek2 != null && amountCodeWeek2.size() > 0;
+    }				
 		public Map<Integer, List<TimeBlock>> getDailyBlocks(){
 				return dailyBlocks;
 		}
@@ -585,6 +679,28 @@ public class MultiJobDoc{
 				}
 				return map2;
 		}
+    public Map<String, String> getAmountCodeWeek1(){
+				Map<String, String> map2 = new TreeMap<>();
+				if(hasAmountCodeWeek1()){
+						Set<String> keys = amountCodeWeek1.keySet();
+						for(String key:keys){
+								double val = amountCodeWeek1.get(key);
+								map2.put(key, dfn.format(val));
+						}
+				}
+				return map2;
+    }
+    public Map<String, String> getAmountCodeWeek2(){
+				Map<String, String> map2 = new TreeMap<>();
+				if(hasAmountCodeWeek2()){
+						Set<String> keys = amountCodeWeek2.keySet();
+						for(String key:keys){
+								double val = amountCodeWeek2.get(key);
+								map2.put(key, dfn.format(val));
+						}
+				}
+				return map2;
+    }				
 		public Map<String, List<String>> getAllAccruals(){
 				return allAccruals;
 		}

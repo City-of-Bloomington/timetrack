@@ -396,6 +396,12 @@ public class Block{
 				}
 				return seed;
 		}
+		public void setHourCode(HourCode val){
+				if(val != null){
+						hourCode = val;
+						hourCodeSet = true;
+				}
+		}
 		public HourCode getHourCode(){
 				if(!hourCodeSet){
 						if(!hour_code_id.equals("")){

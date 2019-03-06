@@ -73,10 +73,10 @@ public class HolidayList{
 	return holidays;
     }
     public boolean isHoliday(String date){
-	if(holidayMap != null){
-	    return holidayMap.containsKey(date);
-	}
-	return false;
+				if(holidayMap != null){
+						return holidayMap.containsKey(date);
+				}
+				return false;
     }
     public String getHolidayName(String date){
 	String str = "";

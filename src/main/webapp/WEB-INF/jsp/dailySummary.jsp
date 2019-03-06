@@ -52,7 +52,7 @@
 		</s:iterator>
 	</s:iterator>
 	<tr class="totals-row">
-		<td><strong>Pay Period Total</strong></td>
+		<td><strong>Pay Period Hours</strong></td>
 		<td colspan="7">&nbsp;</td>
 		<td>
 			<strong><s:property value="#payPeriodTotal" /></strong>
@@ -61,4 +61,16 @@
 			<td>&nbsp;</td>
 		</s:if>
 	</tr>
+	<s:if test="#payPeriodAmount > 0.0">
+		<tr class="totals-row">
+			<td><strong>Pay Period Amount</strong></td>
+			<td colspan="7">&nbsp;</td>
+			<td>
+				<strong>$<s:property value="#payPeriodAmount" /></strong>
+			</td>
+			<s:if test="#unionned">
+				<td>&nbsp;</td>
+			</s:if>
+		</tr>
+	</s:if>
 </table>
