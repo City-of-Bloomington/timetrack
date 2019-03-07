@@ -60,10 +60,16 @@ public class PayPeriodProcess{
     // two week entries for display purpose
     //
     Map<String, Entry> entries = null;
-    Entry firstEntry = null, lastEntry = null;
-    Hashtable<String, ArrayList<Double>> nregFirstPay = null;
-    Hashtable<String, ArrayList<Double>> nregSecondPay = null;    
+    Map<String, Entry> monetaryEntries = null;		
+    Entry firstEntry = null, lastEntry = null, lastMonetaryEntry=null;
+    // Hashtable<String, ArrayList<Double>> nregFirstPay = null;
+    // Hashtable<String, ArrayList<Double>> nregSecondPay = null;    
     //
+    Hashtable<String, Double> nregFirstPay = null;
+    Hashtable<String, Double> nregSecondPay = null;
+		
+    Hashtable<String, Double> monetaryFirstPay = null;
+    Hashtable<String, Double> monetarySecondPay = null;    		
     public PayPeriodProcess(Employee val,
 														Profile val2,
 														PayPeriod val3,
@@ -263,26 +269,33 @@ public class PayPeriodProcess{
 				return df.format(dd);
     }
     //
-    public void addToHash(String nw_code, double hours, Hashtable<String, Double> hval){
-				if(!nw_code.equals("") && hours > 0){
+    public void addToHash(String nw_code, double val,
+													Hashtable<String, Double> hval){
+				if(!nw_code.equals("") && val > 0){
 						if(hval.containsKey(nw_code)){
 								double hrs = hval.get(nw_code).doubleValue();
-								hrs += hours;
+								hrs += val;
 								hval.put(nw_code, hrs); // adjust total
 						}
 						else{ // add new entry
-								hval.put(nw_code, hours);
+								hval.put(nw_code, val);
 						}
 				}
     }		
     public void addToHash(TimeBlock te, Hashtable<String, Double> hval){
 				if(hval.containsKey(te.getNw_code())){
-						double hours = hval.get(te.getNw_code()).doubleValue();
-						hours += te.getHours();
-						hval.put(te.getNw_code(), hours); // adjust total
+						double val = hval.get(te.getNw_code()).doubleValue();
+						val += te.getHours();
+						hval.put(te.getNw_code(), val); // adjust total
 				}
 				else{ // add new entry
-						hval.put(te.getNw_code(), te.getHours());
+						HourCode hrCode = te.getHourCode();
+						if(hrCode.isMonetary()){
+								hval.put(te.getNw_code(), te.getAmount());
+						}
+						else{
+								hval.put(te.getNw_code(), te.getHours());
+						}
 				}
     }
     public boolean hasNonRegularFirstPay(){
@@ -294,7 +307,16 @@ public class PayPeriodProcess{
 				findNonRegularSecondPay();
 				return nregSecondPay != null && !nregSecondPay.isEmpty();
     }
-		
+    public boolean hasMonetaryFirstPay(){
+
+				findMonetaryFirstPay();
+				return monetaryFirstPay != null && !monetaryFirstPay.isEmpty();
+    }
+    public boolean hasMonetarySecondPay(){
+				findMonetarySecondPay();
+				return monetarySecondPay != null && !monetarySecondPay.isEmpty();
+    }		
+		/**
     Hashtable<String, ArrayList<Double>> considerOnCall(Hashtable<String, Double> nreg){
 				Hashtable<String, ArrayList<Double>> nreg2  = new Hashtable<>();
 				if(!nreg.isEmpty()){
@@ -322,12 +344,19 @@ public class PayPeriodProcess{
 				}				
 				return nreg2;
     }
-    public Hashtable<String, ArrayList<Double>> getNonRegularFirstPay(){
+		*/
+    public Hashtable<String, Double> getNonRegularFirstPay(){
 				return nregFirstPay;
     }
-    public Hashtable<String, ArrayList<Double>> getNonRegularSecondPay(){
+    public Hashtable<String, Double> getNonRegularSecondPay(){
 				return nregSecondPay;
-    }    
+    }
+    public Hashtable<String, Double> getMonetaryFirstPay(){
+				return monetaryFirstPay;
+    }
+    public Hashtable<String, Double> getMonetarySecondPay(){
+				return monetarySecondPay;
+    }		
     public void findNonRegularFirstPay(){
 				//
 				Hashtable<String, Double> nreg  = new Hashtable<>();
@@ -343,8 +372,55 @@ public class PayPeriodProcess{
 						if(!nreg2.isEmpty())
 								mergeTwoHashes(nreg2, nreg);
 				}
-				nregFirstPay = considerOnCall(nreg);
+				nregFirstPay = nreg; // considerOnCall(nreg);
     }
+    public void findMonetaryFirstPay(){
+				//
+				Hashtable<String, Double> table  = new Hashtable<>();
+				if(weekOneHasSplit){
+						// week 1 split 1 only
+						table  =  getWeekSplitMonetaryHash(1, 1);
+				}
+				else{
+						// all week 1 
+						table  =  getWeek1MonetaryHash();
+						// plus week 2 split 1
+						Hashtable<String, Double> table2  =	getWeekSplitMonetaryHash(2, 1); // week 2 split 1
+						if(!table2.isEmpty())
+								mergeTwoHashes(table2, table);
+				}
+				if(table.isEmpty())
+						monetaryFirstPay = table;
+				
+    }
+    public void findMonetarySecondPay(){
+				//
+				Hashtable<String, Double> table  = new Hashtable<>();
+				if(weekOneHasSplit){
+						// week 1 split 2 plus all week 2 
+						table  = getWeekSplitMonetaryHash(1, 2);
+						Hashtable<String, Double> table2 =  getWeek2MonetaryHash();
+						if(table.isEmpty()){
+								monetarySecondPay = table2;
+						}
+						else if(table2.isEmpty()){
+								monetarySecondPay = table;
+						}
+						else{
+								mergeTwoHashes(table2, table);
+								monetarySecondPay = table;
+						}
+				}
+				else{
+						// all week 2 split 2 only
+						table  =  getWeekSplitMonetaryHash(2, 2);
+						if(!table.isEmpty()){
+								monetarySecondPay = table;
+						}
+				}
+    }				
+
+		
     public void findNonRegularSecondPay(){
 				Hashtable<String, Double> nreg  = new Hashtable<>();
 				if(weekOneHasSplit){
@@ -378,7 +454,7 @@ public class PayPeriodProcess{
 						Double dd = new Double(dstr);
 						nreg.put(profHrsCode, dd);
 				}
-				nregSecondPay = considerOnCall(nreg);				
+				nregSecondPay = nreg; // considerOnCall(nreg);				
 				
     }		
     public Hashtable<String, Double> getNonRegularHours(){
@@ -397,12 +473,19 @@ public class PayPeriodProcess{
     public Hashtable<String, Double> getWeek2NonRegularHours(){
 				return week2.getNonRegularHours();
     }
+		
     public Hashtable<String, Double> getWeek1RegHash(){
 				return week1.getRegularHash();
     }
     public Hashtable<String, Double> getWeek2RegHash(){
 				return week2.getRegularHash();
     }
+    public Hashtable<String, Double> getWeek1MonetaryHash(){
+				return week1.getMonetaryHash();
+    }
+    public Hashtable<String, Double> getWeek2MonetaryHash(){
+				return week2.getMonetaryHash();
+    }		
     /**
      * consolication of two weeks regular hours (needed for HAND)
      */
@@ -425,6 +508,19 @@ public class PayPeriodProcess{
 				else
 						return week.splitTwo.getNonRegularHours();
     }
+    public Hashtable<String, Double> getWeekSplitMonetaryHash(int week_no,
+																															int split_no){
+				WeekEntry week = null;		
+				if(week_no == 1)
+						week = week1;
+				else
+						week = week2;
+				if(split_no == 1)
+						return week.splitOne.getMonetaryHash();
+				else
+						return week.splitTwo.getMonetaryHash();
+    }		
+		
     public Hashtable<String, Double> getWeek1All(){
 				return week1.getAll();
     }
@@ -442,10 +538,17 @@ public class PayPeriodProcess{
 						mergeTwoHashes(w2all, all);
 				return all;
     }
-    public Hashtable<String, ArrayList<Double>> getAll2(){
-				return considerOnCall(getAll());
-
+    public Hashtable<String, Double> getAllMonetary(){
+				Hashtable<String, Double> all = new Hashtable<String, Double>();
+				Hashtable<String, Double> w1all = week1.getMonetaryHash();
+				if(!w1all.isEmpty())
+						mergeTwoHashes(w1all, all);
+				Hashtable<String, Double> w2all = week2.getMonetaryHash();
+				if(!w2all.isEmpty())
+						mergeTwoHashes(w2all, all);
+				return all;
     }		
+
     boolean hasWeek1ProfHours(){
 				return week1.getProfHours() > 0;
     }
@@ -514,20 +617,25 @@ public class PayPeriodProcess{
 				}
 				try{
 						for(TimeBlock one:blocks){
+								HourCode hrCode = one.getHourCode();
+								/*
 								String code2 = one.getHour_code();
 								String code = code2.toLowerCase();
 								String nw_code = one.getNw_code();
 								String code_desc = one.getCode_desc(); // old cat
+								if(nw_code.equals("")) nw_code = code2;								
+								*/
 								int day = one.getOrder_index();
 								String date = one.getDate();
 								double hours = one.getHours();
 								//
-								// if not in refrence table we use Kuali earn code
-								if(nw_code.equals("")) nw_code = code2;
 								if(day > 13) continue;
+								if(hrCode.isRegular() && hours > 0){
+										/*
 								if(code.startsWith("reg") ||
 									 code.endsWith("reg") ||
 									 code.startsWith("temp")){
+										*/
 										if(holyList.isHoliday(date)){
 												HolidayWorkDay hday = new HolidayWorkDay(debug, hours, payPeriod.getEnd_date(), day, employee.getId());
 												if(day < 7){
@@ -721,13 +829,13 @@ public class PayPeriodProcess{
 										w2_val = "";
 										if(w1_hash.containsKey(key) || w2_hash.containsKey(key)){
 												if(w1_hash.containsKey(key)){
-														if(key.indexOf("ONCALL") == -1)
-																week1Total += w1_hash.get(key).doubleValue();
+														// if(key.indexOf("ONCALL") == -1)
+														week1Total += w1_hash.get(key).doubleValue();
 														w1_val = df.format(w1_hash.get(key).doubleValue());
 												}
 												if(w2_hash.containsKey(key)){
-														if(key.indexOf("ONCALL") == -1)										 
-																week2Total += w2_hash.get(key).doubleValue();
+														// if(key.indexOf("ONCALL") == -1)
+														week2Total += w2_hash.get(key).doubleValue();
 														w2_val = df.format(w2_hash.get(key).doubleValue());
 												}
 												Entry entry = new Entry(key, w1_val, w2_val, df.format(ww_val));
@@ -749,6 +857,60 @@ public class PayPeriodProcess{
 				}
 				return entries;
     }
+    public Map<String, Entry> getMonetaryEntries(){
+				
+				if(monetaryEntries == null){
+						String name="", val="";
+						monetaryEntries = new TreeMap<>();
+						String w1_val = "", w2_val = "";
+						double ww_val = 0;
+						double week1Total = 0, week2Total = 0, total=0;						
+						//
+						Hashtable<String, Double> ww_hash = getAllMonetary(); // two weeks
+						Hashtable<String, Double> w1_hash = getWeek1MonetaryHash();
+						Hashtable<String, Double> w2_hash = getWeek2MonetaryHash();
+						if(ww_hash != null && !ww_hash.isEmpty()){
+								Enumeration<String> keys = ww_hash.keys();
+								while(keys.hasMoreElements()){
+										String key = keys.nextElement();
+										//
+										// val is the sum of two weeks
+										// need to be checked 
+										ww_val = ww_hash.get(key);
+										w1_val = "";
+										w2_val = "";
+										if(w1_hash.containsKey(key) || w2_hash.containsKey(key)){
+												if(w1_hash.containsKey(key)){
+														week1Total += w1_hash.get(key).doubleValue();
+														w1_val = "$"+df.format(w1_hash.get(key).doubleValue());
+												}
+												if(w2_hash.containsKey(key)){
+														week2Total += w2_hash.get(key).doubleValue();
+														w2_val = "$"+df.format(w2_hash.get(key).doubleValue());
+												}
+												Entry entry = new Entry(key, w1_val, w2_val, "$"+df.format(ww_val));
+												monetaryEntries.put(key, entry);
+										}						
+								}
+						}
+						total = week1Total+week2Total;								
+						if(total > 0){
+								w1_val="";w2_val="";
+								if(week1Total > 0){
+										w1_val= "$"+df.format(week1Total);
+								}
+								if(week2Total > 0){
+										w2_val= "$"+df.format(week2Total);
+								}										
+								lastMonetaryEntry = new Entry("Period Total",w1_val,w2_val,"$"+df.format(total));
+						}
+				}
+				return monetaryEntries;
+    }
+    public boolean hasMonetaryEntries(){
+				getMonetaryEntries();
+				return monetaryEntries != null && monetaryEntries.size() > 0;
+    }		
     public boolean hasEntries(){
 				getEntries();
 				return entries != null && entries.size() > 0;
@@ -763,6 +925,9 @@ public class PayPeriodProcess{
 						getEntries();
 				return lastEntry;
     }
+    public Entry getLastMonetaryEntry(){
+				return lastMonetaryEntry;
+    }		
     public Document getDocument(){
 				return document;
     }

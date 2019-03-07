@@ -114,7 +114,7 @@
 				<s:if test="hasMultipleJobs()">
 					<s:if test="mjdoc.hasHourCodeWeek1()">
 						<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek1" />
-						<s:set var="weekTotal" value="mjdoc.week1Total" />
+						<s:set var="weekHourTotal" value="mjdoc.week1Total" />
 						<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
 						<s:set var="whichWeek" value="'week-one'" />
 						<s:if test="mjdoc.hasAmountCodeWeek1()">
@@ -126,7 +126,7 @@
 
 					<s:if test="mjdoc.hasHourCodeWeek2()">
 						<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek2" />
-						<s:set var="weekTotal" value="mjdoc.week2Total" />
+						<s:set var="weekHourTotal" value="mjdoc.week2Total" />
 						<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
 						<s:set var="whichWeek" value="'week-two'" />
 						<s:if test="mjdoc.hasAmountCodeWeek2()">

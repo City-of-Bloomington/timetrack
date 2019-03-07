@@ -29,11 +29,7 @@
 		<tr class="totals-row">
 			<td><strong>Week Total</strong></td>
 			<td><strong><s:property value="#weekHourTotal" /></strong></td>
-			<td>&nbsp;
-				<s:if test="#weekAmountTotal > 0.0">
-					<strong>$<s:property value="#weekAmountTotal" /></strong>
-				</s:if>
-			</td>
+			<td><s:if test="#weekAmountTotal > 0.0"><strong>$<s:property value="#weekAmountTotal" /></strong></s:if><s:else>&nbsp;</s:else></td>
 		</tr>
 	</table>
 </div>

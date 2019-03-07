@@ -59,7 +59,10 @@ public class WeekEntry{
     Hashtable<String, Double> earnedHash = new Hashtable<String, Double>();
     //
     // reg for hand Only 
-    Hashtable<String, Double> regHash = new Hashtable<String, Double>();		
+    Hashtable<String, Double> regHash = new Hashtable<String, Double>();
+		//
+		//  monetary hash
+		Hashtable<String, Double> monetaryHash = new Hashtable<String, Double>();		
     
     public WeekEntry(boolean deb,
 										 Profile val,
@@ -199,7 +202,13 @@ public class WeekEntry{
     }
     public Hashtable<String, Double> getRegularHash(){
 				return regHash;
-    }		
+    }
+    public Hashtable<String, Double> getMonetaryHash(){
+				return monetaryHash;
+    }
+		public boolean hasMonetary(){
+				return monetaryHash != null && !monetaryHash.isEmpty();
+		}
     public Hashtable<String, Double> getAll(){
 				Hashtable<String, Double> all = new Hashtable<String, Double>();
 				if(!hash.isEmpty())
@@ -222,6 +231,8 @@ public class WeekEntry{
 				earned_time = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
 				earn_time_used = splitOne.getEarnedTimeUsed()+splitTwo.getEarnedTimeUsed();
 				unpaid_hrs = splitOne.getUnpaidHrs()+splitTwo.getUnpaidHrs();
+				//
+				mergeMonetaryHashtablesFromSplits(); // monetary if any
 				findHolidayEarned(); // if any				
 				findExessHours();
 				mergeHashtablesFromSplits();
@@ -267,6 +278,19 @@ public class WeekEntry{
 				// to all
 				if(!hash.isEmpty())
 						mergeWithHash(regHash, hash);				
+    }
+    // monetary
+    void mergeMonetaryHashtablesFromSplits(){
+				//
+				Hashtable<String, Double> table = null;				
+				if(splitOne.hasMonetary()){
+						table = splitOne.getMonetaryHash();
+						mergeWithHash(table, monetaryHash);
+				}
+				if(splitTwo.hasMonetary()){
+						table = splitTwo.getMonetaryHash();
+						mergeWithHash(table, monetaryHash);						
+				}
     }		
     //
     void mergeWithHash(Hashtable<String, Double> tFrom,

@@ -10,13 +10,11 @@
 	<table width="100%">
 		<tr>
 			<td class="th_text">Name</td>
-			<td class="th_text">Actions</td>
 			<td align="center" class="th_text">Interpreted Hours Break Down</td>
 		</tr>
 		<s:iterator value="processes" var="one" >
 			<tr>
-				<td valign="top" class="td_text" id="<s:property value='#one.employee.id' />"> <s:property value="#one.employee" /> (<s:property value="#one.employee.employee_number " />)</td>
-				<td valign="top">
+				<td valign="top" class="td_text" id="<s:property value='#one.employee.id' />"> <s:property value="#one.employee" /> (<s:property value="#one.employee.employee_number " />) <br /><br />
 					<s:if test="document.hasTimeActions()">
 						<s:set var="timeActions" value="document.timeActions" />
 						<s:set var="timeActionsTitle" value="' '" />
@@ -28,8 +26,8 @@
 						<tr><td class="th_text">Hours</td><td class="th_text">W1 (gross)</td><td class="th_text">W2 (gross)</td><td class="th_text">Total</td></tr>
 						<tr>
 							<td class="td_text"><s:property value="firstEntry.name" /></td>
-							<td class="td_text"><s:property value="firstEntry.val" /></td>
-							<td class="td_text"><s:property value="firstEntry.val2" /></td>
+							<td class="td_text" align="right"><s:property value="firstEntry.val" /></td>
+							<td class="td_text" align="right"><s:property value="firstEntry.val2" /></td>
 							<td class="td_text" align="right"><s:property value="firstEntry.val3" /></td>
 						</tr>
 						<s:if test="hasEntries()">
@@ -39,8 +37,8 @@
 								<s:iterator value="#rowList" >
 									<tr>
 										<td class="td_text"><s:property value="name" /></td>
-										<td class="td_text"><s:property value="val" /></td>
-										<td class="td_text"><s:property value="val2" /></td>
+										<td class="td_text" align="right"><s:property value="val" /></td>
+										<td class="td_text" align="right"><s:property value="val2" /></td>
 										<td class="td_text" align="right""><s:property value="val3" /></td>
 									</tr>
 								</s:iterator>
@@ -54,10 +52,37 @@
 						</tr>
 						<tr>
 							<td class="td_text"><s:property value="lastEntry.name" /></td>
-							<td class="td_text"><s:property value="lastEntry.val" /></td>
-							<td class="td_text"><s:property value="lastEntry.val2" /></td>
+							<td class="td_text" align="right"><s:property value="lastEntry.val" /></td>
+							<td class="td_text" align="right"><s:property value="lastEntry.val2" /></td>
 							<td class="td_text" align="right"><s:property value="lastEntry.val3" /></td>
 						</tr>
+						<s:if test="hasMonetaryEntries()">
+							<tr>
+								<td class="td_text">-------</td>
+								<td class="td_text">-------</td>
+								<td class="td_text">-------</td>
+								<td class="td_text" align="right">-------</td>
+							</tr>							
+							<tr><td class="th_text">Amounts</td><td class="th_text">W1</td><td class="th_text">W2</td><td class="th_text">Total</td></tr>							
+							<s:iterator value="monetaryEntries" var="row" status="rrow">
+								<s:set var="rowKey" value="#row.key" />
+								<s:set var="rowList" value="#row.value" />
+								<s:iterator value="#rowList" >
+									<tr>
+										<td class="td_text"><s:property value="name" /></td>
+										<td class="td_text" align="right"><s:property value="val" /></td>
+										<td class="td_text" align="right"><s:property value="val2" /></td>
+										<td class="td_text" align="right""><s:property value="val3" /></td>
+									</tr>
+								</s:iterator>
+							</s:iterator>
+							<tr>
+								<td class="td_text"><s:property value="lastMonetaryEntry.name" /></td>
+								<td class="td_text" align="right"><s:property value="lastMonetaryEntry.val" /></td>
+								<td class="td_text" align="right"><s:property value="lastMonetaryEntry.val2" /></td>
+								<td class="td_text" align="right"><s:property value="lastMonetaryEntry.val3" /></td>
+							</tr>							
+						</s:if>
 					</table>
 				</td>
 			</tr>

@@ -550,56 +550,64 @@ public class TimewarpAction extends TopAction{
     void prepareCsv(){
 				allCsvLines = new ArrayList<>();
 				String line  = ",,,,,,,,,,,";
-				String line2 = ",,,,,,,,,,,";
+				String line2 = ",,,,,,,,,,"; // monetary
 				for(PayPeriodProcess process:processes){
 						String csvLine = process.getEmployee().getEmployee_number()+",";
 						csvLine += process.getTwoWeekNetRegular()+",";
 						csvLine += process.getRegCode()+",";
 						csvLine += payPeriod.getEnd_date()+",";
+						csvLine += line;						
 						if(process.hasMultipleJobs()){
-								csvLine += line2+process.getJob_name();
-						}
-						else{
-								csvLine += line;
+								csvLine += process.getJob_name();
 						}
 						allCsvLines.add(csvLine);
 						// 
-						Hashtable<String, ArrayList<Double>> nreg = process.getAll2();
+						Hashtable<String, Double> nreg = process.getAll();
 						if(!nreg.isEmpty()){
 								Set<String> keySet = nreg.keySet();
 								for(String key:keySet){
-										ArrayList<Double> lval = nreg.get(key);
-										for(Double dd:lval){
-												csvLine = process.getEmployee().getEmployee_number()+",";
-												csvLine += dd+","+key+",";
-												csvLine += payPeriod.getEnd_date()+",";
-												if(process.hasMultipleJobs()){
-														csvLine += line2+process.getJob_name();
-												}
-												else{
-														csvLine += line;
-												}
-												allCsvLines.add(csvLine);	
+										double dd = nreg.get(key);
+										csvLine = process.getEmployee().getEmployee_number()+",";
+										csvLine += dd+","+key+",";
+										csvLine += payPeriod.getEnd_date()+",";
+										csvLine += line;										
+										if(process.hasMultipleJobs()){
+												csvLine += process.getJob_name();
 										}
+										allCsvLines.add(csvLine);	
 								}
 						}
+						nreg = process.getAllMonetary();
+						if(!nreg.isEmpty()){
+								Set<String> keySet = nreg.keySet();
+								for(String key:keySet){
+										double dd = nreg.get(key);
+										csvLine = process.getEmployee().getEmployee_number()+",";
+										csvLine += "0,"+key+",";
+										csvLine += payPeriod.getEnd_date()+",";
+										csvLine += dd+",";
+										csvLine += line2;								
+										if(process.hasMultipleJobs()){
+												csvLine += line2+process.getJob_name();
+										}
+										allCsvLines.add(csvLine);	
+								}
+						}				
 				}
-    }
+		}
     void prepareEndYearCsv(){
 				allCsvLines = new ArrayList<>();
 				String line  = ",,,,,,,,,,,";
-				String line2 = ",,,,,,,,,,,";
+				String line2 = ",,,,,,,,,,";
 				for(PayPeriodProcess process:processes){
 						if(process.getNetRegularHoursForFirstPay() > 0){
 								String csvLine = process.getEmployee().getEmployee_number()+",";
 								csvLine += process.getNetRegularHoursForFirstPay()+",";
 								csvLine += process.getRegCode()+",";
 								csvLine += payPeriod.getFirstPayEndDate()+",";
+								csvLine += line;								
 								if(process.hasMultipleJobs()){
-										csvLine += line2+process.getJob_name();
-								}
-								else{
-										csvLine += line;
+										csvLine += line+process.getJob_name();
 								}
 								allCsvLines.add(csvLine);								
 						}
@@ -608,56 +616,82 @@ public class TimewarpAction extends TopAction{
 								csvLine += process.getNetRegularHoursForSecondPay()+",";
 								csvLine += process.getRegCode()+",";
 								csvLine += payPeriod.getEnd_date()+",";
+								csvLine += line;								
 								if(process.hasMultipleJobs()){
-										csvLine += line2+process.getJob_name();
-								}
-								else{
-										csvLine += line;
+										csvLine += process.getJob_name();
 								}
 								allCsvLines.add(csvLine);								
 						}						
 						if(process.hasNonRegularFirstPay()){
-								Hashtable<String, ArrayList<Double>> nreg = process.getNonRegularFirstPay();
+								Hashtable<String, Double> nreg = process.getNonRegularFirstPay();
 								if(!nreg.isEmpty()){
 										Set<String> keySet = nreg.keySet();
 										for(String key:keySet){
-												ArrayList<Double> lval = nreg.get(key);
-												for(Double dd:lval){
-														String csvLine = process.getEmployee().getEmployee_number()+",";
-														csvLine += dd+","+key+",";
-														csvLine += payPeriod.getFirstPayEndDate()+",";
-														if(process.hasMultipleJobs()){
-																csvLine += line2+process.getJob_name();
-														}
-														else{
-																csvLine += line;
-														}
-														allCsvLines.add(csvLine);	
+												double dd = nreg.get(key);
+												String csvLine = process.getEmployee().getEmployee_number()+",";
+												csvLine += dd+","+key+",";
+												csvLine += payPeriod.getFirstPayEndDate()+",";
+												csvLine += line;												
+												if(process.hasMultipleJobs()){
+														csvLine += process.getJob_name();
 												}
+												allCsvLines.add(csvLine);	
 										}
 								}
 						}
 						if(process.hasNonRegularSecondPay()){
-								Hashtable<String, ArrayList<Double>> nreg = process.getNonRegularSecondPay();
+								Hashtable<String, Double> nreg = process.getNonRegularSecondPay();
 								if(!nreg.isEmpty()){
 										Set<String> keySet = nreg.keySet();
 										for(String key:keySet){
-												ArrayList<Double> lval = nreg.get(key);
-												for(Double dd:lval){
-														String csvLine = process.getEmployee().getEmployee_number()+",";
-														csvLine += dd+","+key+",";
-														csvLine += payPeriod.getEnd_date()+",";
-														if(process.hasMultipleJobs()){
-																csvLine += line2+process.getJob_name();
-														}
-														else{
-																csvLine += line;
-														}
-														allCsvLines.add(csvLine);	
+												double dd = nreg.get(key);
+												String csvLine = process.getEmployee().getEmployee_number()+",";
+												csvLine += dd+","+key+",";
+												csvLine += payPeriod.getEnd_date()+",";
+												csvLine += line;												
+												if(process.hasMultipleJobs()){
+														csvLine += process.getJob_name();
 												}
+												allCsvLines.add(csvLine);	
 										}
 								}
-						}						
+						}
+						if(process.hasMonetaryFirstPay()){
+								Hashtable<String, Double> nreg = process.getMonetaryFirstPay();
+								if(!nreg.isEmpty()){
+										Set<String> keySet = nreg.keySet();
+										for(String key:keySet){
+												double dd = nreg.get(key);
+												String csvLine = process.getEmployee().getEmployee_number()+",";
+												csvLine += "0,"+key+",";
+												csvLine += payPeriod.getFirstPayEndDate()+",";
+												csvLine += dd+",";
+												csvLine += line2;												
+												if(process.hasMultipleJobs()){
+														csvLine += process.getJob_name();
+												}
+												allCsvLines.add(csvLine);	
+										}
+								}
+						}
+						if(process.hasMonetarySecondPay()){						
+								Hashtable<String, Double> nreg = process.getMonetarySecondPay();
+								if(!nreg.isEmpty()){
+										Set<String> keySet = nreg.keySet();
+										for(String key:keySet){
+												double dd = nreg.get(key);
+												String csvLine = process.getEmployee().getEmployee_number()+",";
+												csvLine += "0,"+key+",";
+												csvLine += payPeriod.getFirstPayEndDate()+",";
+												csvLine += dd+",";
+												csvLine += line2;												
+												if(process.hasMultipleJobs()){
+														csvLine += process.getJob_name();
+												}
+												allCsvLines.add(csvLine);	
+										}
+								}								
+						}
 				}
     }
     // Not tested yet
@@ -680,6 +714,20 @@ public class TimewarpAction extends TopAction{
 												allCsvLines.add(csvLine);
 										}
 								}
+								Hashtable<String, Double> hash2	= process.getAllMonetary();
+								if(hash2 != null && !hash2.isEmpty()){
+										Set<String> keySet = hash2.keySet();
+										for(String key:keySet){
+												double dd = hash2.get(key);
+												String csvLine = process.getEmployee().getEmployee_number()+",";
+												csvLine += "0,"+key+",";
+												csvLine += payPeriod.getEnd_date()+",";
+												csvLine += dd+",";
+												csvLine += line;
+												csvLine += line2;
+												allCsvLines.add(csvLine);
+										}
+								}								
 						}
 				}
 		}

@@ -47,6 +47,7 @@ public class WeekSplit{
 		// for non regular code we use this hash such as PTO, CU, FMLA
 		//
 		Hashtable<String, Double> hash = new Hashtable<>();
+		Hashtable<String, Double> monetaryHash = new Hashtable<>();
 		//
 		JobTask job = null;
 		SalaryGroup salaryGroup = null;
@@ -118,7 +119,15 @@ public class WeekSplit{
 				if(te != null){
 						HourCode hrCode = te.getHourCode();
 						String nw_code = te.getNw_code();
+						if(nw_code.equals("")){
+								nw_code = hrCode.getName();
+						}
 						double hours = te.getHours();
+						if(hrCode.isMonetary()){
+								double amount = te.getAmount();
+								addToMonetary(nw_code, amount);
+								return;
+						}
 						if(salaryGroup != null && salaryGroup.isUnionned()){
 								addToDaily(te);
 						}
@@ -143,9 +152,6 @@ public class WeekSplit{
 												unpaid_hrs += hours;
 										}
 										else if(hrCode.isOvertime()){												
-												unpaid_hrs += hours;
-										}
-										else if(hrCode.isMonetary()){												
 												unpaid_hrs += hours;
 										}
 										else{ // other
@@ -173,10 +179,9 @@ public class WeekSplit{
 										}
 								}
 								if(hours > 8.009){
-										
 										dif_hrs = hours - daily_hrs;
 										if(dif_hrs > 0.009)
-										if(jj == 6){
+												if(jj == 6){ // Sunday
 												earned_time20 += dif_hrs;												
 										}
 										else{
@@ -208,14 +213,7 @@ public class WeekSplit{
 				}
 				else{ // non regular such On Call, or CO Call Out
 						//
-						if(hrCode.isMonetary()){
-								// hours do not count
-								unpaid_hrs += hours;
-								if(daily.containsKey(code)){
-										hours +=  daily.get(code);
-								}
-						}						
-						else if(hrCode.isCallOut()){ // call out (if < 3 ==> 3)
+						if(hrCode.isCallOut()){ // call out (if < 3 ==> 3)
 								non_reg_hrs += hours;// hours are taken care off in timeblock
 								total_hrs += hours;																		
 								if(daily.containsKey(code)){
@@ -259,7 +257,14 @@ public class WeekSplit{
 		}
 		public Hashtable<String, Double> getRegularHash(){
 				return regHash;
-		}		
+		}
+		public Hashtable<String, Double> getMonetaryHash(){
+				return monetaryHash;
+		}
+		public boolean hasMonetary(){
+				return monetaryHash != null && !monetaryHash.isEmpty();
+		}
+		
 		//
 		// we need this function to adjust regular time used (in HAND)
 		// based on difference between reg hrs and net reg hrs
@@ -421,6 +426,20 @@ public class WeekSplit{
 						tHash.put(code, val);
 				}
 		}
+		public void addToMonetary(String code, double val){
+				if(val > 0.0){
+						if(monetaryHash.containsKey(code)){
+								double amount = monetaryHash.get(code).doubleValue();
+								amount += val;
+								monetaryHash.put(code, amount);
+						}
+						else{
+								monetaryHash.put(code, val);
+						}
+				}
+		}
+		
+		
 		/**
 		 * regular hours when added to non regular we get 40
 		 */
