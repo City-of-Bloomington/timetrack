@@ -222,14 +222,37 @@ public class ShiftTime{
 				return id;
     }
 		void findDatesArray(){
-				if(dates != null && !dates.trim().equals("")){
-						try{
-								datesArr = dates.split(",");
-						}
-						catch(Exception ex){
-								System.err.println(ex);
+				if(datesArr == null){
+						if(dates != null && !dates.trim().equals("")){
+								try{
+										datesArr = dates.split(",");
+								}
+								catch(Exception ex){
+										System.err.println(ex);
+								}
 						}
 				}
+		}
+		String checkDates(){
+				String back = "";
+				findDatesArray();
+				if(datesArr == null || datesArr.length == 0){
+						back = "No dates are set ";
+						return back;
+				}				
+				getPayPeriod();
+				if(payPeriod == null){
+						back = "No pay period selected ";
+						return back;
+				}
+				for(String date:datesArr){
+						if(!payPeriod.isDateWithin(date)){ 
+								back = " date "+date+" is not within this pay period "+
+										payPeriod.getDateRange();
+								return back;
+						}
+				}
+				return back;
 		}
 		void findHours(){
 				if(!start_time.equals("") &&
@@ -269,6 +292,13 @@ public class ShiftTime{
 				findDatesArray();
 				if(datesArr == null || datesArr.length == 0){
 						msg = "no dates provided";
+						return msg;
+				}
+				//
+				// check dates are withing pay period
+				//
+				msg = checkDates();
+				if(!msg.equals("")){
 						return msg;
 				}
 				findHours();
@@ -408,7 +438,11 @@ public class ShiftTime{
 				if(datesArr == null || datesArr.length == 0){
 						msg = "no dates provided";
 						return msg;
-				}				
+				}
+				msg = checkDates();
+				if(!msg.equals("")){
+						return msg;
+				}
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB ";

@@ -19,67 +19,69 @@ public class TmwrpRunList{
     static final long serialVersionUID = 1600L;
     static Logger logger = LogManager.getLogger(TmwrpRunList.class);
     String status = "",
-				department_id="",
+				document_id="",
 				pay_period_id="";
+		boolean lastRunOnly = false;
     List<TmwrpRun> tmwrpRuns = null;
     public TmwrpRunList(){
     }
     public TmwrpRunList(String val, String val2){
-				setDepartment_id(val);
+				setDocument_id(val);
 				setPay_period_id(val2);
     }
 
-    public void setDepartment_id (String val){
+    public void setDocument_id (String val){
 				if(val != null && !val.equals("-1"))
-						department_id = val;
+						document_id = val;
     }
     public void setPay_period_id (String val){
 				if(val != null && !val.equals("-1"))
 						pay_period_id = val;
     }		
 
-    public String getDepartment_id(){
-				if(department_id.equals(""))
+    public String getDocument_id(){
+				if(document_id.equals(""))
 						return "-1";
-				return department_id;
+				return document_id;
     }
     public String getPay_period_id(){
 				if(pay_period_id.equals(""))
 						return "-1";
 				return pay_period_id;
     }		
-		public void setFailedOnly(){
-				status = "Error";
-		}
+
     public List<TmwrpRun> getTmwrpRuns(){
 				return tmwrpRuns;
     }
-    //
-    // getters
     //
     public String find(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.pay_period_id,g.department_id,"+
-						" date_format(g.run_time,'%m/%d/%y %H:%i'),g.status,"+
-						" g.error_text,d.name from tmwrp_runs g join departments d on d.id=g.department_id ";
+				String qq = "select g.id,g.reg_code_id,g.document_id,g.reg_code_id,"+
+						"date_format(g.run_time,'%m/%d/%y %H:%i'),"+
+						"g.week1_grs_reg_hrs, "+
+						"g.week2_grs_reg_hrs, "+
+						"g.week1_net_reg_hrs, "+
+						"g.week2_net_reg_hrs "+
+						" from tmwrp_runs g join time_documents d on d.id=g.document_id";
+
 				String qw = "";
-				if(!department_id.equals("")){
+				if(!document_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
-						qw += "g.department_id = ? ";
+						qw += "g.document_id = ? ";
 				}
 				if(!pay_period_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
-						qw += "g.pay_period_id = ? ";
-				}
-				if(!status.equals("")){
-						if(!qw.equals("")) qw += " and ";						
-						qw += "g.status = ? ";
+						qw += "d.pay_period_id = ? ";
 				}
 				if(!qw.equals("")){
 						qq += " where "+qw;
+				}
+				qq += " order by g.run_time desc ";
+				if(lastRunOnly){
+						qq += " limit 1 "; 
 				}
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -91,27 +93,26 @@ public class TmwrpRunList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!department_id.equals("")){
-								pstmt.setString(jj++, department_id);
+						if(!document_id.equals("")){
+								pstmt.setString(jj++, document_id);
 						}
 						if(!pay_period_id.equals("")){
 								pstmt.setString(jj++, pay_period_id);
 						}
-						if(!status.equals("")){
-								pstmt.setString(jj++, status);
-						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								if(tmwrpRuns == null)
 										tmwrpRuns = new ArrayList<>();
 							 TmwrpRun one = new TmwrpRun(
-																			rs.getString(1),
-																			rs.getString(2),
-																			rs.getString(3),
-																			rs.getString(4),
-																			rs.getString(5),
-																			rs.getString(6),
-																			rs.getString(7));
+																					 rs.getString(1),
+																					 rs.getString(2),
+																					 rs.getString(3),
+																					 rs.getString(4),
+																					 rs.getDouble(5),
+																					 rs.getDouble(6),
+																					 rs.getDouble(7),
+																					 rs.getDouble(8)
+																					 );
 								if(!tmwrpRuns.contains(one))
 										tmwrpRuns.add(one);
 						}

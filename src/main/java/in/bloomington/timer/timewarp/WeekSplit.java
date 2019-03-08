@@ -20,7 +20,7 @@ public class WeekSplit{
 		static Logger logger = LogManager.getLogger(WeekSplit.class);
 		static final long serialVersionUID = 180L;				
 		boolean debug = false;
-		Profile profile = null;
+		// Profile profile = null;
 		BenefitGroup bGroup = null;
 		double total_hrs = 0, regular_hrs = 0,
 				non_reg_hrs = 0, earn_time_used = 0,
@@ -55,14 +55,15 @@ public class WeekSplit{
 		Shift shift = null;		
 
     public WeekSplit(boolean deb,
-										 Profile val,
+										 // Profile val,
 										 Department val2,
 										 JobTask val3){
 				debug = deb;
-				setProfile(val);
+				// setProfile(val);
 				setDepartment(val2);
 				setJob(val3);
     }
+		/*
     public void setProfile(Profile val){
 				if(val != null){
 						profile = val;
@@ -75,6 +76,7 @@ public class WeekSplit{
 						}						
 				}
     }
+		*/
 		void setDepartment(Department val){
 				if(val != null){
 						department = val;
@@ -87,16 +89,24 @@ public class WeekSplit{
 				if(val != null){
 						job = val;
 						salaryGroup = job.getSalaryGroup();
-						if(salaryGroup.isFireSworn()){
-								st_weekly_hrs = 48;
-								comp_weekly_hrs = 53;
+						if(salaryGroup != null){
+								if(salaryGroup.isFireSworn()){
+										st_weekly_hrs = 48;
+										comp_weekly_hrs = 53;
+								}
+								else{
+										st_weekly_hrs = job.getWeekly_regular_hours();
+										comp_weekly_hrs = job.getComp_time_weekly_hours();
+								}
+								comp_factor = job.getComp_time_factor();
+								holiday_factor = job.getHoliday_comp_factor();
+								
 						}
-						else{
-								st_weekly_hrs = job.getWeekly_regular_hours();
-								comp_weekly_hrs = job.getComp_time_weekly_hours();
-						}
-						comp_factor = job.getComp_time_factor();
-						holiday_factor = job.getHoliday_comp_factor();
+						dailyArr = new ArrayList<Hashtable<String, Double>>(7);
+						for(int j=0;j<7;j++){
+								Hashtable<String, Double> one = new Hashtable<String, Double>();
+								dailyArr.add(one);
+						}									
 						group  = job.getGroup();
 						if(group != null){
 								if(group.hasShift()){

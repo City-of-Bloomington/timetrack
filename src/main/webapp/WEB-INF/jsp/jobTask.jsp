@@ -125,16 +125,16 @@
 			<s:checkbox name="jobTask.inactive" value="%{jobTask.inactive}" fieldValue="true" />Yes
 		</div>
 	</s:if>
-	<s:if test="jobTask.id == ''">
-		<s:submit name="action" type="button" value="Save" class="button"/>
-	</s:if>
+	<div class="button-group">	
+		<s:if test="jobTask.id == ''">
+			<s:submit name="action" type="button" value="Save" class="button"/>
+		</s:if>
 		<s:else>
-			<div class="button-group">
-				<a href="<s:property value='#application.url' />jobTask.action" class="button">New Job</a>
-				<s:submit name="action" type="button" value="Save Changes" class="button"/>
-			</div>
+			<s:submit name="action" type="button" value="Save Changes" class="button"/>
+			<a href="<s:property value='#application.url' />jobTask.action" class="button">New Job</a>			
 		</s:else>
 		<a href="<s:property value='#application.url' />searchJobs.action" class="button">Search Jobs</a>
+	</div>
 	</div>
 </s:form>
 

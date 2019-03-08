@@ -19,14 +19,18 @@ public class TmwrpRun{
 
     static Logger logger = LogManager.getLogger(TmwrpRun.class);
     static final long serialVersionUID = 1500L;
-    String id="", pay_period_id="", run_time="", status="", error_text="";
-    String department_id="";
+    String id="", document_id="", run_time="", reg_code_id="";
+		double week1_grs_reg_hrs = 0,
+				week2_grs_reg_hrs=0,
+				week1_net_reg_hrs=0,
+				week2_net_reg_hrs=0;
+		
     //
-    Department department = null;
-		PayPeriod payPeriod = null;
-		/*
-		List<GroupShift> groupShifts = null;
-		*/
+    Document document = null;
+		HourCode regCode = null;
+
+		List<TmwrpBlock> blocks = null;
+
 		
     public TmwrpRun(){
     }		
@@ -37,56 +41,47 @@ public class TmwrpRun{
 										String val2,
 										String val3,
 										String val4,
-										String val5,
-										String val6
-								 ){
+										Double val5,
+										Double val6,
+										Double val7,
+										Double val8){
 				setId(val);
-				setPay_period_id(val2);
-				setDepartment_id(val3);
-				setRunTime(val4);
-				setStatus(val5);
-				setErrorText(val6);				
+				setDocument_id(val2);
+				setRunTime(val3);
+				setReg_code_id(val4);
+				setWeek1GrsRegHrs(val5);
+				setWeek2GrsRegHrs(val6);
+				setWeek1GrsRegHrs(val7);
+				setWeek2GrsRegHrs(val8);				
     }
-    public TmwrpRun(String val,
-										String val2,
-										String val3,
-										String val4,
-										String val5,
-										String val6,
-										String val7
-								 ){
-				setId(val);
-				setPay_period_id(val2);
-				setDepartment_id(val3);
-				setRunTime(val4);
-				setStatus(val5);
-				setErrorText(val6);
-				if(val7 != null){
-						department = new Department(department_id, val7);
-				}
-    }		
     //
     // getters
     //
     public String getId(){
 				return id;
     }
-		public String getPay_period_id(){
-				return pay_period_id;
+		public String getDocument_id(){
+				return document_id;
 		}
-    public String getDepartment_id(){
-				return department_id;
+    public String getReg_code_id(){
+				return reg_code_id;
     }
 
 		public String getRunTime(){
 				return run_time;
 		}
-		public String getStatus(){
-				return status;
+		public double getWeek1GrsRegHrs(){
+				return week1_grs_reg_hrs;
 		}
-		public String getErrorText(){
-				return error_text;
+		public double getWeek2GrsRegHrs(){
+				return week2_grs_reg_hrs;
 		}
+		public double getWeek1NetRegHrs(){
+				return week1_net_reg_hrs;
+		}
+		public double getWeek2NetRegHrs(){
+				return week2_net_reg_hrs;
+		}		
     //
     // setters
     //
@@ -94,30 +89,35 @@ public class TmwrpRun{
 				if(val != null)
 						id = val;
     }
-    public void setPay_period_id(String val){
+    public void setDocument_id(String val){
 				if(val != null)
-						pay_period_id = val;
+						document_id = val;
     }
-    public void setErrorText(String val){
-				if(val != null){
-						error_text = val.trim();
-				}
-    }
-    public void setStatus(String val){
-				if(val != null){
-						status = val;
-				}
-    }
+    public void setReg_code_id(String val){
+				if(val != null)
+						reg_code_id = val;
+    }		
     public void setRunTime(String val){
 				if(val != null){
 						run_time = val;
 				}
     }		
-		
-    public void setDepartment_id (String val){
-				if(val != null && !val.equals("-1"))
-						department_id = val;
+    public void setWeek1GrsRegHrs(Double val){
+				if(val != null)
+						week1_grs_reg_hrs = val;
     }
+    public void setWeek2GrsRegHrs(Double val){
+				if(val != null)
+						week2_grs_reg_hrs = val;
+    }				
+    public void setWeek1NetRegHrs(Double val){
+				if(val != null)
+						week1_net_reg_hrs = val;
+    }
+    public void setWeek2NetRegHrs(Double val){
+				if(val != null)
+						week2_net_reg_hrs = val;
+    }		
 
     public boolean equals(Object o) {
 				if (o instanceof TmwrpRun) {
@@ -142,27 +142,44 @@ public class TmwrpRun{
 				return id;
     }
 		
-    public Department getDepartment(){
-				if(department == null && !department_id.equals("")){
-						Department one = new Department(department_id);
+    public Document getDocument(){
+				if(document == null && !document_id.equals("")){
+						Document one = new Document(document_id);
 						String back = one.doSelect();
 						if(back.equals("")){
-								department = one;
+								document = one;
 						}
 				}
-				return department;
+				return document;
     }
-    public PayPeriod getPayPeriod(){
-				if(payPeriod == null && !pay_period_id.equals("")){
-						PayPeriod one = new PayPeriod(pay_period_id);
+    public HourCode getRegCode(){
+				if(regCode == null && !reg_code_id.equals("")){
+						HourCode one = new HourCode(reg_code_id);
 						String back = one.doSelect();
 						if(back.equals("")){
-								payPeriod = one;
+								regCode = one;
 						}
 				}
-				return payPeriod;
+				return regCode;
     }
-		// ToDo start here
+		public List<TmwrpBlock> getBlocks(){
+				if(blocks == null && !id.equals("")){
+						TmwrpBlockList tbl = new TmwrpBlockList(id);
+						String back = tbl.find();
+						if(back.equals("")){
+								List<TmwrpBlock> ones = tbl.getBlocks();
+								if(ones != null && ones.size() > 0){
+										blocks = ones;
+								}
+						}
+
+				}
+				return blocks;
+		}
+		public boolean hasBlocks(){
+				getBlocks();
+				return blocks != null && blocks.size() > 0;
+		}
 		
     public String doSelect(){
 				//
@@ -170,8 +187,13 @@ public class TmwrpRun{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.pay_period_id,g.department_id,"+
-						"date_format(g.run_time,'%m/%d/%y %H:%i'),g.status,d.error_text from tmwrp_runs g where g.id =? ";
+				String qq = "select g.id,g.reg_code_id,g.document_id,g.reg_code_id,"+
+						"date_format(g.run_time,'%m/%d/%y %H:%i'),"+
+						"g.week1_grs_reg_hrs, "+
+						"g.week2_grs_reg_hrs, "+
+						"g.week1_net_reg_hrs, "+
+						"g.week2_net_reg_hrs "+						
+						"from tmwrp_runs g where g.id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				try{
@@ -180,11 +202,13 @@ public class TmwrpRun{
 								pstmt.setString(1, id);
 								rs = pstmt.executeQuery();
 								if(rs.next()){
-										setPay_period_id(rs.getString(2));
-										setDepartment_id(rs.getString(3));
+										setDocument_id(rs.getString(2));
+										setReg_code_id(rs.getString(3));
 										setRunTime(rs.getString(4));
-										setStatus(rs.getString(5));
-										setErrorText(rs.getString(6));
+										setWeek1GrsRegHrs(rs.getDouble(5));
+										setWeek2GrsRegHrs(rs.getDouble(6));
+										setWeek1NetRegHrs(rs.getDouble(7));
+										setWeek2NetRegHrs(rs.getDouble(8));
 								}
 						}
 				}
@@ -205,13 +229,13 @@ public class TmwrpRun{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into tmwrp_runs values(0,?,?,now(),null,null) ";
-				if(department_id.equals("")){
-						msg = " department not set ";
+				String qq = "insert into tmwrp_runs values(0,?,?,now(),?,?,?,?) ";
+				if(document_id.equals("")){
+						msg = " document not set ";
 						return msg;
 				}
-				if(pay_period_id.equals("")){
-						msg = " pay period not set ";
+				if(reg_code_id.equals("")){
+						msg = " regular hour code not set ";
 						return msg;
 				}				
 				logger.debug(qq);
@@ -222,8 +246,12 @@ public class TmwrpRun{
 				}				
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, pay_period_id);						
-						pstmt.setString(2, department_id);
+						pstmt.setString(1, document_id);						
+						pstmt.setString(2, reg_code_id);
+						pstmt.setDouble(3,week1_grs_reg_hrs);
+						pstmt.setDouble(4,week2_grs_reg_hrs);
+						pstmt.setDouble(5,week1_net_reg_hrs);
+						pstmt.setDouble(6,week2_net_reg_hrs);						
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
@@ -244,14 +272,17 @@ public class TmwrpRun{
 				}
 				return msg;
     }
-
+		/**
+		 * when delete, we also delete related blocks
+		 */
     public String doDelete(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "delete tmwrp_runs where id=? ";
+				String qq = "delete tmwrp_blocks where run_id=? ";
+				String qq2 = "delete tmwrp_runs where id=? ";				
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -262,6 +293,12 @@ public class TmwrpRun{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, id);
 						pstmt.executeUpdate();
+						Helper.databaseDisconnect(pstmt, rs);
+						qq = qq2;
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();						
+						
 				}
 				catch(Exception ex){
 						msg += " "+ex;
@@ -273,43 +310,5 @@ public class TmwrpRun{
 				}
 				return msg;
     }
-		/**
-		 * update status Error or Success
-		 * if error add error text
-		 */
-    public String doUpdateStatus(){
-				//
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				String msg="", str="";
-				String qq = "update tmwrp_runs set status=?,error_text=? where id=? ";
-				logger.debug(qq);
-				con = UnoConnect.getConnection();
-				if(con == null){
-						msg = "Could not connect to DB ";
-						return msg;
-				}							
-				try{
-						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, status);
-						if(error_text.equals(""))
-								pstmt.setNull(2, Types.VARCHAR);
-						else
-								pstmt.setString(2, error_text);
-						pstmt.setString(3, id);
-						pstmt.executeUpdate();
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-						UnoConnect.databaseDisconnect(con);
-				}
-				return msg;
-    }		
-		
 
 }

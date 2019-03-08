@@ -198,6 +198,7 @@ public class TimewarpAction extends TopAction{
 						back = " benefit groups data not found ";
 						return back;
 				}
+				/*
 				if(profiles == null){
 						getProfiles();
 				}
@@ -207,9 +208,12 @@ public class TimewarpAction extends TopAction{
 				}
 				if(holys == null){
 						getHolidayList();
-				}
+				}				
+				*/
+
 				for(Employee emp:employees){
 						String emp_num = emp.getEmployee_number();
+						/*
 						Profile profile = null;
 						if(!emp_num.equals("")){
 								if(profMap.containsKey(emp_num)){
@@ -219,16 +223,17 @@ public class TimewarpAction extends TopAction{
 										continue;
 								}
 						}
+						*/
 						emp.setPay_period_id(pay_period_id);
 						System.err.println(" emp "+emp.getFull_name());
-						System.err.println(" profile "+profile);
+						// System.err.println(" profile "+profile);
 						if(emp.hasMultipleJobs()){
 								List<JobTask> jobs = emp.getJobs();
 								// loop over jobs
 								for(JobTask job:jobs){
 										PayPeriodProcess one =										
 												new PayPeriodProcess(emp,
-																						 profile,
+																						 // profile,
 																						 payPeriod,
 																						 holys,
 																						 job,
@@ -261,7 +266,7 @@ public class TimewarpAction extends TopAction{
 								JobTask job = emp.getJob();
 								PayPeriodProcess one =
 										new PayPeriodProcess(emp,
-																				 profile,
+																				 // profile,
 																				 payPeriod,
 																				 holys,
 																				 job,
@@ -553,7 +558,7 @@ public class TimewarpAction extends TopAction{
 				String line2 = ",,,,,,,,,,"; // monetary
 				for(PayPeriodProcess process:processes){
 						String csvLine = process.getEmployee().getEmployee_number()+",";
-						csvLine += process.getTwoWeekNetRegular()+",";
+						csvLine += process.get2WeekNetRegular()+",";
 						csvLine += process.getRegCode()+",";
 						csvLine += payPeriod.getEnd_date()+",";
 						csvLine += line;						
@@ -588,7 +593,7 @@ public class TimewarpAction extends TopAction{
 										csvLine += dd+",";
 										csvLine += line2;								
 										if(process.hasMultipleJobs()){
-												csvLine += line2+process.getJob_name();
+												csvLine += process.getJob_name();
 										}
 										allCsvLines.add(csvLine);	
 								}
@@ -607,7 +612,7 @@ public class TimewarpAction extends TopAction{
 								csvLine += payPeriod.getFirstPayEndDate()+",";
 								csvLine += line;								
 								if(process.hasMultipleJobs()){
-										csvLine += line+process.getJob_name();
+										csvLine += process.getJob_name();
 								}
 								allCsvLines.add(csvLine);								
 						}

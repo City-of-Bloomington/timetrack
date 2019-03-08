@@ -24,6 +24,9 @@ public class PayPeriod implements Serializable{
 		String id="", start_date="", end_date="", date="";
 		int startYear =0,startMonth=0,startDay=0;
 		int endYear =0,endMonth=0,endDay=0, days=14;
+		// these dates are needed for string comparison
+		// to be in yyyy-mm-dd format 
+		String startDateYmd="", endDateYmd=""; 
 		public static final String[] allMonths =
 		{"January","February","March","April","May","June",
 		 "July","August","September","October","November","December"};
@@ -47,12 +50,16 @@ public class PayPeriod implements Serializable{
 		}
 		public PayPeriod(String val, String val2, String val3,
 										 int val4, int val5, int val6,
-										 int val7, int val8, int val9, int val10){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10);
+										 int val7, int val8, int val9, int val10,
+										 String val11, String val12){
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9,
+								val10, val11, val12);
 		}
 		void setVals(String val, String val2, String val3,
 								 int val4, int val5, int val6,
-								 int val7, int val8, int val9, int val10){
+								 int val7, int val8, int val9,
+								 int val10,
+								 String val11, String val12){
 				setId(val);
 				setStart_date(val2);
 				setEnd_date(val3);
@@ -63,6 +70,8 @@ public class PayPeriod implements Serializable{
 				setEndMonth(val8);
 				setEndDay(val9);
 				setDays(val10);
+				setStartDateYmd(val11);
+				setEndDateYmd(val12);				
 		}
 				//
     // getters
@@ -79,6 +88,12 @@ public class PayPeriod implements Serializable{
     public String getEnd_date(){
 				return end_date;
     }
+    public String getStartDateYmd(){
+				return startDateYmd;
+    }
+    public String getEndDateYmd(){
+				return endDateYmd;
+    }		
 		public int[] getStartDateInt(){
 				int[] ret = {startMonth,startDay,startYear};
 				return ret;
@@ -118,7 +133,14 @@ public class PayPeriod implements Serializable{
 				if(val != null)
 						end_date = val;
     }
-		
+    public void setStartDateYmd (String val){
+				if(val != null)
+						startDateYmd = val;
+    }
+    public void setEndDateYmd (String val){
+				if(val != null)
+						endDateYmd = val;
+    }		
     public void setStartYear (int val){
 				startYear = val;
     }
@@ -165,6 +187,16 @@ public class PayPeriod implements Serializable{
 		}
 		public String getDateRange(){
 				return start_date+" - "+end_date;
+		}
+		// date is in yyy-mm-dd format
+		// we compare with startDateYmd, endDateYmd
+		// using string compare
+		// any date to be in between the comparison
+		// must be start_date <= date <= end_date
+		public boolean isDateWithin(String date){
+				if(date == null) return false;
+				return startDateYmd.compareTo(date) <= 0 &&
+						endDateYmd.compareTo(date) >= 0;
 		}
 		// something like 08/02 - 08/09
 		public String getWeek1DateRange(){
@@ -225,9 +257,6 @@ public class PayPeriod implements Serializable{
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(!id.equals("")){
-
-						}
 						pstmt.setDate(1, new java.sql.Date(dateFormat.parse(date).getTime()));
 						pstmt.setString(2, id);
 						rs = pstmt.executeQuery();
@@ -317,7 +346,8 @@ public class PayPeriod implements Serializable{
 						"date_format(p.start_date,'%m/%d/%Y'), "+
 						"date_format(p.end_date,'%m/%d/%Y'), "+
 						"year(p.start_date),month(p.start_date),day(p.start_date),"+
-						"year(p.end_date),month(p.end_date),day(p.end_date) "+
+						"year(p.end_date),month(p.end_date),day(p.end_date), "+
+						"p.start_date,p.end_date "+
 						"from pay_periods p where id=?";
 				if(id.equals("")){
 						msg = " id not set ";
@@ -344,7 +374,9 @@ public class PayPeriod implements Serializable{
 								setStartDay(rs.getInt(6));
 								setEndYear(rs.getInt(7));
 								setEndMonth(rs.getInt(8));
-								setEndDay(rs.getInt(9));				
+								setEndDay(rs.getInt(9));
+								setStartDateYmd(rs.getString(10));
+								setEndDateYmd(rs.getString(11));								
 						}
 						else{
 								msg = "No pay period found";

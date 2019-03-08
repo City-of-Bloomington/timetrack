@@ -20,7 +20,7 @@ public class TmwrpBlockList{
     static Logger logger = LogManager.getLogger(TmwrpBlockList.class);
     String run_id="", document_id="", pay_period_id="";
 
-    List<TmwrpBlock> tmwrpBlocks = null;
+    List<TmwrpBlock> blocks = null;
     public TmwrpBlockList(){
     }
     public TmwrpBlockList(String val){
@@ -55,8 +55,8 @@ public class TmwrpBlockList{
 						return "-1";
 				return pay_period_id;
     }		
-    public List<TmwrpBlock> getTmwrpBlocks(){
-				return tmwrpBlocks;
+    public List<TmwrpBlock> getBlocks(){
+				return blocks;
     }
     //
     // getters
@@ -66,22 +66,13 @@ public class TmwrpBlockList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.run_id,g.document_id,"+
-						" g.hour_code_id,g.hours,g.amount,"+
-						" date_format(g.apply_date,'%m/%d/%Y'),g.addition_type "+
-						" from tmwrp_blocks g join time_documents d on d.id=g.document_id ";
+				String qq = "select g.id,g.run_id,g.apply_type,"+
+						"g.hour_code_id,g.hours,g.amount "+
+						" from tmwrp_blocks g ";
 				String qw = "";
 				if(!run_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
 						qw += "g.run_id = ? ";
-				}
-				if(!document_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
-						qw += "g.document_id = ? ";
-				}				
-				if(!pay_period_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
-						qw += "d.pay_period_id = ? ";
 				}
 				if(!qw.equals("")){
 						qq += " where "+qw;
@@ -99,27 +90,27 @@ public class TmwrpBlockList{
 						if(!run_id.equals("")){
 								pstmt.setString(jj++, run_id);
 						}
+						/*
 						if(!document_id.equals("")){
 								pstmt.setString(jj++, document_id);
 						}						
 						if(!pay_period_id.equals("")){
 								pstmt.setString(jj++, pay_period_id);
 						}
+						*/
 						rs = pstmt.executeQuery();
 						while(rs.next()){
-								if(tmwrpBlocks == null)
-										tmwrpBlocks = new ArrayList<>();
+								if(blocks == null)
+										blocks = new ArrayList<>();
 							 TmwrpBlock one = new TmwrpBlock(
 																			rs.getString(1),
 																			rs.getString(2),
 																			rs.getString(3),
 																			rs.getString(4),
 																			rs.getDouble(5),
-																			rs.getDouble(6),
-																			rs.getString(7),
-																			rs.getString(8));
-								if(!tmwrpBlocks.contains(one))
-										tmwrpBlocks.add(one);
+																			rs.getDouble(6));
+								if(!blocks.contains(one))
+										blocks.add(one);
 						}
 				}
 				catch(Exception ex){

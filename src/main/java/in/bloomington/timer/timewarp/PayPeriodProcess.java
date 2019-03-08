@@ -23,7 +23,7 @@ public class PayPeriodProcess{
     static final long serialVersionUID = 180L;				
     String regCode="Reg"; // TEMP for temporary work
     Employee employee = null;
-    Profile profile = null;
+    // Profile profile = null;
     PayPeriod payPeriod = null;
     Document document = null;
     boolean twoDifferentYears = false;
@@ -71,14 +71,14 @@ public class PayPeriodProcess{
     Hashtable<String, Double> monetaryFirstPay = null;
     Hashtable<String, Double> monetarySecondPay = null;    		
     public PayPeriodProcess(Employee val,
-														Profile val2,
+														// Profile val2,
 														PayPeriod val3,
 														HolidayList val4,
 														JobTask val5,
 														Department val6,
 														boolean val7){
 				setEmployee(val);
-				setProfile(val2);
+				// setProfile(val2);
 				setPayPeriod(val3);
 				setHolidayList(val4);
 				setJob(val5);
@@ -91,7 +91,7 @@ public class PayPeriodProcess{
     }
     // employee with multiple jobs
     public PayPeriodProcess(Employee val,
-														Profile val2,
+														// Profile val2,
 														PayPeriod val3,
 														HolidayList val4,
 														JobTask val5,
@@ -100,7 +100,7 @@ public class PayPeriodProcess{
 														boolean val8){ // multi
 														
 				setEmployee(val);
-				setProfile(val2);
+				// setProfile(val2);
 				setPayPeriod(val3);
 				setHolidayList(val4);
 				setJob(val5);
@@ -126,7 +126,8 @@ public class PayPeriodProcess{
 								isUtil = true;
 						}
 				}
-    }		
+    }
+		/*
     public void setProfile(Profile val){
 				if(val != null){
 						profile = val;
@@ -141,6 +142,7 @@ public class PayPeriodProcess{
 						}
 				}
     }
+		*/
     public void setHolidayList(HolidayList val){
 				if(val != null){
 						holyList = val;
@@ -152,6 +154,15 @@ public class PayPeriodProcess{
     public void setJob(JobTask val){
 				if(val != null){
 						job = val;
+						SalaryGroup salaryGroup = job.getSalaryGroup();
+						if(salaryGroup != null){
+								if(salaryGroup.isTemporary()){
+										regCode = "TEMP";
+								}
+								else if(salaryGroup.isFireSworn()){
+										regCode = "REG FIRE";
+								}
+						}
 				}
     }
     public void setIsUtil(boolean val){
@@ -171,9 +182,11 @@ public class PayPeriodProcess{
     public Employee getEmployee(){
 				return employee;
     }
+		/*
     public Profile getProfile(){
 				return profile;
     }
+		*/
     private void setWeekEntries(){
 		
 				if(payPeriod.hasTwoDifferentYears()){
@@ -182,23 +195,33 @@ public class PayPeriodProcess{
 						//
 						if(splitDay < 7){
 								weekOneHasSplit = true;
-								week1 = new WeekEntry(debug, profile, department,
+								week1 = new WeekEntry(debug,
+																			// profile,
+																			department,
 																			job,
 																			splitDay);
-								week2 = new WeekEntry(debug, profile, department,
+								week2 = new WeekEntry(debug,
+																			// profile,
+																			department,
 																			job);
 						}
 						else{
-								week1 = new WeekEntry(debug, profile, department,
+								week1 = new WeekEntry(debug,
+																			// profile,
+																			department,
 																			job);
-								week2 = new WeekEntry(debug, profile, department,
+								week2 = new WeekEntry(debug,
+																			// profile,
+																			department,
 																			job,
 																			splitDay-7);
 						}
 				}
 				else{
-						week1 = new WeekEntry(debug, profile, department, job);
-						week2 = new WeekEntry(debug, profile, department, job);
+						week1 = new WeekEntry(debug, // profile,
+																	department, job);
+						week2 = new WeekEntry(debug, // profile,
+																	department, job);
 				}
     }
     //
@@ -240,14 +263,17 @@ public class PayPeriodProcess{
     double getWeek2NetRegular(){
 				return week2.getNetRegular();
     }	
-    double get2WeekRegular(){
+    double get2WeekRegularDbl(){
 				return getWeek1Regular()+getWeek2Regular();
     }
-    public double get2WeekNetRegular(){
+    public String get2WeekRegular(){
+				return df.format(getWeek1Regular()+getWeek2Regular());
+    }		
+    public double get2WeekNetRegularDbl(){
 				return getWeek1NetRegular()+getWeek2NetRegular();
     }
-    public double getTwoWeekNetRegular(){
-				return getWeek1NetRegular()+getWeek2NetRegular();
+    public String get2WeekNetRegular(){
+				return df.format(getWeek1NetRegular()+getWeek2NetRegular());
     }
     public String getProfHrsCode(){
 				return profHrsCode;

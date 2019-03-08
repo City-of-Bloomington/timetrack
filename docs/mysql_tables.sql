@@ -798,34 +798,6 @@ CREATE TABLE shift_times (
 update jobs set weekly_regular_hours=48, comp_time_weekly_hours=106 where salary_group_id=9;
 ;;
 ;;
-;; 2/27/2019
-;;
-CREATE TABLE tmwrp_runs (
-  id int unsigned NOT NULL AUTO_INCREMENT primary key,
-	pay_period_id int unsigned not null,
-	department_id int unsigned not null,
-	run_time datetime,
-	status enum('Error','Success'),
-	error_text varchar(1024),
-	foreign key(pay_period_id) references pay_periods(id),
-	foreign key(department_id) references departments(id)
-	) ENGINE=InnoDB;
-
-CREATE TABLE tmwrp_blocks (
-  id int unsigned NOT NULL AUTO_INCREMENT primary key,
-	run_id int unsigned not null,
-	document_id int unsigned not null,
-	hour_code_id int unsigned not null,
-	hours decimal (6,2) default 0,
-	amount decimal (6,2) default 0,
-	apply_date date,
-	addition_type enum('Daily','Weekly','Cycle'),
-	foreign key(document_id) references time_documents(id),
-	foreign key(hour_code_id) references hour_codes(id),
-	foreign key(run_id) references tmwrp_runs(id)			
-	) ENGINE=InnoDB;
-
-;;
 ;;
 alter table hour_codes modify reg_default char(1);
 update hour_codes set reg_default='y' where reg_default='0';
@@ -853,6 +825,36 @@ alter table hour_codes add default_monetary_amount decimal(6,2) default 0 after 
 ;;
 ;;  need to update the following hour codes to Monetary
 ;; ONCALL 40, ONCALL 35 35, ONCALL FIRE 100, CA no default value, FRP 10
+;;
+;; 3/8/2019
+;;
+CREATE TABLE tmwrp_runs (
+  id int unsigned NOT NULL AUTO_INCREMENT primary key,
+	document_id int unsigned not null,
+	reg_code_id int unsigned not null,
+	run_time datetime,	
+	week1_grs_reg_hrs decimal (6,2),
+	week2_grs_reg_hrs decimal (6,2),	
+	week1_net_reg_hrs decimal (6,2),
+	week2_net_reg_hrs decimal (6,2),
+	foreign key(document_id) references time_documents(id),
+	foreign key(reg_code_id) references hour_codes(id)
+	) ENGINE=InnoDB;
+;;
+;; these will be sums of similar hour_codes, for the whole pay period
+;; OT, CE1.0, will be one
+;; 
+CREATE TABLE tmwrp_blocks (
+  id int unsigned NOT NULL AUTO_INCREMENT primary key,
+	run_id int unsigned not null,
+	hour_code_id int unsigned not null,
+	apply_type enum('Week 1','Week 2','Cycle'),	
+	hours decimal (6,2) default 0,
+	amount decimal (6,2) default 0,
+	foreign key(hour_code_id) references hour_codes(id),
+	foreign key(run_id) references tmwrp_runs(id)			
+	) ENGINE=InnoDB;
+;;
 ;;
 
 

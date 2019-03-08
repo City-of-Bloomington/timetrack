@@ -20,7 +20,7 @@ public class WeekEntry{
     boolean debug = false;
     static final long serialVersionUID = 160L;		
     static Logger logger = LogManager.getLogger(WeekEntry.class);		
-    Profile profile = null;
+    // Profile profile = null;
     // BenefitGroup bGroup = null;
     static DecimalFormat ndf = new DecimalFormat("#0.00");		
     static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -65,25 +65,30 @@ public class WeekEntry{
 		Hashtable<String, Double> monetaryHash = new Hashtable<String, Double>();		
     
     public WeekEntry(boolean deb,
-										 Profile val,
+										 // Profile val,
 										 Department val2,
 										 JobTask val3){ 
 				debug = deb;
-				setProfile(val);
+				// setProfile(val);
 				setDepartment(val2);
 				setJob(val3);
-				splitOne = new WeekSplit(debug, val, val2, val3);
-				splitTwo = new WeekSplit(debug, val, val2, val3);
+				splitOne = new WeekSplit(debug,
+																 // val,
+																 val2, val3);
+				splitTwo = new WeekSplit(debug,
+																 // val,
+																 val2, val3);
 
     }
     public WeekEntry(boolean deb,
-										 Profile val,
+										 // Profile val,
 										 Department val2,
 										 JobTask val3,										 
 										 int val4 // split day
 										 ){
 				//
-				this(deb, val, val2, val3);
+				this(deb, // val,
+						 val2, val3);
 				//
 				// if splitDay = 0 ignore, it just start of a new week
 				// day 7 is day 0 in next week (7 - 7 = 0)
@@ -92,12 +97,14 @@ public class WeekEntry{
 						splitDay = val4;
 				}
     }
+		/*
     public void setProfile(Profile val){
 				if(val != null){
 						profile = val;
 						st_weekly_hrs = profile.getStWeeklyHrs();
 				}
     }
+		*/
     public void setHandSpecial(boolean val){
 				handSpecial = val;
     }
@@ -113,16 +120,18 @@ public class WeekEntry{
 				if(val != null){
 						job = val;
 						salaryGroup = job.getSalaryGroup();
-						if(salaryGroup.isFireSworn()){
-								st_weekly_hrs = 48;
-								comp_weekly_hrs = 53;
+						if(salaryGroup !=null){
+								if(salaryGroup.isFireSworn()){
+										st_weekly_hrs = 48;
+										comp_weekly_hrs = 53;
+								}
+								else{
+										st_weekly_hrs = job.getWeekly_regular_hours();
+										comp_weekly_hrs = job.getComp_time_weekly_hours();
+								}
+								comp_factor = job.getComp_time_factor();
+								holiday_factor = job.getHoliday_comp_factor();
 						}
-						else{
-								st_weekly_hrs = job.getWeekly_regular_hours();
-								comp_weekly_hrs = job.getComp_time_weekly_hours();
-						}
-						comp_factor = job.getComp_time_factor();
-						holiday_factor = job.getHoliday_comp_factor();
 						group  = job.getGroup();
 						if(group != null){
 								if(group.hasShift()){

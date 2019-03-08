@@ -103,14 +103,15 @@ public class PayPeriodList{
 						"date_format(p.end_date,'%m/%d/%Y'), "+
 						"year(p.start_date),month(p.start_date),day(p.start_date),"+
 						"year(p.end_date),month(p.end_date),day(p.end_date),"+
-						"datediff(p.end_date,p.start_date) "+
+						"datediff(p.end_date,p.start_date),p.start_date,p.end_date "+
 						"from pay_periods p ";
 				String qq2 = "select p2.id,"+
 						"date_format(p2.start_date,'%m/%d/%Y'), "+
 						"date_format(p2.end_date,'%m/%d/%Y'), "+
 						"year(p2.start_date),month(p2.start_date),day(p2.start_date),"+
 						"year(p2.end_date),month(p2.end_date),day(p2.end_date),"+
-						"datediff(p2.end_date,p2.start_date) "+
+						"datediff(p2.end_date,p2.start_date), "+
+						"p2.start_date,p2.end_date "+
 						"from pay_periods p2 ";
 				String qw = "";
 				String qo = " order by "+order_by;
@@ -205,7 +206,9 @@ public class PayPeriodList{
 																							rs.getInt(7),
 																							rs.getInt(8),
 																							rs.getInt(9),
-																							rs.getInt(10));
+																							rs.getInt(10),
+																							rs.getString(11),
+																							rs.getString(12));
 								periods.add(one);
 						}
 				}
