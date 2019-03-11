@@ -15,11 +15,11 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WeekEntry{
+public class TmwrpWeekEntry{
 
     boolean debug = false;
     static final long serialVersionUID = 160L;		
-    static Logger logger = LogManager.getLogger(WeekEntry.class);		
+    static Logger logger = LogManager.getLogger(TmwrpWeekEntry.class);		
     // Profile profile = null;
     // BenefitGroup bGroup = null;
     static DecimalFormat ndf = new DecimalFormat("#0.00");		
@@ -50,7 +50,7 @@ public class WeekEntry{
     // these are used for the yearend pay period where we need
     // to split the hours of the week in two different years
     //
-    WeekSplit splitOne = null, splitTwo = null;
+    TmwrpWeekSplit splitOne = null, splitTwo = null;
     int splitDay = 7; // no split
     //
     // for non regular earn code we use this hash such as PTO, CU, FMLA
@@ -64,21 +64,21 @@ public class WeekEntry{
 		//  monetary hash
 		Hashtable<String, Double> monetaryHash = new Hashtable<String, Double>();		
     
-    public WeekEntry(boolean deb,
-										 Department val,
-										 JobTask val2){ 
+    public TmwrpWeekEntry(boolean deb,
+													Department val,
+													JobTask val2){ 
 				debug = deb;
 				setDepartment(val);
 				setJob(val2);
-				splitOne = new WeekSplit(debug,
-																 val,
-																 val2);
-				splitTwo = new WeekSplit(debug,
-																 val,
-																 val2);
+				splitOne = new TmwrpWeekSplit(debug,
+																			val,
+																			val2);
+				splitTwo = new TmwrpWeekSplit(debug,
+																			val,
+																			val2);
 
     }
-    public WeekEntry(boolean deb,
+    public TmwrpWeekEntry(boolean deb,
 										 Department val,
 										 JobTask val2,										 
 										 int val3 // split day
@@ -170,25 +170,25 @@ public class WeekEntry{
     //
     // adding non regular hours except earned, such as PTO, H1,
     //
-    public void addToHash(Hashtable<String, Double> tHash, String code, double val){
-				if(tHash.containsKey(code)){
-						double hours = tHash.get(code).doubleValue();
+    public void addToHash(Hashtable<String, Double> tHash, String code_id, double val){
+				if(tHash.containsKey(code_id)){
+						double hours = tHash.get(code_id).doubleValue();
 						hours += val;
-						tHash.put(code, hours);
+						tHash.put(code_id, hours);
 				}
 				else{
-						tHash.put(code, val);
+						tHash.put(code_id, val);
 				}
     }
     //		
     // this is for holiday earned and other non CE codes
     //
     public void addToEarnedHash(TimeBlock te){
-				addToHash(earnedHash, te.getNw_code(), te.getHours());
+				addToHash(earnedHash, te.getHour_code_id(), te.getHours());
     }
-    public void addToEarnedHash(String code, double hrs){
-				if(code != null && hrs > 0)
-						addToHash(earnedHash, code, hrs);
+    public void addToEarnedHash(String code_id, double hrs){
+				if(code_id != null && hrs > 0)
+						addToHash(earnedHash, code_id, hrs);
     }		
     //
     public Hashtable<String, Double> getNonRegularHours(){
@@ -435,7 +435,7 @@ public class WeekEntry{
 				if(holyWorkDays == null) return;
 				//
 				double holy_earn_hrs = 0;
-				String code = "";
+				String code_id = "";
 				double netHours = total_hrs - earned_time;
 				double extra_hrs = 0;
 				System.err.println(" net hours "+netHours);
@@ -480,20 +480,20 @@ public class WeekEntry{
 								//
 								// create earn codes
 								if(salaryGroup != null && salaryGroup.isUnionned()){
-										code = "HCE2.0";
+										code_id = "46"; // "HCE2.0";
 								}
 								else{
 										if(holiday_factor > 1.5){
-												code = "HCE2.0";
+												code_id = "46";// "HCE2.0";
 										}
 										else if(holiday_factor > 1.0){
-												code = "HCE1.5";
+												code_id = "79"; // "HCE1.5";
 										}
 										else{
-												code = "HCE1.0";
+												code_id = "50"; // "HCE1.0";
 										}
 								}
-								addToEarnedHash(code, holy_earn_hrs);
+								addToEarnedHash(code_id, holy_earn_hrs);
 						}
 				}
     }
@@ -503,12 +503,12 @@ public class WeekEntry{
      */
     public void createEarnRecord(){
 				//
-				String code = "";
+				String code_id = "";
 				if(excess_hrs <= critical_small) return;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
-								code = "OT1.5";	// no CE1.5 for temp
-								addToEarnedHash(code, excess_hrs);								
+								code_id = "43"; // "OT1.5";	// no CE1.5 for temp
+								addToEarnedHash(code_id, excess_hrs);								
 								return;
 						}
 						if(salaryGroup.isFireSworn()){ // NW takes care of this
@@ -528,7 +528,7 @@ public class WeekEntry{
 				//
 				// this should work for full time or part time with benefit
 				//
-				code = "CE1.0";
+				code_id = "71"; // "CE1.0";
 				//
 				// we want to keep excess_hrs as we may need it
 				// for other stuff
@@ -537,11 +537,11 @@ public class WeekEntry{
 				if(st_weekly_hrs < 40){ // for those who have starndard hours < 40
 						double dif = 40 - st_weekly_hrs;								
 						if(excess_hrs2 > dif && dif > 0){
-								addToEarnedHash(code, dif);
+								addToEarnedHash(code_id, dif);
 								excess_hrs2 -= dif;
 						}
 						else{
-								addToEarnedHash(code, excess_hrs2);
+								addToEarnedHash(code_id, excess_hrs2);
 								excess_hrs2 = 0;
 						}
 				}
@@ -551,27 +551,27 @@ public class WeekEntry{
 				//
 				if(excess_hrs2 > critical_small){ 
 						if(excess_hours_calculation_method.equals("Monetary")){
-								code ="OT1.0";
+								code_id ="78"; // "OT1.0";
 								if(comp_factor > 1.0){
-										code = "OT1.5";
+										code_id = "43"; // "OT1.5";
 								}
 						}
 						else{ // Earn time
 								if(comp_factor > 1.0){
-										code = "CE1.5";
+										code_id = "34"; // "CE1.5";
 								}
 						}
 						String dstr = ndf.format(excess_hrs2);
 						excess_hrs2 = (double) (new Double(dstr));
-						addToEarnedHash(code, excess_hrs2);								
+						addToEarnedHash(code_id, excess_hrs2);								
 				}
     }
     public void createProfRecord(){
 				//
-				String code = "PROF HRS";		
+				String code_id = "109";// "PROF HRS";		// on the server 109
 				if(prof_hrs > critical_small){
 						String dstr = ndf.format(prof_hrs);
-						addToEarnedHash(code, new Double(dstr));
+						addToEarnedHash(code_id, new Double(dstr));
 				}
     }	
 }

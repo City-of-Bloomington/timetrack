@@ -16,10 +16,10 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PayPeriodProcess{
+public class TimewarpProcess{
 
     boolean debug = false;
-    static Logger logger = LogManager.getLogger(PayPeriodProcess.class);
+    static Logger logger = LogManager.getLogger(TimewarpProcess.class);
     static final long serialVersionUID = 180L;				
     String regCode="Reg"; // TEMP for temporary work
     Employee employee = null;
@@ -35,7 +35,7 @@ public class PayPeriodProcess{
     static DecimalFormat df4 = new DecimalFormat("#0.0000");
 
     final static String profHrsCode = "PROF HRS";
-    WeekEntry week1 = null, week2 = null;
+    TmwrpWeekEntry week1 = null, week2 = null;
     //
     // List<Holiday> holys = null;
     HolidayList holyList = null;
@@ -70,48 +70,10 @@ public class PayPeriodProcess{
     Hashtable<String, Double> monetarySecondPay = null;
 		//
 		//  used by TimewarpManager
-    public PayPeriodProcess(Document val,
+    public TimewarpProcess(Document val,
 														HolidayList val2){
 				setDocument(val);
 				setHolidayList(val2);
-				//
-				setWeekEntries();
-    }
-		//
-		// used by import
-    public PayPeriodProcess(Employee val,
-														PayPeriod val2,
-														HolidayList val3,
-														JobTask val4,
-														Department val5,
-														boolean val6){
-				setEmployee(val);
-				setPayPeriod(val2);
-				setHolidayList(val3);
-				setJob(val4);
-				setDepartment(val5);				
-				setCsvOutuput(val6);
-				//
-				// prepare the objects
-				//
-				setWeekEntries();
-    }
-    // employee with multiple jobs
-    public PayPeriodProcess(Employee val,
-														PayPeriod val2,
-														HolidayList val3,
-														JobTask val4,
-														Department val5,
-														boolean val6, // csv
-														boolean val7){ // multi
-														
-				setEmployee(val);
-				setPayPeriod(val2);
-				setHolidayList(val3);
-				setJob(val4);
-				setDepartment(val5);				
-				setCsvOutuput(val6);
-				setMultipleJobs(val7);
 				//
 				setWeekEntries();
     }
@@ -199,29 +161,29 @@ public class PayPeriodProcess{
 						//
 						if(splitDay < 7){
 								weekOneHasSplit = true;
-								week1 = new WeekEntry(debug,
+								week1 = new TmwrpWeekEntry(debug,
 																			department,
 																			job,
 																			splitDay);
-								week2 = new WeekEntry(debug,
+								week2 = new TmwrpWeekEntry(debug,
 																			department,
 																			job);
 						}
 						else{
-								week1 = new WeekEntry(debug,
+								week1 = new TmwrpWeekEntry(debug,
 																			department,
 																			job);
-								week2 = new WeekEntry(debug,
+								week2 = new TmwrpWeekEntry(debug,
 																			department,
 																			job,
 																			splitDay-7);
 						}
 				}
 				else{
-						week1 = new WeekEntry(debug, 
+						week1 = new TmwrpWeekEntry(debug, 
 																	department,
 																	job);
-						week2 = new WeekEntry(debug, 
+						week2 = new TmwrpWeekEntry(debug, 
 																	department,
 																	job);
 				}
@@ -497,7 +459,7 @@ public class PayPeriodProcess{
     }
 		
     public Hashtable<String, Double> getWeekSplitNonRegularHours(int week_no, int split_no){
-				WeekEntry week = null;		
+				TmwrpWeekEntry week = null;		
 				if(week_no == 1)
 						week = week1;
 				else
@@ -509,7 +471,7 @@ public class PayPeriodProcess{
     }
     public Hashtable<String, Double> getWeekSplitMonetaryHash(int week_no,
 																															int split_no){
-				WeekEntry week = null;		
+				TmwrpWeekEntry week = null;		
 				if(week_no == 1)
 						week = week1;
 				else

@@ -838,7 +838,8 @@ CREATE TABLE tmwrp_runs (
 	week1_net_reg_hrs decimal (6,2),
 	week2_net_reg_hrs decimal (6,2),
 	foreign key(document_id) references time_documents(id),
-	foreign key(reg_code_id) references hour_codes(id)
+	foreign key(reg_code_id) references hour_codes(id),
+	unique (document_id)
 	) ENGINE=InnoDB;
 ;;
 ;; these will be sums of similar hour_codes, for the whole pay period

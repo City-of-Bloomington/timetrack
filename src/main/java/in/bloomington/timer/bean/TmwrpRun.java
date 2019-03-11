@@ -37,6 +37,20 @@ public class TmwrpRun{
     public TmwrpRun(String val){
 				setId(val);
     }
+		// new record or discovery
+    public TmwrpRun(String val,
+										String val2,
+										Double val3,
+										Double val4,
+										Double val5,
+										Double val6){
+				setDocument_id(val);
+				setReg_code_id(val2);
+				setWeek1GrsRegHrs(val3);
+				setWeek2GrsRegHrs(val4);
+				setWeek1GrsRegHrs(val5);
+				setWeek2GrsRegHrs(val6);				
+    }		
     public TmwrpRun(String val,
 										String val2,
 										String val3,
@@ -222,14 +236,56 @@ public class TmwrpRun{
 				}
 				return msg;
     }
-
+		public String doSaveOrUpdate(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "select id from tmwrp_runs where document_id=? ";
+				if(document_id.equals("")){
+						msg = " document not set ";
+						return msg;
+				}
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, document_id);						
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								id = rs.getString(1);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				if(msg.equals("")){
+						if(id.equals("")){
+								return doSave();
+						}
+						else{
+								return doUpdate();
+						}
+				}
+				return msg;
+		}
     public String doSave(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into tmwrp_runs values(0,?,?,now(),?,?,?,?) ";
+				String qq = "select id from tmwrp_runs where document_id=? ";
+				String qq2 = "insert into tmwrp_runs values(0,?,?,now(),?,?,?,?) ";
 				if(document_id.equals("")){
 						msg = " document not set ";
 						return msg;
@@ -272,6 +328,49 @@ public class TmwrpRun{
 				}
 				return msg;
     }
+    public String doUpdate(){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "update tmwrp_runs set "+
+						"reg_code_id=?,"+
+						"week1_grs_reg_hrs=?,"+
+						"week2_grs_reg_hrs=?,"+
+						"week1_net_reg_hrs=?,"+
+						"week1_net_reg_hrs=? "+
+						"where id=? ";
+				if(reg_code_id.equals("")){
+						msg = " regular hour code not set ";
+						return msg;
+				}				
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, reg_code_id);
+						pstmt.setDouble(2,week1_grs_reg_hrs);
+						pstmt.setDouble(2,week2_grs_reg_hrs);
+						pstmt.setDouble(3,week1_net_reg_hrs);
+						pstmt.setDouble(4,week2_net_reg_hrs);
+						pstmt.setString(5, id);						
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+    }		
 		/**
 		 * when delete, we also delete related blocks
 		 */

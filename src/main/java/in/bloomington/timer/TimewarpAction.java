@@ -198,32 +198,11 @@ public class TimewarpAction extends TopAction{
 						back = " benefit groups data not found ";
 						return back;
 				}
-				/*
-				if(profiles == null){
-						getProfiles();
-				}
-				if(profiles == null){
-						back = " could not find employees profiles ";
-						return back;
-				}
 				if(holys == null){
 						getHolidayList();
 				}				
-				*/
-
 				for(Employee emp:employees){
 						String emp_num = emp.getEmployee_number();
-						/*
-						Profile profile = null;
-						if(!emp_num.equals("")){
-								if(profMap.containsKey(emp_num)){
-										profile = profMap.get(emp_num);
-								}
-								else{
-										continue;
-								}
-						}
-						*/
 						emp.setPay_period_id(pay_period_id);
 						System.err.println(" emp "+emp.getFull_name());
 						// System.err.println(" profile "+profile);
@@ -233,7 +212,6 @@ public class TimewarpAction extends TopAction{
 								for(JobTask job:jobs){
 										PayPeriodProcess one =										
 												new PayPeriodProcess(emp,
-																						 // profile,
 																						 payPeriod,
 																						 holys,
 																						 job,
@@ -266,7 +244,6 @@ public class TimewarpAction extends TopAction{
 								JobTask job = emp.getJob();
 								PayPeriodProcess one =
 										new PayPeriodProcess(emp,
-																				 // profile,
 																				 payPeriod,
 																				 holys,
 																				 job,
