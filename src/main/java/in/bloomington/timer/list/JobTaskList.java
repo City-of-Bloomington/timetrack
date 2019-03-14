@@ -432,7 +432,7 @@ public class JobTaskList{
 						"j.hourly_rate,"+
 						"date_format(j.added_date,'%m/%d/%Y'),"+
 						
-						"j.inactive,  "+
+						" j.inactive,  "+
 						" sg.name,sg.description,sg.default_regular_id,"+
 						" sg.excess_culculation,sg.inactive,"+
 						" p.name, "+
@@ -440,7 +440,7 @@ public class JobTaskList{
 						" from jobs j,employees e, "+
 						" salary_groups sg, "+
 						" positions p ";
-				qq += " where g.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null and j.position_id=p.id "+
+				qq += " where sg.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null and j.position_id=p.id "+
 						" and e.inactive is null ";
 				// active only
 				qq += " and j.inactive is null ";

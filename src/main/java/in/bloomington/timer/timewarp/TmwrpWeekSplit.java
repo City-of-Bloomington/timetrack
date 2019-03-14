@@ -176,12 +176,13 @@ public class TmwrpWeekSplit{
 								}
 								if(hours > 8.009){
 										dif_hrs = hours - daily_hrs;
-										if(dif_hrs > 0.009)
+										if(dif_hrs > 0.009){
 												if(jj == 6){ // Sunday
-												earned_time20 += dif_hrs;												
-										}
-										else{
-												earned_time15 += dif_hrs;
+														earned_time20 += dif_hrs;												
+												}
+												else{
+														earned_time15 += dif_hrs;
+												}
 										}
 								}
 						}
@@ -239,7 +240,7 @@ public class TmwrpWeekSplit{
 		}
 		//
 		// for union or similar
-		// reg code only
+		// reg code only,
 		//
 		void addToRegDaily(TimeBlock te){
 				//

@@ -844,14 +844,18 @@ CREATE TABLE tmwrp_runs (
 ;;
 ;; these will be sums of similar hour_codes, for the whole pay period
 ;; OT, CE1.0, will be one
-;; 
+;; since we are going to do a lot of delete and insert into this table
+;; we decided to make primary key(id, run_id) so that we can recycle id
+;; numbers without adding a new index
+;;
 CREATE TABLE tmwrp_blocks (
-  id int unsigned NOT NULL AUTO_INCREMENT primary key,
+  id int unsigned not null,
 	run_id int unsigned not null,
 	hour_code_id int unsigned not null,
 	apply_type enum('Week 1','Week 2','Cycle'),	
 	hours decimal (6,2) default 0,
 	amount decimal (6,2) default 0,
+	primary key(id,run_id),
 	foreign key(hour_code_id) references hour_codes(id),
 	foreign key(run_id) references tmwrp_runs(id)			
 	) ENGINE=InnoDB;

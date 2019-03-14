@@ -65,6 +65,7 @@ public class Document implements Serializable{
     // week 1,2 / hour_code_id /hours
     Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = null;
     HolidayList holidays = null;
+		TmwrpRun tmwrpRun = null;
 		boolean accrualAdjusted = false, warning_flag_set=false,
 				need_warning = true;
     public Document(String val,
@@ -497,6 +498,24 @@ public class Document implements Serializable{
     public double getWeek2AmountTotalDbl(){
 				return week2AmountTotal;
     }
+		public boolean hasTmwrpRun(){
+				if(tmwrpRun == null){
+						findTmwrpRun();
+				}
+				return tmwrpRun != null;
+		}
+		private void findTmwrpRun(){
+				if(tmwrpRun == null && !id.equals("")){
+						TmwrpRun one = new TmwrpRun();
+						String back = one.doFind(id);
+						if(back.equals("")){
+								tmwrpRun = one;
+						}
+				}
+		}
+		public TmwrpRun getTmwrpRun(){
+				return tmwrpRun;
+		}
 		// total hours
     public String getPayPeriodTotal(){
 				double ret = week1Total+week2Total;

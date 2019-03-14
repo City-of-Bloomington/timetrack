@@ -34,6 +34,17 @@ public class CodeRef{
 				setGl_value(val5);
 				setPto_ratio(val6);
     }
+		// to join with HourCode ID and ratio ignored
+    public CodeRef(String val,
+									 String val2,
+									 String val3,
+									 String val4
+									 ){
+				setCode_id(val);
+				setCode(val2);
+				setNw_code(val3);
+				setGl_value(val4);
+    }		
 		public String getId(){
 				return id;
     }

@@ -67,8 +67,14 @@ public class TmwrpBlockList{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select g.id,g.run_id,g.apply_type,"+
-						"g.hour_code_id,g.hours,g.amount "+
-						" from tmwrp_blocks g ";
+						"g.hour_code_id,g.hours,g.amount, "+
+						" h.id,h.name,h.description,h.record_method,"+
+						" h.accrual_id, h.reg_default,h.type,"+
+						" h.default_monetary_amount,h.inactive, "+
+						" f.nw_code,f.gl_string "+
+						" from tmwrp_blocks g "+						
+						" join hour_codes h on h.id=g.hour_code_id "+
+						" left join code_cross_ref f on f.code_id=h.id ";					
 				String qw = "";
 				if(!run_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
@@ -90,14 +96,6 @@ public class TmwrpBlockList{
 						if(!run_id.equals("")){
 								pstmt.setString(jj++, run_id);
 						}
-						/*
-						if(!document_id.equals("")){
-								pstmt.setString(jj++, document_id);
-						}						
-						if(!pay_period_id.equals("")){
-								pstmt.setString(jj++, pay_period_id);
-						}
-						*/
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								if(blocks == null)
@@ -108,7 +106,23 @@ public class TmwrpBlockList{
 																			rs.getString(3),
 																			rs.getString(4),
 																			rs.getDouble(5),
-																			rs.getDouble(6));
+																			rs.getDouble(6),
+																			
+																			rs.getString(7), // HourCode
+																			rs.getString(8),
+																			rs.getString(9),
+																			rs.getString(10),
+																			rs.getString(11),
+																			rs.getString(12) != null,
+																			rs.getString(13),
+																			rs.getDouble(14),
+																			rs.getString(15) != null,
+																			
+																			rs.getString(16),
+																			rs.getString(17));
+
+
+																			
 								if(!blocks.contains(one))
 										blocks.add(one);
 						}

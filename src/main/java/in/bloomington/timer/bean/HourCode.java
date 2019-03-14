@@ -60,6 +60,7 @@ public class HourCode{
 				setType(code_type);
 				setDefaultMonetaryAmount(default_amount);
 		}
+		
     public HourCode(String val,
 										String val2,
 										String val3,
@@ -71,6 +72,21 @@ public class HourCode{
 										boolean val9){
 				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
     }
+    public HourCode(String val,
+										String val2,
+										String val3,
+										String val4,
+										String val5,
+										boolean val6,
+										String val7,
+										Double val8,
+										boolean val9,
+										
+										String val10, // nw_code
+										String val11){ // gl_string 
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11);
+		
+    }		
     void setVals(String val,
 								 String val2,
 								 String val3,
@@ -92,6 +108,24 @@ public class HourCode{
 				setInactive(val9);
 				
     }
+    void setVals(String val,
+								 String val2,
+								 String val3,
+								 String val4,
+								 String val5,
+								 boolean val6,
+								 String val7,
+								 Double val8,
+								 boolean val9,
+								 
+								 String val10,
+								 String val11
+								 ){
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
+				if(val10 != null){
+						codeRef = new CodeRef(id, name, val10, val11);
+				}
+    }		
     //
     // getters
     //
@@ -291,7 +325,7 @@ public class HourCode{
 						String back = cdr.find();
 						if(back.equals("")){
 								List<CodeRef> ones = cdr.getCodeRefs();
-								if(ones != null && ones.size() == 1){
+								if(ones != null && ones.size() > 0){
 										codeRef = ones.get(0);
 								}
 						}
@@ -304,9 +338,12 @@ public class HourCode{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,name,description,record_method,accrual_id,"+
-						" reg_default,type,default_monetary_amount,inactive "+
-						" from hour_codes where id=? ";
+				String qq = "select h.id,h.name,h.description,h.record_method,"+
+						" h.accrual_id, h.reg_default,h.type,"+
+						" h.default_monetary_amount,h.inactive, "+
+						" f.nw_code,f.gl_string "+
+						" from hour_codes h left join code_cross_ref f on f.code_id=h.id "+
+						" where h.id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -326,7 +363,10 @@ public class HourCode{
 												rs.getString(6) != null,
 												rs.getString(7),
 												rs.getDouble(8),
-												rs.getString(9) != null
+												rs.getString(9) != null,
+												
+												rs.getString(10),
+												rs.getString(11)
 												);
 						}
 				}

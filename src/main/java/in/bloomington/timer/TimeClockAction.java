@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;  
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import in.bloomington.timer.timewarp.TimewarpManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -96,11 +97,17 @@ public class TimeClockAction extends TopAction{
 														if(action.equals("Submit"))
 																return "pickJob";
 												}
+												boolean hasClockIn = timeClock.hasClockIn();
 												back = timeClock.process();
 												if(!back.equals("")){
 														addError(back);
 												}
 												else{
+														if(hasClockIn){
+																TimewarpManager tmwrpManager =
+																		new TimewarpManager(timeClock.getDocument_id());
+																back = tmwrpManager.doProcess();
+														}
 														addMessage("Received Successfully");
 												}
 										}

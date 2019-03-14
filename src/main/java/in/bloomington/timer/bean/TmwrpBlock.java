@@ -7,6 +7,7 @@ package in.bloomington.timer.bean;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import java.util.Hashtable;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
@@ -23,7 +24,7 @@ public class TmwrpBlock{
 		static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     String id="", run_id="", hour_code_id="",
 				apply_type=""; // Week 1, Week 2, Cycle
-
+		int start_id = 1;
     double hours=0, amount=0;
     //
 		HourCode hourCode = null;
@@ -33,6 +34,35 @@ public class TmwrpBlock{
     public TmwrpBlock(String val){
 				setId(val);
     }
+		// for new record - no amount
+    public TmwrpBlock(int val,
+											String val2,
+											String val3,
+											String val4,
+											Double val5
+											){
+				setId(val);
+				setRun_id(val2);
+				setHour_code_id(val3);
+				setApplyType(val4);
+				setHours(val5);
+    }		
+		// for new record with amount
+    public TmwrpBlock(int val,
+											String val2,
+											String val3,
+											String val4,
+											Double val5,
+											Double val6
+											){
+				setId(val);
+				setRun_id(val2);
+				setHour_code_id(val3);
+				setApplyType(val4);
+				setHours(val5);
+				setAmount(val6);
+    }
+		
     public TmwrpBlock(String val,
 											String val2,
 											String val3,
@@ -46,7 +76,47 @@ public class TmwrpBlock{
 				setApplyType(val4);
 				setHours(val5);
 				setAmount(val6);
-    }		
+    }
+		// needed for the list
+    public TmwrpBlock(String val,
+											String val2,
+											String val3,
+											String val4,
+											Double val5,
+											Double val6,
+											
+											String val7, // hourCode
+											String val8,
+											String val9,
+											String val10,
+											String val11,
+											boolean val12,
+											String val13,
+											Double val14,
+											boolean val15,
+										
+											String val16, // nw_code
+											String val17){
+				setId(val);
+				setRun_id(val2);
+				setHour_code_id(val3);
+				setApplyType(val4);
+				setHours(val5);
+				setAmount(val6);
+				hourCode = new HourCode(val7,
+																val8,
+																val9,
+																val10,
+																val11,
+																val12,
+																val13,
+																val14,
+																val15,
+																
+																val16, // nw_code
+																val17);
+		}
+		
     //
     // getters
     //
@@ -76,6 +146,11 @@ public class TmwrpBlock{
 				if(val != null)
 						id = val;
     }
+    public void setId(int val){
+				if(val >  0)
+						id = ""+val;
+    }		
+		
     public void setRun_id(String val){
 				if(val != null)
 						run_id = val;
@@ -143,22 +218,22 @@ public class TmwrpBlock{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.run_id,g.apply_type,"+
+				String qq = "select g.apply_type,"+
 						"g.hour_code_id,g.hours,g.amount "+
-						" from tmwrp_blocks g where g.id =? ";
+						" from tmwrp_blocks g where g.id =? and run_id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				try{
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, id);
+								pstmt.setString(2, run_id);								
 								rs = pstmt.executeQuery();
 								if(rs.next()){
-										setRun_id(rs.getString(2));
-										setHour_code_id(rs.getString(3));
-										setApplyType(rs.getString(4));										
-										setHours(rs.getDouble(5));
-										setAmount(rs.getDouble(6));
+										setApplyType(rs.getString(1));
+										setHour_code_id(rs.getString(2));
+										setHours(rs.getDouble(3));
+										setAmount(rs.getDouble(4));
 								}
 						}
 				}
@@ -179,11 +254,16 @@ public class TmwrpBlock{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into tmwrp_blocks values(0,?,?,?,?, ?) ";
+				String qq = "insert into tmwrp_blocks values(?,?,?,?,?, ?) ";
 				if(run_id.equals("")){
 						msg = " timewarp run not set ";
 						return msg;
 				}
+				if(id.equals("")){
+						msg = " timewarp id not set ";
+						return msg;
+				}
+								
 				if(hour_code_id.equals("")){
 						msg = " hour code id not set ";
 						return msg;
@@ -196,20 +276,13 @@ public class TmwrpBlock{
 				}				
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, run_id);						
-						pstmt.setString(2, hour_code_id);
-						pstmt.setString(3, apply_type);
-						pstmt.setDouble(4, hours);
-						pstmt.setDouble(5, amount);
+						pstmt.setString(1, id);
+						pstmt.setString(2, run_id);						
+						pstmt.setString(3, hour_code_id);
+						pstmt.setString(4, apply_type);
+						pstmt.setDouble(5, hours);
+						pstmt.setDouble(6, amount);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
-						//
-						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								id = rs.getString(1);
-						}
 				}
 				catch(Exception ex){
 						msg += " "+ex;
@@ -221,14 +294,67 @@ public class TmwrpBlock{
 				}
 				return msg;
     }
+    public String doSaveBolk(Hashtable<String, Double> hash,
+														 String apply_type,
+														 String code_type){ // Hours/Amount
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "insert into tmwrp_blocks values(?,?,?,?,?, 0) ";
+				if(code_type.equals("Amount")){
+						qq = "insert into tmwrp_blocks values(?,?,?,?,0, ?) ";
+				}
+				else{
 
+				}
+				if(run_id.equals("")){
+						msg = " timewarp run not set ";
+						return msg;
+				}
+				if(hash == null || hash.isEmpty()){
+						return msg;
+				}
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
+				Set<String> keys = hash.keySet();
+				try{
+						pstmt = con.prepareStatement(qq);
+						for(String key:keys){
+								double dd = hash.get(key);						
+								pstmt.setInt(1, start_id++);
+								pstmt.setString(2, run_id);						
+								pstmt.setString(3, key);
+								pstmt.setString(4, apply_type);
+								pstmt.setDouble(5, dd); // hours/amount
+								pstmt.executeUpdate();
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+    }		
+		//
+		// most likely it is not needed
+		//
     public String doDelete(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "delete from tmwrp_blocks where id=? ";
+				String qq = "delete from tmwrp_blocks where id=? and run_id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -238,6 +364,7 @@ public class TmwrpBlock{
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, id);
+						pstmt.setString(2, run_id);						
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

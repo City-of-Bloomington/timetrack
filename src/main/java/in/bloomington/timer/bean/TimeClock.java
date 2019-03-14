@@ -232,6 +232,12 @@ public class TimeClock {
 						findDocument();
 				return document;
     }
+		public String getDocument_id(){
+				if(document_id.equals("")){
+						getDocument();
+				}
+				return document_id;
+		}
     //
     void findDocument() {
 				if (document == null) {
@@ -244,6 +250,7 @@ public class TimeClock {
 								List<Document> ones = dl.getDocuments();
 								if (ones != null && ones.size() > 0) {
 										document = ones.get(0);
+										document_id = document.getId();
 								}
 						}
 				}
@@ -256,6 +263,7 @@ public class TimeClock {
 						if (back.equals("")) {
 								document = one;
 								new_docuemnt = true;
+								document_id = document.getId();
 						}
 				}
     }

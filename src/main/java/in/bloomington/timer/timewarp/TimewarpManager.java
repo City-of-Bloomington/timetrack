@@ -67,9 +67,10 @@ public class TimewarpManager{
     public String doProcess(){
 				String back = "";
 				getDocument();
+				getHolidayList();
 				if(document != null){
-						PayPeriodProcess process =
-								new PayPeriodProcess(document,
+						TimewarpProcess process =
+								new TimewarpProcess(document,
 																		 holys);
 					  back = process.find();
 						if(back.equals("")){
@@ -81,7 +82,7 @@ public class TimewarpManager{
 				}
 				return back;
 		}
-		private String processData(PayPeriodProcess process){
+		private String processData(TimewarpProcess process){
 				String back = "";
 				double week1_grs_reg_hrs = 0, week2_grs_reg_hrs=0,
 						week1_net_reg_hrs=0, week2_net_reg_hrs = 0;
@@ -101,8 +102,31 @@ public class TimewarpManager{
 																				 week1_net_reg_hrs,
 																				 week2_net_reg_hrs);
 				back = tmwrpRun.doSaveOrUpdate();
-				
-				
+				String run_id = tmwrpRun.getId();
+				if(tmwrpRun.isOldRecord()){
+						back = tmwrpRun.doCleanUp();
+				}
+				// non regular hours
+				TmwrpBlock block = new TmwrpBlock();
+				block.setRun_id(run_id);
+				if(back.equals("") && !run_id.equals("")){
+						Hashtable<String, Double> hash = process.getWeek1All();						
+						if(!hash.isEmpty()){
+								back += block.doSaveBolk(hash, "Week 1", "Hours");
+						}
+						hash = process.getWeek2All();						
+						if(!hash.isEmpty()){
+								back += block.doSaveBolk(hash, "Week 2", "Hours");
+						}
+						hash = process.getWeek1MonetaryHash();
+						if(!hash.isEmpty()){
+								back += block.doSaveBolk(hash, "Week 1", "Amount");
+						}
+						hash = process.getWeek2MonetaryHash();
+						if(!hash.isEmpty()){
+								back += block.doSaveBolk(hash, "Week 2", "Amount");
+						}							
+				}
 				return back;
 		}
     public HolidayList getHolidayList(){

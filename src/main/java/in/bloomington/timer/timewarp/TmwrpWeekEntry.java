@@ -44,7 +44,7 @@ public class TmwrpWeekEntry{
 		SalaryGroup salaryGroup = null;
 		Group group = null;
 		Shift shift = null;
-		// HourCode defaultEarnCode = null;
+		//
 		String excess_hours_calculation_method = "";
     //
     // these are used for the yearend pay period where we need
@@ -213,7 +213,7 @@ public class TmwrpWeekEntry{
 						all.putAll(hash);
 				if(!earnedHash.isEmpty())
 						all.putAll(earnedHash);
-				if(handSpecial){
+				if(handSpecial){ 
 						all.putAll(regHash);
 				}
 				return all;
@@ -342,7 +342,8 @@ public class TmwrpWeekEntry{
      * regular hours when added to non regular we get 40
      */
     public void findNetRegular(){
-	
+
+				
 				net_reg_hrs = 0;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
@@ -398,10 +399,11 @@ public class TmwrpWeekEntry{
 								excess_hrs = 1f;
 						}
 						else if(salaryGroup.isFireSworn()){
-								// excess_hrs = netHours - comp_weekly_hrs;
+								// fire excess is handled by NW
 						}
 						else if(salaryGroup.isFireSworn5x8()){
-								// excess_hrs = netHours - comp_weekly_hrs;
+								// fire excess is handled by NW
+								//
 						}						
 						else{
 								if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){
@@ -513,7 +515,6 @@ public class TmwrpWeekEntry{
 						}
 						if(salaryGroup.isFireSworn()){ // NW takes care of this
 								// code = "FIRE FLSA";	 pay period not weekly
-								// addToEarnedHash(code, excess_hrs);								
 								return;
 						}						
 						else if(!salaryGroup.isExcessCulculationWeekly()){

@@ -24,7 +24,9 @@ public class TmwrpRun{
 				week2_grs_reg_hrs=0,
 				week1_net_reg_hrs=0,
 				week2_net_reg_hrs=0;
-		
+		double week1_total_hours = 0, week2_total_hours = 0;
+		double week1_total_amount = 0, week2_total_amount = 0;		
+		boolean old_record = false;
     //
     Document document = null;
 		HourCode regCode = null;
@@ -48,8 +50,8 @@ public class TmwrpRun{
 				setReg_code_id(val2);
 				setWeek1GrsRegHrs(val3);
 				setWeek2GrsRegHrs(val4);
-				setWeek1GrsRegHrs(val5);
-				setWeek2GrsRegHrs(val6);				
+				setWeek1NetRegHrs(val5);
+				setWeek2NetRegHrs(val6);				
     }		
     public TmwrpRun(String val,
 										String val2,
@@ -65,8 +67,8 @@ public class TmwrpRun{
 				setReg_code_id(val4);
 				setWeek1GrsRegHrs(val5);
 				setWeek2GrsRegHrs(val6);
-				setWeek1GrsRegHrs(val7);
-				setWeek2GrsRegHrs(val8);				
+				setWeek1NetRegHrs(val7);
+				setWeek2NetRegHrs(val8);				
     }
     //
     // getters
@@ -125,14 +127,33 @@ public class TmwrpRun{
 						week2_grs_reg_hrs = val;
     }				
     public void setWeek1NetRegHrs(Double val){
-				if(val != null)
+				if(val != null){
 						week1_net_reg_hrs = val;
+				}
     }
     public void setWeek2NetRegHrs(Double val){
-				if(val != null)
+				if(val != null){
 						week2_net_reg_hrs = val;
+				}
     }		
-
+		public double getWeek1TotalHours(){
+				return week1_total_hours;
+		}
+		public double getWeek2TotalHours(){
+				return week2_total_hours;
+		}
+		public double getCycleTotalHours(){
+				return week1_total_hours+week2_total_hours;
+		}
+		public double getWeek1TotalAmount(){
+				return week1_total_amount;
+		}
+		public double getWeek2TotalAmount(){
+				return week2_total_amount;
+		}
+		public double getCycleTotalAmount(){
+				return week1_total_amount+week2_total_amount;
+		}		
     public boolean equals(Object o) {
 				if (o instanceof TmwrpRun) {
 						TmwrpRun c = (TmwrpRun) o;
@@ -155,6 +176,9 @@ public class TmwrpRun{
     public String toString(){
 				return id;
     }
+		public boolean isOldRecord(){
+				return old_record;
+		}
 		
     public Document getDocument(){
 				if(document == null && !document_id.equals("")){
@@ -176,7 +200,7 @@ public class TmwrpRun{
 				}
 				return regCode;
     }
-		public List<TmwrpBlock> getBlocks(){
+		private void findBlocks(){
 				if(blocks == null && !id.equals("")){
 						TmwrpBlockList tbl = new TmwrpBlockList(id);
 						String back = tbl.find();
@@ -186,13 +210,91 @@ public class TmwrpRun{
 										blocks = ones;
 								}
 						}
-
 				}
-				return blocks;
+				findTotals();
 		}
+		public List<TmwrpBlock> getBlocks(){
+				return blocks;
+		}		
 		public boolean hasBlocks(){
-				getBlocks();
+				findBlocks();
 				return blocks != null && blocks.size() > 0;
+		}
+		private void findTotals(){
+				week1_total_hours = week1_net_reg_hrs;
+				week2_total_hours = week2_net_reg_hrs;				
+				if(hasBlocks()){
+						for(TmwrpBlock one:blocks){
+								if(one.getHourCode().isRecordMethodMonetary()){
+										if(one.getApplyType().equals("Week 1")){
+												week1_total_amount  += one.getAmount();
+										}
+										else{
+												week2_total_amount  += one.getAmount();
+										}
+								}
+								else{
+										if(one.getApplyType().equals("Week 1")){
+												week1_total_hours  += one.getHours();
+										}
+										else{
+												week2_total_hours  += one.getHours();
+										}										
+								}
+						}
+				}
+		}
+		
+		/**
+		 * since document_id is unique per record
+		 * we can use this function to get it (if any)
+		 */
+		public String doFind(String doc_id){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "select g.id,g.reg_code_id,g.document_id,g.reg_code_id,"+
+						"date_format(g.run_time,'%m/%d/%y %H:%i'),"+
+						"g.week1_grs_reg_hrs, "+
+						"g.week2_grs_reg_hrs, "+
+						"g.week1_net_reg_hrs, "+
+						"g.week2_net_reg_hrs "+						
+						"from tmwrp_runs g where g.document_id = ? ";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Unable to connect to DB ";
+						return msg;
+				}
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, doc_id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setId(rs.getString(1));
+								setDocument_id(rs.getString(2));
+								setReg_code_id(rs.getString(3));
+								setRunTime(rs.getString(4));
+								setWeek1GrsRegHrs(rs.getDouble(5));
+								setWeek2GrsRegHrs(rs.getDouble(6));
+								setWeek1NetRegHrs(rs.getDouble(7));
+								setWeek2NetRegHrs(rs.getDouble(8));
+						}
+						else{
+								msg = "No record found for "+doc_id;
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+
 		}
 		
     public String doSelect(){
@@ -258,6 +360,7 @@ public class TmwrpRun{
 						rs = pstmt.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
+								old_record = true;
 						}
 				}
 				catch(Exception ex){
@@ -278,14 +381,47 @@ public class TmwrpRun{
 				}
 				return msg;
 		}
+		/**
+		 * remove old blocks so we can add the new ones
+		 */
+		public String doCleanUp(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "delete from tmwrp_blocks where run_id=? ";
+				if(id.equals("")){
+						msg = " run id not set ";
+						return msg;
+				}
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);						
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}		
     public String doSave(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id from tmwrp_runs where document_id=? ";
-				String qq2 = "insert into tmwrp_runs values(0,?,?,now(),?,?,?,?) ";
+				String qq = "insert into tmwrp_runs values(0,?,?,now(),?,?,?,?) ";
 				if(document_id.equals("")){
 						msg = " document not set ";
 						return msg;
@@ -302,6 +438,7 @@ public class TmwrpRun{
 				}				
 				try{
 						pstmt = con.prepareStatement(qq);
+						
 						pstmt.setString(1, document_id);						
 						pstmt.setString(2, reg_code_id);
 						pstmt.setDouble(3,week1_grs_reg_hrs);
@@ -335,11 +472,12 @@ public class TmwrpRun{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "update tmwrp_runs set "+
+						"run_time=now(),"+
 						"reg_code_id=?,"+
 						"week1_grs_reg_hrs=?,"+
 						"week2_grs_reg_hrs=?,"+
 						"week1_net_reg_hrs=?,"+
-						"week1_net_reg_hrs=? "+
+						"week2_net_reg_hrs=? "+
 						"where id=? ";
 				if(reg_code_id.equals("")){
 						msg = " regular hour code not set ";
@@ -355,10 +493,10 @@ public class TmwrpRun{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, reg_code_id);
 						pstmt.setDouble(2,week1_grs_reg_hrs);
-						pstmt.setDouble(2,week2_grs_reg_hrs);
-						pstmt.setDouble(3,week1_net_reg_hrs);
-						pstmt.setDouble(4,week2_net_reg_hrs);
-						pstmt.setString(5, id);						
+						pstmt.setDouble(3,week2_grs_reg_hrs);
+						pstmt.setDouble(4,week1_net_reg_hrs);
+						pstmt.setDouble(5,week2_net_reg_hrs);
+						pstmt.setString(6, id);						
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

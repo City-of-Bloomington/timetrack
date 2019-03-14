@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import in.bloomington.timer.timewarp.TimewarpManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,6 +30,7 @@ public class TimeBlockAction extends TopAction{
 		Employee employee = null;
 		Document document = null;
 		PayPeriod payPeriod = null;
+		TimewarpManager timewarpManager = null;
 		List<EmployeeAccrual> employeeAccruals = null;
 		List<HourCode> hourCodes = null;
 		Department department = null;
@@ -49,6 +51,8 @@ public class TimeBlockAction extends TopAction{
 										return "json";
 								}
 								else{
+										timewarpManager.setDocument_id(timeBlock.getDocument_id());
+										back = timewarpManager.doProcess();
 										addMessage("Added Successfully");
 								}
 						}
@@ -67,6 +71,8 @@ public class TimeBlockAction extends TopAction{
 										return "json";
 								}
 								else{
+										timewarpManager.setDocument_id(timeBlock.getDocument_id());
+										back = timewarpManager.doProcess();
 										addMessage("Updated Successfully");								
 								}
 						}
@@ -79,6 +85,7 @@ public class TimeBlockAction extends TopAction{
 				else if(action.equals("Delete")){
 						getTimeBlock();
 						back = timeBlock.doSelect();
+						timewarpManager.setDocument_id(timeBlock.getDocument_id());
 						//
 						// we need document_id so that when we delete the timeblock
 						// we stay on the same payperiod
@@ -91,6 +98,7 @@ public class TimeBlockAction extends TopAction{
 								addError(back);
 						}
 						else{
+								back = timewarpManager.doProcess();
 								try{
 										HttpServletResponse res = ServletActionContext.getResponse();
 										String str = url+"timeDetails.action?document_id="+document_id;
@@ -117,10 +125,13 @@ public class TimeBlockAction extends TopAction{
 		public TimeBlock getTimeBlock(){ 
 				if(timeBlock == null){
 						timeBlock = new TimeBlock();
+						timewarpManager = new TimewarpManager();
 						if(!id.equals(""))
 								timeBlock.setId(id);
-						if(!document_id.equals(""))
+						if(!document_id.equals("")){
 								timeBlock.setDocument_id(document_id);
+								timewarpManager.setDocument_id(document_id);
+						}
 						if(!date.equals(""))
 								timeBlock.setDate(date);
 						timeBlock.setOrder_index(order_index);
