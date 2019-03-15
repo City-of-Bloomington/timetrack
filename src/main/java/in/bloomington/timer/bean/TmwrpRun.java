@@ -6,7 +6,11 @@ package in.bloomington.timer.bean;
  */
 import java.io.Serializable;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.Map;
+import java.util.TreeMap;
+import java.text.DecimalFormat;
 import java.sql.*;
 import javax.sql.*;
 import in.bloomington.timer.*;
@@ -18,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class TmwrpRun{
 
     static Logger logger = LogManager.getLogger(TmwrpRun.class);
+    static final DecimalFormat df = new DecimalFormat("#0.00");		
     static final long serialVersionUID = 1500L;
     String id="", document_id="", run_time="", reg_code_id="";
 		double week1_grs_reg_hrs = 0,
@@ -27,12 +32,14 @@ public class TmwrpRun{
 		double week1_total_hours = 0, week2_total_hours = 0;
 		double week1_total_amount = 0, week2_total_amount = 0;		
 		boolean old_record = false;
+		boolean has_week1_rows = false, has_week2_rows = false;
     //
     Document document = null;
 		HourCode regCode = null;
 
 		List<TmwrpBlock> blocks = null;
-
+		// for display
+    Map<String, List<String>> week1Rows = null, week2Rows = null;
 		
     public TmwrpRun(){
     }		
@@ -197,9 +204,15 @@ public class TmwrpRun{
 						if(back.equals("")){
 								regCode = one;
 						}
+						else{
+								System.err.println(" reg code "+back);
+						}
 				}
 				return regCode;
     }
+		//
+		// include totals
+		//
 		private void findBlocks(){
 				if(blocks == null && !id.equals("")){
 						TmwrpBlockList tbl = new TmwrpBlockList(id);
@@ -215,15 +228,14 @@ public class TmwrpRun{
 		}
 		public List<TmwrpBlock> getBlocks(){
 				return blocks;
-		}		
+		}
 		public boolean hasBlocks(){
-				findBlocks();
 				return blocks != null && blocks.size() > 0;
 		}
 		private void findTotals(){
 				week1_total_hours = week1_net_reg_hrs;
-				week2_total_hours = week2_net_reg_hrs;				
-				if(hasBlocks()){
+				week2_total_hours = week2_net_reg_hrs;
+				if(blocks != null && blocks.size() > 0){
 						for(TmwrpBlock one:blocks){
 								if(one.getHourCode().isRecordMethodMonetary()){
 										if(one.getApplyType().equals("Week 1")){
@@ -244,7 +256,131 @@ public class TmwrpRun{
 						}
 				}
 		}
-		
+		// needed as a hack
+		public boolean hasRows(){
+				findRows();
+				return true;
+		}
+		/**
+		 * create an array list of list for display
+		 * on detail and similar pages
+		 */
+		public boolean hasWeek1Rows(){
+				return has_week1_rows;
+		}
+		public boolean hasWeek2Rows(){
+				return has_week2_rows;
+		}
+		public Map<String, List<String>> getWeek1Rows(){
+				return week1Rows;
+		}
+		public Map<String, List<String>> getWeek2Rows(){
+				return week2Rows;
+		}		
+		public void findRows(){
+				findBlocks();
+				if(hasWeek1Totals() || hasWeek2Totals()){
+						week1Rows = new TreeMap<>();
+						week2Rows = new TreeMap<>();				
+						List<String> row = null;
+						getRegCode();
+						String key = "";
+						if(week1_grs_reg_hrs > 0.){
+								if(regCode != null){
+										has_week1_rows = true;
+										row = new ArrayList<>();
+										key = "Grs "+regCode.getCodeInfo();
+										row.add(df.format(week1_grs_reg_hrs));
+										row.add("");
+										week1Rows.put(key, row);
+										row = new ArrayList<>();
+										key = "Net "+regCode.getCodeInfo();
+										row.add(df.format(week1_net_reg_hrs));
+										row.add("");
+										week1Rows.put(key, row);
+								}
+						}
+						if(week2_grs_reg_hrs > 0.){
+								if(regCode != null){
+										has_week2_rows = true;
+										row = new ArrayList<>();
+										key = "Grs "+regCode.getCodeInfo();
+										row.add(df.format(week2_grs_reg_hrs));
+										row.add("");
+										week2Rows.put(key, row);
+										row = new ArrayList<>();
+										key = "Net "+regCode.getCodeInfo();
+										row.add(df.format(week2_net_reg_hrs));
+										row.add("");
+										week2Rows.put(key, row);
+								}
+						}
+						if(hasBlocks()){
+								for(TmwrpBlock one:blocks){
+										row = new ArrayList<>();
+										key = one.getHourCode().getCodeInfo();										
+										if(one.getHourCode().isRecordMethodMonetary()){
+												row.add("");
+												row.add("$"+df.format(one.getAmount()));
+												if(one.getApplyType().equals("Week 1")){
+														has_week1_rows = true;
+														week1Rows.put(key, row);
+												}
+												else{
+														has_week2_rows = true;
+														week2Rows.put(key, row);
+												}
+										}
+										else{
+												row.add(df.format(one.getHours()));
+												row.add("");
+												if(one.getApplyType().equals("Week 1")){
+														week1Rows.put(key, row);
+														has_week1_rows = true;
+												}
+												else{
+														week2Rows.put(key, row);
+														has_week2_rows = true;
+												}										
+										}
+								}
+						}
+						if(hasWeek1Totals()){
+								row = new ArrayList<>();
+								key = "Week Total";
+								if(week1_total_hours > 0.)
+										row.add(df.format(week1_total_hours));
+								else
+										row.add("");
+								if(week1_total_amount > 0.)
+										row.add("$"+df.format(week1_total_amount));
+								else
+										row.add("");
+								week1Rows.put(key, row);
+						}
+						if(hasWeek2Totals()){
+								row = new ArrayList<>();
+								key = "Week Total";
+								if(week2_total_hours > 0.)
+										row.add(df.format(week2_total_hours));
+								else
+										row.add("");
+								if(week2_total_amount > 0.)
+										row.add(df.format("$"+week2_total_amount));
+								else
+										row.add("");
+								week2Rows.put(key, row);
+						}
+				}
+		}
+		public boolean hasWeek1Totals(){
+				return (week1_total_hours  > 0.
+						|| week1_total_amount > 0.);
+		}
+		public boolean hasWeek2Totals(){
+				return (week2_total_hours  > 0.
+						|| week2_total_amount > 0.);
+		}		
 		/**
 		 * since document_id is unique per record
 		 * we can use this function to get it (if any)
@@ -254,7 +390,7 @@ public class TmwrpRun{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.reg_code_id,g.document_id,g.reg_code_id,"+
+				String qq = "select g.id,g.document_id,g.reg_code_id,"+
 						"date_format(g.run_time,'%m/%d/%y %H:%i'),"+
 						"g.week1_grs_reg_hrs, "+
 						"g.week2_grs_reg_hrs, "+
@@ -274,7 +410,7 @@ public class TmwrpRun{
 						if(rs.next()){
 								setId(rs.getString(1));
 								setDocument_id(rs.getString(2));
-								setReg_code_id(rs.getString(3));
+								setReg_code_id(rs.getString(3));								
 								setRunTime(rs.getString(4));
 								setWeek1GrsRegHrs(rs.getDouble(5));
 								setWeek2GrsRegHrs(rs.getDouble(6));

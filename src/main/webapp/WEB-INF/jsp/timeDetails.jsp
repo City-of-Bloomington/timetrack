@@ -115,7 +115,7 @@
 					<s:if test="mjdoc.hasHourCodeWeek1()">
 						<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek1" />
 						<s:set var="weekHourTotal" value="mjdoc.week1Total" />
-						<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
+						<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
 						<s:set var="whichWeek" value="'week-one'" />
 						<s:if test="mjdoc.hasAmountCodeWeek1()">
 							<s:set var="weeklyAmountCodes" value="mjdoc.amountCodeWeek1" />
@@ -123,11 +123,10 @@
 						</s:if>						
 						<%@ include file="weeklySummary.jsp" %>
 					</s:if>
-
 					<s:if test="mjdoc.hasHourCodeWeek2()">
 						<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek2" />
 						<s:set var="weekHourTotal" value="mjdoc.week2Total" />
-						<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
+						<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
 						<s:set var="whichWeek" value="'week-two'" />
 						<s:if test="mjdoc.hasAmountCodeWeek2()">
 							<s:set var="weeklyAmountCodes" value="mjdoc.amountCodeWeek2" />
@@ -135,8 +134,23 @@
 						</s:if>												
 						<%@ include file="weeklySummary.jsp" %>
 					</s:if>
+					<s:if test="mjdoc.hasTmwrpRun()">
+						<s:if test="mjdoc.tmwrpRun.hasWeek1Rows()">
+							<s:set var="rows" value="mjdoc.tmwrpRun.week1Rows" />
+							<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
+							<s:set var="whichWeek" value="'week-one'" />
+							<%@ include file="weeklyTmwrp.jsp" %>
+						</s:if>
+						<s:if test="mjdoc.tmwrpRun.hasWeek2Rows()">
+							<s:set var="rows" value="mjdoc.tmwrpRun.week2Rows" />
+							<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
+							<s:set var="whichWeek" value="'week-one'" />
+							<%@ include file="weeklyTmwrp.jsp" %>
+						</s:if>					
+					</s:if>
 				</s:if>
 				<s:else>
+					<!-- 
 					<s:if test="document.hasHourCodeWeek1()">
 						<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
 						<s:set var="weekHourTotal" value="document.week1Total" />
@@ -148,7 +162,6 @@
 						</s:if>
 						<%@ include file="weeklySummary.jsp" %>
 					</s:if>
-
 					<s:if test="document.hasHourCodeWeek2()">
 						<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
 						<s:set var="weekHourTotal" value="document.week2Total" />
@@ -159,6 +172,22 @@
 							<s:set var="weekAmountTotal" value="document.week2AmountTotal" />
 						</s:if>						
 						<%@ include file="weeklySummary.jsp" %>
+					</s:if>
+					-->
+					<s:if test="document.hasTmwrpRun()">
+						<s:if test="document.tmwrpRun.hasRows()"> </s:if>
+						<s:if test="document.tmwrpRun.hasWeek1Rows()">
+							<s:set var="tmrpRows" value="document.tmwrpRun.week1Rows" />
+							<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
+							<s:set var="whichWeek" value="'week-one'" />
+							<%@ include file="weeklyTmwrp.jsp" %>
+						</s:if>
+						<s:if test="document.tmwrpRun.hasWeek2Rows()">
+							<s:set var="tmrpRows" value="document.tmwrpRun.week2Rows" />
+							<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
+							<s:set var="whichWeek" value="'week-two'" />
+							<%@ include file="weeklyTmwrp.jsp" %>
+						</s:if>					
 					</s:if>
 				</s:else>
 			</div>

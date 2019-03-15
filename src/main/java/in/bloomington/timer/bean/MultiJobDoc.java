@@ -785,7 +785,6 @@ public class MultiJobDoc{
 				}
 				if(week1Total > 0){
 						checkWeekWarnings(hourCodeWeek1, week1Total);
-						// checkForExcessUse(hourCodeWeek1, week1Total, "1");
 						checkForExcessUse(week1Total, 1);						
 				}
 				if(job != null){
@@ -797,7 +796,6 @@ public class MultiJobDoc{
 				}
 				if(week2Total > 0){
 						checkWeekWarnings(hourCodeWeek2, week2Total);
-						// checkForExcessUse(hourCodeWeek2, week2Total, "2");
 						checkForExcessUse(week2Total, 2);						
 				}
 				if(job != null){				

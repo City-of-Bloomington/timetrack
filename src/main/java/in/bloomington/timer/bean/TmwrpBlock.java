@@ -57,8 +57,8 @@ public class TmwrpBlock{
 											){
 				setId(val);
 				setRun_id(val2);
-				setHour_code_id(val3);
-				setApplyType(val4);
+				setApplyType(val3);				
+				setHour_code_id(val4);
 				setHours(val5);
 				setAmount(val6);
     }
@@ -72,8 +72,8 @@ public class TmwrpBlock{
 											){
 				setId(val);
 				setRun_id(val2);
-				setHour_code_id(val3);
-				setApplyType(val4);
+				setApplyType(val3);				
+				setHour_code_id(val4);
 				setHours(val5);
 				setAmount(val6);
     }
@@ -99,8 +99,8 @@ public class TmwrpBlock{
 											String val17){
 				setId(val);
 				setRun_id(val2);
-				setHour_code_id(val3);
-				setApplyType(val4);
+				setApplyType(val3);				
+				setHour_code_id(val4);
 				setHours(val5);
 				setAmount(val6);
 				hourCode = new HourCode(val7,
