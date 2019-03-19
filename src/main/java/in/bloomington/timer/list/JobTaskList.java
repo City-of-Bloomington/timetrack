@@ -440,7 +440,7 @@ public class JobTaskList{
 						" from jobs j,employees e, "+
 						" salary_groups sg, "+
 						" positions p ";
-				qq += " where g.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null and j.position_id=p.id "+
+				qq += " where sg.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null and j.position_id=p.id "+
 						" and e.inactive is null ";
 				// active only
 				qq += " and j.inactive is null ";
