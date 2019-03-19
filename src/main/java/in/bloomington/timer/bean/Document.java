@@ -504,7 +504,7 @@ public class Document implements Serializable{
 				}
 				return tmwrpRun != null;
 		}
-		private void findTmwrpRun(){
+		public void findTmwrpRun(){
 				if(tmwrpRun == null && !id.equals("")){
 						TmwrpRun one = new TmwrpRun();
 						String back = one.doFind(id);

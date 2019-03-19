@@ -39,7 +39,8 @@ public class TmwrpRun{
 
 		List<TmwrpBlock> blocks = null;
 		// for display
-    Map<String, List<String>> week1Rows = null, week2Rows = null;
+    // Map<String, List<String>> week1Rows = null, week2Rows = null;
+    List<List<String>> week1Rows = null, week2Rows = null;
 		
     public TmwrpRun(){
     }		
@@ -213,7 +214,7 @@ public class TmwrpRun{
 		//
 		// include totals
 		//
-		private void findBlocks(){
+		public void findBlocks(){
 				if(blocks == null && !id.equals("")){
 						TmwrpBlockList tbl = new TmwrpBlockList(id);
 						String back = tbl.find();
@@ -232,56 +233,58 @@ public class TmwrpRun{
 		public boolean hasBlocks(){
 				return blocks != null && blocks.size() > 0;
 		}
-		private void findTotals(){
+		public void findTotals(){
 				week1_total_hours = week1_net_reg_hrs;
 				week2_total_hours = week2_net_reg_hrs;
 				if(blocks != null && blocks.size() > 0){
 						for(TmwrpBlock one:blocks){
-								if(one.getHourCode().isRecordMethodMonetary()){
-										if(one.getApplyType().equals("Week 1")){
-												week1_total_amount  += one.getAmount();
+								double hrs = one.getHours();
+								double amnt = one.getAmount();
+								if(hrs + amnt > 0){
+										if(one.getHourCode().isRecordMethodMonetary()){
+												if(one.getApplyType().equals("Week 1")){
+														week1_total_amount += amnt;
+												}
+												else{
+														week2_total_amount += amnt;
+												}
 										}
 										else{
-												week2_total_amount  += one.getAmount();
+												if(one.getApplyType().equals("Week 1")){
+														week1_total_hours  += hrs;
+												}
+												else{
+														week2_total_hours  += hrs;
+												}
 										}
-								}
-								else{
-										if(one.getApplyType().equals("Week 1")){
-												week1_total_hours  += one.getHours();
-										}
-										else{
-												week2_total_hours  += one.getHours();
-										}										
 								}
 						}
 				}
-		}
-		// needed as a hack
-		public boolean hasRows(){
-				findRows();
-				return true;
 		}
 		/**
 		 * create an array list of list for display
 		 * on detail and similar pages
 		 */
 		public boolean hasWeek1Rows(){
+				findRows();
 				return has_week1_rows;
 		}
 		public boolean hasWeek2Rows(){
 				return has_week2_rows;
 		}
-		public Map<String, List<String>> getWeek1Rows(){
+
+		public List<List<String>> getWeek1Rows(){
 				return week1Rows;
 		}
-		public Map<String, List<String>> getWeek2Rows(){
+		public List<List<String>> getWeek2Rows(){
 				return week2Rows;
 		}		
+		
 		public void findRows(){
 				findBlocks();
 				if(hasWeek1Totals() || hasWeek2Totals()){
-						week1Rows = new TreeMap<>();
-						week2Rows = new TreeMap<>();				
+						week1Rows = new ArrayList<>();
+						week2Rows = new ArrayList<>();										
 						List<String> row = null;
 						getRegCode();
 						String key = "";
@@ -290,14 +293,16 @@ public class TmwrpRun{
 										has_week1_rows = true;
 										row = new ArrayList<>();
 										key = "Grs "+regCode.getCodeInfo();
+										row.add(key);
 										row.add(df.format(week1_grs_reg_hrs));
 										row.add("");
-										week1Rows.put(key, row);
+										week1Rows.add(row);
 										row = new ArrayList<>();
 										key = "Net "+regCode.getCodeInfo();
+										row.add(key);
 										row.add(df.format(week1_net_reg_hrs));
 										row.add("");
-										week1Rows.put(key, row);
+										week1Rows.add(row);
 								}
 						}
 						if(week2_grs_reg_hrs > 0.){
@@ -305,41 +310,45 @@ public class TmwrpRun{
 										has_week2_rows = true;
 										row = new ArrayList<>();
 										key = "Grs "+regCode.getCodeInfo();
+										row.add(key);
 										row.add(df.format(week2_grs_reg_hrs));
 										row.add("");
-										week2Rows.put(key, row);
+										week2Rows.add(row);
 										row = new ArrayList<>();
 										key = "Net "+regCode.getCodeInfo();
+										row.add(key);										
 										row.add(df.format(week2_net_reg_hrs));
 										row.add("");
-										week2Rows.put(key, row);
+										week2Rows.add(row);
 								}
 						}
 						if(hasBlocks()){
 								for(TmwrpBlock one:blocks){
 										row = new ArrayList<>();
-										key = one.getHourCode().getCodeInfo();										
+										key = one.getHourCode().getCodeInfo();
 										if(one.getHourCode().isRecordMethodMonetary()){
+												row.add(key);
 												row.add("");
 												row.add("$"+df.format(one.getAmount()));
 												if(one.getApplyType().equals("Week 1")){
 														has_week1_rows = true;
-														week1Rows.put(key, row);
+														week1Rows.add(row);
 												}
 												else{
 														has_week2_rows = true;
-														week2Rows.put(key, row);
+														week2Rows.add(row);
 												}
 										}
 										else{
+												row.add(key);
 												row.add(df.format(one.getHours()));
 												row.add("");
 												if(one.getApplyType().equals("Week 1")){
-														week1Rows.put(key, row);
+														week1Rows.add(row);
 														has_week1_rows = true;
 												}
 												else{
-														week2Rows.put(key, row);
+														week2Rows.add(row);
 														has_week2_rows = true;
 												}										
 										}
@@ -348,6 +357,7 @@ public class TmwrpRun{
 						if(hasWeek1Totals()){
 								row = new ArrayList<>();
 								key = "Week Total";
+								row.add(key);
 								if(week1_total_hours > 0.)
 										row.add(df.format(week1_total_hours));
 								else
@@ -356,30 +366,29 @@ public class TmwrpRun{
 										row.add("$"+df.format(week1_total_amount));
 								else
 										row.add("");
-								week1Rows.put(key, row);
+								week1Rows.add(row);
 						}
-						if(hasWeek2Totals()){
+						if(week2_total_hours+week2_total_amount > 0){
 								row = new ArrayList<>();
 								key = "Week Total";
+								row.add(key);
 								if(week2_total_hours > 0.)
 										row.add(df.format(week2_total_hours));
 								else
 										row.add("");
 								if(week2_total_amount > 0.)
-										row.add(df.format("$"+week2_total_amount));
+										row.add("$"+df.format(week2_total_amount));
 								else
 										row.add("");
-								week2Rows.put(key, row);
+								week2Rows.add(row);
 						}
 				}
 		}
 		public boolean hasWeek1Totals(){
-				return (week1_total_hours  > 0.
-						|| week1_total_amount > 0.);
+				return week1_total_hours + week1_total_amount > 0;
 		}
 		public boolean hasWeek2Totals(){
-				return (week2_total_hours  > 0.
-						|| week2_total_amount > 0.);
+				return week2_total_hours + week2_total_amount > 0;
 		}		
 		/**
 		 * since document_id is unique per record

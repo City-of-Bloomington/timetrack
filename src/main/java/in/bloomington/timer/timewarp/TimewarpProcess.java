@@ -895,28 +895,13 @@ public class TimewarpProcess{
     public Hashtable<CodeRef, String> getTwoWeekHandHash(){
 				if(handHash == null){
 						handHash = new Hashtable<>();
-						Hashtable<String, Double> handReg = get2WeekRegularHash();
+
 						codeRefList = new CodeRefList();
 						String back = codeRefList.find();
-						if(back.equals("")){
-								Set<String> keys = handReg.keySet();
-								for(String key:keys){
-										double dd = handReg.get(key).doubleValue();
-										if(codeRefList.hasKey(key)){
-												CodeRef one = codeRefList.getCodeRef(key);
-												if(one != null){
-														handHash.put(one, df.format(dd));
-												}
-												else{
-														System.err.println("No code ref for "+key);
-												}
-										}
-										else{
-												System.err.println("HAND hour code "+key+" not found");
-										}
-								}
+						if(!back.equals("")){
+								System.err.println(" HAND csv error "+back);
 						}
-						Hashtable<String, Double> nonReg = getNonRegularHours();
+						Hashtable<String, Double> nonReg = getAll();
 						Set<String> keys = nonReg.keySet();
 						for(String key:keys){
 								double dd = nonReg.get(key).doubleValue();

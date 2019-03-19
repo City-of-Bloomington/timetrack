@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MultiJobDoc{
 
-		boolean debug = false;
+		boolean debug = false, hasTmwrpRuns = false;
 		static Logger logger = LogManager.getLogger(MultiJobDoc.class);
 		static final long serialVersionUID = 2400L;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -91,6 +91,9 @@ public class MultiJobDoc{
 										documents = ones;
 										for(Document one:documents){
 												one.prepareDaily();
+												if(one.hasTmwrpRun()){
+														hasTmwrpRuns = true;
+												}
 										}
 										// we need one for accruals
 										document = documents.get(0); // any one will do
@@ -103,6 +106,9 @@ public class MultiJobDoc{
 		public boolean hasDocuments(){
 				findDocuments();
 				return documents != null && documents.size() > 0;
+		}
+		public boolean hasTmwrpRuns(){
+				return hasTmwrpRuns;
 		}
 				
     //
@@ -204,6 +210,9 @@ public class MultiJobDoc{
 		public boolean hasMultipleJobs(){
 				getJobs();
 				return jobs != null && jobs.size() > 0;
+		}
+		public List<Document> getDocuments(){
+				return documents;
 		}
 		//
 		// ToDo change to accrual instead of hourCode

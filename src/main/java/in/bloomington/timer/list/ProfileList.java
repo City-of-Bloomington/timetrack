@@ -28,6 +28,7 @@ public class ProfileList{
     String selected_dept_ref = "", employee_number="";
     String deptRefs = null;
     List<Profile> profiles = null;
+		Set<String> employeeSet = new HashSet<>();
     //
     // basic constructor
     //
@@ -42,6 +43,11 @@ public class ProfileList{
 				setSelectedDeptRef(val2);
 				setBenefitGroups(vals);
     }
+    public ProfileList(String val,
+											 String val2){
+				setEndDate(val);
+				setSelectedDeptRef(val2);
+    }		
     // all depts
     public ProfileList(boolean deb,
 											 Hashtable<String, BenefitGroup> vals,
@@ -102,6 +108,9 @@ public class ProfileList{
     public List<Profile> getProfiles(){
 				return profiles;
     }
+		public Set<String> getEmployeeSet(){
+				return employeeSet;
+		}
     /**
      * not used yet
      * finding job titles for people with multiple jobs
@@ -157,6 +166,146 @@ public class ProfileList{
 				}
 				return back;
     }
+		public String findEmployeeSet(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", back="", date = null;
+				if(payPeriod != null){
+						date = payPeriod.getEnd_date();
+				}
+				else if(!end_date.equals("")){
+						date = end_date;
+				}
+				if(date == null){
+						date = Helper.getToday();
+				}
+				if(selected_dept_ref.equals("")){
+						if(deptRefs == null){
+								DepartmentList dl = new DepartmentList();
+								msg = dl.findDeptRefs();
+								if(msg.equals("")){
+										deptRefs = dl.getDeptRefs();
+								}
+						}
+				}
+				String qq = "select ejp.*, g.GradeCode, ei.*, "+
+						" ej.StandardWeeklyHours, "+
+						" ur.UDFAttributeID,ur.valInt,ur.valDecimal "+ 
+						" from HR.vwEmployeeJobWithPosition ejp,"+
+						" (SELECT  "+
+						" E.EmployeeId, "+  
+						" E.EmployeeNumber, "+ 
+						" ISNULL(Jobs.DepartmentId, -1) AS DepartmentId, "+  
+						" O.OrgStructureDescconcatenated, "+
+						" Jobs.BenefitGroupId, "+ 
+						" GH.xGroupCodeDesc, "+
+						" CASE WHEN Jobs.Title IS NULL THEN P.PositionNumberMasked + ' - ' + PD.PositionTitle ELSE Jobs.Title END AS PositionTitle,  "+
+						" P.PositionNumberMasked, "+ 
+						" EE.vsEmploymentStatusId, "+
+						" VSE1.[Description] AS EmploymentStatus, "+
+						" SUBSTRING(ED.EmployeeSSN, 1, 3) + '-' + SUBSTRING(ED.EmployeeSSN, 4, 2) + '-' + SUBSTRING(ED.EmployeeSSN, 6, 4) AS EmployeeSSN, "+
+						" EN.FirstName, "+ 
+						" EN.MiddleName, "+
+						" EN.LastName, "+
+						" EN.LastName +  ', ' + EN.FirstName + CASE WHEN EN.MiddleName IS NOT NULL AND LEN(EN.MiddleName) > 0 THEN ' ' + EN.MiddleName ELSE '' END + CASE WHEN VSE2.[Description] IS NOT NULL THEN ' ' + VSE2.[Description] ELSE '' END AS EmployeeName, "+
+						" CASE WHEN EA.EmployeeAddressId IS NULL OR Jobs.EmployeeJobId IS NULL THEN 1 ELSE 0 END AS Pending, "+
+						" E.ProcessStatus "+
+						" FROM HR.Employee E "+ 
+						" LEFT JOIN ( "+
+						" SELECT X.EmployeeId, X.EmployeeJobId, X.DepartmentId, X.BenefitGroupId, X.PositionId, X.EffectiveDate, X.EffectiveEndDate, X.Title FROM ( "+
+						" SELECT E.EmployeeId, EmployeeJobId, DepartmentId, BenefitGroupId, PositionId, EffectiveDate, EffectiveEndDate, Title,  ROW_NUMBER() OVER (PARTITION BY E.EmployeeId ORDER BY CASE WHEN EJ.EffectiveDate <= '"+date+"' AND EJ.EffectiveEndDate >='"+date+"' THEN '99991231' ELSE EJ.EffectiveEndDate END DESC) AS RowNumber "+
+						" FROM HR.Employee E "+ 
+						" LEFT JOIN HR.EmployeeJob EJ ON E.EmployeeId = EJ.EmployeeId "+ 
+						" WHERE EJ.IsPrimaryJob = 1 ) X "+
+						" WHERE X.RowNumber = 1 ) Jobs ON Jobs.EmployeeId = E.EmployeeId "+
+						" LEFT JOIN Position P ON P.PositionID = Jobs.PositionId "+
+						" LEFT JOIN PositionDetail PD ON PD.PositionID = Jobs.PositionId "+
+						" AND (PD.PositionDetailESD <= CASE WHEN Jobs.EffectiveDate <='"+date+"' AND Jobs.EffectiveEndDate >= '"+date+"' THEN '"+date+"'  "+
+						" WHEN Jobs.EffectiveDate < '"+date+"' AND Jobs.EffectiveEndDate < '"+date+"' THEN Jobs.EffectiveEndDate "+
+						" WHEN Jobs.EffectiveDate > '"+date+"' THEN Jobs.EffectiveDate END AND "+ 
+						" PD.PositionDetailEED >= CASE WHEN Jobs.EffectiveDate <='"+date+"' AND Jobs.EffectiveEndDate >= '"+date+"' THEN '"+date+"'  "+
+						" WHEN Jobs.EffectiveDate < '"+date+"' AND Jobs.EffectiveEndDate < '"+date+"' THEN Jobs.EffectiveEndDate "+
+						" WHEN Jobs.EffectiveDate > '"+date+"' THEN Jobs.EffectiveDate END)  JOIN ( "+
+						" SELECT  X.EmployeeId, X.EmployeeNameId, X.FirstName, X.LastName, X.MiddleName, X.vsNameSuffixId FROM ( "+
+						" SELECT E.EmployeeId, EN.EmployeeNameId, EN.FirstName, EN.LastName, EN.MiddleName, EN.vsNameSuffixId, ROW_NUMBER() OVER (PARTITION BY E.EmployeeId ORDER BY CASE WHEN EN.EffectiveDate <= '"+date+"' AND EN.EffectiveEndDate >= '"+date+"' THEN '99991231' ELSE EN.EffectiveEndDate END DESC) AS RowNumber "+
+						" FROM HR.Employee E "+ 
+						" JOIN HR.EmployeeName EN ON E.EmployeeId = EN.EmployeeId "+
+						" ) X "+
+						" WHERE X.RowNumber = 1) EN ON EN.EmployeeId = E.EmployeeId "+
+						" JOIN HR.EmployeeDemographics ED ON E.EmployeeId = ED.EmployeeId "+
+						" JOIN (SELECT  X.EmployeeId, X.vsEmploymentStatusId FROM ( "+
+						" SELECT E.EmployeeId, EE.vsEmploymentStatusId, ROW_NUMBER() OVER (PARTITION BY E.EmployeeId ORDER BY CASE WHEN EE.EffectiveDate <='"+date+"' AND EE.EffectiveEndDate >= '"+date+"' THEN '99991231' ELSE EE.EffectiveEndDate END DESC) AS RowNumber "+
+						" FROM HR.Employee E "+ 
+						" JOIN HR.EmployeeEmployment EE ON E.EmployeeId = EE.EmployeeId "+
+						" ) X "+ 
+						" WHERE X.RowNumber = 1) EE ON EE.EmployeeId = E.EmployeeId "+
+						" LEFT JOIN ValidationSetEntry VSE1 ON VSE1.EntryID = EE.vsEmploymentStatusId "+
+						" LEFT JOIN ValidationSetEntry VSE2 ON VSE2.EntryID = EN.vsNameSuffixId  "+
+						" LEFT JOIN HR.vwOrgstructure O ON O.OrgStructureID = Jobs.DepartmentID "+
+						" JOIN ( "+
+						" SELECT  X.EmployeeId, X.EmployeeAddressId FROM ( "+
+						" SELECT E.EmployeeId, EA.EmployeeAddressId, ROW_NUMBER() OVER (PARTITION BY E.EmployeeId ORDER BY CASE WHEN EA.EffectiveDate <='"+date+"' AND EA.EffectiveEndDate >= '"+date+"' THEN '99991231' ELSE EA.EffectiveEndDate END DESC) AS RowNumber "+
+						" FROM HR.Employee E "+
+						" LEFT JOIN HR.EmployeeAddress EA ON E.EmployeeId = EA.EmployeeId "+
+						" ) X "+
+						" WHERE X.RowNumber = 1) EA ON EA.EmployeeId = E.EmployeeId "+
+						" LEFT JOIN xGroupHeader GH ON GH.xGroupHeaderID = Jobs.BenefitGroupId "+
+						" ) ei, "+
+						" HR.Grade g, "+
+						" HR.EmployeeJob ej "+
+						" left join dbo.UDFEntry ur on ur.AttachedFKey=ej.EmployeeJobID and ur.tableId=70 "+						
+						" where ej.EmployeeID=ejp.EmployeeID "+
+						" and ej.GradeId = g.GradeId "+
+						" and ej.effectiveEndDate >= '"+date+"'"+ 
+						" and ej.effectivedate <= '"+date+"'"+						
+						" and ei.employeeID = ejp.employeeID "+
+						" and g.GradeId = ejp.GradeId "+
+						" and ejp.effectivedate <= '"+date+"'"+
+						" and ejp.EffectiveEndDate >= '"+date+"' "+
+						" and ejp.PositionDetailEED >= '"+date+"' "+
+						" and ejp.PositionDetailESD <= '"+date+"' "+
+						" and ejp.IsPrimaryJob = 1 ";
+				
+				//" and (ejp.jobEventReasonId is null or ejp.jobEventReasonId in(2,5))";
+				// one dept may be with one or multiple refs				
+				if(!selected_dept_ref.equals("")){
+						qq += " and ejp.departmentID in ("+selected_dept_ref+") ";// list of all depts
+				}
+				else{ // all departments at once
+						qq += " and ejp.departmentID in ("+deptRefs+") ";// list of all depts
+				}
+				if(currentOnly){
+						qq +=	" and ei.vsEmploymentStatusId = 258 ";
+				}
+				con = SingleConnect.getNwConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				try{
+						if(debug)
+								logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						rs = pstmt.executeQuery();
+						int jj=1;
+						while(rs.next()){
+								String str = rs.getString(22); // employeeNumber
+								if(str != null)
+										employeeSet.add(str);
+						}
+				}
+				catch(Exception ex){
+						back += ex;
+						logger.error(ex+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+				}
+				return back;
+
+		}
     //
     // find all matching records
     // return "" or any exception thrown by DB

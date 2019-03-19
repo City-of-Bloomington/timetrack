@@ -6,12 +6,9 @@
 			<th>Hours</th>
 			<th>Amount</th>
 		</tr>
-		<s:iterator value="#tmrpRows" var="one" >
-			<s:set var="key" value="#one.key" />
-			<s:set var="vals" value="#one.value" />
+		<s:iterator value="#rows" var="one" >
 			<tr>
-				<td><s:property value="#key" /></td>			
-				<s:iterator value="#vals">
+				<s:iterator value="#one">
 					<td><s:property/></td>
 				</s:iterator>						
 			</tr>

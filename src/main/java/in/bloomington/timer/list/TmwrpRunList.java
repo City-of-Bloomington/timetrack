@@ -19,21 +19,28 @@ public class TmwrpRunList{
     static final long serialVersionUID = 1600L;
     static Logger logger = LogManager.getLogger(TmwrpRunList.class);
     String status = "",
-				document_id="",
+				document_id="", employee_id="",
 				pay_period_id="";
 		boolean lastRunOnly = false;
     List<TmwrpRun> tmwrpRuns = null;
     public TmwrpRunList(){
     }
-    public TmwrpRunList(String val, String val2){
+    public TmwrpRunList(String val){
 				setDocument_id(val);
-				setPay_period_id(val2);
     }
+    public TmwrpRunList(String val, String val2){
+				setEmployee_id(val);
+				setPay_period_id(val2);
+    }		
 
     public void setDocument_id (String val){
 				if(val != null && !val.equals("-1"))
 						document_id = val;
     }
+    public void setEmployee_id (String val){
+				if(val != null && !val.equals("-1"))
+						employee_id = val;
+    }		
     public void setPay_period_id (String val){
 				if(val != null && !val.equals("-1"))
 						pay_period_id = val;
@@ -48,7 +55,13 @@ public class TmwrpRunList{
 				if(pay_period_id.equals(""))
 						return "-1";
 				return pay_period_id;
+    }
+    public String getEmployee_id(){
+				if(employee_id.equals(""))
+						return "-1";
+				return employee_id;
     }		
+		
 
     public List<TmwrpRun> getTmwrpRuns(){
 				return tmwrpRuns;
@@ -65,7 +78,8 @@ public class TmwrpRunList{
 						"g.week2_grs_reg_hrs, "+
 						"g.week1_net_reg_hrs, "+
 						"g.week2_net_reg_hrs "+
-						" from tmwrp_runs g join time_documents d on d.id=g.document_id";
+						" from tmwrp_runs g  "+
+						" join time_documents d on d.id=g.document_id";
 
 				String qw = "";
 				if(!document_id.equals("")){
@@ -76,6 +90,10 @@ public class TmwrpRunList{
 						if(!qw.equals("")) qw += " and ";						
 						qw += "d.pay_period_id = ? ";
 				}
+				if(!employee_id.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += "d.employee_id = ? ";
+				}				
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
@@ -99,6 +117,9 @@ public class TmwrpRunList{
 						if(!pay_period_id.equals("")){
 								pstmt.setString(jj++, pay_period_id);
 						}
+						if(!employee_id.equals("")){
+								pstmt.setString(jj++, employee_id);
+						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								if(tmwrpRuns == null)
