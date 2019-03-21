@@ -146,6 +146,12 @@ public class PayPeriodProcess{
     public void setJob(JobTask val){
 				if(val != null){
 						job = val;
+						Group group = job.getGroup();
+						if(group != null){
+								if(group.getName().equals("Fire BC")){
+										regCode = "REG FIRE BC";		
+								}
+						}
 				}
     }
     public void setIsUtil(boolean val){
@@ -303,7 +309,9 @@ public class PayPeriodProcess{
 								Double val = nreg.get(key);
 								if(val != null){
 										ArrayList<Double> lval = new ArrayList<>();
-										if(key.indexOf("ONCALL") == -1){
+										if(key.indexOf("ONCALL") == -1 &&
+											 key.indexOf("HF") == -1 &&
+											 key.indexOf("FRP") == -1){
 												lval.add(val);
 										}
 										else{

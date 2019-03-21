@@ -145,7 +145,9 @@ public class WeekSplit{
 										else if(hrCode.isOvertime()){												
 												unpaid_hrs += hours;
 										}
-										else if(hrCode.isMonetary()){												
+										else if(hrCode.isMonetary()){
+												if(hours < 1.0)
+														hours = 1.0;
 												unpaid_hrs += hours;
 										}
 										else{ // other
@@ -210,6 +212,7 @@ public class WeekSplit{
 						//
 						if(hrCode.isMonetary()){
 								// hours do not count
+								if(hours < 1.0) hours = 1.0;
 								unpaid_hrs += hours;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
