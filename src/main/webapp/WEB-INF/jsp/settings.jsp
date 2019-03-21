@@ -60,7 +60,8 @@
 			</ul>
 			<h2>Timewarp</h2>
 			<ul>
-				<li><a href="<s:property value='#application.url'/>timewarp.action">Timewarp</a></li>
+				<li><a href="<s:property value='#application.url'/>tmwrpWrap.action">Timewarp </a></li>								
+				<li><a href="<s:property value='#application.url'/>timewarp.action">Timewarp (Old)</a></li>
 			</ul>
 			<h2>Shift Times</h2>
 			<ul>

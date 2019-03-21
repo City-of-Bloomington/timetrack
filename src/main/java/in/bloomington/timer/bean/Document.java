@@ -306,6 +306,9 @@ public class Document implements Serializable{
 						if(back.equals("")){
 								job = one;
 						}
+						else{
+								System.err.println(" job "+back);
+						}
 				}
 				return job;
     }		

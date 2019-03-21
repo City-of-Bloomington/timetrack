@@ -32,7 +32,8 @@ public class TmwrpRun{
 		double week1_total_hours = 0, week2_total_hours = 0;
 		double week1_total_amount = 0, week2_total_amount = 0;		
 		boolean old_record = false;
-		boolean has_week1_rows = false, has_week2_rows = false;
+		boolean has_week1_rows = false, has_week2_rows = false,
+				has_cycle_row=false;
     //
     Document document = null;
 		HourCode regCode = null;
@@ -41,7 +42,7 @@ public class TmwrpRun{
 		// for display
     // Map<String, List<String>> week1Rows = null, week2Rows = null;
     List<List<String>> week1Rows = null, week2Rows = null;
-		
+		List<String> cycleRow = null;
     public TmwrpRun(){
     }		
     public TmwrpRun(String val){
@@ -71,8 +72,8 @@ public class TmwrpRun{
 										Double val8){
 				setId(val);
 				setDocument_id(val2);
-				setRunTime(val3);
-				setReg_code_id(val4);
+				setReg_code_id(val3);				
+				setRunTime(val4);
 				setWeek1GrsRegHrs(val5);
 				setWeek2GrsRegHrs(val6);
 				setWeek1NetRegHrs(val7);
@@ -266,20 +267,26 @@ public class TmwrpRun{
 		 * on detail and similar pages
 		 */
 		public boolean hasWeek1Rows(){
-				findRows();
+				if(!has_week1_rows)
+						findRows();
 				return has_week1_rows;
 		}
 		public boolean hasWeek2Rows(){
 				return has_week2_rows;
 		}
-
+		public boolean hasCycleRow(){
+				return has_cycle_row;
+		}
 		public List<List<String>> getWeek1Rows(){
 				return week1Rows;
 		}
 		public List<List<String>> getWeek2Rows(){
 				return week2Rows;
+		}
+		// last total row
+		public List<String> getCycleRow(){
+				return cycleRow;
 		}		
-		
 		public void findRows(){
 				findBlocks();
 				if(hasWeek1Totals() || hasWeek2Totals()){
@@ -294,7 +301,7 @@ public class TmwrpRun{
 										row = new ArrayList<>();
 										key = "Grs "+regCode.getCodeInfo();
 										row.add(key);
-										row.add(df.format(week1_grs_reg_hrs));
+										row.add("("+df.format(week1_grs_reg_hrs)+")");
 										row.add("");
 										week1Rows.add(row);
 										row = new ArrayList<>();
@@ -311,7 +318,7 @@ public class TmwrpRun{
 										row = new ArrayList<>();
 										key = "Grs "+regCode.getCodeInfo();
 										row.add(key);
-										row.add(df.format(week2_grs_reg_hrs));
+										row.add("("+df.format(week2_grs_reg_hrs)+")");
 										row.add("");
 										week2Rows.add(row);
 										row = new ArrayList<>();
@@ -382,6 +389,15 @@ public class TmwrpRun{
 										row.add("");
 								week2Rows.add(row);
 						}
+						cycleRow = new ArrayList<>();
+						cycleRow.add("Pay Period Total");
+						cycleRow.add(df.format(getCycleTotalHours()));
+						double dd = getCycleTotalAmount();
+						if(dd > 0.)
+								cycleRow.add("$"+df.format(dd));
+						else
+								cycleRow.add("");
+						has_cycle_row = true;
 				}
 		}
 		public boolean hasWeek1Totals(){
@@ -448,7 +464,9 @@ public class TmwrpRun{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.reg_code_id,g.document_id,g.reg_code_id,"+
+				String qq = "select g.id,"+
+						"g.document_id,"+
+						"g.reg_code_id,"+
 						"date_format(g.run_time,'%m/%d/%y %H:%i'),"+
 						"g.week1_grs_reg_hrs, "+
 						"g.week2_grs_reg_hrs, "+

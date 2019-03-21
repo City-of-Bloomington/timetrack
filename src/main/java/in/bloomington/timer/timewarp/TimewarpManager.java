@@ -27,6 +27,7 @@ public class TimewarpManager{
 		String document_id="", pay_period_id="", job_id="";
 		PayPeriod payPeriod = null;
 		JobTask job = null;
+		Group group = null; // needed for Fire BC earn code
 		Document document = null;
 		HolidayList holys = null;
 		SalaryGroup salaryGroup = null;
@@ -91,6 +92,9 @@ public class TimewarpManager{
 						return back;
 				}
 				String reg_code_id = salaryGroup.getDefault_regular_id();
+				if(group != null && group.getName().equals("Fire BC")){
+						reg_code_id = "111"; // REG FIRE BC
+				}
 				week1_grs_reg_hrs = process.getWeek1Regular();
 				week2_grs_reg_hrs = process.getWeek2Regular();
 				week1_net_reg_hrs = process.getWeek1NetRegular();
@@ -161,6 +165,7 @@ public class TimewarpManager{
 								payPeriod = document.getPayPeriod();
 								pay_period_id = document.getPay_period_id();
 								job = document.getJob();
+								group = job.getGroup();
 								salaryGroup = job.getSalaryGroup();
 						}
 				}

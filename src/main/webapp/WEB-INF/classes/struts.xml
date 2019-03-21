@@ -239,6 +239,13 @@
 			<result name="handCsv">/WEB-INF/jsp/timewarp/payperiodProcessHandCsv.jsp</result>
 
 		</action>
+		<action name="tmwrpWrap" 
+						class="in.bloomington.timer.TmwrpWrapAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/timewarp/tmwrpWrap.jsp</result>		
+			<result name="error">/WEB-INF/jsp/timewarp/tmwrpWrap.jsp</result>
+			<result name="success">/WEB-INF/jsp/timewarp/tmwrpWrap.jsp</result>
+		</action>
 		<action name="reportHand" 
 						class="in.bloomington.timer.ReportHandAction" 
 						method="execute">

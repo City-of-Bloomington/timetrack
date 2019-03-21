@@ -163,6 +163,7 @@ public class PayPeriodProcess{
     public void setJob(JobTask val){
 				if(val != null){
 						job = val;
+						Group group = job.getGroup();
 						SalaryGroup salaryGroup = job.getSalaryGroup();
 						if(salaryGroup != null){
 								if(salaryGroup.isTemporary()){
@@ -170,6 +171,11 @@ public class PayPeriodProcess{
 								}
 								else if(salaryGroup.isFireSworn()){
 										regCode = "REG FIRE";
+								}
+						}
+						if(group != null){
+								if(group.getName().equals("Fire BC")){
+										regCode = "REG FIRE BC";
 								}
 						}
 				}

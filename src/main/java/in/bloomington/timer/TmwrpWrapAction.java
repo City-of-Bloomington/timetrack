@@ -27,22 +27,22 @@ public class TmwrpWrapAction extends TopAction{
     Department department = null;
     List<PayPeriod> payPeriods = null;		
     String timeBlocksTitle = "TimeWarp";
-    String pay_period_id = "";
+    String pay_period_id = "", source="";
     String department_id = "", group_id="";
 		String type=""; // for custom
-    String source="", outputType="html";
+    String outputType="html";
     boolean isHand = false, csvOutput = false, isUtil = false;
 		PayPeriod payPeriod = null, currentPayPeriod=null;
 		List<Group> groups = null;
     Hashtable<String, Profile> profMap = null;
     List<Department> departments = null;
-    List<Employee> employees = null, noDataEmployees;
+    List<Employee> employees = null, noDataEmployees = null;
 
     List<String> allCsvLines = null;
 		List<Employee> empsWithNoEmpNum = null;
 		Set<String> employeeSet = null;
 		List<TmwrpRun> allRuns = null;
-		Map<Employee, List<TmwrpRun>> empRuns = new TreeMap<>();
+		Map<Employee, List<TmwrpRun>> employeeRuns = new TreeMap<>();
     public String execute(){
 				String ret = SUCCESS;
 				String back = "";
@@ -99,6 +99,10 @@ public class TmwrpWrapAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						action = val;
     }
+    public void setSource(String val){
+				if(val != null && !val.equals(""))		
+						source = val;
+    }		
     public void setType(String val){
 				if(val != null && !val.equals(""))		
 						type = val;
@@ -151,6 +155,9 @@ public class TmwrpWrapAction extends TopAction{
     public String getOutputType(){
 				return outputType;
     }
+    public String getSource(){
+				return source;
+    }		
 		public void setGroup_id(String val){
 				if(val != null && !val.equals("-1") && !val.equals("all"))
 						group_id = val;
@@ -200,14 +207,28 @@ public class TmwrpWrapAction extends TopAction{
 								addError(back);
 						}
 						else{
+								//
+								// some employees may have multiple jobs
+								//
 								List<TmwrpRun> ones = trl.getTmwrpRuns();
 								if(ones != null && ones.size() > 0){
-										empRuns.put(emp, ones);
+										employeeRuns.put(emp, ones);
+								}
+								else{
+										if(noDataEmployees == null)
+												noDataEmployees = new ArrayList<>();
+										noDataEmployees.add(emp);
 								}
 						}
 				}
 				return back;
     }
+		public boolean hasEmployeeRuns(){
+				return employeeRuns != null && !employeeRuns.isEmpty();
+		}
+		public Map<Employee, List<TmwrpRun>> getEmployeeRuns(){
+				return employeeRuns;
+		}
     public List<PayPeriod> getPayPeriods(){
 				if(payPeriods == null){
 						getPayPeriod(); // so that we can initialize the list
@@ -400,14 +421,6 @@ public class TmwrpWrapAction extends TopAction{
 				}
 				return currentPayPeriod;
     }
-		/*
-    public List<PayPeriodProcess> getProcesses(){
-				return processes;
-    }
-    public boolean hasProcesses(){
-				return processes != null && processes.size() > 0;
-    }
-		*/
     public String getCsvFileName(){
 				
 				String dt = payPeriod.getEnd_date();

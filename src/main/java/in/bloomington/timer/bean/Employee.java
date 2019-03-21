@@ -17,7 +17,7 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Employee implements Serializable{
+public class Employee implements Serializable, Comparable<Employee>{
 
     static Logger logger = LogManager.getLogger(Employee.class);
     static final long serialVersionUID = 1150L;		
@@ -393,6 +393,11 @@ public class Employee implements Serializable{
 						}
 				}
 				return seed;
+    }
+		@Override
+    public int compareTo(Employee other){
+        int ret = this.toString().compareTo(other.toString());
+        return ret;
     }
     public String getInfo(){
 				String ret="";
