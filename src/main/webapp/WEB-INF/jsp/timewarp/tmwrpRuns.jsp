@@ -135,13 +135,13 @@
 
 					<tr>
 						<td colspan="2" class="td_text">
-							<b>Weekly Standard Work Hrs:</b> <s:property value="#tmwrpRun.document.job.weekly_regular_hours" />
+							<b>Weekly Standard Work Hours:</b> <s:property value="#tmwrpRun.document.job.weekly_regular_hours" />
 						</td>
 					</tr>
 
 					<tr>
 						<td colspan="2" class="td_text">
-							<b>Weekly Compt Time Earned After Hrs:</b> <s:property value="#tmwrpRun.document.job.comp_time_weekly_hours" />
+							<b>Weekly Comp Time Earned After Hours:</b> <s:property value="#tmwrpRun.document.job.comp_time_weekly_hours" />
 						</td>
 					</tr>
 				</table>
