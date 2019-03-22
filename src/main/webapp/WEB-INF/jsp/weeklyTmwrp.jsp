@@ -1,17 +1,22 @@
 <div class="width-one-half">
-	<h1><s:property value="#weeklyTitle" /></h1>
-	<table class="code-hours-summary-total ${whichWeek}">
-		<tr>
-			<th>Earn Code</th>
-			<th>Hours</th>
-			<th>Amount</th>
-		</tr>
-		<s:iterator value="#rows" var="one" >
+	<h2><s:property value="#weeklyTitle" /></h2>
+	<table class="monetary-hours-summary-total ${whichWeek}">
+		<thead>
 			<tr>
-				<s:iterator value="#one">
-					<td><s:property/></td>
-				</s:iterator>						
+				<th>Earn Code</th>
+				<th>Hours</th>
+				<th>Amount</th>
 			</tr>
-		</s:iterator>
+		</thead>
+
+		<tbody>
+			<s:iterator value="#rows" var="one">
+				<tr data-job-id="<s:property value='job.id' />">
+					<s:iterator value="#one">
+						<td><s:property/></td>
+					</s:iterator>
+				</tr>
+			</s:iterator>
+		</tbody>
 	</table>
 </div>

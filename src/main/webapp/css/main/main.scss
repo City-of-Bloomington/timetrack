@@ -262,7 +262,8 @@
   // Multiple Jobs Coloring
   // attribute: `data-job-id`
   .calendar.view-only.mult-jobs,
-  .view-only table.pay-period-summary-total {
+  .view-only table.pay-period-summary-total,
+  .view-only .monetary-hours-summary-total {
     $jobsCount: 15000;
 
     @for $i from 1 through $jobsCount {
