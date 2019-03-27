@@ -80,7 +80,9 @@ public class TmwrpRunList{
 						"g.week1_grs_reg_hrs, "+
 						"g.week2_grs_reg_hrs, "+
 						"g.week1_net_reg_hrs, "+
-						"g.week2_net_reg_hrs "+
+						"g.week2_net_reg_hrs, "+
+						"g.cycle1_net_reg_hrs, "+
+						"g.cycle2_net_reg_hrs "+						
 						" from tmwrp_runs g  "+
 						" join time_documents d on d.id=g.document_id";
 
@@ -135,7 +137,9 @@ public class TmwrpRunList{
 																					 rs.getDouble(5),
 																					 rs.getDouble(6),
 																					 rs.getDouble(7),
-																					 rs.getDouble(8)
+																					 rs.getDouble(8),
+																					 rs.getDouble(9),
+																					 rs.getDouble(10)
 																					 );
 								if(!tmwrpRuns.contains(one))
 										tmwrpRuns.add(one);

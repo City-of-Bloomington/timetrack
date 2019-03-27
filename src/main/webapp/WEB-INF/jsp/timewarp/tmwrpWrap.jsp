@@ -24,7 +24,7 @@
 			<div class="form-group">
 				<label>Pay Period </label>
 				<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" onchange="doRefresh()" /> &nbsp;&nbsp;
-				<a href="<s:property value='#application.url' />timewarp.action?pay_period_id=<s:property value='currentPayPeriod.id' />&action=Submit">Current Pay Period</a>
+				<a href="<s:property value='#application.url' />tmwrpWrap.action?pay_period_id=<s:property value='currentPayPeriod.id' />&action=Submit">Current Pay Period</a>
 			</div>
 			<div class="form-group">
 				<label>Department </label>

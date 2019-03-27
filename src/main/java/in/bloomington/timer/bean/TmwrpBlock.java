@@ -23,8 +23,8 @@ public class TmwrpBlock{
     static final long serialVersionUID = 1500L;
 		static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     String id="", run_id="", hour_code_id="",
-				apply_type=""; // Week 1, Week 2, Cycle
-		int start_id = 1;
+				term_type=""; // Week 1, Week 2, Cycle
+		int start_id = 1, cycle_order=1;
     double hours=0, amount=0;
     //
 		HourCode hourCode = null;
@@ -39,72 +39,79 @@ public class TmwrpBlock{
 											String val2,
 											String val3,
 											String val4,
-											Double val5
+											Integer val5,
+											Double val6
 											){
 				setId(val);
 				setRun_id(val2);
 				setHour_code_id(val3);
-				setApplyType(val4);
-				setHours(val5);
+				setTermType(val4);
+				setCycleOrder(val5);
+				setHours(val6);
     }		
 		// for new record with amount
     public TmwrpBlock(int val,
 											String val2,
 											String val3,
 											String val4,
-											Double val5,
-											Double val6
+											Integer val5,
+											Double val6,
+											Double val7
 											){
 				setId(val);
 				setRun_id(val2);
-				setApplyType(val3);				
-				setHour_code_id(val4);
-				setHours(val5);
-				setAmount(val6);
+				setHour_code_id(val3);				
+				setTermType(val4);
+				setCycleOrder(val5);
+				setHours(val6);
+				setAmount(val7);
     }
 		
     public TmwrpBlock(String val,
 											String val2,
 											String val3,
 											String val4,
-											Double val5,
-											Double val6
+											Integer val5,
+											Double val6,
+											Double val7
 											){
 				setId(val);
 				setRun_id(val2);
-				setApplyType(val3);				
-				setHour_code_id(val4);
-				setHours(val5);
-				setAmount(val6);
+				setHour_code_id(val3);				
+				setTermType(val4);
+				setCycleOrder(val5);
+				setHours(val6);
+				setAmount(val7);
     }
 		// needed for the list
     public TmwrpBlock(String val,
 											String val2,
 											String val3,
 											String val4,
-											Double val5,
+											Integer val5,
 											Double val6,
+											Double val7,
 											
-											String val7, // hourCode
-											String val8,
+											String val8, // hourCode
 											String val9,
 											String val10,
 											String val11,
-											boolean val12,
-											String val13,
-											Double val14,
-											boolean val15,
+											String val12,
+											boolean val13,
+											String val14,
+											Double val15,
+											boolean val16,
 										
-											String val16, // nw_code
-											String val17){
+											String val17, // nw_code
+											String val18){
 				setId(val);
 				setRun_id(val2);
-				setApplyType(val3);				
-				setHour_code_id(val4);
-				setHours(val5);
-				setAmount(val6);
-				hourCode = new HourCode(val7,
-																val8,
+				setHour_code_id(val3);				
+				setTermType(val4);				
+				setCycleOrder(val5);
+				setHours(val6);
+				setAmount(val7);
+				hourCode = new HourCode(val8,
 																val9,
 																val10,
 																val11,
@@ -112,9 +119,10 @@ public class TmwrpBlock{
 																val13,
 																val14,
 																val15,
+																val16,
 																
-																val16, // nw_code
-																val17);
+																val17, // nw_code
+																val18);
 		}
 		
     //
@@ -136,8 +144,11 @@ public class TmwrpBlock{
 		public double getAmount(){
 				return amount;
 		}		
-		public String getApplyType(){
-				return apply_type;
+		public String getTermType(){
+				return term_type;
+		}
+		public int getCycleOrder(){
+				return cycle_order;
 		}
     //
     // setters
@@ -154,14 +165,21 @@ public class TmwrpBlock{
     public void setRun_id(String val){
 				if(val != null)
 						run_id = val;
-    }		
+    }
+    public void setTermType(String val){
+				if(val != null)
+						term_type = val;
+    }				
 		
     public void setHour_code_id(String val){
 				if(val != null){
 						hour_code_id = val;
 				}
     }
-		
+    public void setCycleOrder(Integer val){
+				if(val != null)
+						cycle_order = val;
+    }				
     public void setHours(Double val){
 				if(val != null)
 						hours = val;
@@ -170,12 +188,6 @@ public class TmwrpBlock{
 				if(val != null)
 						amount = val;
     }		
-		
-    public void setApplyType(String val){
-				if(val != null)
-					 apply_type = val;
-    }		
-		
 
     public boolean equals(Object o) {
 				if (o instanceof TmwrpBlock) {
@@ -218,8 +230,8 @@ public class TmwrpBlock{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.apply_type,"+
-						"g.hour_code_id,g.hours,g.amount "+
+				String qq = "select "+
+						"g.hour_code_id,g.term_type,g.cycle_order,g.hours,g.amount "+
 						" from tmwrp_blocks g where g.id =? and run_id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
@@ -230,10 +242,11 @@ public class TmwrpBlock{
 								pstmt.setString(2, run_id);								
 								rs = pstmt.executeQuery();
 								if(rs.next()){
-										setApplyType(rs.getString(1));
-										setHour_code_id(rs.getString(2));
-										setHours(rs.getDouble(3));
-										setAmount(rs.getDouble(4));
+										setHour_code_id(rs.getString(1));										
+										setTermType(rs.getString(2));
+										setCycleOrder(rs.getInt(3));
+										setHours(rs.getDouble(4));
+										setAmount(rs.getDouble(5));
 								}
 						}
 				}
@@ -254,7 +267,7 @@ public class TmwrpBlock{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into tmwrp_blocks values(?,?,?,?,?, ?) ";
+				String qq = "insert into tmwrp_blocks values(?,?,?,?,?, ?,?) ";
 				if(run_id.equals("")){
 						msg = " timewarp run not set ";
 						return msg;
@@ -279,9 +292,10 @@ public class TmwrpBlock{
 						pstmt.setString(1, id);
 						pstmt.setString(2, run_id);						
 						pstmt.setString(3, hour_code_id);
-						pstmt.setString(4, apply_type);
-						pstmt.setDouble(5, hours);
-						pstmt.setDouble(6, amount);
+						pstmt.setString(4, term_type);
+						pstmt.setInt(5, cycle_order);
+						pstmt.setDouble(6, hours);
+						pstmt.setDouble(7, amount);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
@@ -295,19 +309,17 @@ public class TmwrpBlock{
 				return msg;
     }
     public String doSaveBolk(Hashtable<String, Double> hash,
-														 String apply_type,
+														 String term_type,
+														 Integer cycle_order,
 														 String code_type){ // Hours/Amount
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into tmwrp_blocks values(?,?,?,?,?, 0) ";
+				String qq = "insert into tmwrp_blocks values(?,?,?,?,?, ?,0) ";
 				if(code_type.equals("Amount")){
-						qq = "insert into tmwrp_blocks values(?,?,?,?,0, ?) ";
-				}
-				else{
-
+						qq = "insert into tmwrp_blocks values(?,?,?,?,?, 0,?) ";
 				}
 				if(run_id.equals("")){
 						msg = " timewarp run not set ";
@@ -330,8 +342,9 @@ public class TmwrpBlock{
 								pstmt.setInt(1, start_id++);
 								pstmt.setString(2, run_id);						
 								pstmt.setString(3, key);
-								pstmt.setString(4, apply_type);
-								pstmt.setDouble(5, dd); // hours/amount
+								pstmt.setString(4, term_type);
+								pstmt.setInt(5, cycle_order);
+								pstmt.setDouble(6, dd); // hours/amount
 								pstmt.executeUpdate();
 						}
 				}

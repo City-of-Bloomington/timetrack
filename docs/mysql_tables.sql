@@ -837,10 +837,13 @@ CREATE TABLE tmwrp_runs (
 	week2_grs_reg_hrs decimal (6,2),	
 	week1_net_reg_hrs decimal (6,2),
 	week2_net_reg_hrs decimal (6,2),
+	cycle1_net_reg_hrs decimal (6,2) default 0,
+	cycle2_net_reg_hrs decimal (6,2) default 0,
 	foreign key(document_id) references time_documents(id),
 	foreign key(reg_code_id) references hour_codes(id),
 	unique (document_id)
 	) ENGINE=InnoDB;
+;;
 ;;
 ;; these will be sums of similar hour_codes, for the whole pay period
 ;; OT, CE1.0, will be one
@@ -852,7 +855,8 @@ CREATE TABLE tmwrp_blocks (
   id int unsigned not null,
 	run_id int unsigned not null,
 	hour_code_id int unsigned not null,
-	apply_type enum('Week 1','Week 2','Cycle'),	
+	term_type enum('Week 1','Week 2','Cycle'),
+	cycle_order tinyint unsigned default 1,
 	hours decimal (6,2) default 0,
 	amount decimal (6,2) default 0,
 	primary key(id,run_id),
@@ -861,7 +865,9 @@ CREATE TABLE tmwrp_blocks (
 	) ENGINE=InnoDB;
 ;;
 ;;
-
+;; needed on tomcat2 only
+alter table tmwrp_blocks change apply_type term_type enum('Week 1','Week 2','Cycle');
+alter table tmwrp_blocks add period_order tinyint unsigned default 1 after term_type;
 
 ;;
 ;;

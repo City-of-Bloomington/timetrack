@@ -27,14 +27,14 @@ public class TimewarpProcess{
     PayPeriod payPeriod = null;
     Document document = null;
     boolean twoDifferentYears = false;
-    boolean weekOneHasSplit = false;
+    boolean weekOneHasSplit = false, noWeekSplit = true;
     boolean isUtil = false;
     Department department = null;
     static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     static DecimalFormat df = new DecimalFormat("#0.00");
     static DecimalFormat df4 = new DecimalFormat("#0.0000");
 
-    final static String profHrsCode = "PROF HRS";
+    final static String profHrsCode = CommonInc.profHoursEarnCodeStr;
     TmwrpWeekEntry week1 = null, week2 = null;
     //
     // List<Holiday> holys = null;
@@ -128,10 +128,10 @@ public class TimewarpProcess{
 						SalaryGroup salaryGroup = job.getSalaryGroup();
 						if(salaryGroup != null){
 								if(salaryGroup.isTemporary()){
-										regCode = "TEMP";
+										regCode = CommonInc.tempEarnCodeStr; // TEMP
 								}
 								else if(salaryGroup.isFireSworn()){
-										regCode = "REG FIRE";
+										regCode = CommonInc.regEarnCodeFireStr; // REG FIRE
 								}
 						}
 				}
@@ -153,6 +153,12 @@ public class TimewarpProcess{
     public Employee getEmployee(){
 				return employee;
     }
+		public TmwrpWeekEntry getWeek1(){
+				return week1;
+		}
+		public TmwrpWeekEntry getWeek2(){
+				return week2;
+		}		
     private void setWeekEntries(){
 		
 				if(payPeriod.hasTwoDifferentYears()){
@@ -161,6 +167,7 @@ public class TimewarpProcess{
 						//
 						if(splitDay < 7){
 								weekOneHasSplit = true;
+								noWeekSplit = false;
 								week1 = new TmwrpWeekEntry(debug,
 																			department,
 																			job,
@@ -169,7 +176,16 @@ public class TimewarpProcess{
 																			department,
 																			job);
 						}
+						else if(splitDay == 7){ // no split day two weeks are separate
+								week1 = new TmwrpWeekEntry(debug,
+																					 department,
+																					 job);
+								week2 = new TmwrpWeekEntry(debug,
+																					 department,
+																					 job);
+						}						
 						else{
+								noWeekSplit = false;
 								week1 = new TmwrpWeekEntry(debug,
 																			department,
 																			job);
@@ -290,11 +306,11 @@ public class TimewarpProcess{
     }
     public boolean hasNonRegularFirstPay(){
 
-				findNonRegularFirstPay();
+				findHoursFirstPay();
 				return nregFirstPay != null && !nregFirstPay.isEmpty();
     }
     public boolean hasNonRegularSecondPay(){
-				findNonRegularSecondPay();
+				findHoursSecondPay();
 				return nregSecondPay != null && !nregSecondPay.isEmpty();
     }
     public boolean hasMonetaryFirstPay(){
@@ -317,97 +333,115 @@ public class TimewarpProcess{
     }
     public Hashtable<String, Double> getMonetarySecondPay(){
 				return monetarySecondPay;
-    }		
-    public void findNonRegularFirstPay(){
+    }
+		// all hours except net regular
+    public void findHoursFirstPay(){
 				//
 				Hashtable<String, Double> nreg  = new Hashtable<>();
-				if(weekOneHasSplit){
-						// week 1 split 1 only
-						nreg  =  getWeekSplitNonRegularHours(1, 1);
+				// when two weeks are completely separated
+				if(noWeekSplit){
+						nreg  =  getWeek1All();
 				}
 				else{
-						// all week 1 
-						nreg  =  getWeek1NonRegularHours();
-						// plus week 2 split 1
-						Hashtable<String, Double> nreg2  =	getWeekSplitNonRegularHours(2, 1); // week 2 split 1
+						if(weekOneHasSplit){
+						// week 1 split 1 only
+						nreg  =  getWeekSplitNonRegularHours(1, 1);
+						}
+						else{
+								// all week 1 
+								nreg  =  getWeek1All();
+								// plus week 2 split 1
+								Hashtable<String, Double> nreg2  =	getWeekSplitNonRegularHours(2, 1); // week 2 split 1
 						if(!nreg2.isEmpty())
 								mergeTwoHashes(nreg2, nreg);
+						}
 				}
 				nregFirstPay = nreg; // considerOnCall(nreg);
     }
     public void findMonetaryFirstPay(){
 				//
 				Hashtable<String, Double> table  = new Hashtable<>();
-				if(weekOneHasSplit){
-						// week 1 split 1 only
-						table  =  getWeekSplitMonetaryHash(1, 1);
+				if(noWeekSplit){
+						table  =  getWeek1MonetaryHash();
 				}
 				else{
-						// all week 1 
-						table  =  getWeek1MonetaryHash();
-						// plus week 2 split 1
-						Hashtable<String, Double> table2  =	getWeekSplitMonetaryHash(2, 1); // week 2 split 1
-						if(!table2.isEmpty())
-								mergeTwoHashes(table2, table);
+						if(weekOneHasSplit){
+								// week 1 split 1 only
+								table  =  getWeekSplitMonetaryHash(1, 1);
+						}
+						else{
+								// all week 1 
+								table  =  getWeek1MonetaryHash();
+								// plus week 2 split 1
+								Hashtable<String, Double> table2  =	getWeekSplitMonetaryHash(2, 1); // week 2 split 1
+								if(!table2.isEmpty())
+										mergeTwoHashes(table2, table);
+						}
 				}
-				if(table.isEmpty())
+				if(!table.isEmpty())
 						monetaryFirstPay = table;
 				
     }
     public void findMonetarySecondPay(){
 				//
 				Hashtable<String, Double> table  = new Hashtable<>();
-				if(weekOneHasSplit){
-						// week 1 split 2 plus all week 2 
-						table  = getWeekSplitMonetaryHash(1, 2);
-						Hashtable<String, Double> table2 =  getWeek2MonetaryHash();
-						if(table.isEmpty()){
-								monetarySecondPay = table2;
-						}
-						else if(table2.isEmpty()){
-								monetarySecondPay = table;
+				if(noWeekSplit){
+						table  =  getWeek2MonetaryHash();
+				}
+				else{				
+						if(weekOneHasSplit){
+								// week 1 split 2 plus all week 2 
+								table  = getWeekSplitMonetaryHash(1, 2);
+								Hashtable<String, Double> table2 =  getWeek2MonetaryHash();
+								if(table.isEmpty()){
+										monetarySecondPay = table2;
+								}
+								else if(table2.isEmpty()){
+										monetarySecondPay = table;
+								}
+								else{
+										mergeTwoHashes(table2, table);
+										monetarySecondPay = table;
+								}
 						}
 						else{
-								mergeTwoHashes(table2, table);
-								monetarySecondPay = table;
+								// all week 2 split 2 only
+								table  =  getWeekSplitMonetaryHash(2, 2);
 						}
-				}
-				else{
-						// all week 2 split 2 only
-						table  =  getWeekSplitMonetaryHash(2, 2);
-						if(!table.isEmpty()){
-								monetarySecondPay = table;
-						}
+				}						
+				if(!table.isEmpty()){
+						monetarySecondPay = table;
 				}
     }				
-
 		
-    public void findNonRegularSecondPay(){
+    public void findHoursSecondPay(){
 				Hashtable<String, Double> nreg  = new Hashtable<>();
-				if(weekOneHasSplit){
-						// week 1 split 2 plus all week 2 
-						nreg  = getWeekSplitNonRegularHours(1, 2);
-		
-						Hashtable<String, Double> nreg2 =  getWeek2NonRegularHours();
-						if(!nreg2.isEmpty())
-								mergeTwoHashes(nreg2, nreg);
-						nreg2 =  week1.getEarnedHours();
-						if(!nreg2.isEmpty())
-								mergeTwoHashes(nreg2, nreg);
-						nreg2 =  week2.getEarnedHours();
-						if(!nreg2.isEmpty())
-								mergeTwoHashes(nreg2, nreg);
+				if(noWeekSplit){
+						nreg =  getWeek2All();
 				}
 				else{
-						// all week 2 split 2 only
-						nreg  =  getWeekSplitNonRegularHours(2, 2);
-						Hashtable<String, Double> nreg2 = week1.getEarnedHours();
-						if(!nreg2.isEmpty())
-								mergeTwoHashes(nreg2, nreg);
-						nreg2 =  week2.getEarnedHours();
-						if(!nreg2.isEmpty())
-								mergeTwoHashes(nreg2, nreg);	    	    
-
+						if(weekOneHasSplit){
+								// week 1 split 2 plus all week 2 
+								nreg  = getWeekSplitNonRegularHours(1, 2);
+								
+								Hashtable<String, Double> nreg2 =  getWeek2All();
+								if(!nreg2.isEmpty())
+										mergeTwoHashes(nreg2, nreg);
+								nreg2 =  week1.getEarnedHours();
+								if(!nreg2.isEmpty())
+										mergeTwoHashes(nreg2, nreg);
+						}
+						else{
+								// all week 2 split 2 only
+								nreg  =  getWeekSplitNonRegularHours(2, 2);
+								Hashtable<String, Double> nreg2 = week1.getEarnedHours();
+								if(!nreg2.isEmpty())
+										mergeTwoHashes(nreg2, nreg);
+								nreg2 =  week2.getEarnedHours();
+								if(!nreg2.isEmpty())
+										mergeTwoHashes(nreg2, nreg);	    	    
+								
+						}
 				}
 				// prof hrs always goes in second pay period
 				if(hasProfHours()){
@@ -415,8 +449,9 @@ public class TimewarpProcess{
 						Double dd = new Double(dstr);
 						nreg.put(profHrsCode, dd);
 				}
-				nregSecondPay = nreg; // considerOnCall(nreg);				
-				
+				if(!nreg.isEmpty()){				
+						nregSecondPay = nreg; // considerOnCall(nreg);				
+				}
     }		
     public Hashtable<String, Double> getNonRegularHours(){
 				// return hash;
@@ -469,6 +504,19 @@ public class TimewarpProcess{
 				else
 						return week.splitTwo.getNonRegularHours();
     }
+		// needed for HAND
+    public Hashtable<String, Double> getWeekSplitRegularHours(int week_no, int split_no){
+				TmwrpWeekEntry week = null;		
+				if(week_no == 1)
+						week = week1;
+				else
+						week = week2;
+				if(split_no == 1)
+						return week.splitOne.getRegularHash();
+				else
+						return week.splitTwo.getRegularHash();
+    }
+		
     public Hashtable<String, Double> getWeekSplitMonetaryHash(int week_no,
 																															int split_no){
 				TmwrpWeekEntry week = null;		
@@ -574,7 +622,7 @@ public class TimewarpProcess{
 						return msg;
 				}
 				if(document.isTemporary()){
-						regCode =  "TEMP";
+						regCode =  CommonInc.tempEarnCodeStr; //TEMP
 				}
 				try{
 						for(TimeBlock one:blocks){
@@ -684,52 +732,62 @@ public class TimewarpProcess{
     }		
     public double getNetRegularHoursForFirstPay(){
 				double ret = 0;
-				if(weekOneHasSplit){
-						double w1one = week1.splitOne.getNetRegular(); // main
-						double w1net = week1.getNetRegular(); // check with
-						if(w1one <= w1net){
-								ret = w1one;
-						}
-						else{
-								ret = w1net;
-						}
+				if(noWeekSplit){
+						ret = week1.getNetRegular(); 
 				}
-				else { // add week1 plus part one of week2
-						ret = week1.getNetRegular();
-						double w2one = week2.splitOne.getNetRegular();
-						double w2net = week2.getNetRegular();						
-						if(w2one < w2net)
-								ret += w2one;
-						else
-								ret += w2net;
+				else{
+						if(weekOneHasSplit){
+								double w1one = week1.splitOne.getNetRegular(); // main
+								double w1net = week1.getNetRegular(); // check with
+								if(w1one <= w1net){
+										ret = w1one;
+								}
+								else{
+										ret = w1net;
+								}
+						}
+						else { // add week1 plus part one of week2
+								ret = week1.getNetRegular();
+								double w2one = week2.splitOne.getNetRegular();
+								double w2net = week2.getNetRegular();						
+								if(w2one < w2net)
+										ret += w2one;
+								else
+										ret += w2net;
+						}
 				}
 				return ret;
     }
     public double getNetRegularHoursForSecondPay(){
 				double ret = 0;
-				if(weekOneHasSplit){
-						// week1 part two plus week2
-						double w1net = week1.getNetRegular();						
-						double w1one = week1.splitOne.getNetRegular(); 
-						double w1two = week1.splitTwo.getNetRegular(); // main
-						if(w1one + w1two <= w1net){
-								ret = w1two;
-						}
-						else if(w1one < w1net){
-								ret = w1net - w1one;
-						}
-						ret += week2.getNetRegular();
-			
+				if(noWeekSplit){
+						ret = week2.getNetRegular();
 				}
-				else { // the rest of week2
-						double w2net = week2.getNetRegular();
-						double w2one = week2.splitOne.getNetRegular();						
-						double w2two = week2.splitTwo.getNetRegular();
-						if(w2one + w2two <= w2net){
-								ret = w2two;
+				else{
+						if(weekOneHasSplit){
+								// week1 part two plus week2
+								double w1net = week1.getNetRegular();						
+								double w1one = week1.splitOne.getNetRegular(); 
+								double w1two = week1.splitTwo.getNetRegular(); // main
+								if(w1one + w1two <= w1net){
+										ret = w1two;
+								}
+								else if(w1one < w1net){
+										ret = w1net - w1one;
+								}
+								ret += week2.getNetRegular();
+								
 						}
-						else if(w2one < w2net){
-								ret = w2net - w2one;
+						else { // the rest of week2
+								double w2net = week2.getNetRegular();
+								double w2one = week2.splitOne.getNetRegular();						
+								double w2two = week2.splitTwo.getNetRegular();
+								if(w2one + w2two <= w2net){
+										ret = w2two;
+								}
+								else if(w2one < w2net){
+										ret = w2net - w2one;
+								}
 						}
 				}
 				return ret;

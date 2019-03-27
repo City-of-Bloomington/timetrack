@@ -45,7 +45,7 @@ public class TmwrpWrapAction extends TopAction{
 		Map<Employee, List<TmwrpRun>> employeeRuns = new TreeMap<>();
     public String execute(){
 				String ret = SUCCESS;
-				String back = "";
+				String back = doPrepare("tmwrpWrap.action");
 				if(!action.equals("") && !department_id.equals("")){
 						if(department == null)
 								getDepartment();
@@ -60,32 +60,19 @@ public class TmwrpWrapAction extends TopAction{
 						}
 						getEmployees();
 						back = doProcess();
-						if(allRuns == null || allRuns.size() == 0){
-								back = "No records found";
-								addMessage(back);
-								if(type.equals("single")){ // one department
-										ret = "single";
+						if(!csvOutput){
+								if(allRuns == null || allRuns.size() == 0){
+										back = "No records found";
+										addMessage(back);
+										if(type.equals("single")){ // one department
+												ret = "single";
+										}
+										return ret;
 								}
-								return ret;
 						}
-						if(true){
-								if(csvOutput){
-										prepareCsvs();
-										if(payPeriod.hasTwoDifferentYears()){
-												if(isHand){ 
-														ret = "handEndYearCsv";
-												}
-												else{ // end year 
-														ret = "csv"; 
-												}
-										}
-										else{
-												ret = "csv";
-										}
-								}
-								if(type.equals("single")){ // one department
-										ret = "single";
-								}
+						else{
+								prepareCsvs();
+								ret = "csv";
 						}
 				}
 				else{
@@ -446,219 +433,171 @@ public class TmwrpWrapAction extends TopAction{
      */
     void prepareCsvs(){
 				if(payPeriod.hasTwoDifferentYears()){
-						if(isHand){
-								prepareHandEndYearCsv();
-						}
-						else{
-								prepareEndYearCsv();
-						}
+						prepareEndYearCsv();
 				}
 				else{
-						if(isHand){
-								prepareHandCsv();
-						}
-						else{
-								prepareCsv();
-						}
+						prepareCsv();
 				}
     }
     //
-    // almost all use this csv
+    // works for all
     // 
     void prepareCsv(){
 				allCsvLines = new ArrayList<>();
-				String line  = ",,,,,,,,,,,";
-				String line2 = ",,,,,,,,,,"; // monetary
-				/**
-				for(PayPeriodProcess process:processes){
-						String csvLine = process.getEmployee().getEmployee_number()+",";
-						csvLine += process.get2WeekNetRegular()+",";
-						csvLine += process.getRegCode()+",";
-						csvLine += payPeriod.getEnd_date()+",";
-						csvLine += line;						
-						if(process.hasMultipleJobs()){
-								csvLine += process.getJob_name();
-						}
-						allCsvLines.add(csvLine);
-						// 
-						Hashtable<String, Double> nreg = process.getAll();
-						if(!nreg.isEmpty()){
-								Set<String> keySet = nreg.keySet();
-								for(String key:keySet){
-										double dd = nreg.get(key);
-										csvLine = process.getEmployee().getEmployee_number()+",";
-										csvLine += dd+","+key+",";
-										csvLine += payPeriod.getEnd_date()+",";
-										csvLine += line;										
-										if(process.hasMultipleJobs()){
-												csvLine += process.getJob_name();
-										}
-										allCsvLines.add(csvLine);	
-								}
-						}
-						nreg = process.getAllMonetary();
-						if(!nreg.isEmpty()){
-								Set<String> keySet = nreg.keySet();
-								for(String key:keySet){
-										double dd = nreg.get(key);
-										csvLine = process.getEmployee().getEmployee_number()+",";
-										csvLine += "0,"+key+",";
-										csvLine += payPeriod.getEnd_date()+",";
-										csvLine += dd+",";
-										csvLine += line2;								
-										if(process.hasMultipleJobs()){
-												csvLine += process.getJob_name();
-										}
-										allCsvLines.add(csvLine);	
-								}
-						}				
+				String line =",,,,", line2 =",,,,,,";
+				String utilChar = "";
+				if(isUtil){
+						utilChar ="u"; // append to all earn codes for Utility depart
 				}
-				*/
+				if(employeeRuns != null && employeeRuns.size() > 0){
+						Set<Employee> empSet = employeeRuns.keySet();
+						for(Employee emp:empSet){
+								List<TmwrpRun> runs = employeeRuns.get(emp);
+								emp.setPay_period_id(pay_period_id);
+								boolean multipleJobs = emp.hasMultipleJobs();
+								for(TmwrpRun run:runs){
+										JobTask job = null;
+										if(multipleJobs){
+												job = run.getDocument().getJob();
+										}
+										if(run.hasCsvHourRows()){
+												Map<CodeRef, Double> map = run.getCsvHourRows();
+												Set<CodeRef> refSet = map.keySet();
+												for(CodeRef refKey:refSet){
+														double dd = map.get(refKey);
+														String csvLine = emp.getEmployee_number()+","+df.format(dd)+","+utilChar+refKey.getNw_code()+","+payPeriod.getEnd_date()+",";
+														csvLine += line;
+														if(isHand){
+																csvLine += refKey.getGl_value()+",";
+														}
+														else{
+																csvLine +=",";
+														}
+														csvLine += line2;
+														if(job != null){
+																csvLine += job.getName();
+														}
+														allCsvLines.add(csvLine);														
+												}
+										}
+										if(run.hasCsvAmountRows()){
+												Map<CodeRef, Double> map = run.getCsvAmountRows();
+												Set<CodeRef> refSet = map.keySet();
+												for(CodeRef refKey:refSet){
+														double dd = map.get(refKey);
+														String csvLine = emp.getEmployee_number()+",0,"+utilChar+refKey.getNw_code()+","+payPeriod.getEnd_date()+",";
+														csvLine += df.format(dd)+",";
+														csvLine += line; // gl_value not needed here
+														csvLine += line2;
+														if(job != null){
+																csvLine += job.getName();
+														}														
+														allCsvLines.add(csvLine);														
+												}
+										}										
+								}
+						}
+				}
 		}
+		/**
+		 * End of the year is special case where there will be two
+		 * pay periods one start before end of the year and ends
+		 * at the end of the year and the second start on the
+		 * new year start date and ends at the end of pay period
+		 */
     void prepareEndYearCsv(){
 				allCsvLines = new ArrayList<>();
-				String line  = ",,,,,,,,,,,";
-				String line2 = ",,,,,,,,,,";
-				/**
-				for(PayPeriodProcess process:processes){
-						if(process.getNetRegularHoursForFirstPay() > 0){
-								String csvLine = process.getEmployee().getEmployee_number()+",";
-								csvLine += process.getNetRegularHoursForFirstPay()+",";
-								csvLine += process.getRegCode()+",";
-								csvLine += payPeriod.getFirstPayEndDate()+",";
-								csvLine += line;								
-								if(process.hasMultipleJobs()){
-										csvLine += process.getJob_name();
-								}
-								allCsvLines.add(csvLine);								
-						}
-						if(process.getNetRegularHoursForSecondPay() > 0){
-								String csvLine = process.getEmployee().getEmployee_number()+",";
-								csvLine += process.getNetRegularHoursForSecondPay()+",";
-								csvLine += process.getRegCode()+",";
-								csvLine += payPeriod.getEnd_date()+",";
-								csvLine += line;								
-								if(process.hasMultipleJobs()){
-										csvLine += process.getJob_name();
-								}
-								allCsvLines.add(csvLine);								
-						}						
-						if(process.hasNonRegularFirstPay()){
-								Hashtable<String, Double> nreg = process.getNonRegularFirstPay();
-								if(!nreg.isEmpty()){
-										Set<String> keySet = nreg.keySet();
-										for(String key:keySet){
-												double dd = nreg.get(key);
-												String csvLine = process.getEmployee().getEmployee_number()+",";
-												csvLine += dd+","+key+",";
-												csvLine += payPeriod.getFirstPayEndDate()+",";
-												csvLine += line;												
-												if(process.hasMultipleJobs()){
-														csvLine += process.getJob_name();
+				String line =",,,,", line2 =",,,,,,";
+				String utilChar = "";
+				if(isUtil){
+						utilChar ="u"; // append to all earn codes for Utility depart
+				}
+				if(employeeRuns != null && employeeRuns.size() > 0){
+						Set<Employee> empSet = employeeRuns.keySet();
+						for(Employee emp:empSet){
+								List<TmwrpRun> runs = employeeRuns.get(emp);
+								emp.setPay_period_id(pay_period_id);
+								boolean multipleJobs = emp.hasMultipleJobs();
+								for(TmwrpRun run:runs){
+										JobTask job = null;
+										if(multipleJobs){
+												job = run.getDocument().getJob();
+										}
+										if(run.hasCycle1HourRows()){
+												// first pay period ends at 12/31/yyyy
+												Map<CodeRef, Double> map = run.getCycle1HourRows();
+												Set<CodeRef> refSet = map.keySet();
+												for(CodeRef refKey:refSet){
+														double dd = map.get(refKey);
+														String csvLine = emp.getEmployee_number()+","+df.format(dd)+","+utilChar+refKey.getNw_code()+","+payPeriod.getFirstPayEndDate()+",";
+														csvLine += line;
+														if(isHand){
+																csvLine += refKey.getGl_value()+",";
+														}
+														else{
+																csvLine +=",";
+														}
+														csvLine += line2;
+														if(job != null){
+																csvLine += job.getName();
+														}
+														allCsvLines.add(csvLine);														
 												}
-												allCsvLines.add(csvLine);	
+										}
+										if(run.hasCycle1AmountRows()){
+												Map<CodeRef, Double> map = run.getCycle1AmountRows();
+												Set<CodeRef> refSet = map.keySet();
+												for(CodeRef refKey:refSet){
+														double dd = map.get(refKey);
+														String csvLine = emp.getEmployee_number()+",0,"+utilChar+refKey.getNw_code()+","+payPeriod.getFirstPayEndDate()+",";
+														csvLine += df.format(dd)+",";
+														csvLine += line; // gl_value not needed here
+														csvLine += line2;
+														if(job != null){
+																csvLine += job.getName();
+														}														
+														allCsvLines.add(csvLine);														
+												}
+										}
+										if(run.hasCycle2HourRows()){
+												Map<CodeRef, Double> map = run.getCycle2HourRows();
+												Set<CodeRef> refSet = map.keySet();
+												for(CodeRef refKey:refSet){
+														double dd = map.get(refKey);
+														String csvLine = emp.getEmployee_number()+","+df.format(dd)+","+utilChar+refKey.getNw_code()+","+payPeriod.getEnd_date()+",";
+														csvLine += line;
+														if(isHand){
+																csvLine += refKey.getGl_value()+",";
+														}
+														else{
+																csvLine +=",";
+														}
+														csvLine += line2;
+														if(job != null){
+																csvLine += job.getName();
+														}
+														allCsvLines.add(csvLine);														
+												}
+										}
+										if(run.hasCycle2AmountRows()){
+												Map<CodeRef, Double> map = run.getCycle2AmountRows();
+												Set<CodeRef> refSet = map.keySet();
+												for(CodeRef refKey:refSet){
+														double dd = map.get(refKey);
+														String csvLine = emp.getEmployee_number()+",0,"+utilChar+refKey.getNw_code()+","+payPeriod.getEnd_date()+",";
+														csvLine += df.format(dd)+",";
+														csvLine += line; // gl_value not needed here
+														csvLine += line2;
+														if(job != null){
+																csvLine += job.getName();
+														}														
+														allCsvLines.add(csvLine);														
+												}
 										}
 								}
-						}
-						if(process.hasNonRegularSecondPay()){
-								Hashtable<String, Double> nreg = process.getNonRegularSecondPay();
-								if(!nreg.isEmpty()){
-										Set<String> keySet = nreg.keySet();
-										for(String key:keySet){
-												double dd = nreg.get(key);
-												String csvLine = process.getEmployee().getEmployee_number()+",";
-												csvLine += dd+","+key+",";
-												csvLine += payPeriod.getEnd_date()+",";
-												csvLine += line;												
-												if(process.hasMultipleJobs()){
-														csvLine += process.getJob_name();
-												}
-												allCsvLines.add(csvLine);	
-										}
-								}
-						}
-						if(process.hasMonetaryFirstPay()){
-								Hashtable<String, Double> nreg = process.getMonetaryFirstPay();
-								if(!nreg.isEmpty()){
-										Set<String> keySet = nreg.keySet();
-										for(String key:keySet){
-												double dd = nreg.get(key);
-												String csvLine = process.getEmployee().getEmployee_number()+",";
-												csvLine += "0,"+key+",";
-												csvLine += payPeriod.getFirstPayEndDate()+",";
-												csvLine += dd+",";
-												csvLine += line2;												
-												if(process.hasMultipleJobs()){
-														csvLine += process.getJob_name();
-												}
-												allCsvLines.add(csvLine);	
-										}
-								}
-						}
-						if(process.hasMonetarySecondPay()){						
-								Hashtable<String, Double> nreg = process.getMonetarySecondPay();
-								if(!nreg.isEmpty()){
-										Set<String> keySet = nreg.keySet();
-										for(String key:keySet){
-												double dd = nreg.get(key);
-												String csvLine = process.getEmployee().getEmployee_number()+",";
-												csvLine += "0,"+key+",";
-												csvLine += payPeriod.getFirstPayEndDate()+",";
-												csvLine += dd+",";
-												csvLine += line2;												
-												if(process.hasMultipleJobs()){
-														csvLine += process.getJob_name();
-												}
-												allCsvLines.add(csvLine);	
-										}
-								}								
 						}
 				}
-				*/
     }
-    // 
-    void prepareHandCsv(){
-				allCsvLines = new ArrayList<>();
-				String line =",,,,,", line2 =",,,,,,";
-				/**
-				if(processes != null && processes.size() > 0){
-						for(PayPeriodProcess process:processes){
-								Hashtable<CodeRef, String> hash = process.getTwoWeekHandHash();
-								if(hash != null && !hash.isEmpty()){
-										Set<CodeRef> keySet = hash.keySet();
-										for(CodeRef key:keySet){
-												String dd = hash.get(key);
-												String csvLine = process.getEmployee().getEmployee_number()+",";
-												csvLine += dd+","+key.getNw_code()+",";
-												csvLine += payPeriod.getEnd_date()+",";
-												csvLine += line;
-												csvLine += key.getGl_value()+",";
-												csvLine += line2;
-												allCsvLines.add(csvLine);
-										}
-								}
-								Hashtable<String, Double> hash2	= process.getAllMonetary();
-								if(hash2 != null && !hash2.isEmpty()){
-										Set<String> keySet = hash2.keySet();
-										for(String key:keySet){
-												double dd = hash2.get(key);
-												String csvLine = process.getEmployee().getEmployee_number()+",";
-												csvLine += "0,"+key+",";
-												csvLine += payPeriod.getEnd_date()+",";
-												csvLine += dd+",";
-												csvLine += line;
-												csvLine += line2;
-												allCsvLines.add(csvLine);
-										}
-								}								
-						}
-				}
-				*/
-		}
-		// ToDo
-		void prepareHandEndYearCsv(){
-				
-		}
 				
 }
 

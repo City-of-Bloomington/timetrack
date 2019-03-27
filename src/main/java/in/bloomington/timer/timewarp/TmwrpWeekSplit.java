@@ -384,24 +384,24 @@ public class TmwrpWeekSplit{
 				//
 				if(earned_time15 > 0.009){
 						if(excess_hours_calculation_method.equals("Monetary")){
-								String code_id = "43"; // OT1.5
+								String code_id = CommonInc.overTime15EarnCodeID; // OT1.5
 								addToHash(hash, code_id, earned_time15);
 								earned_time += earned_time15;
 						}
 						else if(excess_hours_calculation_method.equals("Earn Time")){
-								String code_id = "34"; // CE1.5
+								String code_id = CommonInc.compTime15EarnCodeID; // CE1.5
 								addToHash(hash, code_id, earned_time15);
 								earned_time += earned_time15;
 						}
 				}
 				if(earned_time20 > 0.009){
 						if(excess_hours_calculation_method.equals("Monetary")){						
-								String code = "44"; // OT2.0
-								addToHash(hash, code, earned_time15);
+								String code = CommonInc.overTime20EarnCodeID; // OT2.0
+								addToHash(hash, code, earned_time20);
 								earned_time += earned_time15;
 						}
 						else if(excess_hours_calculation_method.equals("Earn Time")){
-								String code = "45"; // CE2.0; 
+								String code = CommonInc.compTime20EarnCodeID; // CE2.0; 
 								addToHash(hash, code, earned_time20);
 								earned_time += earned_time20;
 						}

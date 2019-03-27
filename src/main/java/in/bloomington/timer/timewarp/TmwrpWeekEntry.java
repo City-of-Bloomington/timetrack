@@ -482,17 +482,17 @@ public class TmwrpWeekEntry{
 								//
 								// create earn codes
 								if(salaryGroup != null && salaryGroup.isUnionned()){
-										code_id = "46"; // "HCE2.0";
+										code_id = CommonInc.holyCompTime20EarnCodeID; // "HCE2.0";
 								}
 								else{
 										if(holiday_factor > 1.5){
-												code_id = "46";// "HCE2.0";
+												code_id = CommonInc.holyCompTime20EarnCodeID;// "HCE2.0";
 										}
 										else if(holiday_factor > 1.0){
-												code_id = "79"; // "HCE1.5";
+												code_id = CommonInc.holyCompTime15EarnCodeID; // "HCE1.5";
 										}
 										else{
-												code_id = "50"; // "HCE1.0";
+												code_id = CommonInc.holyCompTime10EarnCodeID; // "HCE1.0";
 										}
 								}
 								addToEarnedHash(code_id, holy_earn_hrs);
@@ -509,7 +509,7 @@ public class TmwrpWeekEntry{
 				if(excess_hrs <= critical_small) return;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
-								code_id = "43"; // "OT1.5";	// no CE1.5 for temp
+								code_id = CommonInc.overTime15EarnCodeID; // "OT1.5";	// no CE1.5 for temp
 								addToEarnedHash(code_id, excess_hrs);								
 								return;
 						}
@@ -529,7 +529,7 @@ public class TmwrpWeekEntry{
 				//
 				// this should work for full time or part time with benefit
 				//
-				code_id = "71"; // "CE1.0";
+				code_id = CommonInc.compTime10EarnCodeID; // "CE1.0";
 				//
 				// we want to keep excess_hrs as we may need it
 				// for other stuff
@@ -552,14 +552,14 @@ public class TmwrpWeekEntry{
 				//
 				if(excess_hrs2 > critical_small){ 
 						if(excess_hours_calculation_method.equals("Monetary")){
-								code_id ="78"; // "OT1.0";
+								code_id =CommonInc.overTime10EarnCodeID ; // "OT1.0";
 								if(comp_factor > 1.0){
-										code_id = "43"; // "OT1.5";
+										code_id = CommonInc.overTime15EarnCodeID; // "OT1.5";
 								}
 						}
 						else{ // Earn time
 								if(comp_factor > 1.0){
-										code_id = "34"; // "CE1.5";
+										code_id = CommonInc.compTime15EarnCodeID; // "CE1.5";
 								}
 						}
 						String dstr = ndf.format(excess_hrs2);
@@ -569,7 +569,7 @@ public class TmwrpWeekEntry{
     }
     public void createProfRecord(){
 				//
-				String code_id = "109";// "PROF HRS";		// on the server 109
+				String code_id = CommonInc.profHoursEarnCodeID ;// "PROF HRS";	
 				if(prof_hrs > critical_small){
 						String dstr = ndf.format(prof_hrs);
 						addToEarnedHash(code_id, new Double(dstr));

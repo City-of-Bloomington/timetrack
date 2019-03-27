@@ -33,8 +33,35 @@ public class CommonInc{
 		public final static String fromEmailStr = "helpdesk@bloomington.in.gov";
 
 		public final static String[] hourCodeTypes = {"Regular","Used","Earned","Overtime","Unpaid", "Other"};
+		//
+		// PROF HRS earn code ID (from database)
+		public final static String profHoursEarnCodeID = "109";
+		// related code strring
+		public final static String profHoursEarnCodeStr = "PROF HRS";		
+		//
+		// Reg code ID used by many (from database)
+		public final static String regEarnCodeID = "1";
+		public final static String regEarnCodeStr = "Reg";
+		public final static String tempEarnCodeID = "14";
+		public final static String tempEarnCodeStr = "TEMP";		
+		//
+		// Fire depart special reg code for BC group only
+		public final static String regEarnCodeFireBCGroupID = "111";
+		public final static String regEarnCodeFireBCGroupStr = "REG FIRE BC";
+		public final static String regEarnCodeFireID = "93";
+		public final static String regEarnCodeFireStr = "REG FIRE";
+		public final static String overTime10EarnCodeID = "78"; // OT1.0		
+		public final static String overTime15EarnCodeID = "43"; // OT1.5
+		public final static String overTime20EarnCodeID = "44"; // OT2.0
+		public final static String compTime10EarnCodeID = "71"; // CE1.0
+		public final static String compTime15EarnCodeID = "34"; // CE1.5
+		public final static String compTime20EarnCodeID = "45"; // CE2.0
+		public final static String holyCompTime10EarnCodeID = "50"; // HCE1.0		
+		public final static String holyCompTime15EarnCodeID = "34"; // HCE1.5
+		public final static String holyCompTime20EarnCodeID = "79"; // HCE2.0			
 		
 		//
+		
    	String message = "";
 		List<String> errors = null;
 		//

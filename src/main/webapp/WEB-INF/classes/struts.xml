@@ -245,6 +245,7 @@
 			<result name="input">/WEB-INF/jsp/timewarp/tmwrpWrap.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timewarp/tmwrpWrap.jsp</result>
 			<result name="success">/WEB-INF/jsp/timewarp/tmwrpWrap.jsp</result>
+			<result name="csv">/WEB-INF/jsp/timewarp/timewarpCsv.jsp</result>			
 		</action>
 		<action name="reportHand" 
 						class="in.bloomington.timer.ReportHandAction" 

@@ -178,10 +178,16 @@ public class PayPeriod implements Serializable{
 				}
 				return allMonths[startMonth-1]+"/"+allMonths[endMonth-1];
 		}
+		// if we have two different years, means we are
+		// at the end of the year pay period, this is handled
+		// by special case
+		//
 		public boolean hasTwoDifferentYears(){
-				return !(startYear == endYear);
+				return startYear < endYear; 
 		}
-		// this is needed for December (31 days) only 
+		// this is needed in December (31 days) only
+		// to find the split day for the end of the year
+		// pay period
 		public int getDaysToYearEnd(){
 				return 31 - startDay + 1;
 		}

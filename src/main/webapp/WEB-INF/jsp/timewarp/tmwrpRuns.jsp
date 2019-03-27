@@ -62,6 +62,25 @@
 									</s:iterator>
 								</tr>
 							</s:iterator>
+							<!-- in case we have only have first week -->
+							<s:if test="!#tmwrpRun.hasWeek2Rows()">
+								<s:if test="#tmwrpRun.hasCycleTotalRow()">
+									<tr>
+										<s:iterator value="#tmwrpRun.cycleTotalRow" status="status">
+											<s:if test="#status.first">
+												<td>
+													<strong><s:property /></strong>
+												</td>
+											</s:if>
+											<s:else>
+												<td style="text-align: right;">
+													<strong><s:property /></strong>
+												</td>
+											</s:else>
+										</s:iterator>
+									</tr>
+								</s:if>
+							</s:if>
 						</table>
 					</s:if>
 
@@ -90,9 +109,9 @@
 								</tr>
 							</s:iterator>
 
-							<s:if test="#tmwrpRun.hasCycleRow()">
+							<s:if test="#tmwrpRun.hasCycleTotalRow()">
 								<tr>
-									<s:iterator value="#tmwrpRun.cycleRow" status="status">
+									<s:iterator value="#tmwrpRun.cycleTotalRow" status="status">
 										<s:if test="#status.first">
 											<td>
 												<strong><s:property /></strong>

@@ -66,8 +66,8 @@ public class TmwrpBlockList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.run_id,g.apply_type,"+
-						"g.hour_code_id,g.hours,g.amount, "+
+				String qq = "select g.id,g.run_id,"+
+						"g.hour_code_id,g.term_type,g.cycle_order,g.hours,g.amount, "+
 						" h.id,h.name,h.description,h.record_method,"+
 						" h.accrual_id, h.reg_default,h.type,"+
 						" h.default_monetary_amount,h.inactive, "+
@@ -105,21 +105,22 @@ public class TmwrpBlockList{
 																			rs.getString(2),
 																			rs.getString(3),
 																			rs.getString(4),
-																			rs.getDouble(5),
+																			rs.getInt(5),
 																			rs.getDouble(6),
+																			rs.getDouble(7),
 																			
-																			rs.getString(7), // HourCode
-																			rs.getString(8),
+																			rs.getString(8), // HourCode
 																			rs.getString(9),
 																			rs.getString(10),
 																			rs.getString(11),
-																			rs.getString(12) != null,
-																			rs.getString(13),
-																			rs.getDouble(14),
-																			rs.getString(15) != null,
+																			rs.getString(12),
+																			rs.getString(13) != null,
+																			rs.getString(14),
+																			rs.getDouble(15),
+																			rs.getString(16) != null,
 																			
-																			rs.getString(16),
-																			rs.getString(17));
+																			rs.getString(17),
+																			rs.getString(18));
 
 
 																			

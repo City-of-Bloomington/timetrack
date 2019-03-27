@@ -28,12 +28,19 @@ public class TmwrpRun{
 		double week1_grs_reg_hrs = 0,
 				week2_grs_reg_hrs=0,
 				week1_net_reg_hrs=0,
-				week2_net_reg_hrs=0;
+				week2_net_reg_hrs=0,
+				cycle1_net_reg_hrs=0,
+				cycle2_net_reg_hrs=0;				
 		double week1_total_hours = 0, week2_total_hours = 0;
 		double week1_total_amount = 0, week2_total_amount = 0;		
 		boolean old_record = false;
 		boolean has_week1_rows = false, has_week2_rows = false,
 				has_cycle_row=false;
+		//
+		// we need this flag when we deal with HAND department
+		// we do not use net reg for hand
+		boolean hand_flag = false; // 
+		//
     //
     Document document = null;
 		HourCode regCode = null;
@@ -42,7 +49,15 @@ public class TmwrpRun{
 		// for display
     // Map<String, List<String>> week1Rows = null, week2Rows = null;
     List<List<String>> week1Rows = null, week2Rows = null;
-		List<String> cycleRow = null;
+		List<String> cycleTotalRow = null; // pay period row 
+		Map<CodeRef, Double> csvHourRows = null;
+		Map<CodeRef, Double> csvAmountRows = null;		
+
+		// for end of the year
+		Map<CodeRef, Double> csvCycle1HourRows = null;
+		Map<CodeRef, Double> csvCycle1AmountRows = null;
+		Map<CodeRef, Double> csvCycle2HourRows = null;
+		Map<CodeRef, Double> csvCycle2AmountRows = null;		
     public TmwrpRun(){
     }		
     public TmwrpRun(String val){
@@ -54,13 +69,18 @@ public class TmwrpRun{
 										Double val3,
 										Double val4,
 										Double val5,
-										Double val6){
+										Double val6,
+										Double val7,
+										Double val8
+										){
 				setDocument_id(val);
 				setReg_code_id(val2);
 				setWeek1GrsRegHrs(val3);
 				setWeek2GrsRegHrs(val4);
 				setWeek1NetRegHrs(val5);
-				setWeek2NetRegHrs(val6);				
+				setWeek2NetRegHrs(val6);
+				setCycle1NetRegHrs(val7);
+				setCycle2NetRegHrs(val8);				
     }		
     public TmwrpRun(String val,
 										String val2,
@@ -69,7 +89,10 @@ public class TmwrpRun{
 										Double val5,
 										Double val6,
 										Double val7,
-										Double val8){
+										Double val8,
+										Double val9,
+										Double val10
+										){
 				setId(val);
 				setDocument_id(val2);
 				setReg_code_id(val3);				
@@ -77,7 +100,9 @@ public class TmwrpRun{
 				setWeek1GrsRegHrs(val5);
 				setWeek2GrsRegHrs(val6);
 				setWeek1NetRegHrs(val7);
-				setWeek2NetRegHrs(val8);				
+				setWeek2NetRegHrs(val8);
+				setCycle1NetRegHrs(val9);
+				setCycle2NetRegHrs(val10);					
     }
     //
     // getters
@@ -106,7 +131,13 @@ public class TmwrpRun{
 		}
 		public double getWeek2NetRegHrs(){
 				return week2_net_reg_hrs;
-		}		
+		}
+		public double getCycle1NetRegHrs(){
+				return cycle1_net_reg_hrs;
+		}
+		public double getCycle2NetRegHrs(){
+				return cycle2_net_reg_hrs;
+		}				
     //
     // setters
     //
@@ -144,7 +175,24 @@ public class TmwrpRun{
 				if(val != null){
 						week2_net_reg_hrs = val;
 				}
-    }		
+    }
+    public void setCycle1NetRegHrs(Double val){
+				if(val != null){
+						cycle1_net_reg_hrs = val;
+				}
+    }
+    public void setCycle2NetRegHrs(Double val){
+				if(val != null){
+						cycle2_net_reg_hrs = val;
+				}
+    }
+		public void setHandFlag(){
+				hand_flag = true;
+		}
+		public Double getCycleNetRegHours(){
+				return week1_net_reg_hrs+week2_net_reg_hrs;
+		}
+		
 		public double getWeek1TotalHours(){
 				return week1_total_hours;
 		}
@@ -243,7 +291,7 @@ public class TmwrpRun{
 								double amnt = one.getAmount();
 								if(hrs + amnt > 0){
 										if(one.getHourCode().isRecordMethodMonetary()){
-												if(one.getApplyType().equals("Week 1")){
+												if(one.getTermType().equals("Week 1")){
 														week1_total_amount += amnt;
 												}
 												else{
@@ -251,7 +299,7 @@ public class TmwrpRun{
 												}
 										}
 										else{
-												if(one.getApplyType().equals("Week 1")){
+												if(one.getTermType().equals("Week 1")){
 														week1_total_hours  += hrs;
 												}
 												else{
@@ -274,7 +322,7 @@ public class TmwrpRun{
 		public boolean hasWeek2Rows(){
 				return has_week2_rows;
 		}
-		public boolean hasCycleRow(){
+		public boolean hasCycleTotalRow(){
 				return has_cycle_row;
 		}
 		public List<List<String>> getWeek1Rows(){
@@ -284,9 +332,11 @@ public class TmwrpRun{
 				return week2Rows;
 		}
 		// last total row
-		public List<String> getCycleRow(){
-				return cycleRow;
-		}		
+		public List<String> getCycleTotalRow(){
+				return cycleTotalRow;
+		}
+
+		
 		public void findRows(){
 				findBlocks();
 				if(hasWeek1Totals() || hasWeek2Totals()){
@@ -337,7 +387,7 @@ public class TmwrpRun{
 												row.add(key);
 												row.add("");
 												row.add("$"+df.format(one.getAmount()));
-												if(one.getApplyType().equals("Week 1")){
+												if(one.getTermType().equals("Week 1")){
 														has_week1_rows = true;
 														week1Rows.add(row);
 												}
@@ -350,7 +400,7 @@ public class TmwrpRun{
 												row.add(key);
 												row.add(df.format(one.getHours()));
 												row.add("");
-												if(one.getApplyType().equals("Week 1")){
+												if(one.getTermType().equals("Week 1")){
 														week1Rows.add(row);
 														has_week1_rows = true;
 												}
@@ -389,14 +439,14 @@ public class TmwrpRun{
 										row.add("");
 								week2Rows.add(row);
 						}
-						cycleRow = new ArrayList<>();
-						cycleRow.add("Pay Period Total");
-						cycleRow.add(df.format(getCycleTotalHours()));
+						cycleTotalRow = new ArrayList<>();
+						cycleTotalRow.add("Pay Period Total");
+						cycleTotalRow.add(df.format(getCycleTotalHours()));
 						double dd = getCycleTotalAmount();
 						if(dd > 0.)
-								cycleRow.add("$"+df.format(dd));
+								cycleTotalRow.add("$"+df.format(dd));
 						else
-								cycleRow.add("");
+								cycleTotalRow.add("");
 						has_cycle_row = true;
 				}
 		}
@@ -405,7 +455,186 @@ public class TmwrpRun{
 		}
 		public boolean hasWeek2Totals(){
 				return week2_total_hours + week2_total_amount > 0;
+		}
+		public boolean hasCsvHourRows(){
+				findCsvRows();
+				return csvHourRows != null && !csvHourRows.isEmpty();
+		}
+		
+		public boolean hasCsvAmountRows(){
+				return csvAmountRows != null && !csvAmountRows.isEmpty();
+		}
+		public Map<CodeRef, Double> getCsvHourRows(){
+				return csvHourRows;
+		}
+		public Map<CodeRef, Double> getCsvAmountRows(){
+				return csvAmountRows;
 		}		
+		void findCsvRows(){
+				findBlocks();
+				csvHourRows = new TreeMap<>();
+				double dd = 0;
+				if(!hand_flag){
+						CodeRef codeRef = null;
+						dd = getCycleNetRegHours();
+						if(dd > 0){
+								getRegCode();
+								if(regCode != null){
+										codeRef = regCode.getCodeRef();
+								}
+								if(codeRef != null){
+										csvHourRows.put(codeRef, dd);
+								}
+								else{
+										logger.error(" codeRef not found ");
+										System.err.println(" codeRef not found ");
+								}
+						}
+				}
+				if(hasBlocks()){
+						for(TmwrpBlock block:blocks){
+								CodeRef codeRef = null;
+								HourCode hrCode = block.getHourCode();
+								if(hrCode != null)
+										codeRef = hrCode.getCodeRef();
+								dd = 0.;
+								if(hrCode.isRecordMethodMonetary()){
+										dd = block.getAmount();
+										if(dd > 0 && codeRef != null){
+												if(csvAmountRows == null){
+														csvAmountRows = new TreeMap<>();
+												}
+												addToMap(csvAmountRows, codeRef, dd);
+										}
+										else{
+												logger.error(" no code ref or dd = 0");
+										}
+								}
+								else{
+										dd = block.getHours();
+										if(dd > 0 && codeRef != null){
+												if(csvHourRows == null){
+														csvHourRows = new TreeMap<>();
+												}												
+												addToMap(csvHourRows, codeRef, dd);
+										}
+										else{
+												logger.error(" no code ref or dd = 0");
+										}
+								}
+						}
+				}
+		}
+		public boolean hasCycle1HourRows(){
+				findCycleCsvRows();
+				return csvCycle1HourRows != null && !csvCycle1HourRows.isEmpty();
+		}
+		
+		public boolean hasCycle2HourRows(){
+				return csvCycle2HourRows != null && !csvCycle2HourRows.isEmpty();
+		}
+		public boolean hasCycle1AmountRows(){
+				return csvCycle1AmountRows != null && !csvCycle1AmountRows.isEmpty();
+		}
+		public boolean hasCycle2AmountRows(){
+				return csvCycle2AmountRows != null && !csvCycle2AmountRows.isEmpty();
+		}
+		public Map<CodeRef, Double> getCycle1HourRows(){
+				return csvCycle1HourRows;
+		}
+		public Map<CodeRef, Double> getCycle2HourRows(){
+				return csvCycle2HourRows;
+		}		
+		public Map<CodeRef, Double> getCycle1AmountRows(){
+				return csvCycle1AmountRows;
+		}
+		public Map<CodeRef, Double> getCycle2AmountRows(){
+				return csvCycle2AmountRows;
+		}		
+		void findCycleCsvRows(){
+				findBlocks();
+				csvCycle1HourRows = new TreeMap<>();
+				csvCycle2HourRows = new TreeMap<>();
+				csvCycle1AmountRows = new TreeMap<>();
+				csvCycle2AmountRows = new TreeMap<>();				
+				double dd = 0;
+				if(!hand_flag){
+						CodeRef codeRef = null;
+						dd = cycle1_net_reg_hrs;
+						if(dd > 0){
+								getRegCode();
+								if(regCode != null){
+										codeRef = regCode.getCodeRef();
+								}
+								if(codeRef != null){
+										csvCycle1HourRows.put(codeRef, dd);
+								}
+								else{
+										logger.error(" codeRef not found ");
+										System.err.println(" codeRef not found ");
+								}
+						}
+						dd = cycle2_net_reg_hrs;
+						if(dd > 0){
+								getRegCode();
+								if(regCode != null){
+										codeRef = regCode.getCodeRef();
+								}
+								if(codeRef != null){
+										csvCycle2HourRows.put(codeRef, dd);
+								}
+								else{
+										logger.error(" codeRef not found ");
+										System.err.println(" codeRef not found ");
+								}
+						}						
+				}
+				if(hasBlocks()){
+						for(TmwrpBlock block:blocks){
+								CodeRef codeRef = null;
+								HourCode hrCode = block.getHourCode();
+								if(hrCode != null)
+										codeRef = hrCode.getCodeRef();
+								dd = 0.;
+								if(hrCode.isRecordMethodMonetary()){
+										dd = block.getAmount();
+										if(dd > 0 && codeRef != null){
+												if(block.getCycleOrder() == 1)
+														addToMap(csvCycle1AmountRows, codeRef, dd);
+												else
+														addToMap(csvCycle2AmountRows, codeRef, dd);
+										}
+										else{
+												logger.error(" no code ref or dd = 0");
+										}
+								}
+								else{
+										dd = block.getHours();
+										if(dd > 0 && codeRef != null){
+												if(block.getCycleOrder() == 1)
+														addToMap(csvCycle1HourRows, codeRef, dd);
+												else
+														addToMap(csvCycle2HourRows, codeRef, dd);				
+										}
+										else{
+												logger.error(" no code ref or dd = 0");
+										}
+								}
+						}
+				}
+		}
+		
+		private void addToMap(Map<CodeRef, Double> map,
+													CodeRef ref,
+													Double dd){
+				double dd2 = 0;
+				if(map.containsKey(ref)){
+						dd2 = map.get(ref);
+				}
+				dd2 = dd+dd2;
+				map.put(ref, dd2);
+		}
+
 		/**
 		 * since document_id is unique per record
 		 * we can use this function to get it (if any)
@@ -420,7 +649,9 @@ public class TmwrpRun{
 						"g.week1_grs_reg_hrs, "+
 						"g.week2_grs_reg_hrs, "+
 						"g.week1_net_reg_hrs, "+
-						"g.week2_net_reg_hrs "+						
+						"g.week2_net_reg_hrs, "+
+						"g.cycle1_net_reg_hrs, "+
+						"g.cycle2_net_reg_hrs "+						
 						"from tmwrp_runs g where g.document_id = ? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
@@ -441,6 +672,8 @@ public class TmwrpRun{
 								setWeek2GrsRegHrs(rs.getDouble(6));
 								setWeek1NetRegHrs(rs.getDouble(7));
 								setWeek2NetRegHrs(rs.getDouble(8));
+								setCycle1NetRegHrs(rs.getDouble(9));
+								setCycle2NetRegHrs(rs.getDouble(10));								
 						}
 						else{
 								msg = "No record found for "+doc_id;
@@ -471,7 +704,9 @@ public class TmwrpRun{
 						"g.week1_grs_reg_hrs, "+
 						"g.week2_grs_reg_hrs, "+
 						"g.week1_net_reg_hrs, "+
-						"g.week2_net_reg_hrs "+						
+						"g.week2_net_reg_hrs, "+
+						"g.cycle1_net_reg_hrs, "+
+						"g.cycle2_net_reg_hrs "+						
 						"from tmwrp_runs g where g.id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
@@ -488,6 +723,8 @@ public class TmwrpRun{
 										setWeek2GrsRegHrs(rs.getDouble(6));
 										setWeek1NetRegHrs(rs.getDouble(7));
 										setWeek2NetRegHrs(rs.getDouble(8));
+										setCycle1NetRegHrs(rs.getDouble(9));
+										setCycle2NetRegHrs(rs.getDouble(10));										
 								}
 						}
 				}
@@ -584,7 +821,7 @@ public class TmwrpRun{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into tmwrp_runs values(0,?,?,now(),?,?,?,?) ";
+				String qq = "insert into tmwrp_runs values(0,?,?,now(),?,?,?,?,?,?) ";
 				if(document_id.equals("")){
 						msg = " document not set ";
 						return msg;
@@ -607,7 +844,9 @@ public class TmwrpRun{
 						pstmt.setDouble(3,week1_grs_reg_hrs);
 						pstmt.setDouble(4,week2_grs_reg_hrs);
 						pstmt.setDouble(5,week1_net_reg_hrs);
-						pstmt.setDouble(6,week2_net_reg_hrs);						
+						pstmt.setDouble(6,week2_net_reg_hrs);
+						pstmt.setDouble(7,cycle1_net_reg_hrs);
+						pstmt.setDouble(8,cycle2_net_reg_hrs);						
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
@@ -640,7 +879,9 @@ public class TmwrpRun{
 						"week1_grs_reg_hrs=?,"+
 						"week2_grs_reg_hrs=?,"+
 						"week1_net_reg_hrs=?,"+
-						"week2_net_reg_hrs=? "+
+						"week2_net_reg_hrs=?, "+
+						"cycle1_net_reg_hrs=?,"+
+						"cycle2_net_reg_hrs=? "+						
 						"where id=? ";
 				if(reg_code_id.equals("")){
 						msg = " regular hour code not set ";
@@ -659,7 +900,9 @@ public class TmwrpRun{
 						pstmt.setDouble(3,week2_grs_reg_hrs);
 						pstmt.setDouble(4,week1_net_reg_hrs);
 						pstmt.setDouble(5,week2_net_reg_hrs);
-						pstmt.setString(6, id);						
+						pstmt.setDouble(6,cycle1_net_reg_hrs);
+						pstmt.setDouble(7,cycle2_net_reg_hrs);						
+						pstmt.setString(8, id);						
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

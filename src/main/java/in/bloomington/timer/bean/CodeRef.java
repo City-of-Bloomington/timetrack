@@ -14,7 +14,7 @@ import in.bloomington.timer.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CodeRef{ 
+public class CodeRef implements Serializable, Comparable<CodeRef>{ 
 
 		String code="", code_id="",
 				nw_code="", gl_value = "", pto_ratio = "", id="";
@@ -99,7 +99,44 @@ public class CodeRef{
     public void setPto_ratio(String val){
 				if(val != null)		
 						pto_ratio = val;
-    }		
+    }
+    public String toString(){
+				return getInfo();
+    }
+		public String getInfo(){
+				String ret = code;
+				if(!nw_code.equals("")){
+						if(!ret.equals(""))
+								ret += ": ";
+						ret += nw_code;
+				}
+				return ret;
+		}
+    public boolean equals(Object o) {
+				if (o instanceof CodeRef) {
+						CodeRef c = (CodeRef) o;
+						if ( this.id.equals(c.getId())) 
+								return true;
+				}
+				return false;
+    }
+    public int hashCode(){
+				int seed = 47;
+				if(!id.equals("")){
+						try{
+								seed += Integer.parseInt(id)*29;
+						}catch(Exception ex){
+								// we ignore
+						}
+				}
+				return seed;
+    }
+		@Override
+    public int compareTo(CodeRef other){
+        int ret = this.toString().compareTo(other.toString());
+        return ret;
+    }
+		
 		public  String doSave(){
 				//
 				Connection con = null;
