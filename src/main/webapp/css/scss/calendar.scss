@@ -94,6 +94,23 @@
           background-color: darken(#dcdcd3, 5%);
         }
 
+        &.monetary {
+          background-color: #8D9E85;
+          color: darken($dark-slate, 5%);
+
+          b {
+            color: darken($dark-slate, 5%);
+          }
+
+          svg {
+            &#remove-icon {
+              path {
+                fill: lighten($dark-slate, 5%);
+              }
+            }
+          }
+        }
+
         &.incomplete-time {
           border: $calendar-day-data-incomplete-border;
           background-color: $calendar-day-data-incomplete-background;
@@ -107,7 +124,11 @@
           display: block;
           margin: 0 0 5px 0;
 
-          &:last-of-type { margin: 0; }
+          &:last-of-type {
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: .3px;
+          }
         }
 
         b { color: $dark-slate; }

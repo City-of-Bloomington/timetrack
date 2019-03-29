@@ -75,7 +75,7 @@
         </s:if>
 
         <s:if test="hasData()">
-          <div class="data <s:if test='!hasNextLine()'>non-regular</s:if>"
+          <div class="data<s:if test='!hasNextLine()'> non-regular</s:if><s:if test='isMonetaryType()'> monetary</s:if>"
                tabindex="1"
                data-block-id="<s:property value='id' />"
                data-date="<s:property value='date' />"
