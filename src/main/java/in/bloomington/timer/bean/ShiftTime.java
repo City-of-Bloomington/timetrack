@@ -12,6 +12,7 @@ import javax.sql.*;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import in.bloomington.timer.timewarp.TimewarpManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -279,6 +280,7 @@ public class ShiftTime{
 		}
 		public String doProcess(){
 				String msg = "";
+				TimewarpManager tmwrpManager = null;
 				List<JobTask> jobs = null;
 				if(id.equals("")){
 						msg = " id not set ";
@@ -322,6 +324,7 @@ public class ShiftTime{
 				for(JobTask job:jobs){
 						System.err.println(jj+" emp "+job.getEmployee()+" "+job.getId());
 						Document document = null;
+						String document_id = "";
 						document = new Document(job.getEmployee_id(),
 																		pay_period_id,
 																		job.getId(),
@@ -331,6 +334,7 @@ public class ShiftTime{
 								System.err.println(" doc error "+msg);
 								return msg;
 						}
+						document_id = document.getId();
 						for(String date:datesArr){
 								System.err.println(" date "+date);
 								if(date.indexOf("-") > -1){
@@ -349,8 +353,9 @@ public class ShiftTime{
 								tb.setAction_by_id(added_by_id); // for logs
 								msg = tb.doSave();
 						}
-						jj++;
-						// if(jj > 2) break;
+						tmwrpManager = new TimewarpManager(document_id);
+						msg = tmwrpManager.doProcess();
+						System.err.println(" manager "+msg);
 				}
 				if(msg.equals("")){
 						msg = doUpdateProcessed();

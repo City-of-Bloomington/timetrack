@@ -33,6 +33,7 @@ public class TimeBlockAction extends TopAction{
 		TimewarpManager timewarpManager = null;
 		List<EmployeeAccrual> employeeAccruals = null;
 		List<HourCode> hourCodes = null;
+		List<HourCode> monetaryHourCodes = null;
 		Department department = null;
 		//
 		//
@@ -233,7 +234,21 @@ public class TimeBlockAction extends TopAction{
 								}
 						}
 				}
-		}				
+		}
+		public boolean hasMonetaryHourCodes(){
+				if(hasHourCodes()){
+						monetaryHourCodes = new ArrayList<>();
+						for(HourCode one:hourCodes){
+								if(one.isMonetary()){
+										monetaryHourCodes.add(one);
+								}
+						}
+				}
+				return monetaryHourCodes != null && monetaryHourCodes.size() > 0;
+		}
+		public List<HourCode> getMonetaryHourCodes(){
+				return monetaryHourCodes;
+		}
 		public boolean hasHourCodes(){
 				getHourCodes();
 				return hourCodes != null;

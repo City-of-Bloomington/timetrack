@@ -19,6 +19,11 @@
 				<input type="hidden" name="timeBlock.accrual_balance" value="<s:property value='related_hour_code_id' />_<s:property value='hours' />" />
 			</s:iterator>
 		</s:if>
+		<s:if test="hasMonetaryHourCodes()">
+			<s:iterator var="one" value="monetaryHourCodes">
+				<input type="hidden" id="<s:property value='id' />_Monetary" value="<s:property value='defaultMonetaryAmount' />" />
+			</s:iterator>				
+		</s:if>
 		<h1>
 			<s:if test="timeBlock.id == ''">
 				Add Time Block
@@ -58,11 +63,11 @@
 		<s:if test="timeBlock.hourCode.record_method == 'Time'">
 			<div id="div_time_in" class="form-group">
 				<label>Time In</label>
-				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" placeholder="(hh:mm AM/PM)" />
+				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
 			<div id="div_time_out" class="form-group">
 				<label>Time Out</label>
-				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hh:mm AM/PM)" />
+				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
 			<div id="div_overnight" class="form-group">
 				<label>Overnight Shift</label>
@@ -73,18 +78,18 @@
 				<s:textfield name="timeBlock.hours" value="%{timeBlock.hoursStr}" maxlength="5" id="hour_change" placeholder="(dd.dd)" />
 			</div>
 			<div id="div_amount" style="display:none;" class="form-group">
-				<label>Amount</label>
-				$<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
+				<label>Amount $</label>
+				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
 			</div>			
 		</s:if>
 		<s:elseif test="timeBlock.isHourType()">
 			<div id="div_time_in" style="display:none;" class="form-group">
 				<label>Start Time</label>
-				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" placeholder="(hh:mm) AM/PM" />
+				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
 			<div id="div_time_out" style="display:none;" class="form-group">
 				<label>End Time</label>
-				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hh:mm) AM/PM" />
+				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
 			<div id="div_overnight" style="display:none;" class="form-group">
 				<label>Overnight Shift</label>
@@ -95,18 +100,18 @@
 				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" placeholder="(dd.dd)" />
 			</div>
 			<div id="div_amount" style="display:none;" class="form-group">
-				<label>Amount</label>
-				$<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
+				<label>Amount $</label>
+				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
 			</div>						
 		</s:elseif>		
 		<s:else>
 			<div id="div_time_in" style="display:none;" class="form-group">
 				<label>Start Time</label>
-				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" placeholder="(hh:mm) AM/PM" />
+				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
 			<div id="div_time_out" style="display:none;" class="form-group">
 				<label>End Time</label>
-				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hh:mm) AM/PM" />
+				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
 			<div id="div_overnight" style="display:none;" class="form-group">
 				<label>Overnight Shift</label>
@@ -117,7 +122,7 @@
 				<s:textfield name="timeBlock.hours" value="%{timeBlock.hours}" maxlength="5" id="hour_change" placeholder="(dd.dd)" />
 			</div>
 			<div id="div_amount" class="form-group">
-				<label>Amount</label>
+				<label>Amount $</label>
 				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
 			</div>					
 		</s:else>

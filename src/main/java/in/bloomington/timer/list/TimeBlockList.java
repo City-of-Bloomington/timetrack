@@ -367,7 +367,6 @@ public class TimeBlockList{
 						
 						"from time_blocks_view v ";
 				String qw = "";
-				// ToDo
 				if(!department_id.equals("")){
 						qq += ", department_employees de ";
 						if(!qw.equals("")) qw += " and ";								
@@ -502,7 +501,6 @@ public class TimeBlockList{
 																							 related_accrual_id,
 																							 code_type,
 																							 default_amount);
-																							 
 								if(code_desc == null) code_desc = "";
 								if(hrCode.isRecordMethodMonetary()){
 										hrs = 0;
@@ -514,17 +512,6 @@ public class TimeBlockList{
 										if(hrs < 3.) hrs = 3;
 										amnt = 0;
 								}
-								
-								/*
-								if(hr_code != null){
-										if(hr_code.indexOf("ONCALL") > -1){ // oncall35 id=17
-												hrs = 1.0;
-										}
-										else if(hr_code.indexOf("CO") > -1){ // Call Out id=16
-												if(hrs < 3.) hrs = 3;
-										}
-								}
-								*/
 								if(!dailyOnly){
 										if(timeBlocks == null)
 												timeBlocks = new ArrayList<>();
@@ -1025,39 +1012,43 @@ public class TimeBlockList{
 														 int hr_code_id,
 														 String hr_code,
 														 double amount){
-				if(amountCodeTotals.containsKey(hr_code_id)){
-						Double val = amountCodeTotals.get(hr_code_id);
-						double val2 = val.doubleValue()+amount;
-						amountCodeTotals.put(hr_code_id, val2);
-						if(order_id < 7){
-								if(amountCodeWeek1.containsKey(hr_code)){
-										val = hourCodeWeek1.get(hr_code);
-										val2 = val.doubleValue()+amount;										
-										amountCodeWeek1.put(hr_code, val2);
+				try{
+						if(amountCodeTotals.containsKey(hr_code_id)){
+								Double val = amountCodeTotals.get(hr_code_id);
+								double val2 = val.doubleValue()+amount;
+								amountCodeTotals.put(hr_code_id, val2);
+								if(order_id < 7){
+										if(amountCodeWeek1.containsKey(hr_code)){
+												val = amountCodeWeek1.get(hr_code);
+												val2 = val.doubleValue()+amount;
+												amountCodeWeek1.put(hr_code, val2);
+										}
+										else{
+												amountCodeWeek1.put(hr_code, amount);
+										}
 								}
 								else{
-										amountCodeWeek1.put(hr_code, amount);
+										if(amountCodeWeek2.containsKey(hr_code)){
+												val =amountCodeWeek2.get(hr_code);
+												val2 = val.doubleValue()+amount;										
+												amountCodeWeek2.put(hr_code, val2);
+										}
+										else{
+												amountCodeWeek2.put(hr_code, amount);
+										}
 								}
 						}
 						else{
-								if(amountCodeWeek2.containsKey(hr_code)){
-										val =amountCodeWeek2.get(hr_code);
-										val2 = val.doubleValue()+amount;										
-										amountCodeWeek2.put(hr_code, val2);
+								amountCodeTotals.put(hr_code_id, amount);
+								if(order_id < 7){
+										amountCodeWeek1.put(hr_code, amount);
 								}
 								else{
 										amountCodeWeek2.put(hr_code, amount);
 								}
 						}
-				}
-				else{
-						amountCodeTotals.put(hr_code_id, amount);
-						if(order_id < 7){
-								amountCodeWeek1.put(hr_code, amount);
-						}
-						else{
-								amountCodeWeek2.put(hr_code, amount);
-						}
+				}catch(Exception ex){
+						logger.error(ex);
 				}
     }		
 		/*

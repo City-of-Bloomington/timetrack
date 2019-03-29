@@ -298,7 +298,7 @@ public class TimeBlock extends Block{
 		}
 		private String splitTimes(String val, boolean isOut){
 				String msg = "";
-				if(val != null){
+				if(val != null && !val.trim().equals("")){
 						int hrs = 0, mins=0;
 						boolean is_pm = false, is_am=false;
 						String dd[] = {"",""};
@@ -1099,6 +1099,10 @@ public class TimeBlock extends Block{
 								double dd = hourCode.getDefaultMonetaryAmount();
 								if(dd > 0){ // use the default amount 
 										amount = dd; 
+								}
+								else if(amount > CommonInc.maxMonetaryAmount){
+										msg = ""+amount+" Amount entered exceeds max limit ";
+										return msg;
 								}
 						}
 				}

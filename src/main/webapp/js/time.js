@@ -176,7 +176,7 @@ $('#hour_code_select').change(function() {
         $('#time_in').attr('tabindex',-1);
         $('#time_out').attr('tabindex',-1);
         $('#time_overnight').attr('tabindex',-1);
-				
+				$('#amount_change').val('');				
         $('#div_time_in').hide();
         $('#div_time_out').hide();
         $('#div_overnight').hide();
@@ -191,11 +191,17 @@ $('#hour_code_select').change(function() {
         $('#div_time_in').hide();
         $('#div_time_out').hide();
         $('#div_overnight').hide();
+				var $obj = $('#'+val);
+				if($obj){
+						var amount = $obj.val();
+						$('#amount_change').val(amount);						
+				}
     }		
     else{
         $('#div_hour_change').val(0);
         $('#div_hours').hide();
-        $('#div_amount').hide();				
+        $('#div_amount').hide();
+				$('#amount_change').val('');						
         $('#div_time_in').show();
         $('#div_time_out').show();
         $('#div_overnight').show();

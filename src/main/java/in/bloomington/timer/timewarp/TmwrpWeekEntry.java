@@ -396,7 +396,8 @@ public class TmwrpWeekEntry{
 								excess_hrs = netHours < 40 ? 0: netHours - 40;
 						}
 						else if(salaryGroup.isUnionned()){ // union AFCSME employee
-								excess_hrs = 1f;
+								// excess_hrs = 1f;
+								excess_hrs = netHours - comp_weekly_hrs;
 						}
 						else if(salaryGroup.isFireSworn()){
 								// fire excess is handled by NW
