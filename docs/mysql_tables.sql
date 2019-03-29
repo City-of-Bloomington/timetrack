@@ -935,3 +935,14 @@ CREATE TABLE leave_block_logs (
   foreign key(action_by) references employees(id)			
 ) ENGINE=InnoDB;
 
+;;
+;; find users who logged during 3/23, 3/24
+
+select distinct(document_id) from time_block_logs where action_time like '2019-03-24%' or action_time like '2019-03-24%';
+;;
+;; name and email
+select distinct(concat_ws(' ',e.first_name,e.last_name)),e.email from time_block_logs l, time_documents d, employees e where (l.action_time like '2019-03-24%' or l.action_time like '2019-03-24%') and d.employee_id=e.id and l.document_id=d.id and not (e.email is null or e.email = '');
+;;
+;; email only
+select distinct(e.email) from time_block_logs l, time_documents d, employees e where (l.action_time like '2019-03-24%' or l.action_time like '2019-03-24%') and d.employee_id=e.id and l.document_id=d.id and not (e.email is null or e.email = '');
+

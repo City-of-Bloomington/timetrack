@@ -99,16 +99,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 						if(sessionMap == null || sessionMap.get("user") == null){
 								//
 								// timeClock we do not need login
-								/**
-									 if(source != null && !source.equals("timeClock.action")){
-									 HttpServletResponse res = ServletActionContext.getResponse();
-									 String str = "Login";								
-									 if(source != null && !source.equals(""))
-									 str += "?source="+source;
-									 res.sendRedirect(str);
-									 return super.execute();
-									 }
-								*/
+								//
 						}
 						else{
 								user = (Employee)sessionMap.get("user");
