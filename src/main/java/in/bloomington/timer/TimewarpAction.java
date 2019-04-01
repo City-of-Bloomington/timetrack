@@ -679,7 +679,7 @@ public class TimewarpAction extends TopAction{
     // Not tested yet
     void prepareHandCsv(){
 				allCsvLines = new ArrayList<>();
-				String line =",,,,,", line2 =",,,,,,";
+				String line =",,,,", line2 =",,,,,,";
 				if(processes != null && processes.size() > 0){
 						for(PayPeriodProcess process:processes){
 								Hashtable<CodeRef, String> hash = process.getTwoWeekHandHash();

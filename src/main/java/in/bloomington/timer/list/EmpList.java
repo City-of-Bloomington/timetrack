@@ -148,6 +148,7 @@ public class EmpList extends CommonInc{
 																"telephoneNumber",
 																"mail",
 																"cn",
+																"sAMAccountName",
 																"sn",
 																"distinguishedName",
 																"dn",
@@ -165,7 +166,6 @@ public class EmpList extends CommonInc{
 						else if (!dept_name.equals("")){
 								// we are excluding disabled users and any user that
 								// givenName starts with * (code \2a)
-								// filter ="(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=512)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(accountExpires=9223372036854775807)(!(givenName=\2a*)))";
 								filter ="(&(objectCategory=person)(objectCategory=user)(!(givenName=\2a*)))";
 						}
 						else{ // all
@@ -214,11 +214,19 @@ public class EmpList extends CommonInc{
 										}
 								}
 								//
+								/*
 								Attribute cn = atts.get("cn");
 								if (cn != null){
 										str = cn.get().toString();
 										emp.setUsername(str);
 								}
+								*/
+								Attribute cn = atts.get("sAMAccountName");
+								if (cn != null){
+										str = cn.get().toString();
+										emp.setUsername(str);
+								}
+																
 								Attribute givenname = atts.get("givenName");
 								if (givenname != null){
 										str = givenname.get().toString();
@@ -276,7 +284,8 @@ public class EmpList extends CommonInc{
 																"department", // not accurate use dn instead
 																"telephoneNumber",
 																"mail",
-																"cn",
+																"cn", // mostly full name
+																"sAMAccountName",
 																"sn",
 																"distinguishedName",
 																"dn",
@@ -315,12 +324,18 @@ public class EmpList extends CommonInc{
 								SearchResult sr = answer.next();
 								Attributes atts = sr.getAttributes();
 								Attribute dn = atts.get("distinguishedName");
-
+								/*
 								Attribute cn = atts.get("cn");
 								if (cn != null){
 										str = cn.get().toString();
 										emp.setUsername(str);
 								}
+								*/
+								Attribute cn = atts.get("sAMAccountName");
+								if (cn != null){
+										str = cn.get().toString();
+										emp.setUsername(str);
+								}								
 								Attribute givenname = atts.get("givenName");
 								if (givenname != null){
 										str = givenname.get().toString();

@@ -234,7 +234,7 @@ public class TimeClock {
     }
 		public String getDocument_id(){
 				if(document_id.equals("")){
-						getDocument();
+						findDocument();
 				}
 				return document_id;
 		}
@@ -351,6 +351,7 @@ public class TimeClock {
 								document = tbl.getDocument();
 								if (document != null) {
 										job_id = document.getJob_id();
+										document_id = document.getId();
 										hasClockIn = true;
 								}
 								else{
@@ -371,6 +372,7 @@ public class TimeClock {
 												document = tbl.getDocument();
 												if (document != null) {
 														job_id = document.getJob_id();
+														document_id = document.getId();
 														hasClockIn = true;
 												}
 										}

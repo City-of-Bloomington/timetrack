@@ -24,6 +24,7 @@ public class PayPeriod implements Serializable{
 		String id="", start_date="", end_date="", date="";
 		int startYear =0,startMonth=0,startDay=0;
 		int endYear =0,endMonth=0,endDay=0, days=14;
+		int start_date_int = 0, end_date_int = 0;
 		// these dates are needed for string comparison
 		// to be in yyyy-mm-dd format 
 		String startDateYmd="", endDateYmd=""; 
@@ -71,9 +72,10 @@ public class PayPeriod implements Serializable{
 				setEndDay(val9);
 				setDays(val10);
 				setStartDateYmd(val11);
-				setEndDateYmd(val12);				
+				setEndDateYmd(val12);
+				setIntDates();
 		}
-				//
+		//
     // getters
     //
     public String getDate(){
@@ -194,15 +196,28 @@ public class PayPeriod implements Serializable{
 		public String getDateRange(){
 				return start_date+" - "+end_date;
 		}
+		// needed for comparison
+		private void setIntDates(){
+				start_date_int = startYear*10000+startMonth*100+startDay;
+				end_date_int = endYear*10000+endMonth*100+endDay;
+		}
 		// date is in yyy-mm-dd format
-		// we compare with startDateYmd, endDateYmd
-		// using string compare
 		// any date to be in between the comparison
 		// must be start_date <= date <= end_date
 		public boolean isDateWithin(String date){
 				if(date == null) return false;
-				return startDateYmd.compareTo(date) <= 0 &&
-						endDateYmd.compareTo(date) >= 0;
+				String date2 = date.trim();
+				int date_int = 0;
+				if(date2.indexOf("-") > -1){
+						date2 = date2.replace("-","");
+						try{
+								date_int = Integer.parseInt(date2);
+						}
+						catch(Exception ex){
+								System.err.println(ex);
+						}
+				}
+				return date_int >= start_date_int && date_int <= end_date_int;
 		}
 		// something like 08/02 - 08/09
 		public String getWeek1DateRange(){
@@ -328,6 +343,7 @@ public class PayPeriod implements Serializable{
 								setEndMonth(rs.getInt(8));
 								setEndDay(rs.getInt(9));
 								setDays(rs.getInt(10));
+								setIntDates();
 						}
 						else{
 								msg = "No pay period found";
@@ -382,7 +398,8 @@ public class PayPeriod implements Serializable{
 								setEndMonth(rs.getInt(8));
 								setEndDay(rs.getInt(9));
 								setStartDateYmd(rs.getString(10));
-								setEndDateYmd(rs.getString(11));								
+								setEndDateYmd(rs.getString(11));
+								setIntDates();
 						}
 						else{
 								msg = "No pay period found";

@@ -105,8 +105,7 @@ public class TimewarpManager{
 				}				
 				String reg_code_id = salaryGroup.getDefault_regular_id();
 				if(group != null && group.getName().equals("Fire BC")){
-						// reg_code_id = "111"; // REG FIRE BC
-						reg_code_id = CommonInc.regEarnCodeFireBCGroupID ;
+						reg_code_id = CommonInc.regEarnCodeFireBCGroupID;// REG FIRE BC
 				}
 				week1_grs_reg_hrs = process.getWeek1Regular();
 				week2_grs_reg_hrs = process.getWeek2Regular();
