@@ -21,10 +21,10 @@
 		<%@ include file="../messages.jsp" %>
 	</s:elseif>
 	<ul>
-		<li>You can quary time details by choosing either the year and quarter or by entering date range.</li>
+		<li>You can query time details by choosing either the year and quarter or by entering date range.</li>
 		<li>For output type, we suggest that you run the 'Web page HTML' type first so that you get an idea about the numbers. If you are OK with these numbers then you choose the 'CSV' type.</li>
 	</ul>
-	<div class="width-one-half float-left">	
+	<div class="width-one-half float-left">
 		<div class="form-group">
 			<label>Department: </label>
 			<s:if test="report.hasDepartment()">
@@ -37,7 +37,7 @@
 		<div class="form-group">
 			<label>Employment Type</label>
 			<s:select name="report.employmentType" value="%{report.employmentType}" list="#{'-1':'All','Temp':'Temp Employee Only','All Other':'All Others'}" />
-		</div>					
+		</div>
 
 		<div class="form-group">
 			<label>Quarter Selection: </label>
@@ -45,12 +45,12 @@
 		</div>
 		<div class="form-group">
 			<label>Date, from: </label>
-			<s:textfield name="report.date_from" value="%{report.date_from}" cssClass="date" size="10" /> to:  
+			<s:textfield name="report.date_from" value="%{report.date_from}" cssClass="date" size="10" /> to:
 							<s:textfield name="report.date_to" value="%{report.date_to}" cssClass="date" size="10" />
 		</div>
 
 		<div class="form-group">
-			<label>Output Type:</label>			
+			<label>Output Type:</label>
 			<s:radio name="report.type" value="%{report.type}" list="#{'html':'Web page HTML','csv':'CSV format'}" />
 		</div>
 		<div class="button-group">
