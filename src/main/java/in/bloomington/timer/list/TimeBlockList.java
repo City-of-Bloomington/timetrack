@@ -199,7 +199,7 @@ public class TimeBlockList{
 										map2.put(j, dfn.format(val));
 								}
 								else{
-										map2.put(j, dfn.format("0"));
+										map2.put(j, "0.0");
 								}
 						}
 						mapd.put(str, map2);

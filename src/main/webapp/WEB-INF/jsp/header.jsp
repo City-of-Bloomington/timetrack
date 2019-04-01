@@ -50,6 +50,9 @@
         <a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA Report</a>
         <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>				
       </s:if>
+      <s:if test="user.isITSAdmin()">
+				<a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>
+      </s:if>			
       <s:if test="user.canRunMpoReport()">
         <a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a>
       </s:if>

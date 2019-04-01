@@ -41,7 +41,6 @@ public class TmwrpWrapAction extends TopAction{
     List<String> allCsvLines = null;
 		List<Employee> empsWithNoEmpNum = null;
 		Set<String> employeeSet = null;
-		List<TmwrpRun> allRuns = null;
 		Map<Employee, List<TmwrpRun>> employeeRuns = new TreeMap<>();
     public String execute(){
 				String ret = SUCCESS;
@@ -61,7 +60,7 @@ public class TmwrpWrapAction extends TopAction{
 						getEmployees();
 						back = doProcess();
 						if(!csvOutput){
-								if(allRuns == null || allRuns.size() == 0){
+								if(employeeRuns == null || employeeRuns.size() == 0){
 										back = "No records found";
 										addMessage(back);
 										if(type.equals("single")){ // one department

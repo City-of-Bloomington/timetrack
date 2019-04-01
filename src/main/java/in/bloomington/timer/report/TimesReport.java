@@ -226,7 +226,7 @@ public class TimesReport{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String date_range="",full_name="", job_name="", hour_code="",
-						hours="";
+						hours="", amount="";
 				//
 				// We are looking for Reg earn codes and its derivatives for
 				// planning department
@@ -236,7 +236,7 @@ public class TimesReport{
 				// We are looking for Reg earn codes and its derivatives for
 				// planning department
 				//
-				String qq = "select concat_ws(' - ',date_format(p.start_date, '%m/%d'), date_format(p.end_date,'%m/%d')) date_range,                                                     concat_ws(', ',e.last_name,e.first_name) full_name,                             ps.name job_name,                                                               c.name hour_code,			                                                         sum(t.hours) hours                                                              from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join employees e on e.id=d.employee_id                                          join department_employees de on de.employee_id=e.id                             where                                                                           t.inactive is null                                                              and ((t.clock_in is not null and t.clock_out is not null) or (t.clock_in is null and t.clock_out is null))                                                       and de.department_id=?                                                          and p.start_date >= ?                                                           and p.end_date <= ?   ";
+				String qq = "select concat_ws(' - ',date_format(p.start_date, '%m/%d'), date_format(p.end_date,'%m/%d')) date_range,                                                     concat_ws(', ',e.last_name,e.first_name) full_name,                             ps.name job_name,                                                               c.name hour_code,			                                                         sum(t.hours) hours,                                                             sum(t.amount) amount                                                            from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join employees e on e.id=d.employee_id                                          join department_employees de on de.employee_id=e.id                             where                                                                           t.inactive is null                                                              and ((t.clock_in is not null and t.clock_out is not null) or (t.clock_in is null and t.clock_out is null))                                                       and (de.department_id=? or de.department2_id=?)                                 and p.start_date >= ?                                                           and p.end_date <= ?   ";
 				if(employmentType.startsWith("Temp")){
 						qq += " and j.salary_group_id=3 ";
 				}
@@ -262,7 +262,6 @@ public class TimesReport{
 						msg = "end date not set ";
 						return msg;
 				}				
-				System.err.println(qq);
 				logger.debug(qq);
 				empJobs = new TreeMap<>();
 				empCodes = new TreeMap<>();
@@ -272,6 +271,7 @@ public class TimesReport{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
 						pstmt.setString(jj++, department_id);
+						pstmt.setString(jj++, department_id);						
 						java.util.Date date_tmp = dateFormat.parse(start_date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						date_tmp = dateFormat.parse(end_date);
@@ -283,12 +283,17 @@ public class TimesReport{
 								job_name = rs.getString(3);
 								hour_code = rs.getString(4);
 								hours = rs.getString(5);
-								System.err.println(date_range+" "+full_name+" "+job_name+" "+hour_code+" "+hours);
+								amount = rs.getString(6);
+								double amt = rs.getDouble(6);
 								addToEmp(full_name, job_name, hour_code);
 								if(!datesList.contains(date_range)){
 										datesList.add(date_range);
 								}
-								addToTimes(date_range, full_name, job_name, hour_code, hours);
+								if(amt > 0.0)
+										addToTimes(date_range, full_name, job_name, hour_code, "$"+amount);									
+								else
+										addToTimes(date_range, full_name, job_name, hour_code, hours);										
+		
 						}
 				}
 				catch(Exception ex){

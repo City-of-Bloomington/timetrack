@@ -46,7 +46,6 @@ public class GroupAction extends TopAction{
 				else if(action.startsWith("Save")){
 						back = group.doUpdate();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);								
 						}
 						else{

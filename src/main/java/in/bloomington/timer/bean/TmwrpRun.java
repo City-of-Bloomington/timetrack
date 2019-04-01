@@ -43,6 +43,7 @@ public class TmwrpRun{
 		//
     //
     Document document = null;
+		Department department = null;
 		HourCode regCode = null;
 
 		List<TmwrpBlock> blocks = null;
@@ -243,6 +244,12 @@ public class TmwrpRun{
 						String back = one.doSelect();
 						if(back.equals("")){
 								document = one;
+								Employee employee = document.getEmployee();
+								if(employee != null){
+										Department dp = employee.getDepartment();
+										if(dp != null)
+												department = dp;
+								}								
 						}
 				}
 				return document;
@@ -283,8 +290,17 @@ public class TmwrpRun{
 				return blocks != null && blocks.size() > 0;
 		}
 		public void findTotals(){
-				week1_total_hours = week1_net_reg_hrs;
-				week2_total_hours = week2_net_reg_hrs;
+				// for HAND dept we do not include net reg
+				if(department == null){
+						getDocument();
+				}
+				if(department != null){
+						hand_flag = department.isHand();
+				}
+				if(!hand_flag){
+						week1_total_hours = week1_net_reg_hrs;
+						week2_total_hours = week2_net_reg_hrs;
+				}
 				if(blocks != null && blocks.size() > 0){
 						for(TmwrpBlock one:blocks){
 								double hrs = one.getHours();

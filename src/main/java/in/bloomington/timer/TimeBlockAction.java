@@ -36,7 +36,6 @@ public class TimeBlockAction extends TopAction{
 		List<HourCode> monetaryHourCodes = null;
 		Department department = null;
 		//
-		//
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("timeBlock.action");

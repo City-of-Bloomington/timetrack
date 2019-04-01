@@ -200,8 +200,9 @@ public class Employee implements Serializable, Comparable<Employee>{
 				String ret = "";
 				if(!roleSet.isEmpty()){
 						for(String str:roleSet){
+								if(ret.indexOf(str) > -1) continue;
 								if(!ret.equals("")) ret += ", ";
-								ret += str;
+								ret += str.trim();
 						}
 				}
 				return ret;
@@ -266,19 +267,24 @@ public class Employee implements Serializable, Comparable<Employee>{
 						if(val.indexOf(",") > -1){
 								roles = val.split(",");
 								for(String str:roles){
-										roleSet.add(str);
+										String str2 = str.trim();
+										if(roleSet.contains(str2)) continue;
+										roleSet.add(str2);
 								}
 						}
 						else{
-								roles = new String[]{val};
-								roleSet.add(val);
+								String str = val.trim();
+								roles = new String[]{str};
+								roleSet.add(str);
 						}
 				}
     }		
     public void setRoles (String[] vals){
 				if(vals != null && vals.length > 0){
 						for(String str:vals){
-								roleSet.add(str);
+								String str2 = str.trim();								
+								if(roleSet.contains(str2)) continue;
+								roleSet.add(str2);
 						}						
 						roles = new String[roleSet.size()];
 						int j=0;
@@ -433,6 +439,10 @@ public class Employee implements Serializable, Comparable<Employee>{
     public boolean isAdmin(){
 				return hasRole("Admin");
     }
+    public boolean isITSAdmin(){
+				return hasRole("ITSAdmin");
+    }		
+		
     public boolean isHrAdmin(){
 				return hasRole("HrAdmin");
     }
@@ -1083,12 +1093,15 @@ public class Employee implements Serializable, Comparable<Employee>{
 						else{
 								pstmt.setString(jj++, email);
 						}
-						String role = "Employee";						
+						String role = "";						
 						if(!roleSet.isEmpty()){
 								for(String str:roleSet){
 										if(!role.equals("")) role +=",";
-										role += str;
+										role += str.trim();
 								}
+						}
+						else{
+							 role = "Employee";	
 						}
 						pstmt.setString(jj++, role);
 						if(id.equals("")) inactive = ""; // new record

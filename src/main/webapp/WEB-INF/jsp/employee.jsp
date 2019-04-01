@@ -8,6 +8,9 @@
 		<s:else>
 			<h1>Employee <s:property value="employee.full_name" /></h1>
 			<s:hidden name="employee.id" value="%{employee.id}" />
+			<s:if test="!user.isAdmin()">
+				<s:hidden name="employee.rolesText" value="%{employee.rolesText}" />
+			</s:if>
 		</s:else>
 		<s:if test="hasMessages()">
 			<s:set var="messages" value="%{messages}" />
@@ -84,12 +87,15 @@
 					<s:property value="employee.added_date" />
 				</div>
 			</s:else>
-
 			<div class="form-group">
 				<label>Roles</label>
-				<s:checkboxlist key="employee.roles" list="roles" />
+				<s:if test="user.isAdmin()">
+					<s:checkboxlist key="employee.roles" list="roles" />
+				</s:if>
+				<s:else>
+					<s:property value="employee.rolesText" />
+				</s:else>
 			</div>
-
 			<div class="form-group">
 				<label>Inactive ?</label>
 				<s:checkbox name="employee.inactive" value="%{employee.inactive}" /> Yes (check to disable)

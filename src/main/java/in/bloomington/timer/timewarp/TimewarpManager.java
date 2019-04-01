@@ -33,6 +33,7 @@ public class TimewarpManager{
 		Document document = null;
 		HolidayList holys = null;
 		SalaryGroup salaryGroup = null;
+		boolean isHand = false;
 		//
     public TimewarpManager(){
     }

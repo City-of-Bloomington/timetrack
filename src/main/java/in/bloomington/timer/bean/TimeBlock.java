@@ -1139,6 +1139,9 @@ public class TimeBlock extends Block{
 												mgtext = checkHourCodeForHoliday();
 										}
 								}
+								else if(isMonetaryType()){
+										// ignore
+								}
 								else{
 										id=""; // for multiple input
 										mgtext = checkForConflicts();
