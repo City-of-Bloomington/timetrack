@@ -868,6 +868,20 @@ CREATE TABLE tmwrp_blocks (
 ;; needed on tomcat2 only
 alter table tmwrp_blocks change apply_type term_type enum('Week 1','Week 2','Cycle');
 alter table tmwrp_blocks add period_order tinyint unsigned default 1 after term_type;
+;;
+;; 4/2/2019
+;;
+;; Police dept needed an item in timetrack to track their earn codes related
+;; to certain reasons (projects) during their duties
+;;
+CREATE TABLE earn_code_reasons (
+  id int unsigned not null auto_increment,
+	name varchar(32) not null,
+	description varchar(164),
+	inactive char(1),
+	unique(name),
+	primary key(id)
+) ENGINE=InnoDB;
 
 ;;
 ;;

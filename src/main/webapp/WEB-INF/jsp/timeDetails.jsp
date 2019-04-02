@@ -112,30 +112,6 @@
 			<%@ include file="dailySummary.jsp" %>
 			<div class="d-flex">
 				<s:if test="hasMultipleJobs()">
-					<!--
-					<s:if test="mjdoc.hasHourCodeWeek1()">
-						<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek1" />
-						<s:set var="weekHourTotal" value="mjdoc.week1Total" />
-						<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
-						<s:set var="whichWeek" value="'week-one'" />
-						<s:if test="mjdoc.hasAmountCodeWeek1()">
-							<s:set var="weeklyAmountCodes" value="mjdoc.amountCodeWeek1" />
-							<s:set var="weekAmountTotal" value="mjdoc.week1AmountTotal" />
-						</s:if>
-						<%@ include file="weeklySummary.jsp" %>
-					</s:if>
-					<s:if test="mjdoc.hasHourCodeWeek2()">
-						<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek2" />
-						<s:set var="weekHourTotal" value="mjdoc.week2Total" />
-						<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
-						<s:set var="whichWeek" value="'week-two'" />
-						<s:if test="mjdoc.hasAmountCodeWeek2()">
-							<s:set var="weeklyAmountCodes" value="mjdoc.amountCodeWeek2" />
-							<s:set var="weekAmountTotal" value="mjdoc.week2AmountTotal" />
-						</s:if>
-						<%@ include file="weeklySummary.jsp" %>
-					</s:if>
-					-->
 					<s:if test="showAllJobs()">
 						<s:if test="mjdoc.hasDocuments()">
 							<s:iterator var="doc" value="mjdoc.documents">

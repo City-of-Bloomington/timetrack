@@ -58,19 +58,16 @@
 				</div>
 			</s:if>
 		</div>
-
-		<s:if test="hourcode.id == ''">
-			<s:submit name="action" type="button" value="Save" />
-		</s:if><br />
-
-		<s:else>
-			<div class="button-group">
+		<div class="button-group">
+			<s:if test="hourcode.id == ''">
+				<s:submit name="action" type="button" value="Save" />
+			</s:if><br />
+			<s:else>
 				<a href="<s:property value='#application.url' />hourcode.action?" class="button">New Hour Code </a>
 				<s:submit name="action" type="button" value="Save Changes" />
-			</div>
-		</s:else>
+			</s:else>
+		</div>
 	</s:form>
-
 	<s:if test="hasHourcodes()">
 		<s:set var="hourcodes" value="%{hourcodes}" />
 		<s:set var="hourcodesTitle" value="hourcodesTitle" />

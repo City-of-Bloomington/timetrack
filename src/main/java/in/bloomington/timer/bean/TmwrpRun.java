@@ -660,7 +660,9 @@ public class TmwrpRun{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.document_id,g.reg_code_id,"+
+				String qq = "select g.id,"+
+						"g.document_id,"+
+						"g.reg_code_id,"+
 						"date_format(g.run_time,'%m/%d/%y %H:%i'),"+
 						"g.week1_grs_reg_hrs, "+
 						"g.week2_grs_reg_hrs, "+

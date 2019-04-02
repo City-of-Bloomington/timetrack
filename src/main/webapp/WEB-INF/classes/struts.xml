@@ -459,7 +459,14 @@
 			<result name="input">/WEB-INF/jsp/searchConditions.jsp</result>		
 			<result name="error">/WEB-INF/jsp/searchConditions.jsp</result>
 			<result name="success">/WEB-INF/jsp/searchConditions.jsp</result>
-		</action>		
+		</action>
+		<action name="codeReason" 
+						class="in.bloomington.timer.EarnCodeReasonAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/codeReason.jsp</result>		
+			<result name="error">/WEB-INF/jsp/codeReason.jsp</result>
+			<result name="success">/WEB-INF/jsp/codeReason.jsp</result>
+		</action>				
 		<action name="searchJobs" 
 						class="in.bloomington.timer.SearchJobAction" 
 						method="execute">

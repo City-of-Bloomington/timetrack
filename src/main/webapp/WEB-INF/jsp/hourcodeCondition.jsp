@@ -3,11 +3,11 @@
 	<s:form action="hourcodeCondition" id="form_id" method="post">
 		<s:hidden name="action2" id="action2" value="" />
 		<s:if test="hourcodeCondition.id == ''">
-			<h1>New Hour Code Restriction</h1>
+			<h1>New Earn Code Restriction</h1>
 		</s:if>
 
 		<s:else>
-			<h1>Edit Hour Code Restriction: <s:property value="hourcodeCondition.name" /></h1>
+			<h1>Edit Earn Code Restriction: <s:property value="hourcodeCondition.name" /></h1>
 			<s:hidden name="hourcodeCondition.id" value="%{hourcodeCondition.id}" />
 		</s:else>
 
@@ -21,7 +21,7 @@
 		</s:if>
 
 		<div class="form-group">
-			<label>Hour Code</label>
+			<label>Earn Code</label>
 			<s:select name="hourcodeCondition.hour_code_id" value="%{hourcodeCondition.hour_code_id}" required="true" list="hourcodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Hour Code" />
 		</div>
 		<div class="form-group">
@@ -56,24 +56,17 @@
 				<s:checkbox name="hourcodeCondition.inactive" value="%{hourcodeCondition.inactive}" /> Yes (check to dissable)
 			</div>
 		</s:if>
-
-		<s:if test="hourcodeCondition.id == ''">
-			<div class="button-group">
-			<s:submit name="action" type="button" value="Save" />
-			</div>
-		</s:if>
-		<s:else>
-			<div class="button-group">
-				<a href="<s:property value='#application.url' />hourcodeCondition.action?" class="button">New Hour Code Restriction</a>
-				<s:submit name="action" type="button" value="Save Changes" />
-			</div>
-		</s:else>
-			<div class="button-group">
-				<a href="<s:property value='#application.url' />searchConditions.action?" class="button">Search Hour Code Restrictions</a>
-				<s:submit name="action" type="button" value="Save Changes" />
-			</div>		
+		<div class="button-group">
+			<s:if test="hourcodeCondition.id == ''">
+				<s:submit name="action" type="button" value="Save" />
+			</s:if>
+			<s:else>
+				<a href="<s:property value='#application.url' />hourcodeCondition.action?" class="button">New Earn Code Restriction</a>
+				<s:submit name="action" type="button" value="Save Changes" />				
+			</s:else>
+			<a href="<s:property value='#application.url' />searchConditions.action?" class="button">Search Earn Code Restrictions</a>
+		</div>		
 	</s:form>
-
 	<s:if test="hasConditions()">
 		<s:set var="hourcodeConditions" value="%{conditions}" />
 		<s:set var="hourcodeConditionsTitle" value="hourcodeConditionsTitle" />

@@ -126,7 +126,7 @@ public class TimewarpManager{
 				}
 				TmwrpRun tmwrpRun = new TmwrpRun(document_id,
 																				 reg_code_id,
-																				 week1_net_reg_hrs,
+																				 week1_grs_reg_hrs,
 																				 week2_grs_reg_hrs,
 																				 week1_net_reg_hrs,
 																				 week2_net_reg_hrs,
