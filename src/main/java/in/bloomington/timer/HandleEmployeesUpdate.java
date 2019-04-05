@@ -24,7 +24,7 @@ public class HandleEmployeesUpdate{
 		static final long serialVersionUID = 53L;
 		static Logger logger = LogManager.getLogger(HandleEmployeesUpdate.class);
 		EnvBean envBean = null;
-		String date="";
+		String date="", pay_period_id="";
 		Hashtable<String, Employee> empTable = null, empUsrTable=null;
     public HandleEmployeesUpdate(EnvBean val){
 				if(val != null)
@@ -38,6 +38,22 @@ public class HandleEmployeesUpdate{
 						date = val;
 				}
     }
+    public String getPay_period_id(){
+				//
+				if(pay_period_id.equals("")){
+						PayPeriodList ppl = new PayPeriodList();
+						ppl.currentOnly();
+						String back = ppl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = ppl.getPeriods();
+								if(ones != null && ones.size() > 0){
+									 PayPeriod payPeriod = ones.get(0);
+									 pay_period_id = payPeriod.getId();
+								}
+						}
+				}
+				return pay_period_id;
+    }		
 		//
 		// find all the employees who have initiated document time but
 		// can not submit for approval
@@ -51,6 +67,16 @@ public class HandleEmployeesUpdate{
 				EmployeeList ul = new EmployeeList();
 				ul.setActiveOnly();
 				ul.setExclude_name("Admin");// exlude admin emp
+				//
+				// we want only employees who do not have time document for this
+				// pay period
+				if(pay_period_id.equals("")){
+						getPay_period_id();
+				}
+				ul.setNoDocumentForPayPeriodId(pay_period_id);
+				//
+				// avoid recently added employees
+				ul.excludeRecentRecords();
 				String back = ul.find();
 				if(back.equals("")){
 						List<Employee> ones = ul.getEmployees();
@@ -61,7 +87,7 @@ public class HandleEmployeesUpdate{
 				else{
 						msg = back;
 						status = "Failure";
-						errors = "Error get emps from DB "+msg;
+						errors = "Error get employee list from DB "+msg;
 				}
 				if(msg.equals("")){
 						EmpList el = new EmpList(envBean);
@@ -118,8 +144,6 @@ public class HandleEmployeesUpdate{
 										}
 								}
 						}
-						
-						System.err.println("the following emps will change to inactive "+inactiveLog);
 						//
 						// new employees
 						// this handled by ImportEmployee code
@@ -142,18 +166,21 @@ public class HandleEmployeesUpdate{
 						}
 						*/
 						//
-						System.err.println(" The following id list of inactive employees "+inactiveSet);
-						if(!inactiveSet.equals("")){
+						if(inactiveSet.equals("")){
+								System.err.println(" No employees found that need change ");
+						}
+						else{
+								System.err.println(" The following id list of inactive employees "+inactiveSet);
 								Employee emp = new Employee();
 								msg = emp.updateInactiveStatus(inactiveSet);
 								if(!msg.equals("")){
 										status = "Failure";
 										errors =" error updating emps status "+msg;
 								}
+								EmployeesLog ll = new EmployeesLog(inactiveLog, status, errors);
+								msg = ll.doSave();								
 						}
 				}
-				EmployeesLog ll = new EmployeesLog(inactiveLog, status, errors);
-				msg = ll.doSave();
 				return msg;
 		}
 

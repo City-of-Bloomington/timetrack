@@ -4,7 +4,7 @@
 		<tr>
 			<th>ID</th>
 			<th>Accrual</th>
-			<th>Related Hour Code</th>
+			<th>Related Earn Code</th>
 			<th>Employee</th>
 			<th>Hours</th>
 			<th>Date</th>

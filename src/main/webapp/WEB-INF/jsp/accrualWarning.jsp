@@ -13,7 +13,7 @@
 	  <%@ include file="strutMessages.jsp" %>
 
 		<p>These warnings are intended to offer some feedback to the employees and their group managers in case excess of times were used or these times will not comply with certain rules.</p>
-		<p>Some of the fields are required, such as the hour code and the excess warning text. Others are optional, such as minimum hours and step hour (fraction used).</p>
+		<p>Some of the fields are required, such as the earn code and the excess warning text. Others are optional, such as minimum hours and step hour (fraction used).</p>
 
 		<div class="width-one-half">
 			<s:if test="accrualWarning.id != ''">
@@ -24,7 +24,7 @@
 			</s:if>
 
 			<div class="form-group">
-				<label>Related Hour Code</label>
+				<label>Related Earn Code</label>
 				<s:property value="%{accrualWarning.hourCodeNames}"  />
 			</div>
 			<div class="form-group">

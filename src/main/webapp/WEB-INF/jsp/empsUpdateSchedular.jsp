@@ -39,4 +39,8 @@
 		</div>
 	</s:form>
 </div>
+<s:if test="hasEmployeesLogs()">
+	<s:set var="employeesLogs" value="employeesLogs" />
+	<%@ include file="employeeLogs.jsp" %>
+</s:if>
 <%@ include file="footer.jsp" %>

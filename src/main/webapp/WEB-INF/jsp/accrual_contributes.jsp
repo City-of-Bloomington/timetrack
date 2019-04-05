@@ -5,7 +5,7 @@
 			<th>ID</th>
 			<th>Name</th>
 			<th>Accrual</th>
-			<th>Hour Code Contributer</th>
+			<th>Earn Code Contributer</th>
 			<th>Multiple Factor</th>
 		</tr>
 	<tbody>

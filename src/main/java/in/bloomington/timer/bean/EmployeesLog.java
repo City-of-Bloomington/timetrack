@@ -93,6 +93,10 @@ public class EmployeesLog{
 						ret += ", "+errors;
 				return ret;
     }
+		public boolean hasErrors(){
+				return !errors.equals("");
+
+		}
 		//
 		public String doSelect(){
 				String back = "";

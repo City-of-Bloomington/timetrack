@@ -3,7 +3,7 @@
 	<s:form action="contribute" id="form_id" method="post">
 		<s:hidden name="action2" id="action2" value="" />
 		<s:if test="contribute.id == ''">
-			<h1>Accrual Contributing Hour Code</h1>
+			<h1>Accrual Contributing Earn Code</h1>
 		</s:if>
 		<s:else>
 			<h1>Edit Accrual Contribute: <s:property value="contribute.name" /></h1>
@@ -18,9 +18,9 @@
 			<%@ include file="errors.jsp" %>
 		</s:elseif>
 		<ul>
-			<li>Select the hour code that will contribute to related accrual,</li>
+			<li>Select the earn code that will contribute to related accrual,</li>
 			<li>Next select the related accrual</li>
-			<li>for example hour code CE1.0 contribute to accrual CUA </li>			
+			<li>for example earn code CE1.0 contribute to accrual CUA </li>			
 			<li>Factor is the multiple factor that will be used to multiply the number
 				of hours by</li>
 			<li>for example factor (1.0) will one hour per hour worked</li>
@@ -41,8 +41,8 @@
 				<s:textfield name="contribute.name" value="%{contribute.name}" required="true" size="30" maxlength="80" />
 			</div>
 			<div class="form-group">
-				<label>Hour Code Contributer:</label>
-				<s:select name="contribute.hourCode_id" value="%{contribute.hourCode_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick hour code" />
+				<label>Earn Code Contributer:</label>
+				<s:select name="contribute.hourCode_id" value="%{contribute.hourCode_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick earn code" />
 			</div>
 			<div class="form-group">
 				<label>Related Accrual:</label>

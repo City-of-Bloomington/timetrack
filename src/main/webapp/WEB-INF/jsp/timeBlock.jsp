@@ -55,7 +55,7 @@
 			</div>
 		</s:if>
 		<div class="form-group">
-			<label>Hour Code</label>
+			<label>Earn Code</label>
 			<s:if test="hasHourCodes()">
 				<s:select name="timeBlock.hour_code_id" value="%{timeBlock.id_compound}" list="hourCodes" listKey="id_compound" listValue="codeInfo" id="hour_code_select" />
 			</s:if>

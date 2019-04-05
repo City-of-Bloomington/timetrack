@@ -13,7 +13,7 @@
 	  <%@ include file="strutMessages.jsp" %>
 
 		<div class="width-one-half">
-			<p><strong>Note:</strong> Pref Max Level below is the max number of hours that the employee should not pass by using the relate hour code instead of PTO for example.</p>
+			<p><strong>Note:</strong> Pref Max Level below is the max number of hours that the employee should not pass by using the relate earn code instead of PTO for example.</p>
 
 			<s:if test="accrual.id != ''">
 				<div class="form-group">

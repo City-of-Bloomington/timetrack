@@ -3,7 +3,7 @@
 	<thead>
 		<tr>
 			<th>ID</th>
-			<th>Hour Codes</th>
+			<th>Earn Codes</th>
 			<th>Min Hours</th>
 			<th>Step Hour</th>
 			<th>Related Accrual Max Level</th>

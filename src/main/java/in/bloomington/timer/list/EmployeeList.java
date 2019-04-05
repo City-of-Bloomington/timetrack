@@ -179,7 +179,7 @@ public class EmployeeList extends CommonInc{
 		public void setHasNoEmployeeNumber(){
 				hasNoEmployeeNumber = true;
 		}
-		// avoid record added within last two weeks
+		// avoid record added within last 30 days
 		public void excludeRecentRecords(){
 				exclude_recent_records = true;
 		}
@@ -319,11 +319,11 @@ public class EmployeeList extends CommonInc{
 						}
 						if(exclude_recent_records){
 								if(!qw.equals("")) qw += " and ";								
-								qw += " e.added_date < (NOW() - INTERVAL 14 DAY) ";
+								qw += " e.added_date < (NOW() - INTERVAL 30 DAY) ";
 						}
 						else if(recent_records_only){
 								if(!qw.equals("")) qw += " and ";								
-								qw += " e.added_date >= (NOW() - INTERVAL 14 DAY) ";
+								qw += " e.added_date >= (NOW() - INTERVAL 30 DAY) ";
 						}
 						if(active_only){
 								if(!qw.equals("")) qw += " and ";

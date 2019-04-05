@@ -3,7 +3,7 @@
 	<tr>
 		<th>ID</th>
 		<th>Code ID</th>
-		<th>Code</th>
+		<th>Earn Code</th>
 		<th>NW Code</th>
 		<th>GL String</th>
 		<th>PTO Ratio</th>

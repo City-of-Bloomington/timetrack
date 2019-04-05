@@ -26,6 +26,7 @@ public class EmployeesUpdateScheduleAction extends TopAction{
 		String employeesUpdateSchedulesTitle = "Employees Update Schedules";
 		QuartzMisc quartzMisc = null;
 		EmployeesUpdateScheduler schedular = null;
+		List<EmployeesLog> employeesLogs = null;
 		String prev_date="", next_date="", date="";
 		public String execute(){
 				String ret = SUCCESS;
@@ -128,7 +129,23 @@ public class EmployeesUpdateScheduleAction extends TopAction{
 		public boolean hasPrevDates(){
 				return !prev_date.equals("");
 		}
-		
+		public boolean hasEmployeesLogs(){
+				getEmployeesLogs();
+				return employeesLogs != null && employeesLogs.size() > 0;
+		}
+		public List<EmployeesLog> getEmployeesLogs(){
+				if(employeesLogs == null){
+						EmployeesLogList ell = new EmployeesLogList();
+						String back = ell.find();
+						if(back.equals("")){
+								List<EmployeesLog> logs = ell.getLogs();
+								if(logs != null){
+										employeesLogs = logs;
+								}
+						}
+				}
+				return employeesLogs;
+		}
 }
 
 

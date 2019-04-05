@@ -139,7 +139,7 @@
 							<s:if test="document.hasHourCodeWeek1()">
 								<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
 								<s:set var="weekHourTotal" value="document.week1Total" />
-								<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
+								<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
 								<s:set var="whichWeek" value="'week-one'" />
 								<s:if test="document.hasAmountCodeWeek1()">
 									<s:set var="weeklyAmountCodes" value="document.amountCodeWeek1" />
@@ -150,7 +150,7 @@
 							<s:if test="document.hasHourCodeWeek2()">
 								<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
 								<s:set var="weekHourTotal" value="document.week2Total" />
-								<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
+								<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
 								<s:set var="whichWeek" value="'week-two'" />
 								<s:if test="document.hasAmountCodeWeek2()">
 									<s:set var="weeklyAmountCodes" value="document.amountCodeWeek2" />
@@ -165,7 +165,7 @@
 					<s:if test="document.hasHourCodeWeek1()">
 						<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
 						<s:set var="weekHourTotal" value="document.week1Total" />
-						<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
+						<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
 						<s:set var="whichWeek" value="'week-one'" />
 						<s:if test="document.hasAmountCodeWeek1()">
 							<s:set var="weeklyAmountCodes" value="document.amountCodeWeek1" />
@@ -176,7 +176,7 @@
 					<s:if test="document.hasHourCodeWeek2()">
 						<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
 						<s:set var="weekHourTotal" value="document.week2Total" />
-						<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
+						<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
 						<s:set var="whichWeek" value="'week-two'" />
 						<s:if test="document.hasAmountCodeWeek2()">
 							<s:set var="weeklyAmountCodes" value="document.amountCodeWeek2" />

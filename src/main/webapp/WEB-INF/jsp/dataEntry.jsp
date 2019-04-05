@@ -120,28 +120,46 @@
 
 						<s:set var="daily" value="daily" />
 						<s:set var="payPeriodTotal" value="payPeriodTotal" />
-						<div class="m-b-40"><%@ include file="dailySummary.jsp" %></div>
-
+						<s:set var="payPeriodAmount" value="payPeriodAmount" />						
+						<div class="m-b-40">
+							<%@ include file="dailySummary.jsp" %>
+						</div>
 						<s:if test="hasTimeIssues()">
 							<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />
 							<s:set var="timeIssues" value="timeIssues" />
 							<%@ include file="timeIssues.jsp" %>
 						</s:if>
-						<div class="d-flex">
-							<s:if test="hasHourCodeWeek1()">
-								<s:set var="weeklyHourCodes" value="hourCodeWeek1" />
-								<s:set var="weekTotal" value="week1Total" />
-								<s:set var="weeklyTitle" value="'Week 1 (Hour Codes)'" />
-								<s:set var="whichWeek" value="'week-one'" />
-								<%@ include file="weeklySummary.jsp" %>
+						<div class="monetary-hours-tables">							
+							<s:if test="hasTmwrpRun()">
+								<s:if test="tmwrpRun.hasWeek1Rows()">
+									<s:set var="rows" value="tmwrpRun.week1Rows" />
+									<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
+									<s:set var="whichWeek" value="'week-one'" />
+									<%@ include file="weeklyTmwrp.jsp" %>
+								</s:if>
+								<s:if test="tmwrpRun.hasWeek2Rows()">
+									<s:set var="rows" value="tmwrpRun.week2Rows" />
+									<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
+									<s:set var="whichWeek" value="'week-one'" />
+									<%@ include file="weeklyTmwrp.jsp" %>
+								</s:if>
 							</s:if>
-							<s:if test="hasHourCodeWeek2()">
-								<s:set var="weeklyHourCodes" value="hourCodeWeek2" />
-								<s:set var="weekTotal" value="week2Total" />
-								<s:set var="weeklyTitle" value="'Week 2 (Hour Codes)'" />
-								<s:set var="whichWeek" value="'week-two'" />
-								<%@ include file="weeklySummary.jsp" %>
-							</s:if>
+							<s:else>												
+								<s:if test="hasHourCodeWeek1()">
+									<s:set var="weeklyHourCodes" value="hourCodeWeek1" />
+									<s:set var="weekTotal" value="week1Total" />
+									<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
+									<s:set var="whichWeek" value="'week-one'" />
+									<%@ include file="weeklySummary.jsp" %>
+								</s:if>
+								<s:if test="hasHourCodeWeek2()">
+									<s:set var="weeklyHourCodes" value="hourCodeWeek2" />
+									<s:set var="weekTotal" value="week2Total" />
+									<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
+									<s:set var="whichWeek" value="'week-two'" />
+									<%@ include file="weeklySummary.jsp" %>
+								</s:if>
+							</s:else>
 						</div>
 					</div>
 				</s:if>

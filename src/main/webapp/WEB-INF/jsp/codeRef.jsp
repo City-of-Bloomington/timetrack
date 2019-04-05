@@ -20,8 +20,8 @@
 			</s:if>
 
 			<div class="form-group">
-				<label>Code</label>
-				<s:select name="codeRef.code_id" value="%{codeRef.code_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Hour Code" onchange="setCodeText(this)" />
+				<label>Earn Code</label>
+				<s:select name="codeRef.code_id" value="%{codeRef.code_id}" list="hourCodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Earn Code" onchange="setCodeText(this)" />
 			</div>
 			<div class="form-group">
 				<label>Modified Code</label>

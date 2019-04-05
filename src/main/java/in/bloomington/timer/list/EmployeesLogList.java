@@ -22,45 +22,45 @@ public class EmployeesLogList{
     public EmployeesLogList(){
     }
     public List<EmployeesLog> getLogs(){
-	return logs;
+				return logs;
     }
 
     public String find(){
 		
-	String back = "";
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	Connection con = UnoConnect.getConnection();
-	String qq = "select id,emps_id_set,date_format(date,'%m/%d/%Y %h:%i'),status,errors from employees_logs order by id desc limit 10 ";
-	if(con == null){
-	    back = "Could not connect to DB";
-	    return back;
-	}
-	try{
-	    logger.debug(qq);
-	    pstmt = con.prepareStatement(qq);
-	    rs = pstmt.executeQuery();
-	    if(logs == null)
-		logs = new ArrayList<>();
-	    while(rs.next()){
-		EmployeesLog one =
-		    new EmployeesLog(rs.getString(1),
-				     rs.getString(2),
-				     rs.getString(3),
-				     rs.getString(4),
-				     rs.getString(5));
-		logs.add(one);
-	    }
-	}
-	catch(Exception ex){
-	    back += ex+" : "+qq;
-	    logger.error(back);
-	}
-	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return back;
+				String back = "";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				Connection con = UnoConnect.getConnection();
+				String qq = "select id,emps_id_set,date_format(date,'%m/%d/%Y %h:%i'),status,errors from employees_logs order by id desc limit 5 ";
+				if(con == null){
+						back = "Could not connect to DB";
+						return back;
+				}
+				try{
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						rs = pstmt.executeQuery();
+						if(logs == null)
+								logs = new ArrayList<>();
+						while(rs.next()){
+								EmployeesLog one =
+										new EmployeesLog(rs.getString(1),
+																		 rs.getString(2),
+																		 rs.getString(3),
+																		 rs.getString(4),
+																		 rs.getString(5));
+								logs.add(one);
+						}
+				}
+				catch(Exception ex){
+						back += ex+" : "+qq;
+						logger.error(back);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return back;
     }
 }
 
