@@ -158,6 +158,10 @@ public class HourCodeList{
 										qw += " (c.group_id = ? or c.group_id is null)";
 								}								
 						}
+						if(active_only){
+								if(!qw.equals("")) qw += " and "; 								
+								qw += " e.inactive is null "; 
+						}						
 						if(!qw.equals("")){
 								qw = " where "+qw;
 						}
@@ -276,6 +280,10 @@ public class HourCodeList{
 						if(default_regular_only){
 								if(!qw.equals("")) qw += " and "; 
 								qw += " e.reg_default is not null "; 
+						}
+						if(active_only){
+								if(!qw.equals("")) qw += " and "; 								
+								qw += " e.inactive is null "; 
 						}
 						if(!qw.equals("")){
 								qw = " where "+qw;

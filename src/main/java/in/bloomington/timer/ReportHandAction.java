@@ -44,6 +44,9 @@ public class ReportHandAction extends TopAction{
 												entries = ones;
 												addMessage("Found "+ones.size()+" entries");
 										}
+										else{
+												addMessage("No records found");
+										}
 								}
 								if(true){
 										back = report.find();

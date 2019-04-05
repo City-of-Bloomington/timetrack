@@ -24,7 +24,7 @@
 			</s:if>
 			<div class="form-group">
 				<label>Name:</label>
-				<s:textfield name="reason.name" value="%{reason.name}" required="true" size="20" maxlength="20" />
+				<s:textfield name="reason.name" value="%{reason.name}" required="true" size="30" maxlength="50" />
 			</div>
 			<div class="form-group">
 				<label>Description:</label>

@@ -25,7 +25,7 @@ public class JobTaskList{
 				clock_time_required = false, clock_time_not_required=false,
 				not_expired = false, non_temp_emp = false;
 		boolean avoid_recent_jobs = false; // jobs are recent if entered within 14 days
-		boolean include_future = false;
+		boolean include_future = false, order_by_employee = false;
     String salary_group_id="", employee_id="", pay_period_id="";
     String id="", effective_date = "", which_date="j.effective_date",
 				date_from="", date_to="", position_id="", employee_name="",
@@ -190,6 +190,9 @@ public class JobTaskList{
 		public void setIncludeFuture(){
 				include_future = true;
 		}
+		public void setOrderByEmployee(){
+				order_by_employee = true;
+		}
     public List<Group> getGroups(){
 				if(groups == null){
 						if(!department_id.equals("")){
@@ -216,7 +219,7 @@ public class JobTaskList{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String msg="", qw="";
+				String msg="", qw="", qo="";
 				String qq = "select j.id,"+
 						"j.position_id,"+
 						"j.salary_group_id,"+
@@ -325,11 +328,22 @@ public class JobTaskList{
 				if(!date_to.equals("")){
 						if(!qw.equals("")) qw += " and ";
 						qw += which_date+" <= ? ";
-				}						
+				}
+				if(order_by_employee){
+						qq += " left join employees e on e.id=j.employee_id ";
+						qo = " order by e.last_name,e.first_name";
+				}
+				else{
+						qo = " order by p.name ";
+				}
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
-				qq += " order by p.name ";
+				qq += qo;
+				if(order_by_employee){
+
+				}
+
 				logger.debug(qq);
 				try{
 						

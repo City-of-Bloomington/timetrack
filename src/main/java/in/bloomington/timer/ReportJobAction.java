@@ -140,6 +140,7 @@ public class ReportJobAction extends TopAction{
 				jtl.setDepartment_id(department_id); // parks department only
 				jtl.setActiveOnly();
 				jtl.setNotExpired();
+				jtl.setOrderByEmployee();
 				if(employmentType.startsWith("Temp")){
 						jtl.setSalary_group_id("3");
 						jobsTitle = jobsTitle+" (Temp)";

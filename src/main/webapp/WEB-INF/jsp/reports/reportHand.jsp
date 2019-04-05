@@ -23,7 +23,6 @@
 			<%@ include file="../messages.jsp" %>
 		</s:elseif>
 		<div class="width-one-half float-left">
-
 			<div class="form-group">
 				<label>Quarter Selection: </label>
 					<s:select name="report.quarter" value="%{report.quarter}" list="#{'-1':'Pick quarter','1':'First','2':'Second','3':'Third','4':'Forth'}" /> Year:<s:select name="report.year" value="%{report.year}" list="years" headerKey="-1" headerValue="Pick Year" />

@@ -144,7 +144,7 @@ public class TimesReport{
 		public boolean hasData(){
 				return arrAll != null && !arrAll.isEmpty();
 		}
-		void createOuput(){
+		void createOutput(){
 				arrAll = new ArrayList<>();
 				int size = datesList.size()+3;
 				String[] arr = new String[size];
@@ -210,8 +210,9 @@ public class TimesReport{
 						start_date = quarter_starts[quarter]+year;
 						end_date = quarter_ends[quarter]+year;
 				}
+				start_date = start_date.trim();
 				if(start_date.equals("")){
-						msg = "Year, quarter and start date not set ";
+						msg = "Year and quarter or start date not set ";
 						return msg;
 				}
 				if(end_date.equals("")){
@@ -231,7 +232,10 @@ public class TimesReport{
 				// We are looking for Reg earn codes and its derivatives for
 				// planning department
 				//
-				setStartAndEndDates();				
+				msg = setStartAndEndDates();
+				if(!msg.equals("")){
+						return msg;
+				}
 				//
 				// We are looking for Reg earn codes and its derivatives for
 				// planning department
@@ -305,8 +309,7 @@ public class TimesReport{
 						UnoConnect.databaseDisconnect(con);
 				}
 				if(msg.equals("")){
-						createOuput();
-						// showOutput();
+						createOutput();
 				}
 				return msg;
 		}

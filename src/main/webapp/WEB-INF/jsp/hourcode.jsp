@@ -3,10 +3,10 @@
 	<s:form action="hourcode" id="form_id" method="post">
 		<s:hidden name="action2" id="action2" value="" />
 		<s:if test="hourcode.id == ''">
-			<h1>New Hour Code</h1>
+			<h1>New Earn Code</h1>
 		</s:if>
 		<s:else>
-			<h1>Edit Hour Code: <s:property value="hourcode.name" /></h1>
+			<h1>Edit Earn Code: <s:property value="hourcode.name" /></h1>
 			<s:hidden name="hourcode.id" value="%{hourcode.id}" />
 		</s:else>
 

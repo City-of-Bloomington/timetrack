@@ -162,8 +162,9 @@ public class MpoReport{
 						start_date = quarter_starts[quarter]+year;
 						end_date = quarter_ends[quarter]+year;
 				}
+				start_date = start_date.trim();
 				if(start_date.equals("")){
-						msg = "Year, quarter and start date not set ";
+						msg = "Year and quarter or start date not set ";
 						return msg;
 				}
 				if(end_date.equals("")){
@@ -239,7 +240,10 @@ public class MpoReport{
 				// We are looking for Reg earn codes and its derivatives for
 				// planning department
 				//
-				setStartAndEndDates();
+				msg = setStartAndEndDates();
+				if(!msg.equals("")){
+						return msg;
+				}				
 				if(!ignoreProfiles){
 						msg = setProfiles();
 						if(!msg.equals("")){
@@ -337,7 +341,10 @@ public class MpoReport{
 				// We are looking for Reg earn codes and its derivatives for
 				// planning department
 				//
-				setStartAndEndDates();
+				msg = setStartAndEndDates();
+				if(!msg.equals("")){
+						return msg;
+				}
 				if(!ignoreProfiles){
 						msg = setProfiles();
 						if(!msg.equals("")){

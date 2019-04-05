@@ -3,7 +3,7 @@
 	<thead>
 		<tr>
 			<th>ID</th>
-			<th>Hour Code</th>
+			<th>Earn Code</th>
 			<th>Salary Group</th>			
 			<th>Department</th>
 			<th>Group</th>

@@ -876,7 +876,7 @@ alter table tmwrp_blocks add period_order tinyint unsigned default 1 after term_
 ;;
 CREATE TABLE earn_code_reasons (
   id int unsigned not null auto_increment,
-	name varchar(32) not null,
+	name varchar(56) not null,
 	description varchar(164),
 	inactive char(1),
 	unique(name),

@@ -45,31 +45,20 @@ public class ReportPlanAction extends TopAction{
 												entries = ones;
 												addMessage("Found "+ones.size()+" entries");
 										}
+										else{
+												addMessage("No records found");
+										}
 								}
 								if(true){
 										List<WarpEntry> ones = report.getDailyEntries();
 										if(ones != null && ones.size() > 0){
 												dailyEntries = ones;
 												addMessage("Found "+ones.size()+" daily entries");
-										}										
-								}								
-								if(true){
-										/**
-										back = report.find();
-										if(!back.equals("")){
-												addError(back);
 										}
 										else{
-												List<TimeBlock> ones = report.getTimeBlocks();
-												if(ones != null && ones.size() > 0){
-														timeBlocks = ones;
-												}
-												else{
-														addMessage("No match found");
-												}
+												addMessage("No records found");
 										}
-										*/
-								}
+								}								
 						}
 				}
 				else{
