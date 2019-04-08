@@ -45,6 +45,8 @@ public class TimeBlock extends Block{
 		};
 		Set<String> document_ids = null; // needed for employee with multiple jobs
 		String start_date = "", end_date="", job_name="";
+		String hour_code_id_old = ""; // for accrual purpose
+		double hours_old = 0;
 		String timeInfo = "";
 		String errors = "";
     public TimeBlock( // for save
@@ -268,6 +270,14 @@ public class TimeBlock extends Block{
 								}
 						}
 				}
+		}
+		public void setHour_code_id_old(String val){
+				if(val != null)
+						hour_code_id_old = val;
+		}
+		public void setHours_old(Double val){
+				if(val != null)
+						hours_old = val;
 		}
 		// do display in calendar view
 		public int getDayInt(){
@@ -558,6 +568,11 @@ public class TimeBlock extends Block{
 								String val = accrualBalance.get(hour_code_id);
 								try{
 										double aval = Double.parseDouble(val);
+										if(!id.equals("") && hour_code_id_old.equals(hour_code_id)){
+												if(hours_old > 0){
+														aval += hours_old; // add old ones to balance
+												}
+										}
 										if(hours > aval){
 												msg = "Entered value "+hours+" greater than available balance "+aval;
 										}

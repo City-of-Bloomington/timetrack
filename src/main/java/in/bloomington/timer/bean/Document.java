@@ -266,6 +266,8 @@ public class Document implements Serializable{
 										GroupManagerList gml = new GroupManagerList();
 										gml.setWorkflow_id(wf_id);
 										gml.setGroup_id(job.getGroup_id());
+										gml.setActiveOnly();
+										gml.setPay_period_id(pay_period_id);
 										String back = gml.find();
 										if(back.equals("")){
 												List<GroupManager> ones = gml.getManagers();
@@ -953,7 +955,19 @@ public class Document implements Serializable{
 						return holidays.getHolidayName(date);
 				}
 				return "";
-    }		
+    }
+		void findWeekTotals(){
+				if(hasTmwrpRun()){
+						tmwrpRun.setDocument(this);
+						tmwrpRun.findBlocks();
+						double dd = tmwrpRun.getWeek1TotalHours();
+						if(dd > 0)
+								week1Total = dd;
+						dd = tmwrpRun.getWeek2TotalHours();
+						if(dd > 0)
+								week2Total = dd;
+				}
+		}
     // since not everyday we have timeblock, we need to fill
     // the empty ones, needed for display and related links
     void fillTwoWeekEmptyBlocks(){
@@ -996,6 +1010,8 @@ public class Document implements Serializable{
     private void checkForWarnings(){
 				setWarningFlag();
 				if(need_warning){
+						// newly added
+						findWeekTotals();
 						checkForWarningsAfter();
 						checkForWarningsBefore();
 				}
@@ -1165,10 +1181,14 @@ public class Document implements Serializable{
 						if(job != null){
 								group = job.getGroup();
 						}
-						if(salaryGroup != null &&
-							 salaryGroup.isFireSworn5x8() &&
-							 (group.getName().indexOf("Admin BC") > -1)){
-								need_warning = false;
+						if(salaryGroup != null){
+								if(salaryGroup.isFireSworn()){
+										need_warning = false;
+								}
+								else if(salaryGroup.isFireSworn5x8() &&
+												(group.getName().indexOf("Admin BC") > -1)){
+										need_warning = false;
+								}
 						}
 				}
 		}

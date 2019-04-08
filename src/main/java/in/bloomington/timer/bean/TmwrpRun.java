@@ -267,6 +267,18 @@ public class TmwrpRun{
 				}
 				return regCode;
     }
+		public void setDocument(Document val){
+				if(val != null){
+						document = val;
+						document_id = document.getId();
+						Employee employee = document.getEmployee();
+						if(employee != null){
+								Department dp = employee.getDepartment();
+								if(dp != null)
+										department = dp;
+						}		
+				}
+		}
 		//
 		// include totals
 		//
@@ -280,8 +292,8 @@ public class TmwrpRun{
 										blocks = ones;
 								}
 						}
+						findTotals();						
 				}
-				findTotals();
 		}
 		public List<TmwrpBlock> getBlocks(){
 				return blocks;

@@ -903,7 +903,7 @@ public class TimeBlockList{
 						usedWeeklyAccruals.put(week_id, map);		
 				}
     }
-    //
+    // hours type only
     void addToDaily(JobType jtype,
 										int order_id,
 										double hrs,
@@ -920,27 +920,25 @@ public class TimeBlockList{
 										total = map.get(order_id);
 										total += hrs;
 										double week_total = 0;
-										if(hr_code.indexOf("ONCALL") == -1){
-												if(order_id < 7){
-														if(map.containsKey(7)){
-																week_total = map.get(7)+hrs; // total week1
-														}
-														else{
-																week_total = hrs;
-														}
-														map.put(7, week_total);
-														week1Total = week_total;
+										if(order_id < 7){
+												if(map.containsKey(7)){
+														week_total = map.get(7)+hrs; // total week1
 												}
 												else{
-														if(map.containsKey(15)){														
-																week_total = map.get(15)+hrs; // total week2
-														}
-														else{
-																week_total = hrs;
-														}
-														map.put(15, week_total);
-														week2Total = week_total;
+														week_total = hrs;
 												}
+												map.put(7, week_total);
+												week1Total = week_total;
+										}
+										else{
+												if(map.containsKey(15)){														
+														week_total = map.get(15)+hrs; // total week2
+												}
+												else{
+														week_total = hrs;
+												}
+												map.put(15, week_total);
+												week2Total = week_total;
 										}
 								}
 								map.put(order_id, total);

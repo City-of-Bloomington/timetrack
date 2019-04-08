@@ -557,6 +557,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 						GroupManagerList gml = new GroupManagerList(id);
 						gml.setActiveOnly();
 						gml.setApproversOnly();
+						gml.setActiveOnly();
+						if(pay_period_id.equals("")){
+								findPayPeriod();
+						}
+						gml.setPay_period_id(pay_period_id);
 						String back = gml.find();
 						if(back.equals("")){
 								List<GroupManager> ones = gml.getManagers();
@@ -584,6 +589,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 						GroupManagerList gml = new GroupManagerList(id);
 						gml.setActiveOnly();
 						gml.setProcessorsOnly();
+						if(pay_period_id.equals("")){
+								findPayPeriod();
+						}
+						gml.setPay_period_id(pay_period_id);						
 						String back = gml.find();
 						if(back.equals("")){
 								List<GroupManager> ones = gml.getManagers();
@@ -599,6 +608,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 						GroupManagerList gml = new GroupManagerList(id);
 						gml.setActiveOnly();
 						gml.setReviewersOnly();
+						if(pay_period_id.equals("")){
+								findPayPeriod();
+						}
+						gml.setPay_period_id(pay_period_id);	
 						String back = gml.find();
 						if(back.equals("")){
 								List<GroupManager> ones = gml.getManagers();
@@ -617,6 +630,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 						GroupManagerList gml = new GroupManagerList(id);
 						gml.setActiveOnly();
 						gml.setTimeMaintainerOnly();
+						if(pay_period_id.equals("")){
+								findPayPeriod();
+						}
+						gml.setPay_period_id(pay_period_id);
 						String back = gml.find();
 						if(back.equals("")){
 								List<GroupManager> ones = gml.getManagers();

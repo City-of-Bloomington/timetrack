@@ -162,7 +162,7 @@ $('#start_date_id').change(function() {
 })
 
 /**
- * toggle input of time-in, time-out or hours depending
+ * toggle input of time-in, time-out, hours or amount depending
  * on hour code for example Reg hour code requires time-in, time-out
  * while PTO requires hours input
  */
@@ -222,12 +222,20 @@ $('#div_hour_change').change(function() {
     var $obj = $('#'+code);
     if($obj.length > 0){
         var aval = $obj.val();
+				var aval2 = 0; // old value if exist
+				var $obj2 = $('#'+code+'_old');
+				if($obj2){
+						if($obj2.length > 0){ // if old value exist for the same code
+								aval2 = $obj2.val();
+								aval = (+aval+aval2);
+						}
+				}
         if(+val > +aval){ // +x will convert to a number
             alert("Entered value "+val+" greated than available balance "+aval);
             $(this).val(0);
         }
     }
-    if(code == "2_Hours"){ // PTO can not be less than 1
+    if(code == "2_Hours"){ //2 is PTO id, PTO can not be less than 1
                            //and must be multiple of0.25
         if(+val < 1.0){
             alert("Entered value "+val+" can not be less than 1 hour ");

@@ -11,6 +11,8 @@
 			<s:hidden name="timeBlock.order_index" value="%{timeBlock.order_index}" />
 			<s:hidden name="timeBlock.clock_in" value="%{timeBlock.clock_in}" />
 			<s:hidden name="timeBlock.clock_out" value="%{timeBlock.clock_out}" />
+			<s:hidden name="timeBlock.hour_code_id_old" value="%{timeBlock.hour_code_id}" />			
+			<input type="hidden" id="<s:property value='timeBlock.hour_code_id' />_Hours_old" name="timeBlock.hours_old" value="<s:property value='timeBlock.hours' />" />
 			<input type="hidden" name="action" value="Save Changes">
 		</s:else>
 		<s:if test="hasEmpAccruals()">
@@ -50,8 +52,6 @@
 						<s:textfield name="timeBlock.end_date" type="date" value="%{timeBlock.end_date}" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="end" />
 					</div>
 				</div>
-
-
 			</div>
 		</s:if>
 		<div class="form-group">

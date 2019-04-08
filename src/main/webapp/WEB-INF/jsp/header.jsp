@@ -68,9 +68,6 @@
       <s:elseif test="user.canRunTargetEmployee()">
         <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
       </s:elseif>
-      <s:if test="user.canRunTimewarp()">
-        <a href="<s:property value='#application.url'/>timewarp.action?type=single">Timewarp</a>
-      </s:if>
     </s:if>
   </div>
 
