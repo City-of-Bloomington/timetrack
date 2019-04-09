@@ -377,7 +377,7 @@ public class TmwrpRun{
 								if(regCode != null){
 										has_week1_rows = true;
 										row = new ArrayList<>();
-										key = "Grs "+regCode.getCodeInfo();
+										key = "Gr "+regCode.getCodeInfo();
 										row.add(key);
 										row.add("("+df.format(week1_grs_reg_hrs)+")");
 										row.add("");
@@ -394,7 +394,7 @@ public class TmwrpRun{
 								if(regCode != null){
 										has_week2_rows = true;
 										row = new ArrayList<>();
-										key = "Grs "+regCode.getCodeInfo();
+										key = "Gr "+regCode.getCodeInfo();
 										row.add(key);
 										row.add("("+df.format(week2_grs_reg_hrs)+")");
 										row.add("");

@@ -865,9 +865,12 @@ CREATE TABLE tmwrp_blocks (
 	) ENGINE=InnoDB;
 ;;
 ;;
-;; needed on tomcat2 only
-alter table tmwrp_blocks change apply_type term_type enum('Week 1','Week 2','Cycle');
-alter table tmwrp_blocks add period_order tinyint unsigned default 1 after term_type;
+;; find all documents and employees that have times but not tmwrp_runs
+;;
+	select distinct(e.id),e.first_name,e.last_name from time_documents d left join time_blocks t on t.document_id=d.id left join employees e on e.id=d.employee_id where d.pay_period_id=554 and d.id not in (select document_id from tmwrp_runs);
+
+
+
 ;;
 ;; 4/2/2019
 ;;
