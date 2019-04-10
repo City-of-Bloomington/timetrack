@@ -133,6 +133,9 @@ public class TmwrpInitiateAction extends TopAction{
 		public boolean hasEmps(){
 				return emps != null && emps.size() > 0;
 		}
+		/**
+		 * list of employees' full names who needed timewarp initiations;
+		 */
 		public List<String> getEmps(){
 				return emps;
 		}

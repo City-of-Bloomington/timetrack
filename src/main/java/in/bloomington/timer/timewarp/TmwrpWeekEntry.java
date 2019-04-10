@@ -441,7 +441,6 @@ public class TmwrpWeekEntry{
 				String code_id = "";
 				double netHours = total_hrs - earned_time;
 				double extra_hrs = 0;
-				System.err.println(" net hours "+netHours);
 				//
 				// for full time working less than 40 hrs
 				//

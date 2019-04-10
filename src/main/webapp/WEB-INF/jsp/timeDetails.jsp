@@ -145,7 +145,7 @@
 									<s:set var="rows" value="document.tmwrpRun.week2Rows" />
 									<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
 									<s:set var="whichWeek" value="'week-one'" />
-									<%@ include file="weeklyTmwrp.jsp" %>
+										<%@ include file="weeklyTmwrp.jsp" %>
 								</s:if>
 							</s:if>
 							<s:else>
