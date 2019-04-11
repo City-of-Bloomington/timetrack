@@ -144,22 +144,6 @@
 									<%@ include file="weeklyTmwrp.jsp" %>
 								</s:if>
 							</s:if>
-							<s:else>												
-								<s:if test="hasHourCodeWeek1()">
-									<s:set var="weeklyHourCodes" value="hourCodeWeek1" />
-									<s:set var="weekTotal" value="week1Total" />
-									<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
-									<s:set var="whichWeek" value="'week-one'" />
-									<%@ include file="weeklySummary.jsp" %>
-								</s:if>
-								<s:if test="hasHourCodeWeek2()">
-									<s:set var="weeklyHourCodes" value="hourCodeWeek2" />
-									<s:set var="weekTotal" value="week2Total" />
-									<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
-									<s:set var="whichWeek" value="'week-two'" />
-									<%@ include file="weeklySummary.jsp" %>
-								</s:if>
-							</s:else>
 						</div>
 					</div>
 				</s:if>

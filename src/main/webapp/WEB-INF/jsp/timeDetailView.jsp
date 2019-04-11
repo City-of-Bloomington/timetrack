@@ -95,32 +95,8 @@
 								</s:iterator>
 							</s:if>
 						</s:if>
-						<s:else> <!-- multiple jobs old format -->
-							<s:if test="mjdoc.hasHourCodeWeek1()">
-								<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek1" />
-								<s:set var="weekHourTotal" value="mjdoc.week1Total" />
-								<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
-								<s:set var="whichWeek" value="'week-one'" />
-								<s:if test="mjdoc.hasAmountCodeWeek1()">
-									<s:set var="weeklyAmountCodes" value="mjdoc.amountCodeWeek1" />
-									<s:set var="weekAmountTotal" value="mjdoc.week1AmountTotal" />
-								</s:if>
-								<%@ include file="weeklySummary.jsp" %>
-							</s:if>
-							<s:if test="mjdoc.hasHourCodeWeek2()">
-								<s:set var="weeklyHourCodes" value="mjdoc.hourCodeWeek2" />
-								<s:set var="weekHourTotal" value="mjdoc.week2Total" />
-								<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
-								<s:set var="whichWeek" value="'week-two'" />
-								<s:if test="mjdoc.hasAmountCodeWeek2()">
-									<s:set var="weeklyAmountCodes" value="mjdoc.amountCodeWeek2" />
-									<s:set var="weekAmountTotal" value="mjdoc.week2AmountTotal" />
-								</s:if>
-								<%@ include file="weeklySummary.jsp" %>
-							</s:if>
-						</s:else>
 					</s:if>
-					<s:else> <!-- one job new format -->
+					<s:else> <!-- one job -->
 						<s:if test="document.hasTmwrpRun()">
 							<s:if test="document.tmwrpRun.hasWeek1Rows()">
 								<s:set var="rows" value="document.tmwrpRun.week1Rows" />
@@ -135,56 +111,8 @@
 								<%@ include file="weeklyTmwrp.jsp" %>
 							</s:if>
 						</s:if>
-						<s:else> <!-- one job old format -->
-							<s:if test="document.hasHourCodeWeek1()">
-								<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
-								<s:set var="weekHourTotal" value="document.week1Total" />
-								<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
-								<s:set var="whichWeek" value="'week-one'" />
-								<s:if test="document.hasAmountCodeWeek1()">
-									<s:set var="weeklyAmountCodes" value="document.amountCodeWeek1" />
-									<s:set var="weekAmountTotal" value="document.week1AmountTotal" />
-								</s:if>
-								<%@ include file="weeklySummary.jsp" %>
-							</s:if>
-							<s:if test="document.hasHourCodeWeek2()">
-								<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
-								<s:set var="weekHourTotal" value="document.week2Total" />
-								<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
-								<s:set var="whichWeek" value="'week-two'" />
-								<s:if test="document.hasAmountCodeWeek2()">
-									<s:set var="weeklyAmountCodes" value="document.amountCodeWeek2" />
-									<s:set var="weekAmountTotal" value="document.week2AmountTotal" />
-								</s:if>
-								<%@ include file="weeklySummary.jsp" %>
-							</s:if>
-						</s:else>
 					</s:else>
 				</s:if>
-				<s:else>
-					<s:if test="document.hasHourCodeWeek1()">
-						<s:set var="weeklyHourCodes" value="document.hourCodeWeek1" />
-						<s:set var="weekHourTotal" value="document.week1Total" />
-						<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
-						<s:set var="whichWeek" value="'week-one'" />
-						<s:if test="document.hasAmountCodeWeek1()">
-							<s:set var="weeklyAmountCodes" value="document.amountCodeWeek1" />
-							<s:set var="weekAmountTotal" value="document.week1AmountTotal" />
-						</s:if>
-						<%@ include file="weeklySummary.jsp" %>
-					</s:if>
-					<s:if test="document.hasHourCodeWeek2()">
-						<s:set var="weeklyHourCodes" value="document.hourCodeWeek2" />
-						<s:set var="weekHourTotal" value="document.week2Total" />
-						<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
-						<s:set var="whichWeek" value="'week-two'" />
-						<s:if test="document.hasAmountCodeWeek2()">
-							<s:set var="weeklyAmountCodes" value="document.amountCodeWeek2" />
-							<s:set var="weekAmountTotal" value="document.week2AmountTotal" />
-						</s:if>
-						<%@ include file="weeklySummary.jsp" %>
-					</s:if>
-				</s:else>
 			</div>
       <ul>
       	<s:if test="hasAccruals()">

@@ -179,30 +179,6 @@
 									<%@ include file="weeklyTmwrp.jsp" %>
 								</s:if>
 							</s:if>
-							<s:else>							
-								<s:if test="hasHourCodeWeek1()">
-									<s:set var="weeklyHourCodes" value="hourCodeWeek1" />
-									<s:set var="weekTotal" value="week1Total" />
-									<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
-									<s:set var="whichWeek" value="'week-one'" />
-									<s:if test="hasAmountCodeWeek1()">
-										<s:set var="weeklyAmountCodes" value="amountCodeWeek1" />
-										<s:set var="weekAmountTotal" value="week1AmountTotal" />
-									</s:if>
-									<%@ include file="weeklySummary.jsp" %>
-								</s:if>
-								<s:if test="hasHourCodeWeek2()">
-									<s:set var="weeklyHourCodes" value="hourCodeWeek2" />
-									<s:set var="weekTotal" value="week2Total" />
-									<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
-									<s:set var="whichWeek" value="'week-two'" />
-									<s:if test="hasAmountCodeWeek2()">
-										<s:set var="weeklyAmountCodes" value="amountCodeWeek2" />
-										<s:set var="weekAmountTotal" value="week2AmountTotal" />
-									</s:if>								
-									<%@ include file="weeklySummary.jsp" %>
-								</s:if>
-							</s:else>
             </div>
           </div>
         </s:if>
