@@ -23,6 +23,7 @@ public class EarnCodeReasonAction extends TopAction{
 		//
 		EarnCodeReason reason = null;
 		List<EarnCodeReason> reasons = null;
+		List<ReasonCategory> categories = null;
 		String reasonsTitle = "Current Earn Codde Reasons";
 		public String execute(){
 				String ret = SUCCESS;
@@ -93,7 +94,23 @@ public class EarnCodeReasonAction extends TopAction{
 				}
 				return reasons;
 		}
-
+		public boolean hasCategories(){
+				getCategories();
+				return categories != null;
+		}
+		public List<ReasonCategory> getCategories(){
+				if(categories == null){
+						ReasonCategoryList tl = new ReasonCategoryList();
+						String back = tl.find();
+						if(back.equals("")){
+								List<ReasonCategory> ones = tl.getReasonCategories();
+								if(ones != null && ones.size() > 0){
+										categories = ones;
+								}
+						}
+				}
+				return categories;
+		}
 }
 
 

@@ -20,10 +20,10 @@ import org.apache.logging.log4j.Logger;
 public class EarnCodeReasonList{
 
     boolean debug = false;
-    String name = "";
+    String name = "", reason_category_id="";
     static final long serialVersionUID = 54L;
     static Logger logger = LogManager.getLogger(EarnCodeReasonList.class);
-		boolean activeOnly = false;
+		boolean active_only = false;
     List<EarnCodeReason> reasons = null;
     //
     public EarnCodeReasonList(){
@@ -41,7 +41,13 @@ public class EarnCodeReasonList{
 				if(val != null)
 						name = val;
     }
-		
+    public void setReason_category_id(String val){
+				if(val != null && !val.equals("-1"))
+						reason_category_id = val;
+    }
+    public void setActiveOnly(){
+				active_only = true;
+    }		
     public List<EarnCodeReason> getReasons(){
 				return reasons;
     }
@@ -55,19 +61,22 @@ public class EarnCodeReasonList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 		
-				String qq = "select h.id,h.name,h.description,h.inactive from "+
+				String qq = "select h.id,h.name,h.description,h.reason_category_id,h.inactive from "+
 						" earn_code_reasons h", qw = "";
 				if(!name.equals("")){
 						qw += " name like ? ";
 				}
-				if(activeOnly){
+				if(!reason_category_id.equals("")){
+						qw += " reason_category_id = ? ";
+				}				
+				if(active_only){
 						if(!qw.equals("")) qw += " and ";
 						qw += " inactive is null ";
 				}
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
-				qq += " order by name ";
+				qq += " order by description ";
 				String back = "";
 				con = UnoConnect.getConnection();				
 				if(con == null){
@@ -82,19 +91,23 @@ public class EarnCodeReasonList{
 						int jj = 1;
 						if(!name.equals("")){
 								pstmt.setString(jj,"%"+name+"%");
-
 						}
+						if(!reason_category_id.equals("")){
+								pstmt.setString(jj, reason_category_id);
+						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								String str  = rs.getString(1);
 								String str2 = rs.getString(2);
 								String str3 = rs.getString(3);
-								boolean str4 = rs.getString(4) != null;
-								// allSet.add(str2);
+								String str4 = rs.getString(4);
+								boolean str5 = rs.getString(5) != null;
 								if(reasons == null)
 										reasons = new ArrayList<>();
-								EarnCodeReason one = new EarnCodeReason(debug, str, str2, str3, str4);
-								reasons.add(one);
+								EarnCodeReason one =
+										new EarnCodeReason(debug, str, str2, str3, str4, str5);
+								if(!reasons.contains(one))
+										reasons.add(one);
 						}
 				}
 				catch(Exception ex){

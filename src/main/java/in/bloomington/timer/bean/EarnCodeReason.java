@@ -15,7 +15,8 @@ import org.apache.logging.log4j.Logger;
 
 public class EarnCodeReason{
 
-		String id="", name = "", description="", inactive="";
+		String id="", name = "", description="",
+				reason_category_id="", inactive="";
 		boolean debug = false;
 		static Logger logger = LogManager.getLogger(EarnCodeReason.class);
 
@@ -31,13 +32,15 @@ public class EarnCodeReason{
 													String val,
 													String val2,
 													String val3,
-													boolean val4
+													String val4,
+													boolean val5
 									 ){
 				debug = deb;
 				setId(val);
 				setName(val2);
 				setDescription(val3);
-				setInactive(val4);
+				setReason_category_id(val4);
+				setInactive(val5);
     }
 	
 		public String getId(){
@@ -46,7 +49,9 @@ public class EarnCodeReason{
 		public String getName(){
 				return name;
 		}
-
+		public String getReason_category_id(){
+				return reason_category_id;
+		}
 		public String getDescription(){
 				return description;
     }
@@ -68,6 +73,10 @@ public class EarnCodeReason{
 						name = val.trim();
 				}
     }
+    public void setReason_category_id(String val){
+				if(val != null && !val.equals("-1"))		
+					 reason_category_id = val;
+    }		
 		public void setInactive(boolean val){
 				if(val)
 						inactive = "y";
@@ -97,12 +106,16 @@ public class EarnCodeReason{
 				ResultSet rs = null;
 		
 				String qq = "insert into "+ 
-						" earn_code_reasons values(0,?,?,null) ";
+						" earn_code_reasons values(0,?,?,?,null) ";
 				String back = "";
 				if(name.equals("")){
 						back = "Name not set ";
 						return back;
 				}
+				if(reason_category_id.equals("")){
+						back = "Need to select reason category ";
+						return back;
+				}				
 				con = UnoConnect.getConnection();				
 				if(con == null){
 						back = "Could not connect to DB ";
@@ -121,6 +134,7 @@ public class EarnCodeReason{
 						else{
 								pstmt.setString(jj++,description);
 						}
+						pstmt.setString(jj++, reason_category_id);						
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
@@ -153,13 +167,17 @@ public class EarnCodeReason{
 		
 				String qq = 
 						" update earn_code_reasons "+
-						" set name=?, description=?,inactive=? "+			
+						" set name=?, description=?,reason_category_id=?,inactive=? "+			
 						" where id = ? ";
 				String back = "";
 				if(id.equals("") || name.equals("")){
 						back = " Name or id not set ";
 						return back;
 				}
+				if(reason_category_id.equals("")){
+						back = "Need to select reason category ";
+						return back;
+				}				
 				con = UnoConnect.getConnection();	
 				if(con == null){
 						back = "Could not connect to DB ";
@@ -178,6 +196,7 @@ public class EarnCodeReason{
 						else{						
 								pstmt.setString(jj++,description);
 						}
+						pstmt.setString(jj++, reason_category_id);						
 						if(inactive.equals("")){
 								pstmt.setNull(jj++, Types.CHAR);
 						}
@@ -244,7 +263,7 @@ public class EarnCodeReason{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 		
-				String qq = "select name,description,inactive from "+
+				String qq = "select name,description,reason_category_id,inactive from "+
 						" earn_code_reasons where id = ? ";
 				String back = "";
 				if(debug){
@@ -263,7 +282,8 @@ public class EarnCodeReason{
 						if(rs.next()){
 								setName(rs.getString(1));
 								setDescription(rs.getString(2));
-								setInactive(rs.getString(3) !=null);
+								setReason_category_id(rs.getString(3));
+								setInactive(rs.getString(4) !=null);
 						}
 				}
 				catch(Exception ex){

@@ -10,8 +10,15 @@
 			<h1>Edit Holiday Type: <s:property value="%{holiday.name}" /> </h1>
 			<s:hidden name="holiday.id" value="%{holiday.id}" />
 		</s:else>
+		<s:if test="hasErrors()">
+			<s:set var="errors" value="%{errors}" />		
+			<%@ include file="errors.jsp" %>
+		</s:if>		
+		<s:elseif test="hasMessages()">
+			<s:set var="messages" value="%{messages}" />					
+			<%@ include file="messages.jsp" %>
+		</s:elseif>
 
-	  <%@ include file="strutMessages.jsp" %>
 	  <div class="width-one-half">
 			<div class="form-group">
 				<label>Pick A Year</label>

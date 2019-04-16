@@ -9,9 +9,14 @@
 			<h1>Edit Earn Code: <s:property value="hourcode.name" /></h1>
 			<s:hidden name="hourcode.id" value="%{hourcode.id}" />
 		</s:else>
-
-	  <%@ include file="strutMessages.jsp" %>
-
+		<s:if test="hasErrors()">
+			<s:set var="errors" value="%{errors}" />		
+			<%@ include file="errors.jsp" %>
+		</s:if>		
+		<s:elseif test="hasMessages()">
+			<s:set var="messages" value="%{messages}" />					
+			<%@ include file="messages.jsp" %>
+		</s:elseif>
 		<div class="width-one-half">
 			<s:if test="hourcode.id != ''">
 				<div class="form-group">

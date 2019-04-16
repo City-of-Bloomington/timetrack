@@ -10,9 +10,14 @@
 			<h1>Edit Earn Code Restriction: <s:property value="hourcodeCondition.name" /></h1>
 			<s:hidden name="hourcodeCondition.id" value="%{hourcodeCondition.id}" />
 		</s:else>
-
-	  <%@ include file="strutMessages.jsp" %>
-
+		<s:if test="hasErrors()">
+			<s:set var="errors" value="%{errors}" />		
+			<%@ include file="errors.jsp" %>
+		</s:if>		
+		<s:elseif test="hasMessages()">
+			<s:set var="messages" value="%{messages}" />					
+			<%@ include file="messages.jsp" %>
+		</s:elseif>
 		<s:if test="hourcodeCondition.id != ''">
 			<div class="form-group">
 				<label>ID</label>

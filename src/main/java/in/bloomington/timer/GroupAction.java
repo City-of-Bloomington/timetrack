@@ -140,7 +140,7 @@ public class GroupAction extends TopAction{
 		public List<HourCode> getHourCodes(){
 				if(hourCodes == null){
 						HourCodeList gml = new HourCodeList();
-						gml.setEarnTypes();
+						gml.setEarnTypesOnly();
 						gml.setCurrentOnly();
 						String back = gml.find();
 						if(back.equals("")){

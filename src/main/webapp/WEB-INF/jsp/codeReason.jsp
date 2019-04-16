@@ -10,9 +10,11 @@
 			<s:hidden name="reason.id" value="%{reason.id}" />
 		</s:else>
 		<s:if test="hasErrors()">
+			<s:set var="errors" value="%{errors}" />			
 			<%@ include file="errors.jsp" %>
 		</s:if>		
 		<s:elseif test="hasMessages()">
+			<s:set var="messages" value="%{messages}" />			
 			<%@ include file="messages.jsp" %>
 		</s:elseif>
 		<div class="width-one-half">
@@ -25,6 +27,10 @@
 			<div class="form-group">
 				<label>Name:</label>
 				<s:textfield name="reason.name" value="%{reason.name}" required="true" size="30" maxlength="50" />
+			</div>
+			<div class="form-group">
+				<label>Reason Category:</label>
+				<s:select name="reason.reason_category_id" value="%{reason.reason_category_id}" required="true" list="categories" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Category" />
 			</div>
 			<div class="form-group">
 				<label>Description:</label>

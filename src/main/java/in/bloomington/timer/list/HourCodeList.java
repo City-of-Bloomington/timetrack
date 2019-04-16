@@ -26,7 +26,7 @@ public class HourCodeList{
     String employee_id = "", accrual_id="", group_id="";
     boolean active_only = false , default_regular_only = false;
     boolean current_only = false, related_to_accruals_only=false;
-    String type="", name="";
+    String type="", name="", record_method="";
     boolean allEarnTypes = false;
     public HourCodeList(){
     }
@@ -65,10 +65,14 @@ public class HourCodeList{
     public void setName(String val){
 				if(val != null)
 						name = val;
-    }		
-    public void setEarnTypes(){
-				allEarnTypes = true;
     }
+    public void setRecord_method(String val){
+				if(val != null)
+						record_method = val;
+    }		
+    public void setEarnTypesOnly(){
+				allEarnTypes = true;
+    }		
     public void setActiveOnly(){
 				active_only = true;
     }
@@ -277,6 +281,11 @@ public class HourCodeList{
 								if(!qw.equals("")) qw += " and "; 
 								qw += " (e.type = 'Earned' or e.type ='Overtime')  ";
 						}
+						if(!record_method.equals("")){
+								if(!qw.equals("")) qw += " and "; 
+								qw += " e.record_method = ?  ";
+
+						}
 						if(default_regular_only){
 								if(!qw.equals("")) qw += " and "; 
 								qw += " e.reg_default is not null "; 
@@ -304,6 +313,9 @@ public class HourCodeList{
 						}
 						if(!name.equals("")){
 								pstmt.setString(jj++, name);
+						}
+						if(!record_method.equals("")){
+								pstmt.setString(jj++, record_method);
 						}						
 						rs = pstmt.executeQuery();
 						hourCodes = new ArrayList<>();

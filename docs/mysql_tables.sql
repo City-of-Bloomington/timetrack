@@ -877,15 +877,131 @@ CREATE TABLE tmwrp_blocks (
 ;; Police dept needed an item in timetrack to track their earn codes related
 ;; to certain reasons (projects) during their duties
 ;;
-CREATE TABLE earn_code_reasons (
+create table reason_categories(
   id int unsigned not null auto_increment,
 	name varchar(56) not null,
-	description varchar(164),
 	inactive char(1),
 	unique(name),
 	primary key(id)
 ) ENGINE=InnoDB;
 
+insert into reason_categories (name) values('ADMIN'),('COMMUNITY EVENTS'),('COURT'),('DETECTIVES'),('DISPATCH'),('DOWNTOWN PATROLS'),('EVIDENCE'),('IU BASKETBALL'),('IU FOOTBALL'),('OFFICER SHORTAGE'),('PARKING'),('PATROL ASSIGNED DUTY'),('POSITION'),('RECORDS'),('SPECIAL DETAILS'),('SPECIALTY DUTY'),('TRAINING');
+
+CREATE TABLE earn_code_reasons (
+  id int unsigned not null auto_increment,
+	name varchar(56) not null,
+	description varchar(164),
+	reason_category_id int unsigned,
+	inactive char(1),
+	unique(name),
+	foreign key(reason_category_id) references reason_categories(id),
+	primary key(id)
+) ENGINE=InnoDB;
+
+insert into earn_code_reasons (id,name,description,reason_category_id) values(1,'Admistrative Duty','ADMIN: Admistrative Duty',1),
+(2,'Citizens Academy','ADMIN: Citizens Academy',1),
+(3,'Hiring Process/Backgrounds','ADMIN: Hiring Process/Backgrounds, etc',1),
+(4,'Community Engagement','COMMUNITY EVENTS: Community Engagement',2),
+(5,'Explorer/Teen Academy','COMMUNITY EVENTS: Explorer/Teen Academy',2),
+(6,'Court','COURT: Court',3),
+(7,'Assist Other Agency','DETECTIVES: Assist Other Agency',4),
+(8,'Assist Uniform Division','DETECTIVES: Assist Uniform Division',4),
+(9,'ATF','DETECTIVES: ATF',4),
+(10,'Callout','DETECTIVES: Callout',4),
+(11,'DEA','DETECTIVES: DEA',4);
+
+insert into earn_code_reasons (id,name,description,reason_category_id) values
+(12,'Investigation','DETECTIVES: Investigation',4),
+(13,'On Call','DETECTIVES: On Call',4),
+(14,'DETECTIVES:Other','DETECTIVES: Other',4),
+(15,'SIU Drups','DETECTIVES: SIU Drugs',4),
+(16,'SIU Investigation','DETECTIVES: SIU Investigation',4),
+(17,'Busy','DISPATCH: Busy',5),
+(18,'Holiday','DISPATCH: Holiday',5),
+(19,'IDACS Coordinator work','DISPATCH: IDACS Coordinator work',5),
+(20,'Manpower/PTO, Hol','DISPATCH: Manpower/PTO, Hol',5),
+(21,'Manpower/Sickness','DISPATCH: Manpower/Sickness',5),
+(22,'Meetings/Evaluations/Admin','DISPATCH: Meetings/Evaluations/Admin',5),
+(23,'Dispatch: Other','DISPATCH: Other',5),
+(24,'Person Shortage','DISPATCH: Person Shortage',5),
+(25,'Training','DISPATCH: Training',5);
+
+insert into earn_code_reasons (id,name,description,reason_category_id) values
+(26,'Downtown Patrol','DOWNTOWN PATROLS: Downtown Patrol',6),
+(27,'Downtown Patrol PEO','DOWNTOWN PATROLS: Downtown Patrol PEO',6),
+(28,'Wylie Downtown','DOWNTOWN PATROLS: Wylie Downtown',6),
+(29,'Evidence: Call Out ','EVIDENCE: Call Out',7),
+(30,'Process/Busy in Lab','EVIDENCE: Process/Busy in Lab',7),
+(31,'Scene Process','EVIDENCE: Scene Process',7),
+(32,'Evidence: Training','EVIDENCE: Training',7),
+(33,'IU Basketball Sworn Officer','IU BASKETBALL: IU Basketball Sworn Officer',8),
+(34,'IU Football Sworn Officer','IU FOOTBALL: IU Football Sworn Officer',9),
+(35,'Hold Over Due to Event/Weather','OFFICER SHORTAGE: Hold Over Due to Event/Weather',10),
+(36,'Officer Shortage:Other','OFFICER SHORTAGE: Other',10),
+(37,'Sickness','OFFICER SHORTAGE: Sickness',10),
+(38,'IU Basketball PEO','PARKING: : IU Basketball PEO',11),
+(39,'IU Football PEO','PARKING: : IU Football PEO',11),
+(40,'PEO for Police (Other)','PARKING: PEO for Police (Other)',11);
+
+
+insert into earn_code_reasons (id,name,description,reason_category_id) values
+(41,'Assist SIU or Another Agency','PATROL ASSIGNED DUTY: Assist SIU or Another Agency',12),
+(42,'Case Report/Late Call','PATROL ASSIGNED DUTY: Case Report/Late Call',12),
+(43,'Patrol Assigned Duty: Other','PATROL ASSIGNED DUTY: Other',12),
+(44,'POTC DOR Probationary Officer','PATROL ASSIGNED DUTY: POTC DOR Probationary Officer',12),
+(45,'CAD/RMS Administrator','POSITION: CAD/RMS Administrator',13),
+(46,'CALEA/Comm Engagement','POSITION: CALEA/Comm Engagement',13),
+(47,'Custodian','POSITION: Custodian',13),
+(48,'Executive Assistant','POSITION: Executive Assistant',13),
+(49,'NRS duties','POSITION: NRS duties',13),
+(50,'Offfice Manage','POSITION: Offfice Manager',13),
+(51,'Social Worker','POSITION: Social Worker',13),
+(52,'Records: Busy','RECORDS: Busy',14),
+(53,'Records: Holiday','RECORDS: Holiday',14),
+(54,'Meetings/Evaluations','RECORDS: Meetings/Evaluations',14),
+(55,'Records: Other','RECORDS: Other',14),
+(56,'Records: Person Shortage','RECORDS: Person Shortage',14),
+(57,'Records: Training','RECORDS: Training',14),
+(58,'Records: Weekend Duty','RECORDS: Weekend Duty',14);
+
+
+insert into earn_code_reasons (id,name,description,reason_category_id) values
+(59,'Burglary Patrol','SPECIAL DETAILS: Burglary Patrol',15),
+(60,'DUI','SPECIAL DETAILS: DUI',15),
+(61,'Little 500','SPECIAL DETAILS: Little 500',15),
+(62,'OPO','SPECIAL DETAILS: OPO',15),
+(63,'Special Details: Other','SPECIAL DETAILS: Other',15),
+(64,'Quiet Nights','SPECIAL DETAILS: Quiet Nights',15),
+(65,'Special Assignment','SPECIAL DETAILS: Special Assignment',15),
+(66,'Special Detail','SPECIAL DETAILS: Special Detail',15),
+(67,'Accident Reconstructionist','SPECIALTY DUTY: Accident Reconstructionist',16),
+(68,'Bike Patrol','SPECIALTY DUTY: Bike Patrol',16),
+(69,'Civil Disturbance Unit','SPECIALTY DUTY: Civil Disturbance Unit',16),
+(70,'CIRT','SPECIALTY DUTY: CIRT',16),
+(71,'Dive','SPECIALTY DUTY: Dive',16),
+(72,'Downtown Resource Officer','SPECIALTY DUTY: Downtown Resource Officer',16),
+(73,'Specialty Duty: PTO','SPECIALTY DUTY: FTO',16),
+(74,'Honor Guard','SPECIALTY DUTY: Honor Guard',16),
+(75,'Hostage Negotiator','SPECIALTY DUTY: Hostage Negotiator',16),
+(76,'K9','SPECIALTY DUTY: K9',16),
+(77,'Training Instructor','SPECIALTY DUTY: Training Instructor',16),
+(78,'Officer Training/Travel Time','TRAINING: Officer Training/Travel Time',17);
+
+create table code_reason_conditions(
+  id int unsigned not null auto_increment,
+	reason_id int unsigned not null,
+	hour_code_id int unsigned not null,
+	salary_group_id int unsigned not null,
+	department_id int unsigned,
+	group_id int unsigned,
+	inactive char(1),
+	primary key(id),
+	foreign key(reason_id) references earn_code_reasons(id),
+	foreign key(hour_code_id) references hour_codes(id),
+	foreign key(salary_group_id) references salary_groups(id),	
+	foreign key(department_id) references departments(id),		
+	foreign key(group_id) references groups(id)		
+) ENGINE=InnoDB;
 ;;
 ;;
 ;; ====================================================

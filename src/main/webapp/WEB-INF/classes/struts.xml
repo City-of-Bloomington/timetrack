@@ -467,6 +467,20 @@
 			<result name="error">/WEB-INF/jsp/searchConditions.jsp</result>
 			<result name="success">/WEB-INF/jsp/searchConditions.jsp</result>
 		</action>
+		<action name="codeReasonCondition" 
+						class="in.bloomington.timer.CodeReasonConditionAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/codeReasonCondition.jsp</result>		
+			<result name="error">/WEB-INF/jsp/codeReasonCondition.jsp</result>
+			<result name="success">/WEB-INF/jsp/codeReasonCondition.jsp</result>
+		</action>		
+		<action name="reasonCategory" 
+						class="in.bloomington.timer.ReasonCategoryAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/reasonCategory.jsp</result>		
+			<result name="error">/WEB-INF/jsp/reasonCategory.jsp</result>
+			<result name="success">/WEB-INF/jsp/reasonCategory.jsp</result>
+		</action>						
 		<action name="codeReason" 
 						class="in.bloomington.timer.EarnCodeReasonAction" 
 						method="execute">
