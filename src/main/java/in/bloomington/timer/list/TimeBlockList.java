@@ -297,32 +297,14 @@ public class TimeBlockList{
 			 
        create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id                                                       from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id ;			 
 
+			 // modified for earn_code_reason_id
+       create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    t.eanrn_code_reason_id earn_code_reason_id,                                     t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id                                                       from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id ;			 
+
+			 
     */
     //
     /**
-     * find using view (old)
-     *
-		      select time_block_id,
-						"document_id,"+
-						"hour_code_id,"+
-						"date_formatted,"+
-						"begin_hour,"+
-						"begin_minute,"+
-						"end_hour,"+
-						"end_minute,"+
-						"hours,"+
-						"amount,"+
-						"clock_in,"+
-						"clock_out,"+
-						"inactive,"+
-						"order_id,"+
-						"code_name,"+
-						"code_description,"+
-						"nw_code_name,"+
-						"job_name,"+
-						"accrual_id,"+
-						"job_id "+
-						"from time_blocks_view v ";
+			 // 
 		 
 		 
     */
@@ -338,9 +320,10 @@ public class TimeBlockList{
 						"time_block_id,"+
 						"document_id,"+
 						"hour_code_id,"+
+						// "earn_code_reason_id,"+
 						"date_format(date,'%m/%d/%Y'),"+
 						"begin_hour,"+
-						
+					 
 						"begin_minute,"+
 						"end_hour,"+
 						"end_minute,"+
@@ -519,6 +502,7 @@ public class TimeBlockList{
 												new TimeBlock(rs.getString(1),
 																			rs.getString(2),
 																			rs.getString(3), // code_id
+																			// rs.getString(4), // earn_code_reason
 																			rs.getString(4), // date
 																			rs.getInt(5),  // b
 																			

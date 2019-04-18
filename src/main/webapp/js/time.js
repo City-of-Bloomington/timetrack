@@ -136,6 +136,34 @@ $('#department_id_change').change(function() {
         alert(status+" "+err);
     });
 })
+//
+// the following function will be used by timeBlock page
+// when hour code change to one that have code_reasons, we need to
+// show earn_code_reason_id options
+// disabled for now
+/**
+function handleShowCodeReason(val){
+    $.ajax({
+        url: APPLICATION_URL + "CodeReasonService?salary_group_id="+$("#salary_group_id").val()+"&hour_code_id="+val,
+        dataType:'json'
+    })
+    .done(function( data, status ) {
+				var options = $("#earn_code_reason_id");
+				options.prop('disabled',false);
+				options.empty();
+				options.append(new Option("Pick a Reason","-1"));
+        for(key in data){ // it is an array
+            // var obj = data[key];
+            options.append(new Option(data[key].name, data[key].id));
+        }
+    })
+    .error(function(x,status,err){
+        alert(status+" "+err);
+    });
+}
+*/
+//
+//
 $('#job_salary_group_change').change(function() {
     var $option = $(this).find('option:selected');
     var sel_name = $option.text();
@@ -209,6 +237,12 @@ $('#hour_code_select').change(function() {
         $('#time_in').attr('tabindex',2);
         $('#time_out').attr('tabindex',3);
         $('#time_overnight').attr('tabindex',4);
+				//
+				// we call earn_code_reason function here
+				//
+				// var codes = ['113','114','115','116'];
+				// var hour_code_id = val.substring(0,val.indexOf("_")); // id only
+				// if(codes.include(hour_cod_id)) handleShowCodeReason(hour_code_id);
     }
 });
 /**

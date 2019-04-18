@@ -23,12 +23,15 @@ public class Block{
     String id="",
 				document_id="",
 				hour_code_id="",
+				earn_code_reason_id="",
 				clock_in="", clock_out="", holidayName="";
+		String salary_group_id = "";
 		String date = ""; // the user pick date, needed for PTO, Holiday etc
 		double hours = 0.0, amount = 0.0; // for dollar value
 		int begin_hour = 0, begin_minute=0, end_hour=0, end_minute=0;
 		HourCode hourCode = null;
 		CodeRef codeRef = null;
+		EarnCodeReason earnCodeReason = null;
 		JobTask jobTask = null;
 		Document document = null;
 		boolean hourCodeSet = false, isHoliday=false;
@@ -42,129 +45,151 @@ public class Block{
     public Block( // for save
 								 String val,
 								 String val2,
-								 String val3,
-								 int val4,
+								 // String val3,		
+								 String val4,
 								 int val5,
 								 int val6,
 								 int val7,
-								 double val8,
-								 double val9
+								 int val8,
+								 double val9,
+								 double val10
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
+				setVals(val,
+								val2,
+								//val3,
+								val4,
+								val5,
+								val6, val7, val8, val9, val10);
 		}		
 		
     public Block(
 								 String val,
 								 String val2,
 								 String val3,
-								 String val4,
-								 int val5,
+								 // String val4,
+								 String val5,
 								 int val6,
 								 int val7,
 								 int val8,
-								 double val9,
+								 int val9,
 								 double val10,
-								 String val11,
-								 String val12
+								 double val11,
+								 String val12,
+								 String val13
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11,val12);
+				setVals(val, val2, val3,
+								// val4,
+								val5,
+								val6,
+								val7, val8, val9, val10, val11, val12,val13);
 		}
     public Block(
 								 String val,
 								 String val2,
 								 String val3,
+								 // String val4,
+								 String val5,
+								 int val6,
+								 int val7,
+								 int val8,
+								 int val9,
+								 double val10,
+								 double val11,
+								 String val12,
+								 String val13,
+								 boolean val14,
+								 String val15
+							 ){
+				setVals(val, val2, val3,
+								// val4,
+								val5,
+								val6, val7, val8, val9,
+								val10, val11, val12, val13, val14, val15);
+		}
+		void setVals(
+								 String val,
+								 String val2,
+								 // String val3,								 
 								 String val4,
 								 int val5,
 								 int val6,
 								 int val7,
 								 int val8,
 								 double val9,
-								 double val10,
-								 String val11,
-								 String val12,
-								 boolean val13,
-								 String val14
-							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14);
-		}
-		void setVals(
-								 String val,
-								 String val2,
-								 String val3,
-								 int val4,
-								 int val5,
-								 int val6,
-								 int val7,
-								 double val8,
-								 Double val9
+								 Double val10
 							 ){								
 				setDocument_id(val);
 				setHour_code_id(val2);
-				setDate(val3);
-				setBegin_hour(val4);
-				setBegin_minute(val5);
-				setEnd_hour(val6);
-				setEnd_minute(val7);				
-				setHoursDbl(val8);
-				setAmountDbl(val9);
+				// setEarn_code_reason_id(val3);
+				setDate(val4);
+				setBegin_hour(val5);
+				setBegin_minute(val6);
+				setEnd_hour(val7);
+				setEnd_minute(val8);				
+				setHoursDbl(val9);
+				setAmountDbl(val10);
     }		
 		void setVals(
 								 String val,
 								 String val2,
 								 String val3,
-								 String val4,
-								 int val5,
+								 // String val4,
+								 String val5,
 								 int val6,
 								 int val7,
 								 int val8,
-								 double val9,
+								 int val9,
 								 double val10,
-								 String val11,
-								 String val12
+								 double val11,
+								 String val12,
+								 String val13
 							 ){								
 				setId(val);
 				setDocument_id(val2);
 				setHour_code_id(val3);
-				setDate(val4);
-				setBegin_hour(val5);
-				setBegin_minute(val6);
-				setEnd_hour(val7);
-				setEnd_minute(val8);				
-				setHoursDbl(val9);
-				setAmountDbl(val10);
-				setClock_in(val11);
-				setClock_out(val12);
+				// setEarn_code_reason_id(val4);				
+				setDate(val5);
+				setBegin_hour(val6);
+				setBegin_minute(val7);
+				setEnd_hour(val8);
+				setEnd_minute(val9);				
+				setHoursDbl(val10);
+				setAmountDbl(val11);
+				setClock_in(val12);
+				setClock_out(val13);
     }
 		void setVals(
 								 String val,
 								 String val2,
 								 String val3,
-								 String val4,
-								 int val5,
+								 // String val4,
+								 String val5,
 								 int val6,
 								 int val7,
 								 int val8,
-								 double val9,
+								 int val9,
 								 double val10,
-								 String val11,
+								 double val11,
 								 String val12,
-								 boolean val13,
-								 String val14
+								 String val13,
+								 boolean val14,
+								 String val15
 							 ){								
 				setId(val);
 				setDocument_id(val2);
 				setHour_code_id(val3);
-				setDate(val4);
-				setBegin_hour(val5);
-				setBegin_minute(val6);
-				setEnd_hour(val7);
-				setEnd_minute(val8);				
-				setHoursDbl(val9);
-				setAmountDbl(val10);
-				setClock_in(val11);
-				setClock_out(val12);
-				setIsHoliday(val13);
-				setHolidayName(val14);
+				// setEarn_code_reason_id(val4);
+				setDate(val5);
+				setBegin_hour(val6);
+				setBegin_minute(val7);
+				setEnd_hour(val8);
+				setEnd_minute(val9);				
+				setHoursDbl(val10);
+				setAmountDbl(val11);
+				setClock_in(val12);
+				setClock_out(val13);
+				setIsHoliday(val14);
+				setHolidayName(val15);
     }		
     public Block(String val){
 				setId(val);
@@ -183,6 +208,9 @@ public class Block{
     public String getHour_code_id(){
 				return hour_code_id;
     }
+    public String getEarn_code_reason_id(){
+				return earn_code_reason_id;
+    }		
 		// hourCode 
 		public String getId_compound(){
 				getHourCode();
@@ -303,6 +331,16 @@ public class Block{
 						}
 				}
     }
+    public void setEarn_code_reason_id(String val){
+				if(val != null && !val.equals("-1")){
+						if(val.indexOf("_") > -1){
+								earn_code_reason_id = val.substring(0,val.indexOf("_"));
+						}
+						else{
+								earn_code_reason_id = val;
+						}
+				}
+    }		
 		public void setHolidayName(String val){
 				if(val != null)
 						holidayName = val;
@@ -418,6 +456,21 @@ public class Block{
 				}
 				return hourCode;
 		}
+		public EarnCodeReason getEarnCodeReason(){
+				if(earnCodeReason == null){
+						if(!earn_code_reason_id.equals("")){
+								EarnCodeReason one = new EarnCodeReason(earn_code_reason_id);
+								String back = one.doSelect();
+								if(back.equals("")){
+										earnCodeReason = one;
+								}
+						}
+						else{
+								earnCodeReason = new EarnCodeReason();
+						}
+				}
+				return earnCodeReason;
+		}		
 		public boolean hasCodeRef(){
 				getCodeRef();
 				return codeRef != null;
@@ -450,7 +503,25 @@ public class Block{
 						}
 				}
 				return document;
-		}		
+		}
+		public String getSalary_group_id(){
+				if(salary_group_id.equals("")){
+						if(jobTask == null){
+								getDocument();
+								if(document != null){
+										jobTask = document.getJob();
+								}
+						}
+						if(jobTask != null){
+								salary_group_id = jobTask.getSalary_group_id();
+						}
+				}
+				return salary_group_id;
+		}
+		public void setSalary_group_id(String val){
+				if(val != null)
+						salary_group_id = val;
+		}
 		public boolean isClockIn(){
 				return !clock_in.equals("");
 		}

@@ -98,7 +98,10 @@ public class EarnCodeReason{
 						}
 				}
 				return seed;
-    }		
+    }
+		public String getInfo(){
+				return id+": "+name+": "+description;
+		}
    public  String doSave(){
 				//
 				Connection con = null;

@@ -25,7 +25,8 @@ public class TimeBlockLog extends Block{
     public TimeBlockLog(
 							 String val,
 							 String val2,
-							 String val4,
+							 String val3,
+							 // String val4,
 							 String val5,
 							 
 							 int val6,
@@ -37,13 +38,16 @@ public class TimeBlockLog extends Block{
 							 double val11,
 							 String val12,
 							 String val13,
+							 
 							 String val14,
 							 String val15,
 							 
 							 String val16,
 							 String val17
 							 ){
-				super(val, val2, val4, val5, val6, val7, val8, val9, val10, val11, val12,val13);
+				super(val, val2, val3,
+							// val4,
+							val5, val6, val7, val8, val9, val10, val11, val12, val13);
 				setTime_block_id(val14);
 				setAction_type(val15);
 				setAction_by_id(val16);
@@ -148,6 +152,7 @@ public class TimeBlockLog extends Block{
 												rs.getString(1),
 												rs.getString(2),
 												rs.getString(3),
+												// rs.getString(4),
 												rs.getString(4),
 												rs.getInt(5),
 												rs.getInt(6),
@@ -199,27 +204,29 @@ public class TimeBlockLog extends Block{
 				}							
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, document_id);
-						pstmt.setString(2, hour_code_id);
+						int jj=1;
+						pstmt.setString(jj++, document_id);
+						pstmt.setString(jj++, hour_code_id);
+						// pstmt.setString(jj++, earn_code_reason_id);						
 						java.util.Date date_tmp = df.parse(date);
-						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
-						pstmt.setInt(4, begin_hour);
-						pstmt.setInt(5, begin_minute);
-						pstmt.setInt(6, end_hour);
-						pstmt.setInt(7, end_minute);
-						pstmt.setDouble(8, hours);
-						pstmt.setDouble(9, amount);						
+						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setInt(jj++, begin_hour);
+						pstmt.setInt(jj++, begin_minute);
+						pstmt.setInt(jj++, end_hour);
+						pstmt.setInt(jj++, end_minute);
+						pstmt.setDouble(jj++, hours);
+						pstmt.setDouble(jj++, amount);						
 						if(clock_in.equals(""))
-								pstmt.setNull(10, Types.CHAR);
+								pstmt.setNull(jj++, Types.CHAR);
 						else
-								pstmt.setString(10, "y");
+								pstmt.setString(jj++, "y");
 						if(clock_out.equals(""))
-								pstmt.setNull(11, Types.CHAR);
+								pstmt.setNull(jj++, Types.CHAR);
 						else
-								pstmt.setString(11, "y");								
-						pstmt.setString(12, time_block_id);
-						pstmt.setString(13, action_type);
-						pstmt.setString(14, action_by_id);
+								pstmt.setString(jj++, "y");								
+						pstmt.setString(jj++, time_block_id);
+						pstmt.setString(jj++, action_type);
+						pstmt.setString(jj++, action_by_id);
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//

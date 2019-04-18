@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 public class CodeReasonCondition implements Serializable{
 
+		boolean debug = false;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		static Logger logger = LogManager.getLogger(CodeReasonCondition.class);
 		static final long serialVersionUID = 800L;
@@ -46,6 +47,30 @@ public class CodeReasonCondition implements Serializable{
 				setGroup_id(val6);
 				setInactive(val7);
     }
+    public CodeReasonCondition(
+												String val,
+												String val2,
+												String val3,
+												String val4,
+												String val5,
+												String val6,
+												boolean val7,
+
+												String val8,
+												String val9,
+												String val10,
+												boolean val11
+									 ){
+				setId(val);
+				setReason_id(val2);
+				setHour_code_id(val3);
+				setSalary_group_id(val4);				
+				setDepartment_id(val5);
+				setGroup_id(val6);
+				setInactive(val7);
+				//
+				earnCodeReason = new EarnCodeReason(debug, reason_id, val8, val9, val10, val11);
+    }		
     public CodeReasonCondition(String val){
 				setId(val);
     }
@@ -133,6 +158,10 @@ public class CodeReasonCondition implements Serializable{
 				if(val)
 						inactive = "y";
 		}
+		public void setEarnCodeReason(EarnCodeReason val){
+				if(val != null)
+						earnCodeReason = val;
+		}
 		public String toString(){
 				return id;
 		}
@@ -202,7 +231,12 @@ public class CodeReasonCondition implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,reason_id,hour_code_id,salary_group_id,department_id,group_id,inactive from code_reason_conditions where id =? ";
+				String qq = "select g.id,g.reason_id,g.hour_code_id,g.salary_group_id,"+
+						" g.department_id,g.group_id,g.inactive, "+
+						" r.name,r.description,r.reason_category_id,r.inactive "+
+						" from code_reason_conditions g "+
+						" join earn_code_reasons r on r.id=g.reason_id "+
+						" where id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -220,6 +254,12 @@ public class CodeReasonCondition implements Serializable{
 								setDepartment_id(rs.getString(5));
 								setGroup_id(rs.getString(6));
 								setInactive(rs.getString(7) != null);
+								earnCodeReason = new EarnCodeReason(debug,
+																										reason_id,
+																										rs.getString(8),
+																										rs.getString(9),
+																										rs.getString(10),
+																										rs.getString(11) != null);
 						}
 				}
 				catch(Exception ex){
@@ -360,5 +400,37 @@ public class CodeReasonCondition implements Serializable{
 
 				return msg;
 		}
+		public String doDelete(){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				if(id.equals("")){
+						return " id not set ";
+				}
+				String qq = "delete from  code_reason_conditions where id=? ";
+				
+				logger.debug(qq);
+				con = UnoConnect.getConnection();				
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}			
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}		
 
 }

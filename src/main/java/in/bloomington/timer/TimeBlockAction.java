@@ -33,6 +33,7 @@ public class TimeBlockAction extends TopAction{
 		TimewarpManager timewarpManager = null;
 		List<EmployeeAccrual> employeeAccruals = null;
 		List<HourCode> hourCodes = null;
+		List<CodeReasonCondition> reasonConditions = null;
 		List<HourCode> monetaryHourCodes = null;
 		Department department = null;
 		//
@@ -233,6 +234,40 @@ public class TimeBlockAction extends TopAction{
 								}
 						}
 				}
+		}
+		//
+		// needed for Police department only (for now)
+		//
+		void findReasonConditions(){
+				if(reasonConditions == null){
+						getDocument();
+						if(document != null){
+								if(department != null && department.getName().equals("Police")){
+										CodeReasonConditionList crcl = new CodeReasonConditionList();
+										String salary_group_id = document.getJob().getSalary_group_id();
+										crcl.setSalary_group_id(salary_group_id);
+										if(department != null){
+												crcl.setDepartment_id(department.getId());
+										}
+										// crcl.setGroup_id(group_id); // not needed now
+										crcl.setActiveOnly();
+										String back = crcl.find();
+										if(back.equals("")){
+												List<CodeReasonCondition> ones = crcl.getConditions();
+												if(ones != null && ones.size() > 0){
+														reasonConditions = ones;
+												}
+										}
+								}
+						}
+				}
+		}
+		public boolean hasReasonConditions(){
+				findReasonConditions();
+				return reasonConditions != null && reasonConditions.size() > 0;
+		}
+		public List<CodeReasonCondition> getReasonConditions(){
+				return reasonConditions;
 		}
 		public boolean hasMonetaryHourCodes(){
 				if(hasHourCodes()){

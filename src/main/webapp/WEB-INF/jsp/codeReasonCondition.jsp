@@ -69,7 +69,8 @@
 			</s:if>
 			<s:else>
 				<a href="<s:property value='#application.url' />codeReasonCondition.action?" class="button">New Code Reason Restriction</a>
-				<s:submit name="action" type="button" value="Save Changes" />				
+				<s:submit name="action" type="button" value="Save Changes" />
+				<s:submit name="action" type="button" value="Delete" />				
 			</s:else>
 		</div>		
 	</s:form>

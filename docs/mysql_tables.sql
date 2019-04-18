@@ -1004,6 +1004,15 @@ create table code_reason_conditions(
 ) ENGINE=InnoDB;
 ;;
 ;;
+;;
+;; ------------------------------------------------
+;; 4/18/2019
+;; to be done later 
+alter table time_blocks add earn_code_reason_id int unsigned after hour_code_id;
+alter table time_blocks add foreign key(earn_code_reason_id) references earn_code_reasons(id);
+alter table time_block_logs add earn_code_reason_id int unsigned after hour_code_id;
+alter table time_block_logs add foreign key(earn_code_reason_id) references earn_code_reasons(id);
+
 ;; ====================================================
 ;; 
 ;; Leave Management (in progress started on 10/01/2018)

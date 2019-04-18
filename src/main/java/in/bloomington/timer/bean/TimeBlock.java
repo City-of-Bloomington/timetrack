@@ -39,6 +39,7 @@ public class TimeBlock extends Block{
 		Map<String, String> accrualBalance = new Hashtable<>();
 		final static Set<String> holidayHourCodeSet = new HashSet<String>(){{
 						add("HCE1.0");
+						add("HCE1.5");						
 						add("HCE2.0");
 						add("H1.0");
 				}
@@ -52,91 +53,102 @@ public class TimeBlock extends Block{
     public TimeBlock( // for save
 										 String val,
 										 String val2,
-										 String val3,
-										 int val4,
-										 int val5,
-										 int val6,
-										 int val7,
-										 double val8,
-										 double val9
-											){
-				super(val, val2, val3, val4, val5, val6, val7, val8, val9);
-		}
-		public TimeBlock(
-										 String val,
-										 String val2,
-										 String val3,
+										 // String val3,
 										 String val4,
 										 int val5,
 										 int val6,
 										 int val7,
 										 int val8,
 										 double val9,
+										 double val10
+											){
+				super(val, val2,
+							// val3,
+							val4, val5, val6, val7, val8, val9, val10);
+		}
+		public TimeBlock(
+										 String val,
+										 String val2,
+										 String val3,
+										 // String val4,
+										 String val5,
+										 int val6,
+										 int val7,
+										 int val8,
+										 int val9,
 										 double val10,
-										 String val11,
-										 String val12
+										 double val11,
+										 String val12,
+										 String val13
 										 ){
-				super(val, val2, val3, val4, val5, val6, val7, val8, val9,
-							val10, val11, val12);
+				super(val, val2, val3,
+							// val4,
+							val5, val6, val7, val8, val9,
+							val10, val11, val12, val13);
 		}
 												 
 		public TimeBlock(
 										 String val,
 										 String val2,
 										 String val3, 
-										 String val4,
-										 
-										 int val5,
+										 // String val4,
+										 String val5,
 										 int val6,
 										 int val7,
 										 int val8,
-										 double val9,
+										 int val9,
 										 double val10,
+										 double val11,
 										 
-										 String val11,
 										 String val12,
-										 boolean val13,
-										 String val14
+										 String val13,
+										 boolean val14,
+										 String val15
 							 ){
-				super(val, val2, val3, val4, val5, val6, val7, val8, val9,
-							val10, val11, val12, val13, val14);
+				super(val, val2, val3,
+							// val4,
+							val5, val6, val7, val8, val9,
+							val10, val11, val12, val13, val14, val15);
 		}
     public TimeBlock(
 							 String val,
 							 String val2,
-							 String val3, // 4
-							 String val4,
-							 int val5,
-							 
+							 String val3, 
+							 // String val4,
+							 String val5,
 							 int val6,
+							 
 							 int val7,
 							 int val8,
-							 double val9,
+							 int val9,
 							 double val10,
+							 double val11,
 							 
-							 String val11,
 							 String val12,
-							 boolean val13,
-							 String val14,
-							 boolean val15,
+							 String val13,
+							 boolean val14,
+							 String val15,
+							 boolean val16,
 							 
-							 int val16,
-							 String val17,
+							 int val17,
 							 String val18,
 							 String val19,
 							 String val20,
-							 String val21
+							 String val21,
+							 String val22
 							 ){
 				super(val, val2,
-							val3, val4, val5, val6, val7, val8, val9,
-							val10, val11, val12, val13, val14);
-				setInactive(val15);
-				setOrder_index(val16);
-				setHour_code(val17);
-				setCode_desc(val18);
-				setNw_code(val19);
-				setJob_name(val20);
-				setJob_id(val21);
+							val3,
+							// val4,
+							val5, val6, val7, val8, val9,
+							val10, val11, val12, val13, val14, val15);
+				setInactive(val16);
+				setOrder_index(val17);
+				setHour_code(val18);
+				setCode_desc(val19);
+				setNw_code(val20);
+				setJob_name(val21);
+				setJob_id(val22);
 		}
     public TimeBlock(String val){
 				super(val);
@@ -1034,18 +1046,21 @@ public class TimeBlock extends Block{
 						date = Helper.getToday();
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, document_id);
-						pstmt.setString(2, hour_code_id);
+						int jj=1;
+						pstmt.setString(jj++, document_id);
+						pstmt.setString(jj++, hour_code_id);
+						//
+						// pstmt.setString(jj+=, earn_code_reason_id);
 						java.util.Date date_tmp = df.parse(date);
-						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
-						pstmt.setInt(4, begin_hour);
-						pstmt.setInt(5, begin_minute);
-						pstmt.setInt(6, end_hour);
-						pstmt.setInt(7, end_minute);
-						pstmt.setDouble(8, 0.0);
-						pstmt.setDouble(9, 0.0);
-						pstmt.setString(10, "y"); // clock_in
-						pstmt.setNull(11,Types.CHAR); // clock_out
+						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						pstmt.setInt(jj++, begin_hour);
+						pstmt.setInt(jj++, begin_minute);
+						pstmt.setInt(jj++, end_hour);
+						pstmt.setInt(jj++, end_minute);
+						pstmt.setDouble(jj++, 0.0);
+						pstmt.setDouble(jj++, 0.0);
+						pstmt.setString(jj++, "y"); // clock_in
+						pstmt.setNull(jj++,Types.CHAR); // clock_out
 						pstmt.executeUpdate();
 						pstmt = con.prepareStatement(qq2);
 						rs = pstmt.executeQuery();
@@ -1055,6 +1070,7 @@ public class TimeBlock extends Block{
 						TimeBlockLog tbl = new TimeBlockLog(null,
 																								document_id,
 																								hour_code_id,
+																								// eanr_code_reason_id,
 																								date,
 																								begin_hour,
 																								begin_minute,
@@ -1168,24 +1184,26 @@ public class TimeBlock extends Block{
 								}
 								else{
 										pstmt = con.prepareStatement(qq);
-										pstmt.setString(1, document_id);
-										pstmt.setString(2, hour_code_id);
+										int jj=1;
+										pstmt.setString(jj++, document_id);
+										pstmt.setString(jj++, hour_code_id);
+										// pstmt.setString(jj++, earn_code_reason_id);
 										java.util.Date date_tmp = df.parse(date);
-										pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
-										pstmt.setInt(4, begin_hour);
-										pstmt.setInt(5, begin_minute);
-										pstmt.setInt(6, end_hour);
-										pstmt.setInt(7, end_minute);
-										pstmt.setDouble(8, hours);
-										pstmt.setDouble(9, amount);
+										pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+										pstmt.setInt(jj++, begin_hour);
+										pstmt.setInt(jj++, begin_minute);
+										pstmt.setInt(jj++, end_hour);
+										pstmt.setInt(jj++, end_minute);
+										pstmt.setDouble(jj++, hours);
+										pstmt.setDouble(jj++, amount);
 										if(clock_in.equals(""))
-												pstmt.setNull(10,Types.CHAR);
+												pstmt.setNull(jj++,Types.CHAR);
 										else
-												pstmt.setString(10, "y");
+												pstmt.setString(jj++, "y");
 										if(clock_out.equals(""))
-												pstmt.setNull(11,Types.CHAR);
+												pstmt.setNull(jj++,Types.CHAR);
 										else
-												pstmt.setString(11, "y");								
+												pstmt.setString(jj++, "y");								
 										pstmt.executeUpdate();
 										pstmt2 = con.prepareStatement(qq2);
 										rs = pstmt2.executeQuery();
@@ -1200,6 +1218,7 @@ public class TimeBlock extends Block{
 										TimeBlockLog tbl = new TimeBlockLog(null,
 																												document_id,
 																												hour_code_id,
+																												// earn_code_reason_id,
 																												date,
 																												begin_hour, begin_minute,
 																												end_hour, end_minute,
@@ -1272,6 +1291,7 @@ public class TimeBlock extends Block{
 						TimeBlockLog tbl = new TimeBlockLog(null,
 																								document_id,
 																								hour_code_id,
+																								// earn_code_reason_id,
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
@@ -1352,25 +1372,27 @@ public class TimeBlock extends Block{
 				}				
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, hour_code_id);
-						pstmt.setInt(2, begin_hour);
-						pstmt.setInt(3, begin_minute);
-						pstmt.setInt(4, end_hour);
-						pstmt.setInt(5, end_minute);
-						pstmt.setDouble(6, hours);
-						pstmt.setDouble(7, amount);						
+						int jj=1;
+						pstmt.setString(jj++, hour_code_id);
+						// pstmt.setString(jj++, earn_code_reason_id);
+						pstmt.setInt(jj++, begin_hour);
+						pstmt.setInt(jj++, begin_minute);
+						pstmt.setInt(jj++, end_hour);
+						pstmt.setInt(jj++, end_minute);
+						pstmt.setDouble(jj++, hours);
+						pstmt.setDouble(jj++, amount);						
 						if(clock_in.equals(""))
-								pstmt.setNull(8, Types.CHAR);
+								pstmt.setNull(jj++, Types.CHAR);
 						else
-										pstmt.setString(8, "y");
+										pstmt.setString(jj++, "y");
 						if(clock_out.equals(""))
-								pstmt.setNull(9, Types.CHAR);
+								pstmt.setNull(jj++, Types.CHAR);
 						else
-								pstmt.setString(9, "y");	
+								pstmt.setString(jj++, "y");	
 						//
 						// we do not change inactive here
 						// doDelete will take care of it
-						pstmt.setString(10, id);
+						pstmt.setString(jj++, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
@@ -1384,6 +1406,7 @@ public class TimeBlock extends Block{
 						TimeBlockLog tbl = new TimeBlockLog(null,
 																								document_id,
 																								hour_code_id,
+																								//earn_code_reason_id,
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
@@ -1432,6 +1455,7 @@ public class TimeBlock extends Block{
 						TimeBlockLog tbl = new TimeBlockLog(null,
 																								document_id,
 																								hour_code_id,
+																								// earn_code_reason_id,
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
