@@ -45,7 +45,7 @@ public class TmwrpWeekEntry{
 		Group group = null;
 		Shift shift = null;
 		//
-		String excess_hours_calculation_method = "";
+		String excess_hours_earn_type = "";
     //
     // these are used for the yearend pay period where we need
     // to split the hours of the week in two different years
@@ -130,7 +130,8 @@ public class TmwrpWeekEntry{
 												daily_hrs = dd;
 										}
 								}
-								excess_hours_calculation_method = group.getExcessHoursCalculationMethod();
+								// comp time, overtime or donation
+								excess_hours_earn_type = group.getExcessHoursEarnType();
 						}
 				}
 		}		
@@ -226,6 +227,7 @@ public class TmwrpWeekEntry{
 				regular_hrs = splitOne.getRegularHours()+splitTwo.getRegularHours();
 				//
 				// the following earned_time are the overtime for certain employees
+				// from dialy earns
 				earned_time = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
 				earn_time_used = splitOne.getEarnedTimeUsed()+splitTwo.getEarnedTimeUsed();
 				unpaid_hrs = splitOne.getUnpaidHrs()+splitTwo.getUnpaidHrs();
@@ -324,7 +326,7 @@ public class TmwrpWeekEntry{
 				//
 				// everybody else
 				//
-				prof_hrs = total_hrs - st_weekly_hrs - earned_time - excess_hrs;//- unpaid_hrs;
+				prof_hrs = total_hrs - st_weekly_hrs - earned_time;
 				if(prof_hrs < critical_small){
 						prof_hrs = 0;
 				}
@@ -343,7 +345,6 @@ public class TmwrpWeekEntry{
      */
     public void findNetRegular(){
 
-				
 				net_reg_hrs = 0;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
@@ -363,7 +364,7 @@ public class TmwrpWeekEntry{
 								return;
 						}
 				}
-				net_reg_hrs = regular_hrs - earned_time - excess_hrs - prof_hrs;
+				net_reg_hrs = regular_hrs - earned_time - prof_hrs;
 				//
     }
     //
@@ -396,8 +397,10 @@ public class TmwrpWeekEntry{
 								excess_hrs = netHours < 40 ? 0: netHours - 40;
 						}
 						else if(salaryGroup.isUnionned()){ // union AFCSME employee
-								// excess_hrs = 1f;
-								excess_hrs = netHours - comp_weekly_hrs;
+								//
+								if(netHours > comp_weekly_hrs){
+										excess_hrs = netHours - comp_weekly_hrs;
+								}
 						}
 						else if(salaryGroup.isFireSworn()){
 								// fire excess is handled by NW
@@ -414,7 +417,9 @@ public class TmwrpWeekEntry{
 										excess_hrs = netHours - comp_weekly_hrs;
 								}
 						}
-				}				
+				}
+				// we may have carry over from daily such as union
+				earned_time += excess_hrs;
     }
     public boolean hasExessHours(){
 				return excess_hrs > critical_small;
@@ -517,13 +522,13 @@ public class TmwrpWeekEntry{
 								// code = "FIRE FLSA";	 pay period not weekly
 								return;
 						}						
-						else if(!salaryGroup.isExcessCulculationWeekly()){
+						else if(salaryGroup.isExcessCulculationPayPeriod()){
 								// we are interested in weekly only for now
 								// anything else we ignore here
 								return;
 						}
 				}
-				if(excess_hours_calculation_method.equals("Donation")){
+				if(excess_hours_earn_type.equals("Donation")){
 						return;
 				}
 				//
@@ -532,9 +537,12 @@ public class TmwrpWeekEntry{
 				code_id = CommonInc.compTime10EarnCodeID; // "CE1.0";
 				//
 				// we want to keep excess_hrs as we may need it
-				// for other stuff
+				// for other stuff, we are interested in weekly exess hours
+				// even with daily union employee, they may work 8 daily hours
+				// but they may total more than 40 if they work 48 hrs for example
 				//
-				double excess_hrs2 = excess_hrs;
+				// double excess_hrs2 = excess_hrs;
+				double excess_hrs2 = earned_time;				
 				if(st_weekly_hrs < 40){ // for those who have starndard hours < 40
 						double dif = 40 - st_weekly_hrs;								
 						if(excess_hrs2 > dif && dif > 0){
@@ -551,7 +559,7 @@ public class TmwrpWeekEntry{
 				// for hours after 40
 				//
 				if(excess_hrs2 > critical_small){ 
-						if(excess_hours_calculation_method.equals("Monetary")){
+						if(excess_hours_earn_type.equals("Monetary")){
 								code_id =CommonInc.overTime10EarnCodeID ; // "OT1.0";
 								if(comp_factor > 1.0){
 										code_id = CommonInc.overTime15EarnCodeID; // "OT1.5";

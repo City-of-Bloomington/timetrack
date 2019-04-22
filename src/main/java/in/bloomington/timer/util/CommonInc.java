@@ -33,6 +33,7 @@ public class CommonInc{
 		public final static String fromEmailStr = "helpdesk@bloomington.in.gov";
 
 		public final static String[] hourCodeTypes = {"Regular","Used","Earned","Overtime","Unpaid", "Other"};
+		public final static String[] excess_hours_earn_types={"Monetary","Earn Time","Donation"};		
 		//
 		// PROF HRS earn code ID (from database)
 		public final static String profHoursEarnCodeID = "109";

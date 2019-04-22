@@ -45,7 +45,7 @@ public class WeekEntry{
 		Group group = null;
 		Shift shift = null;
 		// HourCode defaultEarnCode = null;
-		String excess_hours_calculation_method = "";
+		String excess_hours_earn_type = "";
     //
     // these are used for the yearend pay period where we need
     // to split the hours of the week in two different years
@@ -130,7 +130,7 @@ public class WeekEntry{
 												daily_hrs = dd;
 										}
 								}
-								excess_hours_calculation_method = group.getExcessHoursCalculationMethod();
+								excess_hours_earn_type = group.getExcessHoursEarnType();
 						}
 				}
 		}		
@@ -324,7 +324,7 @@ public class WeekEntry{
 				//
 				// everybody else
 				//
-				prof_hrs = total_hrs - st_weekly_hrs - earned_time - excess_hrs;//- unpaid_hrs;
+				prof_hrs = total_hrs - st_weekly_hrs - earned_time;
 				if(prof_hrs < critical_small){
 						prof_hrs = 0;
 				}
@@ -362,7 +362,7 @@ public class WeekEntry{
 								return;
 						}
 				}
-				net_reg_hrs = regular_hrs - earned_time - excess_hrs - prof_hrs;
+				net_reg_hrs = regular_hrs - earned_time - prof_hrs;
 				//
     }
     //
@@ -411,7 +411,8 @@ public class WeekEntry{
 										excess_hrs = netHours - comp_weekly_hrs;
 								}
 						}
-				}				
+				}
+				earned_time += excess_hrs;
     }
     public boolean hasExessHours(){
 				return excess_hrs > critical_small;
@@ -516,13 +517,13 @@ public class WeekEntry{
 								// addToEarnedHash(code, excess_hrs);								
 								return;
 						}						
-						else if(!salaryGroup.isExcessCulculationWeekly()){
+						else if(salaryGroup.isExcessCulculationPayPeriod()){
 								// we are interested in weekly only for now
 								// anything else we ignore here
 								return;
 						}
 				}
-				if(excess_hours_calculation_method.equals("Donation")){
+				if(excess_hours_earn_type.equals("Donation")){
 						return;
 				}
 				//
@@ -550,7 +551,7 @@ public class WeekEntry{
 				// for hours after 40
 				//
 				if(excess_hrs2 > critical_small){ 
-						if(excess_hours_calculation_method.equals("Monetary")){
+						if(excess_hours_earn_type.equals("Monetary")){
 								code ="OT1.0";
 								if(comp_factor > 1.0){
 										code = "OT1.5";

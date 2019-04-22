@@ -33,7 +33,7 @@ public class WeekSplit{
 				comp_weekly_hrs = 0,
 				comp_factor = 1,
 				holiday_factor = 1;
-		String excess_hours_calculation_method="";
+		String excess_hours_earn_type="";
 		double daily_hrs = 8; // except Sanitaiton 10, delman 12
 		double prof_hrs = 0, net_reg_hrs= 0;		
 		boolean consolidated = false;
@@ -114,7 +114,7 @@ public class WeekSplit{
 												daily_hrs = dd;
 										}
 								}
-								excess_hours_calculation_method = group.getExcessHoursCalculationMethod();
+								excess_hours_earn_type = group.getExcessHoursEarnType();
 						}
 				}
 		}
@@ -396,28 +396,28 @@ public class WeekSplit{
 								}
 						}
 				}
-				if(excess_hours_calculation_method.equals("Donation")){
+				if(excess_hours_earn_type.equals("Donation")){
 						return;
 				}
 				if(earned_time15 > 0.009){
-						if(excess_hours_calculation_method.equals("Monetary")){
+						if(excess_hours_earn_type.equals("Monetary")){
 								String code = "OT1.5";
 								addToHash(hash, code, earned_time15);
 								earned_time += earned_time15;
 						}
-						else if(excess_hours_calculation_method.equals("Earn Time")){
+						else if(excess_hours_earn_type.equals("Earn Time")){
 								String code = "CE1.5";
 								addToHash(hash, code, earned_time15);
 								earned_time += earned_time15;
 						}
 				}
 				if(earned_time20 > 0.009){
-						if(excess_hours_calculation_method.equals("Monetary")){						
+						if(excess_hours_earn_type.equals("Monetary")){						
 								String code = "OT2.0";
 								addToHash(hash, code, earned_time15);
 								earned_time += earned_time15;
 						}
-						else if(excess_hours_calculation_method.equals("Earn Time")){
+						else if(excess_hours_earn_type.equals("Earn Time")){
 								String code = "CE2.0"; 
 								addToHash(hash, code, earned_time20);
 								earned_time += earned_time20;

@@ -24,9 +24,9 @@ public class FmlaReport extends MpoReport{
 				setIgnoreProfiles();
     }
 		public void setDepartment_id(String val){
-				if(val != null){
+				if(val != null && !val.equals("-1")){
 						department_id = val;
-						getDepartment(); // we need ref id
+						getDepartment(); 
 				}
 		}
 		public void setDept_ref_id(String val){

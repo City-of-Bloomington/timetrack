@@ -37,8 +37,9 @@ public class TimeBlock extends Block{
 		boolean include_weekends = false, overnight = false;
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
+		//
 		final static Set<String> holidayHourCodeSet = new HashSet<String>(){{
-						add("HCE1.0");
+						add("HCE1.0");						
 						add("HCE1.5");						
 						add("HCE2.0");
 						add("H1.0");

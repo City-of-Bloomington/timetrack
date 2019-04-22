@@ -18,7 +18,7 @@
 			<%@ include file="errors.jsp" %>
 		</s:elseif>
 		<ul>
-			<li>Excess Hours Calculation Method is the compensatory method either 'Earn Time' such as 'CE1.0 Comp Time' or Monetary such as 'OT1.0 Overtime' for certain groups such as union, if hours worked exceeds weekly, daily or pay period hours. The Donation is for groups that do not earn either. </li>
+			<li>Excess Hours Earn Type is the compensatory type either 'Earn Time' such as 'CE1.0 Comp Time' or Monetary such as 'OT1.0 Overtime' for certain groups such as union, if hours worked exceeds weekly, daily or pay period hours. The Donation is for groups that do not earn either. </li>
 		</ul>
 		<div class="width-one-half">
 			<s:if test="group.id != ''">
@@ -43,8 +43,8 @@
 				<s:textarea name="group.description" value="%{group.description}" rows="5" cols="50" />
 			</div>
 			<div class="form-group">
-				<label>Excess Hours Calculation Method</label>			
-				<s:radio name="group.excessHoursCalculationMethod" value="%{group.excessHoursCalculationMethod}" list="excessHoursCalculationMethods" />
+				<label>Excess Hours Earn Type</label>			
+				<s:radio name="group.excessHoursEarnType" value="%{group.excessHoursEarnType}" list="excessHoursEarnTypes" />
 			</div>
 			<div class="form-group">
 				<label>Inactive?</label>

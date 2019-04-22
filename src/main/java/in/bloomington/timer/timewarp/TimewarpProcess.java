@@ -483,7 +483,7 @@ public class TimewarpProcess{
 				return week2.getMonetaryHash();
     }		
     /**
-     * consolication of two weeks regular hours (needed for HAND)
+     * consolidation of two weeks regular hours (needed for HAND)
      */
     public Hashtable<String, Double> get2WeekRegularHash(){
 				Hashtable<String, Double> reg1 = week1.getRegularHash();

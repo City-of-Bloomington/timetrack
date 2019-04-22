@@ -161,7 +161,7 @@ public class EmpList extends CommonInc{
 						ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 						String filter = "";
 						if(!name.equals("")){
-								filter = "(cn="+name+"*)";
+								filter = "(sAMAccountName="+name+"*)";
 						}
 						else if (!dept_name.equals("")){
 								// we are excluding disabled users and any user that
@@ -298,7 +298,7 @@ public class EmpList extends CommonInc{
 						ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 						String filter = "";
 						if(!name.equals("")){
-								filter = "(cn="+name+"*)";
+								filter = "(sAMAccountName="+name+"*)";
 						}
 						else if (!dept_name.equals("")){
 								/*

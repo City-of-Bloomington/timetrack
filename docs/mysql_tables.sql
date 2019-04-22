@@ -20,7 +20,7 @@ CREATE TABLE `departments` (
   name varchar(80) NOT NULL,
   description varchar(512) DEFAULT NULL,
   department_id int(10) unsigned NOT NULL,
-	excess_hours_calculation_method enum('Earn Time','Monetary','Donation'),
+	excess_hours_earn_type enum('Earn Time','Monetary','Donation'),
   inactive char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `department_id` (`department_id`),
@@ -1005,14 +1005,19 @@ create table code_reason_conditions(
 ;;
 ;;
 ;;
+;; 4/15/2019 
+alter table groups change excess_hours_calculation_method	excess_hours_earn_type enum('Earn Time','Monetary','Donation');
+;;
 ;; ------------------------------------------------
 ;; 4/18/2019
-;; to be done later 
+;; to be done later
 alter table time_blocks add earn_code_reason_id int unsigned after hour_code_id;
 alter table time_blocks add foreign key(earn_code_reason_id) references earn_code_reasons(id);
 alter table time_block_logs add earn_code_reason_id int unsigned after hour_code_id;
 alter table time_block_logs add foreign key(earn_code_reason_id) references earn_code_reasons(id);
 
+
+;;
 ;; ====================================================
 ;; 
 ;; Leave Management (in progress started on 10/01/2018)

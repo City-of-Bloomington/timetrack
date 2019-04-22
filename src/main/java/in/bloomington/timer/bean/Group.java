@@ -24,7 +24,9 @@ public class Group implements Serializable{
     //
     // default_earn_code_id is needed when 
     // employees work more than weekly or daily hours
-		String excess_hours_calculation_method = "Earn Time";
+		//
+		// the following changed from excess_hours_calculation_method
+		String excess_hours_earn_type = "Earn Time";
     Type department = null;
     HourCode defaultEarnCode = null;
     List<GroupEmployee> groupEmployees = null;
@@ -56,7 +58,7 @@ public class Group implements Serializable{
 				setName(val2);
 				setDescription(val3);
 				setDepartment_id(val4);
-				setExcessHoursCalculationMethod(val5);
+				setExcessHoursEarnType(val5);
 				setInactive(val6);				
     }
     public Group(String val,
@@ -71,7 +73,7 @@ public class Group implements Serializable{
 				setName(val2);
 				setDescription(val3);
 				setDepartment_id(val4);
-				setExcessHoursCalculationMethod(val5);
+				setExcessHoursEarnType(val5);
 				setInactive(val6);
 				if(val7 != null && !val7.equals("")){
 						department = new Type(department_id, val7);
@@ -102,8 +104,8 @@ public class Group implements Serializable{
     public String getDepartment_id(){
 				return department_id;
     }
-		public String getExcessHoursCalculationMethod(){
-				return excess_hours_calculation_method;
+		public String getExcessHoursEarnType(){
+				return excess_hours_earn_type;
 		}
     //
     // setters
@@ -130,9 +132,9 @@ public class Group implements Serializable{
 						department_id = val;
     }
 
-		public void setExcessHoursCalculationMethod(String val){
+		public void setExcessHoursEarnType(String val){
 				if(val != null)
-						excess_hours_calculation_method = val;
+						excess_hours_earn_type = val;
 		}
     public boolean equals(Object o) {
 				if (o instanceof Group) {
@@ -266,7 +268,8 @@ public class Group implements Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select g.id,g.name,g.description,g.department_id,"+
-						"g.excess_hours_calculation_method,g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";
+						"g.excess_hours_earn_type,"+ // renamed
+						"g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				try{
@@ -278,7 +281,7 @@ public class Group implements Serializable{
 										setName(rs.getString(2));
 										setDescription(rs.getString(3));
 										setDepartment_id(rs.getString(4));
-										setExcessHoursCalculationMethod(rs.getString(5));
+										setExcessHoursEarnType(rs.getString(5));
 										setInactive(rs.getString(6) != null);
 										str = rs.getString(7);
 										if(str != null){
@@ -327,10 +330,10 @@ public class Group implements Serializable{
 						else
 								pstmt.setString(2, description);
 						pstmt.setString(3, department_id);
-						if(excess_hours_calculation_method.equals(""))
+						if(excess_hours_earn_type.equals(""))
 								pstmt.setNull(4, Types.INTEGER);
 						else
-								pstmt.setString(4, excess_hours_calculation_method);
+								pstmt.setString(4, excess_hours_earn_type);
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
@@ -361,7 +364,9 @@ public class Group implements Serializable{
 				if(name.equals("")){
 						return " name not set ";
 				}
-				String qq = "update groups set name=?,description=?,department_id=?,excess_hours_calculation_method=?,inactive=? where id=? ";
+				String qq = "update groups set name=?,description=?,department_id=?,"+
+						"excess_hours_earn_type=?,"+ // renamed
+						"inactive=? where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -376,10 +381,10 @@ public class Group implements Serializable{
 						else
 								pstmt.setString(2, description);								
 						pstmt.setString(3, department_id);
-						if(excess_hours_calculation_method.equals(""))
+						if(excess_hours_earn_type.equals(""))
 								pstmt.setNull(4, Types.INTEGER);
 						else
-								pstmt.setString(4, excess_hours_calculation_method);
+								pstmt.setString(4, excess_hours_earn_type);
 						if(inactive.equals("")){
 								pstmt.setNull(5, Types.CHAR);
 						}

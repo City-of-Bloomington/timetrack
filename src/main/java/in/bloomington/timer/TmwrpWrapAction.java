@@ -48,10 +48,9 @@ public class TmwrpWrapAction extends TopAction{
 				if(!action.equals("") && !department_id.equals("")){
 						if(department == null)
 								getDepartment();
-						// utilities department
-						if(department_id.equals("36")) 
+						if(department.isUtilities()) 
 								isUtil = true;
-						else if(department_id.equals("3"))
+						else if(department.isHand())
 								isHand = true;
 						back = prepareEmployeeSet();
 						if(!back.equals("")){

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import in.bloomington.timer.util.CommonInc;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +29,7 @@ public class GroupAction extends TopAction{
 		List<Type> departments = null;
 		// for excess hour calculation types
 		// either CE1.0, OT1.0 or (Donation) ignore
-		String[] excess_hours_calculation_methods={"Monetary","Earn Time","Donation"};
+		// CommonInc.excess_hours_earn_types;
 		String department_id="";
 		public String execute(){
 				String ret = SUCCESS;
@@ -153,8 +154,8 @@ public class GroupAction extends TopAction{
 				return hourCodes;				
 		}
 		//
-		public String[] getExcessHoursCalculationMethods(){
-				return excess_hours_calculation_methods;
+		public String[] getExcessHoursEarnTypes(){
+				return CommonInc.excess_hours_earn_types;
 		}
 }
 

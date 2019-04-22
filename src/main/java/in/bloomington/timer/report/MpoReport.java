@@ -220,7 +220,9 @@ public class MpoReport{
 				tbl.setDate_to(end_date);
 				tbl.setCode(code);
 				tbl.setCode2(code2);
-				tbl.setDepartment_id(department_id);
+				if(!department_id.equals("")){
+						tbl.setDepartment_id(department_id);
+				}
 				msg = tbl.find();
 				if(!msg.equals("")){
 						return msg;
@@ -266,13 +268,16 @@ public class MpoReport{
 						" join pay_periods p on p.id=d.pay_period_id "+
 						" join department_employees de on de.employee_id=d.employee_id "+
 						" join employees e on d.employee_id=e.id "+
-						" where de.department_id = ? and t.inactive is null and "+
+						" where t.inactive is null and "+
 						" p.start_date >= ? and p.end_date <= ? ";
 				if(!code2.equals("")){
 						qq += " and (c.name like ? or c.name like ?) ";
 				}
 				else{
 						qq += " and c.name like ? ";
+				}
+				if(!department_id.equals("")){
+						qq += " and de.department_id = ? ";
 				}
 				qq += " ) tt ";
 				qq += " group by tt.name,tt.empnum,tt.code,tt.date ";
@@ -287,7 +292,6 @@ public class MpoReport{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(jj++, department_id);
 						java.util.Date date_tmp = dateFormat.parse(start_date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						date_tmp = dateFormat.parse(end_date);
@@ -295,6 +299,9 @@ public class MpoReport{
 						pstmt.setString(jj++, code);
 						if(!code2.equals(""))
 								pstmt.setString(jj++, code2);
+						if(!department_id.equals("")){
+								pstmt.setString(jj++, department_id);
+						}
 						rs = pstmt.executeQuery();
 						jj=0;
 						while(rs.next()){
@@ -366,7 +373,7 @@ public class MpoReport{
 						" join pay_periods p on p.id=d.pay_period_id "+
 						" join department_employees de on de.employee_id=d.employee_id "+
 						" join employees e on d.employee_id=e.id "+
-						" where de.department_id = ? and t.inactive is null and "+
+						" where t.inactive is null and "+
 						" p.start_date >= ? and p.end_date <= ? ";
 				if(!code2.equals("")){
 						qq += " and (c.name like ? or c.name like ?) ";
@@ -374,6 +381,9 @@ public class MpoReport{
 				else{
 						qq += " and c.name like ? ";
 				}
+				if(!department_id.equals("")){
+						qq += " and de.department_id = ? ";
+				}				
 				qq += " ) tt ";
 				qq += " group by tt.code,tt.name,tt.empnum ";
 				con = Helper.getConnection();
@@ -388,7 +398,6 @@ public class MpoReport{
 						int jj=1;
 						entries = new ArrayList<>();
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(jj++, department_id);
 						java.util.Date date_tmp = dateFormat.parse(start_date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						date_tmp = dateFormat.parse(end_date);
@@ -396,6 +405,9 @@ public class MpoReport{
 						pstmt.setString(jj++, code);
 						if(!code2.equals(""))
 								pstmt.setString(jj++, code2);
+						if(!department_id.equals("")){
+								pstmt.setString(jj++, department_id);
+						}
 						rs = pstmt.executeQuery();
 						jj=0;
 						while(rs.next()){

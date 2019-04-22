@@ -27,7 +27,7 @@
 			<s:if test="hasDepts()">
 				<div class="form-group">
 					<label>Department</label>
-					<s:select name="report.department_id" value="%{report.department_id}" list="depts" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Dept" required="true" />
+					<s:select name="report.department_id" value="%{report.department_id}" list="depts" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
 				</div>
 			</s:if>
 			<div class="form-group">
