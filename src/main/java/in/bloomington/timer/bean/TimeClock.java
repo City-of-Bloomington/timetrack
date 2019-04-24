@@ -474,8 +474,9 @@ public class TimeClock {
 								timeBlock = new TimeBlock(null,
 																					document.getId(),
 																					hour_code_id,
+																					null, // earn_code_reason_id,
 																					date,
-
+																					
 																					time_hr,
 																					time_min,
 																					0, 0, 0, 0, 
@@ -514,6 +515,7 @@ public class TimeClock {
 												timeBlock = new TimeBlock(null,
 																									document.getId(),
 																									hour_code_id,
+																									null,// earn_code_reason_id
 																									date,
 
 																									time_hr, time_min,

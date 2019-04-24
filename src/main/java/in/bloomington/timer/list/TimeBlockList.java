@@ -51,10 +51,13 @@ public class TimeBlockList{
 		Map<Integer, Double> amountCodeTotals = new TreeMap<>();
     Map<String, Double> amountCodeWeek1 = new TreeMap<>();
     Map<String, Double> amountCodeWeek2 = new TreeMap<>();
-		
+
+		Map<String, Double> reasonTotals = new TreeMap<>();
+    Map<String, Double> reasonWeek1 = new TreeMap<>();
+    Map<String, Double> reasonWeek2 = new TreeMap<>();		
     Map<Integer, Double> usedAccrualTotals = new TreeMap<>();
     HolidayList holidays = null;
-    // 		Map<String, Map<Integer, Double>> daily = new TreeMap<>();
+		
     Map<JobType, Map<Integer, Double>> daily = new TreeMap<>();		
     // week 1,2 / hour_code_id /hours
     Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = new TreeMap<>();
@@ -170,7 +173,20 @@ public class TimeBlockList{
     // total hour codes for week2
     public Map<String, Double> getAmountCodeWeek2(){
 				return amountCodeWeek2;
+    }
+    public Map<String, Double> getReasonTotals(){
+				return reasonTotals;
     }		
+    public Map<String, Double> getReasonWeek1(){
+				return reasonWeek1;
+    }
+    // total hour codes for week2
+    public Map<String, Double> getReasonWeek2(){
+				return reasonWeek2;
+    }
+		public boolean hasReasonTotals(){
+				return reasonTotals != null && !reasonTotals.isEmpty();
+		}
     public double getWeek1Total(){
 				return week1Total;
     }
@@ -294,12 +310,9 @@ public class TimeBlockList{
 // will simplify building HourCode class since we are going
 // to needed more than before
 
-			 
-       create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id                                                       from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id ;			 
 
 			 // modified for earn_code_reason_id
-       create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    t.eanrn_code_reason_id earn_code_reason_id,                                     t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id                                                       from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id ;			 
-
+       create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    t.earn_code_reason_id earn_code_reason_id,                                      t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id,                                                      r.description reason                                                            from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id 			                            left join earn_code_reasons r on r.id=t.earn_code_reason_id 
 			 
     */
     //
@@ -320,33 +333,35 @@ public class TimeBlockList{
 						"time_block_id,"+
 						"document_id,"+
 						"hour_code_id,"+
-						// "earn_code_reason_id,"+
+						"earn_code_reason_id,"+
 						"date_format(date,'%m/%d/%Y'),"+
+						
 						"begin_hour,"+
-					 
 						"begin_minute,"+
 						"end_hour,"+
 						"end_minute,"+
 						"hours,"+
-						"amount,"+
 						
+						"amount,"+
 						"clock_in,"+
 						"clock_out,"+
 						"inactive,"+
 						"order_id,"+
-						"code_name,"+
 						
+						"code_name,"+
 						"code_description,"+
 						"record_method,"+
 						"accrual_id,"+
 						"code_type,"+
-						"default_monetary_amount,"+
 						
+						"default_monetary_amount,"+
 						"nw_code_name,"+
 						"job_name,"+
 						"job_id, "+
 						"pay_period_id,"+
-						"employee_id "+
+						
+						"employee_id, "+
+						"reason "+
 						
 						"from time_blocks_view v ";
 				String qw = "";
@@ -453,25 +468,30 @@ public class TimeBlockList{
 						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
-								double hrs = rs.getDouble(9);
-								double amnt = rs.getDouble(10);
-								int order_id = rs.getInt(14); 
 								int code_id = rs.getInt(3);
-								String code_name = rs.getString(15); 
-								String code_desc = rs.getString(16);
-								String record_method = rs.getString(17);
+								String date = rs.getString(5); 								
+								double hrs = rs.getDouble(10);
+								double amnt = rs.getDouble(11);
+								int order_id = rs.getInt(15); 
+
+								String code_name = rs.getString(16); 
+								String code_desc = rs.getString(17);
+								String record_method = rs.getString(18);
 								String related_accrual_id = "";
-								str = rs.getString(18);
+								str = rs.getString(19);
 								if(str != null && !str.equals("")){
 										related_accrual_id = str;
 								}
-								String code_type = rs.getString(19);
-								double default_amount = rs.getDouble(20);
+								String reason = "";
+								str = rs.getString(27);
+								if(str != null)
+										reason = str;
+								String code_type = rs.getString(20);
+								double default_amount = rs.getDouble(21);
 								
-								String job_name = rs.getString(22); // job name
-								String job_id = rs.getString(23);
-
-								String date = rs.getString(4); // formatted date
+								String job_name = rs.getString(23); // job name
+								String job_id = rs.getString(24);
+								//
 								boolean isHoliday = isHoliday(date);
 								String holidayName = "";
 								if(isHoliday){
@@ -502,26 +522,26 @@ public class TimeBlockList{
 												new TimeBlock(rs.getString(1),
 																			rs.getString(2),
 																			rs.getString(3), // code_id
-																			// rs.getString(4), // earn_code_reason
-																			rs.getString(4), // date
-																			rs.getInt(5),  // b
+																			rs.getString(4), // earn_code_reason
+																			rs.getString(5), // date
+																			rs.getInt(6),  // b
 																			
-																			rs.getInt(6),
 																			rs.getInt(7),
 																			rs.getInt(8),
+																			rs.getInt(9),
 																			hrs,
 																			amnt,
 																			
-																			rs.getString(11), // clock in
-																			rs.getString(12), // clock out
+																			rs.getString(12), // clock in
+																			rs.getString(13), // clock out
 																			isHoliday,
 																			holidayName,
-																			rs.getString(13) != null,
+																			rs.getString(14) != null,
 																			
-																			rs.getInt(14), // order id
+																			rs.getInt(15), // order id
 																			code_name,
 																			code_desc, 
-																			rs.getString(21),  // nw_code
+																			rs.getString(22),  // nw_code
 																			job_name, 
 																			
 																			job_id 
@@ -539,6 +559,10 @@ public class TimeBlockList{
 										else
 												week2_flsa += hrs;
 								}
+								if(!reason.equals("")){
+										reason = code_name+" - "+reason;
+										addToReasons(order_id, reason, hrs);
+								}
 								code_name += ": "+code_desc;
 								JobType jtype = new JobType(job_id, job_name);
 								if(hrCode.isRecordMethodMonetary()){
@@ -553,7 +577,7 @@ public class TimeBlockList{
 								else{
 										addToHourCodeTotals(order_id, code_id, code_name, hrs);
 										addToDaily(jtype, order_id, hrs, code_name);
-										total_hours += hrs;										
+										total_hours += hrs;
 								}
 						}
 				}
@@ -566,8 +590,46 @@ public class TimeBlockList{
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
-    }		
-		
+    }
+		/**
+		 * list of earn code - earn_reason, hours
+		 */
+		void addToReasons(int order_id, String reason, double hrs){
+				if(reasonTotals.containsKey(reason)){
+						Double val = reasonTotals.get(reason);
+						double val2 = val.doubleValue()+hrs;
+						reasonTotals.put(reason, val2);
+						if(order_id < 7){
+								if(reasonWeek1.containsKey(reason)){
+										val = reasonWeek1.get(reason);
+										val2 = val.doubleValue()+hrs;										
+										reasonWeek1.put(reason, val2);
+								}
+								else{
+										reasonWeek1.put(reason, hrs);
+								}
+						}
+						else{
+								if(reasonWeek2.containsKey(reason)){
+										val = reasonWeek2.get(reason);
+										val2 = val.doubleValue()+hrs;										
+										reasonWeek2.put(reason, val2);
+								}
+								else{
+										reasonWeek2.put(reason, hrs);
+								}
+						}
+				}
+				else{
+						reasonTotals.put(reason, hrs);
+						if(order_id < 7){
+								reasonWeek1.put(reason, hrs);
+						}
+						else{
+								reasonWeek2.put(reason, hrs);
+						}
+				}
+		}
     /**
      * this method is needed for employee with multiple jobs and find out
      * if they have clocked-in already but no clocked-out
@@ -649,15 +711,16 @@ public class TimeBlockList{
 				String qq = "select t.id,"+
 						" t.document_id,"+
 						"t.hour_code_id,"+
+						"t.earn_code_reason_id,"+
 						"date_format(t.date,'%m/%d/%Y'),"+
-						"t.begin_hour,"+
 						
+						"t.begin_hour,"+
 						"t.begin_minute,"+
 						"t.end_hour,"+
 						"t.end_minute,"+
 						"t.hours,"+
-						"t.amount,"+
 						
+						"t.amount,"+
 						"t.clock_in,"+
 						"t.clock_out"+
 							
@@ -752,16 +815,17 @@ public class TimeBlockList{
 																	rs.getString(2),
 																	rs.getString(3),
 																	rs.getString(4),
-																	rs.getInt(5),
+																	rs.getString(5),
 																	
 																	rs.getInt(6),
 																	rs.getInt(7),
 																	rs.getInt(8),
-																	rs.getDouble(9),
+																	rs.getInt(9),
 																	rs.getDouble(10),
 																	
-																	rs.getString(11),
-																	rs.getString(12)
+																	rs.getDouble(11),
+																	rs.getString(12),
+																	rs.getString(13)
 																	);
 								if(!timeBlocks.contains(one)){
 										timeBlocks.add(one);

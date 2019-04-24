@@ -54,6 +54,10 @@ public class Document implements Serializable{
 		Map<Integer, Double> amountCodeTotals = null; 
     Map<String, Double> amountCodeWeek1 = null;
     Map<String, Double> amountCodeWeek2 = null;
+
+		Map<String, Double> reasonTotals = null; 
+    Map<String, Double> reasonWeek1 = null;
+    Map<String, Double> reasonWeek2 = null;
 		
     Map<Integer, List<TimeBlock>> dailyBlocks = null;
     List<EmployeeAccrual> employeeAccruals = null;
@@ -436,6 +440,11 @@ public class Document implements Serializable{
 										amountCodeTotals = tl.getAmountCodeTotals();
 										amountCodeWeek1 = tl.getAmountCodeWeek1();
 										amountCodeWeek2 = tl.getAmountCodeWeek2();
+										if(tl.hasReasonTotals()){
+												reasonTotals = tl.getReasonTotals();
+												reasonWeek1 = tl.getReasonWeek1();
+												reasonWeek2 = tl.getReasonWeek2();
+										}
 										List<TimeBlock> ones2 = tl.getTimeBlocks();
 										if(ones2 != null && ones2.size() > 0){
 												timeBlocks = ones2;
@@ -784,6 +793,9 @@ public class Document implements Serializable{
     public boolean hasHourCodeTotals(){
 				return hourCodeTotals != null;
     }
+    public boolean hasReasonTotals(){
+				return reasonTotals != null;
+    }		
     public boolean hasAllAccruals(){
 				if(allAccruals.size() == 0){
 						getEmpAccruals();
@@ -801,7 +813,13 @@ public class Document implements Serializable{
     }
     public boolean hasAmountCodeWeek2(){
 				return amountCodeWeek2 != null && amountCodeWeek2.size() > 0;
-    }		
+    }
+    public boolean hasReasonWeek1(){
+				return reasonWeek1 != null && reasonWeek1.size() > 0;
+    }
+    public boolean hasReasonWeek2(){
+				return reasonWeek2 != null && reasonWeek2.size() > 0;
+    }				
     public Map<Integer, List<TimeBlock>> getDailyBlocks(){
 				if(dailyBlocks == null){
 						prepareDaily();
@@ -823,50 +841,49 @@ public class Document implements Serializable{
     public Map<String, Double> getAmountCodeWeek2Dbl(){
 				return amountCodeWeek2;
     }
-    // change double to string for formating purpose
-    public Map<String, String> getHourCodeWeek1(){
+    public Map<String, Double> getReasonTotalsDbl(){
+				return reasonTotals;
+    }
+    public Map<String, Double> getReasonWeek1Dbl(){
+				return reasonWeek1;
+    }
+    public Map<String, Double> getReasonWeek2Dbl(){
+				return reasonWeek2;
+    }
+    public Map<String, String> getReasonTotals(){
+				return mapDoubleToStr(reasonTotals);
+		}		
+    public Map<String, String> getReasonWeek1(){
+				return mapDoubleToStr(reasonWeek1);
+		}
+    public Map<String, String> getReasonWeek2(){
+				return mapDoubleToStr(reasonWeek2);
+		}		
+		/**
+		 * we need to format double values to dd.dd format
+		 */
+		public Map<String, String> mapDoubleToStr(Map<String, Double> map){
 				Map<String, String> map2 = new TreeMap<>();
-				if(hasHourCodeWeek1()){
-						Set<String> keys = hourCodeWeek1.keySet();
+				if(map != null && !map.isEmpty()){
+						Set<String> keys = map.keySet();
 						for(String key:keys){
-								double val = hourCodeWeek1.get(key);
+								double val = map.get(key);
 								map2.put(key, dfn.format(val));
 						}
 				}
 				return map2;
+		}
+    public Map<String, String> getHourCodeWeek1(){
+				return mapDoubleToStr(hourCodeWeek1);
     }
     public Map<String, String> getHourCodeWeek2(){
-				Map<String, String> map2 = new TreeMap<>();
-				if(hasHourCodeWeek2()){
-						Set<String> keys = hourCodeWeek2.keySet();
-						for(String key:keys){
-								double val = hourCodeWeek2.get(key);
-								map2.put(key, dfn.format(val));
-						}
-				}
-				return map2;
+				return mapDoubleToStr(hourCodeWeek2);
     }
     public Map<String, String> getAmountCodeWeek1(){
-				Map<String, String> map2 = new TreeMap<>();
-				if(hasAmountCodeWeek1()){
-						Set<String> keys = amountCodeWeek1.keySet();
-						for(String key:keys){
-								double val = amountCodeWeek1.get(key);
-								map2.put(key, dfn.format(val));
-						}
-				}
-				return map2;
+				return mapDoubleToStr(amountCodeWeek1);
     }
     public Map<String, String> getAmountCodeWeek2(){
-				Map<String, String> map2 = new TreeMap<>();
-				if(hasAmountCodeWeek2()){
-						Set<String> keys = amountCodeWeek2.keySet();
-						for(String key:keys){
-								double val = amountCodeWeek2.get(key);
-								map2.put(key, dfn.format(val));
-						}
-				}
-				return map2;
+				return mapDoubleToStr(amountCodeWeek2);
     }		
 		
     public Map<String, List<String>> getAllAccruals(){
@@ -1187,6 +1204,9 @@ public class Document implements Serializable{
 								}
 								else if(salaryGroup.isFireSworn5x8() &&
 												(group.getName().indexOf("Admin BC") > -1)){
+										need_warning = false;
+								}
+								else if(salaryGroup.isPoliceSworn()){
 										need_warning = false;
 								}
 						}

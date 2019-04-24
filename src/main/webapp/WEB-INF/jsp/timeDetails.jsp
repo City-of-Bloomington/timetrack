@@ -147,6 +147,20 @@
 							<%@ include file="weeklyTmwrp.jsp" %>
 						</s:if>
 					</s:if>
+					<s:if test="document.hasReasonTotals()">
+						<s:if test="document.hasReasonWeek1()">
+							<s:set var="rows" value="document.reasonWeek1" />
+							<s:set var="weeklyTitle" value="'Week 1 (Earn Codes/Reasons)'" />
+							<s:set var="whichWeek" value="'week-one'" />
+							<%@ include file="weeklyReasons.jsp" %>
+						</s:if>
+						<s:if test="document.hasReasonWeek2()">
+							<s:set var="rows" value="document.reasonWeek2" />
+							<s:set var="weeklyTitle" value="'Week 2 (Earn Codes/Reasons)'" />
+							<s:set var="whichWeek" value="'week-two'" />
+							<%@ include file="weeklyReasons.jsp" %>
+						</s:if>
+					</s:if>					
 				</s:else>
 			</s:if>
 			<s:else> <!-- one job only -->
@@ -164,6 +178,22 @@
 						<s:set var="whichWeek" value="'week-two'" />
 						<%@ include file="weeklyTmwrp.jsp" %>
 					</s:if>
+				</s:if>
+				<s:if test="document.hasReasonTotals()">
+					<div class="monetary-hours-tables">
+						<s:if test="document.hasReasonWeek1()">
+							<s:set var="rows" value="document.reasonWeek1" />
+							<s:set var="weeklyTitle" value="'Week 1 (Earn Codes/Reasons)'" />
+							<s:set var="whichWeek" value="'week-one'" />
+							<%@ include file="weeklyReasons.jsp" %>
+						</s:if>
+						<s:if test="document.hasReasonWeek2()">
+							<s:set var="rows" value="document.reasonWeek2" />
+							<s:set var="weeklyTitle" value="'Week 2 (Earn Codes/Reasons)'" />
+							<s:set var="whichWeek" value="'week-two'" />
+							<%@ include file="weeklyReasons.jsp" %>
+						</s:if>
+					</div>
 				</s:if>
 			</s:else>
 			</div>

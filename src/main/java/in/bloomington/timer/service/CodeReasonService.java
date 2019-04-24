@@ -111,7 +111,7 @@ public class CodeReasonService extends HttpServlet{
 				String json="";
 				for(EarnCodeReason one:ones){
 						if(!json.equals("")) json += ",";
-						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getName()+"\"}";
+						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getDescription()+"\"}";
 				}
 				json = "["+json+"]";
 				return json;

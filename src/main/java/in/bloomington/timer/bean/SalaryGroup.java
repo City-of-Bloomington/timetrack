@@ -103,8 +103,11 @@ public class SalaryGroup implements Serializable{
 				return name.equals("Part Time");
 		}		
 		public boolean isUnionned(){
-				return name.equals("Union");
+				return name.equals("Union") || name.equals("AFSCME");
 		}
+		public boolean isAfscme(){
+				return name.equals("Union") || name.equals("AFSCME");
+		}		
 		public boolean isPoliceSworn(){
 				return name.equals("Police Sworn");
 		}

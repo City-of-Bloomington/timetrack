@@ -138,17 +138,17 @@ $('#department_id_change').change(function() {
 })
 //
 // the following function will be used by timeBlock page
-// when hour code change to one that have code_reasons, we need to
+// when hour code change to one that have earnReasons, we need to
 // show earn_code_reason_id options
 // disabled for now
-/**
+
 function handleShowCodeReason(val){
     $.ajax({
         url: APPLICATION_URL + "CodeReasonService?salary_group_id="+$("#salary_group_id").val()+"&hour_code_id="+val,
         dataType:'json'
     })
     .done(function( data, status ) {
-				var options = $("#earn_code_reason_id");
+				var options = $("#select_reason_id");
 				options.prop('disabled',false);
 				options.empty();
 				options.append(new Option("Pick a Reason","-1"));
@@ -156,12 +156,13 @@ function handleShowCodeReason(val){
             // var obj = data[key];
             options.append(new Option(data[key].name, data[key].id));
         }
+				$("#reason_div_id").show();				
     })
     .error(function(x,status,err){
         alert(status+" "+err);
     });
 }
-*/
+
 //
 //
 $('#job_salary_group_change').change(function() {
@@ -208,6 +209,8 @@ $('#hour_code_select').change(function() {
         $('#div_time_in').hide();
         $('#div_time_out').hide();
         $('#div_overnight').hide();
+				$("#reason_div_id").hide();	
+				$("#select_reason_id").val('');
     }
     else if(val.indexOf('Monetary') > -1){
         $('#div_amount').show();
@@ -219,6 +222,8 @@ $('#hour_code_select').change(function() {
         $('#div_time_in').hide();
         $('#div_time_out').hide();
         $('#div_overnight').hide();
+				$("#reason_div_id").hide();	
+				$("#select_reason_id").val('');
 				var $obj = $('#'+val);
 				if($obj){
 						var amount = $obj.val();
@@ -240,9 +245,15 @@ $('#hour_code_select').change(function() {
 				//
 				// we call earn_code_reason function here
 				//
-				// var codes = ['113','114','115','116'];
-				// var hour_code_id = val.substring(0,val.indexOf("_")); // id only
-				// if(codes.include(hour_cod_id)) handleShowCodeReason(hour_code_id);
+				var codes = ['113','114','115','116'];
+				var code_id = val.substring(0,val.indexOf('_')); // id only
+				if(codes.includes(code_id)){
+						handleShowCodeReason(code_id);
+				}
+				else{
+						$("#reason_div_id").hide();	
+						$("#select_reason_id").val('');
+				}
     }
 });
 /**

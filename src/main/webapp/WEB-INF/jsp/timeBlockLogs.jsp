@@ -6,6 +6,7 @@
 			<tr>
 				<th>Related Time Block</th>
 				<th>Hour Code</th>
+				<th>Earn Reason</th>
 				<th>Date</th>
 				<th>Start Time</th>
 				<th>End Time</th>
@@ -19,6 +20,7 @@
 			<tr>
 				<td><s:property value="time_block_id" /></td>
 				<td><s:property value="hourCode" /></td>
+				<td><s:property value="earnCodeReason" /></td>
 				<td><s:property value="date" /></td>
 				<td><s:if test="showBeginTime()"><s:property value="beginHourMinute" /></s:if>&nbsp;</td>
 				<td><s:if test="showEndTime()"><s:property value="endHourMinute" /></s:if>&nbsp;</td>

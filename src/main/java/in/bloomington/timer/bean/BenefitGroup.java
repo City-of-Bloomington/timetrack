@@ -130,24 +130,6 @@ public class BenefitGroup{
 		}
 		public String getSalary_group_name(){
 				return salary_group_name;
-				/*
-				if(isExempt()){
-						return "Exempt";
-				}
-				else if(isNonExempt()){
-						return "Non-Exempt";
-				}
-				else if(isUnioned()){
-						return "Union";
-				}
-				else if(isTemporary()){
-						return "Temp";
-				}
-				else if(isPartTime()){
-						return "Part Time";
-				}
-				return "Unknown";
-				*/
 		}
 		public boolean equals(Object  gg){
 				boolean match = false;
@@ -240,7 +222,7 @@ public class BenefitGroup{
 						exempt = true;
 				}
 				else if(name.indexOf("AFSCME") > -1){
-						salary_group_name = "Union";
+						salary_group_name = "Union"; // AFSCME
 						afscme = true;
 						unioned = true;
 				}
@@ -312,8 +294,15 @@ public class BenefitGroup{
     public void setUnioned(boolean val){
 				if(val){
 						unioned = true;
+						afscme = true;
 				}
     }
+    public void setAfscme(boolean val){
+				if(val){
+						unioned = true;
+						afscme = true;
+				}
+    }		
 		
    public  String doSave(){
 				//

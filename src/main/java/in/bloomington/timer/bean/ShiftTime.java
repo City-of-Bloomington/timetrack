@@ -342,6 +342,7 @@ public class ShiftTime{
 								}
 								TimeBlock tb = new TimeBlock(document.getId(),
 																						 default_hour_code_id,
+																						 null,// earn_code_reason_id
 																						 date,
 																						 begin_hour,
 																						 begin_minute,

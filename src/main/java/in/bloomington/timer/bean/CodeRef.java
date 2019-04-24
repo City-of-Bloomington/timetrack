@@ -292,6 +292,36 @@ public class CodeRef implements Serializable, Comparable<CodeRef>{
 						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
-    }	
+    }
+   public  String doDelete(){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+		
+				String qq = "delete from "+
+						" code_cross_ref where id = ? ";
+				String back = "";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();				
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}				
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1,id);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						back += ex;
+						logger.error(ex+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return back;
+    }		 
 
 }

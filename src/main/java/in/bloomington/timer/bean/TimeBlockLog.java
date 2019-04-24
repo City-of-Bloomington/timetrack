@@ -26,7 +26,7 @@ public class TimeBlockLog extends Block{
 							 String val,
 							 String val2,
 							 String val3,
-							 // String val4,
+							 String val4,
 							 String val5,
 							 
 							 int val6,
@@ -46,7 +46,7 @@ public class TimeBlockLog extends Block{
 							 String val17
 							 ){
 				super(val, val2, val3,
-							// val4,
+							val4,
 							val5, val6, val7, val8, val9, val10, val11, val12, val13);
 				setTime_block_id(val14);
 				setAction_type(val15);
@@ -136,7 +136,7 @@ public class TimeBlockLog extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,document_id,hour_code_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs where id =? ";
+				String qq = "select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs where id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -152,20 +152,20 @@ public class TimeBlockLog extends Block{
 												rs.getString(1),
 												rs.getString(2),
 												rs.getString(3),
-												// rs.getString(4),
 												rs.getString(4),
-												rs.getInt(5),
+												rs.getString(5),
 												rs.getInt(6),
 												rs.getInt(7),
 												rs.getInt(8),
-												rs.getDouble(9),
+												rs.getInt(9),
 												rs.getDouble(10),
-												rs.getString(11),
-												rs.getString(12));
-								setTime_block_id(rs.getString(13));
-								setAction_type(rs.getString(14));
-								setAction_by_id(rs.getString(15));
-								setAction_time(rs.getString(16));
+												rs.getDouble(11),
+												rs.getString(12),
+												rs.getString(13));
+								setTime_block_id(rs.getString(14));
+								setAction_type(rs.getString(15));
+								setAction_by_id(rs.getString(16));
+								setAction_time(rs.getString(17));
 						}
 				}
 				catch(Exception ex){
@@ -187,7 +187,7 @@ public class TimeBlockLog extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into time_block_logs values(0,?,?,?, ?,?,?,?,? ,?,?,?,?,?,?, now()) ";
+				String qq = "insert into time_block_logs values(0,?,?,?, ?,?,?,?,? ,?,?,?,?,?,?,?, now()) ";
 				if(document_id.equals("")){
 						msg = " document not set ";
 						return msg;
@@ -207,7 +207,10 @@ public class TimeBlockLog extends Block{
 						int jj=1;
 						pstmt.setString(jj++, document_id);
 						pstmt.setString(jj++, hour_code_id);
-						// pstmt.setString(jj++, earn_code_reason_id);						
+						if(earn_code_reason_id.equals(""))
+								pstmt.setNull(jj++, Types.INTEGER);
+						else
+								pstmt.setString(jj++, earn_code_reason_id);						
 						java.util.Date date_tmp = df.parse(date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						pstmt.setInt(jj++, begin_hour);

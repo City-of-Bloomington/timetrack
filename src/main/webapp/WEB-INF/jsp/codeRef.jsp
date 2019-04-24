@@ -42,13 +42,16 @@
 				<s:textfield name="codeRef.pto_ratio" value="%{codeRef.pto_ratio}" size="20" maxlength="20" /><br />
 				(for HAND Dept)
 			</div>
+			<div class="button-group">
+				<s:if test="codeRef.id == ''">
+					<s:submit name="action" codeRef="button" value="Save" class="button"/>
 
-			<s:if test="codeRef.id == ''">
-				<s:submit name="action" codeRef="button" value="Save" class="button"/>
-			</s:if>
-			<s:else>
-				<s:submit name="action" codeRef="button" value="Save Changes" class="button"/>
-			</s:else>
+				</s:if>
+				<s:else>
+					<s:submit name="action" codeRef="button" value="Save Changes" class="button"/>
+					<s:submit name="action" codeRef="button" value="Delete" class="button"/>				
+				</s:else>
+			</div>
 		</div>
 	</s:form>
 	<script type="text/javascript">

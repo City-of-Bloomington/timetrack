@@ -34,7 +34,6 @@
 			<s:else>
 				Edit Time Block
 			</s:else>
-
 			<small>Date: <s:property value="timeBlock.date" /></small>
 		</h1>
 		<div class="alert"><p></p></div>
@@ -61,6 +60,20 @@
 				<s:select name="timeBlock.hour_code_id" value="%{timeBlock.id_compound}" list="hourCodes" listKey="id_compound" listValue="codeInfo" id="hour_code_select" />
 			</s:if>
 		</div>
+		<s:if test="timeBlock.hasEarnReasons()">
+			<div class="form-group" id="reason_div_id">
+				<label>Earn Reason</label>
+				<s:select name="timeBlock.earn_code_reason_id" value="%{timeBlock.earn_code_reason_id}" list="timeBlock.earnReasons" listKey="id" listValue="description" id="select_reason_id" />
+			</div>
+		</s:if>
+		<s:else>
+			<div class="form-group" id="reason_div_id" style="display:none;">
+				<label>Earn Reason</label>					
+				<select name="timeBlock.earn_code_reason_id" value="" id="select_reason_id" disabled="disabled">
+					<option value="-1">Select a Reason</option>
+				</select>
+			</div>
+		</s:else>
 		<s:if test="timeBlock.hourCode.record_method == 'Time'">
 			<div id="div_time_in" class="form-group">
 				<label>Time In</label>

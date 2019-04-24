@@ -50,7 +50,7 @@ public class GroupLocationList{
 				ResultSet rs = null;
 				String qq = "select t.id,t.group_id,t.location_id,"+
 						" l.ip_address,l.name,"+
-						" g.name,g.description,g.department_id,g.excess_hours_calculation_method,"+
+						" g.name,g.description,g.department_id,g.excess_hours_earn_type,"+
 						" g.inactive "+
 						" from group_locations t "+
 						" left join locations l on l.id = t.location_id "+

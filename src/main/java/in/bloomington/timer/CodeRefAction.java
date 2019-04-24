@@ -46,6 +46,18 @@ public class CodeRefAction extends TopAction{
 								addMessage("Saved Successfully");
 						}
 				}
+				else if(action.startsWith("Delete")){
+						getCodeRef();
+						back = codeRef.doDelete();
+						if(!back.equals("")){
+								addError(back);
+						}
+						else{
+								addMessage("Deleted Successfully");
+								id="";
+								codeRef = new CodeRef();
+						}
+				}				
 				else{		
 						getCodeRef();
 						if(!id.equals("")){

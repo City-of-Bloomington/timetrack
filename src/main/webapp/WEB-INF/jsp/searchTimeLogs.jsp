@@ -7,10 +7,12 @@
 	  <div class="width-one-half">
 			<div class="form-group">
 				<label>Employee Name:</label>
-				<s:textfield name="employee_name" value="%{employee_name}" size="20" id="employee_name" /> (key words)
+				<s:textfield name="employee_name" value="%{employee_name}" size="30" id="employee_name2" /><br />
+				(key words)
 			</div>
 			<div class="form-group">			
-				<label>Employee ID:</label><s:textfield name="other_employee_id" value="%{other_employee_id}" size="10" id="employee_id" />
+				<label>Employee ID:</label>
+				<s:textfield name="other_employee_id" value="%{other_employee_id}" size="10" id="employee_id" />
 			</div>
 			<div class="form-group">
 				<label>Pay Period:</label>			
