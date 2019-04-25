@@ -18,6 +18,9 @@ public class CommonInc{
 		public boolean debug = false;
 		static final long serialVersionUID = 400L;			
 		static Logger logger = LogManager.getLogger(CommonInc.class);
+		// this year is used to create the list of years for running
+		// reports, normally this the production start year
+		public final static int reportStartYear = 2018; 
 		// a bunch of static variables that will be used all over
 		// the code
 		public final static String default_effective_date = "07/01/2017";
@@ -62,7 +65,6 @@ public class CommonInc{
 		public final static String holyCompTime20EarnCodeID = "79"; // HCE2.0			
 		public final static double maxMonetaryAmount = 1000.0; // CA for example
 
-		
    	String message = "";
 		List<String> errors = null;
 		//

@@ -18,24 +18,22 @@ import in.bloomington.timer.timewarp.WarpEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ReportFmlaAction extends TopAction{
+public class ReportReasonAction extends TopAction{
 
 		static final long serialVersionUID = 1850L;	
-		static Logger logger = LogManager.getLogger(ReportFmlaAction.class);
+		static Logger logger = LogManager.getLogger(ReportReasonAction.class);
 		static final int startYear = CommonInc.reportStartYear; 
 		//
-		List<TimeBlock> timeBlocks = null;
 		List<WarpEntry> entries = null;
-		List<Department> depts = null;
-		FmlaReport report = null;
+		ReasonReport report = null;
 		List<Integer> years = null;
 		List<WarpEntry> dailyEntries = null;
-		String reportTitle = "Fmla Report ";
+		String reportTitle = "Code Reasons Report ";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(!action.equals("")){
-						back = report.findHoursByNameCode();
+						back = report.findHoursByNameAndCode();
 						back += report.findHoursByDateAndCode();
 						if(!back.equals("")){
 								addError(back);
@@ -71,14 +69,14 @@ public class ReportFmlaAction extends TopAction{
 				}
 				return ret;
 		}
-		public FmlaReport getReport(){ 
+		public ReasonReport getReport(){ 
 				if(report == null){
-						report = new FmlaReport();
+						report = new ReasonReport();
 				}		
 				return report;
 		}
 
-		public void setReport(FmlaReport val){
+		public void setReport(ReasonReport val){
 				if(val != null){
 						report = val;
 				}
@@ -86,17 +84,13 @@ public class ReportFmlaAction extends TopAction{
 
 		public String getReportTitle(){
 				if(report != null){
-						reportTitle = " FMLA Report "+report.getStart_date()+" - "+report.getEnd_date();
+						reportTitle = "Code Reason Report "+report.getStart_date()+" - "+report.getEnd_date();
 				}
 				return reportTitle;
 		}
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;
-		}
-		// todo
-		public List<TimeBlock> getTimeBlocks(){
-				return timeBlocks;
 		}
 
 		public List<Integer> getYears(){
@@ -112,10 +106,7 @@ public class ReportFmlaAction extends TopAction{
 		
 		// needed only for csv output
 		public String getFileName(){
-				String filename = "fmla_report_";
-				if(report.hasDepartment()){
-						filename += report.getDepartment().getName()+"_";
-				}
+				String filename = "code_reason_report_";
 				filename +=report.getEnd_date().replace("/","_")+".csv";
 				return filename;
 		}
@@ -123,28 +114,7 @@ public class ReportFmlaAction extends TopAction{
 				String str = report.getStart_date()+" - "+report.getEnd_date();
 				return str;
 		}
-		public List<Department> getDepts(){
-				if(depts == null){
-						DepartmentList dl = new DepartmentList();
-						dl.setActiveOnly();
-						dl.hasRefIds();
-						String msg = dl.find();
-						if(!msg.equals("")){
-								logger.error(msg);
-						}
-						else{
-								List<Department> ones = dl.getDepartments();
-								if(ones != null && ones.size() > 0){
-										depts = ones;
-								}
-						}
-				}
-				return depts;
-		}
-		public boolean hasDepts(){
-				getDepts();
-				return depts != null && depts.size() > 0;
-		}		
+
 				
 }
 

@@ -7,9 +7,9 @@
 <h4><s:property value="#reportTitle" /></h4>
 
 <table border="1" width="40%">
-	<caption>Hours Classified by Hour Codes</caption>
+	<caption>Hours Classified by Earn Codes</caption>
 	<tr>
-		<td align="center"><b>Hour Code</b></td>
+		<td align="center"><b>Earn Code</b></td>
 		<td align="center"><b>Hours</b></td>
 	</tr>
 	<s:iterator var="row" value="#hoursSums">
@@ -29,7 +29,7 @@
 	<caption>Hours Classified by Employees & Hour Codes</caption>
 	<tr>
 		<td>Employee</td>
-		<td>Hour Code</td>
+		<td>Earn Code</td>
 		<td>Hours</td>
 		<td>Hourly Rate</td>
 		<td>Amount</td>
@@ -82,7 +82,7 @@
 		<tr>
 			<td align="center"><b>Employee</b></td>
 			<td align="center"><b>Date</b></td>		
-			<td align="center"><b>Hour Code</b></td>
+			<td align="center"><b>Earn Code</b></td>
 			<td align="center"><b>Hours</b></td>
 		</tr>
 		<s:iterator var="row" value="#dailyEntries">

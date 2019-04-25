@@ -17,6 +17,7 @@ import in.bloomington.timer.list.*;
 public class FmlaReport extends MpoReport{
 
 		static Logger logger = LogManager.getLogger(PlanReport.class);
+		static final long serialVersionUID = 3820L;	
 		Department department = null;
     public FmlaReport(){
 				super();

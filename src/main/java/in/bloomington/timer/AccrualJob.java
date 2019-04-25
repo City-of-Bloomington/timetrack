@@ -26,7 +26,6 @@ public class AccrualJob implements Job{
 		static final long serialVersionUID = 55L;		
 		static Logger logger = LogManager.getLogger(AccrualJob.class);
 		static List<Department> depts = null;
-		// static Hashtable<String, BenefitGroup> benGroups = null;
 		public AccrualJob(){
 
 		}

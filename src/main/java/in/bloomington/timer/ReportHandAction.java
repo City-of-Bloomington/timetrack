@@ -22,8 +22,7 @@ public class ReportHandAction extends TopAction{
 
 		static final long serialVersionUID = 1800L;	
 		static Logger logger = LogManager.getLogger(ReportHandAction.class);
-		static final int startYear = 2017; // 
-		//
+		static final int startYear = CommonInc.reportStartYear; 
 		List<TimeBlock> timeBlocks = null;
 		List<WarpEntry> entries = null;
 		HandReport report = null;

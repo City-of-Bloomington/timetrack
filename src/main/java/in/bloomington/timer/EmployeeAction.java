@@ -21,7 +21,11 @@ public class EmployeeAction extends TopAction{
 		static final long serialVersionUID = 1150L;	
 		static Logger logger = LogManager.getLogger(EmployeeAction.class);
 		//
-		static final String[] roles = {"Employee","Timewarp","FMLAReport","MPOReport","TargetEmployee","ParkReport", "FireReport","HrAdmin", "ITSAdmin","Admin"};
+		static final String[] roles = {"Employee","Timewarp","FMLAReport",
+																	 "MPOReport","TargetEmployee","ParkReport",
+																	 "FireReport","HrAdmin", "ITSAdmin",
+																	 "PoliceAdmin",
+																	 "Admin"};
 		Employee employee = null;
 		DepartmentEmployee departmentEmployee = null; // for new employee
 		GroupEmployee groupEmployee = null; // for new employee

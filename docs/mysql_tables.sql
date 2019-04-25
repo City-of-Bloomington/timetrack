@@ -1010,13 +1010,15 @@ alter table groups change excess_hours_calculation_method	excess_hours_earn_type
 ;;
 ;; ------------------------------------------------
 ;; 4/18/2019
-;; to be done later
+;; 
 alter table time_blocks add earn_code_reason_id int unsigned after hour_code_id;
 alter table time_blocks add foreign key(earn_code_reason_id) references earn_code_reasons(id);
 alter table time_block_logs add earn_code_reason_id int unsigned after hour_code_id;
 alter table time_block_logs add foreign key(earn_code_reason_id) references earn_code_reasons(id);
 alter table  code_cross_ref add unique(code_id);
-
+;;
+;; add PoliceAdmin role to Elaine and Jamie in Police
+;;
 
 ;;
 ;; update the view
@@ -1097,4 +1099,14 @@ select distinct(concat_ws(' ',e.first_name,e.last_name)),e.email from time_block
 ;;
 ;; email only
 select distinct(e.email) from time_block_logs l, time_documents d, employees e where (l.action_time like '2019-03-24%' or l.action_time like '2019-03-24%') and d.employee_id=e.id and l.document_id=d.id and not (e.email is null or e.email = '');
+;;
+
+;;
+;; using command line prepared statements
+;;
+prepare stmt1 from "select id from time_block_logs l where date(l.action_time) = str_to_date(?,'%m/%d/%Y') ";
+
+set @a='04/20/2019';
+execute stmt1 using @a;
+
 

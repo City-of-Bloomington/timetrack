@@ -244,6 +244,7 @@ public class PayPeriodList{
 						while(rs.next()){
 								int year = rs.getInt(1);
 								if(years == null) years = new ArrayList<>();
+								if(year < CommonInc.reportStartYear) continue;
 								years.add(year);
 						}
 				}

@@ -44,6 +44,7 @@
 				<li><a href="<s:property value='#application.url'/>notificationSchedule.action?action=logs">Recent Automated Notification logs</a></li>				
 				<li><a href="<s:property value='#application.url'/>inform.action?action=logs">Approvers/Payroll Email Logs</a></li>
 				<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Entry History</a></li>
+				<li><a href="<s:property value='#application.url'/>auditTime.action">Time Active Users (Email list)</a></li>				
 			</ul>
 		</div>
 		<div class="width-one-half float-right">
@@ -80,7 +81,8 @@
 				<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA</a></li>
 				<li><a href="<s:property value='#application.url'/>jobsReport.action">Employee Jobs</a></li>
 				<li><a href="<s:property value='#application.url'/>jobIntervention.action">Parks Jobs Need Intervention</a></li>
-				<li><a href="<s:property value='#application.url'/>reportTimes.action">Employees Time Details</a></li>				
+				<li><a href="<s:property value='#application.url'/>reportTimes.action">Employees Time Details</a></li>
+				<li><a href="<s:property value='#application.url'/>reportReason.action">Police Code Reasons</a></li>
 			</ul>			
 			<h2>Employee Data Import</h2>
 			<ul>
@@ -92,8 +94,9 @@
 				<li><a href="<s:property value='#application.url'/>profileSchedule.action">Employees Profile Update</a></li>
 				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees Update(including active status)</a></li>				
 				<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
+				<!-- currently not used 
 				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch clock batch submission </a></li>
-
+				-->
 			</ul>
 		</div>
 	</s:if>

@@ -1,17 +1,10 @@
-<!--
- * @copyright Copyright (C) 2014-2015 City of Bloomington, Indiana. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
- * @author W. Sibo <sibow@bloomington.in.gov>
- *
-	-->
-
 
 <s:if test="#hasEntries" >
 	<h4><s:property value="#reportTitle" /></h4>	
 	<table border="1" width="40%">
-		<caption>Hours Classified by Earn Codes</caption>
+		<caption>Hours Classified by Earn Code and Reason</caption>
 		<tr>
-			<td align="center"><b>Earn Code</b></td>
+			<td align="center"><b>Earn Code - Reason</b></td>
 			<td align="center"><b>Hours</b></td>
 		</tr>
 		<s:iterator var="row" value="#hoursSums">
@@ -28,10 +21,10 @@
 	</table>
 
 	<table width="80%" border="1">
-		<caption>Hours Classified by Employees & Hour Codes</caption>
+		<caption>Hours Classified by Employees & Earn Code - Reason</caption>
 		<tr>
 			<td>Employee</td>
-			<td>Earn Code</td>
+			<td>Earn Code - Reason</td>
 			<td>Hours</td>
 		</tr>
 		<s:iterator var="row" value="#hoursSums">
@@ -67,11 +60,11 @@
 </s:if>
 <s:if test="#hasDaily">
 	<table border="1" width="90%">
-		<caption>Hours Classified by Employeee, Date, Earn Codes</caption>
+		<caption>Hours Classified by Employeee, Date, Earn Code - Reason</caption>
 		<tr>
 			<td align="center"><b>Employee</b></td>
 			<td align="center"><b>Date</b></td>		
-			<td align="center"><b>Earn Code</b></td>
+			<td align="center"><b>Earn Code - Reason</b></td>
 			<td align="center"><b>Hours</b></td>
 		</tr>
 		<s:iterator var="row" value="#dailyEntries">

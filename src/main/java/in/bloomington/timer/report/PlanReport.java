@@ -16,6 +16,7 @@ import in.bloomington.timer.list.*;
 
 public class PlanReport extends MpoReport{
 
+		static final long serialVersionUID = 3830L;	
 		static Logger logger = LogManager.getLogger(PlanReport.class);
     public PlanReport(){
 				super();
