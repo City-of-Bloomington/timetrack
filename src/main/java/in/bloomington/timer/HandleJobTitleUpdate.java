@@ -167,7 +167,7 @@ public class HandleJobTitleUpdate{
 			 }
 			 return msg;
 		}
-		String findEmployeeJobs(){
+		public String findEmployeeJobs(){
 				getPayPeriod();
 				DepartmentEmployeeList dempl = new DepartmentEmployeeList();
 				dempl.setDepartment_id("5"); // parks
@@ -241,10 +241,6 @@ public class HandleJobTitleUpdate{
 			 where e.vsEmploymentStatusId=258
 			 and e.DepartmentId = 39
 			 order by e.employeename, e.EmployeeName,job.JobTitle
-
-			 
-
-
 
 		 */
 		public String findNWJobs(){

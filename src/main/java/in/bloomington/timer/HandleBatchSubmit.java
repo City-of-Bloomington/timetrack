@@ -55,7 +55,7 @@ public class HandleBatchSubmit{
 		// find all the employees who have initiated document time but
 		// can not submit for approval
 		//
-    String process(){
+    public String process(){
 		
 				Connection con = null;
 				PreparedStatement pstmt = null;

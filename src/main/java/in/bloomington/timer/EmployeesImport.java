@@ -62,10 +62,10 @@ public class EmployeesImport{
 		Map<String, Profile> profMap = new HashMap<>();
 		String dept_refs = "";
 		String errors = "";
-		EmployeesImport(){
+		public EmployeesImport(){
 
 		}
-		EmployeesImport(EnvBean val){
+		public EmployeesImport(EnvBean val){
 				if(val != null)
 						bean = val;
 		}		

@@ -26,7 +26,7 @@ public class ProfileScheduler {
 		static Logger logger = LogManager.getLogger(ProfileScheduler.class);
 		int month = 1, day = 1, year=2017;
 		Date startDate, endDate = null;
-		ProfileScheduler(String date){
+		public ProfileScheduler(String date){
 				try{
 						if(!date.equals("")){
 								// startDate = new Date(date);

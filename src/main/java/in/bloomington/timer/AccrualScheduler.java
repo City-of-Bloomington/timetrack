@@ -26,7 +26,7 @@ public class AccrualScheduler {
 		static Logger logger = LogManager.getLogger(AccrualScheduler.class);
 		int month = 1, day = 1, year=2017;
 		Date startDate, endDate = null;
-		AccrualScheduler(String date){
+		public AccrualScheduler(String date){
 				try{
 						if(!date.equals("")){
 								// startDate = new Date(date);

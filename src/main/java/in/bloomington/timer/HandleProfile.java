@@ -90,7 +90,7 @@ public class HandleProfile{
 				}
 				return benefitGroups;
 		}				
-    String process(){
+    public String process(){
 		
 				String msg="";
 				List<Profile> profiles = null;

@@ -88,7 +88,7 @@ public class HandleNwAccrual{
 				return msg;
 		}
 		//
-    String process(){
+    public String process(){
 		
 				Connection con = null;
 				PreparedStatement pstmt = null;

@@ -24,27 +24,27 @@
       <result >/index.html</result>
     </action>				
     <action name="settings"
-	    class="in.bloomington.timer.SettingAction">
+	    class="in.bloomington.timer.action.SettingAction">
       <result name="success">/WEB-INF/jsp/settings.jsp</result>
       <result name="error">/Login</result>			
       <result name="login">/Login</result>	 
     </action>		
     
     <action name="welcome"
-	    class="in.bloomington.timer.WelcomeAction">
+	    class="in.bloomington.timer.action.WelcomeAction">
       <result name="success">/WEB-INF/jsp/welcome.jsp</result>
       <result name="error">/Login</result>			
       <result name="login">/Login</result>	   
     </action>
 
     <action name="logout"
-	    class="in.bloomington.timer.LogoutAction">
+	    class="in.bloomington.timer.action.LogoutAction">
       <result name="success">/WEB-INF/jsp/logoutPage.jsp</result>
       <result name="error">/WEB-INF/jsp/logoutPage.jsp</result>
     </action>
     
     <action name="inform" 
-	    class="in.bloomington.timer.InformAction" 
+	    class="in.bloomington.timer.action.InformAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/inform.jsp</result>		
       <result name="error">/WEB-INF/jsp/inform.jsp</result>
@@ -53,98 +53,98 @@
       <result name="logs">/WEB-INF/jsp/email_logs.jsp</result>			
     </action>		
     <action name="type" 
-	    class="in.bloomington.timer.TypeAction" 
+	    class="in.bloomington.timer.action.TypeAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/type.jsp</result>		
 			<result name="error">/WEB-INF/jsp/type.jsp</result>
 			<result name="success">/WEB-INF/jsp/type.jsp</result>
     </action>
     <action name="jobIntervention" 
-	    class="in.bloomington.timer.JobInterventionAction" 
+	    class="in.bloomington.timer.action.JobInterventionAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/job_intervention.jsp</result>		
 			<result name="error">/WEB-INF/jsp/job_intervention.jsp</result>
 			<result name="success">/WEB-INF/jsp/job_intervention.jsp</result>
     </action>		
     <action name="location" 
-	    class="in.bloomington.timer.LocationAction" 
+	    class="in.bloomington.timer.action.LocationAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/location.jsp</result>		
       <result name="error">/WEB-INF/jsp/location.jsp</result>
       <result name="success">/WEB-INF/jsp/location.jsp</result>
     </action>		
     <action name="department" 
-	    class="in.bloomington.timer.DeptAction" 
+	    class="in.bloomington.timer.action.DeptAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/department.jsp</result>		
       <result name="error">/WEB-INF/jsp/department.jsp</result>
       <result name="success">/WEB-INF/jsp/department.jsp</result>
     </action>
     <action name="timeNote" 
-	    class="in.bloomington.timer.TimeNoteAction" 
+	    class="in.bloomington.timer.action.TimeNoteAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/timeNote.jsp</result>		
       <result name="error">/WEB-INF/jsp/timeNote.jsp</result>
       <result name="success">/WEB-INF/jsp/timeNote.jsp</result>
     </action>
     <action name="timeIssue" 
-	    class="in.bloomington.timer.TimeIssueAction" 
+	    class="in.bloomington.timer.action.TimeIssueAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/timeIssue.jsp</result>		
       <result name="error">/WEB-INF/jsp/timeIssue.jsp</result>
       <result name="success">/WEB-INF/jsp/timeIssue.jsp</result>
     </action>
     <action name="handleIssue" 
-	    class="in.bloomington.timer.HandleIssueAction" 
+	    class="in.bloomington.timer.action.HandleIssueAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/handleIssue.jsp</result>		
       <result name="error">/WEB-INF/jsp/handleIssue.jsp</result>
       <result name="success">/WEB-INF/jsp/handleIssue.jsp</result>
     </action>		
     <action name="accrual" 
-	    class="in.bloomington.timer.AccrualAction" 
+	    class="in.bloomington.timer.action.AccrualAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/accrual.jsp</result>		
       <result name="error">/WEB-INF/jsp/accrual.jsp</result>
       <result name="success">/WEB-INF/jsp/accrual.jsp</result>
     </action>
     <action name="contribute" 
-	    class="in.bloomington.timer.AccrualContributeAction" 
+	    class="in.bloomington.timer.action.AccrualContributeAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/accrual_contribute.jsp</result>		
       <result name="error">/WEB-INF/jsp/accrual_contribute.jsp</result>
       <result name="success">/WEB-INF/jsp/accrual_contribute.jsp</result>
     </action>		
     <action name="accrualSchedule" 
-	    class="in.bloomington.timer.AccrualScheduleAction" 
+	    class="in.bloomington.timer.action.AccrualScheduleAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/accrualSchedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/accrualSchedular.jsp</result>
       <result name="success">/WEB-INF/jsp/accrualSchedular.jsp</result>
     </action>
     <action name="profileSchedule" 
-	    class="in.bloomington.timer.ProfileScheduleAction" 
+	    class="in.bloomington.timer.action.ProfileScheduleAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/profileSchedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/profileSchedular.jsp</result>
       <result name="success">/WEB-INF/jsp/profileSchedular.jsp</result>
     </action>
     <action name="employeesSchedule" 
-	    class="in.bloomington.timer.CurrentEmployeesScheduleAction" 
+	    class="in.bloomington.timer.action.CurrentEmployeesScheduleAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/employeesSchedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/employeesSchedular.jsp</result>
       <result name="success">/WEB-INF/jsp/employeesSchedular.jsp</result>
     </action>
     <action name="empsUpdateSchedule" 
-	    class="in.bloomington.timer.EmployeesUpdateScheduleAction" 
+	    class="in.bloomington.timer.action.EmployeesUpdateScheduleAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
       <result name="success">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
     </action>				
     <action name="notificationSchedule" 
-	    class="in.bloomington.timer.NotificationScheduleAction" 
+	    class="in.bloomington.timer.action.NotificationScheduleAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/notificationSchedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/notificationSchedular.jsp</result>
@@ -152,84 +152,84 @@
       <result name="logs">/WEB-INF/jsp/notificationLogs.jsp</result>			
     </action>
     <action name="batchSchedule" 
-	    class="in.bloomington.timer.BatchSubmitScheduleAction" 
+	    class="in.bloomington.timer.action.BatchSubmitScheduleAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/batchSchedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/batchSchedular.jsp</result>
       <result name="success">/WEB-INF/jsp/batchSchedular.jsp</result>
     </action>		
     <action name="accrualWarning" 
-	    class="in.bloomington.timer.AccrualWarningAction" 
+	    class="in.bloomington.timer.action.AccrualWarningAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/accrualWarning.jsp</result>		
       <result name="error">/WEB-INF/jsp/accrualWarning.jsp</result>
       <result name="success">/WEB-INF/jsp/accrualWarning.jsp</result>
     </action>		
     <action name="node" 
-	    class="in.bloomington.timer.NodeAction" 
+	    class="in.bloomington.timer.action.NodeAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/node.jsp</result>		
       <result name="error">/WEB-INF/jsp/node.jsp</result>
       <result name="success">/WEB-INF/jsp/node.jsp</result>
     </action>
     <action name="position" 
-	    class="in.bloomington.timer.PositionAction" 
+	    class="in.bloomington.timer.action.PositionAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/position.jsp</result>		
       <result name="error">/WEB-INF/jsp/position.jsp</result>
       <result name="success">/WEB-INF/jsp/position.jsp</result>
     </action>		
     <action name="codeRef" 
-	    class="in.bloomington.timer.CodeRefAction" 
+	    class="in.bloomington.timer.action.CodeRefAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/codeRef.jsp</result>		
       <result name="error">/WEB-INF/jsp/codeRef.jsp</result>
       <result name="success">/WEB-INF/jsp/codeRef.jsp</result>
     </action>		
     <action name="benefitGroup" 
-	    class="in.bloomington.timer.BenefitGroupAction" 
+	    class="in.bloomington.timer.action.BenefitGroupAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/benefitGroup.jsp</result>		
       <result name="error">/WEB-INF/jsp/benefitGroup.jsp</result>
       <result name="success">/WEB-INF/jsp/benefitGroup.jsp</result>
     </action>
 		<action name="shift" 
-						class="in.bloomington.timer.ShiftAction" 
+						class="in.bloomington.timer.action.ShiftAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/shift.jsp</result>		
 			<result name="error">/WEB-INF/jsp/shift.jsp</result>
 			<result name="success">/WEB-INF/jsp/shift.jsp</result>
 		</action>
 		<action name="shiftTime" 
-						class="in.bloomington.timer.ShiftTimeAction" 
+						class="in.bloomington.timer.action.ShiftTimeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/shiftTime.jsp</result>		
 			<result name="error">/WEB-INF/jsp/shiftTime.jsp</result>
 			<result name="success">/WEB-INF/jsp/shiftTime.jsp</result>
 		</action>				
 		<action name="holiday" 
-						class="in.bloomington.timer.HolidayAction" 
+						class="in.bloomington.timer.action.HolidayAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/holiday.jsp</result>		
 			<result name="error">/WEB-INF/jsp/holiday.jsp</result>
 			<result name="success">/WEB-INF/jsp/holiday.jsp</result>
 		</action>
 		<action name="empImport" 
-						class="in.bloomington.timer.EmployeesImportAction" 
+						class="in.bloomington.timer.action.EmployeesImportAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/empImport.jsp</result>		
 			<result name="error">/WEB-INF/jsp/empImport.jsp</result>
 			<result name="success">/WEB-INF/jsp/empImport.jsp</result>
 		</action>		
 		<action name="payperiod" 
-						class="in.bloomington.timer.PayPeriodAction" 
+						class="in.bloomington.timer.action.PayPeriodAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/payperiods.jsp</result>		
 			<result name="error">/WEB-INF/jsp/payperiods.jsp</result>
 			<result name="success">/WEB-INF/jsp/payperiods.jsp</result>
 		</action>
 		<action name="timewarp" 
-						class="in.bloomington.timer.TimewarpAction" 
+						class="in.bloomington.timer.action.TimewarpAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/timewarp/timewarp.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timewarp/timewarp.jsp</result>
@@ -240,7 +240,7 @@
 
 		</action>
 		<action name="tmwrpWrap" 
-						class="in.bloomington.timer.TmwrpWrapAction" 
+						class="in.bloomington.timer.action.TmwrpWrapAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/timewarp/tmwrpWrap.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timewarp/tmwrpWrap.jsp</result>
@@ -248,14 +248,14 @@
 			<result name="csv">/WEB-INF/jsp/timewarp/timewarpCsv.jsp</result>			
 		</action>
 		<action name="tmwrpInitiate" 
-						class="in.bloomington.timer.TmwrpInitiateAction" 
+						class="in.bloomington.timer.action.TmwrpInitiateAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/timewarp/tmwrpInitiate.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timewarp/tmwrpInitiate.jsp</result>
 			<result name="success">/WEB-INF/jsp/timewarp/tmwrpInitiate.jsp</result>
 		</action>		
 		<action name="reportHand" 
-						class="in.bloomington.timer.ReportHandAction" 
+						class="in.bloomington.timer.action.ReportHandAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/reports/reportHand.jsp</result>		
 			<result name="error">/WEB-INF/jsp/reports/reportHand.jsp</result>
@@ -263,7 +263,7 @@
 			<result name="csv">/WEB-INF/jsp/reports/reportHandCsv.jsp</result>
 		</action>
 		<action name="reportTimes" 
-						class="in.bloomington.timer.ReportTimesAction" 
+						class="in.bloomington.timer.action.ReportTimesAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/reports/reportTimes.jsp</result>		
 			<result name="error">/WEB-INF/jsp/reports/reportTimes.jsp</result>
@@ -271,7 +271,7 @@
 			<result name="csv">/WEB-INF/jsp/reports/reportTimesCsv.jsp</result>
 		</action>		
 		<action name="jobsReport" 
-						class="in.bloomington.timer.ReportJobAction" 
+						class="in.bloomington.timer.action.ReportJobAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/reports/jobsReport.jsp</result>		
 			<result name="error">/WEB-INF/jsp/reports/jobsReport.jsp</result>
@@ -279,7 +279,7 @@
 			<result name="csv">/WEB-INF/jsp/reports/jobsReportCsv.jsp</result>
 		</action>		
 		<action name="reportPlan" 
-						class="in.bloomington.timer.ReportPlanAction" 
+						class="in.bloomington.timer.action.ReportPlanAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/reports/reportPlan.jsp</result>		
 			<result name="error">/WEB-INF/jsp/reports/reportPlan.jsp</result>
@@ -287,7 +287,7 @@
 			<result name="csv">/WEB-INF/jsp/reports/reportPlanCsv.jsp</result>
 		</action>
 		<action name="reportFmla" 
-						class="in.bloomington.timer.ReportFmlaAction" 
+						class="in.bloomington.timer.action.ReportFmlaAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/reports/reportFmla.jsp</result>		
 			<result name="error">/WEB-INF/jsp/reports/reportFmla.jsp</result>
@@ -295,7 +295,7 @@
 			<result name="csv">/WEB-INF/jsp/reports/fmlaReportCsv.jsp</result>
 		</action>
 		<action name="reportReason" 
-						class="in.bloomington.timer.ReportReasonAction" 
+						class="in.bloomington.timer.action.ReportReasonAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/reports/reportReason.jsp</result>		
 			<result name="error">/WEB-INF/jsp/reports/reportReason.jsp</result>
@@ -303,42 +303,42 @@
 			<result name="csv">/WEB-INF/jsp/reports/reasonReportCsv.jsp</result>
 		</action>
 		<action name="auditTime" 
-						class="in.bloomington.timer.TimeActiveAction" 
+						class="in.bloomington.timer.action.TimeActiveAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/reports/auditActiveTime.jsp</result>		
 			<result name="error">/WEB-INF/jsp/reports/auditActiveTime.jsp</result>
 			<result name="success">/WEB-INF/jsp/reports/auditActiveTime.jsp</result>
 		</action>		
 		<action name="dataEntry" 
-						class="in.bloomington.timer.DataEntryAction" 
+						class="in.bloomington.timer.action.DataEntryAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/dataEntry.jsp</result>		
 			<result name="error">/WEB-INF/jsp/dataEntry.jsp</result>
 			<result name="success">/WEB-INF/jsp/dataEntry.jsp</result>
 		</action>				
 		<action name="approve" 
-						class="in.bloomington.timer.ApproveAction" 
+						class="in.bloomington.timer.action.ApproveAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/approve.jsp</result>		
 			<result name="error">/WEB-INF/jsp/approve.jsp</result>
 			<result name="success">/WEB-INF/jsp/approve.jsp</result>
 		</action>
 		<action name="review" 
-						class="in.bloomington.timer.ReviewAction" 
+						class="in.bloomington.timer.action.ReviewAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/review.jsp</result>		
 			<result name="error">/WEB-INF/jsp/review.jsp</result>
 			<result name="success">/WEB-INF/jsp/review.jsp</result>
 		</action>		
 		<action name="payrollProcess" 
-						class="in.bloomington.timer.PayrollProcessAction" 
+						class="in.bloomington.timer.action.PayrollProcessAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/payrollProcess.jsp</result>		
 			<result name="error">/WEB-INF/jsp/payrollProcess.jsp</result>
 			<result name="success">/WEB-INF/jsp/payrollProcess.jsp</result>
 		</action>				
 		<action name="employee" 
-						class="in.bloomington.timer.EmployeeAction" 
+						class="in.bloomington.timer.action.EmployeeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/employee.jsp</result>		
 			<result name="error">/WEB-INF/jsp/employee.jsp</result>
@@ -346,28 +346,28 @@
 			<result name="view">/WEB-INF/jsp/employeeView.jsp</result>			
 		</action>
 		<action name="activeEmployees" 
-						class="in.bloomington.timer.ActiveEmployeesAction" 
+						class="in.bloomington.timer.action.ActiveEmployeesAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/activeEmployees.jsp</result>		
 			<result name="error">/WEB-INF/jsp/activeEmployees.jsp</result>
 			<result name="success">/WEB-INF/jsp/activeEmployees.jsp</result>
 		</action>		
 		<action name="importEmployees" 
-						class="in.bloomington.timer.ImportEmployeeAction" 
+						class="in.bloomington.timer.action.ImportEmployeeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/importEmployees.jsp</result>		
 			<result name="error">/WEB-INF/jsp/importEmployees.jsp</result>
 			<result name="success">/WEB-INF/jsp/importEmployees.jsp</result>
 		</action>		
 		<action name="switch" 
-						class="in.bloomington.timer.SwitchAction" 
+						class="in.bloomington.timer.action.SwitchAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/switch.jsp</result>		
 			<result name="error">/WEB-INF/jsp/switch.jsp</result>
 			<result name="success">/WEB-INF/jsp/switch.jsp</result>
 		</action>
 		<action name="timeClock" 
-						class="in.bloomington.timer.TimeClockAction" 
+						class="in.bloomington.timer.action.TimeClockAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/timeClock.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timeClock.jsp</result>
@@ -375,7 +375,7 @@
 			<result name="pickJob">/WEB-INF/jsp/clockPickJob.jsp</result>			
 		</action>		
 		<action name="empAccrual" 
-						class="in.bloomington.timer.EmployeeAccrualAction" 
+						class="in.bloomington.timer.action.EmployeeAccrualAction" 
 						method="execute">
 			<result name="select">/WEB-INF/jsp/empSelect.jsp</result>
 			<result name="input">/WEB-INF/jsp/empAccrual.jsp</result>					
@@ -383,21 +383,21 @@
 			<result name="success">/WEB-INF/jsp/empAccrual.jsp</result>
 		</action>				
 		<action name="groupEmployee" 
-						class="in.bloomington.timer.GroupEmployeeAction" 
+						class="in.bloomington.timer.action.GroupEmployeeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/groupEmployee.jsp</result>		
 			<result name="error">/WEB-INF/jsp/groupEmployee.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupEmployee.jsp</result>
 		</action>
 		<action name="groupLocation" 
-						class="in.bloomington.timer.GroupLocationAction" 
+						class="in.bloomington.timer.action.GroupLocationAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/groupLocation.jsp</result>		
 			<result name="error">/WEB-INF/jsp/groupLocation.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupLocation.jsp</result>
 		</action>		
 		<action name="salaryGroup" 
-						class="in.bloomington.timer.SalaryGroupAction" 
+						class="in.bloomington.timer.action.SalaryGroupAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/salaryGroup.jsp</result>		
 			<result name="error">/WEB-INF/jsp/salaryGroup.jsp</result>
@@ -405,21 +405,21 @@
 		</action>
 		
 		<action name="departmentEmployee" 
-						class="in.bloomington.timer.DepartmentEmployeeAction" 
+						class="in.bloomington.timer.action.DepartmentEmployeeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/departmentEmployee.jsp</result>		
 			<result name="error">/WEB-INF/jsp/departmentEmployee.jsp</result>
 			<result name="success">/WEB-INF/jsp/departmentEmployee.jsp</result>
 		</action>
 		<action name="deptEmpChange" 
-						class="in.bloomington.timer.DepartmentEmployeeChangeAction" 
+						class="in.bloomington.timer.action.DepartmentEmployeeChangeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/deptEmpChange.jsp</result>		
 			<result name="error">/WEB-INF/jsp/deptEmpChage.jsp</result>
 			<result name="success">/WEB-INF/jsp/deptEmpChange.jsp</result>
 		</action>
 		<action name="jobChange" 
-						class="in.bloomington.timer.JobChangeAction" 
+						class="in.bloomington.timer.action.JobChangeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/jobChange.jsp</result>		
 			<result name="error">/WEB-INF/jsp/jobChage.jsp</result>
@@ -427,98 +427,98 @@
 			<result name="pickJob">/WEB-INF/jsp/jobsChange.jsp</result>			
 		</action>		
 		<action name="groupEmpChange" 
-						class="in.bloomington.timer.GroupEmployeeAction" 
+						class="in.bloomington.timer.action.GroupEmployeeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/groupEmpChange.jsp</result>		
 			<result name="error">/WEB-INF/jsp/groupEmpChage.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupEmpChange.jsp</result>
 		</action>		
 		<action name="groupManager" 
-						class="in.bloomington.timer.GroupManagerAction" 
+						class="in.bloomington.timer.action.GroupManagerAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/groupManager.jsp</result>		
 			<result name="error">/WEB-INF/jsp/groupManager.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupManager.jsp</result>
 		</action>
 		<action name="groupManagerAdd" 
-						class="in.bloomington.timer.GroupManagerAction" 
+						class="in.bloomington.timer.action.GroupManagerAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/groupManagerAdd.jsp</result>		
 			<result name="error">/WEB-INF/jsp/groupManagerAdd.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupManager.jsp</result>
 		</action>				
 		<action name="group" 
-						class="in.bloomington.timer.GroupAction" 
+						class="in.bloomington.timer.action.GroupAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/group.jsp</result>		
 			<result name="error">/WEB-INF/jsp/group.jsp</result>
 			<result name="success">/WEB-INF/jsp/group.jsp</result>
 		</action>
 		<action name="groupShift" 
-						class="in.bloomington.timer.GroupShiftAction" 
+						class="in.bloomington.timer.action.GroupShiftAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/groupShift.jsp</result>		
 			<result name="error">/WEB-INF/jsp/groupShift.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupShift.jsp</result>
 		</action>		
 		<action name="jobTask" 
-						class="in.bloomington.timer.JobTaskAction" 
+						class="in.bloomington.timer.action.JobTaskAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/jobTask.jsp</result>		
 			<result name="error">/WEB-INF/jsp/jobTask.jsp</result>
 			<result name="success">/WEB-INF/jsp/jobTask.jsp</result>
 		</action>
 		<action name="searchGroups" 
-						class="in.bloomington.timer.SearchGroupAction" 
+						class="in.bloomington.timer.action.SearchGroupAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/searchGroups.jsp</result>		
 			<result name="error">/WEB-INF/jsp/searchGroups.jsp</result>
 			<result name="success">/WEB-INF/jsp/searchGroups.jsp</result>
 		</action>
 		<action name="searchConditions" 
-						class="in.bloomington.timer.SearchHourCodeConditionsAction" 
+						class="in.bloomington.timer.action.SearchHourCodeConditionsAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/searchConditions.jsp</result>		
 			<result name="error">/WEB-INF/jsp/searchConditions.jsp</result>
 			<result name="success">/WEB-INF/jsp/searchConditions.jsp</result>
 		</action>
 		<action name="codeReasonCondition" 
-						class="in.bloomington.timer.CodeReasonConditionAction" 
+						class="in.bloomington.timer.action.CodeReasonConditionAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/codeReasonCondition.jsp</result>		
 			<result name="error">/WEB-INF/jsp/codeReasonCondition.jsp</result>
 			<result name="success">/WEB-INF/jsp/codeReasonCondition.jsp</result>
 		</action>		
 		<action name="reasonCategory" 
-						class="in.bloomington.timer.ReasonCategoryAction" 
+						class="in.bloomington.timer.action.ReasonCategoryAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/reasonCategory.jsp</result>		
 			<result name="error">/WEB-INF/jsp/reasonCategory.jsp</result>
 			<result name="success">/WEB-INF/jsp/reasonCategory.jsp</result>
 		</action>						
 		<action name="codeReason" 
-						class="in.bloomington.timer.EarnCodeReasonAction" 
+						class="in.bloomington.timer.action.EarnCodeReasonAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/codeReason.jsp</result>		
 			<result name="error">/WEB-INF/jsp/codeReason.jsp</result>
 			<result name="success">/WEB-INF/jsp/codeReason.jsp</result>
 		</action>				
 		<action name="searchJobs" 
-						class="in.bloomington.timer.SearchJobAction" 
+						class="in.bloomington.timer.action.SearchJobAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/searchJobs.jsp</result>		
 			<result name="error">/WEB-INF/jsp/searchJobs.jsp</result>
 			<result name="success">/WEB-INF/jsp/searchJobs.jsp</result>
 		</action>
 		<action name="searchEmployees" 
-						class="in.bloomington.timer.SearchEmployeeAction" 
+						class="in.bloomington.timer.action.SearchEmployeeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/searchEmployees.jsp</result>		
 			<result name="error">/WEB-INF/jsp/searchEmployees.jsp</result>
 			<result name="success">/WEB-INF/jsp/searchEmployees.jsp</result>
 		</action>		
 		<action name="timeDetails" 
-						class="in.bloomington.timer.TimeDetailsAction" 
+						class="in.bloomington.timer.action.TimeDetailsAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/timeDetails.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timeDetails.jsp</result>
@@ -527,7 +527,7 @@
 			<result name="login">/Login</result>			
 		</action>
 		<action name="timeAction" 
-						class="in.bloomington.timer.TimeActionAction" 
+						class="in.bloomington.timer.action.TimeActionAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/timeAction.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timeAction.jsp</result>
@@ -541,7 +541,7 @@
 
 		</action>		
 		<action name="timeBlock" 
-						class="in.bloomington.timer.TimeBlockAction" 
+						class="in.bloomington.timer.action.TimeBlockAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/timeBlock.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timeBlock.jsp</result>
@@ -550,7 +550,7 @@
 			<result name="index" type="redirectAction">index</result>
 		</action>
 		<action name="timeBlockLog" 
-						class="in.bloomington.timer.TimeBlockLogAction" 
+						class="in.bloomington.timer.action.TimeBlockLogAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/timeBlockLogs.jsp</result>		
 			<result name="error">/WEB-INF/jsp/timeBlockLogs.jsp</result>
@@ -558,14 +558,14 @@
 			<result name="search">/WEB-INF/jsp/searchTimeLogs.jsp</result>			
 		</action>		
 		<action name="hourcode" 
-						class="in.bloomington.timer.HourCodeAction" 
+						class="in.bloomington.timer.action.HourCodeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/hourcode.jsp</result>		
 			<result name="error">/WEB-INF/jsp/hourcode.jsp</result>
 			<result name="success">/WEB-INF/jsp/hourcode.jsp</result>
 		</action>		
 		<action name="hourcodeCondition" 
-						class="in.bloomington.timer.HourCodeConditionAction" 
+						class="in.bloomington.timer.action.HourCodeConditionAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/hourcodeCondition.jsp</result>		
 			<result name="error">/WEB-INF/jsp/hourcodeCondition.jsp</result>
