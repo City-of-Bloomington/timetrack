@@ -73,8 +73,6 @@ public class TmwrpInitiate{
 		/**
 		 * get the list of documents ID's that have time entries but not
 		 * tmwrpRun enteries
-		 select distinct(d.id),e.id,concat_ws(' ',e.first_name,e.last_name) full_name from time_documents d, time_blocks t,employees e where t.document_id=d.id and e.id=d.employee_id and d.pay_period_id=555 and d.id not in (select document_id from tmwrp_runs) and t.inactive is null and t.inactive is null and ((t.clock_in is null and t.clock_out is null) or (t.clock_in is not null and t.clock_out is not null)) ";
-		 
 		 */
 		public String doProcess(){
 				Connection con = null;

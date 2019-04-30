@@ -144,7 +144,7 @@ $('#department_id_change').change(function() {
 
 function handleShowCodeReason(val){
     $.ajax({
-        url: APPLICATION_URL + "CodeReasonService?salary_group_id="+$("#salary_group_id").val()+"&hour_code_id="+val,
+        url: APPLICATION_URL + "CodeReasonService?salary_group_id="+$("#salary_group_id").val()+"&group_id="+$("#group_id").val()+"&hour_code_id="+val,
         dataType:'json'
     })
     .done(function( data, status ) {

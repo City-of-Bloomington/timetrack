@@ -563,14 +563,13 @@ public class TimeBlock extends Block{
 								}
 								if(department != null && department.getName().equals("Police")){
 										CodeReasonConditionList crcl = new CodeReasonConditionList();
-										String salary_group_id = document.getJob().getSalary_group_id();
-										crcl.setSalary_group_id(salary_group_id);
-										if(department != null){
-												crcl.setDepartment_id(department.getId());
-										}
-										// crcl.setGroup_id(group_id); // not needed now
-										crcl.setActiveOnly();
+										salary_group_id = document.getJob().getSalary_group_id();
+										crcl.setSalary_group_id(salary_group_id);										
+										group_id = document.getJob().getGroup_id();
+										crcl.setGroup_id(group_id);	
+										crcl.setDepartment_id(department.getId());
 										crcl.setHour_code_id(hour_code_id);
+										crcl.setActiveOnly();
 										String back = crcl.lookFor();
 										if(back.equals("")){
 												List<EarnCodeReason> ones = crcl.getReasons();

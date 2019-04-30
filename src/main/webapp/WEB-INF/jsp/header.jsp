@@ -55,6 +55,7 @@
       </s:if>
       <s:if test="user.isPoliceAdmin()">
 				<a href="<s:property value='#application.url'/>reportReason.action">Police Reason Report</a>
+        <a href="<s:property value='#application.url'/>switch.action?department_id=20">Change Target Employee</a>				
       </s:if>			
       <s:if test="user.canRunMpoReport()">
         <a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a>

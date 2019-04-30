@@ -25,7 +25,7 @@ public class Block{
 				hour_code_id="",
 				earn_code_reason_id="",
 				clock_in="", clock_out="", holidayName="";
-		String salary_group_id = "";
+		String salary_group_id = "", group_id="";
 		String date = ""; // the user pick date, needed for PTO, Holiday etc
 		double hours = 0.0, amount = 0.0; // for dollar value
 		int begin_hour = 0, begin_minute=0, end_hour=0, end_minute=0;
@@ -510,14 +510,25 @@ public class Block{
 						}
 						if(jobTask != null){
 								salary_group_id = jobTask.getSalary_group_id();
+								group_id = jobTask.getGroup_id();
 						}
 				}
 				return salary_group_id;
+		}
+		public String getGroup_id(){
+				if(group_id.equals("")){
+						getSalary_group_id(); // we use this to find group_id as well
+				}
+				return group_id;
 		}
 		public void setSalary_group_id(String val){
 				if(val != null)
 						salary_group_id = val;
 		}
+		public void setGroup_id(String val){
+				if(val != null)
+						group_id = val;
+		}		
 		public boolean isClockIn(){
 				return !clock_in.equals("");
 		}

@@ -45,7 +45,7 @@ public class CodeReasonService extends HttpServlet{
 				PrintWriter out = res.getWriter();
 				String name, value;
 				String term ="", type="", department_id="",
-						salary_group_id="",
+						salary_group_id="", group_id="",
 						hour_code_id="";
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
@@ -62,6 +62,15 @@ public class CodeReasonService extends HttpServlet{
 										}
 								}
 						}
+						else if (name.equals("group_id")) {
+								if(value != null && !value.equals("")){
+										try{
+												Integer.parseInt(value);
+												group_id = value;										
+										}catch(Exception ex){
+										}
+								}
+						}						
 						else if(name.equals("hour_code_id")){
 								if(value != null && !value.equals("")){
 										try{
@@ -85,6 +94,7 @@ public class CodeReasonService extends HttpServlet{
 						crcl = new CodeReasonConditionList();
 						crcl.setSalary_group_id(salary_group_id);
 						crcl.setHour_code_id(hour_code_id);
+						crcl.setGroup_id(group_id);
 						String back = crcl.lookFor();
 						if(back.equals("")){
 								reasons = crcl.getReasons();

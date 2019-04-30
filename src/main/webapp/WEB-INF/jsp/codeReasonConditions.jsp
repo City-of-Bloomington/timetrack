@@ -17,8 +17,8 @@
 				<td><a href="<s:property value='#application.url' />codeReasonCondition.action?id=<s:property value='id' />"><s:property value="id" /></a></td>
 				<td><s:property value="earnCodeReason.description" /></td>
 				<td><s:property value="hourCode" /></td>
-				<td><s:property value="salaryGroup" /></td>				
-				<td><s:property value="department" /></td>
+				<td><s:if test="salary_group_id == -1">All</s:if><s:else><s:property value="salaryGroup" /></s:else></td>
+				<td><s:if test="department_id == -1">All</s:if><s:else><s:property value="department" /></s:else></td>
 				<td><s:if test="group_id == -1">All</s:if><s:else><s:property value="group" /></s:else></td>
 				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>
