@@ -482,6 +482,13 @@
 			<result name="error">/WEB-INF/jsp/searchConditions.jsp</result>
 			<result name="success">/WEB-INF/jsp/searchConditions.jsp</result>
 		</action>
+		<action name="searchReasonConditions" 
+						class="in.bloomington.timer.action.SearchReasonConditionsAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/searchReasonConditions.jsp</result>		
+			<result name="error">/WEB-INF/jsp/searchReasonConditions.jsp</result>
+			<result name="success">/WEB-INF/jsp/searchReasonConditions.jsp</result>
+		</action>		
 		<action name="codeReasonCondition" 
 						class="in.bloomington.timer.action.CodeReasonConditionAction" 
 						method="execute">

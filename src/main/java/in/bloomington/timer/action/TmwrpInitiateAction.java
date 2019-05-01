@@ -26,23 +26,41 @@ public class TmwrpInitiateAction extends TopAction{
     List<PayPeriod> payPeriods = null;
 		TmwrpInitiate tmwrp = null;
     String tmwrpWrapsTitle = "Timewarp Initiate";
-    String pay_period_id = "", source="";
+    String pay_period_id = "", source="", employee_name="",
+				new_employee_id="", department_id="";
 		PayPeriod payPeriod = null, currentPayPeriod=null;
 		List<String> emps = null;
     public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("tmwrpWrapInitiate.action");
-				if(!action.equals("") && !pay_period_id.equals("")){
-						getTmwrp();
-						tmwrp.setPay_period_id(pay_period_id);
-						back = tmwrp.doProcess();
-						if(!back.equals("")){
-								addMessage(back);
+				if(!action.equals("")){
+						if(!pay_period_id.equals("")){
+								getTmwrp();
+								tmwrp.setPay_period_id(pay_period_id);								
+								if(new_employee_id.equals("")){
+										back = tmwrp.doProcess();
+										if(!back.equals("")){
+												addMessage(back);
+										}
+										else{
+												addMessage("Updated successfully");
+										}
+										emps = tmwrp.getEmps();
+								}
+								else{
+										tmwrp.setEmployee_id(new_employee_id);
+										back = tmwrp.doProcessOne();
+										if(!back.equals("")){
+												addMessage(back);
+										}
+										else{
+												addMessage("Updated successfully");
+										}										
+								}
 						}
 						else{
-								addMessage("Updated successfully");
+								addMessage("Need to select a pay period ");
 						}
-						emps = tmwrp.getEmps();
 				}
 				return ret;
     }
@@ -58,6 +76,28 @@ public class TmwrpInitiateAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						pay_period_id = val;
     }
+		public void setNew_employee_id(String val){
+				if(val != null && !val.equals(""))		
+						new_employee_id = val;
+		}
+		// not used right now
+		public void setDepartment_id(String val){
+				if(val != null && !val.equals(""))		
+						department_id = val;
+		}
+		public String getDepartment_id(){
+				return department_id;
+		}
+		public String getEmployee_name(){
+				return employee_name;
+		}
+		public String getNew_employee_id(){
+				return new_employee_id;
+		}				
+		public void setEmployee_name(String val){
+				if(val != null && !val.equals(""))		
+						employee_name = val;
+		}		
     public String getSource(){
 				return source;
     }		

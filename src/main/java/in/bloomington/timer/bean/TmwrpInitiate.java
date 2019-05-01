@@ -24,7 +24,7 @@ public class TmwrpInitiate{
     static Logger logger = LogManager.getLogger(TmwrpInitiate.class);
     static final DecimalFormat df = new DecimalFormat("#0.00");		
     static final long serialVersionUID = 1500L;
-		String pay_period_id = "";
+		String pay_period_id = "", employee_id="";
 		List<String> emps = null;
     public TmwrpInitiate(){
     }		
@@ -45,6 +45,10 @@ public class TmwrpInitiate{
 				if(val != null)
 						pay_period_id = val;
     }
+    public void setEmployee_id(String val){
+				if(val != null)
+					 employee_id = val;
+    }		
     public boolean equals(Object o) {
 				if (o instanceof TmwrpInitiate) {
 						TmwrpInitiate c = (TmwrpInitiate) o;
@@ -133,5 +137,59 @@ public class TmwrpInitiate{
 				return msg;
 
 		}
+		/**
+		 * here we have one employee that we want to recalculate his/her times
+		 * tmwrpRun enteries
+		 */
+		public String doProcessOne(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				Set<String> docIdSet = null;
+				String msg="", str="", doc_id="";
+				String qq = "select d.id from time_documents d where d.pay_period_id=? and  d.employee_id = ? ";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Unable to connect to DB ";
+						return msg;
+				}
+				emps = new ArrayList<>();
+				docIdSet = new HashSet<>();
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, pay_period_id);
+						pstmt.setString(2, employee_id);						
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								doc_id = rs.getString(1);
+								System.err.println(doc_id);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				if(!doc_id.equals("")){
+						TimewarpManager manager = new TimewarpManager();
+						manager.setDocument_id(doc_id);
+						String back = manager.doProcess();
+						if(!back.equals("")){
+								msg += back;												
+						}
+						else{
+								System.err.println(" updated doc "+doc_id+" for employee "+employee_id);
+						}
+				}
+				else{
+						msg = "No document found";
+				}
+				return msg;
+
+		}		
 
 }
