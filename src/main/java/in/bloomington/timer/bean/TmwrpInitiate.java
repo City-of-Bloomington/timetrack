@@ -24,7 +24,8 @@ public class TmwrpInitiate{
     static Logger logger = LogManager.getLogger(TmwrpInitiate.class);
     static final DecimalFormat df = new DecimalFormat("#0.00");		
     static final long serialVersionUID = 1500L;
-		String pay_period_id = "", employee_id="";
+		String pay_period_id = "", employee_id="",
+				department_id="", group_id="";
 		List<String> emps = null;
     public TmwrpInitiate(){
     }		
@@ -42,12 +43,20 @@ public class TmwrpInitiate{
     // setters
     //
     public void setPay_period_id(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						pay_period_id = val;
     }
     public void setEmployee_id(String val){
 				if(val != null)
 					 employee_id = val;
+    }
+    public void setDepartment_id(String val){
+				if(val != null && !val.equals("-1"))
+					 department_id = val;
+    }
+    public void setGroup_id(String val){
+				if(val != null && !val.equals("-1"))
+					 group_id = val;
     }		
     public boolean equals(Object o) {
 				if (o instanceof TmwrpInitiate) {
@@ -137,6 +146,138 @@ public class TmwrpInitiate{
 				return msg;
 
 		}
+		public String doProcessDept(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				Set<String> docIdSet = null;
+				String msg="", str="";
+				String qq = "select distinct(d.id),e.id,concat_ws(' ',e.first_name,e.last_name) full_name "+
+						"from time_documents d, time_blocks t,employees e, "+
+						"department_employees de "+
+						"where t.document_id=d.id and e.id=d.employee_id "+
+						"and de.employee_id=e.id and de.department_id=? "+
+						"and d.pay_period_id=? ";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Unable to connect to DB ";
+						return msg;
+				}
+				emps = new ArrayList<>();
+				docIdSet = new HashSet<>();
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, department_id);						
+						pstmt.setString(2, pay_period_id);
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								String doc_id = rs.getString(1);
+								String emp_id = rs.getString(2);
+								String emp_name = rs.getString(3);
+								docIdSet.add(doc_id);
+								emps.add(emp_name);
+								System.err.println(doc_id+" "+emp_name);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				if(docIdSet != null && !docIdSet.isEmpty()){
+						TimewarpManager manager = null;
+						for(String id:docIdSet){
+								manager = new TimewarpManager();
+								manager.setDocument_id(id);
+								String back = manager.doProcess();
+								if(!back.equals("")){
+										if(msg.indexOf(back) == -1){
+												if(!msg.equals("")) msg += ", ";
+												msg += back;												
+										}
+								}
+								else{
+										System.err.println(" updated doc "+id);
+								}
+						}
+				}
+				else{
+						msg = "No match found";
+				}
+				return msg;
+
+		}
+		public String doProcessGroup(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				Set<String> docIdSet = null;
+				String msg="", str="";
+				String qq = "select distinct(d.id),e.id,concat_ws(' ',e.first_name,e.last_name) full_name "+
+						"from time_documents d, time_blocks t,employees e, "+
+						"group_employees g "+
+						"where t.document_id=d.id and e.id=d.employee_id "+
+						"and g.employee_id=e.id and g.group_id=? "+
+						"and d.pay_period_id=? ";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Unable to connect to DB ";
+						return msg;
+				}
+				emps = new ArrayList<>();
+				docIdSet = new HashSet<>();
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1,group_id);						
+						pstmt.setString(2, pay_period_id);
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								String doc_id = rs.getString(1);
+								String emp_id = rs.getString(2);
+								String emp_name = rs.getString(3);
+								docIdSet.add(doc_id);
+								emps.add(emp_name);
+								System.err.println(doc_id+" "+emp_name);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				if(docIdSet != null && !docIdSet.isEmpty()){
+						TimewarpManager manager = null;
+						for(String id:docIdSet){
+								manager = new TimewarpManager();
+								manager.setDocument_id(id);
+								String back = manager.doProcess();
+								if(!back.equals("")){
+										if(msg.indexOf(back) == -1){
+												if(!msg.equals("")) msg += ", ";
+												msg += back;												
+										}
+								}
+								else{
+										System.err.println(" updated doc "+id);
+								}
+						}
+				}
+				else{
+						msg = "No match found";
+				}
+				return msg;
+
+		}		
+		
+		
 		/**
 		 * here we have one employee that we want to recalculate his/her times
 		 * tmwrpRun enteries
@@ -191,5 +332,5 @@ public class TmwrpInitiate{
 				return msg;
 
 		}		
-
+		
 }
