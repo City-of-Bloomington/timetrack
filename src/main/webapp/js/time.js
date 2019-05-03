@@ -159,7 +159,7 @@ function handleShowCodeReason(val){
 				$("#reason_div_id").show();				
     })
     .error(function(x,status,err){
-        alert(status+" "+err);
+        // alert(status+" "+err);
     });
 }
 
