@@ -308,7 +308,7 @@ public class JobTask implements Serializable{
 				// needed for auto_complete
     }		
     public void setSalary_group_id(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						salary_group_id = val;
     }
     public void setEffective_date(String val){

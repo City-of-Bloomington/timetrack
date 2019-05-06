@@ -37,7 +37,7 @@ public class TmwrpInitiateAction extends TopAction{
 				if(!action.equals("")){
 						if(!pay_period_id.equals("")){
 								getTmwrp();
-								tmwrp.setPay_period_id(pay_period_id);								
+								tmwrp.setPay_period_id(pay_period_id);
 								if(!group_id.equals("")){
 										tmwrp.setGroup_id(group_id);		
 										back = tmwrp.doProcessGroup();
@@ -110,9 +110,14 @@ public class TmwrpInitiateAction extends TopAction{
 		}
 		// not used right now
 		public void setDepartment_id(String val){
-				if(val != null && !val.equals(""))		
-						department_id = val;
+				if(val != null && !val.equals("-1")){		
+						// we ignore this 
+				}
 		}
+		public void setDept_id(String val){
+				if(val != null && !val.equals("-1"))		
+						department_id = val;
+		}		
 		public String getDepartment_id(){
 				return department_id;
 		}

@@ -330,38 +330,38 @@ public class TimeBlockList{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select "+
-						"time_block_id,"+
-						"document_id,"+
-						"hour_code_id,"+
-						"earn_code_reason_id,"+
-						"date_format(date,'%m/%d/%Y'),"+
+						"v.time_block_id,"+
+						"v.document_id,"+
+						"v.hour_code_id,"+
+						"v.earn_code_reason_id,"+
+						"date_format(v.date,'%m/%d/%Y'),"+
 						
-						"begin_hour,"+
-						"begin_minute,"+
-						"end_hour,"+
-						"end_minute,"+
-						"hours,"+
+						"v.begin_hour,"+
+						"v.begin_minute,"+
+						"v.end_hour,"+
+						"v.end_minute,"+
+						"v.hours,"+
 						
-						"amount,"+
-						"clock_in,"+
-						"clock_out,"+
-						"inactive,"+
-						"order_id,"+
+						"v.amount,"+
+						"v.clock_in,"+
+						"v.clock_out,"+
+						"v.inactive,"+
+						"v.order_id,"+
 						
-						"code_name,"+
-						"code_description,"+
-						"record_method,"+
-						"accrual_id,"+
-						"code_type,"+
+						"v.code_name,"+
+						"v.code_description,"+
+						"v.record_method,"+
+						"v.accrual_id,"+
+						"v.code_type,"+
 						
-						"default_monetary_amount,"+
-						"nw_code_name,"+
-						"job_name,"+
-						"job_id, "+
-						"pay_period_id,"+
+						"v.default_monetary_amount,"+
+						"v.nw_code_name,"+
+						"v.job_name,"+
+						"v.job_id, "+
+						"v.pay_period_id,"+
 						
-						"employee_id, "+
-						"reason "+
+						"v.employee_id, "+
+						"v.reason "+
 						
 						"from time_blocks_view v ";
 				String qw = "";
@@ -372,56 +372,56 @@ public class TimeBlockList{
 				}
 				if(!pay_period_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
-						qw += "pay_period_id=? ";
+						qw += "v.pay_period_id=? ";
 				}
 				if(!document_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
-						qw += "document_id=? ";
+						qw += "v.document_id=? ";
 				}				
 				if(!employee_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += "employee_id=? ";
+						qw += "v.employee_id=? ";
 				}
 				if(!job_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += "job_id=? ";
+						qw += "v.job_id=? ";
 				}				
 				if(!date_from.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += "date >= ? ";
+						qw += "v.date >= ? ";
 				}
 				if(!date_to.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += "date <= ? ";
+						qw += "v.date <= ? ";
 				}
 				if(!date.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += "date = ? ";
+						qw += "v.date = ? ";
 				}
 				if(!code.equals("") && !code2.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += "(code_name like ? or code_name like ?)";
+						qw += "(v.code_name like ? or v.code_name like ?)";
 				}
 				else if(!code.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += "code_name like ? ";
+						qw += "v.code_name like ? ";
 				}
 				if(clockInOnly){
 						if(!qw.equals("")) qw += " and ";
-						qw += " clock_in is not null and clock_out is null ";
+						qw += " v.clock_in is not null and v.clock_out is null ";
 				}
 				else if(hasClockInAndOut){
 						if(!qw.equals("")) qw += " and ";
-						qw += " clock_in is not null and clock_out is not null ";
+						qw += " v.clock_in is not null and v.clock_out is not null ";
 				}
 				if(active_only){
 						if(!qw.equals("")) qw += " and ";
-						qw += " inactive is null ";
+						qw += " v.inactive is null ";
 				}
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
-				qq += " order by date, begin_hour ";
+				qq += " order by v.date, v.begin_hour ";
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";

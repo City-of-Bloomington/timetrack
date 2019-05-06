@@ -15,9 +15,7 @@
 	<p>3 - (Optional) You may run this process for whole department or only certain group in the department</p>	
 	
 	<s:form action="tmwrpInitiate" id="form_id" method="post" >
-		<s:hidden name="action2" id="action2" value="" />
-		<input type="hidden" name="department_id" id="department_id"
-			value="<s:property value='department_id' />"  />
+    <s:hidden name="department_id" value="" id="department_id" />		
 		<s:if test="hasMessages()">
 			<s:set var="messages" value="%{messages}" />
 			<%@ include file="../messages.jsp" %>
@@ -42,7 +40,7 @@
       </div>
   		<div class="form-group">
   			<label>Department</label>
-				<s:select name="department_id" value="%{department_id}" list="departments" listKey="id" listValue="name" id="department_id_change"/>				
+				<s:select name="dept_id" value="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change"/> 				
   		</div>
   		<div class="form-group">
   			<label>Group</label>

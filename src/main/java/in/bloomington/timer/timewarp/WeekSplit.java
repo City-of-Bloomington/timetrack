@@ -151,7 +151,7 @@ public class WeekSplit{
 								else{
 										if(hrCode.isUsed()){
 												earn_time_used += hours;
-												total_hrs += hours;
+												// total_hrs += hours;
 										}
 										else if(hrCode.isUnpaid()){
 												unpaid_hrs += hours;
@@ -235,7 +235,7 @@ public class WeekSplit{
 						}
 						else if(hrCode.isUsed()){
 								earn_time_used += hours;
-								total_hrs += hours;								
+								// total_hrs += hours;								
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}											

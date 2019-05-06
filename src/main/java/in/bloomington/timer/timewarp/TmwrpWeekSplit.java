@@ -141,7 +141,7 @@ public class TmwrpWeekSplit{
 								else{
 										if(hrCode.isUsed()){
 												earn_time_used += hours;
-												total_hrs += hours;
+												// total_hrs += hours;
 										}
 										else if(hrCode.isCallOut()){
 												non_reg_hrs += hours;
@@ -213,7 +213,7 @@ public class TmwrpWeekSplit{
 				}
 				else if(hrCode.isUsed()){
 						earn_time_used += hours;
-						total_hrs += hours;								
+						// total_hrs += hours;								
 						if(daily.containsKey(code_id)){
 								hours +=  daily.get(code_id);
 						}											
