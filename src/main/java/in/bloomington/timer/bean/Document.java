@@ -462,6 +462,7 @@ public class Document implements Serializable{
 								fillTwoWeekEmptyBlocks();
 						}
 						getEmpAccruals();
+						checkForWarnings();
 				}
     }
     public void prepareDaily(){
@@ -639,11 +640,14 @@ public class Document implements Serializable{
 										employeeAccruals = ones;
 								}
 						}
-						// now we adjust the totals see below
+						else{
+								System.err.println(" emp accruals "+back);
+						}
 						findHourCodeTotals();
 						findUsedAccruals();
+						// now we adjust the totals see below
 						adjustAccruals();
-						checkForWarnings();
+						// checkForWarnings();
 				}
 				return employeeAccruals;
     }
@@ -799,9 +803,14 @@ public class Document implements Serializable{
     public boolean hasAllAccruals(){
 				if(allAccruals.size() == 0){
 						getEmpAccruals();
+						checkForWarnings();
 				}
 				return allAccruals != null && allAccruals.size() > 0;
     }
+		public boolean hasEmpAccruals(){
+				getEmpAccruals();
+				return employeeAccruals != null && employeeAccruals.size() > 0;
+		}
     public boolean hasHourCodeWeek1(){
 				return hourCodeWeek1 != null && hourCodeWeek1.size() > 0;
     }
@@ -1027,10 +1036,13 @@ public class Document implements Serializable{
     private void checkForWarnings(){
 				setWarningFlag();
 				if(need_warning){
-						// newly added
+						try{
 						findWeekTotals();
 						checkForWarningsAfter();
 						checkForWarningsBefore();
+						}catch(Exception ex){
+								System.err.println("check warn "+ex);
+						}
 				}
     }
     // after submission
