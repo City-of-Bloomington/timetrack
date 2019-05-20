@@ -101,23 +101,23 @@ public class TmwrpInitiateAction extends TopAction{
 						pay_period_id = val;
     }
   public void setGroup_id(String val){
-				if(val != null && !val.equals(""))		
+			if(val != null && !val.equals("-1") && !val.equals(""))		
 						group_id = val;
     }		
 		public void setNew_employee_id(String val){
 				if(val != null && !val.equals(""))		
 						new_employee_id = val;
 		}
-		// not used right now
+		// 
 		public void setDepartment_id(String val){
 				if(val != null && !val.equals("-1")){		
-						// we ignore this 
+						department_id = val;
 				}
 		}
 		public void setDept_id(String val){
 				if(val != null && !val.equals("-1"))		
 						department_id = val;
-		}		
+		}
 		public String getDepartment_id(){
 				return department_id;
 		}

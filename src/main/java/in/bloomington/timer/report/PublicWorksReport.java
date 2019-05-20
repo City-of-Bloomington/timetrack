@@ -15,12 +15,12 @@ import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.timewarp.WarpEntry;
 
-public class ReasonReport{
+public class PublicWorksReport{
 
 		boolean debug = false;
 		static final long serialVersionUID = 3820L;
 		static final int startYear = CommonInc.reportStartYear; 
-		static Logger logger = LogManager.getLogger(ReasonReport.class);
+		static Logger logger = LogManager.getLogger(PublicWorksReport.class);
 		//
 		final static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");		
 		final static DecimalFormat df4 = new DecimalFormat("#0.0000");
@@ -42,7 +42,7 @@ public class ReasonReport{
 		double totalHours =0, totalAmount=0;
 		double hourly_rate = 35.;
 		String errors = "";
-    public ReasonReport(){
+    public PublicWorksReport(){
 				
     }	
 		public int getYear(){
@@ -168,6 +168,10 @@ public class ReasonReport{
 				}
 				return msg;
 		}
+		/**
+ select tt.name,tt.empnum,tt.code,tt.date,sum(hours)                                    from (select                                                                    concat_ws(' ',e.first_name,e.last_name) AS name,                                e.employee_number as empnum,                                                    t.date AS date,                                                                 c.name AS code,                                                                 t.hours AS hours                                                                from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join employees e on d.employee_id=e.id                                          where t.inactive is null                                                        and c.name like 'REG_ASSET'                                                     and p.start_date >= '2019-05-05' and p.end_date <= '2019-05-20'                 ) tt group by tt.name,tt.empnum,tt.code,tt.date;
+
+		 */
 		public String findHoursByDateAndCode(){
 				String msg = "";
 				Connection con = null;
@@ -185,28 +189,24 @@ public class ReasonReport{
 				// using subquery
 				//
 				String qq = "select tt.name,tt.empnum,"+
-						" tt.code,tt.reason,tt.date,"+
+						" tt.code,tt.date,"+
 						" sum(hours) "+
 						" from (select "+
 						" concat_ws(' ',e.first_name,e.last_name) AS name,"+
 						" e.employee_number as empnum,"+
 						" t.date AS date,"+
 						" c.name AS code, "+
-						" r.description AS reason, "+
 						" t.hours AS hours "+
 						" from time_blocks t "+
 						" join hour_codes c on t.hour_code_id=c.id "+						
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
-						" join department_employees de on de.employee_id=d.employee_id "+
 						" join employees e on d.employee_id=e.id "+
-						" join earn_code_reasons r on r.id=t.earn_code_reason_id "+
 						" where t.inactive is null "+
-            " and t.earn_code_reason_id is not null "+
-						" and de.department_id = 20 "+ // police						
+						" and c.name like 'REG_ASSET' "+
 						" and p.start_date >= ? and p.end_date <= ? ";
 				qq += " ) tt ";
-				qq += " group by tt.name,tt.empnum,tt.code,tt.reason,tt.date ";
+				qq += " group by tt.name,tt.empnum,tt.code,tt.date ";
 				con = Helper.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -232,9 +232,9 @@ public class ReasonReport{
 										new WarpEntry(debug,
 																	rs.getString(1), // name
 																	rs.getString(2), // emp num
-																	rs.getString(3)+" - "+rs.getString(4), // code
-																	rs.getString(5), // date
-																	rs.getDouble(6), //hours 
+																	rs.getString(3), // code
+																	rs.getString(4), // date
+																	rs.getDouble(5), //hours 
 																	hourly_rate);
 								dailyEntries.add(one);
 						}
@@ -248,7 +248,13 @@ public class ReasonReport{
 						UnoConnect.databaseDisconnect(con);
 				}						
 				return msg;
-		}		
+		}
+		/*
+			 select tt.name,tt.empnum,tt.code,sum(hours)                                           from ( select                                                                   concat_ws(' ',e.first_name,e.last_name) AS name,                                e.employee_number AS empnum,                                                    c.name AS code,                                                                 t.hours AS hours                                                                from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join department_employees de on de.employee_id=d.employee_id                    join employees e on d.employee_id=e.id                                          where t.inactive is null                                                        and c.name like 'REG_ASSET'                                                     and p.start_date >= '2019-05-05' and p.end_date <= '2019-05-20'                ) tt                                                                          group by tt.code,tt.name,tt.empnum;
+
+			
+
+		 */
 		public String findHoursByNameAndCode(){
 				String msg = "";
 				Connection con = null;
@@ -265,13 +271,11 @@ public class ReasonReport{
 				//
 				// using subquery
 				//
-				String qq = "select tt.name,tt.empnum,tt.code,tt.reason,"+
-						" sum(hours) "+
+				String qq = "select tt.name,tt.empnum,tt.code,sum(hours) "+
 						"from ( select "+
 						" concat_ws(' ',e.first_name,e.last_name) AS name,"+
 						" e.employee_number AS empnum,"+
 						" c.name AS code, "+
-						" r.description AS reason, "+
 						" t.hours AS hours "+
 						" from time_blocks t "+
 						" join hour_codes c on t.hour_code_id=c.id "+						
@@ -279,13 +283,11 @@ public class ReasonReport{
 						" join pay_periods p on p.id=d.pay_period_id "+
 						" join department_employees de on de.employee_id=d.employee_id "+
 						" join employees e on d.employee_id=e.id "+
-						" join earn_code_reasons r on r.id=t.earn_code_reason_id "+
 						" where t.inactive is null "+
-						" and t.earn_code_reason_id is not null "+
-						" and de.department_id = 20 "+
+						" and c.name like 'REG_ASSET' "+						
 						" and p.start_date >= ? and p.end_date <= ? ";
 				qq += " ) tt ";
-				qq += " group by tt.code,tt.reason,tt.name,tt.empnum ";
+				qq += " group by tt.code,tt.name,tt.empnum ";
 				con = Helper.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -310,8 +312,8 @@ public class ReasonReport{
 										new WarpEntry(debug,
 																	rs.getString(1), // name
 																	rs.getString(2), // emp num
-																	rs.getString(3)+" - "+rs.getString(4), // code
-																	rs.getDouble(5), // hours
+																	rs.getString(3), // code
+																	rs.getDouble(4), // hours
 																	hourly_rate);
 								addToHash(one);
 								entries.add(one);

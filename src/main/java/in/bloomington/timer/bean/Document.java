@@ -1150,6 +1150,7 @@ public class Document implements Serializable{
 																	 double weekTotal
 																	 ){
 				getJob();
+				if(hourCodeWeek == null) return;
 				for(String key:warningMap.keySet()){
 						if(hourCodeWeek.containsKey(key)){
 								AccrualWarning acc_warn = warningMap.get(key);

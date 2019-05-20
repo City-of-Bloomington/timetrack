@@ -84,6 +84,7 @@
 				<li><a href="<s:property value='#application.url'/>jobIntervention.action">Parks Jobs Need Intervention</a></li>
 				<li><a href="<s:property value='#application.url'/>reportTimes.action">Employees Time Details</a></li>
 				<li><a href="<s:property value='#application.url'/>reportReason.action">Police Code Reasons</a></li>
+				<li><a href="<s:property value='#application.url'/>reportPublicWorks.action">Asset Management (Public Works)</a></li>				
 			</ul>			
 			<h2>Employee Data Import</h2>
 			<ul>
