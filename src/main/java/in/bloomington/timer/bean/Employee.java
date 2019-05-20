@@ -449,6 +449,9 @@ public class Employee implements Serializable, Comparable<Employee>{
     public boolean isHrAdmin(){
 				return hasRole("HrAdmin");
     }
+    public boolean isPublicWorksAdmin(){
+				return hasRole("PublicWorksAdmin");
+    }		
     public boolean canRunTimewarp(){
 				return hasRole("Timewarp");
     }
