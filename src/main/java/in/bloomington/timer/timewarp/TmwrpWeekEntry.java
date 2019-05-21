@@ -183,6 +183,23 @@ public class TmwrpWeekEntry{
 						tHash.put(code_id, val);
 				}
     }
+    void mergeTwoHashes(Hashtable<String, Double> tFrom,
+												Hashtable<String, Double> tTo){
+				if(tFrom != null && tFrom.size() > 0){
+						Enumeration<String> keys = tFrom.keys();
+						while(keys.hasMoreElements()){
+								String key = keys.nextElement();
+								Double val = tFrom.get(key);
+								if(tTo.containsKey(key)){
+										double val2 = tTo.get(key).doubleValue() + val.doubleValue();
+										tTo.put(key, val2);
+								}
+								else{
+										tTo.put(key, val);
+								}
+						}
+				}
+    }		
     //		
     // this is for holiday earned and other non CE codes
     //
@@ -212,12 +229,14 @@ public class TmwrpWeekEntry{
 		}
     public Hashtable<String, Double> getAll(){
 				Hashtable<String, Double> all = new Hashtable<String, Double>();
-				if(!hash.isEmpty())
+				if(!hash.isEmpty()){
 						all.putAll(hash);
-				if(!earnedHash.isEmpty())
-						all.putAll(earnedHash);
-				if(handSpecial){ 
-						all.putAll(regHash);
+				}
+				if(!earnedHash.isEmpty()){
+						mergeTwoHashes(earnedHash, all);
+				}
+				if(handSpecial){
+						mergeTwoHashes(regHash, all);						
 				}
 				return all;
     }

@@ -210,15 +210,34 @@ public class WeekEntry{
 		}
     public Hashtable<String, Double> getAll(){
 				Hashtable<String, Double> all = new Hashtable<String, Double>();
-				if(!hash.isEmpty())
+				if(!hash.isEmpty()){
 						all.putAll(hash);
-				if(!earnedHash.isEmpty())
-						all.putAll(earnedHash);
+				}
+				if(!earnedHash.isEmpty()){
+						mergeTwoHashes(earnedHash, all);
+				}
 				if(handSpecial){
-						all.putAll(regHash);
+						mergeTwoHashes(regHash, all);						
 				}
 				return all;
     }
+    void mergeTwoHashes(Hashtable<String, Double> tFrom,
+												Hashtable<String, Double> tTo){
+				if(tFrom != null && tFrom.size() > 0){
+						Enumeration<String> keys = tFrom.keys();
+						while(keys.hasMoreElements()){
+								String key = keys.nextElement();
+								Double val = tFrom.get(key);
+								if(tTo.containsKey(key)){
+										double val2 = tTo.get(key).doubleValue() + val.doubleValue();
+										tTo.put(key, val2);
+								}
+								else{
+										tTo.put(key, val);
+								}
+						}
+				}
+    }				
     public void doCalculations(){
 	
 				splitOne.doCalculations();

@@ -268,7 +268,10 @@ public class HourCode{
 		}				
 		public boolean isOther(){
 				return type.equals("Other");
-		}		
+		}
+		public boolean requireReason(){
+				return isEarned() && record_method.equals("Time");
+		}
 		public AccrualWarning getAccrualWarning(){
 				if(accrualWarning == null &&
 					 !id.equals("") &&

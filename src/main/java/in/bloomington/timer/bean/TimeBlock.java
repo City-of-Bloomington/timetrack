@@ -1182,7 +1182,7 @@ public class TimeBlock extends Block{
 						return msg;
 				}
 				if(isMonetaryType()){
-						getHourCode();
+						// getHourCode();
 						if(hourCode != null){
 								double dd = hourCode.getDefaultMonetaryAmount();
 								if(dd > 0){ // use the default amount 
@@ -1192,6 +1192,12 @@ public class TimeBlock extends Block{
 										msg = ""+amount+" Amount entered exceeds max limit ";
 										return msg;
 								}
+						}
+				}
+				if(hourCode != null){
+						if(hourCode.requireReason() && earn_code_reason_id.equals("")){
+								msg = "You need to pick a reason for ean code ";
+								return msg;
 						}
 				}
 				//
@@ -1409,7 +1415,6 @@ public class TimeBlock extends Block{
 						amount = 0;
 				}
 				else if(isMonetaryType()){
-						getHourCode();
 						if(hourCode != null){
 								double dd = hourCode.getDefaultMonetaryAmount();
 								if(dd > 0)
@@ -1418,6 +1423,12 @@ public class TimeBlock extends Block{
 						}
 				}
 				else{
+						if(hourCode != null){
+								if(hourCode.requireReason() && earn_code_reason_id.equals("")){
+										msg = "You need to pick a reason for ean code ";
+										return msg;
+								}
+						}						
 						msg = checkForConflicts();
 				}				
 				if(!msg.equals("")){
