@@ -43,7 +43,7 @@
 				<s:if test="#code == #code2">
 					<s:iterator var="entry" value="#entries">				
 						<tr>
-							<td><s:property value="#entry.fullname" /></td>
+							<td><s:property value="#entry.fullname" /> (<s:property value="#entry.empNum" />)</td>							
 							<td><s:property value="#entry.code" /></td>
 							<td align="right"><s:property value="#entry.hoursStr" /></td>
 						</tr>
@@ -76,7 +76,7 @@
 		</tr>
 		<s:iterator var="row" value="#dailyEntries">
 			<tr>
-				<td><s:property value="#row.fullname" /></td>
+				<td><s:property value="#row.fullname" /> (<s:property value="#row.empNum" />)</td>				
 				<td><s:property value="#row.date" /></td>
 				<td><s:property value="#row.code" /></td>
 				<td align="right"><s:property value="#row.hoursStr" /></td>
