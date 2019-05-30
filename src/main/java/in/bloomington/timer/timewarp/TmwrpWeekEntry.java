@@ -236,7 +236,8 @@ public class TmwrpWeekEntry{
 						mergeTwoHashes(earnedHash, all);
 				}
 				if(handSpecial){
-						mergeTwoHashes(regHash, all);						
+						// already taken care of
+						// mergeTwoHashes(regHash, all);						
 				}
 				return all;
     }

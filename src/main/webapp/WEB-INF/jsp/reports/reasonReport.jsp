@@ -24,6 +24,7 @@
 		<caption>Hours Classified by Employees & Earn Code - Reason</caption>
 		<tr>
 			<td>Employee</td>
+			<td>Employee Number</td>			
 			<td>Earn Code - Reason</td>
 			<td>Hours</td>
 		</tr>
@@ -36,7 +37,8 @@
 				<s:if test="#code == #code2">
 					<s:iterator var="entry" value="#entries">				
 						<tr>
-							<td><s:property value="#entry.fullname" /> (<s:property value="#entry.empNum" />)</td>
+							<td><s:property value="#entry.fullname" /></td>
+							<td><s:property value="#entry.empNum" />)</td>
 							<td><s:property value="#entry.code" /></td>
 							<td align="right"><s:property value="#entry.hoursStr" /></td>
 						</tr>
@@ -63,13 +65,15 @@
 		<caption>Hours Classified by Employeee, Date, Earn Code - Reason</caption>
 		<tr>
 			<td align="center"><b>Employee</b></td>
+			<td align="center"><b>Employee Number</b></td>			
 			<td align="center"><b>Date</b></td>		
 			<td align="center"><b>Earn Code - Reason</b></td>
 			<td align="center"><b>Hours</b></td>
 		</tr>
 		<s:iterator var="row" value="#dailyEntries">
 			<tr>
-				<td><s:property value="#row.fullname" /> (<s:property value="#row.empNum" />)</td>
+				<td><s:property value="#row.fullname" /></td>
+				<td><s:property value="#row.empNum" /></td>
 				<td><s:property value="#row.date" /></td>
 				<td><s:property value="#row.code" /></td>
 				<td align="right"><s:property value="#row.hoursStr" /></td>
