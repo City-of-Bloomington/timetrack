@@ -298,8 +298,8 @@ public class TmwrpWeekEntry{
 				if(!table2.isEmpty())
 						mergeWithHash(table2, regHash);
 				// to all
-				if(!hash.isEmpty())
-						mergeWithHash(regHash, hash);				
+				// if(!hash.isEmpty())
+				mergeWithHash(regHash, hash);				
     }
     // monetary
     void mergeMonetaryHashtablesFromSplits(){

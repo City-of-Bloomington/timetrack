@@ -61,8 +61,8 @@ public class CommonInc{
 		public final static String compTime15EarnCodeID = "34"; // CE1.5
 		public final static String compTime20EarnCodeID = "45"; // CE2.0
 		public final static String holyCompTime10EarnCodeID = "50"; // HCE1.0		
-		public final static String holyCompTime15EarnCodeID = "34"; // HCE1.5
-		public final static String holyCompTime20EarnCodeID = "79"; // HCE2.0			
+		public final static String holyCompTime15EarnCodeID = "79"; // HCE1.5
+		public final static String holyCompTime20EarnCodeID = "48"; // HCE2.0			
 		public final static double maxMonetaryAmount = 1000.0; // CA for example
 
    	String message = "";
