@@ -49,14 +49,20 @@
 
 			<div class="form-group">
 				<label>Effective Date</label>
-				<s:textfield name="departmentEmployee.effective_date" value="%{departmentEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" />
+				<div class="date-range-picker">
+					<div>		
+						<s:textfield name="departmentEmployee.effective_date" value="%{departmentEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" />
+					</div>
+				</div>
 			</div>
-
 			<div class="form-group">
 				<label>Expire Date</label>
-				<s:textfield name="departmentEmployee.expire_date" value="%{departmentEmployee.expire_date}" size="10" maxlength="10" cssClass="date" />
+				<div class="date-range-picker">
+					<div>						
+						<s:textfield name="departmentEmployee.expire_date" value="%{departmentEmployee.expire_date}" size="10" maxlength="10" cssClass="date" />
+					</div>
+				</div>
 			</div>
-
 			<s:if test="departmentEmployee.id == ''">
 				<s:submit name="action" type="button" value="Save" class="button"/>
 			</s:if>

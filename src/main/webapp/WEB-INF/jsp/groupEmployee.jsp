@@ -30,14 +30,20 @@
 			</div>
 			<div class="form-group">
 				<label>Effective Date</label>
-				<s:textfield name="groupEmployee.effective_date" value="%{groupEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" />
+					<div class="date-range-picker">
+						<div>								
+							<s:textfield name="groupEmployee.effective_date" value="%{groupEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" />
+						</div>
+					</div>
 			</div>
-
 			<div class="form-group">
 				<label>Expire Date</label>
-				<s:textfield name="groupEmployee.expire_date" value="%{groupEmployee.expire_date}" size="10" maxlength="10" cssClass="date" />
+				<div class="date-range-picker">
+					<div>				
+						<s:textfield name="groupEmployee.expire_date" value="%{groupEmployee.expire_date}" size="10" maxlength="10" cssClass="date" />
+					</div>
+				</div>
 			</div>
-
 			<div class="form-group">
 				<label>Inactive</label>
 				<s:checkbox name="groupEmployee.inactive" value="%{groupEmployee.inactive}" /> Yes (check to dissable)

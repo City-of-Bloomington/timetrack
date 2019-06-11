@@ -52,8 +52,12 @@
 			</div>
       <div class="form-group">
         <label>New Job Effective Start Pay Period</label>
-        <s:select name="jobTask.pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Effective start pay period" />
-      </div>			
+				<div class="date-range-picker">
+					<div>					
+						<s:select name="jobTask.pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Effective start pay period" />
+					</div>
+				</div>
+			</div>
 			<div class="form-group">
 				<label>Primary Job?</label>
 				<s:checkbox name="jobTask.primary_flag" value="%{jobTask.primary_flag}" fieldValue="true" />Yes

@@ -51,12 +51,21 @@
 			</div>
 
 			<div class="form-group">
-				<!-- butcherad: we need to design input groups of this nature too -->
-				<label>Date, from:</label>
-				<s:textfield name="joblst.date_from" value="%{joblst.date_from}" size="10" cssClass="date" /> to:
-				<s:textfield name="joblst.date_to" value="%{joblst.date_to}" size="10" cssClass="date" />
+				<label>Date, from: (mm/dd/yyyy)</label>
+				<div class="date-range-picker">
+					<div>					
+						<s:textfield name="joblst.date_from" value="%{joblst.date_from}" size="10" cssClass="date" />
+					</div>
+				</div>
 			</div>
-
+			<div class="form-group">
+				<label>Date, to: (mm/dd/yyyy)</label>			
+				<div class="date-range-picker">
+					<div>			
+						<s:textfield name="joblst.date_to" value="%{joblst.date_to}" size="10" cssClass="date" />
+					</div>
+				</div>
+			</div>
 			<div class="form-group">
 				<label>Date Type:</label>
 				<s:radio name="joblst.which_date" value="%{joblst.which_date}" list="#{'j.effective_date':'Effective Date','j.expire_date':'Expire Date'}" />

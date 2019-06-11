@@ -33,10 +33,13 @@
 			</s:if>
 
 			<div class="form-group">
-				<label>Date</label>
-				<s:textfield name="holiday.date" value="%{holiday.date}" size="10" maxlength="10" requiredLabel="true" required="true" cssClass="date" />
+				<label>Date (mm/dd/yyyy)</label>
+				<div class="date-range-picker">
+					<div>					
+						<s:textfield name="holiday.date" value="%{holiday.date}" size="10" maxlength="10" requiredLabel="true" required="true" cssClass="date" />
+					</div>
+				</div>
 			</div>
-
 			<div class="form-group">
 				<label>Name</label>
 				<s:textfield name="holiday.description" value="%{holiday.description}" size="30" maxlength="70" requiredLabel="true" required="true" />

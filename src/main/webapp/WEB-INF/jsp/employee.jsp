@@ -66,7 +66,11 @@
 			<s:if test="employee.id == ''">
 				<div class="form-group">
 					<label>Effective Date</label>
-					<s:textfield name="employee.effective_date" size="10" value="" cssClass="date"  required="true" />
+					<div class="date-range-picker">
+						<div>									
+							<s:textfield name="employee.effective_date" size="10" value="" cssClass="date"  required="true" />
+						</div>
+					</div>
 				</div>
 			</s:if>
 			<s:if test="employee.id == ''">
