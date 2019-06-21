@@ -7,6 +7,8 @@ package in.bloomington.timer.list;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
+import java.util.HashSet;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import org.apache.logging.log4j.LogManager;
@@ -69,10 +71,9 @@ public class EmployeeAccrualList{
 		}
 		/**
 		 *
-			select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id                             join time_documents d on d.employee_id=a.employee_id join pay_periods p on p.id = d.pay_period_id                                                              where a.date = (select a2.date from employee_accruals a2 where a2.date < p.start_date and a2.employee_id=d.employee_id order by a2.date desc limit 1) and d.id = 2;
+			select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id                    join time_documents d on d.employee_id=a.employee_id join pay_periods p on p.id = d.pay_period_id                                                                where a.date = (select a2.date from employee_accruals a2 where a2.date < p.start_date and a2.employee_id=d.employee_id order by a2.id desc limit 1) and d.id = 2;
 		 
 		 */
-		 
 			 
 		public String find(){
 				//
@@ -85,8 +86,8 @@ public class EmployeeAccrualList{
 						qq += " join time_documents d on d.employee_id=a.employee_id ";
 						qq += " join pay_periods p on p.id = d.pay_period_id ";						
 						if(!qw.equals("")) qw += " and "; // the last date
-						qw += " a.date = (select a2.date from employee_accruals a2 where a2.date <= p.end_date and a2.employee_id=d.employee_id order by a2.date desc limit 1) ";
-						qw += " and d.id = ? ";
+						qw += " a.date = (select a2.date from employee_accruals a2 where a2.date <= p.end_date and a2.employee_id=d.employee_id order by a2.id desc limit 1) ";
+						qw += " and d.id = ? and ec.type='Used' ";
 				}				
 				else if(!employee_id.equals("")){
 						if(!qw.equals("")) qw += " and ";				
@@ -94,7 +95,7 @@ public class EmployeeAccrualList{
 						if(most_current){
 								// we are looking for the last one
 								if(!qw.equals("")) qw += " and ";								
-								qw += " a.date = (select a2.date from employee_accruals a2 where a2.accrual_id = a.accrual_id order by a2.date desc limit 1) ";
+								qw += " a.date = (select a2.date from employee_accruals a2 where a2.accrual_id = a.accrual_id order by a2.id desc limit 1)  ";
 						}
 						else if(!pay_period_id.equals("")){
 								qq += ", pay_periods p ";
@@ -122,6 +123,7 @@ public class EmployeeAccrualList{
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
+				qq += " order by a.id desc ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -175,7 +177,86 @@ public class EmployeeAccrualList{
 																				rs.getString(10));
 								if(employeeAccruals == null)
 										employeeAccruals = new ArrayList<>();
-								employeeAccruals.add(one);
+								if(!employeeAccruals.contains(one))
+										employeeAccruals.add(one);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}
+		/**
+				select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.description,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id                                                                                join time_documents d on d.employee_id=a.employee_id                            join pay_periods p on p.id = d.pay_period_id 	                                  where a.date = (select a2.date from employee_accruals a2 where a2.date <= p.start_date and a2.employee_id=d.employee_id order by a2.id desc limit 1) and d.id = 9171 order by a.id desc ;
+
+				doc_id's 
+				11068
+				9913
+				9171
+				8487
+				7438
+				
+		 */
+		//
+		// accruals are saved on the last day of pay period to be available
+		// for next pay period
+		//
+		public String findForDocument(){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", qw="";
+				if(document_id.equals("")){
+						msg = " document id not set ";
+						return msg;
+				}
+				String qq = "select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.description,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id ";
+				qq += " join time_documents d on d.employee_id=a.employee_id ";
+				qq += " join pay_periods p on p.id = d.pay_period_id ";						
+				qw =  "  a.date = (select a2.date from employee_accruals a2 where a2.date <= p.start_date and a2.employee_id=d.employee_id order by a2.id desc limit 1) ";
+				qw += " and d.id = ? ";
+				qw += " and ec.type='Used' ";
+				qq += " where "+qw;
+				qq += " order by a.id desc ";
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
+				try{
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						pstmt.setString(jj++, document_id);
+						rs = pstmt.executeQuery();
+						Set<Integer> idSet = new HashSet<>();
+						//
+						while(rs.next()){
+								EmployeeAccrual one =
+										new EmployeeAccrual(rs.getString(1),
+																				rs.getString(2),
+																				rs.getString(3),
+																				rs.getString(4),
+																				rs.getDouble(5),
+																				rs.getString(6),
+																				rs.getString(7),
+																				rs.getString(8),
+																				rs.getInt(9),
+																				rs.getString(10));
+								int earn_code_id = rs.getInt(3);
+								if(employeeAccruals == null)
+										employeeAccruals = new ArrayList<>();
+								if(!idSet.contains(earn_code_id)){
+										idSet.add(earn_code_id);
+										if(!employeeAccruals.contains(one))
+												employeeAccruals.add(one);
+								}
 						}
 				}
 				catch(Exception ex){
@@ -188,7 +269,7 @@ public class EmployeeAccrualList{
 				}
 				return msg;
 		}		
-
+		
 		
 		
 }

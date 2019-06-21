@@ -24,7 +24,7 @@ public class HourCodeConditionAction extends TopAction{
 		//
 		HourCodeCondition hourcodeCondition = null;
 		List<HourCodeCondition> conditions = null;
-		String hourcodeConditionsTitle = "Current hour code restrictions";
+		String hourcodeConditionsTitle = "Current Earn Code Restrictions";
 		List<HourCode> hourcodes = null;
 		List<Type> departments = null;
 		List<Type> salaryGroups = null;

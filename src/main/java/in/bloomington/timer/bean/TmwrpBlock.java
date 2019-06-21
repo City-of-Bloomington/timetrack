@@ -100,10 +100,11 @@ public class TmwrpBlock{
 											boolean val13,
 											String val14,
 											Double val15,
-											boolean val16,
+											Double val16,
+											boolean val17,
 										
-											String val17, // nw_code
-											String val18){
+											String val18, // nw_code
+											String val19){
 				setId(val);
 				setRun_id(val2);
 				setHour_code_id(val3);				
@@ -120,9 +121,10 @@ public class TmwrpBlock{
 																val14,
 																val15,
 																val16,
+																val17,
 																
-																val17, // nw_code
-																val18);
+																val18, // nw_code
+																val19);
 		}
 		
     //

@@ -9,6 +9,7 @@
 			<th>Related Accrual</th>
 			<th>Type</th>
 			<th>Default Monetary Amount</th>
+			<th>Earn Factor</th>
 			<th>Default Regular</th>
 			<th>Active?</th>
 		</tr>
@@ -22,6 +23,7 @@
 				<td><s:if test="accrual_id != ''"><s:property value="accrual" /></s:if><s:else>&nbsp;</s:else></td>
 				<td><s:property value="type" /></td>
 				<td>$<s:property value="defaultMonetaryAmount" /></td>
+				<td><s:property value="earnFactor" /></td>				
 				<td><s:if test="reg_default">Yes</s:if><s:else>No</s:else></td>
 				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>

@@ -70,7 +70,7 @@ public class TmwrpBlockList{
 						"g.hour_code_id,g.term_type,g.cycle_order,g.hours,g.amount, "+
 						" h.id,h.name,h.description,h.record_method,"+
 						" h.accrual_id, h.reg_default,h.type,"+
-						" h.default_monetary_amount,h.inactive, "+
+						" h.default_monetary_amount,h.earn_factor,h.inactive, "+
 						" f.nw_code,f.gl_string "+
 						" from tmwrp_blocks g "+						
 						" join hour_codes h on h.id=g.hour_code_id "+
@@ -117,10 +117,11 @@ public class TmwrpBlockList{
 																			rs.getString(13) != null,
 																			rs.getString(14),
 																			rs.getDouble(15),
-																			rs.getString(16) != null,
+																			rs.getDouble(16),
+																			rs.getString(17) != null,
 																			
-																			rs.getString(17),
-																			rs.getString(18));
+																			rs.getString(18),
+																			rs.getString(19));
 
 
 																			

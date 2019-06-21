@@ -53,8 +53,26 @@
 				<s:radio name="hourcode.type" value="%{hourcode.type}" list="types" />
 			</div>
 			<div class="form-group">
-				<label>Default Monetary Amount:</label>
-				$<s:textfield name="hourcode.defaultMonetaryAmount" value="%{hourcode.defaultMonetaryAmount}" size="8" maxlength="8" /> (for fixed amount hour codes such as ONCALL)
+				<label>Default Monetary Amount ($):</label>
+				<div class="date-range-picker">
+					<div>			
+						<s:textfield name="hourcode.defaultMonetaryAmount" value="%{hourcode.defaultMonetaryAmount}" size="6" maxlength="6" placeholder="ddd.dd"/>
+					</div>
+					<div>
+						(for fixed amount earn codes such as ONCALL)
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Earn Factor:</label>
+				<div class="date-range-picker">
+					<div>			
+						<s:textfield name="hourcode.earnFactor" value="%{hourcode.earnFactor}" size="6" maxlength="6" placeholder="dd.dd"/>
+					</div>
+					<div>
+						(for Earn Codes only, such as CE1.0, CE1.5, HCE1.5, etc)
+					</div>
+				</div>
 			</div>			
 			<s:if test="hourcode.id != ''">
 				<div class="form-group">

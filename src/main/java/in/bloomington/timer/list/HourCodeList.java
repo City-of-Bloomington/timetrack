@@ -114,7 +114,7 @@ public class HourCodeList{
 				// other are for non-specified department
 				// 
 				String qq = "select count(*) from hour_code_conditions c where c.department_id=? ";
-				String qq2 = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.reg_default,e.type,e.default_monetary_amount,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
+				String qq2 = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.reg_default,e.type,e.default_monetary_amount,e.earn_factor,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
 				String qw = "", msg="";
 				logger.debug(qq);
 				boolean setDept = false;
@@ -206,7 +206,8 @@ public class HourCodeList{
 																						rs.getString(6) != null,
 																						rs.getString(7),
 																						rs.getDouble(8),
-																						rs.getString(9) != null);
+																						rs.getDouble(9),
+																						rs.getString(10) != null);
 								if(one.isRegDefault()){
 										if(!hourCodes.contains(one))
 												hourCodes.add(0, one);
@@ -241,7 +242,7 @@ public class HourCodeList{
 				// 
 				String qq = "select e.id,e.name,e.description,e.record_method,"+
 						" e.accrual_id,e.reg_default,e.type,"+
-						" e.default_monetary_amount,e.inactive, "+
+						" e.default_monetary_amount,e.earn_factor,e.inactive, "+
 						" f.nw_code,f.gl_string "+
 						" from hour_codes e "+
 						" left join code_cross_ref f on f.code_id=e.id "+
@@ -328,10 +329,11 @@ public class HourCodeList{
 																						rs.getString(6) != null,
 																						rs.getString(7),
 																						rs.getDouble(8),
-																						rs.getString(9) != null,
+																						rs.getDouble(9),
+																						rs.getString(10) != null,
 																						
-																						rs.getString(10),
-																						rs.getString(11)
+																						rs.getString(11),
+																						rs.getString(12)
 																						);
 								if(!hourCodes.contains(one))
 										hourCodes.add(one);

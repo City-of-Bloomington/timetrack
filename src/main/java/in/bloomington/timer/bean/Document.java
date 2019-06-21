@@ -47,6 +47,7 @@ public class Document implements Serializable{
     SalaryGroup salaryGroup = null;
     Map<String, List<String>> allAccruals = new TreeMap<>();
     Map<Integer, Double> usedAccrualTotals = null;
+		Map<Integer, Double> earnedAccrualTotals = null;		
     Map<Integer, Double> hourCodeTotals = null;
     Map<String, Double> hourCodeWeek1 = null;
     Map<String, Double> hourCodeWeek2 = null;
@@ -633,7 +634,7 @@ public class Document implements Serializable{
 				if(employeeAccruals == null){
 						EmployeeAccrualList al = new EmployeeAccrualList();						
 						al.setDocument_id(id);
-						String back = al.find();
+						String back = al.findForDocument();
 						if(back.equals("")){
 								List<EmployeeAccrual> ones = al.getEmployeeAccruals();
 								if(ones != null && ones.size() > 0){
@@ -644,10 +645,9 @@ public class Document implements Serializable{
 								System.err.println(" emp accruals "+back);
 						}
 						findHourCodeTotals();
-						findUsedAccruals();
+						findUsedAccruals();// include earnedAccruals
 						// now we adjust the totals see below
 						adjustAccruals();
-						// checkForWarnings();
 				}
 				return employeeAccruals;
     }
@@ -770,6 +770,13 @@ public class Document implements Serializable{
 						else{
 								logger.error(back);
 						}
+						back = tl.findEarnedAccruals();
+						if(back.equals("")){
+								earnedAccrualTotals = tl.getEarnedAccrualTotals();
+						}
+						else{
+								logger.error(back);
+						}
 				}
     }
     public Map<Integer, Double> getUsedAccrualTotals(){
@@ -777,6 +784,14 @@ public class Document implements Serializable{
 						findUsedAccruals();
 				return usedAccrualTotals;
     }
+		public boolean hasUsedAccruals(){
+				getUsedAccrualTotals();
+				return usedAccrualTotals != null && !usedAccrualTotals.isEmpty();
+		}
+		public boolean hasEarnedAccruals(){
+				getUsedAccrualTotals(); // shared function
+				return earnedAccrualTotals != null && !earnedAccrualTotals.isEmpty();
+		}		
     public void findHourCodeTotals(){
 				if(hourCodeTotals == null){
 						TimeBlockList tl = new TimeBlockList();
@@ -917,6 +932,18 @@ public class Document implements Serializable{
 												list.add(""+dfn.format(hrs_total));
 												try{
 														int cd_id = Integer.parseInt(accrual_id);
+														if(earnedAccrualTotals != null &&
+															 earnedAccrualTotals.containsKey(cd_id)){
+																double hrs_earned = earnedAccrualTotals.get(cd_id);
+																list.add(""+dfn.format(hrs_earned));
+																if(hrs_earned > 0){
+																		hrs_total += hrs_earned;
+																		one.setHours(hrs_total);
+																}
+														}
+														else{
+																list.add("0.00"); // nothing earned
+														}
 														if(usedAccrualTotals.containsKey(cd_id)){
 																double hrs_used = usedAccrualTotals.get(cd_id);
 																list.add(""+dfn.format(hrs_used));
