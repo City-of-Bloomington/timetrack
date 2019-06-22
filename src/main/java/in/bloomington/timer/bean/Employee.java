@@ -381,6 +381,7 @@ public class Employee implements Serializable, Comparable<Employee>{
     public String toString(){
 				return getFull_name();
     }
+		@Override
     public boolean equals(Object o) {
 				if (o instanceof Employee) {
 						Employee c = (Employee) o;
@@ -389,6 +390,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 				}
 				return false;
     }
+		@Override
     public int hashCode(){
 				int seed = 31;
 				if(!id.equals("")){
@@ -449,6 +451,9 @@ public class Employee implements Serializable, Comparable<Employee>{
     public boolean isHrAdmin(){
 				return hasRole("HrAdmin");
     }
+    public boolean isPublicWorksAdmin(){
+				return hasRole("PublicWorksAdmin");
+    }		
     public boolean canRunTimewarp(){
 				return hasRole("Timewarp");
     }

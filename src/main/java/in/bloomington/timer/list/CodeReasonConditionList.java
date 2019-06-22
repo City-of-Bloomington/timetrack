@@ -81,7 +81,7 @@ public class CodeReasonConditionList{
 				}
 				if(!salary_group_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += " g.salary_group_id = ? ";
+						qw += " (g.salary_group_id = ? or g.salary_group_id is null)";
 				}
 				if(!group_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
@@ -188,7 +188,7 @@ public class CodeReasonConditionList{
 				}
 				if(!salary_group_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
-						qw += " g.salary_group_id = ? ";
+						qw += " (g.salary_group_id = ? or g.salary_group_id is null)";
 				}
 				if(!group_id.equals("")){
 						if(!qw.equals("")) qw += " and ";

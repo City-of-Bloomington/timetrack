@@ -135,6 +135,32 @@ public class EmployeeAccrual extends CommonInc{
 				String ret = getEmployee_id()+" "+getAccrual_id()+" "+getRelated_hour_code_id()+" "+getHours();
 				return ret;
 		}
+		@Override
+    public boolean equals(Object o) {
+				if (o instanceof EmployeeAccrual) {
+						EmployeeAccrual c = (EmployeeAccrual) o;
+						if ( this.id.equals(c.getId()) &&
+								 this.related_hour_code_id.equals(c.getRelated_hour_code_id()))
+								return true;
+				}
+				return false;
+    }
+		@Override
+    public int hashCode(){
+				int seed = 31;
+				if(!id.equals("")){
+						try{
+								seed += Integer.parseInt(id)*43;
+								if(!related_hour_code_id.equals("")){
+										seed += Integer.parseInt(related_hour_code_id)*31;
+								}
+						}catch(Exception ex){
+								// we ignore
+						}
+				}
+				return seed;
+    }
+		
 		public Accrual getAccrual(){
 				if(accrual == null && !accrual_id.equals("")){
 						Accrual one = new Accrual(accrual_id);

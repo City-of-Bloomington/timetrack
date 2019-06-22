@@ -151,17 +151,23 @@ public class WeekSplit{
 								else{
 										if(hrCode.isUsed()){
 												earn_time_used += hours;
-												total_hrs += hours;
+												// total_hrs += hours;
 										}
 										else if(hrCode.isUnpaid()){
 												unpaid_hrs += hours;
 										}
+										else if(hrCode.isMonetary()){
+												// unpaid_hrs += hours;
+										}										
 										else if(hrCode.isEarned()){										
 												unpaid_hrs += hours;
 										}
 										else if(hrCode.isOvertime()){												
 												unpaid_hrs += hours;
 										}
+										else if(hrCode.isCallOut()){												
+												unpaid_hrs += hours;
+										}										
 										else{ // other
 												non_reg_hrs += hours;
 												total_hrs += hours;
@@ -223,14 +229,13 @@ public class WeekSplit{
 						//
 						if(hrCode.isCallOut()){ // call out (if < 3 ==> 3)
 								non_reg_hrs += hours;// hours are taken care off in timeblock
-								total_hrs += hours;																		
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}
 						}
 						else if(hrCode.isUsed()){
 								earn_time_used += hours;
-								total_hrs += hours;								
+								// total_hrs += hours;								
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}											
@@ -247,6 +252,9 @@ public class WeekSplit{
 										hours +=  daily.get(code);
 								}											
 						}
+						else if(hrCode.isMonetary()){
+								// ignore
+						}						
 						else{ // any thing else such as holidays
 								non_reg_hrs += hours;
 								total_hrs += hours;									

@@ -141,8 +141,11 @@ public class TmwrpWeekSplit{
 								else{
 										if(hrCode.isUsed()){
 												earn_time_used += hours;
-												total_hrs += hours;
+												// total_hrs += hours;
 										}
+										else if(hrCode.isCallOut()){
+												non_reg_hrs += hours;
+										}										
 										else if(hrCode.isUnpaid()){
 												unpaid_hrs += hours;
 										}
@@ -204,14 +207,13 @@ public class TmwrpWeekSplit{
 				//
 				if(hrCode.isCallOut()){ // call out (if < 3 ==> 3)
 						non_reg_hrs += hours;// hours are taken care off in timeblock
-						total_hrs += hours;																		
 						if(daily.containsKey(code_id)){
 								hours +=  daily.get(code_id);
 						}
 				}
 				else if(hrCode.isUsed()){
 						earn_time_used += hours;
-						total_hrs += hours;								
+						// total_hrs += hours;								
 						if(daily.containsKey(code_id)){
 								hours +=  daily.get(code_id);
 						}											

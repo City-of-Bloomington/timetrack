@@ -166,16 +166,16 @@ CREATE TABLE `group_managers` (
 ;; employee_accruals 
 ;;
 CREATE TABLE `employee_accruals` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `accrual_id` int(10) unsigned NOT NULL,
-  `employee_id` int(10) unsigned NOT NULL,
-  `hours` decimal(7,2) DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `accrual_id` (`accrual_id`),
-  KEY `employee_id` (`employee_id`),
-  CONSTRAINT `employee_accruals_ibfk_1` FOREIGN KEY (`accrual_id`) REFERENCES `accruals` (`id`),
-  CONSTRAINT `employee_accruals_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  accrual_id int(10) unsigned NOT NULL,
+  employee_id int(10) unsigned NOT NULL,
+  hours decimal(7,2) DEFAULT NULL,
+  date date DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY accrual_id (accrual_id),
+  KEY employee_id (employee_id),
+  CONSTRAINT employee_accruals_ibfk_1 FOREIGN KEY (accrual_id) REFERENCES accruals (id),
+  CONSTRAINT employee_accruals_ibfk_2 FOREIGN KEY (employee_id) REFERENCES employees (id)
 ) ENGINE=InnoDB;
 ;;
 ;; benefit_groups
@@ -1110,3 +1110,23 @@ set @a='04/20/2019';
 execute stmt1 using @a;
 
 
+;;
+;; 6/20/2019
+;; adding an earn factor to earn_codes (hour_codes) table related to eanred
+;; type earn_codes 
+;;
+alter table hour_codes add earn_factor decimal(5,2) default 0 after default_monetary_amount;
+
+;;
+;; modify the view for earn_factor field
+;;
+ create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    t.earn_code_reason_id earn_code_reason_id,                                      t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      c.earn_factor earn_factor,                                                      cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id,                                                      r.description reason                                                            from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id 			                            left join earn_code_reasons r on r.id=t.earn_code_reason_id;
+ 
+;;
+;; set earn_factor amounts for the following earn_codes
+;; CE1.0 1, CE1.5 1.5, CE2.0 2,
+;; CEt1.0 1, CEt1.5 1.5, CEt2.0 2,
+;; HCE1.0 1, HCE1.5 1.5, HCE2.0 2
+;;
+;; modify earn_codes above and link to accruals id's
+;; CE1.0,CE1.5,CE2.0 ==> CUA; HCE1.0, HCE1.5,HCE2.0 ==> HCUA

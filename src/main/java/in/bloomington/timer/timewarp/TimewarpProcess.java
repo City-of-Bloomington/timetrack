@@ -834,12 +834,10 @@ public class TimewarpProcess{
 										w2_val = "";
 										if(w1_hash.containsKey(key) || w2_hash.containsKey(key)){
 												if(w1_hash.containsKey(key)){
-														// if(key.indexOf("ONCALL") == -1)
 														week1Total += w1_hash.get(key).doubleValue();
 														w1_val = df.format(w1_hash.get(key).doubleValue());
 												}
 												if(w2_hash.containsKey(key)){
-														// if(key.indexOf("ONCALL") == -1)
 														week2Total += w2_hash.get(key).doubleValue();
 														w2_val = df.format(w2_hash.get(key).doubleValue());
 												}

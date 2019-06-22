@@ -345,7 +345,7 @@ public class TimeBlock extends Block{
 										dd = val2.split(";");
 								}
 								else if(val2.indexOf(".") > -1){
-										dd = val2.split(".");
+										dd = val2.split("\\."); 
 								}								
 								else if(val2.length() >= 3){
 										// no colon, time format hmm, or hhmm
@@ -563,14 +563,13 @@ public class TimeBlock extends Block{
 								}
 								if(department != null && department.getName().equals("Police")){
 										CodeReasonConditionList crcl = new CodeReasonConditionList();
-										String salary_group_id = document.getJob().getSalary_group_id();
-										crcl.setSalary_group_id(salary_group_id);
-										if(department != null){
-												crcl.setDepartment_id(department.getId());
-										}
-										// crcl.setGroup_id(group_id); // not needed now
-										crcl.setActiveOnly();
+										salary_group_id = document.getJob().getSalary_group_id();
+										crcl.setSalary_group_id(salary_group_id);										
+										group_id = document.getJob().getGroup_id();
+										crcl.setGroup_id(group_id);	
+										crcl.setDepartment_id(department.getId());
 										crcl.setHour_code_id(hour_code_id);
+										crcl.setActiveOnly();
 										String back = crcl.lookFor();
 										if(back.equals("")){
 												List<EarnCodeReason> ones = crcl.getReasons();
@@ -1183,7 +1182,7 @@ public class TimeBlock extends Block{
 						return msg;
 				}
 				if(isMonetaryType()){
-						getHourCode();
+						// getHourCode();
 						if(hourCode != null){
 								double dd = hourCode.getDefaultMonetaryAmount();
 								if(dd > 0){ // use the default amount 
@@ -1193,6 +1192,12 @@ public class TimeBlock extends Block{
 										msg = ""+amount+" Amount entered exceeds max limit ";
 										return msg;
 								}
+						}
+				}
+				if(hourCode != null){
+						if(hourCode.requireReason() && earn_code_reason_id.equals("")){
+								msg = "You need to pick a reason for ean code ";
+								return msg;
 						}
 				}
 				//
@@ -1410,7 +1415,6 @@ public class TimeBlock extends Block{
 						amount = 0;
 				}
 				else if(isMonetaryType()){
-						getHourCode();
 						if(hourCode != null){
 								double dd = hourCode.getDefaultMonetaryAmount();
 								if(dd > 0)
@@ -1419,6 +1423,12 @@ public class TimeBlock extends Block{
 						}
 				}
 				else{
+						if(hourCode != null){
+								if(hourCode.requireReason() && earn_code_reason_id.equals("")){
+										msg = "You need to pick a reason for ean code ";
+										return msg;
+								}
+						}						
 						msg = checkForConflicts();
 				}				
 				if(!msg.equals("")){

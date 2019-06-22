@@ -26,23 +26,65 @@ public class TmwrpInitiateAction extends TopAction{
     List<PayPeriod> payPeriods = null;
 		TmwrpInitiate tmwrp = null;
     String tmwrpWrapsTitle = "Timewarp Initiate";
-    String pay_period_id = "", source="";
+    String pay_period_id = "", source="", employee_name="",
+				new_employee_id="", department_id="", group_id="";
 		PayPeriod payPeriod = null, currentPayPeriod=null;
+		List<Type> departments = null;
 		List<String> emps = null;
     public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("tmwrpWrapInitiate.action");
-				if(!action.equals("") && !pay_period_id.equals("")){
-						getTmwrp();
-						tmwrp.setPay_period_id(pay_period_id);
-						back = tmwrp.doProcess();
-						if(!back.equals("")){
-								addMessage(back);
+				if(!action.equals("")){
+						if(!pay_period_id.equals("")){
+								getTmwrp();
+								tmwrp.setPay_period_id(pay_period_id);
+								if(!group_id.equals("")){
+										tmwrp.setGroup_id(group_id);		
+										back = tmwrp.doProcessGroup();
+										if(!back.equals("")){
+												addMessage(back);
+										}
+										else{
+												addMessage("Updated successfully");
+										}
+										emps = tmwrp.getEmps();
+								}
+								else if(!department_id.equals("")){
+										tmwrp.setDepartment_id(department_id);		
+										back = tmwrp.doProcessDept();
+										if(!back.equals("")){
+												addMessage(back);
+										}
+										else{
+												addMessage("Updated successfully");
+										}
+										emps = tmwrp.getEmps();
+								}								
+								else if(!new_employee_id.equals("")){
+										tmwrp.setEmployee_id(new_employee_id);
+										back = tmwrp.doProcessOne();
+										if(!back.equals("")){
+												addMessage(back);
+										}
+										else{
+												addMessage("Updated successfully");
+										}										
+								}
+								else { // all
+										back = tmwrp.doProcess();
+										if(!back.equals("")){
+												addMessage(back);
+										}
+										else{
+												addMessage("Updated successfully");
+										}
+										emps = tmwrp.getEmps();
+								}
+								
 						}
 						else{
-								addMessage("Updated successfully");
+								addMessage("Need to select a pay period ");
 						}
-						emps = tmwrp.getEmps();
 				}
 				return ret;
     }
@@ -58,6 +100,37 @@ public class TmwrpInitiateAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						pay_period_id = val;
     }
+  public void setGroup_id(String val){
+			if(val != null && !val.equals("-1") && !val.equals(""))		
+						group_id = val;
+    }		
+		public void setNew_employee_id(String val){
+				if(val != null && !val.equals(""))		
+						new_employee_id = val;
+		}
+		// 
+		public void setDepartment_id(String val){
+				if(val != null && !val.equals("-1")){		
+						department_id = val;
+				}
+		}
+		public void setDept_id(String val){
+				if(val != null && !val.equals("-1"))		
+						department_id = val;
+		}
+		public String getDepartment_id(){
+				return department_id;
+		}
+		public String getEmployee_name(){
+				return employee_name;
+		}
+		public String getNew_employee_id(){
+				return new_employee_id;
+		}				
+		public void setEmployee_name(String val){
+				if(val != null && !val.equals(""))		
+						employee_name = val;
+		}		
     public String getSource(){
 				return source;
     }		
@@ -139,7 +212,23 @@ public class TmwrpInitiateAction extends TopAction{
 		public List<String> getEmps(){
 				return emps;
 		}
-				
+		public List<Type> getDepartments(){
+				if(departments == null){
+						TypeList tl = new TypeList("departments");
+						String back = tl.find();
+						if(back.equals("")){
+								List<Type> ones = tl.getTypes();
+								if(ones != null && ones.size() > 0){
+								departments = ones;
+								}
+						}
+				}
+				return departments;
+		}
+		public boolean hasDepartments(){
+				getDepartments();
+				return departments != null && departments.size() > 0;
+		}
 				
 }
 

@@ -236,7 +236,7 @@ public class CodeReasonCondition implements Serializable{
 						" r.name,r.description,r.reason_category_id,r.inactive "+
 						" from code_reason_conditions g "+
 						" join earn_code_reasons r on r.id=g.reason_id "+
-						" where id =? ";
+						" where g.id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -288,10 +288,6 @@ public class CodeReasonCondition implements Serializable{
 						msg = " reason code not selected ";
 						return msg;
 				}
-				if(salary_group_id.equals("")){
-						msg = " salary group not selected ";
-						return msg;
-				}				
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB ";
@@ -302,7 +298,10 @@ public class CodeReasonCondition implements Serializable{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, reason_id);						
 						pstmt.setString(2, hour_code_id);
-						pstmt.setString(3, salary_group_id);
+						if(salary_group_id.equals(""))
+								pstmt.setNull(3,Types.INTEGER);
+						else
+								pstmt.setString(3, salary_group_id);
 						if(department_id.equals(""))
 								pstmt.setNull(4,Types.INTEGER);
 						else
@@ -350,10 +349,6 @@ public class CodeReasonCondition implements Serializable{
 				if(reason_id.equals("")){
 						return " reason code is required";
 				}
-				if(salary_group_id.equals("")){
-						msg = " salary group not selected ";
-						return msg;
-				}								
 				String qq = "update code_reason_conditions set reason_id=?,hour_code_id=?,salary_group_id=?,department_id=?,group_id=?,inactive=? where id=? ";
 				
 				logger.debug(qq);
@@ -367,7 +362,10 @@ public class CodeReasonCondition implements Serializable{
 						int jj=1;
 						pstmt.setString(jj++, reason_id);						
 						pstmt.setString(jj++, hour_code_id);
-						pstmt.setString(jj++, salary_group_id);
+						if(salary_group_id.equals(""))
+								pstmt.setNull(jj++, Types.INTEGER);
+						else
+								pstmt.setString(jj++, salary_group_id);
 						if(department_id.equals(""))
 								pstmt.setNull(jj++, Types.INTEGER);
 						else

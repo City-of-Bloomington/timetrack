@@ -35,6 +35,7 @@ public class WeekEntry{
 				comp_weekly_hrs = 0,
 				comp_factor = 1,
 				holiday_factor = 1;
+		double holy_earn_hrs = 0;
     double prof_hrs = 0, excess_hrs = 0, net_reg_hrs= 0;
     boolean handSpecial = false; 
     List<HolidayWorkDay> holyWorkDays = null;
@@ -209,15 +210,34 @@ public class WeekEntry{
 		}
     public Hashtable<String, Double> getAll(){
 				Hashtable<String, Double> all = new Hashtable<String, Double>();
-				if(!hash.isEmpty())
+				if(!hash.isEmpty()){
 						all.putAll(hash);
-				if(!earnedHash.isEmpty())
-						all.putAll(earnedHash);
+				}
+				if(!earnedHash.isEmpty()){
+						mergeTwoHashes(earnedHash, all);
+				}
 				if(handSpecial){
-						all.putAll(regHash);
+						mergeTwoHashes(regHash, all);						
 				}
 				return all;
     }
+    void mergeTwoHashes(Hashtable<String, Double> tFrom,
+												Hashtable<String, Double> tTo){
+				if(tFrom != null && tFrom.size() > 0){
+						Enumeration<String> keys = tFrom.keys();
+						while(keys.hasMoreElements()){
+								String key = keys.nextElement();
+								Double val = tFrom.get(key);
+								if(tTo.containsKey(key)){
+										double val2 = tTo.get(key).doubleValue() + val.doubleValue();
+										tTo.put(key, val2);
+								}
+								else{
+										tTo.put(key, val);
+								}
+						}
+				}
+    }				
     public void doCalculations(){
 	
 				splitOne.doCalculations();
@@ -386,7 +406,7 @@ public class WeekEntry{
     public void findExessHours(){
 	
 				excess_hrs = 0;
-				double netHours = total_hrs - earned_time;
+				double netHours = total_hrs - earned_time - holy_earn_hrs;
 				//
 				// for full time working less than 40 hrs
 				//
@@ -435,7 +455,6 @@ public class WeekEntry{
 				//
 				if(holyWorkDays == null) return;
 				//
-				double holy_earn_hrs = 0;
 				String code = "";
 				double netHours = total_hrs - earned_time;
 				double extra_hrs = 0;
@@ -477,7 +496,7 @@ public class WeekEntry{
 						holy_earn_hrs = (double)(new Double(dstr));
 						//
 						if(holy_earn_hrs > critical_small){
-								earned_time += holy_earn_hrs;
+								// earned_time += holy_earn_hrs;
 								//
 								// create earn codes
 								if(salaryGroup != null && salaryGroup.isUnionned()){

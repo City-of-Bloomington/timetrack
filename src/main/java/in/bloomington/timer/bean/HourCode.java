@@ -30,9 +30,9 @@ public class HourCode{
     private String 
 				record_method="Time", // Time, Hours, Monetary
 				accrual_id ="",
-		// each salary group can have only one reg_default set to 0
+		// each salary group can have only one reg_default
 				reg_default=""; // y for default, null for others
-		private double default_monetary_amount=0.0;
+		private double default_monetary_amount=0.0, earn_factor=0.0;
 		private String timeUsed="", timeEarned="", unpaid="";
 
     public HourCode(){
@@ -51,7 +51,8 @@ public class HourCode{
 										String record_method,
 										String related_accrual_id,
 										String code_type,
-										double default_amount){
+										double default_amount,
+										double earn_factor){
 				setId(code_id);
 				setName(code_name);
 				setDescription(code_desc);
@@ -59,6 +60,7 @@ public class HourCode{
 				setAccrual_id(related_accrual_id);
 				setType(code_type);
 				setDefaultMonetaryAmount(default_amount);
+				setEarnFactor(earn_factor);
 		}
 		
     public HourCode(String val,
@@ -69,8 +71,9 @@ public class HourCode{
 										boolean val6,
 										String val7,
 										Double val8,
-										boolean val9){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
+										Double val9,
+										boolean val10){
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10);
     }
     public HourCode(String val,
 										String val2,
@@ -80,11 +83,12 @@ public class HourCode{
 										boolean val6,
 										String val7,
 										Double val8,
-										boolean val9,
+										Double val9,
+										boolean val10,
 										
-										String val10, // nw_code
-										String val11){ // gl_string 
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11);
+										String val11, // nw_code
+										String val12){ // gl_string 
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12);
 		
     }		
     void setVals(String val,
@@ -95,7 +99,8 @@ public class HourCode{
 								 boolean val6,
 								 String val7,
 								 Double val8,
-								 boolean val9								 
+								 Double val9,
+								 boolean val10								 
 								 ){
 				setId(val);
 				setName(val2);
@@ -105,7 +110,8 @@ public class HourCode{
 				setReg_default(val6);
 				setType(val7);
 				setDefaultMonetaryAmount(val8);
-				setInactive(val9);
+				setEarnFactor(val9);
+				setInactive(val10);
 				
     }
     void setVals(String val,
@@ -116,14 +122,15 @@ public class HourCode{
 								 boolean val6,
 								 String val7,
 								 Double val8,
-								 boolean val9,
+								 Double val9,
+								 boolean val10,
 								 
-								 String val10,
-								 String val11
+								 String val11,
+								 String val12
 								 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
-				if(val10 != null){
-						codeRef = new CodeRef(id, name, val10, val11);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10);
+				if(val11 != null){
+						codeRef = new CodeRef(id, name, val11, val12);
 				}
     }		
     //
@@ -177,10 +184,17 @@ public class HourCode{
 		public double getDefaultMonetaryAmount(){
 				return default_monetary_amount;
 		}
+		public double getEarnFactor(){
+				return earn_factor;
+		}		
 		public void setDefaultMonetaryAmount(Double val){
 				if(val != null)
 						default_monetary_amount = val;
 		}
+		public void setEarnFactor(Double val){
+				if(val != null)
+						earn_factor = val;
+		}		
 		//
 		// id-Time, id-Hours
 		// needed for js
@@ -268,7 +282,13 @@ public class HourCode{
 		}				
 		public boolean isOther(){
 				return type.equals("Other");
-		}		
+		}
+		public boolean requireReason(){
+				return isEarned() && record_method.equals("Time");
+		}
+		public boolean hasEarnFactor(){
+				return earn_factor > 0;
+		}
 		public AccrualWarning getAccrualWarning(){
 				if(accrualWarning == null &&
 					 !id.equals("") &&
@@ -340,7 +360,7 @@ public class HourCode{
 				String msg="", str="";
 				String qq = "select h.id,h.name,h.description,h.record_method,"+
 						" h.accrual_id, h.reg_default,h.type,"+
-						" h.default_monetary_amount,h.inactive, "+
+						" h.default_monetary_amount,h.earn_factor,h.inactive, "+
 						" f.nw_code,f.gl_string "+
 						" from hour_codes h left join code_cross_ref f on f.code_id=h.id "+
 						" where h.id=? ";
@@ -363,10 +383,11 @@ public class HourCode{
 												rs.getString(6) != null,
 												rs.getString(7),
 												rs.getDouble(8),
-												rs.getString(9) != null,
+												rs.getDouble(9),
+												rs.getString(10) != null,
 												
-												rs.getString(10),
-												rs.getString(11)
+												rs.getString(11),
+												rs.getString(12)
 												);
 						}
 				}
@@ -385,7 +406,7 @@ public class HourCode{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " insert into hour_codes values(0,?,?,?,?, ?,?,?,?)";
+				String qq = " insert into hour_codes values(0,?,?,?,?, ?,?,?,?, ?)";
 				if(name.equals("")){
 						msg = "Hour code name is required";
 						return msg;
@@ -450,6 +471,7 @@ public class HourCode{
 						else
 								pstmt.setString(jj++, type);
 						pstmt.setDouble(jj++, default_monetary_amount);
+						pstmt.setDouble(jj++, earn_factor);
 						if(inactive.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
 						else
@@ -468,7 +490,7 @@ public class HourCode{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,reg_default=?,type=?,default_monetary_amount=?,inactive=? where id=?";
+				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,reg_default=?,type=?,default_monetary_amount=?,earn_factor=?,inactive=? where id=?";
 				if(name.equals("")){
 						msg = "Hour code name is required";
 						return msg;
@@ -485,7 +507,7 @@ public class HourCode{
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						pstmt.setString(9, id);
+						pstmt.setString(10, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

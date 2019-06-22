@@ -35,6 +35,8 @@ public class TmwrpWeekEntry{
 				comp_weekly_hrs = 0,
 				comp_factor = 1,
 				holiday_factor = 1;
+		double holy_earn_hrs = 0;
+
     double prof_hrs = 0, excess_hrs = 0, net_reg_hrs= 0;
     boolean handSpecial = false; 
     List<HolidayWorkDay> holyWorkDays = null;
@@ -181,6 +183,23 @@ public class TmwrpWeekEntry{
 						tHash.put(code_id, val);
 				}
     }
+    void mergeTwoHashes(Hashtable<String, Double> tFrom,
+												Hashtable<String, Double> tTo){
+				if(tFrom != null && tFrom.size() > 0){
+						Enumeration<String> keys = tFrom.keys();
+						while(keys.hasMoreElements()){
+								String key = keys.nextElement();
+								Double val = tFrom.get(key);
+								if(tTo.containsKey(key)){
+										double val2 = tTo.get(key).doubleValue() + val.doubleValue();
+										tTo.put(key, val2);
+								}
+								else{
+										tTo.put(key, val);
+								}
+						}
+				}
+    }		
     //		
     // this is for holiday earned and other non CE codes
     //
@@ -210,12 +229,15 @@ public class TmwrpWeekEntry{
 		}
     public Hashtable<String, Double> getAll(){
 				Hashtable<String, Double> all = new Hashtable<String, Double>();
-				if(!hash.isEmpty())
+				if(!hash.isEmpty()){
 						all.putAll(hash);
-				if(!earnedHash.isEmpty())
-						all.putAll(earnedHash);
-				if(handSpecial){ 
-						all.putAll(regHash);
+				}
+				if(!earnedHash.isEmpty()){
+						mergeTwoHashes(earnedHash, all);
+				}
+				if(handSpecial){
+						// already taken care of
+						// mergeTwoHashes(regHash, all);						
 				}
 				return all;
     }
@@ -276,8 +298,8 @@ public class TmwrpWeekEntry{
 				if(!table2.isEmpty())
 						mergeWithHash(table2, regHash);
 				// to all
-				if(!hash.isEmpty())
-						mergeWithHash(regHash, hash);				
+				// if(!hash.isEmpty())
+				mergeWithHash(regHash, hash);				
     }
     // monetary
     void mergeMonetaryHashtablesFromSplits(){
@@ -388,7 +410,7 @@ public class TmwrpWeekEntry{
     public void findExessHours(){
 	
 				excess_hrs = 0;
-				double netHours = total_hrs - earned_time;
+				double netHours = total_hrs - earned_time - holy_earn_hrs;
 				//
 				// for full time working less than 40 hrs
 				//
@@ -442,7 +464,6 @@ public class TmwrpWeekEntry{
 				//
 				if(holyWorkDays == null) return;
 				//
-				double holy_earn_hrs = 0;
 				String code_id = "";
 				double netHours = total_hrs - earned_time;
 				double extra_hrs = 0;
@@ -483,7 +504,8 @@ public class TmwrpWeekEntry{
 						holy_earn_hrs = (double)(new Double(dstr));
 						//
 						if(holy_earn_hrs > critical_small){
-								earned_time += holy_earn_hrs;
+								// 
+								// earned_time += holy_earn_hrs;
 								//
 								// create earn codes
 								if(salaryGroup != null && salaryGroup.isUnionned()){

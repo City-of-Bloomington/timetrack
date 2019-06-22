@@ -7,8 +7,8 @@
 	-->
 
 <div class="internal-page container clearfix settings">
-	<h1>FMLA Report</h1>
-	<s:form action="reportFmla" id="form_id" method="post" >
+	<h1>Asset Management Report (Public Works)</h1>
+	<s:form action="reportPublicWorks" id="form_id" method="post" >
 		<s:if test="hasErrors()">
 			<div class="errors">
 				<s:set var="errors" value="%{errors}" />
@@ -24,12 +24,6 @@
 			<li>For output type, we suggest that you run the 'Web page HTML' type first so that you get an idea about the numbers. If you are OK with these numbers then you choose the 'CSV' type.</li>
 		</ul>
 		<div class="width-one-half float-left">
-			<s:if test="hasDepts()">
-				<div class="form-group">
-					<label>Department</label>
-					<s:select name="report.department_id" value="%{report.department_id}" list="depts" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
-				</div>
-			</s:if>
 			<div class="form-group">
 				<label>Quarter Selection: </label>
 				<s:select name="report.quarter" value="%{report.quarter}" list="#{'-1':'Pick quarter','1':'First','2':'Second','3':'Third','4':'Forth'}" /> Year:<s:select name="report.year" value="%{report.year}" list="years" headerKey="-1" headerValue="Pick Year" />
@@ -37,15 +31,15 @@
 			<div class="form-group">
 				<label>Date, from: (mm/dd/yyyy)</label>
 				<div class="date-range-picker">
-					<div>									
+					<div>										
 						<s:textfield name="report.date_from" value="%{report.date_from}" cssClass="date" size="10" />
 					</div>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group">			
 				<label>Date, to: (mm/dd/yyyy)</label>
 				<div class="date-range-picker">
-					<div>									
+					<div>
 						<s:textfield name="report.date_to" value="%{report.date_to}" cssClass="date" size="10" />
 					</div>
 				</div>
@@ -73,7 +67,7 @@
 		<s:set var="dailyEntries" value="report.dailyEntries" />
 	</s:if>
 	<s:if test="report.hasAnyEntries()">
-		<%@  include file="fmlaReport.jsp" %>
+		<%@  include file="publicWorksReport.jsp" %>
 	</s:if>
 </s:if>
 <%@ include file="../footer.jsp" %>

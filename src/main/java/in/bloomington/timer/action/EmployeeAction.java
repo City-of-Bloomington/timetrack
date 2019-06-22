@@ -24,7 +24,7 @@ public class EmployeeAction extends TopAction{
 		static final String[] roles = {"Employee","Timewarp","FMLAReport",
 																	 "MPOReport","TargetEmployee","ParkReport",
 																	 "FireReport","HrAdmin", "ITSAdmin",
-																	 "PoliceAdmin",
+																	 "PoliceAdmin","PublicWorksAdmin",
 																	 "Admin"};
 		Employee employee = null;
 		DepartmentEmployee departmentEmployee = null; // for new employee

@@ -65,7 +65,10 @@ public class Login extends HttpServlet{
 				res.setContentType("text/html");
 				PrintWriter out = res.getWriter();
 				if(host_forward != null){
-						url = host_forward+"/timetrack/";
+						if(host_forward.indexOf("timetrack") == -1)
+								url = host_forward+"/timetrack/";
+						else
+								url = host_forward;
 				}
 				else if(host != null){
 						if(host.indexOf("timetrack") > -1){

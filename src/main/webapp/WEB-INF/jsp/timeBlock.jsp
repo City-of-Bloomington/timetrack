@@ -2,7 +2,8 @@
 <div class="time-block">
 	<s:form action="timeBlock" id="form_id" class="time-block-form" method="post">
 		<s:hidden id="document_id" name="timeBlock.document_id" value="%{timeBlock.document_id}" />
-		<s:hidden id="salary_group_id" name="timeBlock.salary_group_id" value="%{timeBlock.salary_group_id}" />		
+		<s:hidden id="salary_group_id" name="timeBlock.salary_group_id" value="%{timeBlock.salary_group_id}" />
+		<s:hidden id="group_id" name="timeBlock.group_id" value="%{timeBlock.group_id}" />		
 		<s:if test="timeBlock.id == ''">
 			<input type="hidden" name="action" value="Save">
 		</s:if>

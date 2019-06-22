@@ -144,7 +144,7 @@ $('#department_id_change').change(function() {
 
 function handleShowCodeReason(val){
     $.ajax({
-        url: APPLICATION_URL + "CodeReasonService?salary_group_id="+$("#salary_group_id").val()+"&hour_code_id="+val,
+        url: APPLICATION_URL + "CodeReasonService?salary_group_id="+$("#salary_group_id").val()+"&group_id="+$("#group_id").val()+"&hour_code_id="+val,
         dataType:'json'
     })
     .done(function( data, status ) {
@@ -159,7 +159,7 @@ function handleShowCodeReason(val){
 				$("#reason_div_id").show();				
     })
     .error(function(x,status,err){
-        alert(status+" "+err);
+        // alert(status+" "+err);
     });
 }
 
@@ -245,7 +245,7 @@ $('#hour_code_select').change(function() {
 				//
 				// we call earn_code_reason function here
 				//
-				var codes = ['113','114','115','116'];
+				var codes = ['113','114','115','116','118'];
 				var code_id = val.substring(0,val.indexOf('_')); // id only
 				if(codes.includes(code_id)){
 						handleShowCodeReason(code_id);

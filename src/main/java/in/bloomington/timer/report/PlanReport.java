@@ -23,7 +23,7 @@ public class PlanReport extends MpoReport{
 				dept="Planning & Transportation";
 				department_id="7";  
 				dept_ref_id="25,31"; // planning & engineering
-				code="%_MP_%";
+				code="%\\_MP\\_%";
     }	
 		
 }

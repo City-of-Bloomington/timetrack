@@ -21,7 +21,9 @@ public class SwitchAction extends TopAction{
 		static final long serialVersionUID = 1150L;	
 		static Logger logger = LogManager.getLogger(SwitchAction.class);
 		//
-		String new_employee_id = "", document_id="", source="",
+		String new_employee_id = "",
+				document_id="",
+				source="",
 				department_id="";
 		// Employee employee = null;
 		String employeesTitle = "Current Employees";

@@ -76,14 +76,20 @@
 		</s:else>
 		<div class="form-group">
 			<label>Effective Date</label>
-			<s:textfield name="jobTask.effective_date" value="%{jobTask.effective_date}" size="10" cssClass="date" />
+			<div class="date-range-picker">
+				<div>		
+					<s:textfield name="jobTask.effective_date" value="%{jobTask.effective_date}" size="10" cssClass="date" />
+				</div>
+			</div>
 		</div>
-
 		<div class="form-group">
 			<label>Expire Date</label>
-			<s:textfield name="jobTask.expire_date" value="%{jobTask.expire_date}" size="10" cssClass="date" />
+			<div class="date-range-picker">
+				<div>					
+					<s:textfield name="jobTask.expire_date" value="%{jobTask.expire_date}" size="10" cssClass="date" />
+				</div>
+			</div>
 		</div>
-
 		<div class="form-group">
 			<label>Primary Job?</label>
 			<s:checkbox name="jobTask.primary_flag" value="%{jobTask.primary_flag}" fieldValue="true" />Yes

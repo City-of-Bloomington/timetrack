@@ -28,9 +28,20 @@
 					<s:select name="report.quarter" value="%{report.quarter}" list="#{'-1':'Pick quarter','1':'First','2':'Second','3':'Third','4':'Forth'}" /> Year:<s:select name="report.year" value="%{report.year}" list="years" headerKey="-1" headerValue="Pick Year" />
 			</div>
 			<div class="form-group">
-				<label>Date, from: </label>
-				<s:textfield name="report.date_from" value="%{report.date_from}" cssClass="date" size="10" /> to:
-				<s:textfield name="report.date_to" value="%{report.date_to}" cssClass="date" size="10" />
+				<label>Date, from: (mm/dd/yyyy)</label>
+				<div class="date-range-picker">
+					<div>								
+						<s:textfield name="report.date_from" value="%{report.date_from}" cssClass="date" size="10" />
+					</div>
+				</div>
+			</div>
+			<div class="form-group">			
+				<label> Date, to: (mm/dd/yyyy)</label>
+				<div class="date-range-picker">
+					<div>								
+						<s:textfield name="report.date_to" value="%{report.date_to}" cssClass="date" size="10" />
+					</div>
+				</div>
 			</div>
 			<div class="form-group">
 				<label>Output Type:</label>

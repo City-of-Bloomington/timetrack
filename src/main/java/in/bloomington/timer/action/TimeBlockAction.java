@@ -293,14 +293,15 @@ public class TimeBlockAction extends TopAction{
 				if(document == null){
 						getDocument();
 				}
-				if(document.hasAllAccruals()){
+				if(document.hasEmpAccruals()){
 						employeeAccruals = document.getEmpAccruals();
-				}						
+				}
 				return employeeAccruals;
 		}
 		public boolean hasEmpAccruals(){
 				getEmpAccruals();
-				return employeeAccruals != null && employeeAccruals.size() > 0;
+				boolean ret = employeeAccruals != null && employeeAccruals.size() > 0;
+				return ret;
 		}
 
 }
