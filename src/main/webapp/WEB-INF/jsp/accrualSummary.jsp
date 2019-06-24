@@ -3,10 +3,12 @@
 <s:if test="document.hasAllAccruals()">
 	<table class="accruals-summary width-full">
 		<tr>
-			<th width="20%">Accrual Category</th>
-			<th width="20%">Carry Over Balance</th>
-			<th width="20%">Earned</th>
-			<th width="20%">Usage</th>
+			<th width="40%">Accrual Category</th>
+			<th width="15%">Carry Over Balance</th>
+			<!--  
+			<th width="15%">Pending Accrual</th>
+			-->
+			<th width="15%">Usage</th>
 			<th>Available Balance</th>
 		</tr>
 		<s:iterator value="document.allAccruals" var="one" >
