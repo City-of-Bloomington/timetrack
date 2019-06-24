@@ -59,11 +59,12 @@ public class GroupLocation{
 												 String val7,
 												 String val8,
 												 String val9,
-												 boolean val10
+												 boolean val10,
+												 boolean val11
 												 ){
 				setVals(val, val2, val3,
 								val4, val5,
-								val6, val7, val8, val9, val10);
+								val6, val7, val8, val9, val10, val11);
 		}
 		private void setVals(
 												 String val,
@@ -77,13 +78,14 @@ public class GroupLocation{
 												 String val7,
 												 String val8,
 												 String val9,
-												 boolean val10
+												 boolean val10,
+												 boolean val11
 												 ){
 				setId(val);
 				setGroup_id(val2);
 				setLocation_id(val3);
 				location = new Location(val3, val4, val5);
-				group = new Group(val2, val6, val7, val8, val9, val10);
+				group = new Group(val2, val6, val7, val8, val9, val10, val11);
     }		
 		public int hashCode(){
 				int seed = 29;
@@ -161,7 +163,7 @@ public class GroupLocation{
 				ResultSet rs = null;
 				String qq = "select t.id,t.group_id,t.location_id,"+
 						" l.ip_address,l.name,"+
-						" g.name,g.description,g.department_id,g.excess_hours_calculation_method,"+
+						" g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,"+
 						" g.inactive "+
 						" from group_locations t "+
 						" left join locations l on l.id = t.location_id "+
@@ -190,7 +192,8 @@ public class GroupLocation{
 												rs.getString(7),
 												rs.getString(8),
 												rs.getString(9),
-												rs.getString(10) != null);
+												rs.getString(10) != null,
+												rs.getString(11) != null);
 						}
 						else{
 								back ="Record "+id+" Not found";

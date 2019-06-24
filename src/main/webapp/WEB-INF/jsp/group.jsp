@@ -47,6 +47,10 @@
 				<s:radio name="group.excessHoursEarnType" value="%{group.excessHoursEarnType}" list="excessHoursEarnTypes" />
 			</div>
 			<div class="form-group">
+				<label>Allow Pending Accrual?</label>
+				<s:checkbox name="group.allowPendingAccrual" value="%{group.allowPendingAccrual}" fieldValue="true" />Yes
+			</div>
+			<div class="form-group">
 				<label>Inactive?</label>
 				<s:checkbox name="group.inactive" value="%{group.inactive}" fieldValue="true" />Yes
 			</div>

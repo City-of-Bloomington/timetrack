@@ -120,7 +120,8 @@ public class DepartmentList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				Connection con = UnoConnect.getConnection();
-				String qq = "select t.id,t.name,t.description,t.ref_id,t.ldap_name,t.inactive from departments t ";
+				String qq = "select t.id,t.name,t.description,t.ref_id,t.ldap_name,"+
+						"t.allow_pending_accrual,t.inactive from departments t ";
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -169,7 +170,8 @@ public class DepartmentList{
 																	 rs.getString(3),
 																	 rs.getString(4),
 																	 rs.getString(5),
-																	 rs.getString(6)!=null);
+																	 rs.getString(6) != null,
+																	 rs.getString(7) != null);
 								if(!departments.contains(one))
 										departments.add(one);
 						}

@@ -7,6 +7,7 @@
 			<th>Ldap Name</th>
 			<th>Referance ID(s)</th>
 			<th>Description</th>
+			<th>Pending Accrual Allowed?</th>
 			<th>Inactive?</th>
 		</tr>
 	</thead>
@@ -18,6 +19,7 @@
 				<td><s:property value="ldap_name" /></td>
 				<td><s:property value="ref_id" /></td>
 				<td><s:property value="description" /></td>
+				<td><s:if test="allowPendingAccrual">Yes</s:if><s:else>No</s:else></td>									
 				<td><s:if test="inactive">Yes</s:if><s:else>No</s:else></td>
 			</tr>
 		</s:iterator>

@@ -7,6 +7,7 @@
 			<th>Department</th>
 			<th>Excess Hours Earn Type</th>			
 			<th>Description</th>
+			<th>Pending Accrual Allowed?</th>
 			<th>Active?</th>
 		</tr>
 	</thead>
@@ -18,6 +19,7 @@
 				<td><s:property value="department" /></td>
 				<td><s:property value="excessHoursEarnType" /></td>
 				<td><s:property value="description" /></td>
+				<td><s:if test="allowPendingAccrual">Yes</s:if><s:else>No</s:else></td>								
 				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>
 		</s:iterator>

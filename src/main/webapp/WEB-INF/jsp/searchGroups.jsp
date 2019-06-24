@@ -28,7 +28,11 @@
 				<s:radio name="grplst.active_status" value="%{grplst.active_status}" list="#{'-1':'All','Active':'Active only','Inactive':'Inactive only'}"/>
 
 			</div>
+			<div class="form-group">
+				<label>Allow Pending Accrual?</label>
+				<s:radio name="grplst.pending_accrual_status" value="%{grplst.pending_accrual_status}" list="#{'-1':'All','Allowed':'Allowed','Not_Allowed':'Not Allowed'}"/>
 
+			</div>
 			<div class="button-group">
 				<s:submit name="action" type="button" value="Submit" class="button"/>
 				<a href="<s:property value='#application.url' />group.action" class="button">New Group</a>

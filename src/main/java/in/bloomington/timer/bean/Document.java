@@ -43,6 +43,7 @@ public class Document implements Serializable{
     List<TimeBlock> timeBlocks = null;
     List<String> warnings = new ArrayList<>();
     JobTask job = null;
+		Group group = null;
     List<JobTask> jobs = null;
     SalaryGroup salaryGroup = null;
     Map<String, List<String>> allAccruals = new TreeMap<>();
@@ -312,6 +313,7 @@ public class Document implements Serializable{
 						String back = one.doSelect();
 						if(back.equals("")){
 								job = one;
+								group = job.getGroup();
 						}
 						else{
 								System.err.println(" job "+back);
@@ -541,7 +543,20 @@ public class Document implements Serializable{
     public String getPayPeriodAmount(){
 				double ret = week1AmountTotal+week2AmountTotal;
 				return ""+dfn.format(ret);
-    }		
+    }
+		public Group getGroup(){
+				if(group == null){
+						getJob();
+				}
+				return group;
+		}
+		public boolean isPendingAccrualAllowed(){
+				getGroup();
+				if(group != null){
+						return group.isPendingAccrualAllowed();
+				}
+				return false;
+		}
     // we need at least one job to find some info
     // about the employee
     public JobTask getJobTask(){
@@ -567,6 +582,9 @@ public class Document implements Serializable{
 										}
 								}								
 						}
+				}
+				if(job != null){
+						group = job.getGroup();
 				}
 				return job;
     }
@@ -770,16 +788,15 @@ public class Document implements Serializable{
 						else{
 								logger.error(back);
 						}
-						/**
-						 * need to be done by group
-						back = tl.findEarnedAccruals();
-						if(back.equals("")){
-								earnedAccrualTotals = tl.getEarnedAccrualTotals();
+						if(isPendingAccrualAllowed()){
+								back = tl.findEarnedAccruals();
+								if(back.equals("")){
+										earnedAccrualTotals = tl.getEarnedAccrualTotals();
+								}
+								else{
+										logger.error(back);
+								}
 						}
-						else{
-								logger.error(back);
-						}
-						*/
 				}
     }
     public Map<Integer, Double> getUsedAccrualTotals(){
@@ -923,6 +940,7 @@ public class Document implements Serializable{
     public void adjustAccruals(){
 				if(!accrualAdjusted){
 						accrualAdjusted = true;
+						boolean pendingAccrualAllowed = isPendingAccrualAllowed();
 						if(employeeAccruals != null && usedAccrualTotals != null){
 								for(EmployeeAccrual one: employeeAccruals){
 										String accrual_id = one.getAccrual_id();
@@ -938,20 +956,20 @@ public class Document implements Serializable{
 												list.add(""+dfn.format(hrs_total));
 												try{
 														int cd_id = Integer.parseInt(accrual_id);
-														/**
-														if(earnedAccrualTotals != null &&
-															 earnedAccrualTotals.containsKey(cd_id)){
-																double hrs_earned = earnedAccrualTotals.get(cd_id);
-																list.add(""+dfn.format(hrs_earned));
-																if(hrs_earned > 0){
-																		hrs_total += hrs_earned;
-																		one.setHours(hrs_total);
+														if(pendingAccrualAllowed){
+																if(earnedAccrualTotals != null &&
+																	 earnedAccrualTotals.containsKey(cd_id)){
+																		double hrs_earned = earnedAccrualTotals.get(cd_id);
+																		list.add(""+dfn.format(hrs_earned));
+																		if(hrs_earned > 0){
+																				hrs_total += hrs_earned;
+																				one.setHours(hrs_total);
+																		}
+																}
+																else{
+																		list.add("0.00"); // nothing earned
 																}
 														}
-														else{
-																list.add("0.00"); // nothing earned
-														}
-														*/
 														if(usedAccrualTotals.containsKey(cd_id)){
 																double hrs_used = usedAccrualTotals.get(cd_id);
 																list.add(""+dfn.format(hrs_used));
@@ -1242,7 +1260,6 @@ public class Document implements Serializable{
 						warning_flag_set = true;
 						getSalaryGroup();
 						getJob();
-						Group group = null;
 						if(job != null){
 								group = job.getGroup();
 						}

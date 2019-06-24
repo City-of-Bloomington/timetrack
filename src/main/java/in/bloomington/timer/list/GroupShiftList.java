@@ -93,7 +93,7 @@ public class GroupShiftList{
 						" date_format(gs.expire_date,'%m/%d/%Y'),"+						
 						" gs.inactive, "+
 						// group
-						" g.name,g.description,g.department_id,g.excess_hours_earn_type,g.inactive,d.name, "+
+						" g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive,d.name, "+
 						// shift 
 						" s.name,s.start_hour,s.start_minute,s.duration,"+
 						" s.start_minute_window,s.end_minute_window,s.minute_rounding,"+
@@ -163,17 +163,18 @@ public class GroupShiftList{
 																								rs.getString(9),
 																								rs.getString(10),
 																								rs.getString(11) != null,
-																								rs.getString(12),
+																								rs.getString(12) != null,
+																								rs.getString(13),
 
 																								rs.getString(3), // shift id
-																								rs.getString(13),
-																								rs.getInt(14),
+																								rs.getString(14),
 																								rs.getInt(15),
 																								rs.getInt(16),
 																								rs.getInt(17),
 																								rs.getInt(18),
 																								rs.getInt(19),
-																								rs.getString(20) != null
+																								rs.getInt(20),
+																								rs.getString(21) != null
 																								);
 								if(!groupShifts.contains(one))
 										groupShifts.add(one);

@@ -60,7 +60,8 @@ public class GroupShift implements Serializable{
 											String val04,
 											String val05,
 											boolean val06,
-											String val07,
+											boolean val07,
+											String val08,
 
 											String val11,
 											String val12,
@@ -79,7 +80,7 @@ public class GroupShift implements Serializable{
 				setStartDate(val4);
 				setExpireDate(val5);
 				setInactive(val6);
-				group = new Group(val01, val02, val03, val04, val05,val06, val07);
+				group = new Group(val01, val02, val03, val04, val05,val06, val07, val08);
 				shift = new Shift(val11, val12, val13, val14, val15, val16,
 													val17, val18, val19);
 

@@ -730,7 +730,6 @@ public class MultiJobDoc{
 										list.add(""+dfn.format(hrs_total));
 										try{
 												int cd_id = Integer.parseInt(accrual_id);
-												/**
 												if(earnedAccrualTotals != null &&
 													 earnedAccrualTotals.containsKey(cd_id)){
 														double hrs_earned = earnedAccrualTotals.get(cd_id);
@@ -743,7 +742,6 @@ public class MultiJobDoc{
 												else{
 														list.add("0.00"); // nothing earned
 												}
-												*/
 												if(usedAccrualTotals.containsKey(cd_id)){
 														double hrs_used = usedAccrualTotals.get(cd_id);
 														list.add(""+dfn.format(hrs_used));

@@ -24,6 +24,7 @@ public class GroupList{
 				pay_period_id="";
     String name="", id="";
     boolean active_only = false, inactive_only=false;
+		boolean allowed = false, not_allowed=false;
 		boolean include_future = false;
     List<Group> groups = null;
     public GroupList(){
@@ -65,11 +66,35 @@ public class GroupList{
 						else if(val.equals("Inactive"))
 								inactive_only = true;
 				}
-    }		
+    }
+		public void setPending_accrual_status(String val){
+				if(val != null && !val.equals("-1")){
+						if(val.equals("Allowed"))
+								allowed = true;
+						else if(val.equals("Not_Allowed"))
+								not_allowed = true;
+					}
+		}
+		public String getPending_accrual_status(){
+				if(allowed)
+						 return "Allowed";
+				else if(not_allowed)
+						return "Not_Allowed";
+				else
+						return "-1";
+		}
     public void setActiveOnly(){
 				active_only = true;
     }
     public String getDepartment_id(){
+				if(!department_ids.equals("")){
+						if(department_ids.indexOf(",") > -1){
+								department_id = department_ids.substring(0, department_ids.indexOf(","));
+						}
+						else{
+								department_id = department_ids;
+						}
+				}
 				if(department_id.equals(""))
 						return "-1";
 				return department_id;
@@ -101,7 +126,7 @@ public class GroupList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.name,g.description,g.department_id,g.excess_hours_earn_type,g.inactive,d.name from groups g left join departments d on d.id=g.department_id ";
+				String qq = "select g.id,g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive,d.name from groups g left join departments d on d.id=g.department_id ";
 				String qw = "";
 				if(!department_ids.equals("")){
 						if(!qw.equals("")) qw += " and ";						
@@ -135,6 +160,14 @@ public class GroupList{
 						if(!qw.equals("")) qw += " and ";
 						qw += " g.inactive is null ";
 				}
+				if(allowed){
+						if(!qw.equals("")) qw += " and ";
+						qw += " g.allow_pending_accrual is not null ";
+				}
+				if(not_allowed){
+						if(!qw.equals("")) qw += " and ";
+						qw += " g.allow_pending_accrual is null ";
+				}				
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
@@ -171,7 +204,8 @@ public class GroupList{
 																			rs.getString(4),
 																			rs.getString(5),
 																			rs.getString(6) != null,
-																			rs.getString(7));
+																			rs.getString(7) != null,
+																			rs.getString(8));
 								if(!groups.contains(one))
 										groups.add(one);
 						}

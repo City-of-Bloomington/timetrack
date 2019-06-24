@@ -1130,3 +1130,11 @@ alter table hour_codes add earn_factor decimal(5,2) default 0 after default_mone
 ;;
 ;; modify earn_codes above and link to accruals id's
 ;; CE1.0,CE1.5,CE2.0 ==> CUA; HCE1.0, HCE1.5,HCE2.0 ==> HCUA
+;;
+;;
+;; 06/24/2019
+;; allowing the use of pending accruals to be configured by group
+;;
+ alter table groups add allow_pending_accrual char(1) after excess_hours_earn_type;
+ alter table departments add allow_pending_accrual char(1) after ldap_name;
+ 

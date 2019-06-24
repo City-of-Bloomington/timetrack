@@ -5,9 +5,9 @@
 		<tr>
 			<th width="40%">Accrual Category</th>
 			<th width="15%">Carry Over Balance</th>
-			<!--  
-			<th width="15%">Pending Accrual</th>
-			-->
+			<s:if test="document.isPendingAccrualAllowed()">
+				<th width="15%">Pending Accrual</th>
+			</s:if>
 			<th width="15%">Usage</th>
 			<th>Available Balance</th>
 		</tr>

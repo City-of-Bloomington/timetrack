@@ -9,8 +9,8 @@
 		<s:else>
 			<h1>Edit <s:property value="%{department.name}" /></h1>
 			<s:hidden name="department.id" value="%{department.id}" />
+			<s:hidden name="department.oldAllowPendingAccrual" value="%{department.allowPendingAccrual}" />			
 		</s:else>
-
 	  <%@ include file="strutMessages.jsp" %>
 
 	  <p><strong>Note:</strong> Reference ID is New World app ID for the specified department.<br /> Ldap/AD name is the department name in ldap, needed for data import.
@@ -43,7 +43,10 @@
 				<label>Referance ID(s)</label>
 				<s:textfield name="department.ref_id" value="%{department.ref_id}" size="30" maxlength="80" /><br />(for multiple ID's, use comma in between)
 			</div>
-
+			<div class="form-group">
+				<label>Allow Pending Accrual?</label>
+				<s:checkbox name="department.allowPendingAccrual" value="%{department.allowPendingAccrual}" fieldValue="true" />Yes
+			</div>
 			<div class="form-group">
 				<label>Inactive?</label>
 				<s:checkbox name="department.inactive" value="%{department.inactive}" fieldValue="true" />Yes

@@ -19,7 +19,8 @@ public class Group implements Serializable{
 
     static Logger logger = LogManager.getLogger(Group.class);
     static final long serialVersionUID = 1500L;
-    String id="", name="", description="", inactive="";
+    String id="", name="", description="", inactive="",
+				allow_pending_accrual="";
     String department_id="";
     //
     // default_earn_code_id is needed when 
@@ -52,14 +53,16 @@ public class Group implements Serializable{
 								 String val3,
 								 String val4,
 								 String val5,
-								 boolean val6
+								 boolean val6,
+								 boolean val7
 								 ){
 				setId(val);
 				setName(val2);
 				setDescription(val3);
 				setDepartment_id(val4);
 				setExcessHoursEarnType(val5);
-				setInactive(val6);				
+				setAllowPendingAccrual(val6);
+				setInactive(val7);				
     }
     public Group(String val,
 								 String val2,
@@ -67,16 +70,18 @@ public class Group implements Serializable{
 								 String val4,
 								 String val5,
 								 boolean val6,
-								 String val7
+								 boolean val7,
+								 String val8
 								 ){
 				setId(val);
 				setName(val2);
 				setDescription(val3);
 				setDepartment_id(val4);
 				setExcessHoursEarnType(val5);
-				setInactive(val6);
-				if(val7 != null && !val7.equals("")){
-						department = new Type(department_id, val7);
+				setAllowPendingAccrual(val6);
+				setInactive(val7);
+				if(val8 != null && !val8.equals("")){
+						department = new Type(department_id, val8);
 				}
     }		
 		
@@ -95,11 +100,17 @@ public class Group implements Serializable{
     public boolean getInactive(){
 				return !inactive.equals("");
     }
+    public boolean getAllowPendingAccrual(){
+				return !allow_pending_accrual.equals("");
+    }		
     public boolean isInactive(){
 				return !inactive.equals("");
     }
     public boolean isActive(){
 				return inactive.equals("");
+    }
+    public boolean isPendingAccrualAllowed(){
+				return !allow_pending_accrual.equals("");
     }		
     public String getDepartment_id(){
 				return department_id;
@@ -126,7 +137,11 @@ public class Group implements Serializable{
     public void setInactive(boolean val){
 				if(val)
 						inactive = "y";
-    }				
+    }
+    public void setAllowPendingAccrual(boolean val){
+				if(val)
+						allow_pending_accrual = "y";
+    }		
     public void setDepartment_id (String val){
 				if(val != null && !val.equals("-1"))
 						department_id = val;
@@ -269,6 +284,7 @@ public class Group implements Serializable{
 				String msg="", str="";
 				String qq = "select g.id,g.name,g.description,g.department_id,"+
 						"g.excess_hours_earn_type,"+ // renamed
+						"g.allow_pending_accrual,"+
 						"g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
@@ -282,8 +298,9 @@ public class Group implements Serializable{
 										setDescription(rs.getString(3));
 										setDepartment_id(rs.getString(4));
 										setExcessHoursEarnType(rs.getString(5));
-										setInactive(rs.getString(6) != null);
-										str = rs.getString(7);
+										setAllowPendingAccrual(rs.getString(6) != null);
+										setInactive(rs.getString(7) != null);
+										str = rs.getString(8);
 										if(str != null){
 												department = new Type(department_id, str);
 										}
@@ -307,7 +324,7 @@ public class Group implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into groups values(0,?,?,?,?,null) ";
+				String qq = "insert into groups values(0,?,?,?,?,?,null) ";
 				if(name.equals("")){
 						msg = " name not set ";
 						return msg;
@@ -334,6 +351,12 @@ public class Group implements Serializable{
 								pstmt.setNull(4, Types.INTEGER);
 						else
 								pstmt.setString(4, excess_hours_earn_type);
+						if(allow_pending_accrual.equals("")){
+								pstmt.setNull(5, Types.CHAR);
+						}
+						else{
+								pstmt.setString(5,"y");
+						}
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
@@ -366,6 +389,7 @@ public class Group implements Serializable{
 				}
 				String qq = "update groups set name=?,description=?,department_id=?,"+
 						"excess_hours_earn_type=?,"+ // renamed
+						"allow_pending_accrual=?,"+
 						"inactive=? where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
@@ -385,13 +409,19 @@ public class Group implements Serializable{
 								pstmt.setNull(4, Types.INTEGER);
 						else
 								pstmt.setString(4, excess_hours_earn_type);
-						if(inactive.equals("")){
+						if(allow_pending_accrual.equals("")){
 								pstmt.setNull(5, Types.CHAR);
 						}
 						else{
 								pstmt.setString(5,"y");
 						}
-						pstmt.setString(6, id);
+						if(inactive.equals("")){
+								pstmt.setNull(6, Types.CHAR);
+						}
+						else{
+								pstmt.setString(6,"y");
+						}
+						pstmt.setString(7, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
