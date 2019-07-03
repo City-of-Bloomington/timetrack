@@ -19,7 +19,7 @@ public class TimeActionList{
     static final long serialVersionUID = 3700L;
     static Logger logger = LogManager.getLogger(TimeActionList.class);
     String document_id = "", id="", sortBy=" a.id desc ";
-    boolean last_action = false;
+    boolean last_action = false, active_only=false;
     List<TimeAction> timeActions = null;
     public TimeActionList(){
     }
@@ -37,6 +37,9 @@ public class TimeActionList{
     public void onlyLastAction(){
 				last_action = true;
     }
+    public void setActiveOnly(){
+				active_only = true;
+    }		
     public void setSortby(String val){
 				if(val != null)
 						sortBy = val;
@@ -46,7 +49,6 @@ public class TimeActionList{
     }
     public String doIt(){
 				return "";
-
     }
 
     //
@@ -58,13 +60,19 @@ public class TimeActionList{
 				ResultSet rs = null;
 				String msg="", qw="";
 				String qq = "select a.id,a.workflow_id,a.document_id,a.action_by,"+
-						" date_format(a.action_time,'%m/%d/%y %H:%i'),w.node_id,w.next_node_id from time_actions a join workflows w on w.id=a.workflow_id ";
+						" date_format(a.action_time,'%m/%d/%y %H:%i'),"+
+						" a.cancelled_by, date_format(a.cancelled_time,'%m/%d/%Y %H:%i'),"+
+						" w.node_id,w.next_node_id from time_actions a join workflows w on w.id=a.workflow_id ";
 				if(!id.equals("")){
 						qw += " w.id = ? ";
 				}
 				if(!document_id.equals("")){
 						if(!qw.equals("")) qw += " and ";
 						qw += " a.document_id = ? ";
+				}
+				if(active_only){
+						if(!qw.equals("")) qw += " and ";
+						qw += " a.cancelled_time is null ";
 				}
 				if(!qw.equals("")){
 						qq += " where "+qw;
@@ -99,7 +107,9 @@ public class TimeActionList{
 																								rs.getString(4),
 																								rs.getString(5),
 																								rs.getString(6),
-																								rs.getString(7));
+																								rs.getString(7),
+																								rs.getString(8),
+																								rs.getString(9));
 								timeActions.add(one);
 						}
 				}

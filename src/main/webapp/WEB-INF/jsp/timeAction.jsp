@@ -28,7 +28,13 @@
 	<dl class="fn1-output-field">
 		<dt>Action By </dt>
 		<dd><s:property value="%{timeAction.action_by}" /> </dd>
-	</dl>		
+	</dl>
+	<s:if test="isCancelled()">
+		<dl class="fn1-output-field">
+			<dt>Cancel Info </dt>
+			<dd><s:property value="%{timeAction.cancelInfo}" /> </dd>
+		</dl>
+	</s:if>
 	<a href="<s:property value='#application.url' />timeDetails.action?document_id=<s:property value='timeAction.document_id' />" class="fn1-btn">Time Details </a>					
 </div>
 <%@  include file="footer.jsp" %>

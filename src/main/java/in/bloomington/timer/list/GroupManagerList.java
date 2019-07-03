@@ -23,7 +23,9 @@ public class GroupManagerList{
     String execludeManager_id = ""; // employee_id
     boolean active_only = false,approversOnly=false,
 				processorsOnly=false, exclude_reviewers = false,
-				reviewersOnly=false, timeMaintainOnly = false;
+				reviewersOnly=false, timeMaintainOnly = false,
+				approversAndProcessorsOnly = false;
+		
     List<GroupManager> managers = null;
     public GroupManagerList(){
     }
@@ -68,6 +70,9 @@ public class GroupManagerList{
     public void setProcessorsOnly(){
 				processorsOnly = true;
     }
+    public void setApproversAndProcessorsOnly(){
+				approversAndProcessorsOnly = true;
+    }		
     public void setTimeMaintainerOnly(){
 				timeMaintainOnly = true;
     }
@@ -137,7 +142,11 @@ public class GroupManagerList{
 				else if(timeMaintainOnly){
 						if(!qw.equals("")) qw += " and ";						
 						qw += " wn.name like 'Time%'";
-				}				
+				}
+				else if(approversAndProcessorsOnly){
+						if(!qw.equals("")) qw += " and ";						
+						qw += "(wn.name like 'Approve' or wn.name like 'Payroll%')";
+				}
 				if(active_only){
 						if(!qw.equals("")) qw += " and ";
 						qw += " gm.inactive is null ";

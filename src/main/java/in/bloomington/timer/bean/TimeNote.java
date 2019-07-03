@@ -180,6 +180,33 @@ public class TimeNote{
 				}
 				return msg;
 		}
+		public String doDelete(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = " delete from time_notes where id=?";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}
+		
 		String setParams(PreparedStatement pstmt){
 				String msg = "";
 				int jj=1;

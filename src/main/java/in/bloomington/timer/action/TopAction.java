@@ -214,6 +214,13 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								messages.add(str.trim());
 				}
     }
+		public void setMessages(String[] vals){
+				if(vals != null){
+						for(String val:vals){
+								addMessage(val);
+						}
+				}
+		}
     void clearAll(){
 				if(errors.size() > 0)
 						errors = new ArrayList<>();

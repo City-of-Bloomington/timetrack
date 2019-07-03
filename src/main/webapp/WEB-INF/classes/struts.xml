@@ -86,6 +86,11 @@
       <result name="input">/WEB-INF/jsp/timeNote.jsp</result>		
       <result name="error">/WEB-INF/jsp/timeNote.jsp</result>
       <result name="success">/WEB-INF/jsp/timeNote.jsp</result>
+      <result name="redirectTimeDetails" type="redirectAction">
+				<param name="actionName">timeDetails</param>
+				<param name="document_id">${document_id}</param>
+				<param name="messages">${messages}</param>
+			</result>			
     </action>
     <action name="timeIssue" 
 	    class="in.bloomington.timer.action.TimeIssueAction" 
@@ -550,8 +555,8 @@
 			<result name="timeDetails" type="redirectAction">
 				<param name="actionName">timeDetails</param>
 				<param name="document_id">${document_id}</param>
-				<param name="actionMessages">${actionMessages}</param>
-				<param name="actionErrors">${actionErrors}</param>
+				<param name="messages">${essages}</param>
+				<param name="errors">${errors}</param>
 			</result>			
 
 		</action>		

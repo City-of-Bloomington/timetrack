@@ -83,7 +83,6 @@ public class TimeDetailsAction extends TopAction{
 						if(hasEmployee()){
 								employee.setPay_period_id(pay_period_id);
 								dl.setPay_period_id(pay_period_id);
-								// System.err.println(" get job ");
 								if(job_id.equals("")){
 										getJob();
 								}
@@ -234,7 +233,31 @@ public class TimeDetailsAction extends TopAction{
 						}
 				}
 				return payPeriods;
-    }		
+    }
+		public boolean userCanEdit(){
+				boolean ret = false;
+				if(document == null){
+						getDocument();
+				}
+				if(user == null){
+						getUser();
+				}
+				if(document != null && user != null){
+						ret = document.canEdit(user);
+				}
+				return ret;
+		}
+		public boolean isNotEditable(){
+				boolean ret = false;
+				if(document == null){
+						getDocument();
+				}				
+				ret = document.isProcessed() ||
+						(document.isApproved() && !userCanEdit()) ||
+						(isUserCurrentEmployee() &&
+						 (document.isPunchClockOnly() || document.isApproved()));
+				return ret;
+		}
     public PayPeriod getPayPeriod(){
 				//
 				// if pay period is not set, we look for current one
@@ -372,6 +395,22 @@ public class TimeDetailsAction extends TopAction{
     public String getJob_id(){
 				return job_id;
     }
+		public boolean canCancelAction(){
+				getDocument();
+				getUser();				
+				if(document != null && user != null){
+						//
+						// we want to know if the user is one of payroll processors
+						//
+						boolean ret = document != null && document.isProcesser(user);
+						if(ret){
+								TimeAction lastAction = document.getLastTimeAction();
+								ret =  lastAction != null && lastAction.canBeCancelled();
+								return ret;
+						}
+				}
+				return false;
+		}
     public List<JobTask> getJobs(){
 				if(jobs == null){
 						JobTaskList jl = new JobTaskList(getEmployee_id());

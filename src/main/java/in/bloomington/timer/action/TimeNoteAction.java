@@ -38,7 +38,27 @@ public class TimeNoteAction extends TopAction{
 						else{
 								addMessage("Saved Successfully");								
 						}
-				}				
+				}
+				else if(action.equals("Delete")){
+						getTimeNote();
+						back = timeNote.doDelete();
+						if(!back.equals("")){
+								addError(back);
+						}
+						else{
+								addMessage("Deleted Successfully");
+								ret="redirectTimeDetails";
+								/**
+									 protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+									 RequestDispatcher dispatcher = getServletContext()
+									 .getRequestDispatcher("/forwarded");
+									 dispatcher.forward(req, resp);
+}
+
+								 */
+						}
+						
+				}
 				else{		
 						getTimeNote();
 						if(!id.equals("")){
@@ -75,6 +95,9 @@ public class TimeNoteAction extends TopAction{
 		public void setDocument_id(String val){
 				if(val != null && !val.equals(""))		
 						document_id = val;
+		}
+		public String getDocument_id(){
+				return document_id;
 		}		
 		public List<TimeNote> getTimeNotes(){
 				if(timeNotes == null){

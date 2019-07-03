@@ -15,16 +15,15 @@
 			<s:set var="messages" value="%{messages}" />
 			<%@ include file="messages.jsp" %>
 		</s:if>
-		<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
-			<div class="alert"><p><b>Note:</b> Time Details (View Only)</p></div>
-		</s:if>
 
-		<%@ include file="calendarTopDetails.jsp" %>
 		<s:set var="dailyBlocks" value="document.dailyBlocks" />
-		<s:if test="document.isProcessed() || (isUserCurrentEmployee() && document.isPunchClockOnly())">
+		<s:if test="isNotEditable()">
+			<div class="alert"><p><b>Note:</b> Time Details (View Only)</p></div>
+			<%@ include file="calendarTopDetails.jsp" %>
 			<%@ include file="calendarFullView.jsp" %>
 		</s:if>
 		<s:else>
+			<%@ include file="calendarTopDetails.jsp" %>						
 			<%@ include file="calendarFullNew.jsp" %>
 		</s:else>
 
@@ -218,7 +217,9 @@
 				<%@ include file="accrualSummary.jsp" %>
 			</s:else>
 			<%@ include file="timeIssues.jsp" %>
-
+			<s:if test="canCancelAction()">
+				<s:set var="canCancelAction" value="'true'" />
+			</s:if>
 			<%@ include file="timeActions.jsp" %>
 			<%@ include file="timeNotes.jsp" %>
 			<br />

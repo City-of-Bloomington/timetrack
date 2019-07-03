@@ -23,11 +23,12 @@ public class TimeAction implements Serializable{
     private String id="", workflow_id="", document_id="",
 				action_by="", // employee id
 				action_time="";
-
+		String cancelled_by = "", cancelled_time="";
+		
 		Type action = null;
 		Type nextAction = null;
 		Workflow workflow = null;
-		Employee actioner = null;
+		Employee actioner = null, canceller=null;
 		public TimeAction(){
     }
 		
@@ -48,9 +49,11 @@ public class TimeAction implements Serializable{
 											String val4,
 											String val5,
 											String val6,
-											String val7
+											String val7,
+											String val8,
+											String val9
 								){
-				setVals(val, val2, val3, val4, val5, val6, val7);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9);
     }
     void setVals(String val,
 								 String val2,
@@ -58,15 +61,19 @@ public class TimeAction implements Serializable{
 								 String val4,
 								 String val5,
 								 String val6,
-								 String val7
+								 String val7,
+								 String val8,
+								 String val9
 								){
 				setId(val);
 				setWorkflow_id(val2);
 				setDocument_id(val3);
 				setAction_by(val4);
 				setAction_time(val5);
-				if(val6 != null){
-						workflow = new Workflow(workflow_id, val6, val7);
+				setCancelled_by(val6);
+				setCancelled_time(val7);
+				if(val8 != null){
+						workflow = new Workflow(workflow_id, val8, val9);
 				}
     }		
     //
@@ -81,13 +88,34 @@ public class TimeAction implements Serializable{
     }
 		public String getAction_time(){
 				return action_time;
+    }
+		public String getCancelled_time(){
+				return cancelled_time;
     }		
 		public String getDocument_id(){
 				return document_id;
     }
 		public String getWorkflow_id(){
 				return workflow_id;
-    }		
+    }
+		public String getCancelled_by(){
+				return cancelled_by;
+    }
+		public boolean isCancelled(){
+				return !cancelled_time.equals("");
+		}
+		public String getCancelInfo(){
+				if(isCancelled()){
+						return " Cancelled on "+cancelled_time+" by "+getCanceller();
+				}
+				return "";
+		}
+		// only Payroll approve can be cancelled
+		public boolean canBeCancelled(){
+				if(id.equals("") || isCancelled()) return false;
+				getWorkflow();
+				return workflow != null && workflow.isProcessed();
+		}
     //
     // setters
     //
@@ -107,10 +135,18 @@ public class TimeAction implements Serializable{
 				if(val != null)
 						action_by = val;
     }
+    public void setCancelled_by(String val){
+				if(val != null)
+						cancelled_by = val;
+    }		
     public void setAction_time(String val){
 				if(val != null)
 						action_time = val;
     }
+    public void setCancelled_time(String val){
+				if(val != null)
+						cancelled_time = val;
+    }		
 		public Workflow getWorkflow(){
 				if(workflow == null && !workflow_id.equals("")){
 						Workflow one = new Workflow(workflow_id);
@@ -131,7 +167,16 @@ public class TimeAction implements Serializable{
 				}
 				return actioner;
 		}
-
+		public Employee getCanceller(){
+				if(canceller == null && !cancelled_by.equals("")){
+						Employee one = new Employee(cancelled_by);
+						String back = one.doSelect();
+						if(back.equals("")){
+								canceller = one;
+						}
+				}
+				return canceller;
+		}
 		public String toString(){
 				return id;
 		}
@@ -161,7 +206,11 @@ public class TimeAction implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select a.id,a.workflow_id,a.document_id,a.action_by,date_format(a.action_time,'%m/%d/%Y %H:%i'),w.node_id,w.next_node_id from time_actions a join workflows w on a.workflow_id=w.id where a.id=? ";
+				String qq = "select a.id,a.workflow_id,a.document_id,a.action_by,"+
+						" date_format(a.action_time,'%m/%d/%Y %H:%i'),"+
+						" a.cancelled_by, date_format(a.cancelled_time,'%m/%d/%Y %H:%i'),"+
+						" w.node_id,w.next_node_id from time_actions a "+
+						" join workflows w on a.workflow_id=w.id where a.id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -180,7 +229,9 @@ public class TimeAction implements Serializable{
 												rs.getString(4),
 												rs.getString(5),
 												rs.getString(6),
-												rs.getString(7));
+												rs.getString(7),
+												rs.getString(8),
+												rs.getString(9));
 						}
 						else{
 								msg = "record not found";
@@ -206,8 +257,8 @@ public class TimeAction implements Serializable{
 				String msg="", str="";
 				//
 				// check if it is not performed yet (approve or else)
-				String qq = " select count(*) from time_actions where document_id=? and workflow_id=? ";
-				String qq2 = " insert into time_actions values(0,?,?,?,now())";
+				String qq = " select count(*) from time_actions where document_id=? and workflow_id=? and cancelled_time is null";
+				String qq2 = " insert into time_actions values(0,?,?,?,now(),null,null)";
 				if(workflow_id.equals("")){
 						msg = "workflow id not set ";
 						return msg;
@@ -263,5 +314,48 @@ public class TimeAction implements Serializable{
 				msg += doSelect();
 				return msg;
 		}
+		//
+		// if the action need to be cancelled
+		//
+		public String doCancel(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				//
+				// check if it is not performed yet (approve or else)
+				String qq = " update time_actions set cancelled_by=?, cancelled_time=now() where id=? ";
+				if(id.equals("")){
+						msg = "action id not set ";
+						return msg;
+				}
+				if(cancelled_by.equals("")){
+						msg = "cancelled by  set ";
+						return msg;
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
+				try{
+						// to avoid multiple approve
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, cancelled_by);
+						pstmt.setString(2, id);
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				msg += doSelect();
+				return msg;
+		}
+		
 
 }

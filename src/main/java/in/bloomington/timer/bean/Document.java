@@ -66,6 +66,8 @@ public class Document implements Serializable{
     List<TimeNote> timeNotes = null;
     List<TimeIssue> timeIssues = null;
     List<Employee> nextActioners = null;
+		List<GroupManager> editors = null;
+		List<GroupManager> processors = null;		
     TimeAction lastTimeAcion = null;
     Map<String, AccrualWarning> warningMap = new TreeMap<>();
     // week 1,2 / hour_code_id /hours
@@ -217,7 +219,12 @@ public class Document implements Serializable{
 								List<TimeAction> ones = tal.getTimeActions();
 								if(ones != null && ones.size() > 0){
 										timeActions = ones;
-										lastTimeAcion = ones.get(0); // last is first since desc
+										for(TimeAction one:ones){
+												if(!one.isCancelled()){
+														lastTimeAcion = one; // last is first since desc
+														break;
+												}
+										}
 								}
 						}
 				}
@@ -225,7 +232,7 @@ public class Document implements Serializable{
     }
     public TimeAction getLastTimeAction(){
 				if(hasTimeBlocks() && lastTimeAcion == null){
-						lastTimeAcion = timeActions.get(0);
+						getTimeActions();
 				}
 				return lastTimeAcion;
     }
@@ -255,6 +262,65 @@ public class Document implements Serializable{
 				}
 				return lastWorkflow;
     }
+		/**
+		 * if the document is not processed, then the
+		 * approvers and payroll approvers can edit
+		 */
+		public boolean canEdit(Employee emp){
+				if(isProcessed()) return false;
+				if(editors == null){
+						findEditors(); // approvers and payroll approvers
+				}
+				if(editors != null){
+						for(GroupManager one:editors){
+								if(one.getEmployee_id().equals(emp.getId())){
+										return true;
+								}
+						}
+				}
+				return false;
+		}
+		void findEditors(){
+				GroupManagerList gml = new GroupManagerList();
+				gml.setApproversAndProcessorsOnly();
+				gml.setPay_period_id(pay_period_id);				
+				gml.setGroup_id(job.getGroup_id());
+				gml.setActiveOnly();
+				String back = gml.find();
+				if(back.equals("")){
+						List<GroupManager> ones = gml.getManagers();
+						if(ones != null && ones.size() > 0){
+								editors = ones;
+						}
+				}
+		}
+		void findProcessors(){
+				GroupManagerList gml = new GroupManagerList();
+				gml.setProcessorsOnly();
+				gml.setPay_period_id(pay_period_id);				
+				gml.setGroup_id(job.getGroup_id());
+				gml.setActiveOnly();
+				String back = gml.find();
+				if(back.equals("")){
+						List<GroupManager> ones = gml.getManagers();
+						if(ones != null && ones.size() > 0){
+								processors = ones;
+						}
+				}
+		}
+		public boolean isProcesser(Employee emp){
+				if(processors == null){
+						findProcessors(); // payroll approvers
+				}
+				if(processors != null){
+						for(GroupManager one:processors){
+								if(one.getEmployee_id().equals(emp.getId())){
+										return true;
+								}
+						}
+				}
+				return false;
+		}		
     public boolean hasNextActioners(){
 				if(hasLastWorkflow() && nextActioners == null){
 						getJob();
@@ -358,15 +424,14 @@ public class Document implements Serializable{
 				}
 				return false;
     }
+		/**
+		 * normally Payroll Approve (Process) is the last action 
+		 */ 
     public boolean isProcessed(){
-				getTimeActions();
-				if(timeActions != null){
-						for(TimeAction one:timeActions){ 
-								Workflow wf = one.getWorkflow();
-								if(wf.isProcessed()){
-										return true;
-								}
-						}
+				getLastTimeAction();
+				if(lastTimeAcion != null && !lastTimeAcion.isCancelled()){
+						Workflow wf = lastTimeAcion.getWorkflow();
+						return wf.isProcessed();
 				}
 				return false;
     }

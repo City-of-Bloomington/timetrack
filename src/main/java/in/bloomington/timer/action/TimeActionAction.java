@@ -41,6 +41,21 @@ public class TimeActionAction extends TopAction{
 										addMessage("Saved Successfully");
 								}
 						}
+				}
+				else if(action.startsWith("Cancel")){
+						getTimeAction();
+						getUser();
+						if(user != null){
+								timeAction.setCancelled_by(user.getId());
+								back = timeAction.doCancel();
+								if(!back.equals("")){
+										addError(back);
+								}
+								else{ // normally we return to TimeDetails
+										addMessage("Cancelled Successfully");
+										ret = "timeDetails";
+								}
+						}
 				}				
 				else{		
 						getTimeAction();
@@ -74,7 +89,6 @@ public class TimeActionAction extends TopAction{
 						timeAction = val;
 				}
     }
-
     public String getTimeActionsTitle(){
 				return timeActionsTitle;
     }
