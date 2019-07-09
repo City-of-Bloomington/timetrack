@@ -1141,5 +1141,6 @@ alter table hour_codes add earn_factor decimal(5,2) default 0 after default_mone
  ;; 07/02/2019
  ;; adding 'Cancel' action to time_actions table for now only 'Payroll Approve' option
  ;;
- alter table time_actions add cancelled_by int unsigned;
- alter table time_actions add cancelled_time datetime;
+  alter table time_actions add cancelled_by int unsigned;
+  alter table time_actions add cancelled_time datetime;
+  alter table time_actions add foreign key(cancelled_by) references employees(id);
