@@ -25,7 +25,7 @@
 				<td><a href="<s:property value='#application.url' />jobTask.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
 				<td><s:property value="position" /></td>
 				<td><s:property value="salaryGroup" /></td>
-				<td><a href="<s:property value='#application.url' />employee.action?id=<s:property value='employee_id' />"> <s:property value="employee" /></a></td>
+				<td><a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='employee_id' />"> <s:property value="employee" /></a></td>
 				<td><a href="<s:property value='#application.url' />group.action?id=<s:property value='group_id' />"> <s:property value="group" /></a></td>					
 				<td><s:property value="effective_date" /></td>
 				<td><s:if test="primary_flag">Yes</s:if><s:else>No</s:else></td>

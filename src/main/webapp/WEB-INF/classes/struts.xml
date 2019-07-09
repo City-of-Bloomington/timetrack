@@ -291,6 +291,13 @@
 			<result name="success">/WEB-INF/jsp/reports/reportPlan.jsp</result>
 			<result name="csv">/WEB-INF/jsp/reports/reportPlanCsv.jsp</result>
 		</action>
+		<action name="reportUnscheduled" 
+						class="in.bloomington.timer.action.ReportUnscheduledAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/reports/reportUnscheduled.jsp</result>
+			<result name="error">/WEB-INF/jsp/reports/reportUnscheduled.jsp</result>
+			<result name="success">/WEB-INF/jsp/reports/reportUnscheduled.jsp</result>
+		</action>
 		<action name="reportFmla" 
 						class="in.bloomington.timer.action.ReportFmlaAction" 
 						method="execute">
@@ -298,7 +305,7 @@
 			<result name="error">/WEB-INF/jsp/reports/reportFmla.jsp</result>
 			<result name="success">/WEB-INF/jsp/reports/reportFmla.jsp</result>
 			<result name="csv">/WEB-INF/jsp/reports/fmlaReportCsv.jsp</result>
-		</action>
+		</action>		
 		<action name="reportReason" 
 						class="in.bloomington.timer.action.ReportReasonAction" 
 						method="execute">
@@ -466,6 +473,7 @@
 			<result name="input">/WEB-INF/jsp/group.jsp</result>		
 			<result name="error">/WEB-INF/jsp/group.jsp</result>
 			<result name="success">/WEB-INF/jsp/group.jsp</result>
+			<result name="view">/WEB-INF/jsp/groupView.jsp</result>			
 		</action>
 		<action name="groupShift" 
 						class="in.bloomington.timer.action.GroupShiftAction" 

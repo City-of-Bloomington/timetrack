@@ -26,7 +26,8 @@ public class EmployeeAction extends TopAction{
 																	 "FireReport","HrAdmin", "ITSAdmin",
 																	 "PoliceAdmin","PublicWorksAdmin",
 																	 "Admin"};
-		Employee employee = null;
+		String emp_id="";
+		Employee emp = null;
 		DepartmentEmployee departmentEmployee = null; // for new employee
 		GroupEmployee groupEmployee = null; // for new employee
 		List<Employee> employees = null;
@@ -37,21 +38,21 @@ public class EmployeeAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(action.equals("Save")){
-						back = employee.validate();
+						back = emp.validate();
 						if(!back.equals("")){
 								addError(back);
 								return ret;
 						}
-						back = employee.doSave();
+						back = emp.doSave();
 						if(!back.equals("")){
 								addError(back);
 						}
 						else{
-								id = employee.getId();
+								emp_id = emp.getId();
 						}
 				}				
 				else if(action.startsWith("Save")){
-						back = employee.doUpdate();
+						back = emp.doUpdate();
 						if(!back.equals("")){
 								addError(back);
 						}
@@ -60,17 +61,17 @@ public class EmployeeAction extends TopAction{
 						}
 				}
 				else if(action.startsWith("Edit")){
-						getEmployee();
-						back = employee.doSelect();
+						getEmp();
+						back = emp.doSelect();
 						if(!back.equals("")){
 								addError(back);
 						}
 						getDepartmentEmployee();
 				}				
 				else{		
-						getEmployee();
-						if(!id.equals("")){
-								back = employee.doSelect();
+						getEmp();
+						if(!emp_id.equals("")){
+								back = emp.doSelect();
 								if(!back.equals("")){
 										addError(back);
 								}
@@ -82,12 +83,12 @@ public class EmployeeAction extends TopAction{
 				}
 				return ret;
 		}
-		public Employee getEmployee(){
-				if(employee == null){
-						employee = new Employee();
-						employee.setId(id);
+		public Employee getEmp(){
+				if(emp == null){
+						emp = new Employee();
+						emp.setId(emp_id);
 				}
-				return employee;
+				return emp;
 						
 		}
 		public DepartmentEmployee getDepartmentEmployee(){
@@ -104,10 +105,21 @@ public class EmployeeAction extends TopAction{
 				return groupEmployee;
 						
 		}		
-		public void setEmployee(Employee val){
+		public void setEmp(Employee val){
 				if(val != null){
-						employee = val;
+						emp = val;
 				}
+		}
+		public void setEmp_id(String val){
+				if(val != null){
+						emp_id = val;
+				}
+		}
+		public String getEmp_id(){
+				if(emp_id.equals("") && emp != null){
+						emp_id = emp.getId();
+				}
+				return emp_id;
 		}
 		public void setDepartmentEmployee(DepartmentEmployee val){
 				if(val != null){
@@ -128,7 +140,7 @@ public class EmployeeAction extends TopAction{
 						action = val;
 		}
 		public List<Employee> getEmployees(){
-				if(employees == null){
+				if(emp == null){
 						EmployeeList tl = new EmployeeList();
 						tl.setActiveOnly();
 						String back = tl.find();

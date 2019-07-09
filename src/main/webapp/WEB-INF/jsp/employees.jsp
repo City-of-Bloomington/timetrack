@@ -16,7 +16,7 @@
 	<tbody>
 		<s:iterator var="one" value="#employees">
 			<tr>
-				<td><a href="<s:property value='#application.url' />employee.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
+				<td><a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='id' />"> <s:property value="id" /></a></td>
 				<td><s:property value="username" /></td>
 				<td><s:property value="full_name" /></td>
 				<td><s:property value="id_code" /></td>

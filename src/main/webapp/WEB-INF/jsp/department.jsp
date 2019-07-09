@@ -71,14 +71,12 @@
 			<s:set var="groupsTitle" value="'Groups in this Department'" />
 			<%@ include file="groups.jsp" %>
 		</s:if>
-
-		<s:if test="hasEmployees()">
-			<s:set var="employees" value="employees" />
-			<s:set var="employeesTitle" value="'Employees in this Department'" />
-			<%@ include file="employees.jsp" %>
+		<s:if test="hasDepartmentEmployees()">
+			<s:set var="departmentEmployees" value="departmentEmployees" />
+			<s:set var="departmentEmployeesTitle" value="'Employees in this Department'" />
+			<%@ include file="departmentEmployees.jsp" %>
 		</s:if>
 	</s:if>
-
 	<s:else>
 		<s:if test="departments != null">
 			<s:set var="departments" value="departments" />

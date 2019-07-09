@@ -162,7 +162,11 @@
         </s:if>
       </ul>
 			<%@ include file="timeIssues.jsp" %>
-
+			<s:if test="document.hasUnscheduleds()">
+				<s:set var="unscheduledTitle" value="'Unscheduled Times'" />				
+				<s:set var="unscheduleds" value="document.unscheduleds" />
+				<%@ include file="unscheduledTimes.jsp" %>				
+			</s:if>		
 			<%@ include file="timeActions.jsp" %>
 			<%@ include file="timeNotes.jsp" %>
 			<br />

@@ -14,6 +14,7 @@ import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
+import org.javatuples.Triplet;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
@@ -37,6 +38,7 @@ public class Document implements Serializable{
     Employee initiater = null;
     Workflow lastWorkflow = null;
     List<TimeAction> timeActions = null;
+		List<Triplet<String, String, String>> unscheduleds = null;
     //
     Map<JobType, Map<Integer, String>> daily = null;
     Map<JobType, Map<Integer, Double>> dailyDbl = null;		
@@ -72,6 +74,7 @@ public class Document implements Serializable{
     Map<String, AccrualWarning> warningMap = new TreeMap<>();
     // week 1,2 / hour_code_id /hours
     Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = null;
+
     HolidayList holidays = null;
 		TmwrpRun tmwrpRun = null;
 		boolean accrualAdjusted = false, warning_flag_set=false,
@@ -262,6 +265,12 @@ public class Document implements Serializable{
 				}
 				return lastWorkflow;
     }
+		public List<Triplet<String, String, String>> getUnscheduleds(){
+				return unscheduleds;
+		}
+		public boolean hasUnscheduleds(){
+				return unscheduleds != null && unscheduleds.size() > 0;
+		}		
 		/**
 		 * if the document is not processed, then the
 		 * approvers and payroll approvers can edit
@@ -524,6 +533,9 @@ public class Document implements Serializable{
 										week2Total = tl.getWeek2Total();
 										week1AmountTotal = tl.getWeek1AmountTotal();
 										week2AmountTotal = tl.getWeek2AmountTotal();
+										if(tl.hasUnscheduleds(id)){
+												unscheduleds = tl.getUnscheduleds();
+										}
 								}
 						}
 						if(includeEmptyBlocks){

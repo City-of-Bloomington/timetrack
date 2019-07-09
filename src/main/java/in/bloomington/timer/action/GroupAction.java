@@ -54,13 +54,23 @@ public class GroupAction extends TopAction{
 								addMessage("Updated Successfully");
 						}
 				}
+				else if(action.startsWith("Edit")){
+						getGroup();
+						if(!id.equals("")){
+								back = group.doSelect();
+								if(!back.equals("")){
+										addError(back);								
+								}
+						}
+				}				
 				else{		
 						getGroup();
 						if(!id.equals("")){
 								back = group.doSelect();
 								if(!back.equals("")){
 										addError(back);
-								}								
+								}
+								ret = "view";
 						}
 				}
 				return ret;

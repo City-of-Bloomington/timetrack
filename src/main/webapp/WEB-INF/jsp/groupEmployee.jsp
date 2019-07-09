@@ -22,7 +22,7 @@
 	  <div class="width-one-half">
 			<div class="form-group">
 				<label>Employee</label>
-				<a href="<s:property value='#application.url' />employee.action?id=<s:property value='groupEmployee.employee_id' />" /><s:property value="%{groupEmployee.employee}" /></a>
+				<a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='groupEmployee.employee_id' />" /><s:property value="%{groupEmployee.employee}" /></a>
 			</div>
 			<div class="form-group">
 				<label>Group</label>

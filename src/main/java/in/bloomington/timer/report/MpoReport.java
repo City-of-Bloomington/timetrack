@@ -26,8 +26,6 @@ public class MpoReport{
 		String start_date ="", end_date=""; // temp holders
 		List<TimeBlock> timeBlocks = null;
 		List<WarpEntry> entries = null;
-		String[] quarter_starts = {"","01/01/","04/01/","07/01/","10/01/"};
-		String[] quarter_ends = {"","03/31/","06/30/","09/30/","12/31/"};		
 		boolean debug = false, ignoreProfiles = false;
 		String dept="", department_id="", type="html"; 
 		String dept_ref_id="";
@@ -159,8 +157,8 @@ public class MpoReport{
 				start_date = date_from;
 				end_date = date_to;
 				if(year > 0 && quarter > 0){
-						start_date = quarter_starts[quarter]+year;
-						end_date = quarter_ends[quarter]+year;
+						start_date = CommonInc.quarter_starts[quarter]+year;
+						end_date = CommonInc.quarter_ends[quarter]+year;
 				}
 				start_date = start_date.trim();
 				if(start_date.equals("")){

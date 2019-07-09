@@ -27,6 +27,7 @@ public class DeptAction extends TopAction{
 		List<Department> departments = null;
 		List<Group> groups = null;
 		List<Employee> employees = null;
+		List<DepartmentEmployee> departmentEmployees = null;		
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -120,7 +121,7 @@ public class DeptAction extends TopAction{
 				if(employees == null && !id.equals("")){
 						EmployeeList tl = new EmployeeList();
 						tl.setDepartment_id(id);
-						tl.setActiveOnly();
+						// tl.setActiveOnly();
 						String back = tl.find();
 						if(back.equals("")){
 								List<Employee> ones = tl.getEmployees();
@@ -130,6 +131,24 @@ public class DeptAction extends TopAction{
 						}
 				}
 				return employees;
+		}
+		public List<DepartmentEmployee> getDepartmentEmployees(){
+				if(departmentEmployees == null && !id.equals("")){
+						DepartmentEmployeeList tl = new DepartmentEmployeeList();
+						tl.setDepartment_id(id);
+						String back = tl.find();
+						if(back.equals("")){
+								List<DepartmentEmployee> ones = tl.getDepartmentEmployees();
+								if(ones != null && ones.size() > 0){
+										departmentEmployees = ones;
+								}
+						}
+				}
+				return departmentEmployees;
+		}
+		public boolean hasDepartmentEmployees(){
+				getDepartmentEmployees();
+				return departmentEmployees != null && departmentEmployees.size() > 0;
 		}
 		public boolean hasEmployees(){
 				getEmployees();

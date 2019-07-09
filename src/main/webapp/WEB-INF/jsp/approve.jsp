@@ -175,11 +175,16 @@
 								<s:if test="tmwrpRun.hasWeek2Rows()">
 									<s:set var="rows" value="tmwrpRun.week2Rows" />
 									<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
-									<s:set var="whichWeek" value="'week-one'" />
+									<s:set var="whichWeek" value="'week-two'" />
 									<%@ include file="weeklyTmwrp.jsp" %>
 								</s:if>
 							</s:if>
             </div>
+						<s:if test="hasUnscheduleds()">
+							<s:set var="unscheduledTitle" value="'Unscheduled Times'" />
+							<s:set var="unscheduleds" value="unscheduleds" />
+							<%@ include file="unscheduledTimes.jsp" %>				
+						</s:if>								
           </div>
         </s:if>
       </s:iterator>

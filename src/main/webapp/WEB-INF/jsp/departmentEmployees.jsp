@@ -14,7 +14,7 @@
 		<s:iterator var="one" value="#departmentEmployees">
 			<tr>
 				<td><a href="<s:property value='#application.url' />departmentEmployee.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
-				<td><s:property value="employee" /></td>
+				<td><a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='employee_id' />"> <s:property value="employee" /></a></td>
 				<td><s:property value="department" /></td>
 				<td><s:if test="hasSecondaryDept()"><s:property value="department2" /></s:if>&nbsp;</td>
 				<td><s:property value="effective_date" /></td>

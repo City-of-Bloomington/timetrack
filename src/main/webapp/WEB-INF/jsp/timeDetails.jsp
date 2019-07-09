@@ -217,13 +217,17 @@
 				<%@ include file="accrualSummary.jsp" %>
 			</s:else>
 			<%@ include file="timeIssues.jsp" %>
+			<s:if test="document.hasUnscheduleds()">
+				<s:set var="unscheduledTitle" value="'Unscheduled Times'" />				
+				<s:set var="unscheduleds" value="document.unscheduleds" />
+				<%@ include file="unscheduledTimes.jsp" %>				
+			</s:if>			
 			<s:if test="canCancelAction()">
 				<s:set var="canCancelAction" value="'true'" />
 			</s:if>
 			<%@ include file="timeActions.jsp" %>
 			<%@ include file="timeNotes.jsp" %>
 			<br />
-
 			<h1>Time Log History</h1>
 			<a href="<s:property value='#application.url' />timeBlockLog.action?document_id=<s:property value='document.id' />">(view)</a>
 		</div>

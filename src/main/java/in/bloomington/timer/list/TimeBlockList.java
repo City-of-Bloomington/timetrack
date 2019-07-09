@@ -6,6 +6,7 @@ package in.bloomington.timer.list;
  */
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.TreeMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.sql.*;
+import org.javatuples.Triplet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
@@ -62,6 +64,7 @@ public class TimeBlockList{
     Map<JobType, Map<Integer, Double>> daily = new TreeMap<>();		
     // week 1,2 / hour_code_id /hours
     Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = new TreeMap<>();
+		List<Triplet<String, String, String>> unscheduleds = null;
     Document document = null;
     List<String> jobNames = null;
     public TimeBlockList(){
@@ -203,7 +206,13 @@ public class TimeBlockList{
     public double getWeek2AmountTotal(){
 				return week2AmountTotal;
     }		
-		
+		public List<Triplet<String, String, String>> getUnscheduleds(){
+				return unscheduleds;
+		}
+		public boolean hasUnscheduleds(String emp_id){
+				findUnscheduleds(emp_id);
+				return unscheduleds != null && unscheduleds.size() > 0;
+		}
     public Map<JobType, Map<Integer, Double>> getDailyDbl(){
 				return daily;
     }
@@ -944,6 +953,71 @@ public class TimeBlockList{
 				}
 				return msg;
     }
+		/**
+		 * this function is intended to find the dates, earn code and hours
+		 * that the employee used within one year from now. This is needed
+		 * since some employees have limited number of times unscheduled times
+		 * can be used. This will help the managers to decide if they approve
+		 * or not, currently the two earn codes are the unscheduled PTOUN and SBUUN 
+		 */
+		/*
+			select date_format(t.date,'%m/%d/%Y') date, c.name code, sum(t.hours)           from time_blocks t,time_documents d,hour_codes c                                where t.document_id=d.id and t.inactive is null                                 and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTO' or c.name like 'SBU')                                    and d.employee_id=1  and  t.date > str_to_date('07/01/2018','%m/%d/%Y')         and t.date <= curdate()                                                         group by date, code
+
+		 */
+		public String findUnscheduleds(String doc_id){
+				Connection con = null;
+				PreparedStatement pstmt = null, pstmt2=null;
+				ResultSet rs = null;
+				Date end_date=null, prev_date = null;
+				Calendar cal = Calendar.getInstance();
+				String msg = "", emp_id="";
+				String qq = "select d.employee_id,p.end_date from time_documents d, pay_periods p where d.pay_period_id=p.id and d.id=? ";
+				String qq2 = "select date_format(t.date,'%m/%d/%Y') date, c.name code, sum(t.hours)           from time_blocks t,time_documents d,hour_codes c                       where t.document_id=d.id and t.inactive is null                                 and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                and d.employee_id=?  and  t.date >= ?  and t.date <= ?                         group by date, code ";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, doc_id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								emp_id = rs.getString(1);
+								end_date = rs.getDate(2);
+						}
+						cal.setTime(end_date);
+						cal.add(Calendar.YEAR, -1);
+						prev_date = cal.getTime();
+						pstmt2 = con.prepareStatement(qq2);
+						pstmt2.setString(1, emp_id);
+						pstmt2.setDate(2, new java.sql.Date(prev_date.getTime()));
+						pstmt2.setDate(3, new java.sql.Date(end_date.getTime()));						
+						rs = pstmt2.executeQuery();
+						while(rs.next()){
+								String str = rs.getString(1);
+								String str2 = rs.getString(2);
+								String str3 = rs.getString(3);
+								if(unscheduleds == null){
+										unscheduleds = new ArrayList<Triplet<String, String, String>>();
+								}
+								Triplet<String, String, String> trp = Triplet.with(str, str2, str3);
+								unscheduleds.add(trp);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+								
+				}
+				finally{
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}
 		/**
       select c.accrual_id, c.earn_factor, sum(t.hours)                                from time_blocks t,time_documents d,hour_codes c                                where t.document_id=d.id and t.inactive is null                                 and c.id=t.hour_code_id and c.inactive is null                                  and c.accrual_id is not null and c.earn_factor > 0                              and c.type='Earned'  and d.pay_period_id in (559, 560)                          and d.employee_id=1                                                             group by c.accrual_id,c.earn_factor 
 
