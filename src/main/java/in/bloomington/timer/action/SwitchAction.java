@@ -25,7 +25,6 @@ public class SwitchAction extends TopAction{
 				document_id="",
 				source="",
 				department_id="";
-		// Employee employee = null;
 		String employeesTitle = "Current Employees";
 		public String execute(){
 				String ret = SUCCESS;

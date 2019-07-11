@@ -21,6 +21,7 @@ public class EmpList extends CommonInc{
 		static final long serialVersionUID = 1100L;
 		static EnvBean bean = null;
 		String name = "", dept_name="", group_name="";
+		String id_code="";
 		Hashtable<String, String> deptTable = null; // name, id
 		Hashtable<String, Hashtable<String,String>> grpTable = null; // dept_id, groups
 		List<Employee> emps = null;
@@ -46,9 +47,18 @@ public class EmpList extends CommonInc{
 				return emps;
 		}
 		public void setName(String val){
-				if(val != null)
-						name = val;
+				if(val != null){
+						try{
+								id_code = ""+Integer.parseInt(val); 
+						}catch(Exception ex){
+								name = val;
+						}
+				}
 		}
+		public void setId_code(String val){
+				if(val != null)
+						id_code = val;
+		}		
 		public void setDept_name(String val){
 				if(val != null)
 						dept_name = val;
@@ -162,6 +172,10 @@ public class EmpList extends CommonInc{
 						String filter = "";
 						if(!name.equals("")){
 								filter = "(sAMAccountName="+name+"*)";
+						}
+						else if(!id_code.equals("")){
+								filter = "(employeeId="+id_code+")";
+								
 						}
 						else if (!dept_name.equals("")){
 								// we are excluding disabled users and any user that
@@ -300,6 +314,10 @@ public class EmpList extends CommonInc{
 						if(!name.equals("")){
 								filter = "(sAMAccountName="+name+"*)";
 						}
+						else if(!id_code.equals("")){
+								filter = "(employeeId="+id_code+")";
+								
+						}						
 						else if (!dept_name.equals("")){
 								/*
 									// we can not use wildcard in AD so we have to do

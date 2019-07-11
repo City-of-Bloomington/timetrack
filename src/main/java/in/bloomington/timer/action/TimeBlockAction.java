@@ -41,7 +41,7 @@ public class TimeBlockAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare("timeBlock.action");
 				if(!back.equals("")){
-						return back; // login
+						return back; 
 				}
 				if(action.equals("Save")){
 						if(timeBlock.areAllTimesSet()){
@@ -207,7 +207,7 @@ public class TimeBlockAction extends TopAction{
 		}
 		public List<HourCode> getHourCodes(){
 				//
-				// hours code are part of finding document
+				// earn codes are part of finding document
 				//
 				getDocument();
 				findHourCodes();
@@ -249,7 +249,6 @@ public class TimeBlockAction extends TopAction{
 										if(department != null){
 												crcl.setDepartment_id(department.getId());
 										}
-										// crcl.setGroup_id(group_id); // not needed now
 										crcl.setActiveOnly();
 										String back = crcl.lookFor();
 										if(back.equals("")){

@@ -29,11 +29,10 @@
 			</s:if>
 			<s:if test="emp.id == ''">
 				<div class="form-group">
-					<label>Full Name</label>
-					<s:textfield name="emp.full_name" value="" size="30" maxlength="70" id="emp_name" /><br /> Start typing employee last name to pick from the list
+					<label>Search by Full Name or ID Code</label>
+					<s:textfield name="emp.full_name" value="" size="30" maxlength="70" id="emp_name" /><br /> Start typing employee last name or ID code then pick from the list
 				</div>
 			</s:if>
-
 			<div class="form-group">
 				<label>Username</label>
 				<s:textfield name="emp.username" size="10" value="%{emp.username}" required="true" id="username_id" />
