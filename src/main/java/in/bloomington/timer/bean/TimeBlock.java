@@ -1067,7 +1067,7 @@ public class TimeBlock extends Block{
 		}
 		private String doSaveForInOnly(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				if(!errors.equals("")){
@@ -1119,8 +1119,9 @@ public class TimeBlock extends Block{
 						pstmt.setString(jj++, "y"); // clock_in
 						pstmt.setNull(jj++,Types.CHAR); // clock_out
 						pstmt.executeUpdate();
-						pstmt = con.prepareStatement(qq2);
-						rs = pstmt.executeQuery();
+						//
+						pstmt2 = con.prepareStatement(qq2);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -1148,7 +1149,7 @@ public class TimeBlock extends Block{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -1303,8 +1304,7 @@ public class TimeBlock extends Block{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-						Helper.databaseDisconnect(pstmt2, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 				}
 				return msg;
 		}

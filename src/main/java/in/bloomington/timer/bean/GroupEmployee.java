@@ -351,11 +351,13 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						if(payPeriod != null)
 								employee.setPay_period_id(payPeriod.getId());
 						List<JobTask> jobs = employee.getJobs();
-						for(JobTask job:jobs){
-								// change jobs that are linked to the old group only
-								if(job.getGroup_id().equals(group_id)){
-										job.setGroup_id(new_group_id);
-										job.doUpdate();
+						if(jobs != null && jobs.size() > 0){
+								for(JobTask job:jobs){
+										// change jobs that are linked to the old group only
+										if(job.getGroup_id().equals(group_id)){
+												job.setGroup_id(new_group_id);
+												job.doUpdate();
+										}
 								}
 						}
 				}
@@ -406,10 +408,12 @@ public class GroupEmployee extends CommonInc implements Serializable{
 								employee.setPay_period_id(payPeriod.getId());
 						}
 						List<JobTask> jobs = employee.getJobs();
-						for(JobTask job:jobs){
-								if(job.getGroup_id().equals(group_id)){
-										job.setExpire_date(exp_date);
-										job.doUpdate();
+						if(jobs != null && jobs.size() > 0){
+								for(JobTask job:jobs){
+										if(job.getGroup_id().equals(group_id)){
+												job.setExpire_date(exp_date);
+												job.doUpdate();
+										}
 								}
 						}
 				}

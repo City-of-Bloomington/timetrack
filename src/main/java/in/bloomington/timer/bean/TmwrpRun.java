@@ -770,14 +770,31 @@ public class TmwrpRun{
     }
 		public String doSaveOrUpdate(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3 = null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select id from tmwrp_runs where document_id=? ";
+				// for save
+				String qq2 = "insert into tmwrp_runs values(0,?,?,now(),?,?,?,?,?,?) ";
+				// for update
+				String qq3 = "update tmwrp_runs set "+
+						"run_time=now(),"+
+						"reg_code_id=?,"+
+						"week1_grs_reg_hrs=?,"+
+						"week2_grs_reg_hrs=?,"+
+						"week1_net_reg_hrs=?,"+
+						"week2_net_reg_hrs=?, "+
+						"cycle1_net_reg_hrs=?,"+
+						"cycle2_net_reg_hrs=? "+						
+						"where id=? ";				
 				if(document_id.equals("")){
 						msg = " document not set ";
 						return msg;
 				}
+				if(reg_code_id.equals("")){
+						msg = " regular earn code not set ";
+						return msg;
+				}								
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -791,6 +808,42 @@ public class TmwrpRun{
 						if(rs.next()){
 								id = rs.getString(1);
 								old_record = true;
+								//
+								// then do update
+								//
+								qq = qq3;
+								pstmt2 = con.prepareStatement(qq);
+								pstmt2.setString(1, reg_code_id);
+								pstmt2.setDouble(2,week1_grs_reg_hrs);
+								pstmt2.setDouble(3,week2_grs_reg_hrs);
+								pstmt2.setDouble(4,week1_net_reg_hrs);
+								pstmt2.setDouble(5,week2_net_reg_hrs);
+								pstmt2.setDouble(6,cycle1_net_reg_hrs);
+								pstmt2.setDouble(7,cycle2_net_reg_hrs);						
+								pstmt2.setString(8, id);						
+								pstmt2.executeUpdate();
+						}
+						else{
+								// Save
+								qq = qq2;
+								pstmt2 = con.prepareStatement(qq);
+						
+								pstmt2.setString(1, document_id);						
+								pstmt2.setString(2, reg_code_id);
+								pstmt2.setDouble(3,week1_grs_reg_hrs);
+								pstmt2.setDouble(4,week2_grs_reg_hrs);
+								pstmt2.setDouble(5,week1_net_reg_hrs);
+								pstmt2.setDouble(6,week2_net_reg_hrs);
+								pstmt2.setDouble(7,cycle1_net_reg_hrs);
+								pstmt2.setDouble(8,cycle2_net_reg_hrs);						
+								pstmt2.executeUpdate();
+								//
+								qq = "select LAST_INSERT_ID()";
+								pstmt3 = con.prepareStatement(qq);
+								rs = pstmt3.executeQuery();
+								if(rs.next()){
+										id = rs.getString(1);
+								}								
 						}
 				}
 				catch(Exception ex){
@@ -798,16 +851,8 @@ public class TmwrpRun{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
 						UnoConnect.databaseDisconnect(con);
-				}
-				if(msg.equals("")){
-						if(id.equals("")){
-								return doSave();
-						}
-						else{
-								return doUpdate();
-						}
 				}
 				return msg;
 		}
@@ -844,107 +889,7 @@ public class TmwrpRun{
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
-		}		
-    public String doSave(){
-				//
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				String msg="", str="";
-				String qq = "insert into tmwrp_runs values(0,?,?,now(),?,?,?,?,?,?) ";
-				if(document_id.equals("")){
-						msg = " document not set ";
-						return msg;
-				}
-				if(reg_code_id.equals("")){
-						msg = " regular hour code not set ";
-						return msg;
-				}				
-				logger.debug(qq);
-				con = UnoConnect.getConnection();
-				if(con == null){
-						msg = "Could not connect to DB ";
-						return msg;
-				}				
-				try{
-						pstmt = con.prepareStatement(qq);
-						
-						pstmt.setString(1, document_id);						
-						pstmt.setString(2, reg_code_id);
-						pstmt.setDouble(3,week1_grs_reg_hrs);
-						pstmt.setDouble(4,week2_grs_reg_hrs);
-						pstmt.setDouble(5,week1_net_reg_hrs);
-						pstmt.setDouble(6,week2_net_reg_hrs);
-						pstmt.setDouble(7,cycle1_net_reg_hrs);
-						pstmt.setDouble(8,cycle2_net_reg_hrs);						
-						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
-						//
-						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
-						if(rs.next()){
-								id = rs.getString(1);
-						}
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-						UnoConnect.databaseDisconnect(con);
-				}
-				return msg;
-    }
-    public String doUpdate(){
-				//
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				String msg="", str="";
-				String qq = "update tmwrp_runs set "+
-						"run_time=now(),"+
-						"reg_code_id=?,"+
-						"week1_grs_reg_hrs=?,"+
-						"week2_grs_reg_hrs=?,"+
-						"week1_net_reg_hrs=?,"+
-						"week2_net_reg_hrs=?, "+
-						"cycle1_net_reg_hrs=?,"+
-						"cycle2_net_reg_hrs=? "+						
-						"where id=? ";
-				if(reg_code_id.equals("")){
-						msg = " regular hour code not set ";
-						return msg;
-				}				
-				logger.debug(qq);
-				con = UnoConnect.getConnection();
-				if(con == null){
-						msg = "Could not connect to DB ";
-						return msg;
-				}				
-				try{
-						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, reg_code_id);
-						pstmt.setDouble(2,week1_grs_reg_hrs);
-						pstmt.setDouble(3,week2_grs_reg_hrs);
-						pstmt.setDouble(4,week1_net_reg_hrs);
-						pstmt.setDouble(5,week2_net_reg_hrs);
-						pstmt.setDouble(6,cycle1_net_reg_hrs);
-						pstmt.setDouble(7,cycle2_net_reg_hrs);						
-						pstmt.setString(8, id);						
-						pstmt.executeUpdate();
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-						UnoConnect.databaseDisconnect(con);
-				}
-				return msg;
-    }		
+		}
 		/**
 		 * when delete, we also delete related blocks
 		 */

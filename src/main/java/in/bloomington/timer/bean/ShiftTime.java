@@ -356,7 +356,6 @@ public class ShiftTime{
 						}
 						tmwrpManager = new TimewarpManager(document_id);
 						msg = tmwrpManager.doProcess();
-						System.err.println(" manager "+msg);
 				}
 				if(msg.equals("")){
 						msg = doUpdateProcessed();

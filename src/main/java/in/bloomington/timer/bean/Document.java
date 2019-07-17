@@ -1184,7 +1184,7 @@ public class Document implements Serializable{
 						checkWeekWarnings(hourCodeWeek1, week1Total);
 				}
 				if(job != null){
-						if(week1Total < job.getWeekly_regular_hours()){
+						if(week1Total+0.001 < job.getWeekly_regular_hours()){
 								String str = "Week 1 total hours are less than "+job.getWeekly_regular_hours()+" hrs";
 								if(!warnings.contains(str))
 										warnings.add(str);
@@ -1194,7 +1194,7 @@ public class Document implements Serializable{
 						checkWeekWarnings(hourCodeWeek2, week2Total);
 				}
 				if(job != null){				
-						if(week2Total < job.getWeekly_regular_hours()){
+						if(week2Total + 0.001 < job.getWeekly_regular_hours()){
 								String str = "Week 2 total hours are less than "+job.getWeekly_regular_hours()+" hrs";
 								if(!warnings.contains(str))
 										warnings.add(str);
@@ -1438,7 +1438,7 @@ public class Document implements Serializable{
     public String findOrSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qqs = "select id from time_documents where employee_id=? "+
@@ -1473,17 +1473,16 @@ public class Document implements Serializable{
 										id = rs.getString(1);
 								}
 								else{
-										Helper.databaseDisconnect(pstmt, rs);
-										pstmt = con.prepareStatement(qq);
-										pstmt.setString(1, employee_id);
-										pstmt.setString(2, pay_period_id);
-										pstmt.setString(3, job_id);
-										pstmt.setString(4, initiated_by);
-										pstmt.executeUpdate();
-										Helper.databaseDisconnect(pstmt, rs);
+										pstmt2 = con.prepareStatement(qq);
+										pstmt2.setString(1, employee_id);
+										pstmt2.setString(2, pay_period_id);
+										pstmt2.setString(3, job_id);
+										pstmt2.setString(4, initiated_by);
+										pstmt2.executeUpdate();
+										//
 										qq = "select LAST_INSERT_ID()";
-										pstmt = con.prepareStatement(qq);
-										rs = pstmt.executeQuery();
+										pstmt3 = con.prepareStatement(qq);
+										rs = pstmt3.executeQuery();
 										if(rs.next()){
 												id = rs.getString(1);
 										}
@@ -1503,7 +1502,7 @@ public class Document implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
