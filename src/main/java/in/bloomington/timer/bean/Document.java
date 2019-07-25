@@ -1507,6 +1507,45 @@ public class Document implements Serializable{
 				}
 				return msg;
     }
+    public String doUpdateJob(){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "update time_documents set job_id=? where id=? ";
+				if(job_id.equals("")){
+						msg = " job not set ";
+						return msg;
+				}				
+				if(id.equals("")){
+						msg = " id not set ";
+						return msg;
+				}				
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "No db connection ";
+						return msg;
+				}
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, job_id);
+						pstmt.setString(2, id);						
+						pstmt.executeUpdate();
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(rs, pstmt);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+    }		
+
+		
     Workflow findFirstWorkFlow(){
 				Workflow workflow = null;
 				WorkflowList wfl = new WorkflowList();

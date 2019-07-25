@@ -110,6 +110,7 @@
 
 			<s:else>
 				<div class="button-group">
+					<s:submit name="action" type="button" value="Save Changes" class="button"/>					
 					<a href="<s:property value='#application.url' />employee.action" class="button">New Employee</a>
 					<s:if test="!emp.hasDepartments()">
 						<a href="<s:property value='#application.url' />departmentEmployee.action?employee_id=<s:property value='emp.id' />" class="button">Add Employee to Department</a>
@@ -130,9 +131,9 @@
 						</s:if>
 						<s:else>
 							<a href="<s:property value='#application.url' />jobChange.action?related_employee_id=<s:property value='emp.id' />" class="button">Change Job</a>
+							<a href="<s:property value='#application.url' />jobTimeChange.action?related_employee_id=<s:property value='emp.id' />" class="button">Change Job Times</a>							
 						</s:else>
 					</s:else>
-					<s:submit name="action" type="button" value="Save Changes" class="button"/>
 				</div>
 			</s:else>
 		</div>

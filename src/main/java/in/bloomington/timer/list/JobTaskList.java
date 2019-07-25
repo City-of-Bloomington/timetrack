@@ -25,7 +25,8 @@ public class JobTaskList{
 				clock_time_required = false, clock_time_not_required=false,
 				not_expired = false, non_temp_emp = false;
 		boolean avoid_recent_jobs = false; // jobs are recent if entered within 14 days
-		boolean include_future = false, order_by_employee = false;
+		boolean include_future = false, order_by_employee = false,
+				order_by_id = false;
     String salary_group_id="", employee_id="", pay_period_id="";
     String id="", effective_date = "", which_date="j.effective_date",
 				date_from="", date_to="", position_id="", employee_name="",
@@ -193,6 +194,9 @@ public class JobTaskList{
 		public void setOrderByEmployee(){
 				order_by_employee = true;
 		}
+		public void setOrderById(){
+				order_by_id = true;
+		}		
     public List<Group> getGroups(){
 				if(groups == null){
 						if(!department_id.equals("")){
@@ -333,6 +337,9 @@ public class JobTaskList{
 						qq += " left join employees e on e.id=j.employee_id ";
 						qo = " order by e.last_name,e.first_name";
 				}
+				else if(order_by_id){
+						qo = " order by j.id DESC ";
+				}
 				else{
 						qo = " order by p.name ";
 				}
@@ -340,10 +347,6 @@ public class JobTaskList{
 						qq += " where "+qw;
 				}
 				qq += qo;
-				if(order_by_employee){
-
-				}
-
 				logger.debug(qq);
 				try{
 						
