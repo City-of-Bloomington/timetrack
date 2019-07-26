@@ -131,7 +131,7 @@
 						</s:if>
 						<s:else>
 							<a href="<s:property value='#application.url' />jobChange.action?related_employee_id=<s:property value='emp.id' />" class="button">Change Job</a>
-							<a href="<s:property value='#application.url' />jobTimeChange.action?related_employee_id=<s:property value='emp.id' />" class="button">Change Job Times</a>							
+							<a href="<s:property value='#application.url' />jobTimeChange.action?related_employee_id=<s:property value='emp.id' />" class="button">Transfer Job Times</a>							
 						</s:else>
 					</s:else>
 				</div>

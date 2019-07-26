@@ -292,6 +292,15 @@ public class TimeClock {
 
     public Employee getEmployee() {
 				if (employee == null && !id_code.equals("")) {
+						//
+						// if two employee swipe one after another quickely
+						// we pick the first 4 digits and ignore the second
+						if(id_code.length() == 8){ 
+								id_code = id_code.substring(0,4);
+						}
+						else if(id_code.length() > 4){ // if it is more we do not accept
+								return null;
+						}
 						Employee one = new Employee();
 						one.setId_code(id_code);
 						String back = one.doSelect();

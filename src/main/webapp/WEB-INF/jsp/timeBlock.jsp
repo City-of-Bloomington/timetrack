@@ -84,8 +84,12 @@
 				<label>Time Out</label>
 				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
+			<div id="div_startnextday" class="form-group">
+				<label>Start Time Next Day</label>
+				<s:checkbox name="timeBlock.startNextDay" value="%{timeBlock.startNextDay}" id="time_startnextday" />
+			</div>
 			<div id="div_overnight" class="form-group">
-				<label>Overnight Shift</label>
+				<label>End Time Next Day</label>
 				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" id="time_overnight" />
 			</div>
 			<div id="div_hours" style="display:none;" class="form-group">
@@ -106,8 +110,12 @@
 				<label>End Time</label>
 				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
+			<div id="div_startnextday" style="display:none;" class="form-group">
+				<label>Start Time Next Day</label>
+				<s:checkbox name="timeBlock.startNextDay" value="%{timeBlock.startNextDay}" id="time_startnextday" />
+			</div>			
 			<div id="div_overnight" style="display:none;" class="form-group">
-				<label>Overnight Shift</label>
+				<label>End Time Next Day</label>
 				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" id="time_overnight" />
 			</div>
 			<div id="div_hours" class="form-group">
@@ -128,8 +136,12 @@
 				<label>End Time</label>
 				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
+			<div id="div_startnextday" style="display:none;" class="form-group">
+				<label>Start Time Next Day</label>
+				<s:checkbox name="timeBlock.startNextDay" value="%{timeBlock.startNextDay}" id="time_startnextday" />
+			</div>						
 			<div id="div_overnight" style="display:none;" class="form-group">
-				<label>Overnight Shift</label>
+				<label>End Time Next Day</label>
 				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" id="time_overnight" />
 			</div>
 			<div id="div_hours" style="display:none"  class="form-group">

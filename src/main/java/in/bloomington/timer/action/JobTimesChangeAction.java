@@ -30,7 +30,7 @@ public class JobTimesChangeAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				getJobTime();
-				if(action.startsWith("Change")){
+				if(!action.equals("")){
 						jobTime.setEmployee_id(related_employee_id);
 						jobTime.setPay_period_id(pay_period_id);
 						jobTime.setTo_job_id(to_job_id);
@@ -45,7 +45,7 @@ public class JobTimesChangeAction extends TopAction{
 				}
 				return ret;
 		}
-	 public List<JobTask> getJobs(){
+		public List<JobTask> getJobs(){
 			 if(pay_period_id.equals("")){
 					 getPay_period_id();
 			 }

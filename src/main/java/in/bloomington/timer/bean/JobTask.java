@@ -870,12 +870,13 @@ public class JobTask implements Serializable{
 		//
     public String doChange(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				boolean add_group = false;
-				String qq = "update jobs set expire_date = ? where id = ?";
-				String qq2 = "update time_documents set job_id=? where job_id=? and pay_period_id >= ? ";
+				String qq = "select expire_date from jobs where id=? ";
+				String qq2 = "update jobs set expire_date = ? where id = ? and expire_date is null";
+				String qq3 = "update time_documents set job_id=? where job_id=? and pay_period_id >= ? ";
 				if(pay_period_id.equals("")){
 						msg = "pay period is required";
 						return msg;
@@ -907,26 +908,39 @@ public class JobTask implements Serializable{
 						return msg;
 				}						
 				try{
-						pstmt = con.prepareStatement(qq);
-						java.util.Date date_tmp = df.parse(old_expire_date);
-						pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
-						pstmt.setString(2, id);				
-						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
-						//
-						String old_group_id = group_id;
 						String old_job_id = id;
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, old_job_id); 
+						rs = pstmt.executeQuery();
+						boolean alreadyExpired = false;
+						if(rs.next()){
+								if(rs.getString(1) != null){
+										alreadyExpired = true;
+								}
+						}
+						if(!alreadyExpired){
+								qq = qq2;
+								pstmt2 = con.prepareStatement(qq);
+								java.util.Date date_tmp = df.parse(old_expire_date);
+								pstmt2.setDate(1, new java.sql.Date(date_tmp.getTime()));
+								pstmt2.setString(2, id);				
+								pstmt2.executeUpdate();
+								//
+						}
+						String old_group_id = group_id;
+
 						group_id = new_group_id;
 						id = "";
 						effective_date = start_date;
 						msg = doSave();
-						qq = qq2;
-						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, id);
-						pstmt.setString(2, old_job_id);
-						pstmt.setString(3, pay_period_id);
-						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
+						if(!alreadyExpired){
+								qq = qq3;
+								pstmt3 = con.prepareStatement(qq);
+								pstmt3.setString(1, id);
+								pstmt3.setString(2, old_job_id);
+								pstmt3.setString(3, pay_period_id);
+								pstmt3.executeUpdate();
+						}
 						//
 						if(add_group){
 								// add employee to the new group
@@ -958,7 +972,7 @@ public class JobTask implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
 						UnoConnect.databaseDisconnect(con);
 				}						
 				return msg;

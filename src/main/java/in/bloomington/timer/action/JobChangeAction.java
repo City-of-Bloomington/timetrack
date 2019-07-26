@@ -37,6 +37,9 @@ public class JobChangeAction extends TopAction{
 						}
 						else{
 								addMessage("changed Successfully");
+								related_employee_id = jobTask.getEmployee_id();
+								getJobs();
+								return "pickJob";
 						}
 				}
 				else{

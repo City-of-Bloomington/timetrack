@@ -20,16 +20,18 @@
 			<s:set var="errors" value="%{errors}" />			
 			<%@ include file="errors.jsp" %>
 		</s:elseif>
-		Note: To change employee's job
+		Note: To change employee's job to another job
 		<ul>
 			<li> If the employee switched department, you need to change the employee
 				department first, then come here and change the job and group.</li>
 			<li> If the department is changed or no need to change the department continue</li>
+			<li> A new job will be created to replace the selected job </li>
 			<li> Pick the pay period where the pay period start date
 				will be the employee new job start date. </li>
-			<li>It is better to pick a future pay period to avoid conficts</li>
+			<li> The day before the picked pay period start date will mark the expire date for the old job </li> 
+			<li>It is better to pick a future pay period to avoid conflicts</li>
 			<li>Pick the employee group from the list </li>
-			<li>Fill the rest of fields and click on 'Change'</li>
+			<li>Fill the rest of fields to create the new job and click on 'Change'</li>
 		</ul>
 		<div class="width-one-half">
 			<div class="form-group">

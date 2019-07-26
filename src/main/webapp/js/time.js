@@ -205,9 +205,11 @@ $('#hour_code_select').change(function() {
         $('#time_in').attr('tabindex',-1);
         $('#time_out').attr('tabindex',-1);
         $('#time_overnight').attr('tabindex',-1);
+        $('#time_startnextday').attr('tabindex',-1);				
 				$('#amount_change').val('');				
         $('#div_time_in').hide();
         $('#div_time_out').hide();
+				$('#div_startnextday').hide();				
         $('#div_overnight').hide();
 				$("#reason_div_id").hide();	
 				$("#select_reason_id").val('');
@@ -219,8 +221,10 @@ $('#hour_code_select').change(function() {
         $('#time_in').attr('tabindex',-1);
         $('#time_out').attr('tabindex',-1);
         $('#time_overnight').attr('tabindex',-1);
+        $('#time_startnextday').attr('tabindex',-1);				
         $('#div_time_in').hide();
         $('#div_time_out').hide();
+				$('#div_startnextday').hide();								
         $('#div_overnight').hide();
 				$("#reason_div_id").hide();	
 				$("#select_reason_id").val('');
@@ -238,10 +242,12 @@ $('#hour_code_select').change(function() {
         $('#div_time_in').show();
         $('#div_time_out').show();
         $('#div_overnight').show();
+        $('#div_startnextday').show();				
         $('#hour_change').attr('tabindex',-1);
         $('#time_in').attr('tabindex',2);
         $('#time_out').attr('tabindex',3);
         $('#time_overnight').attr('tabindex',4);
+        $('#time_startnextday').attr('tabindex',5);				
 				//
 				// we call earn_code_reason function here
 				//

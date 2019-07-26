@@ -71,16 +71,16 @@ public class JobTimesChange implements Serializable{
     public String doChange(){
 				Connection con = null;
 				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null,
-						pstmt4=null, pstmt5=null, pstmt6=null, pstmt7=null;
+						pstmt4=null, pstmt5=null;
 				ResultSet rs = null;
 				String msg="";
 				String qq = " update time_blocks set document_id=? where document_id=?";
 				String qq2 = " update time_block_logs set document_id=? where document_id=?";
-				String qq3 = " delete from time_actions where document_id=? ";
-				String qq4 = " select id from tmwrp_runs where document_id=? ";
-				String qq5 = " delete from tmwrp_blocks where run_id =? ";
-				String qq6 = " delete from tmwrp_runs where id=? ";
-				String qq7 = " delete from time_documents where id=? ";				
+				String qq3 = " select id from tmwrp_runs where document_id=? ";
+				String qq4 = " delete from tmwrp_blocks where run_id =? ";
+				String qq5 = " delete from tmwrp_runs where id=? ";
+				// String qq6 = " delete from time_actions where document_id=? ";
+				// String qq7 = " delete from time_documents where id=? ";				
 				if(employee_id.equals("")){
 						msg = " Employee not set ";
 						return msg;
@@ -159,46 +159,36 @@ public class JobTimesChange implements Serializable{
 						pstmt.executeUpdate();
 						//
 						// set time block logs to the old document
-						logger.debug(qq2);
-						qq = qq2;
-						pstmt2 = con.prepareStatement(qq2);
+						qq = qq2;						
+						logger.debug(qq);
+						pstmt2 = con.prepareStatement(qq);
 						pstmt2.setString(1, toDocument.getId());
 						pstmt2.setString(2, fromDocument.getId());
 						pstmt2.executeUpdate();						
 						//
-						// delete time actions
-						logger.debug(qq3);
-						qq = qq3;
-						pstmt3 = con.prepareStatement(qq3);
-						pstmt3.setString(1, fromDocument.getId());
-						pstmt3.executeUpdate();
-						//
 						// find run_id
-						logger.debug(qq4);
-						qq = qq4;
-						pstmt4 = con.prepareStatement(qq4);
-						pstmt4.setString(1, fromDocument.getId());
-						rs = pstmt4.executeQuery();
+						qq = qq3;						
+						logger.debug(qq);
+						pstmt3 = con.prepareStatement(qq);
+						pstmt3.setString(1, fromDocument.getId());
+						rs = pstmt3.executeQuery();
 						String run_id = "";
 						if(rs.next()){
 								run_id = rs.getString(1);
 						}
 						if(!run_id.equals("")){
-								logger.debug(qq5);
-								qq = qq5;
-								pstmt5 = con.prepareStatement(qq5);
+								qq = qq4;								
+								logger.debug(qq);
+
+								pstmt4 = con.prepareStatement(qq);
+								pstmt4.setString(1, run_id);
+								pstmt4.executeUpdate();
+								qq = qq5;								
+								logger.debug(qq);
+								pstmt5 = con.prepareStatement(qq);
 								pstmt5.setString(1, run_id);
 								pstmt5.executeUpdate();
-								logger.debug(qq6);
-								qq = qq6;
-								pstmt6 = con.prepareStatement(qq6);
-								pstmt6.setString(1, run_id);
-								pstmt6.executeUpdate();
 						}
-						qq = qq7;
-						pstmt7 = con.prepareStatement(qq6);
-						pstmt7.setString(1, fromDocument.getId());
-						pstmt7.executeUpdate();
 						TimewarpManager manager = new TimewarpManager(toDocument.getId());
 						msg = manager.doProcess();
 				}

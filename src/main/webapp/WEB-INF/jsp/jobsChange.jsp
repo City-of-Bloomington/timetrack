@@ -1,7 +1,15 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
 
-	<h1>Select one of the jobs to change</h1>
+<h1>Select one of the jobs to change</h1>
+<s:if test="hasMessages()">
+	<s:set var="messages" value="%{messages}" />			
+	<%@ include file="messages.jsp" %>
+</s:if>
+<s:elseif test="hasErrors()">
+	<s:set var="errors" value="%{errors}" />			
+	<%@ include file="errors.jsp" %>
+</s:elseif>
 <table class="width-full">
 	<thead>
 		<tr>
@@ -19,7 +27,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<s:iterator var="one" value="#jobTasks">
+		<s:iterator var="one" value="jobs">
 			<tr>
 				<td><a href="<s:property value='#application.url' />jobChange.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
 				<td><s:property value="position" /></td>

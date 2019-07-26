@@ -35,6 +35,7 @@ public class TimeBlock extends Block{
 		Set<String> rangeDateSet = new HashSet<>();
 		int order_index=0, repeat_count=0;
 		boolean include_weekends = false, overnight = false;
+		boolean startNextDay=false, endNextDay=false;
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
 		//
@@ -202,6 +203,9 @@ public class TimeBlock extends Block{
 		public boolean getOvernight(){
 				return overnight;
 		}
+		public boolean getStartNextDay(){
+				return startNextDay;
+		}		
 		public int getOrder_index(){
 				return order_index;
 		}
@@ -275,6 +279,10 @@ public class TimeBlock extends Block{
 				if(val)
 						overnight = true;
 		}
+		public void setStartNextDay(boolean val){
+				if(val)
+						startNextDay = true;
+		}		
 		public void setAccrual_balance(String[] vals){
 				if(vals != null){
 						for(String str: vals){
@@ -417,11 +425,11 @@ public class TimeBlock extends Block{
 				String am_pm = "AM";
 				if(begin_hour > 24){
 						begin_hour -= 24;
-						overnight = true;
+						startNextDay = true;
 				}
 				else if(begin_hour == 24){
 						begin_hour = 12;
-						overnight = true;
+						startNextDay = true;
 				}				
 				else if(begin_hour > 12){
 						begin_hour -= 12;						
@@ -675,8 +683,14 @@ public class TimeBlock extends Block{
 				return ret;
 		}
 		private void checkForOvernight(){
+				if(startNextDay){
+						if(begin_hour < 24){
+								begin_hour += 24;
+						}
+				}
 				if(overnight){
-						end_hour += 24;
+						if(end_hour < 24)
+								end_hour += 24;
 				}
 		}
 		private void adjustAccraulBalance(String code_id, double hrs){

@@ -39,9 +39,6 @@
         <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='currentPayPeriod.id' />" class="button today"><span>Current Pay Period</span></a>
         <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
       </div>
-			<!-- 
-      <a href="<s:property value='#application.url' />timewarp.action?pay_period_id=<s:property value='pay_period_id' />&department_id=<s:property value='department_id' />&action=Submit&type=single&group_id=<s:property value='group_id' />" class="button">More Details</a>
-			-->
       <s:if test="hasNoDocNorSubmitEmps()">
         <a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a>
       </s:if>
@@ -92,8 +89,6 @@
       </s:if>
       </div>
     </s:if>
-
-
 
     <s:if test="hasDocuments()">
       <s:iterator var="one" value="documents">
