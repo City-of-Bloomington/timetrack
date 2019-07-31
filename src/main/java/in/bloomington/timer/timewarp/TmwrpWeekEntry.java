@@ -24,7 +24,7 @@ public class TmwrpWeekEntry{
     // BenefitGroup bGroup = null;
     static DecimalFormat ndf = new DecimalFormat("#0.00");		
     static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-    static final double critical_small = 0.009;
+		//     static final double critical_small = 0.01;
 		
     double total_hrs = 0, regular_hrs = 0,
 				non_reg_hrs = 0, earn_time_used = 0,
@@ -269,7 +269,7 @@ public class TmwrpWeekEntry{
 						// in HAND case we have multiple Reg hours (HOME_REG, HOUSE_REG, )
 						// so we need to subtract it evenly from the bunch used in
 						// this week
-						if(regular_hrs > 0.01 && net_reg_hrs + 0.01 < regular_hrs){
+						if(regular_hrs > CommonInc.critical_small && net_reg_hrs + CommonInc.critical_small < regular_hrs){
 								double ratio = net_reg_hrs / regular_hrs; 
 								splitOne.adjustRegHashBy(ratio);
 								splitTwo.adjustRegHashBy(ratio);
@@ -349,12 +349,12 @@ public class TmwrpWeekEntry{
 				// everybody else
 				//
 				prof_hrs = total_hrs - st_weekly_hrs - earned_time;
-				if(prof_hrs < critical_small){
+				if(prof_hrs < CommonInc.critical_small){
 						prof_hrs = 0;
 				}
     }
     boolean hasProfHours(){
-				return prof_hrs > critical_small;
+				return prof_hrs > CommonInc.critical_small;
     }
     boolean hasSplitDay(){
 				return splitDay < 7;
@@ -380,7 +380,7 @@ public class TmwrpWeekEntry{
 						}
 						else if(salaryGroup.isUnionned()){
 								net_reg_hrs = regular_hrs - earned_time;
-								if(net_reg_hrs < critical_small){
+								if(net_reg_hrs < CommonInc.critical_small){
 										net_reg_hrs = 0;
 								}
 								return;
@@ -441,16 +441,18 @@ public class TmwrpWeekEntry{
 						}
 				}
 				// we may have carry over from daily such as union
-				earned_time += excess_hrs;
+				if(excess_hrs > CommonInc.critical_small){
+						earned_time += excess_hrs;
+				}
     }
     public boolean hasExessHours(){
-				return excess_hrs > critical_small;
+				return excess_hrs > CommonInc.critical_small;
     }
     public boolean hasInsufficientTotalHours(){
 				boolean ret = false;
 				
 				if(salaryGroup != null && !salaryGroup.isTemporary()){
-						if(total_hrs + 0.01 < st_weekly_hrs){
+						if(total_hrs + CommonInc.critical_small < st_weekly_hrs){
 								ret = true;
 						}
 				}
@@ -489,7 +491,7 @@ public class TmwrpWeekEntry{
 										extra_hrs = netHours - st_weekly_hrs;
 						}
 				}
-				if(extra_hrs > critical_small){
+				if(extra_hrs > CommonInc.critical_small){
 						double holy_hours = 0;
 						for(HolidayWorkDay one: holyWorkDays){
 								holy_hours += one.getHours();
@@ -503,7 +505,7 @@ public class TmwrpWeekEntry{
 						String dstr = ndf.format(holy_earn_hrs);
 						holy_earn_hrs = (double)(new Double(dstr));
 						//
-						if(holy_earn_hrs > critical_small){
+						if(holy_earn_hrs > CommonInc.critical_small){
 								// 
 								// earned_time += holy_earn_hrs;
 								//
@@ -533,7 +535,7 @@ public class TmwrpWeekEntry{
     public void createEarnRecord(){
 				//
 				String code_id = "";
-				if(excess_hrs <= critical_small) return;
+				if(excess_hrs <= CommonInc.critical_small) return;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
 								code_id = CommonInc.overTime15EarnCodeID; // "OT1.5";	// no CE1.5 for temp
@@ -580,7 +582,7 @@ public class TmwrpWeekEntry{
 				// second level for those in if above 40
 				// for hours after 40
 				//
-				if(excess_hrs2 > critical_small){ 
+				if(excess_hrs2 > CommonInc.critical_small){ 
 						if(excess_hours_earn_type.equals("Monetary")){
 								code_id =CommonInc.overTime10EarnCodeID ; // "OT1.0";
 								if(comp_factor > 1.0){
@@ -600,7 +602,7 @@ public class TmwrpWeekEntry{
     public void createProfRecord(){
 				//
 				String code_id = CommonInc.profHoursEarnCodeID ;// "PROF HRS";	
-				if(prof_hrs > critical_small){
+				if(prof_hrs > CommonInc.critical_small){
 						String dstr = ndf.format(prof_hrs);
 						addToEarnedHash(code_id, new Double(dstr));
 				}

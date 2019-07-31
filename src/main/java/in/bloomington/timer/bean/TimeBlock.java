@@ -35,7 +35,7 @@ public class TimeBlock extends Block{
 		Set<String> rangeDateSet = new HashSet<>();
 		int order_index=0, repeat_count=0;
 		boolean include_weekends = false, overnight = false;
-		boolean startNextDay=false, endNextDay=false;
+		boolean startNextDay=false;
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
 		//
@@ -52,6 +52,7 @@ public class TimeBlock extends Block{
 		double hours_old = 0;
 		String timeInfo = "";
 		List<EarnCodeReason> earnReasons = null;
+		String overnightOption = ""; // arrived before 12am, arrived after 12am
 		String errors = "";
     public TimeBlock( // for save
 										 String val,
@@ -200,12 +201,19 @@ public class TimeBlock extends Block{
 		public boolean getInclude_weekends(){
 				return false;
 		}
+		public String getOvernightOption(){
+				String val = "-1";
+				if(overnight){
+						val = "arrived before 12am";
+				}
+				if(startNextDay){
+						val = "arrived after 12am";
+				}
+				return val;
+		}
 		public boolean getOvernight(){
 				return overnight;
 		}
-		public boolean getStartNextDay(){
-				return startNextDay;
-		}		
 		public int getOrder_index(){
 				return order_index;
 		}
@@ -215,6 +223,17 @@ public class TimeBlock extends Block{
     //
     // setters
     //
+		public void setOvernightOption(String val){
+				if(val != null && !val.equals("-1")){
+						if(val.equals("arrived before 12am")){
+								overnight = true;
+						}
+						else {
+								startNextDay = true;
+								overnight = true;
+						}
+				}
+		}
 		public void setInactive(boolean val){
 				if(val)
 						inactive = "y";
@@ -279,10 +298,6 @@ public class TimeBlock extends Block{
 				if(val)
 						overnight = true;
 		}
-		public void setStartNextDay(boolean val){
-				if(val)
-						startNextDay = true;
-		}		
 		public void setAccrual_balance(String[] vals){
 				if(vals != null){
 						for(String str: vals){

@@ -41,13 +41,11 @@
 		<s:if test="timeBlock.id == ''">
 			<div class="form-group">
 				<label>Date Range</label>
-
 				<div class="date-range-picker">
 					<div>
 						<label for="timeBlock.start_date">From</label>
 						<s:textfield name="timeBlock.start_date" type="date" value="%{timeBlock.start_date}" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="start" />
 					</div>
-
 					<div>
 						<label for="timeBlock.end_date">To</label>
 						<s:textfield name="timeBlock.end_date" type="date" value="%{timeBlock.end_date}" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="end" />
@@ -84,13 +82,9 @@
 				<label>Time Out</label>
 				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
-			<div id="div_startnextday" class="form-group">
-				<label>Start Time Next Day</label>
-				<s:checkbox name="timeBlock.startNextDay" value="%{timeBlock.startNextDay}" id="time_startnextday" />
-			</div>
 			<div id="div_overnight" class="form-group">
-				<label>End Time Next Day</label>
-				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" id="time_overnight" />
+				<label>Overnight Shift Options</label>
+				<s:select name="timeBlock.overnightOption" value="%{timeBlock.overnightOption}" id="time_overnight" list="#{'-1':'None','arrived before 12am':'Regular Overnight Shift (arrived before 12am)','arrived after 12am':'Irregular Overnight Shift (arrived after 12am)'}" />
 			</div>
 			<div id="div_hours" style="display:none;" class="form-group">
 				<label>Hours</label>
@@ -110,13 +104,9 @@
 				<label>End Time</label>
 				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
-			<div id="div_startnextday" style="display:none;" class="form-group">
-				<label>Start Time Next Day</label>
-				<s:checkbox name="timeBlock.startNextDay" value="%{timeBlock.startNextDay}" id="time_startnextday" />
-			</div>			
 			<div id="div_overnight" style="display:none;" class="form-group">
-				<label>End Time Next Day</label>
-				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" id="time_overnight" />
+				<label>Overnight Shift Options</label>
+				<s:select name="timeBlock.overnightOption" value="%{timeBlock.overnightOption}" id="time_overnight" list="#{'-1':'None','arrived before 12am':'Regular Overnight Shift (arrived before 12am)','arrived after 12am':'Irregular Overnight Shift (arrived after 12am)'}" />
 			</div>
 			<div id="div_hours" class="form-group">
 				<label>Hours</label>
@@ -136,13 +126,9 @@
 				<label>End Time</label>
 				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out" placeholder="(hhmm or hh:mm AM/PM)" />
 			</div>
-			<div id="div_startnextday" style="display:none;" class="form-group">
-				<label>Start Time Next Day</label>
-				<s:checkbox name="timeBlock.startNextDay" value="%{timeBlock.startNextDay}" id="time_startnextday" />
-			</div>						
 			<div id="div_overnight" style="display:none;" class="form-group">
-				<label>End Time Next Day</label>
-				<s:checkbox name="timeBlock.overnight" value="%{timeBlock.overnight}" id="time_overnight" />
+				<label>Overnight Shift Options</label>
+				<s:select name="timeBlock.overnightOption" value="%{timeBlock.overnightOption}" id="time_overnight" list="#{'-1':'None','arrived before 12am':'Regular Overnight Shift (arrived before 12am)','arrived after 12am':'Irregular Overnight Shift (arrived after 12am)'}" />
 			</div>
 			<div id="div_hours" style="display:none"  class="form-group">
 				<label>Hours</label>

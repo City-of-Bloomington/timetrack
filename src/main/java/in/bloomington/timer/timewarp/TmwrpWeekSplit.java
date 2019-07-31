@@ -177,9 +177,9 @@ public class TmwrpWeekSplit{
 										double hrs = daily.get(code).doubleValue();
 										hours += hrs;
 								}
-								if(hours > 8.009){
+								if(hours > 8.01){
 										dif_hrs = hours - daily_hrs;
-										if(dif_hrs > 0.009){
+										if(dif_hrs > CommonInc.critical_small){
 												if(jj == 6){ // Sunday
 														earned_time20 += dif_hrs;												
 												}
@@ -324,21 +324,21 @@ public class TmwrpWeekSplit{
 						}
 						else if(salaryGroup.isUnionned()){
 								net_reg_hrs = regular_hrs - earned_time;
-								if(net_reg_hrs < 0.009){
+								if(net_reg_hrs < CommonInc.critical_small){
 										net_reg_hrs = 0;
 								}
 								return;
 						}
 						else if(salaryGroup.isFireSworn()){
 								net_reg_hrs = regular_hrs - earned_time;
-								if(net_reg_hrs < 0.009){
+								if(net_reg_hrs < CommonInc.critical_small){
 										net_reg_hrs = 0;
 								}
 								return;								
 						}
 						else if(salaryGroup.isFireSworn5x8()){
 								net_reg_hrs = regular_hrs - earned_time;
-								if(net_reg_hrs < 0.009){
+								if(net_reg_hrs < CommonInc.critical_small){
 										net_reg_hrs = 0;
 								}
 								return;								
@@ -348,7 +348,7 @@ public class TmwrpWeekSplit{
 				if(net_reg_hrs > st_weekly_hrs){
 						net_reg_hrs = st_weekly_hrs;
 				}
-				else if(net_reg_hrs < 0.009){
+				else if(net_reg_hrs < CommonInc.critical_small){
 						net_reg_hrs = 0;
 				}
 				
@@ -384,7 +384,7 @@ public class TmwrpWeekSplit{
 				//
 				computeDailyUnionEarnedTime();
 				//
-				if(earned_time15 > 0.009){
+				if(earned_time15 > CommonInc.critical_small){
 						if(excess_hours_earn_type.equals("Monetary")){
 								String code_id = CommonInc.overTime15EarnCodeID; // OT1.5
 								addToHash(hash, code_id, earned_time15);
@@ -396,7 +396,7 @@ public class TmwrpWeekSplit{
 								earned_time += earned_time15;
 						}
 				}
-				if(earned_time20 > 0.009){
+				if(earned_time20 > CommonInc.critical_small){
 						if(excess_hours_earn_type.equals("Monetary")){						
 								String code = CommonInc.overTime20EarnCodeID; // OT2.0
 								addToHash(hash, code, earned_time20);

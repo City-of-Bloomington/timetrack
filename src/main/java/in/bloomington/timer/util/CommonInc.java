@@ -64,6 +64,7 @@ public class CommonInc{
 		public final static String holyCompTime15EarnCodeID = "79"; // HCE1.5
 		public final static String holyCompTime20EarnCodeID = "48"; // HCE2.0			
 		public final static double maxMonetaryAmount = 1000.0; // CA for example
+		public final static double critical_small = 0.01;
 		//
 		// the following two array are used in reports
 		public final static String[] quarter_starts = {"","01/01/","04/01/","07/01/","10/01/"};
