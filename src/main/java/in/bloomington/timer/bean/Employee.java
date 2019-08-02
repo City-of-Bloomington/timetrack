@@ -685,12 +685,6 @@ public class Employee implements Serializable, Comparable<Employee>{
 				if(departmentEmployees == null && !id.equals("")){
 						DepartmentEmployeeList del = new DepartmentEmployeeList(id);
 						del.setIncludeFuture();
-						/*
-						if(!pay_period_id.equals("")){
-								findPayPeriod();
-						}
-						del.setPay_period_id(pay_period_id);
-						*/
 						String back = del.find();
 						if(back.equals("")){
 								List<DepartmentEmployee> des = del.getDepartmentEmployees();
@@ -737,12 +731,6 @@ public class Employee implements Serializable, Comparable<Employee>{
 				if(groupEmployees == null && !id.equals("")){
 						GroupEmployeeList del = new GroupEmployeeList(id);
 						del.setIncludeFuture();
-						/*
-						if(!pay_period_id.equals("")){
-								findPayPeriod();
-						}
-						del.setPay_period_id(pay_period_id);
-						*/
 						String back = del.find();
 						if(back.equals("")){
 								List<GroupEmployee> ones = del.getGroupEmployees();

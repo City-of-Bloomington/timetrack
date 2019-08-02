@@ -28,7 +28,7 @@
     <div class="width-one-half">
       <div class="form-group">
         <label>Employee</label>
-        <a href="<s:property value='#application.url' />employee.action?id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee}" /></a>
+        <a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee}" /></a>
       </div>
       <div class="form-group">
         <label>Old Department</label>
@@ -40,11 +40,11 @@
       </div>
       <div class="form-group">
         <label>Secondary Department</label>
-        <<s:select name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" />
+        <s:select name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" />
       </div>
       <div class="form-group">
-        <label>New Dept Effective Start Pay Period</label>
-        <s:select name="departmentEmployee.pay_period_id" value="%{departmentEmployee.pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Effective start pay period" />
+        <label>Effective Start Date</label>
+        <s:select name="departmentEmployee.effective_date" value="" list="payPeriods" listKey="startDate" listValue="startDate" headerKey="-1" headerValue="Pick Start Date" /> (Start pay period date)
       </div>
       <div class="button-group">
         <s:submit name="action" type="button" value="Change Department" class="fn1-btn"/>

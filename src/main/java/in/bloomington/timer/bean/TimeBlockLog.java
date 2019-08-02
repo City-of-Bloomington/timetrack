@@ -34,24 +34,25 @@ public class TimeBlockLog extends Block{
 							 int val8,
 							 int val9,
 							 double val10,
-							 
-							 double val11,
-							 String val12,
+
+							 int val11,
+							 double val12,
 							 String val13,
-							 
 							 String val14,
-							 String val15,
 							 
+							 String val15,
 							 String val16,
-							 String val17
+							 
+							 String val17,
+							 String val18
 							 ){
 				super(val, val2, val3,
 							val4,
-							val5, val6, val7, val8, val9, val10, val11, val12, val13);
-				setTime_block_id(val14);
-				setAction_type(val15);
-				setAction_by_id(val16);
-				setAction_time(val17);
+							val5, val6, val7, val8, val9, val10, val11, val12, val13, val14);
+				setTime_block_id(val15);
+				setAction_type(val16);
+				setAction_by_id(val17);
+				setAction_time(val18);
 		}
     public TimeBlockLog(String val){
 				super(val);
@@ -136,7 +137,7 @@ public class TimeBlockLog extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs where id =? ";
+				String qq = "select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,minutes,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs where id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -159,13 +160,14 @@ public class TimeBlockLog extends Block{
 												rs.getInt(8),
 												rs.getInt(9),
 												rs.getDouble(10),
-												rs.getDouble(11),
-												rs.getString(12),
-												rs.getString(13));
-								setTime_block_id(rs.getString(14));
-								setAction_type(rs.getString(15));
-								setAction_by_id(rs.getString(16));
-								setAction_time(rs.getString(17));
+												rs.getInt(11),
+												rs.getDouble(12),
+												rs.getString(13),
+												rs.getString(14));
+								setTime_block_id(rs.getString(15));
+								setAction_type(rs.getString(16));
+								setAction_by_id(rs.getString(17));
+								setAction_time(rs.getString(18));
 						}
 				}
 				catch(Exception ex){
@@ -184,10 +186,10 @@ public class TimeBlockLog extends Block{
 		public String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into time_block_logs values(0,?,?,?, ?,?,?,?,? ,?,?,?,?,?,?,?, now()) ";
+				String qq = "insert into time_block_logs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,now()) ";
 				if(document_id.equals("")){
 						msg = " document not set ";
 						return msg;
@@ -214,10 +216,13 @@ public class TimeBlockLog extends Block{
 						java.util.Date date_tmp = df.parse(date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						pstmt.setInt(jj++, begin_hour);
+						
 						pstmt.setInt(jj++, begin_minute);
 						pstmt.setInt(jj++, end_hour);
 						pstmt.setInt(jj++, end_minute);
 						pstmt.setDouble(jj++, hours);
+						pstmt.setInt(jj++, minutes);
+						
 						pstmt.setDouble(jj++, amount);						
 						if(clock_in.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
@@ -229,13 +234,13 @@ public class TimeBlockLog extends Block{
 								pstmt.setString(jj++, "y");								
 						pstmt.setString(jj++, time_block_id);
 						pstmt.setString(jj++, action_type);
+						
 						pstmt.setString(jj++, action_by_id);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -245,7 +250,7 @@ public class TimeBlockLog extends Block{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;

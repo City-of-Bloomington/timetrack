@@ -28,7 +28,8 @@ public class Block{
 		String salary_group_id = "", group_id="";
 		String date = ""; // the user pick date, needed for PTO, Holiday etc
 		double hours = 0.0, amount = 0.0; // for dollar value
-		int begin_hour = 0, begin_minute=0, end_hour=0, end_minute=0;
+		int begin_hour = 0, begin_minute=0, end_hour=0, end_minute=0,
+				minutes=0;
 		HourCode hourCode = null;
 		CodeRef codeRef = null;
 		EarnCodeReason earnCodeReason = null;
@@ -53,14 +54,15 @@ public class Block{
 								 int val7,
 								 int val8,
 								 double val9,
-								 double val10
+								 int val10,
+								 double val11
 							 ){
 				setVals(val,
 								val2,
 								val3,
 								val4,
 								val5,
-								val6, val7, val8, val9, val10);
+								val6, val7, val8, val9, val10, val11);
 		}		
 		
     public Block(
@@ -74,15 +76,16 @@ public class Block{
 								 int val8,
 								 int val9,
 								 double val10,
-								 double val11,
-								 String val12,
-								 String val13
+								 int val11,
+								 double val12,
+								 String val13,
+								 String val14
 							 ){
 				setVals(val, val2, val3,
 								val4,
 								val5,
 								val6,
-								val7, val8, val9, val10, val11, val12,val13);
+								val7, val8, val9, val10, val11, val12,val13, val14);
 		}
     public Block(
 								 String val,
@@ -95,17 +98,18 @@ public class Block{
 								 int val8,
 								 int val9,
 								 double val10,
-								 double val11,
-								 String val12,
+								 int val11,
+								 double val12,
 								 String val13,
-								 boolean val14,
-								 String val15
+								 String val14,
+								 boolean val15,
+								 String val16
 							 ){
 				setVals(val, val2, val3,
 								val4,
 								val5,
 								val6, val7, val8, val9,
-								val10, val11, val12, val13, val14, val15);
+								val10, val11, val12, val13, val14, val15, val16);
 		}
 		void setVals(
 								 String val,
@@ -117,7 +121,8 @@ public class Block{
 								 int val7,
 								 int val8,
 								 double val9,
-								 Double val10
+								 int val10,
+								 Double val11
 							 ){								
 				setDocument_id(val);
 				setHour_code_id(val2);
@@ -128,7 +133,8 @@ public class Block{
 				setEnd_hour(val7);
 				setEnd_minute(val8);				
 				setHoursDbl(val9);
-				setAmountDbl(val10);
+				setMinutesInt(val10);
+				setAmountDbl(val11);
     }		
 		void setVals(
 								 String val,
@@ -141,9 +147,10 @@ public class Block{
 								 int val8,
 								 int val9,
 								 double val10,
-								 double val11,
-								 String val12,
-								 String val13
+								 int val11,
+								 double val12,
+								 String val13,
+								 String val14
 							 ){								
 				setId(val);
 				setDocument_id(val2);
@@ -155,9 +162,10 @@ public class Block{
 				setEnd_hour(val8);
 				setEnd_minute(val9);				
 				setHoursDbl(val10);
-				setAmountDbl(val11);
-				setClock_in(val12);
-				setClock_out(val13);
+				setMinutesInt(val11);
+				setAmountDbl(val12);
+				setClock_in(val13);
+				setClock_out(val14);
     }
 		void setVals(
 								 String val,
@@ -170,11 +178,12 @@ public class Block{
 								 int val8,
 								 int val9,
 								 double val10,
-								 double val11,
-								 String val12,
+								 int val11,
+								 double val12,
 								 String val13,
-								 boolean val14,
-								 String val15
+								 String val14,
+								 boolean val15,
+								 String val16
 							 ){								
 				setId(val);
 				setDocument_id(val2);
@@ -186,11 +195,12 @@ public class Block{
 				setEnd_hour(val8);
 				setEnd_minute(val9);				
 				setHoursDbl(val10);
-				setAmountDbl(val11);
-				setClock_in(val12);
-				setClock_out(val13);
-				setIsHoliday(val14);
-				setHolidayName(val15);
+				setMinutesInt(val11);
+				setAmountDbl(val12);
+				setClock_in(val13);
+				setClock_out(val14);
+				setIsHoliday(val15);
+				setHolidayName(val16);
     }		
     public Block(String val){
 				setId(val);
@@ -284,6 +294,9 @@ public class Block{
     public double getAmount(){
 				return amount;
     }
+    public int getMinutes(){
+				return minutes;
+    }		
     public String getAmountStr(){
 				if(amount == 0.0){
 						return "";
@@ -296,6 +309,12 @@ public class Block{
 				}
 				return ""+hours;
     }
+    public String getMinutesStr(){
+				if(minutes == 0){
+						return "";
+				}
+				return ""+minutes;
+    }		
 		public String getClock_in(){
 				return clock_in;
     }
@@ -373,6 +392,10 @@ public class Block{
 		public void setAmountDbl(Double val){
 				if(val != null)
 						amount = val;
+		}
+		public void setMinutesInt(Integer val){
+				if(val != null)
+						minutes = val;
 		}		
     public void setHours(String val){
 				if(val != null && !val.equals("")){
@@ -387,6 +410,15 @@ public class Block{
 						hours_set = false;
 				}
     }
+    public void setMinutes(String val){
+				if(val != null && !val.equals("")){
+						try{
+								minutes = Integer.parseInt(val);
+						}catch(Exception ex){
+
+						}
+				}
+    }		
     public void setAmount(String val){
 				if(val != null && !val.equals("")){
 						try{

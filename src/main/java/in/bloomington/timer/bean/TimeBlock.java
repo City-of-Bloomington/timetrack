@@ -64,11 +64,12 @@ public class TimeBlock extends Block{
 										 int val7,
 										 int val8,
 										 double val9,
-										 double val10
+										 int val10,
+										 double val11
 											){
 				super(val, val2,
 							val3,
-							val4, val5, val6, val7, val8, val9, val10);
+							val4, val5, val6, val7, val8, val9, val10, val11);
 		}
 		public TimeBlock(
 										 String val,
@@ -81,14 +82,15 @@ public class TimeBlock extends Block{
 										 int val8,
 										 int val9,
 										 double val10,
-										 double val11,
-										 String val12,
-										 String val13
+										 int val11,
+										 double val12,
+										 String val13,
+										 String val14
 										 ){
 				super(val, val2, val3,
 							val4,
 							val5, val6, val7, val8, val9,
-							val10, val11, val12, val13);
+							val10, val11, val12, val13, val14);
 		}
 												 
 		public TimeBlock(
@@ -102,17 +104,18 @@ public class TimeBlock extends Block{
 										 int val8,
 										 int val9,
 										 double val10,
-										 double val11,
+										 int val11,
+										 double val12,
 										 
-										 String val12,
 										 String val13,
-										 boolean val14,
-										 String val15
+										 String val14,
+										 boolean val15,
+										 String val16
 							 ){
 				super(val, val2, val3,
 							val4,
 							val5, val6, val7, val8, val9,
-							val10, val11, val12, val13, val14, val15);
+							val10, val11, val12, val13, val14, val15, val16);
 		}
     public TimeBlock(
 							 String val,
@@ -126,33 +129,34 @@ public class TimeBlock extends Block{
 							 int val8,
 							 int val9,
 							 double val10,
-							 double val11,
+							 int val11,
+							 double val12,
 							 
-							 String val12,
 							 String val13,
-							 boolean val14,
-							 String val15,
-							 boolean val16,
+							 String val14,
+							 boolean val15,
+							 String val16,
+							 boolean val17,
 							 
-							 int val17,
-							 String val18,
+							 int val18,
 							 String val19,
 							 String val20,
 							 String val21,
-							 String val22
+							 String val22,
+							 String val23
 							 ){
 				super(val, val2,
 							val3,
 							val4,
 							val5, val6, val7, val8, val9,
-							val10, val11, val12, val13, val14, val15);
-				setInactive(val16);
-				setOrder_index(val17);
-				setHour_code(val18);
-				setCode_desc(val19);
-				setNw_code(val20);
-				setJob_name(val21);
-				setJob_id(val22);
+							val10, val11, val12, val13, val14, val15, val16);
+				setInactive(val17);
+				setOrder_index(val18);
+				setHour_code(val19);
+				setCode_desc(val20);
+				setNw_code(val21);
+				setJob_name(val22);
+				setJob_id(val23);
 		}
     public TimeBlock(String val){
 				super(val);
@@ -911,7 +915,7 @@ public class TimeBlock extends Block{
 						
 						"t.begin_hour,t.begin_minute,"+
 						"t.end_hour,t.end_minute,"+
-						"t.hours,t.amount,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),c.name,c.description,cf.nw_code "+
+						"t.hours,t.minutes,t.amount,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),c.name,c.description,cf.nw_code "+
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
@@ -929,14 +933,19 @@ public class TimeBlock extends Block{
 						pstmt.setString(1, id);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
-								String hrCode = rs.getString(15);
+								String hrCode = rs.getString(16);
 								double hrs = rs.getDouble(10);
+								int mints = rs.getInt(11);
 								if(hrCode != null){
 										if(hrCode.indexOf("ONCALL") > -1){
 												hrs = 1.0;
+												mints = 60;
 										}
 										else if(hrCode.indexOf("CO") > -1){ // Call Out
-												if(hrs < 3.) hrs = 3;
+												if(hrs < 3.){
+														hrs = 3;
+														mints = 180;
+												}
 										}
 								}
 								setVals(
@@ -950,18 +959,19 @@ public class TimeBlock extends Block{
 												rs.getInt(8),
 												rs.getInt(9),
 												hrs,
-												rs.getDouble(11),
-												rs.getString(12),
+												mints,
+												rs.getDouble(12),
 												rs.getString(13),
+												rs.getString(14),
 												false, // isHoliday
 												null // holiday
 												);
 								
-								setInactive(rs.getString(14) != null);
-								setOrder_index(rs.getInt(15));
-								setHour_code(rs.getString(16));
-								setCode_desc(rs.getString(17));
-								setNw_code(rs.getString(18));
+								setInactive(rs.getString(15) != null);
+								setOrder_index(rs.getInt(16));
+								setHour_code(rs.getString(17));
+								setCode_desc(rs.getString(18));
+								setNw_code(rs.getString(19));
 						}
 				}
 				catch(Exception ex){
@@ -988,6 +998,9 @@ public class TimeBlock extends Block{
 						end_hour = 23;
 						end_minute = 59;
 						amount=0;
+						if(minutes == 0){
+								minutes = (int)(hours*60);
+						}
 				}
 				else if(isMonetaryType()){
 						begin_hour = 23;
@@ -995,17 +1008,21 @@ public class TimeBlock extends Block{
 						end_hour = 23;
 						end_minute = 59;
 						hours=0;
+						minutes=0;
 				}
 				else {
-						hours = (end_hour+end_minute/60.) - (begin_hour+begin_minute/60.);
+						minutes = (end_hour*60+end_minute) - (begin_hour*60+begin_minute);
+						hours = minutes/60.;
 						if(hours < 0){
 								hours = 0.0;
+								minutes = 0;
 								msg = "Time in is greater than time out";
 								errors += msg;
 						}
-						else if(hours < 0.05){
+						else if(minutes < 3){
 								msg = "Time entry is less than 3 minutes: "+hours;
 								hours = 0.0;
+								minutes = 0;
 								errors += msg;
 						}
 				}
@@ -1103,7 +1120,7 @@ public class TimeBlock extends Block{
 						return errors;
 				}
 				if(action_type.equals("")) action_type="Add";
-				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?, null) ";
+				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?, null) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				msg = checkForConflicts();
 				if(!msg.equals("")){
@@ -1144,6 +1161,7 @@ public class TimeBlock extends Block{
 						pstmt.setInt(jj++, end_hour);
 						pstmt.setInt(jj++, end_minute);
 						pstmt.setDouble(jj++, 0.0);
+						pstmt.setInt(jj++, 0);
 						pstmt.setDouble(jj++, 0.0);
 						pstmt.setString(jj++, "y"); // clock_in
 						pstmt.setNull(jj++,Types.CHAR); // clock_out
@@ -1164,6 +1182,7 @@ public class TimeBlock extends Block{
 																								end_hour,
 																								end_minute,
 																								hours,
+																								minutes,
 																								amount,
 																								clock_in,
 																								clock_out,
@@ -1193,7 +1212,7 @@ public class TimeBlock extends Block{
 						return errors;
 				}
 				if(action_type.equals("")) action_type="Add";
-				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,null) ";
+				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,null) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				checkForOvernight();
 				if((clock_in.equals("") && clock_out.equals(""))
@@ -1212,7 +1231,6 @@ public class TimeBlock extends Block{
 						return msg;
 				}
 				if(isMonetaryType()){
-						// getHourCode();
 						if(hourCode != null){
 								double dd = hourCode.getDefaultMonetaryAmount();
 								if(dd > 0){ // use the default amount 
@@ -1291,6 +1309,7 @@ public class TimeBlock extends Block{
 										pstmt.setInt(jj++, end_hour);
 										pstmt.setInt(jj++, end_minute);
 										pstmt.setDouble(jj++, hours);
+										pstmt.setInt(jj++, minutes);
 										pstmt.setDouble(jj++, amount);
 										if(clock_in.equals(""))
 												pstmt.setNull(jj++,Types.CHAR);
@@ -1301,6 +1320,7 @@ public class TimeBlock extends Block{
 										else
 												pstmt.setString(jj++, "y");								
 										pstmt.executeUpdate();
+										//
 										pstmt2 = con.prepareStatement(qq2);
 										rs = pstmt2.executeQuery();
 										if(rs.next()){
@@ -1318,7 +1338,7 @@ public class TimeBlock extends Block{
 																												date,
 																												begin_hour, begin_minute,
 																												end_hour, end_minute,
-																												hours, amount,
+																												hours, minutes, amount,
 																												clock_in,clock_out,
 																												id,
 																												action_type,
@@ -1390,7 +1410,7 @@ public class TimeBlock extends Block{
 																								date,
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
-																								hours, amount,
+																								hours, minutes, amount,
 																								clock_in,clock_out,
 																								id, action_type,
 																								action_by_id,null);
@@ -1463,7 +1483,7 @@ public class TimeBlock extends Block{
 				if(!msg.equals("")){
 						return msg;
 				}
-				String qq = "update time_blocks set hour_code_id=?,earn_code_reason_id=?,begin_hour=?,begin_minute=?,end_hour=?,end_minute=?,hours=?,amount=?,clock_in=?,clock_out=? where id=? ";
+				String qq = "update time_blocks set hour_code_id=?,earn_code_reason_id=?,begin_hour=?,begin_minute=?,end_hour=?,end_minute=?,hours=?,minutes=?,amount=?,clock_in=?,clock_out=? where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -1483,6 +1503,7 @@ public class TimeBlock extends Block{
 						pstmt.setInt(jj++, end_hour);
 						pstmt.setInt(jj++, end_minute);
 						pstmt.setDouble(jj++, hours);
+						pstmt.setInt(jj++, minutes);
 						pstmt.setDouble(jj++, amount);						
 						if(clock_in.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
@@ -1514,6 +1535,7 @@ public class TimeBlock extends Block{
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
 																								hours,
+																								minutes,
 																								amount,
 																								clock_in,clock_out,
 																								id, action_type,
@@ -1563,6 +1585,7 @@ public class TimeBlock extends Block{
 																								begin_hour, begin_minute,
 																								end_hour, end_minute,
 																								hours,
+																								minutes,
 																								amount,
 																								clock_in,clock_out,
 																								id, action_type,

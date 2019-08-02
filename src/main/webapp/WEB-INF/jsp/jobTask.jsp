@@ -77,16 +77,26 @@
 		<div class="form-group">
 			<label>Effective Date</label>
 			<div class="date-range-picker">
-				<div>		
-					<s:textfield name="jobTask.effective_date" value="%{jobTask.effective_date}" size="10" cssClass="date" />
+				<div>
+					<s:if test="jobTask.id == ''">					
+						<s:select name="jobTask.effective_date" value="" list="payPeriods" listKey="startDate" listValue="startDate" headerKey="-1" headerValue="Pick Start Date" /> (Start pay period date)
+					</s:if>
+					<s:else>
+						<s:textfield name="jobTask.effective_date" value="%{jobTask.effective_date}" size="10" cssClass="date" /> 
+					</s:else>
 				</div>
 			</div>
 		</div>
 		<div class="form-group">
 			<label>Expire Date</label>
 			<div class="date-range-picker">
-				<div>					
-					<s:textfield name="jobTask.expire_date" value="%{jobTask.expire_date}" size="10" cssClass="date" />
+				<div>
+					<s:if test="jobTask.hasExpireDate()">
+						<s:textfield name="jobTask.expire_date" value="%{jobTask.expire_date}" size="10" cssClass="date" />
+					</s:if>
+					<s:else>
+						<s:select name="jobTask.expire_date" value="" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick Expire Date" /> (End pay period date)	
+					</s:else>
 				</div>
 			</div>
 		</div>

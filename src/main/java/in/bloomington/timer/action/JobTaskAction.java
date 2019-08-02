@@ -25,6 +25,7 @@ public class JobTaskAction extends TopAction{
 		JobTask jobTask = null;
 		List<JobTask> jobTasks = null;
 		String jobTasksTitle = "Current jobs";
+		List<PayPeriod> payPeriods = null;
 		List<Type> salaryGroups = null;
 		List<Position> positions = null;
 		List<Employee> employees = null;
@@ -153,7 +154,22 @@ public class JobTaskAction extends TopAction{
 						}
 				}
 				return departments;
-		}				
+		}
+		public List<PayPeriod> getPayPeriods(){
+				if(payPeriods == null){
+						PayPeriodList tl = new PayPeriodList();
+						tl.setTwoPeriodsAheadOnly();
+						tl.setLimit("5");
+						String back = tl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = tl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										payPeriods = ones;
+								}
+						}
+				}
+				return payPeriods;
+		}		
 }
 
 

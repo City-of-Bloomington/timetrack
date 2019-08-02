@@ -29,6 +29,7 @@ public class ShiftTime{
 		HourCode defaultHourCode = null;
 		int begin_hour=0,begin_minute=0,end_hour=0, end_minute = 0;
 		double hours = 0;
+		int minutes = 0;
 		String[] datesArr = null;
     public ShiftTime(){
 
@@ -271,7 +272,8 @@ public class ShiftTime{
 										end_hour = Integer.parseInt(arr[0]);
 										end_minute = Integer.parseInt(arr[1]);
 								}								
-								hours = (end_hour+end_minute/60.) - (begin_hour+begin_minute/60.);
+								minutes = (end_hour+end_minute) - (begin_hour+begin_minute);
+								hours = minutes/60;
 						}
 						catch(Exception ex){
 								System.err.println(ex);								
@@ -349,6 +351,7 @@ public class ShiftTime{
 																						 end_hour,
 																						 end_minute,
 																						 hours,
+																						 minutes,
 																						 0.0 // amount
 																						 );
 								tb.setAction_by_id(added_by_id); // for logs
@@ -410,7 +413,7 @@ public class ShiftTime{
     }
     public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into shift_times values(0,?,?,?,?, ?,?,?,now(),null)";
@@ -468,11 +471,11 @@ public class ShiftTime{
 						else
 								pstmt.setString(7, added_by_id);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
+
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -482,7 +485,7 @@ public class ShiftTime{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				if(msg.equals("")){

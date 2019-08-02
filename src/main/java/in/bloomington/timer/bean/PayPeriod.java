@@ -46,8 +46,8 @@ public class PayPeriod implements Serializable{
     }
 		public PayPeriod(String val, String val2, String val3){
 				setId(val);
-				setStart_date(val2);
-				setEnd_date(val3);
+				setStartDate(val2);
+				setEndDate(val3);
 		}
 		public PayPeriod(String val, String val2, String val3,
 										 int val4, int val5, int val6,
@@ -62,8 +62,8 @@ public class PayPeriod implements Serializable{
 								 int val10,
 								 String val11, String val12){
 				setId(val);
-				setStart_date(val2);
-				setEnd_date(val3);
+				setStartDate(val2);
+				setEndDate(val3);
 				setStartYear(val4);
 				setStartMonth(val5);
 				setStartDay(val6);
@@ -83,13 +83,19 @@ public class PayPeriod implements Serializable{
     }
     public String getId(){
 				return id;
-    }		
+    }
     public String getStart_date(){
 				return start_date;
     }
     public String getEnd_date(){
 				return end_date;
     }
+    public String getStartDate(){
+				return start_date;
+    }
+    public String getEndDate(){
+				return end_date;
+    }		
     public String getStartDateYmd(){
 				return startDateYmd;
     }
@@ -126,15 +132,15 @@ public class PayPeriod implements Serializable{
     }
     public void setDate (int day, int month, int year){
 				date = month+"/"+day+"/"+year;
-    }	
-    public void setStart_date (String val){
+    }
+    public void setStartDate (String val){
 				if(val != null)
 						start_date = val;
     }
-    public void setEnd_date (String val){
+    public void setEndDate (String val){
 				if(val != null)
 						end_date = val;
-    }
+    }		
     public void setStartDateYmd (String val){
 				if(val != null)
 						startDateYmd = val;
@@ -334,8 +340,8 @@ public class PayPeriod implements Serializable{
 						rs = pstmt.executeQuery();
 						if(rs.next()){
 								setId(rs.getString(1));
-								setStart_date(rs.getString(2));
-								setEnd_date(rs.getString(3));
+								setStartDate(rs.getString(2));
+								setEndDate(rs.getString(3));
 								setStartYear(rs.getInt(4));
 								setStartMonth(rs.getInt(5));
 								setStartDay(rs.getInt(6));
@@ -389,8 +395,8 @@ public class PayPeriod implements Serializable{
 						rs = pstmt.executeQuery();
 						if(rs.next()){
 								setId(rs.getString(1));
-								setStart_date(rs.getString(2));
-								setEnd_date(rs.getString(3));
+								setStartDate(rs.getString(2));
+								setEndDate(rs.getString(3));
 								setStartYear(rs.getInt(4));
 								setStartMonth(rs.getInt(5));
 								setStartDay(rs.getInt(6));

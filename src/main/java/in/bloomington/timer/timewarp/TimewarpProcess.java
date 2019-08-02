@@ -23,7 +23,6 @@ public class TimewarpProcess{
     static final long serialVersionUID = 180L;				
     String regCode="Reg"; // TEMP for temporary work
     Employee employee = null;
-    // Profile profile = null;
     PayPeriod payPeriod = null;
     Document document = null;
     boolean twoDifferentYears = false;
@@ -32,12 +31,10 @@ public class TimewarpProcess{
     Department department = null;
     static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     static DecimalFormat df = new DecimalFormat("#0.00");
-    static DecimalFormat df4 = new DecimalFormat("#0.0000");
 
     final static String profHrsCode = CommonInc.profHoursEarnCodeStr;
     TmwrpWeekEntry week1 = null, week2 = null;
     //
-    // List<Holiday> holys = null;
     HolidayList holyList = null;
     int year = 2017, splitDay = 14; // default 14 no split
     String status = "No data";
@@ -51,7 +48,6 @@ public class TimewarpProcess{
     // the compt time critical limit that the employee must keep
     // below that limit by using CU instead of PTO
     //
-    static double compTimeAccrualLimit = 10f;
 		
     boolean isHand = false; // HAND dept has special treatment
     boolean multipleJobs = false;
@@ -74,7 +70,6 @@ public class TimewarpProcess{
 														HolidayList val2){
 				setDocument(val);
 				setHolidayList(val2);
-				//
 				setWeekEntries();
     }
 		public void setMultipleJobs(boolean val){

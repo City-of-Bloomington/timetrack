@@ -35,7 +35,8 @@ public class TmwrpWeekSplit{
 				holiday_factor = 1;
 		String excess_hours_earn_type="";
 		double daily_hrs = 8; // except Sanitaiton 10, delman 12
-		double prof_hrs = 0, net_reg_hrs= 0;		
+		double prof_hrs = 0, net_reg_hrs= 0;
+		int regular_mints = 0, total_mints=0;
 		boolean consolidated = false;
 		Department department = null;
 		// reg
@@ -112,6 +113,9 @@ public class TmwrpWeekSplit{
 		double getRegularHours(){
 				return regular_hrs;
 		}
+		int getRegularMinutes(){
+				return regular_mints;
+		}		
 		//
 		void add(TimeBlock te){
 				//
@@ -119,6 +123,7 @@ public class TmwrpWeekSplit{
 						HourCode hrCode = te.getHourCode();
 						String code_id = hrCode.getId();
 						double hours = te.getHours();
+						int mints = te.getMinutes();
 						if(hrCode.isMonetary()){
 								double amount = te.getAmount();
 								addToMonetary(code_id, amount);
@@ -132,8 +137,8 @@ public class TmwrpWeekSplit{
 						}
 						else{
 								if(hrCode.isRegular()){ // Reg or Temp
-										regular_hrs += hours;
-										total_hrs += hours;																					
+										regular_mints += mints;
+										total_mints += mints;
 										// needed for HAND dept Only, we are using original code
 										// not nw_code
 										addToHash(regHash, code_id, hours);
@@ -141,7 +146,6 @@ public class TmwrpWeekSplit{
 								else{
 										if(hrCode.isUsed()){
 												earn_time_used += hours;
-												// total_hrs += hours;
 										}
 										else if(hrCode.isCallOut()){
 												non_reg_hrs += hours;
@@ -157,7 +161,7 @@ public class TmwrpWeekSplit{
 										}
 										else{ // other
 												non_reg_hrs += hours;
-												total_hrs += hours;
+												total_mints += mints;
 										}
 										addToHash(hash, code_id, hours);
 								}
@@ -199,9 +203,8 @@ public class TmwrpWeekSplit{
 				int jj = te.getOrder_index() % 7;
 				HourCode hrCode = te.getHourCode();
 				String code_id = hrCode.getId();
-				// String code = hrCode.getName(); // only here we need our hour_code
-				// if(nw_code.equals("")) nw_code = code;
 				double hours = te.getHours();
+				int mints = te.getMinutes();
 				double prev_hours = 0, dif_hrs = 0;
 				Hashtable<String, Double> daily = dailyArr.get(jj);
 				//
@@ -213,7 +216,6 @@ public class TmwrpWeekSplit{
 				}
 				else if(hrCode.isUsed()){
 						earn_time_used += hours;
-						// total_hrs += hours;								
 						if(daily.containsKey(code_id)){
 								hours +=  daily.get(code_id);
 						}											
@@ -232,7 +234,7 @@ public class TmwrpWeekSplit{
 				}
 				else{ // any thing else such as holidays
 						non_reg_hrs += hours;
-						total_hrs += hours;									
+						total_mints += mints;
 						if(daily.containsKey(code_id)){
 								hours +=  daily.get(code_id);
 						}								
@@ -249,14 +251,13 @@ public class TmwrpWeekSplit{
 				int jj = te.getOrder_index() % 7;
 				HourCode hrCode = te.getHourCode();
 				String code_id = hrCode.getId();
-				// String code = hrCode.getName(); // only here we need our hour_code
-				// if(nw_code.equals("")) nw_code = code;
 				double hours = te.getHours();
+				int mints = te.getMinutes();
 				double prev_hours = 0, dif_hrs = 0;
 				Hashtable<String, Double> daily = regDailyArr.get(jj);
 				if(hrCode.isRegular()){
-						regular_hrs += hours;
-						total_hrs += hours;
+						regular_mints += mints;
+						total_mints += mints;
 						if(daily.containsKey(code_id)){
 							 hours += daily.get(code_id).doubleValue();
 						}
@@ -312,6 +313,7 @@ public class TmwrpWeekSplit{
 		public void findNetRegular(){
 
 				net_reg_hrs = 0;
+				regular_hrs = regular_mints/60.;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
 								if(regular_hrs > 40){
@@ -453,5 +455,9 @@ public class TmwrpWeekSplit{
 		public double getTotalHours(){
 				return total_hrs;
 		}
+		public int getTotalMinutes(){
+				return total_mints;
+		}
+		
 
 }

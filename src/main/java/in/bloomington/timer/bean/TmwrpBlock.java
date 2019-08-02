@@ -24,8 +24,8 @@ public class TmwrpBlock{
 		static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     String id="", run_id="", hour_code_id="",
 				term_type=""; // Week 1, Week 2, Cycle
-		int start_id = 1, cycle_order=1;
-    double hours=0, amount=0;
+		int start_id = 1, cycle_order=1, minutes=0;
+    double hours=0, amount=0; 
     //
 		HourCode hourCode = null;
 		
@@ -92,19 +92,19 @@ public class TmwrpBlock{
 											Double val6,
 											Double val7,
 											
-											String val8, // hourCode
-											String val9,
+											String val9, // hourCode
 											String val10,
 											String val11,
 											String val12,
-											boolean val13,
-											String val14,
-											Double val15,
+											String val13,
+											boolean val14,
+											String val15,
 											Double val16,
-											boolean val17,
+											Double val17,
+											boolean val18,
 										
-											String val18, // nw_code
-											String val19){
+											String val19, // nw_code
+											String val20){
 				setId(val);
 				setRun_id(val2);
 				setHour_code_id(val3);				
@@ -112,8 +112,7 @@ public class TmwrpBlock{
 				setCycleOrder(val5);
 				setHours(val6);
 				setAmount(val7);
-				hourCode = new HourCode(val8,
-																val9,
+				hourCode = new HourCode(val9,
 																val10,
 																val11,
 																val12,
@@ -122,9 +121,10 @@ public class TmwrpBlock{
 																val15,
 																val16,
 																val17,
+																val18,
 																
-																val18, // nw_code
-																val19);
+																val19, // nw_code
+																val20);
 		}
 		
     //
@@ -142,6 +142,9 @@ public class TmwrpBlock{
 
 		public double getHours(){
 				return hours;
+		}
+		public Integer getMinutes(){
+				return minutes;
 		}
 		public double getAmount(){
 				return amount;
@@ -189,6 +192,10 @@ public class TmwrpBlock{
     public void setAmount(Double val){
 				if(val != null)
 						amount = val;
+    }
+    public void setMinutes(Integer val){
+				if(val != null)
+						minutes = val;
     }		
 
     public boolean equals(Object o) {
@@ -310,6 +317,7 @@ public class TmwrpBlock{
 				}
 				return msg;
     }
+		/// need revist TODO
     public String doSaveBolk(Hashtable<String, Double> hash,
 														 String term_type,
 														 Integer cycle_order,
@@ -346,7 +354,7 @@ public class TmwrpBlock{
 								pstmt.setString(3, key);
 								pstmt.setString(4, term_type);
 								pstmt.setInt(5, cycle_order);
-								pstmt.setDouble(6, dd); // hours/amount
+								pstmt.setDouble(6, dd); // amout or hours
 								pstmt.executeUpdate();
 						}
 				}

@@ -424,7 +424,13 @@ public class EmployeeList extends CommonInc{
 				}
 				return back;
     }
+		/*
 
+select e.id,e.username,e.first_name,e.last_name,e.id_code,e.inactive from employees e , pay_periods pd , department_employees de , group_employees ge  where  pd.id=564  and  de.employee_id=e.id and  (de.department_id = 36 or de.department2_id=36) and de.effective_date <= pd.start_date  and (de.expire_date is null or de.expire_date >= pd.end_date ) and  e.employee_number is not null and  ge.employee_id=e.id and ge.group_id in (110)  and ge.effective_date <= pd.start_date  and (ge.expire_date is null or ge.expire_date >= pd.end_date ) order by e.last_name,e.first_name
+
+
+
+		 */
 
 				
 }

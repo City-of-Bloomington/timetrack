@@ -218,7 +218,8 @@ public class TmwrpWrapAction extends TopAction{
 				if(payPeriods == null){
 						getPayPeriod(); // so that we can initialize the list
 						PayPeriodList tl = new PayPeriodList();
-						tl.avoidFuturePeriods();
+						// tl.avoidFuturePeriods();
+						tl.setTwoPeriodsAheadOnly();
 						String back = tl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = tl.getPeriods();

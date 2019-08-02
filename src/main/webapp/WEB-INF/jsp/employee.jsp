@@ -113,7 +113,7 @@
 					<s:submit name="action" type="button" value="Save Changes" class="button"/>					
 					<a href="<s:property value='#application.url' />employee.action" class="button">New Employee</a>
 					<s:if test="!emp.hasDepartments()">
-						<a href="<s:property value='#application.url' />departmentEmployee.action?employee_id=<s:property value='emp.id' />" class="button">Add Employee to Department</a>
+						<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add Employee to Department</a>
 					</s:if>
 					<s:if test="!emp.hasGroupEmployees()">
 						<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add Employee to a Group</a>

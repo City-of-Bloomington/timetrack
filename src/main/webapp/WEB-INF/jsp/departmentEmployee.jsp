@@ -5,12 +5,7 @@
 		<s:hidden name="departmentEmployee.employee_id" value="%{departmentEmployee.employee_id}" />
 		<s:if test="departmentEmployee.id != ''">
 			<s:hidden name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" />
-			<s:if test="departmentEmployee.hasSecondaryDept()">
-				<s:hidden name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" />
-			</s:if>
 		</s:if>
-
-
 		<s:if test="departmentEmployee.id == ''">
 			<h1>Add Employee to a Department</h1>
 		</s:if>
@@ -25,7 +20,7 @@
 	  <div class="width-one-half">
 			<div class="form-group">
 				<label>Employee</label>
-				<a href="<s:property value='#application.url' />employee.action?id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee}" /></a>
+				<a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee}" /></a>
 			</div>
 
 			<s:if test="departmentEmployee.id == ''">
@@ -50,16 +45,26 @@
 			<div class="form-group">
 				<label>Effective Date</label>
 				<div class="date-range-picker">
-					<div>		
-						<s:textfield name="departmentEmployee.effective_date" value="%{departmentEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" />
+					<div>
+						<s:if test="departmentEmployee.id == ''">
+							<s:select name="departmentEmployee.effective_date" value="" list="payPeriods" listKey="startDate" listValue="startDate" headerKey="-1" headerValue="Pick Expire Date" /> (Start pay period date)	
+						</s:if>
+						<s:else>
+							<s:textfield name="departmentEmployee.effective_date" value="%{departmentEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" />
+						</s:else>
 					</div>
 				</div>
 			</div>
 			<div class="form-group">
 				<label>Expire Date</label>
 				<div class="date-range-picker">
-					<div>						
-						<s:textfield name="departmentEmployee.expire_date" value="%{departmentEmployee.expire_date}" size="10" maxlength="10" cssClass="date" />
+					<div>
+						<s:if test="departmentEmployee.hasExpireDate()">
+							<s:textfield name="departmentEmployee.expire_date" value="%{departmentEmployee.expire_date}" size="10" maxlength="10" cssClass="date" />
+						</s:if>
+						<s:else>
+						<s:select name="departmentEmployee.expire_date" value="" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick Expire Date" /> (End pay period date)	
+						</s:else>
 					</div>
 				</div>
 			</div>

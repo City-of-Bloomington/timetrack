@@ -225,8 +225,6 @@ public class JobTask implements Serializable{
 				return salary_group_id;
     }
     public String getEffective_date(){
-				if(id.equals(""))
-						return CommonInc.default_effective_date;
 				return effective_date;
     }
     public String getExpire_date(){
@@ -234,7 +232,10 @@ public class JobTask implements Serializable{
     }
     public String getAdded_date(){
 				return added_date;
-    }		
+    }
+		public boolean hasExpireDate(){
+				return !expire_date.equals("");
+		}
     public boolean getPrimary_flag(){
 				if(id.equals(""))
 						return true; // default
@@ -312,7 +313,7 @@ public class JobTask implements Serializable{
 						salary_group_id = val;
     }
     public void setEffective_date(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						effective_date = val;
     }
     public void setExprire_date(String val){
@@ -320,7 +321,7 @@ public class JobTask implements Serializable{
 						expire_date = val;
     }		
     public void setExpire_date(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						expire_date = val;
     }
     public void setAdded_date(String val){
@@ -877,10 +878,6 @@ public class JobTask implements Serializable{
 				String qq = "select expire_date from jobs where id=? ";
 				String qq2 = "update jobs set expire_date = ? where id = ? and expire_date is null";
 				String qq3 = "update time_documents set job_id=? where job_id=? and pay_period_id >= ? ";
-				if(pay_period_id.equals("")){
-						msg = "pay period is required";
-						return msg;
-				}
 				if(new_group_id.equals("")){
 						msg = "group is required";
 						return msg;
@@ -897,9 +894,7 @@ public class JobTask implements Serializable{
 						msg = "salary group is required";
 						return msg;
 				}
-				PayPeriod pp = new PayPeriod(pay_period_id);
-				msg = pp.doSelect();
-				String start_date = pp.getStart_date();
+				String start_date = effective_date;
 				String old_expire_date = Helper.getDateFrom(start_date,-1);
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
@@ -931,7 +926,6 @@ public class JobTask implements Serializable{
 
 						group_id = new_group_id;
 						id = "";
-						effective_date = start_date;
 						msg = doSave();
 						if(!alreadyExpired){
 								qq = qq3;

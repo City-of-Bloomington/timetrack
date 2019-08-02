@@ -18,8 +18,8 @@ public class DepartmentEmployeeChangeAction extends TopAction{
 
 		static final long serialVersionUID = 2100L;	
 		static Logger logger = LogManager.getLogger(DepartmentEmployeeChangeAction.class);
-		String employee_id="", department_id="";
-		Employee employee = null;
+		String emp_id="", department_id="";
+		Employee emp = null;
 		List<Type> departments = null;
 		DepartmentEmployee departmentEmployee = null;
 		List<Employee> otherEmployees = null;
@@ -31,12 +31,10 @@ public class DepartmentEmployeeChangeAction extends TopAction{
 				if(action.startsWith("Change")){ 
 						back = departmentEmployee.doChange();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						else{
 								addMessage("changed Successfully");
-								addActionMessage("Changed Successfully");
 						}
 				}
 				else{		
@@ -45,7 +43,6 @@ public class DepartmentEmployeeChangeAction extends TopAction{
 								back = departmentEmployee.doSelect();
 								if(!back.equals("")){
 										addError(back);
-										addActionError(back);
 								}								
 						}
 				}
@@ -54,7 +51,7 @@ public class DepartmentEmployeeChangeAction extends TopAction{
 		public DepartmentEmployee getDepartmentEmployee(){ 
 				if(departmentEmployee == null){
 						departmentEmployee = new DepartmentEmployee(id);
-						departmentEmployee.setEmployee_id(employee_id);
+						departmentEmployee.setEmployee_id(emp_id);
 				}		
 				return departmentEmployee;
 		}
@@ -76,9 +73,9 @@ public class DepartmentEmployeeChangeAction extends TopAction{
 				if(val != null && !val.equals("-1"))		
 						department_id = val;
 		}
-		public void setEmployee_id(String val){
+		public void setEmp_id(String val){
 				if(val != null && !val.equals("-1"))		
-						employee_id = val;
+						emp_id = val;
 		}				
 		public List<Type> getDepartments(){
 				if(departments == null){

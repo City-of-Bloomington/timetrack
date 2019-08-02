@@ -79,7 +79,7 @@ public class DepartmentEmployeeList{
 				}
 				if(include_future){
 						if(!qw.equals("")) qw += " and ";
-						qw += " de.expire_date is null "; 						
+						qw += " (de.expire_date is null or de.expire_date >= curdate())";
 				}
 				else if(!pay_period_id.equals("")){
 						qq += ", pay_periods pp ";

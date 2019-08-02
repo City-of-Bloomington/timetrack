@@ -33,6 +33,9 @@ public class WeekSplit{
 				comp_weekly_hrs = 0,
 				comp_factor = 1,
 				holiday_factor = 1;
+		// added 
+		int regular_mints = 0, total_mints=0;
+		//
 		String excess_hours_earn_type="";
 		double daily_hrs = 8; // except Sanitaiton 10, delman 12
 		double prof_hrs = 0, net_reg_hrs= 0;		
@@ -42,7 +45,8 @@ public class WeekSplit{
 
 		// for HAND dept, multiple types of regular code are used
 		// such as HOME_REG, HOUSE_REG, RENT_REG, etc
-		Hashtable<String, Double> regHash = new Hashtable<>();		
+		Hashtable<String, Double> regHash = new Hashtable<>();
+		// Hashtable<String, Integer> regMintHash = new Hashtable<>();		
 		//
 		// for non regular code we use this hash such as PTO, CU, FMLA
 		//
@@ -61,20 +65,6 @@ public class WeekSplit{
 				setDepartment(val2);
 				setJob(val3);
     }
-		/*
-    public void setProfile(Profile val){
-				if(val != null){
-						profile = val;
-						st_weekly_hrs = profile.getStWeeklyHrs();
-						bGroup = profile.getBenefitGroup();
-						dailyArr = new ArrayList<Hashtable<String, Double>>(7);
-						for(int j=0;j<7;j++){
-								Hashtable<String, Double> one = new Hashtable<String, Double>();
-								dailyArr.add(one);
-						}						
-				}
-    }
-		*/
 		void setDepartment(Department val){
 				if(val != null){
 						department = val;
@@ -136,14 +126,18 @@ public class WeekSplit{
 								addToMonetary(nw_code, amount);
 								return;
 						}
+						
 						if(salaryGroup != null && salaryGroup.isUnionned()){
 								addToDaily(te);
 						}
 						else{
 								if(hrCode.isRegular()){ // Reg or Temp
+										int mints = te.getMinutes();
 										String code = hrCode.getName();
 										regular_hrs += hours;
-										total_hrs += hours;																					
+										total_hrs += hours;
+										regular_mints += mints;
+										total_mints += mints;
 										// needed for HAND dept Only, we are using original code
 										// not nw_code
 										addToHash(regHash, code, hours);
@@ -192,9 +186,9 @@ public class WeekSplit{
 												hours += hrs;
 										}
 								}
-								if(hours > 8.009){
+								if(hours > daily_hrs + CommonInc.critical_small){
 										dif_hrs = hours - daily_hrs;
-										if(dif_hrs > 0.009)
+										if(dif_hrs > CommonInc.critical_small)
 												if(jj == 6){ // Sunday
 												earned_time20 += dif_hrs;												
 										}
@@ -216,11 +210,14 @@ public class WeekSplit{
 				// String code = hrCode.getName(); // only here we need our hour_code
 				// if(nw_code.equals("")) nw_code = code;
 				double hours = te.getHours();
+				int mints = te.getMinutes();
 				double prev_hours = 0, dif_hrs = 0;
 				Hashtable<String, Double> daily = dailyArr.get(jj);
 				if(hrCode.isRegular()){
 						regular_hrs += hours;
 						total_hrs += hours;
+						regular_mints += mints;
+						total_mints += mints;
 						if(daily.containsKey(code)){
 							 hours += daily.get(code).doubleValue();
 						}
@@ -235,7 +232,6 @@ public class WeekSplit{
 						}
 						else if(hrCode.isUsed()){
 								earn_time_used += hours;
-								// total_hrs += hours;								
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}											
@@ -257,7 +253,8 @@ public class WeekSplit{
 						}						
 						else{ // any thing else such as holidays
 								non_reg_hrs += hours;
-								total_hrs += hours;									
+								total_hrs += hours;
+								total_mints += mints;
 								if(daily.containsKey(code)){
 										hours +=  daily.get(code);
 								}								
@@ -316,6 +313,8 @@ public class WeekSplit{
 		public void findNetRegular(){
 
 				net_reg_hrs = 0;
+				// we are overiding regular_hrs value 
+				regular_hrs = regular_mints/60.;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
 								if(regular_hrs > 40){
@@ -348,26 +347,6 @@ public class WeekSplit{
 								return;								
 						}						
 				}
-				/*
-				else if(bGroup != null){
-						if(bGroup.isTemporary()){
-								if(regular_hrs > 40){
-										net_reg_hrs = 40;
-								}
-								else{
-										net_reg_hrs = regular_hrs;
-								}
-								return;
-						}
-						else if(bGroup.isUnioned()){
-								net_reg_hrs = regular_hrs - earned_time;
-								if(net_reg_hrs < 0.009){
-										net_reg_hrs = 0;
-								}
-								return;
-						}
-				}
-				*/
 				net_reg_hrs = regular_hrs - earned_time;
 				if(net_reg_hrs > st_weekly_hrs){
 						net_reg_hrs = st_weekly_hrs;

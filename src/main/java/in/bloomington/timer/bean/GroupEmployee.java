@@ -24,7 +24,8 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				inactive="", id="";
 		// to change group
 		//
-		String new_group_id="", change_date="", change_pay_period_id="";
+		String new_group_id="";
+		//
 		Group group = null;
 		Employee employee = null;
 		PayPeriod payPeriod = null, changePayPeriod=null;
@@ -75,9 +76,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 		public String getEffective_date(){
 				return effective_date;
 		}
-		public String getChange_date(){
-				return change_date;
-		}
 		public String getNew_group_id(){
 				return new_group_id;
 		}		
@@ -104,26 +102,17 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						new_group_id = val;
 		}		
 		public void setEffective_date(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						effective_date = val;
 		}
 		public void setExpire_date(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						expire_date = val;
 		}
-		/*
-		public void setChange_date(String val){
-				if(val != null)
-						change_date = val;
+		public boolean hasExpireDate(){
+				return !expire_date.equals("");
 		}
-		*/
-		public void setChange_pay_period_id(String val){
-				if(val != null && !val.equals("-1"))
-						change_pay_period_id = val;
-		}
-		public String getChange_pay_period_id(){
-				return change_pay_period_id;
-		}
+
 		public void setInactive(boolean val){
 				if(val)
 						inactive = "y";
@@ -171,7 +160,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
     public String doSave(){
 				String msg = "";
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String qc = " select count(*) from group_employees where group_id=? and employee_id=? ";
 				String qq = " insert into group_employees values(0,?,?,?,?,null) "; 
@@ -223,11 +212,10 @@ public class GroupEmployee extends CommonInc implements Serializable{
 										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 								}
 								pstmt.executeUpdate();
-								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt2 = con.prepareStatement(qq);
+								rs = pstmt2.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -238,7 +226,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						addError(msg);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -328,17 +316,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				}
 				return payPeriod;
 		}
-		public PayPeriod getChangePayPeriod(){
-				//
-				if(changePayPeriod == null && !change_pay_period_id.equals("")){
-						PayPeriod pp = new PayPeriod(change_pay_period_id);
-						String back = pp.doSelect();
-						if(back.equals("")){
-								changePayPeriod = pp;
-						}
-				}
-				return changePayPeriod;
-		}		
 		/**
 		 * if employee has one group only then we can change jobs group,
 		 * this happens when an employee was assigned to a wrong group
@@ -364,14 +341,14 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				group_id = new_group_id;
 		}
     public String doChange(){
-				getChangePayPeriod();
-				String date = changePayPeriod.getStart_date();
+				// getChangePayPeriod();
+				String date = effective_date; // changePayPeriod.getStart_date();
 				String exp_date = Helper.getDateFrom(date, -1); // one day before
 				String msg = "";
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "update group_employees set expire_date=?,inactive='y' where id=? ";				
+				String qq = "update group_employees set expire_date=? where id=? ";				
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB";
@@ -400,8 +377,8 @@ public class GroupEmployee extends CommonInc implements Serializable{
     }
 		String doExpireRelatedGroupJobs(){
 				getEmployee();
-				getChangePayPeriod();
-				String date = changePayPeriod.getStart_date();
+				// getChangePayPeriod();
+				String date = effective_date;// changePayPeriod.getStart_date();
 				String exp_date = Helper.getDateFrom(date, -1);
 				if(employee != null){
 						if(payPeriod != null){
@@ -418,7 +395,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						}
 				}
 				id = "";
-				effective_date=date;
+				// effective_date=date;
 				group_id = new_group_id;
 				return doSave();
 		}

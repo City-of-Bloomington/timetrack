@@ -24,6 +24,7 @@ public class DepartmentEmployeeAction extends TopAction{
 		List<Type> departments = null;
 		DepartmentEmployee departmentEmployee = null;
 		List<Employee> otherEmployees = null;
+		List<PayPeriod> payPeriods = null;		
 		String departmentEmployeesTitle = "Employees in this department";
 		public String execute(){
 				String ret = SUCCESS;
@@ -103,7 +104,21 @@ public class DepartmentEmployeeAction extends TopAction{
 				}
 				return departments;
 		}
-
+		public List<PayPeriod> getPayPeriods(){
+				if(payPeriods == null){
+						PayPeriodList tl = new PayPeriodList();
+						tl.setTwoPeriodsAheadOnly();
+						tl.setLimit("5");
+						String back = tl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = tl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										payPeriods = ones;
+								}
+						}
+				}
+				return payPeriods;
+		}		
 }
 
 

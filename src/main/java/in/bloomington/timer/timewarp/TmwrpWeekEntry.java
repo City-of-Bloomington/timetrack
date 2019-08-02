@@ -35,6 +35,7 @@ public class TmwrpWeekEntry{
 				comp_weekly_hrs = 0,
 				comp_factor = 1,
 				holiday_factor = 1;
+		int total_mints=0, regular_mints = 0;
 		double holy_earn_hrs = 0;
 
     double prof_hrs = 0, excess_hrs = 0, net_reg_hrs= 0;
@@ -245,8 +246,10 @@ public class TmwrpWeekEntry{
 	
 				splitOne.doCalculations();
 				splitTwo.doCalculations();
-				total_hrs = splitOne.getTotalHours()+splitTwo.getTotalHours();
-				regular_hrs = splitOne.getRegularHours()+splitTwo.getRegularHours();
+				// total_hrs = splitOne.getTotalHours()+splitTwo.getTotalHours();
+				// regular_hrs = splitOne.getRegularHours()+splitTwo.getRegularHours();
+				total_mints = splitOne.getTotalMinutes()+splitTwo.getTotalMinutes();
+				regular_mints = splitOne.getRegularMinutes()+splitTwo.getRegularMinutes();				
 				//
 				// the following earned_time are the overtime for certain employees
 				// from dialy earns
@@ -410,6 +413,8 @@ public class TmwrpWeekEntry{
     public void findExessHours(){
 	
 				excess_hrs = 0;
+				regular_hrs = regular_mints/60.;
+				total_hrs = total_mints/60.;
 				double netHours = total_hrs - earned_time - holy_earn_hrs;
 				//
 				// for full time working less than 40 hrs

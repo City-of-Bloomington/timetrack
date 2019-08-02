@@ -26,10 +26,8 @@
 				department first, then come here and change the job and group.</li>
 			<li> If the department is changed or no need to change the department continue</li>
 			<li> A new job will be created to replace the selected job </li>
-			<li> Pick the pay period where the pay period start date
-				will be the employee new job start date. </li>
-			<li> The day before the picked pay period start date will mark the expire date for the old job </li> 
-			<li>It is better to pick a future pay period to avoid conflicts</li>
+			<li> Pick the new job Start Date (It is pay period start date)</li>
+			<li> The old job will be to expire to one day before the new job Start Date picked above. </li> 
 			<li>Pick the employee group from the list </li>
 			<li>Fill the rest of fields to create the new job and click on 'Change'</li>
 		</ul>
@@ -53,10 +51,10 @@
 				</select><br />				
 			</div>
       <div class="form-group">
-        <label>New Job Effective Start Pay Period</label>
+        <label>New Job Start Date</label>
 				<div class="date-range-picker">
 					<div>					
-						<s:select name="jobTask.pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Effective start pay period" />
+						<s:select name="jobTask.effective_date" value="" list="payPeriods" listKey="startDate" listValue="startDate" headerKey="-1" headerValue="Pick Start Date" /> (Start of pay period)
 					</div>
 				</div>
 			</div>

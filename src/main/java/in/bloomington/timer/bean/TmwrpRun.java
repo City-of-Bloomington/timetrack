@@ -30,7 +30,7 @@ public class TmwrpRun{
 				week1_net_reg_hrs=0,
 				week2_net_reg_hrs=0,
 				cycle1_net_reg_hrs=0,
-				cycle2_net_reg_hrs=0;				
+				cycle2_net_reg_hrs=0;
 		double week1_total_hours = 0, week2_total_hours = 0;
 		double week1_total_amount = 0, week2_total_amount = 0;		
 		boolean old_record = false;
@@ -317,6 +317,7 @@ public class TmwrpRun{
 						for(TmwrpBlock one:blocks){
 								double hrs = one.getHours();
 								double amnt = one.getAmount();
+								int mints = one.getMinutes();
 								if(hrs + amnt > 0){
 										if(one.getHourCode().isRecordMethodMonetary()){
 												if(one.getTermType().equals("Week 1")){

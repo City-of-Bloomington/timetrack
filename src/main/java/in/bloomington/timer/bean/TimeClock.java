@@ -488,7 +488,7 @@ public class TimeClock {
 																					
 																					time_hr,
 																					time_min,
-																					0, 0, 0, 0, 
+																					0, 0, 0, 0, 0, 
 
 																					"y", null, false, null);
 								timeBlock.setAction_type("ClockIn");
@@ -528,7 +528,7 @@ public class TimeClock {
 																									date,
 
 																									time_hr, time_min,
-																									0, 0, 0, 0, 
+																									0, 0, 0, 0, 0,
 
 																									"y", null, false, null);
 												timeBlock.setAction_type("ClockIn");
