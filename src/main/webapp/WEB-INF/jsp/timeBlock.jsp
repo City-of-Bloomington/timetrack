@@ -52,6 +52,10 @@
 					</div>
 				</div>
 			</div>
+			<div class="form-group">
+				<label>&nbsp;</label>
+				<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}"  /> <b>Include Weekends </b>
+			</div>			
 		</s:if>
 		<div class="form-group">
 			<label>Earn Code</label>
@@ -139,12 +143,6 @@
 				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
 			</div>					
 		</s:else>
-		<s:if test="timeBlock.id == ''">
-			<div class="form-group">
-				<label>Include Weekend</label>
-				<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}"  />
-			</div>
-		</s:if>
 	</s:form>
 </div>
 

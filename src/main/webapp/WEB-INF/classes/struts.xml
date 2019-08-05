@@ -6,6 +6,9 @@
 <struts>
   <constant name="struts.devMode" value="true" />
   <constant name="struts.ui.theme" value="simple" />
+	<!-- to remove .action 
+	<constant name="struts.action.extension" value = ""/>
+	-->
   <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*,/JobTitleService*,/GroupManagerService*,/ManagerService*,/PositionService*,/CodeReasonService*" />
 
   <package name="default" extends="struts-default">
