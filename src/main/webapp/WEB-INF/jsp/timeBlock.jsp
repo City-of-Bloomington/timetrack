@@ -1,4 +1,5 @@
 <%@ include file="headerMin.jsp" %>
+
 <div class="time-block">
 	<s:form action="timeBlock" id="form_id" class="time-block-form" method="post">
 		<s:hidden id="document_id" name="timeBlock.document_id" value="%{timeBlock.document_id}" />
@@ -39,7 +40,7 @@
 		</h1>
 		<div class="alert"><p></p></div>
 		<s:if test="timeBlock.id == ''">
-			<div class="form-group">
+			<div class="form-group" style="border-bottom: none;">
 				<label>Date Range</label>
 				<div class="date-range-picker">
 					<div>
@@ -54,7 +55,7 @@
 			</div>
 			<div class="form-group">
 				<label>&nbsp;</label>
-				<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}"  /> <b>Include Weekends </b>
+				<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}"  /> Include Weekends 
 			</div>			
 		</s:if>
 		<div class="form-group">

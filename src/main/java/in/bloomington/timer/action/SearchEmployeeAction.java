@@ -61,7 +61,7 @@ public class SearchEmployeeAction extends TopAction{
 				}
 				else{
 						getUser();
-						if(user != null && !user.isAdmin()){
+						if(user != null && !(user.isAdmin() || user.isITSAdmin())){
 								String val = user.getDepartment_id();
 								if(val != null)
 										department_id = val;

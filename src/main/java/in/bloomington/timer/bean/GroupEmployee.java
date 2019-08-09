@@ -162,7 +162,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				Connection con = null;
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
-				String qc = " select count(*) from group_employees where group_id=? and employee_id=? ";
+				String qc = " select count(*) from group_employees where group_id=? and employee_id=? and expire_date is null";
 				String qq = " insert into group_employees values(0,?,?,?,?,null) "; 
 				if(employee_id.equals("")){
 						msg = "employee not set ";
@@ -196,6 +196,10 @@ public class GroupEmployee extends CommonInc implements Serializable{
 								cnt = rs.getInt(1);
 						}
 						Helper.databaseDisconnect(pstmt, rs);
+						if(cnt > 0){
+								msg = " Employee is already in this group ";
+								return msg;
+						}
 						//
 						if(cnt == 0){ // avoid dups
 								pstmt = con.prepareStatement(qq);

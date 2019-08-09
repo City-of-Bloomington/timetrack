@@ -19,7 +19,7 @@ public class DepartmentEmployeeAction extends TopAction{
 		static final long serialVersionUID = 2100L;	
 		static Logger logger = LogManager.getLogger(DepartmentEmployeeAction.class);
 		//
-		String department_id="", employee_id="";
+		String department_id="", emp_id="";
 		Employee employee = null;
 		List<Type> departments = null;
 		DepartmentEmployee departmentEmployee = null;
@@ -63,7 +63,7 @@ public class DepartmentEmployeeAction extends TopAction{
 		public DepartmentEmployee getDepartmentEmployee(){ 
 				if(departmentEmployee == null){
 						departmentEmployee = new DepartmentEmployee(id);
-						departmentEmployee.setEmployee_id(employee_id);
+						departmentEmployee.setEmployee_id(emp_id);
 				}		
 				return departmentEmployee;
 		}
@@ -85,9 +85,9 @@ public class DepartmentEmployeeAction extends TopAction{
 				if(val != null && !val.equals("-1"))		
 						department_id = val;
 		}
-		public void setEmployee_id(String val){
+		public void setEmp_id(String val){
 				if(val != null && !val.equals("-1"))		
-						employee_id = val;
+						emp_id = val;
 		}				
 		public List<Type> getDepartments(){
 				if(departments == null){

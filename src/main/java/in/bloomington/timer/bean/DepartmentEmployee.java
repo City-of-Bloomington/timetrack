@@ -128,7 +128,7 @@ public class DepartmentEmployee{
 						change_date = val;
     }		
     public void setExpire_date(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						expire_date = val;
     }
 		public Department getDepartment(){
