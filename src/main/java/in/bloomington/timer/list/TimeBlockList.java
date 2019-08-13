@@ -36,8 +36,10 @@ public class TimeBlockList{
     boolean active_only = false, for_today = false, dailyOnly=false,
 				clockInOnly = false, hasClockInAndOut = false;
     double total_hours = 0.0, week1_flsa=0.0, week2_flsa=0.0;
+		int total_minutes = 0;
     double week1Total = 0, week2Total = 0;
-    double week1AmountTotal = 0, week2AmountTotal = 0;		
+    double week1AmountTotal = 0, week2AmountTotal = 0;
+		int week1MintTotal = 0, week2MintTotal = 0;
     String duration = "";
     List<TimeBlock> timeBlocks = null;
     Set<JobType> jobTypeSet = new HashSet<>();
@@ -60,9 +62,10 @@ public class TimeBlockList{
     Map<Integer, Double> usedAccrualTotals = new TreeMap<>();
 		Map<Integer, Double> earnedAccrualTotals = new TreeMap<>();		
     HolidayList holidays = null;
-		
-    Map<JobType, Map<Integer, Double>> daily = new TreeMap<>();		
+		//
     // week 1,2 / hour_code_id /hours
+    Map<JobType, Map<Integer, Integer>> dailyInt = new TreeMap<>();
+		
     Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = new TreeMap<>();
 		List<Triplet<String, String, String>> unscheduleds = null;
     Document document = null;
@@ -194,12 +197,13 @@ public class TimeBlockList{
 		public boolean hasReasonTotals(){
 				return reasonTotals != null && !reasonTotals.isEmpty();
 		}
+
     public double getWeek1Total(){
-				return week1Total;
+				return week1MintTotal/60.;
     }
     public double getWeek2Total(){
-				return week2Total;
-    }
+				return week2MintTotal/60.;
+    }		
     public double getWeek1AmountTotal(){
 				return week1AmountTotal;
     }
@@ -213,19 +217,19 @@ public class TimeBlockList{
 				findUnscheduleds(emp_id);
 				return unscheduleds != null && unscheduleds.size() > 0;
 		}
-    public Map<JobType, Map<Integer, Double>> getDailyDbl(){
-				return daily;
-    }
+		//
+		// using total minutes instead of hours
+		// then convert to hours
     public Map<JobType, Map<Integer, String>> getDaily(){
-				Set<JobType> set = daily.keySet();
+				Set<JobType> set = dailyInt.keySet();
 				Map<JobType, Map<Integer, String>> mapd = new TreeMap<>();
 				for(JobType str:set){
 						Map<Integer, String> map2 = new TreeMap<>();
-						Map<Integer, Double> map = daily.get(str);
+						Map<Integer, Integer> map = dailyInt.get(str);
 						for(int j=0;j<16;j++){ // 8 total week1, 15 total week2
 								if(map.containsKey(j)){
-										double val = map.get(j);
-										map2.put(j, dfn.format(val));
+										int val = map.get(j);
+										map2.put(j, dfn.format(val/60.));
 								}
 								else{
 										map2.put(j, "0.0");
@@ -235,12 +239,17 @@ public class TimeBlockList{
 				}
 				return mapd;
     }		
+		
+    public Map<JobType, Map<Integer, Integer>> getDailyInt(){
+				return dailyInt;
+    }		
     public Map<Integer, Map<Integer, Double>> getUsedWeeklyAccruals(){
 				return usedWeeklyAccruals;
     }
+
     public double getTotal_hours(){
-				return total_hours;
-    }
+				return getWeek1Total()+getWeek2Total();
+    }		
     public double getWeek1_flsa(){
 				return week1_flsa;
     }
@@ -596,8 +605,9 @@ public class TimeBlockList{
 								}
 								else{
 										addToHourCodeTotals(order_id, code_id, code_name, hrs);
-										addToDaily(jtype, order_id, hrs, code_name);
+										addToDaily(jtype, order_id, mints, code_name);
 										total_hours += hrs;
+										total_minutes += mints;
 								}
 						}
 				}
@@ -1139,11 +1149,11 @@ public class TimeBlockList{
 						jobNames = findJobNames();
 						if(jobTypeSet.size() > 0){
 								for(JobType one:jobTypeSet){
-										Map<Integer, Double> map = new TreeMap<>();
+										Map<Integer, Integer> map = new TreeMap<>();
 										for(int i=0;i<16;i++){
-												map.put(i,0.);
+												map.put(i,0);
 										}
-										daily.put(one, map);
+										dailyInt.put(one, map);
 								}
 						}
 				}
@@ -1188,56 +1198,50 @@ public class TimeBlockList{
 						usedWeeklyAccruals.put(week_id, map);		
 				}
     }
-    // hours type only
     void addToDaily(JobType jtype,
 										int order_id,
-										double hrs,
+										int mints,
 										String hr_code){
-				double total = 0.;
+				int total = 0;
 				try{
-						if(daily.containsKey(jtype)){
-								Map<Integer, Double> map = daily.get(jtype);
+						if(dailyInt.containsKey(jtype)){
+								Map<Integer, Integer> map = dailyInt.get(jtype);
 								//
 								// leaving space for total at index 7
 								//
 								if(order_id > 6) order_id = order_id + 1;
 								if(map != null && map.containsKey(order_id)){
 										total = map.get(order_id);
-										total += hrs;
-										double week_total = 0;
+										total += mints;
+										int week_total = 0;
 										if(order_id < 7){
 												if(map.containsKey(7)){
-														week_total = map.get(7)+hrs; // total week1
+														week_total = map.get(7)+mints; // total week1
 												}
 												else{
-														week_total = hrs;
+														week_total = mints;
 												}
 												map.put(7, week_total);
-												week1Total = week_total;
+												week1MintTotal = week_total;
 										}
 										else{
 												if(map.containsKey(15)){														
-														week_total = map.get(15)+hrs; // total week2
+														week_total = map.get(15)+mints; // total week2
 												}
 												else{
-														week_total = hrs;
+														week_total = mints;
 												}
 												map.put(15, week_total);
-												week2Total = week_total;
+												week2MintTotal = week_total;
 										}
 								}
 								map.put(order_id, total);
-								daily.put(jtype, map);
-						}
-						else{ // this is not needed
-								Map<Integer, Double> map = new TreeMap<>();
-								map.put(order_id, hrs);
-								daily.put(jtype, map);
+								dailyInt.put(jtype, map);
 						}
 				}catch(Exception ex){
 						logger.error(ex);
 				}
-		}				
+		}						
     void addToBlocks(int order_id, TimeBlock block){
 				List<TimeBlock> list = dailyBlocks.get(order_id);
 				if(list != null){

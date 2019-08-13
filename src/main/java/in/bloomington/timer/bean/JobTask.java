@@ -216,6 +216,9 @@ public class JobTask implements Serializable{
 				return employee_id;
     }
     public String getGroup_id(){
+				if(group_id.equals("")){
+						getGroup();
+				}
 				return group_id;
     }		
     public String getEmployee_number(){
@@ -427,12 +430,18 @@ public class JobTask implements Serializable{
 										group = one;
 								}
 						}
+						else{
+								if(hasOneGroupOnly()){
+										group = allGroups.get(0);
+										group_id= group.getId();
+								}
+						}
 				}
 				return group;
     }
 		void findAllGroups(){
-				if(id.equals("") && !employee_id.equals("")){
-						if(allGroups == null){
+				if(allGroups == null){
+						if(!employee_id.equals("")){
 								GroupEmployeeList gel = new GroupEmployeeList();
 								gel.setEmployee_id(employee_id);
 								gel.setIncludeFuture();
@@ -450,6 +459,10 @@ public class JobTask implements Serializable{
 								}
 						}
 				}
+		}
+		public boolean hasOneGroupOnly(){
+				findAllGroups();
+				return allGroups != null && allGroups.size() == 1;
 		}
 		public boolean hasAllGroups(){
 				findAllGroups();

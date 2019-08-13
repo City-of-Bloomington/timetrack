@@ -33,7 +33,7 @@ public class EmployeeAction extends TopAction{
 		List<Employee> employees = null;
 		String employeesTitle = "Current Employees";
 		List<Type> departments = null;
-											
+		List<PayPeriod> payPeriods = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -168,6 +168,22 @@ public class EmployeeAction extends TopAction{
 		public String[] getRoles(){
 				return roles;
 		}
+		public List<PayPeriod> getPayPeriods(){
+				if(payPeriods == null){
+						PayPeriodList tl = new PayPeriodList();
+						tl.setTwoPeriodsAheadOnly();
+						tl.setLimit("5");
+						String back = tl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = tl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										payPeriods = ones;
+								}
+						}
+				}
+				return payPeriods;
+		}		
+		
 }
 
 

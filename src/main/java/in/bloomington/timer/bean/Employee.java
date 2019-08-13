@@ -304,7 +304,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 				}
     }
     public void setEffective_date(String val){
-				if(val != null){
+				if(val != null && !val.equals("-1")){
 						effective_date = val;
 						if(departmentEmployee == null){
 								departmentEmployee = new DepartmentEmployee();

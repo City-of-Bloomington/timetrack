@@ -213,6 +213,11 @@ public class GroupManagerList{
 			 // find the list of managers for all groups in certain department
 			 //
 				select g.name group_name,concat_ws(' ',e.first_name, e.last_name) emp_name,wn.name role_name                                                                  from group_managers gm join groups g on g.id=gm.group_id                        join workflow_nodes wn on wn.id=gm.wf_node_id                                   join employees e on e.id=gm.employee_id                                         where g.department_id=5 and gm.expire_date is null                              and gm.inactive is null                                                         and wn.id in (3,4,5)                                                            order by group_name, role_name, emp_name                                        into outfile '/var/lib/mysql-files/managers.csv'                                fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
+
+
+				// email list of the managers
+				//
+				select distinct concat_ws(' ',e.first_name, e.last_name) emp_name,                 e.email email                                                                from group_managers gm join groups g on g.id=gm.group_id                        join workflow_nodes wn on wn.id=gm.wf_node_id                                   join employees e on e.id=gm.employee_id                                         where g.department_id not in (16,20) and gm.expire_date is null                 and gm.inactive is null and (e.email is not null and e.email <> '')             and wn.id in (3,4,5)                                                            order by emp_name                                                               into outfile '/var/lib/mysql-files/manager_emails.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';				
 				
 		 */
 }

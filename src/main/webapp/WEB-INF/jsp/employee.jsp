@@ -62,17 +62,15 @@
 				<label>Email</label>
 				<s:textfield name="emp.email" size="30" value="%{emp.email}" id="email_id" />
 			</div>
-			<s:if test="emp.id == ''">
+			<s:if test="emp.id == ''">			
 				<div class="form-group">
 					<label>Effective Date</label>
 					<div class="date-range-picker">
-						<div>									
-							<s:textfield name="emp.effective_date" size="10" value="" cssClass="date"  required="true" />
+						<div>
+							<s:select name="emp.effective_date" value="" list="payPeriods" listKey="startDate" listValue="startDate" headerKey="-1" headerValue="Pick Start Date" /> (Start pay period date)	
 						</div>
 					</div>
 				</div>
-			</s:if>
-			<s:if test="emp.id == ''">
 				<div class="form-group">
 					<label>Department</label>
 					<s:select name="emp.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />

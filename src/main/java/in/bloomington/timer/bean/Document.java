@@ -41,7 +41,7 @@ public class Document implements Serializable{
 		List<Triplet<String, String, String>> unscheduleds = null;
     //
     Map<JobType, Map<Integer, String>> daily = null;
-    Map<JobType, Map<Integer, Double>> dailyDbl = null;		
+    Map<JobType, Map<Integer, Integer>> dailyInt = null;		
     List<TimeBlock> timeBlocks = null;
     List<String> warnings = new ArrayList<>();
     JobTask job = null;
@@ -72,9 +72,9 @@ public class Document implements Serializable{
 		List<GroupManager> processors = null;		
     TimeAction lastTimeAcion = null;
     Map<String, AccrualWarning> warningMap = new TreeMap<>();
+		//
     // week 1,2 / hour_code_id /hours
     Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = null;
-
     HolidayList holidays = null;
 		TmwrpRun tmwrpRun = null;
 		boolean accrualAdjusted = false, warning_flag_set=false,
@@ -508,7 +508,7 @@ public class Document implements Serializable{
 								Map<JobType, Map<Integer, String>> ones = tl.getDaily();
 								if(ones != null && ones.size() > 0){
 										daily = tl.getDaily();
-										dailyDbl = tl.getDailyDbl();
+										dailyInt = tl.getDailyInt();
 										dailyBlocks = tl.getDailyBlocks();
 										hourCodeTotals = tl.getHourCodeTotals();
 										hourCodeWeek1 = tl.getHourCodeWeek1();
@@ -529,8 +529,8 @@ public class Document implements Serializable{
 										usedWeeklyAccruals = tl.getUsedWeeklyAccruals();
 										week1_flsa = tl.getWeek1_flsa();
 										week2_flsa = tl.getWeek2_flsa();
-										week1Total = tl.getWeek1Total();
-										week2Total = tl.getWeek2Total();
+										// week1Total = tl.getWeek1Total();
+										// week2Total = tl.getWeek2Total();
 										week1AmountTotal = tl.getWeek1AmountTotal();
 										week2AmountTotal = tl.getWeek2AmountTotal();
 										if(tl.hasUnscheduleds(id)){
@@ -542,6 +542,7 @@ public class Document implements Serializable{
 								fillTwoWeekEmptyBlocks();
 						}
 						getEmpAccruals();
+						findWeekTotals(); // move here
 						checkForWarnings();
 				}
     }
@@ -551,10 +552,28 @@ public class Document implements Serializable{
 				//
 				prepareDaily(true);
     }
-		
+
     public Map<JobType, Map<Integer, Double>> getDailyDbl(){
-				return dailyDbl;
-    }		
+				Map<JobType, Map<Integer, Double>> mapd = new TreeMap<>();				
+				if(dailyInt != null){
+						Set<JobType> set = dailyInt.keySet();
+						for(JobType str:set){
+								Map<Integer, Double> map2 = new TreeMap<>();
+								Map<Integer, Integer> map = dailyInt.get(str);
+								for(int j=0;j<16;j++){ // 8 total week1, 15 total week2
+										if(map.containsKey(j)){
+												int val = map.get(j);
+												map2.put(j, val/60.);
+										}
+										else{
+												map2.put(j, 0.);
+										}
+								}
+								mapd.put(str, map2);
+						}
+				}
+				return mapd;
+    }
     public Map<JobType, Map<Integer, String>> getDaily(){
 				return daily;
     }		
@@ -1117,11 +1136,31 @@ public class Document implements Serializable{
 						tmwrpRun.setDocument(this);
 						tmwrpRun.findBlocks();
 						double dd = tmwrpRun.getWeek1TotalHours();
-						if(dd > 0)
+						if(dd > 0){
 								week1Total = dd;
+						}
 						dd = tmwrpRun.getWeek2TotalHours();
-						if(dd > 0)
+						if(dd > 0){
 								week2Total = dd;
+						}
+				}
+				//
+				// override the weekly totals in the daily map
+				// 
+				if(week1Total > 0 || week2Total > 0){
+						if(daily != null){
+								Set<JobType> keys = daily.keySet();
+								for(JobType key:keys){
+										Map<Integer, String> map = daily.get(key);
+										if(map != null){
+												if(week1Total > 0)
+														map.put(7, dfn.format(week1Total));
+												if(week2Total > 0)
+														map.put(15,dfn.format(week2Total));
+												daily.put(key, map);
+										}
+								}
+						}
 				}
 		}
     // since not everyday we have timeblock, we need to fill
@@ -1167,9 +1206,9 @@ public class Document implements Serializable{
 				setWarningFlag();
 				if(need_warning){
 						try{
-						findWeekTotals();
-						checkForWarningsAfter();
-						checkForWarningsBefore();
+								// findWeekTotals();
+								checkForWarningsAfter();
+								checkForWarningsBefore();
 						}catch(Exception ex){
 								System.err.println("check warn "+ex);
 						}

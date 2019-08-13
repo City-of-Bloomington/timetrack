@@ -39,7 +39,6 @@ public class EmployeeAccrualAction extends TopAction{
 						}
 						else{
 								addMessage("Saved Successfully");
-								addActionMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
@@ -50,7 +49,6 @@ public class EmployeeAccrualAction extends TopAction{
 						}
 						else{
 								addMessage("Saved Successfully");
-								addActionMessage("Saved Successfully");
 						}
 				}
 				else if(action.equals("Next")){
@@ -106,20 +104,6 @@ public class EmployeeAccrualAction extends TopAction{
 						return "-1"; // for list
 				}
 				return employee_selected_id;
-		}
-		public List<Employee> getEmployees(){
-				if(employees == null){
-						EmployeeList tl = new EmployeeList();
-						tl.setActiveOnly();
-						String back = tl.find();
-						if(back.equals("")){
-								List<Employee> ones = tl.getEmployees();
-								if(ones != null && ones.size() > 0){
-										employees = ones;
-								}
-						}
-				}
-				return employees;
 		}
 		public List<Type> getAccruals(){
 				TypeList tl = new TypeList("accruals");

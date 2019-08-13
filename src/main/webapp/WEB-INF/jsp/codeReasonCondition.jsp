@@ -36,7 +36,7 @@
 			<s:select name="condition.salary_group_id" value="%{condition.salary_group_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="All" required="true" />
 		</div>
 		<div class="form-group">
-			<label>Department</label>+``````````````````````````
+			<label>Department</label>
 			<s:select name="condition.department_id" value="%{condition.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" id="department_id_change" />
 		</div>
 		<s:if test="condition.id != ''">

@@ -1,5 +1,6 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
+	<div class="width-one-half">
   <s:form action="switch" id="form_id" method="post" >
   	<input type="hidden" name="action2" id="action2" value="" />
   	<input type="hidden" name="department_id" id="department_id"
@@ -20,7 +21,7 @@
 				<%@  include file="messages.jsp" %>
 			</div>
 		</s:elseif>
-  	<div class="width-one-half">
+
   		<div class="form-group">
   			<label>Employee</label>
         <s:textfield name="employee_name" value="" id="employee_name" size="20" />

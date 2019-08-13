@@ -2,7 +2,7 @@
 <div class="internal-page">
 	<s:form action="searchJobs" id="form_id" method="post" >
 		<s:hidden name="action2" id="action2" value="" />
-		<h3>Search Jobs</h3>
+		<h1>Search Jobs</h1>
 		<s:if test="hasMessages()">
 			<s:set var="messages" value="messages" />			
 			<%@ include file="messages.jsp" %>

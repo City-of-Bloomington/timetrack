@@ -257,7 +257,6 @@ public class MultiJobDoc{
 				return ""+dfn.format(week2_flsa);
 		}						
 		public boolean hasDaily(){
-				// prepareDaily();
 				return daily != null && daily.size() > 0;
 		}
 		public void prepareDaily(boolean includeEmptyBlocks){

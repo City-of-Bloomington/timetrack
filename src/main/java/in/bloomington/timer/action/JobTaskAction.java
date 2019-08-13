@@ -40,6 +40,7 @@ public class JobTaskAction extends TopAction{
 								addError(back);
 						}
 						else{
+								ret="edit";
 								addMessage("Added Successfully");
 						}
 				}				
@@ -49,6 +50,7 @@ public class JobTaskAction extends TopAction{
 								addError(back);
 						}
 						else{
+								ret="edit";
 								addMessage("Saved Successfully");
 						}
 				}
@@ -58,7 +60,8 @@ public class JobTaskAction extends TopAction{
 								back = jobTask.doSelect();
 								if(!back.equals("")){
 										addError(back);
-								}								
+								}
+								ret ="edit";
 						}
 				}
 				return ret;

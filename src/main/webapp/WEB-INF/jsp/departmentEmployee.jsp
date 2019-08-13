@@ -47,7 +47,7 @@
 				<div class="date-range-picker">
 					<div>
 						<s:if test="departmentEmployee.id == ''">
-							<s:select name="departmentEmployee.effective_date" value="" list="payPeriods" listKey="startDate" listValue="startDate" headerKey="-1" headerValue="Pick Expire Date" /> (Start pay period date)	
+							<s:select name="departmentEmployee.effective_date" value="" list="payPeriods" listKey="startDate" listValue="startDate" headerKey="-1" headerValue="Pick Start Date" /> (Start pay period date)	
 						</s:if>
 						<s:else>
 							<s:textfield name="departmentEmployee.effective_date" value="%{departmentEmployee.effective_date}" size="10" maxlength="10" cssClass="date" required="true" />

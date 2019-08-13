@@ -272,7 +272,7 @@ public class ShiftTime{
 										end_hour = Integer.parseInt(arr[0]);
 										end_minute = Integer.parseInt(arr[1]);
 								}								
-								minutes = (end_hour+end_minute) - (begin_hour+begin_minute);
+								minutes = (end_hour*60+end_minute) - (begin_hour*60+begin_minute);
 								hours = minutes/60;
 						}
 						catch(Exception ex){
