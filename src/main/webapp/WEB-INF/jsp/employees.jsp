@@ -7,6 +7,7 @@
 			<th>Full Name</th>
 			<th>ID Code #</th>
 			<th>Employee #</th>
+			<th>AD Sid</th>			
 			<th>Email</th>
 			<th>Role</th>
 			<th>Added Date</th>			
@@ -21,6 +22,7 @@
 				<td><s:property value="full_name" /></td>
 				<td><s:property value="id_code" /></td>
 				<td><s:property value="employee_number" /></td>
+				<td><s:property value="ad_sid" /></td>				
 				<td><s:property value="email" /></td>
 				<td><s:property value="rolesText" /></td>
 				<td><s:property value="added_date" /></td>				

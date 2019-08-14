@@ -55,9 +55,12 @@
 
 			<div class="form-group">
 				<label>Employee # </label>
-				<s:textfield name="emp.employee_number" value="%{emp.employee_number}" size="15" maxlength="15" id="employee_number_id" /><br />(from new world)
+				<s:textfield name="emp.employee_number" value="%{emp.employee_number}" size="15" maxlength="15" id="employee_number_id" /><br />(from New World)
 			</div>
-
+			<div class="form-group">
+				<label>AD Sid </label>
+				<s:textfield name="emp.ad_sid" value="%{emp.ad_sid}" size="8" maxlength="8" id="ad_sid_id" readonly="true" /><br />(AD Object SID)
+			</div>
 			<div class="form-group">
 				<label>Email</label>
 				<s:textfield name="emp.email" size="30" value="%{emp.email}" id="email_id" />

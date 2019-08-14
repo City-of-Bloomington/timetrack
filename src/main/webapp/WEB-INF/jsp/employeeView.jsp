@@ -28,6 +28,9 @@
 		<label>Employee #: </label>
 		<s:property value="emp.employee_number" /> <br /><br />
 		
+		<label>AD Sid </label>
+		<s:property value="emp.ad_sid" /> <br /><br />
+
 		<label>Email: </label>
 		<s:property value="emp.email" /> <br /><br />
 		

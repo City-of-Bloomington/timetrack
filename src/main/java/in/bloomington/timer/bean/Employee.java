@@ -21,8 +21,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 
     static Logger logger = LogManager.getLogger(Employee.class);
     static final long serialVersionUID = 1150L;		
-    private String id="", inactive="",
-				id_code="", employee_number="", // both are unique
+    private String id="", inactive="", 
+				id_code="", // unique
+				employee_number="", //unique
+				ad_sid="", // unique, last 4 bytes of AD sid object (28 bytes)
+				           // create a 8 character string
 				email="", 
 				username="", // unique
 				full_name="", first_name="", last_name="";
@@ -142,6 +145,9 @@ public class Employee implements Serializable, Comparable<Employee>{
     public String getEmployee_number(){
 				return employee_number;
     }
+    public String getAd_sid(){
+				return ad_sid;
+    }		
     public boolean isInactive(){
 				return !inactive.equals("");
     }
@@ -226,6 +232,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 				if(val != null && !val.equals("0"))
 						id_code = val.trim();
     }
+    public void setAd_sid(String val){
+				if(val != null && !val.equals(""))
+						ad_sid = val;
+    }		
     public void setEmployee_number(String val){
 				if(val != null)
 						employee_number = val.trim();
@@ -425,8 +435,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 				if(!id_code.equals("")){
 						ret += ", id code = "+id_code;
 				}
+				if(!ad_sid.equals("")){
+						ret += ", AD Sid = "+ad_sid;
+				}				
 				if(!email.equals(""))
-						ret += ", email ="+email;
+						ret += ", email = "+email;
 				return ret;
     }
     public boolean hasRole(String val){
@@ -807,11 +820,6 @@ public class Employee implements Serializable, Comparable<Employee>{
 						JobTaskList jtl = new JobTaskList();
 						jtl.setEmployee_id(id);
 						jtl.setIncludeFuture();
-						/*
-						if(!pay_period_id.equals("")){
-								jtl.setPay_period_id(pay_period_id);
-						}
-						*/
 						String back = jtl.find();
 						if(back.equals("")){
 								List<JobTask> ones = jtl.getJobs();
@@ -857,6 +865,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						one.getLast_name().equals(last_name) &&
 						one.getFirst_name().equals(first_name) &&
 						one.getId_code().equals(id_code) &&
+						// one.getAd_sid().equals(ad_sid) &&
 						one.getEmployee_number().equals(employee_number);
     }
 		/**
@@ -913,7 +922,6 @@ public class Employee implements Serializable, Comparable<Employee>{
 				try{
 						pstmt = con.prepareStatement(qq);
 						
-						// pstmt.setString(1, employee_number);
 						rs = pstmt.executeQuery();
 						/*
 						ResultSetMetaData rsmd = rs.getMetaData();
@@ -1184,7 +1192,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update employees set username=?,first_name=?,last_name=?,id_code=?, email=?, employee_number=? where id=? ";
+				String qq = " update employees set username=?,first_name=?,"+
+						"last_name=?,id_code=?, email=?, employee_number=? "+
+						//", ad_sid=? "+
+						" where id=? ";
 				if(id.equals("")){
 						msg = "id is required";
 						return msg;
@@ -1194,11 +1205,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 						return msg;
 				}
 				try{
-						// System.err.println("Old emp info "+getInfo()); // old data
-						// System.err.println("New emp inof "+ldapEmp.getInfo());
 						setUsername(ldapEmp.getUsername());
 						setFirst_name(ldapEmp.getFirst_name());
 						setLast_name(ldapEmp.getLast_name());
+						//
 						// in case not in ldap yet and entered mannually
 						// we ignore ldap code if not set yet
 						if(!ldapEmp.getId_code().equals("")) 
@@ -1229,7 +1239,13 @@ public class Employee implements Serializable, Comparable<Employee>{
 						else
 								pstmt.setString(5, email);						
 						pstmt.setString(6, employee_number);
-						pstmt.setString(7, id);
+						/*
+						if(ad_sid.equals(""))
+								pstmt.setNull(7, Types.VARCHAR);
+						else
+								pstmt.setString(7, ad_sid);
+						*/
+						pstmt.setString(7, id); // change to 8
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

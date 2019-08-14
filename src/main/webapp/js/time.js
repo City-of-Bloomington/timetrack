@@ -38,6 +38,7 @@ $("#emp_name").autocomplete({
             $("#username_id").val(ui.item.id);
             $("#employee_number_id").val(ui.item.employee_number);
             $("#id_code_id").val(ui.item.id_code);
+						$("#ad_sid_id").val(ui.item.ad_sid);						
             $("#email_id").val(ui.item.email);
             $("#department_id").val(ui.item.department_id);
             $("#group_id").val(ui.item.group_id);

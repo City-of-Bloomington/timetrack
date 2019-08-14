@@ -128,6 +128,8 @@ public class EmpList extends CommonInc{
 						env.put(Context.SECURITY_AUTHENTICATION, "simple"); 
 						env.put(Context.SECURITY_PRINCIPAL, bean.getPrinciple());
 						env.put(Context.SECURITY_CREDENTIALS, bean.getPassword());
+						env.put("java.naming.ldap.attributes.binary","objectSID");
+						// env.put("java.naming.ldap.attributes.binary","objectGUID");
 				}
 				else{
 						return false;
@@ -153,7 +155,8 @@ public class EmpList extends CommonInc{
 						DirContext ctx = new InitialDirContext(env);
 						SearchControls ctls = new SearchControls();
 						ctls.setCountLimit(2000);
-						String[] attrIDs = {"givenName",
+						String[] attrIDs = {"objectSID",
+																"givenName",
 																"department", // not accurate use dn instead
 																"telephoneNumber",
 																"mail",
@@ -228,13 +231,19 @@ public class EmpList extends CommonInc{
 										}
 								}
 								//
-								/*
-								Attribute cn = atts.get("cn");
-								if (cn != null){
-										str = cn.get().toString();
-										emp.setUsername(str);
+								Attribute sid = atts.get("objectSID");
+								if (sid != null){
+										byte[] sidBytes = (byte[])atts.get("objectSid").get();
+										//
+										// we take the last four bytes only
+										str = String.format("%02x%02x%02x%02x",
+																				sidBytes[24] & 255, 
+																				sidBytes[25] & 255, 
+																				sidBytes[26] & 255, 
+																				sidBytes[27] & 255);
+										// System.err.println(" sid "+str);
+										emp.setAd_sid(str);
 								}
-								*/
 								Attribute cn = atts.get("sAMAccountName");
 								if (cn != null){
 										str = cn.get().toString();
@@ -282,11 +291,29 @@ public class EmpList extends CommonInc{
 				}
 				return back;
 		}
-		public String simpleFind(){
-				Hashtable<String, String> env = new Hashtable<String, String>(11);
-				String back = "", fullName="", str="";
-				Employee emp = null;
-				if (!connectToServer(env)){
+		public static String getStringFromBytes(byte[] sid) {
+				String str = "";
+				System.err.println(" size "+sid.length);
+				/*
+				for(byte b: sid){
+						str += byte2hex(b);
+				}
+				*/
+				for(byte b: sid){
+						str += String.format("%02x", b & 255);
+				}
+				return str;
+		}
+		public static String byte2hex(byte b) {
+				String ret = Integer.toHexString((int)b&0xFF);
+				if (ret.length()<2) ret = "0"+ret;
+				return ret;
+		}
+				public String simpleFind(){
+						Hashtable<String, String> env = new Hashtable<String, String>(11);
+						String back = "", fullName="", str="";
+						Employee emp = null;
+						if (!connectToServer(env)){
 						System.err.println("Unable to connect to ldap");
 						return null;
 				}
@@ -294,7 +321,8 @@ public class EmpList extends CommonInc{
 						//
 						DirContext ctx = new InitialDirContext(env);
 						SearchControls ctls = new SearchControls();
-						String[] attrIDs = {"givenName",
+						String[] attrIDs = {"objectSid",
+																"givenName",
 																"department", // not accurate use dn instead
 																"telephoneNumber",
 																"mail",
@@ -349,6 +377,19 @@ public class EmpList extends CommonInc{
 										emp.setUsername(str);
 								}
 								*/
+								Attribute sid = atts.get("objectSid");
+								if (sid != null){
+										byte[] sidBytes = (byte[])sid.get();
+										if(sidBytes.length == 28){
+												str = String.format("%02x%02x%02x%02x", 
+																								sidBytes[24] & 255, 
+																								sidBytes[25] & 255, 
+																								sidBytes[26] & 255, 
+																								sidBytes[27] & 255);
+												System.err.println(" obj sid "+str);
+												emp.setAd_sid(str);
+										}
+								}																
 								Attribute cn = atts.get("sAMAccountName");
 								if (cn != null){
 										str = cn.get().toString();
