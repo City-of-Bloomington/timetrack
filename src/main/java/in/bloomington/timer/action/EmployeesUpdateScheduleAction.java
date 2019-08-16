@@ -36,13 +36,12 @@ public class EmployeesUpdateScheduleAction extends TopAction{
 				if(action.equals("Schedule")){
 						back = doClean();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						try{
 								back = schedular.run();
 								if(!back.equals("")){
-										addActionError(back);
+										addError(back);
 								}
 								else{
 										if(quartzMisc != null){
@@ -68,6 +67,17 @@ public class EmployeesUpdateScheduleAction extends TopAction{
 								addMessage("Submitted Successfully");								
 						}
 				}
+				else if(action.startsWith("Add")){
+						HandleEmployeesUpdate handle = new HandleEmployeesUpdate(envBean);
+						back = handle.process2();
+						if(!back.equals("")){
+								addActionError(back);
+								addError(back);
+						}
+						else{
+								addMessage("Submitted Successfully");								
+						}
+				}				
 				return ret;
 		}
 		private void prepareSchedular(){

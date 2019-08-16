@@ -9,12 +9,17 @@ import org.quartz.TriggerBuilder;
 import org.quartz.DateBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 import java.util.Date;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
+import org.quartz.CronTrigger;
 import org.quartz.SchedulerFactory;
+import org.quartz.DailyTimeIntervalScheduleBuilder;
+import org.quartz.CronScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +40,9 @@ public class EmployeesUpdateScheduler {
 				if(val2 != null)
 						date = val2;
 				try{
+						//
+						// for cron date is not needed
+						//
 						if(!date.equals("")){
 								String strArr[] = date.split("/");
 								month = Integer.parseInt(strArr[0]);
@@ -84,19 +92,35 @@ public class EmployeesUpdateScheduler {
 						// second minute hour day-of-month month week-day year
 						// you can use ? no specific value, 0/5 for incrment (every 5 seconds)
 						// * for any value (in minutes mean every minute
+						/*
 						Trigger trigger = TriggerBuilder.newTrigger()
 								.withIdentity(jobName, groupName)
 								.startAt(startDate)
 								.withSchedule(simpleSchedule()
-															// .withIntervalInMinutes(3)
 															.withIntervalInHours(24*7) // 24*7 every weeks
 															.repeatForever()
-															// .withRepeatCount(2) 
-															// .withMisfireHandlingInstructionFireNow())
 															.withMisfireHandlingInstructionIgnoreMisfires())
-								// .endAt(endDate)						  
 								.build();
-		
+						*/
+						/*
+							cron format
+							Seconds
+							minutes
+							hours
+							day of month
+							month
+							day of week
+							year (optional)
+
+							(0 0 9,11,13,15,17 ? * 1-5) // year is empty
+						*/
+						// every day from Mon-Friday, start at 9 am till 5 pm
+						String cronStr ="0 0 9,11,13,15,17 ? * 2-6";
+						CronTrigger trigger = TriggerBuilder.newTrigger()
+								.withIdentity(jobName	, groupName)
+								.withSchedule(CronScheduleBuilder.cronSchedule(cronStr)
+															.withMisfireHandlingInstructionIgnoreMisfires())
+								.build();
 						// Tell quartz to schedule the job using our trigger
 						sched.scheduleJob(job, trigger);
 						//  logger.info(job.getKey() + " will run at: " + runTime);  
@@ -104,7 +128,6 @@ public class EmployeesUpdateScheduler {
 						// Start up the scheduler (nothing can actually run until the 
 						// scheduler has been started)
 						sched.start();
-
 						/*
 							logger.info("------- Started Scheduler -----------------");
 

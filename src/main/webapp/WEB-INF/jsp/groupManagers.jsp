@@ -16,8 +16,8 @@
 		<s:iterator var="one" value="#groupManagers">
 			<tr>
 				<td><a href="<s:property value='#application.url' />groupManager.action?id=<s:property value='id' />"> <s:property value="id" /></a></td>
-				<td><s:property value="group" /></td>
-				<td><s:property value="employee" /></td>
+				<td><a href="<s:property value='#application.url' />group.action?id=<s:property value='group_id' />"> <s:property value="group" /></a></td>
+				<td><a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='employee_id' />"> <s:property value="employee" /> </a></td>
 				<td><s:property value="node" /></td>
 				<td><s:property value="start_date" /></td>
 				<td><s:if  test="primary">Yes</s:if><s:else>No</s:else></td>

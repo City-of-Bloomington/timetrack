@@ -97,7 +97,7 @@
 			<ul>
 				<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Employees' accrual</a></li>
 				<li><a href="<s:property value='#application.url'/>profileSchedule.action">Employees Profile Update</a></li>
-				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees Update(including active status)</a></li>				
+				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees' Update from AD (ldap)</a></li>				
 				<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
 				<!-- currently not used 
 				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch clock batch submission </a></li>

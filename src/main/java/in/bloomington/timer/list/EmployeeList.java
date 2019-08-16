@@ -25,7 +25,8 @@ public class EmployeeList extends CommonInc{
     static final long serialVersionUID = 1160L;
     static Logger logger = LogManager.getLogger(EmployeeList.class);
     String id = "", username="", name="",
-				full_name="", group_id="", group_ids="", id_code="", 
+				full_name="", group_id="", group_ids="", id_code="",
+				ad_sid="",
 				exclude_group_id="", groupManager_id="", department_id="",
 				dept_ref_id="", // one or more values
 				employee_number="",  exclude_name="",
@@ -34,6 +35,7 @@ public class EmployeeList extends CommonInc{
 				no_document_for_payperiod_id="", added_status="";
     Set<String> group_id_set = new HashSet<>();
     boolean active_only = false, inactive_only = false,
+				hasAdSid=false,
 				hasEmployeeNumber=false, hasNoEmployeeNumber=false;
 		boolean exclude_recent_records = false, recent_records_only=false;
     boolean includeAllDirectors = false, include_future = false;
@@ -58,6 +60,9 @@ public class EmployeeList extends CommonInc{
     public String getId_code(){
 				return id_code;
     }
+    public String getAd_sid(){
+				return ad_sid;
+    }		
     public String getActiveStatus(){
 				if(active_only)
 						return "Active";
@@ -90,6 +95,10 @@ public class EmployeeList extends CommonInc{
 				if(val != null)
 						id = val;
     }
+    public void setAd_sid(String val){
+				if(val != null)
+						ad_sid = val;
+    }		
     public void setName(String val){
 				if(val != null)
 						name = val;
@@ -176,6 +185,9 @@ public class EmployeeList extends CommonInc{
     public void setUsedTimeTrack(){
 				used_time_track = true;
     }
+    public void setHasAdSid(){
+				hasAdSid = true;
+    }		
 		public void setHasNoEmployeeNumber(){
 				hasNoEmployeeNumber = true;
 		}
@@ -220,7 +232,7 @@ public class EmployeeList extends CommonInc{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive from employees e ";				
+				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.ad_sid,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive from employees e ";				
 				String qw = "";
 				if(!id.equals("")){
 						if(!qw.equals("")) qw += " and ";
@@ -233,6 +245,10 @@ public class EmployeeList extends CommonInc{
 				else if(!employee_number.equals("")){
 						if(!qw.equals("")) qw += " and ";
 						qw += " e.employee_number = ? ";
+				}
+				else if(!ad_sid.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " e.ad_sid = ? ";
 				}				
 				else if(!employee_ids.equals("")){
 						if(!qw.equals("")) qw += " and ";
@@ -290,6 +306,10 @@ public class EmployeeList extends CommonInc{
 								if(!qw.equals("")) qw += " and ";								
 								qw += " e.employee_number is null";
 						}
+						if(hasAdSid){ 
+								if(!qw.equals("")) qw += " and ";								
+								qw += " e.ad_sid is not null";
+						}						
 						if(!group_ids.equals("")){
 								qq += ", group_employees ge ";
 								if(!qw.equals("")) qw += " and ";
@@ -356,6 +376,9 @@ public class EmployeeList extends CommonInc{
 						}
 						else if(!employee_number.equals("")){
 								pstmt.setString(jj++, employee_number);
+						}
+						else if(!ad_sid.equals("")){
+								pstmt.setString(jj++, ad_sid);
 						}						
 						else if(!employee_ids.equals("")){
 								// nothing here
@@ -408,7 +431,8 @@ public class EmployeeList extends CommonInc{
 																 rs.getString(7),
 																 rs.getString(8),
 																 rs.getString(9),
-																 rs.getString(10) != null
+																 rs.getString(10),
+																 rs.getString(11) != null
 																 );
 								if(!employees.contains(employee))
 										employees.add(employee);

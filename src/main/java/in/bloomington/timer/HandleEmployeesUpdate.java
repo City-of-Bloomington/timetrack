@@ -65,18 +65,21 @@ public class HandleEmployeesUpdate{
 				Hashtable<String, Employee> empTable = null;
 				String inactiveSet = "", inactiveLog = "";
 				EmployeeList ul = new EmployeeList();
-				ul.setActiveOnly();
 				ul.setExclude_name("Admin");// exlude admin emp
+				ul.setHasAdSid();
 				//
+				/*
 				// we want only employees who do not have time document for this
 				// pay period
+				// ul.setActiveOnly();
 				if(pay_period_id.equals("")){
 						getPay_period_id();
-				}
+				}					
 				ul.setNoDocumentForPayPeriodId(pay_period_id);
 				//
 				// avoid recently added employees
 				ul.excludeRecentRecords();
+				*/
 				String back = ul.find();
 				if(back.equals("")){
 						List<Employee> ones = ul.getEmployees();
@@ -95,12 +98,11 @@ public class HandleEmployeesUpdate{
 						if(back.equals("")){
 								ldapEmps = el.getEmps();
 								empTable = new Hashtable<>();
-								empUsrTable = new Hashtable<>();
+								// empUsrTable = new Hashtable<>();
 								for(Employee one:ldapEmps){
-										// System.err.println(one.getInfo());
-										empUsrTable.put(one.getUsername(), one);
-										if(one.hasNoEmployeeNumber()) continue;
-										empTable.put(one.getEmployee_number(), one);
+										empTable.put(one.getAd_sid(), one);
+										// if(one.hasNoEmployeeNumber()) continue;
+										// empTable.put(one.getEmployee_number(), one);
 								}
 						}
 						else{
@@ -110,25 +112,11 @@ public class HandleEmployeesUpdate{
 						}
 				}
 				if(msg.equals("")){
-						/*						
-						if(dbEmps != null){
-
-								System.err.println(" DB emps ");
-								for(Emp one:dbEmps){
-										System.err.println(one.getInfo());
-								}
-						}
-						if(ldapEmps != null){
-								int jj=1;
-								System.err.println(" Ldap emps ");
-								for(Employee one:ldapEmps){
-										System.err.println((jj++)+" "+one.getInfo());
-								}
-						}
-						*/
 						// changes
+						int jj=1;
 						for(Employee one:dbEmps){
-								if(!empTable.containsKey(one.getEmployee_number()) &&
+								/*
+								if(!empTable.containsKey(one.getAd_sid()) &&
 									 !empUsrTable.containsKey(one.getUsername())){
 										if(!inactiveSet.equals("")){
 												inactiveSet += ",";
@@ -137,35 +125,25 @@ public class HandleEmployeesUpdate{
 										inactiveSet += one.getId();
 										inactiveLog += one.getId()+" "+one.getFull_name();
 								}
-								if(empTable.containsKey(one.getEmployee_number())){
-										Employee ldapEmp = empTable.get(one.getEmployee_number());
-										if(!one.isSameEntity(ldapEmp)){
-												msg += one.doUpdateFromLdap(ldapEmp);
+								*/
+
+								if(!one.getAd_sid().equals("")){
+										if(empTable.containsKey(one.getAd_sid())){
+												Employee ldapEmp = empTable.get(one.getAd_sid());
+												if(!one.isSameEntity(ldapEmp)){
+														System.err.println(" emp "+one.getInfo());
+														System.err.println((jj++)+" found "+ldapEmp.getInfo());
+														// System.err.println(" update "+one.getInfo());
+														// System.err.println(" to => "+ldapEmp.getInfo());
+														msg += one.doUpdateFromLdap(ldapEmp);
+												}
 										}
 								}
 						}
 						//
-						// new employees
-						// this handled by ImportEmployee code
-						/*
-						empTable = new Hashtable<>();
-						for(Employee one:dbEmps){
-								empTable.put(one.getUsername(), one);
-						}
-						int jj=1;
-						for(Employee one:ldapEmps){
-								if(one.getFirst_name().startsWith("*")) continue;
-								if(one.hasNoEmployeeNumber()) continue;
-								if(!empTable.containsKey(one.getUsername())){
-										//
-										// normally this should be a new employee
-										//
-										msg += one.doSave();
-										System.err.println("new "+(jj++)+" "+one.getInfo());
-								}
-						}
-						*/
 						//
+						/*
+							// we do not need this feature any more
 						if(inactiveSet.equals("")){
 								System.err.println(" No employees found that need change ");
 						}
@@ -180,8 +158,86 @@ public class HandleEmployeesUpdate{
 								EmployeesLog ll = new EmployeesLog(inactiveLog, status, errors);
 								msg = ll.doSave();								
 						}
+						*/
 				}
 				return msg;
 		}
+		//
+		// we run this one time only and net needed after that
+		//
+   public String process2(){
+			 Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg = "", status="Success", errors="";
+				List<Employee> dbEmps = null;
+				List<Employee> ldapEmps = null;
+				Hashtable<String, Employee> empTable = null;
+				String inactiveSet = "", inactiveLog = "";
+				EmployeeList ul = new EmployeeList();
+				// ul.setActiveOnly();
+				ul.setExclude_name("Admin");// exlude admin emp
+				//
+				String back = ul.find();
+				if(back.equals("")){
+						List<Employee> ones = ul.getEmployees();
+						if(ones != null && ones.size() > 0){
+								dbEmps = ones;
+						}
+				}
+				else{
+						msg = back;
+						status = "Failure";
+						errors = "Error get employee list from DB "+msg;
+				}
+				if(msg.equals("")){
+						EmpList el = new EmpList(envBean);
+						back = el.find();
+						if(back.equals("")){
+								ldapEmps = el.getEmps();
+								empUsrTable = new Hashtable<>();
+								for(Employee one:ldapEmps){
+										empUsrTable.put(one.getUsername(), one);
+								}
+						}
+						else{
+								msg = back;
+								System.err.println(back);
+						}
+				}
+				if(msg.equals("")){
+						//
+						String qq = " update employees set ad_sid=? where id=?";						
+						con = UnoConnect.getConnection();
+						try{
+								pstmt = con.prepareStatement(qq);						
+								for(Employee one:dbEmps){
+										if(empUsrTable.containsKey(one.getUsername())){
+												Employee emp = empUsrTable.get(one.getUsername());
+												if(emp != null){
+														String emp_id = one.getId();
+														String ad_sid = emp.getAd_sid();
+														System.err.println(emp_id+" "+ad_sid);
+														if(ad_sid != null && emp_id != null){
+																pstmt.setString(1, ad_sid);
+																pstmt.setString(2, emp_id);
+																pstmt.executeUpdate();
+														}
+												}
+										}
+								}
+						}
+						catch(Exception ex){
+								System.err.println(" "+ex);
+						}
+						finally{
+								Helper.databaseDisconnect(con, pstmt, rs);
+						}
+				}
+				return msg;
+		}
+		/*
+			j445566n:42a6d2b7f0
+		*/		
 
 }

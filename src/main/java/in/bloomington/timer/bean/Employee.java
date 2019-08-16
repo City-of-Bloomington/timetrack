@@ -88,14 +88,16 @@ public class Employee implements Serializable, Comparable<Employee>{
 										String val3,
 										String val4,
 										String val5,
-										String val6
+										String val6,
+										String val7
 										){
 				setUsername(val);
 				setFirst_name(val2);
 				setLast_name(val3);
 				setId_code(val4);
 				setEmployee_number(val5);
-				setEmail(val6);
+				setAd_sid(val6);
+				setEmail(val7);
     }		
     public Employee(String val,
 										String val2,
@@ -106,10 +108,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 										String val7,
 										String val8,
 										String val9,
-										boolean val10
+										String val10,
+										boolean val11
 										){
 				setVals(val, val2, val3, val4, val5, val6,
-								val7, val8, val9, val10);
+								val7, val8, val9, val10, val11);
     }
     void setVals(String val,
 								 String val2,
@@ -120,7 +123,8 @@ public class Employee implements Serializable, Comparable<Employee>{
 								 String val7,
 								 String val8,
 								 String val9,
-								 boolean val10
+								 String val10,
+								 boolean val11
 								 ){
 				setId(val);
 				setUsername(val2);
@@ -128,10 +132,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 				setLast_name(val4);
 				setId_code(val5);
 				setEmployee_number(val6);
-				setEmail(val7);
-				setRolesText(val8);
-				setAdded_date(val9);
-				setInactive(val10);				
+				setAd_sid(val7);
+				setEmail(val8);
+				setRolesText(val9);
+				setAdded_date(val10);
+				setInactive(val11);				
     }
     //
     // getters
@@ -861,12 +866,35 @@ public class Employee implements Serializable, Comparable<Employee>{
 				return job != null && job.isLeaveEligible();
     }
     public boolean isSameEntity(Employee one){
-				return one.getUsername().equals(username) && 
+				boolean ret = one.getUsername().equals(username) && 
 						one.getLast_name().equals(last_name) &&
 						one.getFirst_name().equals(first_name) &&
-						one.getId_code().equals(id_code) &&
-						// one.getAd_sid().equals(ad_sid) &&
-						one.getEmployee_number().equals(employee_number);
+						one.getAd_sid().equals(ad_sid);
+				if(employee_number.equals("")){
+						if(!one.getEmployee_number().equals("")){
+								return false;
+						}
+				}
+				else if(one.getEmployee_number().equals("")){
+						//if ldap no employee number 
+						// we ignore
+				}
+				else {
+						ret = ret && employee_number.equals(one.getEmployee_number());
+				}
+				if(id_code.equals("")){
+						if(!one.getId_code().equals("")){
+								return false;
+						}
+				}
+				else if(one.getId_code().equals("")){
+						// if Ldap has no id Code
+						// we ignore
+				}
+				else{
+						ret = ret && id_code.equals(one.getId_code());
+				}
+				return ret;
     }
 		/**
 		 * find job titles from New World app
@@ -957,7 +985,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive from employees e where ";
+				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.ad_sid,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive from employees e where ";
 				if(!id.equals("")){
 						qq += " e.id = ? ";
 				}
@@ -966,6 +994,9 @@ public class Employee implements Serializable, Comparable<Employee>{
 				}
 				else if(!username.equals("")){ // for login
 						qq += " e.username like ? ";		
+				}
+				else if(!ad_sid.equals("")){ 
+						qq += " e.ad_sid like ? ";		
 				}				
 				else{
 						msg = "Employee info can not be found as no employee id is set";
@@ -985,6 +1016,9 @@ public class Employee implements Serializable, Comparable<Employee>{
 								else if(!username.equals("")){
 										pstmt.setString(1, username);
 								}
+								else if(!ad_sid.equals("")){
+										pstmt.setString(1, ad_sid);
+								}											
 								rs = pstmt.executeQuery();
 								//
 								if(rs.next()){
@@ -997,7 +1031,8 @@ public class Employee implements Serializable, Comparable<Employee>{
 														rs.getString(7),
 														rs.getString(8),
 														rs.getString(9),
-														rs.getString(10) != null);
+														rs.getString(10),
+														rs.getString(11) != null);
 								}
 								else{
 										msg = "Employee not found";
@@ -1020,7 +1055,7 @@ public class Employee implements Serializable, Comparable<Employee>{
      */
     public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;		
 				String msg="", str="";
 				inactive=""; // default
@@ -1033,17 +1068,16 @@ public class Employee implements Serializable, Comparable<Employee>{
 						msg = "Could not connect to DB ";
 						return msg;
 				}
-				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,now(),?)";
+				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,?,now(),?)";
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
 						if(msg.equals("")){
 								pstmt.executeUpdate();
-								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt2 = con.prepareStatement(qq);
+								rs = pstmt2.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -1083,7 +1117,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				if(msg.equals(""))
@@ -1108,6 +1142,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
 								pstmt.setString(jj++, employee_number);
+						if(ad_sid.equals(""))
+								pstmt.setNull(jj++, Types.VARCHAR);
+						else
+								pstmt.setString(jj++, ad_sid);						
 						if(email.equals("")){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
@@ -1142,7 +1180,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update employees set username=?,first_name=?,last_name=?,id_code=?, employee_number=?, email=?,roles=?,inactive=? where id=?";
+				String qq = " update employees set username=?,first_name=?,last_name=?,id_code=?, employee_number=?, ad_sid=?, email=?,roles=?,inactive=? where id=?";
 				if(id.equals("")){
 						msg = "id is required";
 						return msg;
@@ -1159,7 +1197,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						pstmt.setString(9, id);
+						pstmt.setString(10, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
@@ -1193,8 +1231,8 @@ public class Employee implements Serializable, Comparable<Employee>{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update employees set username=?,first_name=?,"+
-						"last_name=?,id_code=?, email=?, employee_number=? "+
-						//", ad_sid=? "+
+						" last_name=?,id_code=?, email=?, employee_number=?, "+
+						" ad_sid=? "+
 						" where id=? ";
 				if(id.equals("")){
 						msg = "id is required";
@@ -1239,13 +1277,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 						else
 								pstmt.setString(5, email);						
 						pstmt.setString(6, employee_number);
-						/*
 						if(ad_sid.equals(""))
 								pstmt.setNull(7, Types.VARCHAR);
 						else
 								pstmt.setString(7, ad_sid);
-						*/
-						pstmt.setString(7, id); // change to 8
+						pstmt.setString(8, id); 
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

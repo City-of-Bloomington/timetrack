@@ -1166,8 +1166,13 @@ update time_block_logs set minutes = hours*60;
 ;;
 ;; 8/14/2019
 ;;
-alter table employees add ad_sid varchar(8) after employee_number;
+   alter table employees add ad_sid varchar(8) after employee_number;
 ;;
 ;; after the field is populated we add the constraint
 ;;
-alter table employees add unique(ad_sid);
+   alter table employees add unique(ad_sid);
+;;
+;;
+;; we do not need this info any more
+;;
+   delete from employees_logs;

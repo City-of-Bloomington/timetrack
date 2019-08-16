@@ -35,7 +35,11 @@
 				<s:textfield name="emplst.employee_number" value="%{emplst.employee_number}" size="15" maxlength="15" /><br />
 				(from new world)
 			</div>
-			
+			<div class="form-group">
+				<label>AD Sid</label>
+				<s:textfield name="emplst.ad_sid" value="%{emplst.ad_sid}" size="10" maxlength="10" /><br />
+				(The number on City ID)
+			</div>			
 			<div class="form-group">
 				<label>Department</label>
 				<s:select name="emplst.department_id" value="%{emplst.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" id="department_id_change" />

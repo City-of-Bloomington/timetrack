@@ -31,7 +31,7 @@
 	</dl>
 	<dl class="fn1-output-field">
 		<dt>Employee </dt>
-		<dd><a href="<s:property value='#application.url' />employee.action?id=<s:property value='groupManager.employee_id' />" /><s:property value="%{groupManager.employee}" /></a></dd>
+		<dd><a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='groupManager.employee_id' />" /><s:property value="%{groupManager.employee}" /></a></dd>
 	</dl>
 	<dl class="fn1-output-field">
 		<dt>Workflow Action </dt>
