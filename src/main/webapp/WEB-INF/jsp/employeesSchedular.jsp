@@ -49,7 +49,7 @@
 		<dl class="fn1-output-field">
 			<dt> </dt>
 			<dd>
-				<s:submit name="action" accrual="button" value="Submit" class="fn1-btn"/></dd>
+				<s:submit name="action" accrual="button" value="Submit" class="button"/ ></dd>
 		</dl>
 	</div>
 </s:form>

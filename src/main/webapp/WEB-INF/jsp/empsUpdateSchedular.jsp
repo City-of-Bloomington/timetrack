@@ -18,9 +18,11 @@
 			<s:textfield name="date" value="%{date}" size="10" maxlength="10" cssClass="date" />
 		</div>
 		<div class="button-group">
-			<s:submit name="action" accrual="button" value="Schedule" class="fn1-btn"/>
-			<s:submit name="action" accrual="button" value="Submit" class="fn1-btn"/></dd>
-			<s:submit name="action" accrual="button" value="Add AD Sid" class="fn1-btn"/></dd>			
+			<s:submit name="action" accrual="button" value="Schedule" class="button"/>
+			<s:submit name="action" accrual="button" value="Submit" class="button"/>
+			<!-- Not needed after first run 
+			<s:submit name="action" accrual="button" value="Add AD Sid" class="button"/>
+			 -->
 		</div>
 	</s:form>
 </div>

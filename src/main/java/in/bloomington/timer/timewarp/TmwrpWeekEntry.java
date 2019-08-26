@@ -28,7 +28,8 @@ public class TmwrpWeekEntry{
 		
     double total_hrs = 0, regular_hrs = 0,
 				non_reg_hrs = 0, earn_time_used = 0,
-				earned_time = 0, unpaid_hrs = 0,
+				earned_time = 0, earned_time_daily=0,
+				unpaid_hrs = 0,
 				over_time15 = 0, over_time20=0, over_time25 = 0;
     double st_weekly_hrs = 40,
 				daily_hrs = 8,
@@ -252,8 +253,8 @@ public class TmwrpWeekEntry{
 				regular_mints = splitOne.getRegularMinutes()+splitTwo.getRegularMinutes();				
 				//
 				// the following earned_time are the overtime for certain employees
-				// from dialy earns
-				earned_time = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
+				// from dialy earns (union)
+				earned_time_daily = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
 				earn_time_used = splitOne.getEarnedTimeUsed()+splitTwo.getEarnedTimeUsed();
 				unpaid_hrs = splitOne.getUnpaidHrs()+splitTwo.getUnpaidHrs();
 				//
@@ -382,7 +383,7 @@ public class TmwrpWeekEntry{
 								return;
 						}
 						else if(salaryGroup.isUnionned()){
-								net_reg_hrs = regular_hrs - earned_time;
+								net_reg_hrs = regular_hrs - earned_time - earned_time_daily;
 								if(net_reg_hrs < CommonInc.critical_small){
 										net_reg_hrs = 0;
 								}
@@ -449,8 +450,14 @@ public class TmwrpWeekEntry{
 						}
 				}
 				// we may have carry over from daily such as union
+				if(excess_hrs >= earned_time_daily){
+						excess_hrs = excess_hrs - earned_time_daily;
+				}
+				else if(excess_hrs < earned_time_daily){
+						excess_hrs = 0;
+				}
 				if(excess_hrs > CommonInc.critical_small){
-						earned_time += excess_hrs;
+						earned_time = excess_hrs;
 				}
     }
     public boolean hasExessHours(){
