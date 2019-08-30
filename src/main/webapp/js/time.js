@@ -294,6 +294,37 @@ $('#div_hour_change').change(function() {
         }
     }
 });
+// for shiftTime page data entry
+$('#shift_time_earn_code').change(function() {
+    var $option = $(this).find('option:selected');
+    var val = $option.val();
+    if(val.indexOf('Hours') > -1){
+        $('#div_hours').show();
+				$('#div_amount').hide();
+        $('#div_time_in').hide();
+        $('#div_time_out').hide();
+				$('#amount_val').val('');
+				$('#time_in_val').val('');
+				$('#time_out_val').val('');				
+    }
+    else if(val.indexOf('Monetary') > -1){
+        $('#div_amount').show();
+        $('#div_hours').hide();				
+        $('#div_time_in').hide();
+        $('#div_time_out').hide();
+				$('#hours_val').val('');
+				$('#time_in_val').val('');
+				$('#time_out_val').val('');					
+    }		
+    else{
+        $('#div_hours').hide();
+        $('#div_amount').hide();
+				$('#hours_val').val('');
+				$('#amount_val').val('');				
+        $('#div_time_in').show();
+        $('#div_time_out').show();
+    }
+});
 
 function windowOpener(url, name, args) {
     if(typeof(popupWin) != "object" || popupWin.closed)  {

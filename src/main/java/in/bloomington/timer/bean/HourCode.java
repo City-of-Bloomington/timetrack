@@ -32,6 +32,10 @@ public class HourCode{
 				accrual_id ="",
 		// each salary group can have only one reg_default
 				reg_default=""; // y for default, null for others
+		//
+		// codes that con be used on holidays only
+		private String holiday_related="";
+		//
 		private double default_monetary_amount=0.0, earn_factor=0.0;
 		private String timeUsed="", timeEarned="", unpaid="";
 
@@ -52,7 +56,8 @@ public class HourCode{
 										String related_accrual_id,
 										String code_type,
 										double default_amount,
-										double earn_factor){
+										double earn_factor,
+										boolean holiday_related){
 				setId(code_id);
 				setName(code_name);
 				setDescription(code_desc);
@@ -61,6 +66,7 @@ public class HourCode{
 				setType(code_type);
 				setDefaultMonetaryAmount(default_amount);
 				setEarnFactor(earn_factor);
+				setHolidayRelated(holiday_related);
 		}
 		
     public HourCode(String val,
@@ -72,8 +78,9 @@ public class HourCode{
 										String val7,
 										Double val8,
 										Double val9,
-										boolean val10){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10);
+										boolean val10,
+										boolean val11){
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11);
     }
     public HourCode(String val,
 										String val2,
@@ -85,10 +92,11 @@ public class HourCode{
 										Double val8,
 										Double val9,
 										boolean val10,
+										boolean val11,
 										
-										String val11, // nw_code
-										String val12){ // gl_string 
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12);
+										String val12, // nw_code
+										String val13){ // gl_string 
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13);
 		
     }		
     void setVals(String val,
@@ -100,7 +108,8 @@ public class HourCode{
 								 String val7,
 								 Double val8,
 								 Double val9,
-								 boolean val10								 
+								 boolean val10,
+								 boolean val11
 								 ){
 				setId(val);
 				setName(val2);
@@ -111,7 +120,8 @@ public class HourCode{
 				setType(val7);
 				setDefaultMonetaryAmount(val8);
 				setEarnFactor(val9);
-				setInactive(val10);
+				setHolidayRelated(val10);
+				setInactive(val11);
 				
     }
     void setVals(String val,
@@ -124,13 +134,14 @@ public class HourCode{
 								 Double val8,
 								 Double val9,
 								 boolean val10,
+								 boolean val11,
 								 
-								 String val11,
-								 String val12
+								 String val12,
+								 String val13
 								 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10);
-				if(val11 != null){
-						codeRef = new CodeRef(id, name, val11, val12);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11);
+				if(val12 != null){
+						codeRef = new CodeRef(id, name, val12, val13);
 				}
     }		
     //
@@ -156,7 +167,10 @@ public class HourCode{
 		}
 		public boolean isActive(){
 				return inactive.equals("");
-		}		
+		}
+		public boolean isHolidayRelated(){
+				return !holiday_related.equals("");
+		}
 		public String getRecord_method(){
 				if(record_method.equals("")){
 						return "Time";
@@ -224,7 +238,11 @@ public class HourCode{
     public void setInactive(boolean val){
 				if(val)
 						inactive = "y";
-    }				
+    }
+    public void setHolidayRelated(boolean val){
+				if(val)
+						holiday_related = "y";
+    }		
     public void setRecord_method(String val){
 				if(val != null && !val.equals("-1"))
 						record_method = val;
@@ -272,10 +290,10 @@ public class HourCode{
 				return type.equals("Overtime");
 		}
 		public boolean isOnCall(){
-				return type.equals("Monetary");
+				return isRecordMethodMonetary();
 		}
 		public boolean isMonetary(){
-				return type.equals("Monetary");
+				return isRecordMethodMonetary();
 		}		
 		public boolean isCallOut(){
 				return type.equals("Call Out");
@@ -360,7 +378,8 @@ public class HourCode{
 				String msg="", str="";
 				String qq = "select h.id,h.name,h.description,h.record_method,"+
 						" h.accrual_id, h.reg_default,h.type,"+
-						" h.default_monetary_amount,h.earn_factor,h.inactive, "+
+						" h.default_monetary_amount,h.earn_factor,h.holiday_related,"+
+						" h.inactive, "+
 						" f.nw_code,f.gl_string "+
 						" from hour_codes h left join code_cross_ref f on f.code_id=h.id "+
 						" where h.id=? ";
@@ -385,9 +404,9 @@ public class HourCode{
 												rs.getDouble(8),
 												rs.getDouble(9),
 												rs.getString(10) != null,
-												
-												rs.getString(11),
-												rs.getString(12)
+												rs.getString(11) != null,
+												rs.getString(12),
+												rs.getString(13)
 												);
 						}
 				}
@@ -403,10 +422,10 @@ public class HourCode{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " insert into hour_codes values(0,?,?,?,?, ?,?,?,?, ?)";
+				String qq = " insert into hour_codes values(0,?,?,?,?, ?,?,?,?, ?,?)";
 				if(name.equals("")){
 						msg = "Hour code name is required";
 						return msg;
@@ -429,8 +448,8 @@ public class HourCode{
 								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt2 = con.prepareStatement(qq);
+								rs = pstmt2.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -441,7 +460,7 @@ public class HourCode{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -472,6 +491,10 @@ public class HourCode{
 								pstmt.setString(jj++, type);
 						pstmt.setDouble(jj++, default_monetary_amount);
 						pstmt.setDouble(jj++, earn_factor);
+						if(holiday_related.equals(""))
+								pstmt.setNull(jj++, Types.CHAR);
+						else
+								pstmt.setString(jj++, "y");						
 						if(inactive.equals(""))
 								pstmt.setNull(jj++, Types.CHAR);
 						else
@@ -490,7 +513,7 @@ public class HourCode{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,reg_default=?,type=?,default_monetary_amount=?,earn_factor=?,inactive=? where id=?";
+				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,reg_default=?,type=?,default_monetary_amount=?,earn_factor=?,holiday_related=?,inactive=? where id=?";
 				if(name.equals("")){
 						msg = "Hour code name is required";
 						return msg;
@@ -507,7 +530,7 @@ public class HourCode{
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						pstmt.setString(10, id);
+						pstmt.setString(11, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){

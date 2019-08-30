@@ -47,7 +47,7 @@ public class ShiftTimeList{
 				String qq = "select s.id,s.pay_period_id,"+
 						" s.group_id,s.default_hour_code_id,"+
 						" s.start_time,"+
-						" s.end_time,s.dates,s.added_by_id,"+
+						" s.end_time,s.hours,s.amount,s.dates,s.added_by_id,"+
 						" date_format(s.added_time,'%m/%d/%Y %H:%i'), "+
 						" s.processed "+
 						" from shift_times s,groups g ";
@@ -94,7 +94,9 @@ public class ShiftTimeList{
 																			rs.getString(7),
 																			rs.getString(8),
 																			rs.getString(9),
-																			rs.getString(10) != null
+																			rs.getString(10),
+																			rs.getString(11),
+																			rs.getString(12) != null
 																							);
 								shifts.add(one);
 						}

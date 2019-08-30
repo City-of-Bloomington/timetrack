@@ -28,7 +28,7 @@ public class ShiftTime{
 		PayPeriod payPeriod = null;
 		HourCode defaultHourCode = null;
 		int begin_hour=0,begin_minute=0,end_hour=0, end_minute = 0;
-		double hours = 0;
+		double hours = 0, amount=0;
 		int minutes = 0;
 		String[] datesArr = null;
     public ShiftTime(){
@@ -47,9 +47,11 @@ public class ShiftTime{
 										 String val7,
 										 String val8,
 										 String val9,
-										 boolean val10
+										 String val10,
+										 String val11,
+										 boolean val12
 								 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12);
 
 		}
 		void setVals(String val,
@@ -61,17 +63,21 @@ public class ShiftTime{
 								 String val7,
 								 String val8,
 								 String val9,
-								 boolean val10){
+								 String val10,
+								 String val11,
+								 boolean val12){
 				setId(val);
 				setPay_period_id(val2);
 				setGroup_id(val3);
 				setDefault_hour_code_id(val4);
 				setStartTime(val5);
 				setEndTime(val6);
-				setDates(val7);
-				setAdded_by_id(val8);
-				setAddedTime(val9);
-				setProcessed(val10);
+				setHours(val7);
+				setAmount(val8);
+				setDates(val9);
+				setAdded_by_id(val10);
+				setAddedTime(val11);
+				setProcessed(val12);
     }
 		
     //
@@ -108,6 +114,15 @@ public class ShiftTime{
     public String getDefault_hour_code_id(){
 				return default_hour_code_id;
     }
+		public String getId_compound(){
+				if(!default_hour_code_id.equals("")){
+						getDefaultHourCode();
+						if(defaultHourCode != null){
+								return defaultHourCode.getId_compound();
+						}
+				}
+				return default_hour_code_id;
+		}
     public String getStartTime(){
 				return start_time;
     }
@@ -123,6 +138,12 @@ public class ShiftTime{
 		public String getAddedTime(){
 				return added_time;
     }
+		public String getHours(){
+				return ""+hours;
+    }
+		public String getAmount(){
+				return ""+amount;
+    }		
 		public boolean getProcessed(){
 				return !processed.equals("");
 		}
@@ -142,8 +163,14 @@ public class ShiftTime{
 						group_id = val;
     }
     public void setDefault_hour_code_id(String val){
-				if(val != null && !val.equals("-1"))
-						default_hour_code_id = val;
+				if(val != null && !val.equals("-1")){
+						if(val.indexOf("_") > -1){
+								default_hour_code_id = val.substring(0, val.indexOf("_"));
+						}
+						else{
+								default_hour_code_id = val;								
+						}
+				}
     }		
     public void setStartTime(String val){
 				if(val != null)
@@ -153,10 +180,27 @@ public class ShiftTime{
 				if(val != null)
 						end_time = val;
     }
+    public void setHours(String val){
+				if(val != null && !val.equals("")){
+						try{
+								hours = Double.parseDouble(val);
+						}catch(Exception ex){}
+				}
+    }
+    public void setAmount(String val){
+				if(val != null && !val.equals("")){
+						try{
+								amount = Double.parseDouble(val);
+						}catch(Exception ex){}								
+				}
+    }		
 		public String getStartEndTimes(){
-				String ret = start_time;
-				if(!end_time.equals("")){
-						ret += " - "+end_time;
+				String ret = "";
+				if(!start_time.equals("")){
+						ret = start_time;
+						if(!end_time.equals("")){
+								ret += " - "+end_time;
+						}
 				}
 				return ret;
 		}
@@ -305,10 +349,29 @@ public class ShiftTime{
 				if(!msg.equals("")){
 						return msg;
 				}
-				findHours();
-				if(hours <= 0.){
-						msg = "invalid times ";
-						return msg;
+				getDefaultHourCode();
+				if(defaultHourCode != null && defaultHourCode.isRecordMethodMonetary()){
+						double dd = defaultHourCode.getDefaultMonetaryAmount();
+						if(dd > 0){
+								amount = dd;
+						}
+						if(amount <= 0.){
+								msg = "invalid amount "+amount;
+								return msg;
+						}						
+				}
+				else if(defaultHourCode.isRecordMethodHours()){
+						if(hours <= 0.){
+								msg = "invalid hours "+hours;
+								return msg;
+						}
+				}
+				else{ // time based
+						findHours();
+						if(hours <= 0.){
+								msg = "invalid times ";
+								return msg;
+						}						
 				}
 				JobTaskList jl = new JobTaskList();
 				jl.setGroup_id(group_id);
@@ -352,13 +415,16 @@ public class ShiftTime{
 																						 end_minute,
 																						 hours,
 																						 minutes,
-																						 0.0 // amount
+																						 amount // amount
 																						 );
 								tb.setAction_by_id(added_by_id); // for logs
-								msg = tb.doSave();
+								if(defaultHourCode != null){
+										tb.setHourCode(defaultHourCode);
+								}
+								msg += tb.doSaveForInOut();
 						}
 						tmwrpManager = new TimewarpManager(document_id);
-						msg = tmwrpManager.doProcess();
+						msg += tmwrpManager.doProcess();
 				}
 				if(msg.equals("")){
 						msg = doUpdateProcessed();
@@ -372,7 +438,7 @@ public class ShiftTime{
 				ResultSet rs = null;
 				String qq = "select id,pay_period_id,group_id,default_hour_code_id,"+
 						" start_time,"+
-						" end_time,dates,added_by_id,"+
+						" end_time,hours, amount, dates,added_by_id,"+
 						" date_format(added_time,'%m/%d/%Y %H:%i'),processed "+
 						" from shift_times where id=?";
 				con = UnoConnect.getConnection();
@@ -395,7 +461,9 @@ public class ShiftTime{
 												rs.getString(7),
 												rs.getString(8),
 												rs.getString(9),
-												rs.getString(10) != null);												
+												rs.getString(10),
+												rs.getString(11),
+												rs.getString(12) != null);												
 						}
 						else{
 								back ="Record "+id+" Not found";
@@ -416,7 +484,7 @@ public class ShiftTime{
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = " insert into shift_times values(0,?,?,?,?, ?,?,?,now(),null)";
+				String qq = " insert into shift_times values(0,?,?,?,?, ?,?,?,?,?, now(),null)";
 				if(pay_period_id.equals("")){
 						msg = "Pay period not set";
 						return msg;
@@ -429,19 +497,38 @@ public class ShiftTime{
 						msg = "Default hour code not set";
 						return msg;
 				}
-				if(start_time.equals("")){
-						msg = "Start time not set";
-						return msg;
+				getDefaultHourCode();
+				if(defaultHourCode != null && defaultHourCode.isRecordMethodMonetary()){
+						double dd = defaultHourCode.getDefaultMonetaryAmount();
+						if(dd > 0){
+								amount = dd;
+						}
+						if(amount <= 0.){
+								msg = "invalid amount "+amount;
+								return msg;
+						}						
 				}
-				if(end_time.equals("")){
-						msg = "End time not set";
-						return msg;
+				else if(defaultHourCode.isRecordMethodHours()){
+						if(hours <= 0.){
+								msg = "invalid hours "+hours;
+								return msg;
+						}
 				}
-				findHours();
-				if(hours <= 0.){
-						msg = "invalid times entered ";
-						return msg;
-				}
+				else{ // time based
+						if(start_time.equals("")){
+								msg = "Start time not set";
+								return msg;
+						}
+						if(end_time.equals("")){
+								msg = "End time not set";
+								return msg;
+						}
+						findHours();
+						if(hours <= 0.){
+								msg = "invalid times ";
+								return msg;
+						}						
+				}				
 				findDatesArray();
 				if(datesArr == null || datesArr.length == 0){
 						msg = "no dates provided";
@@ -462,14 +549,22 @@ public class ShiftTime{
 						pstmt.setString(1, pay_period_id);
 						pstmt.setString(2, group_id);
 						pstmt.setString(3, default_hour_code_id);
-						pstmt.setString(4, start_time);
-						pstmt.setString(5, end_time);
-						pstmt.setString(6, dates);
+						if(start_time.equals(""))
+								pstmt.setNull(4, Types.VARCHAR);
+						else
+								pstmt.setString(4, start_time);
+						if(end_time.equals(""))
+								pstmt.setNull(5, Types.VARCHAR);
+						else
+								pstmt.setString(5, end_time);
+						pstmt.setString(6, ""+hours);						
+						pstmt.setString(7, ""+amount);
+						pstmt.setString(8, dates);						
 						if(added_by_id.equals("")){
-								pstmt.setNull(7, Types.INTEGER);
+								pstmt.setNull(9, Types.INTEGER);
 						}
 						else
-								pstmt.setString(7, added_by_id);
+								pstmt.setString(9, added_by_id);
 						pstmt.executeUpdate();
 
 						//

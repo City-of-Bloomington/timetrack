@@ -1176,3 +1176,21 @@ update time_block_logs set minutes = hours*60;
 ;; we do not need this info any more
 ;;
    delete from employees_logs;
+;;
+;; 08/30/2019
+;;
+  alter table shift_times add hours varchar(5) after end_time;
+  alter table shift_times add amount varchar(5) after hours;
+;;
+;; update the hours to reflect the real value
+;;
+	update shift_times set hours = (substring_index(end_time,':',1)+substring_index(end_time,':',-1)/60)  - (substring_index(start_time,':',1)+substring_index(start_time,':',-1)/60) where start_time is not null;
+
+	alter table hour_codes add holiday_related char(1) after earn_factor;
+;;
+;; update the view
+;;
+     create or replace view time_blocks_view as                                         select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    t.earn_code_reason_id earn_code_reason_id,                                      t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.minutes minutes,                                                              t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      c.earn_factor earn_factor,                                                      c.holiday_related holiday_related,                                              cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id,                                                      r.description reason                                                            from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id 			                           left join earn_code_reasons r on r.id=t.earn_code_reason_id;
+
+;;
+;; mark the following earn codes as holiday related H1.0, HCE1.0, HCE1.5, HCE2.0;; and HF

@@ -190,6 +190,7 @@ public class ShiftTimeAction extends TopAction{
 				if(hourCodes == null){
 						HourCodeList gsl = new HourCodeList();
 						gsl.setDefaultRegularOnly();
+						gsl.setIncludeHolidays();
 						String back = gsl.find();
 						if(back.equals("")){
 								List<HourCode> ones = gsl.getHourCodes();

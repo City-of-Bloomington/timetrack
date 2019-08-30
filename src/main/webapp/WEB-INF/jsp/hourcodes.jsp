@@ -11,6 +11,7 @@
 			<th>Default Monetary Amount</th>
 			<th>Earn Factor</th>
 			<th>Default Regular</th>
+			<th>Holiday Related</th>
 			<th>Active?</th>
 		</tr>
 	<tbody>
@@ -25,6 +26,7 @@
 				<td>$<s:property value="defaultMonetaryAmount" /></td>
 				<td><s:property value="earnFactor" /></td>				
 				<td><s:if test="reg_default">Yes</s:if><s:else>No</s:else></td>
+				<td><s:if test="holidayRelated">Yes</s:if><s:else>No</s:else></td>
 				<td><s:if test="inactive">No</s:if><s:else>Yes</s:else></td>
 			</tr>
 		</s:iterator>

@@ -45,9 +45,11 @@
 				<s:select name="hourcode.accrual_id" value="%{hourcode.accrual_id}" list="accruals" listKey="id" listValue="name" headerKey="-1" headerValue="Pick related accrual" />
 			</div>
 			<div class="form-group">
-				<label>Default Regular?:</label>
-				<s:checkbox name="hourcode.reg_default" value="%{hourcode.reg_default}" /> Yes	(each salary group need only one default regular)
+				<label> <s:checkbox name="hourcode.reg_default" value="%{hourcode.reg_default}" />Default Regular </label> (each salary group need only one default regular)
 			</div>
+			<div class="form-group">
+				<label> <s:checkbox name="hourcode.holidayRelated" value="%{hourcode.holidayRelated}" />Holiday Related </label> (can be used on holidays only)
+			</div>			
 			<div class="form-group">
 				<label>Type:</label>
 				<s:radio name="hourcode.type" value="%{hourcode.type}" list="types" />
@@ -76,8 +78,8 @@
 			</div>			
 			<s:if test="hourcode.id != ''">
 				<div class="form-group">
-					<label>Inactive?:</label>
-					<s:checkbox name="hourcode.inactive" value="%{hourcode.inactive}" /> Yes (check to dissable)
+					<label>
+						<s:checkbox name="hourcode.inactive" value="%{hourcode.inactive}" /> Inactive</label> (check to dissable)
 				</div>
 			</s:if>
 		</div>

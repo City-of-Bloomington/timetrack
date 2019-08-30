@@ -7,6 +7,8 @@
 			<th>Pay Period</th>
 			<th>Hour Code</th>
 			<th>Start time, end time</th>
+			<th>Hours</th>
+			<th>Amount($)</th>
 			<th>Dates</th>
 			<th>Added</th>
 		</tr>
@@ -19,6 +21,8 @@
 				<td><s:property value="payPeriod" /></td>
 				<td><s:property value="defaultHourCode" /></td>
 				<td><s:property value="startEndTimes" /></td>
+				<td><s:property value="hours" /></td>
+				<td><s:property value="amount" /></td>								
 				<td><s:property value="dates" /></td>				
 				<td><s:property value="addedTime" /></td>
 			</tr>

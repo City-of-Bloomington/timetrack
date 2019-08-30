@@ -25,6 +25,7 @@ public class HourCodeList{
     String department_id = "", salary_group_id="", effective_date_before="";
     String employee_id = "", accrual_id="", group_id="";
     boolean active_only = false , default_regular_only = false;
+		boolean include_holidays = false;
     boolean current_only = false, related_to_accruals_only=false;
     String type="", name="", record_method="";
     boolean allEarnTypes = false;
@@ -85,6 +86,9 @@ public class HourCodeList{
     public void setDefaultRegularOnly(){
 				default_regular_only = true; // needed for salary groups
     }
+		public void setIncludeHolidays(){
+				include_holidays=true;
+		}
     public List<HourCode> getHourCodes(){
 				return hourCodes;
     }
@@ -114,7 +118,7 @@ public class HourCodeList{
 				// other are for non-specified department
 				// 
 				String qq = "select count(*) from hour_code_conditions c where c.department_id=? ";
-				String qq2 = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.reg_default,e.type,e.default_monetary_amount,e.earn_factor,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
+				String qq2 = "select e.id,e.name,e.description,e.record_method,e.accrual_id,e.reg_default,e.type,e.default_monetary_amount,e.earn_factor,e.holiday_related,e.inactive from hour_codes e left join hour_code_conditions c on c.hour_code_id=e.id ";
 				String qw = "", msg="";
 				logger.debug(qq);
 				boolean setDept = false;
@@ -207,7 +211,8 @@ public class HourCodeList{
 																						rs.getString(7),
 																						rs.getDouble(8),
 																						rs.getDouble(9),
-																						rs.getString(10) != null);
+																						rs.getString(10) != null,
+																						rs.getString(11) != null);
 								if(one.isRegDefault()){
 										if(!hourCodes.contains(one))
 												hourCodes.add(0, one);
@@ -242,7 +247,8 @@ public class HourCodeList{
 				// 
 				String qq = "select e.id,e.name,e.description,e.record_method,"+
 						" e.accrual_id,e.reg_default,e.type,"+
-						" e.default_monetary_amount,e.earn_factor,e.inactive, "+
+						" e.default_monetary_amount,e.earn_factor,e.holiday_related,"+
+						" e.inactive, "+
 						" f.nw_code,f.gl_string "+
 						" from hour_codes e "+
 						" left join code_cross_ref f on f.code_id=e.id "+
@@ -288,8 +294,13 @@ public class HourCodeList{
 
 						}
 						if(default_regular_only){
-								if(!qw.equals("")) qw += " and "; 
-								qw += " e.reg_default is not null "; 
+								if(!qw.equals("")) qw += " and ";
+								if(include_holidays){
+										qw += " (e.reg_default is not null or (e.holiday_related is not null and e.type <> 'Earned')) ";
+								}
+								else{
+										qw += " e.reg_default is not null";
+								}
 						}
 						if(active_only){
 								if(!qw.equals("")) qw += " and "; 								
@@ -331,9 +342,10 @@ public class HourCodeList{
 																						rs.getDouble(8),
 																						rs.getDouble(9),
 																						rs.getString(10) != null,
-																						
-																						rs.getString(11),
-																						rs.getString(12)
+
+																						rs.getString(11) != null,
+																						rs.getString(12),
+																						rs.getString(13)
 																						);
 								if(!hourCodes.contains(one))
 										hourCodes.add(one);

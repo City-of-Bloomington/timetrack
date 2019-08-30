@@ -39,13 +39,6 @@ public class TimeBlock extends Block{
 		// from the interface
 		Map<String, String> accrualBalance = new Hashtable<>();
 		//
-		final static Set<String> holidayHourCodeSet = new HashSet<String>(){{
-						add("HCE1.0");						
-						add("HCE1.5");						
-						add("HCE2.0");
-						add("H1.0");
-				}
-		};
 		Set<String> document_ids = null; // needed for employee with multiple jobs
 		String start_date = "", end_date="", job_name="";
 		String hour_code_id_old = ""; // for accrual purpose
@@ -691,11 +684,10 @@ public class TimeBlock extends Block{
 				getHourCode();
 				getDocument();
 				if(hourCode != null){
-						String str = hourCode.getName();
-						if(holidayHourCodeSet.contains(str)){
+						if(hourCode.isHolidayRelated()){
 								document.prepareHolidays();
 								if(!document.isHoliday(date)){
-										ret = " You can not use hour code "+str+" in non-holiday day";
+										ret = " You can not use hour code "+hourCode.getName()+" in non-holiday day";
 								}
 						}
 				}
@@ -1202,7 +1194,7 @@ public class TimeBlock extends Block{
 				}
 				return msg;
 		}
-		private String doSaveForInOut(){
+		String doSaveForInOut(){
 				//
 				Connection con = null;
 				PreparedStatement pstmt = null, pstmt2=null;
@@ -1282,7 +1274,12 @@ public class TimeBlock extends Block{
 										}
 								}
 								else if(isMonetaryType()){
-										// ignore
+										// some earn codes are monetary but holiday related
+										// such as HF (holiday firke)
+										mgtext = checkHourCodeForHoliday();
+										if(!mgtext.equals("")){
+												return mgtext;
+										}
 								}
 								else{
 										id=""; // for multiple input
@@ -1290,8 +1287,9 @@ public class TimeBlock extends Block{
 								}
 								if(!mgtext.equals("")){
 										// we do not show the conflict for multiple entries
-										if(rangeDateSet.size() == 1) 
+										if(rangeDateSet.size() == 1){ 
 												msg += mgtext;
+										}
 								}
 								else{
 										pstmt = con.prepareStatement(qq);

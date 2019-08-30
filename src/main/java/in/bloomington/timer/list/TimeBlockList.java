@@ -379,9 +379,10 @@ public class TimeBlockList{
 						"v.code_type,"+
 						"v.default_monetary_amount,"+
 						"v.earn_factor,"+
+						"v.holiday_related,"+
 						"v.nw_code_name,"+
-						"v.job_name,"+
 						
+						"v.job_name,"+
 						"v.job_id, "+
 						"v.pay_period_id,"+
 						"v.employee_id, "+
@@ -508,15 +509,15 @@ public class TimeBlockList{
 										related_accrual_id = str;
 								}
 								String reason = "";
-								str = rs.getString(29);
+								str = rs.getString(30);
 								if(str != null)
 										reason = str;
 								String code_type = rs.getString(21);
 								double default_amount = rs.getDouble(22);
 								double earn_factor = rs.getDouble(23);
-								
-								String job_name = rs.getString(25); // job name
-								String job_id = rs.getString(26);
+								String holiday_related = rs.getString(24);
+								String job_name = rs.getString(26); // job name
+								String job_id = rs.getString(27);
 								//
 								boolean isHoliday = isHoliday(date);
 								String holidayName = "";
@@ -530,7 +531,8 @@ public class TimeBlockList{
 																							 related_accrual_id,
 																							 code_type,
 																							 default_amount,
-																							 earn_factor);
+																							 earn_factor,
+																							 holiday_related != null);
 								if(code_desc == null) code_desc = "";
 								if(hrCode.isRecordMethodMonetary()){
 										hrs = 0;
@@ -551,26 +553,26 @@ public class TimeBlockList{
 																			rs.getString(3), // code_id
 																			rs.getString(4), // earn_code_reason
 																			rs.getString(5), // date
-																			rs.getInt(6),  // b
 																			
+																			rs.getInt(6),  // b
 																			rs.getInt(7),
 																			rs.getInt(8),
 																			rs.getInt(9),
 																			hrs,
-																			mints,
 																			
+																			mints,
 																			amnt,
 																			rs.getString(13), // clock in
 																			rs.getString(14), // clock out
 																			isHoliday,
-																			holidayName,
 																			
+																			holidayName,
 																			rs.getString(15) != null,
 																			rs.getInt(16), // order id
 																			code_name,
-																			code_desc, 
-																			rs.getString(23),  // nw_code
+																			code_desc,
 																			
+																			rs.getString(25),  // nw_code
 																			job_name, 
 																			job_id 
 																			);
