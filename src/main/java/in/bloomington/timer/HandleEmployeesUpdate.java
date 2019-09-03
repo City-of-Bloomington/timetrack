@@ -66,20 +66,8 @@ public class HandleEmployeesUpdate{
 				String inactiveSet = "", inactiveLog = "";
 				EmployeeList ul = new EmployeeList();
 				ul.setExclude_name("Admin");// exlude admin emp
-				ul.setHasAdSid();
+				// ul.setHasAdSid();
 				//
-				/*
-				// we want only employees who do not have time document for this
-				// pay period
-				// ul.setActiveOnly();
-				if(pay_period_id.equals("")){
-						getPay_period_id();
-				}					
-				ul.setNoDocumentForPayPeriodId(pay_period_id);
-				//
-				// avoid recently added employees
-				ul.excludeRecentRecords();
-				*/
 				String back = ul.find();
 				if(back.equals("")){
 						List<Employee> ones = ul.getEmployees();
@@ -98,11 +86,9 @@ public class HandleEmployeesUpdate{
 						if(back.equals("")){
 								ldapEmps = el.getEmps();
 								empTable = new Hashtable<>();
-								// empUsrTable = new Hashtable<>();
 								for(Employee one:ldapEmps){
 										empTable.put(one.getAd_sid(), one);
-										// if(one.hasNoEmployeeNumber()) continue;
-										// empTable.put(one.getEmployee_number(), one);
+										empTable.put(one.getUsername(), one);
 								}
 						}
 						else{
@@ -111,23 +97,12 @@ public class HandleEmployeesUpdate{
 								errors = "Error get emps from ldap "+msg;								
 						}
 				}
+				System.err.println(" msg "+msg);
 				if(msg.equals("")){
 						// changes
 						int jj=1;
 						for(Employee one:dbEmps){
-								/*
-								if(!empTable.containsKey(one.getAd_sid()) &&
-									 !empUsrTable.containsKey(one.getUsername())){
-										if(!inactiveSet.equals("")){
-												inactiveSet += ",";
-												inactiveLog += ", ";
-										}
-										inactiveSet += one.getId();
-										inactiveLog += one.getId()+" "+one.getFull_name();
-								}
-								*/
-
-								if(!one.getAd_sid().equals("")){
+								if(one.hasAdSid()){
 										if(empTable.containsKey(one.getAd_sid())){
 												Employee ldapEmp = empTable.get(one.getAd_sid());
 												if(!one.isSameEntity(ldapEmp)){
@@ -137,6 +112,20 @@ public class HandleEmployeesUpdate{
 														// System.err.println(" to => "+ldapEmp.getInfo());
 														msg += one.doUpdateFromLdap(ldapEmp);
 												}
+										}
+								}
+								else{
+										if(empTable.containsKey(one.getUsername())){
+												System.err.println("found emp "+one.getUsername());
+												Employee ldapEmp = empTable.get(one.getUsername());
+
+												if(!one.isSameEntity(ldapEmp)){
+														System.err.println(" emp using username "+one.getInfo());
+														System.err.println((jj++)+" found "+ldapEmp.getInfo());
+														// System.err.println(" update "+one.getInfo());
+														// System.err.println(" to => "+ldapEmp.getInfo());
+														msg += one.doUpdateFromLdap(ldapEmp);
+												}										
 										}
 								}
 						}

@@ -489,7 +489,10 @@ public class Employee implements Serializable, Comparable<Employee>{
     }		
     public boolean canRunTargetEmployee(){
 				return hasRole("TargetEmployee");
-    }		
+    }
+		public boolean hasAdSid(){
+				return !ad_sid.equals("");
+		}
     void findPayPeriod(){
 				if(pay_period_id.equals("")){
 						PayPeriodList ppl = new PayPeriodList();
@@ -870,6 +873,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						one.getLast_name().equals(last_name) &&
 						one.getFirst_name().equals(first_name) &&
 						one.getAd_sid().equals(ad_sid);
+				if(!ret) return ret;
 				if(employee_number.equals("")){
 						if(!one.getEmployee_number().equals("")){
 								return false;
@@ -1255,7 +1259,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						if(!ldapEmp.getEmployee_number().equals(""))						
 								setEmployee_number(ldapEmp.getEmployee_number());
 						setEmail(ldapEmp.getEmail());
-						
+						setAd_sid(ldapEmp.getAd_sid());
 						con = UnoConnect.getConnection();
 						if(con == null){
 								msg = "Could not connect to DB ";

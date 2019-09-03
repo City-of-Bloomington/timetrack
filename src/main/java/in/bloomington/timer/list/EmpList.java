@@ -183,12 +183,12 @@ public class EmpList extends CommonInc{
 						else if (!dept_name.equals("")){
 								// we are excluding disabled users and any user that
 								// givenName starts with * (code \2a)
-								filter ="(&(objectCategory=person)(objectCategory=user)(!(givenName=\2a*)))";
+								filter ="(&(objectCategory=person)(objectCategory=user)(!(givenName=\2*)))";
 						}
 						else{ // all
 								// we are excluding disabled users and any user that
 								// givenName (first name) that starts with * code \2a 				
-								filter ="(&(objectCategory=person)(objectCategory=user)(!(givenName=\2a*)))";
+								filter ="(&(objectCategory=person)(objectCategory=user)(!(givenName=\2*)))";
 						}
 						System.err.println(" filter "+filter);
 						NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctls);
@@ -282,8 +282,8 @@ public class EmpList extends CommonInc{
 								if(!emp.getUsername().startsWith("*")){
 										emps.add(emp);
 								}
-								System.err.println(jj+" emp "+emp.getInfo());
-								jj++;
+								// System.err.println(jj+" emp "+emp.getInfo());
+								// jj++;
 						}
 				}
 				catch(Exception ex){
@@ -503,7 +503,7 @@ public class EmpList extends CommonInc{
 						}catch(Exception ex){
 								System.err.println(ex);
 						}
-						System.err.println(" dept: "+dept+" group: "+grp);
+						// System.err.println(" dept: "+dept+" group: "+grp);
 				}
 				return retArr;
 		}
