@@ -164,13 +164,14 @@ public class HandleNotification{
     }
     String compuseAndSend(String to_str){
 				String msg = "";
-				String body_text ="This is an automated reminder from the Timetrack timekeeping system.\n\n";
-				body_text +=" Today marks the beginning of a new pay period. Our records show you have not submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible.\n\n";
-				body_text += " The timetrack system is available here:\n\n";
-				body_text += " https://bloomington.in.gov/timetrack\n";
-				body_text +=" \n\n";
-				body_text +=" If you have any questions or support needs, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n                Thank you,\n";
-				body_text +=" City of Bloomington ITS\n";
+				String body_text ="This is an automated message from the Timetrack timekeeping system.\n\n";
+				body_text += "Today marks the beginning of a new pay period. Our records show you have not yet submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible.\n\n";
+				body_text += "The timetrack system is available here:\n\n";
+				body_text += "https://bloomington.in.gov/timetrack\n\n";
+				body_text += "After you login, you may need to click on the previous pay period button under 'Time Details' title.\n";
+				body_text += "Then click on 'Submit for Approval' button in the middle of the page.\n\n";
+				body_text += "If you have any questions or support needs, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n";
+				body_text +="Thank you\n";
 				body_text +="\n\n";
 				Properties props = new Properties();
 				props.put("mail.smtp.host", mail_host);

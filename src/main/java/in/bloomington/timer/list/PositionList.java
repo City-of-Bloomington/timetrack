@@ -25,13 +25,17 @@ public class PositionList{
 	
     public PositionList(){
     }
+    public PositionList(String val){
+				setName(val);
+    }		
+		
     public List<Position> getPositions(){
 				return positions;
     }
 		
     public void setName(String val){
 				if(val != null)
-						name = val;
+						name = val.trim();
     }
     public void setGroup_id(String val){
 				if(val != null && !val.equals("-1"))

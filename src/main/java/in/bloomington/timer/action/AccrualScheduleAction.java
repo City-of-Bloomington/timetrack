@@ -64,6 +64,18 @@ public class AccrualScheduleAction extends TopAction{
 								}
 						}
 				}
+				/*
+				else if(!action.equals("")){ // for testing
+						HandleNwAccrual handle = new HandleNwAccrual(dept_ref_id, date, date);
+						back = handle.processSpecial("100003240"); // for testing
+						if(!back.equals("")){
+								addActionError(back);
+						}
+						else{
+								addActionMessage("Imported Successfully");
+						}
+				}
+				*/
 				return ret;
 		}
 		private void prepareSchedular(){

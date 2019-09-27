@@ -33,9 +33,9 @@ public class Profile extends CommonInc{
 		String nw_employee_id="", // new world employee id
 				benefitGroup_id = ""; // we needed this for accruals 
 		double comp_time_multiple = 1.0;
-		double comp_time_after = 40.0;
+		int comp_time_after = 40;
+		int st_weekly_hrs = 40; // standard weekly hours		
 		double holiday_time_multiple = 1.0;
-		double st_weekly_hrs = 40.0; // standard weekly hours
 		double hourlyRate = 0; // needed for planning dept
 		boolean debug = false;
 		boolean overTimeElegible = false;
@@ -119,7 +119,7 @@ public class Profile extends CommonInc{
 		// Check
 		public void setStWeeklyHrs(String val){
 				if(val != null){
-						st_weekly_hrs = Double.parseDouble(val);
+						st_weekly_hrs = (int)Double.parseDouble(val);
 						if(bGroup != null && bGroup.isTemporary()){
 								comp_time_after = 40;
 								comp_time_multiple = 1.5;
@@ -142,7 +142,7 @@ public class Profile extends CommonInc{
 								comp_time_multiple = Double.valueOf(val2).doubleValue();
 						}
 						else{
-								comp_time_after = Double.valueOf(val2).doubleValue();
+								comp_time_after = Integer.parseInt(val2);
 						}
 				}catch(Exception ex){}
 		}
@@ -161,11 +161,14 @@ public class Profile extends CommonInc{
 		}
 		public String getJob_name(){
 				return job_name;
+		}
+		public String getJobTitle(){
+				return job_name;
 		}		
 		public String getEmployee_number(){
 				return employee_number;
 		}	
-		public double getCompTimeAfter(){
+		public int getCompTimeAfter(){
 				return comp_time_after;
 		}
 		public double getCompTimeMultiple(){
@@ -174,7 +177,7 @@ public class Profile extends CommonInc{
 		public double getHolidayTimeMultiple(){
 				return holiday_time_multiple;
 		}
-		public double getStWeeklyHrs(){
+		public int getStWeeklyHrs(){
 				return st_weekly_hrs;
 		}
 		public double getHourlyRate(){
@@ -182,6 +185,11 @@ public class Profile extends CommonInc{
 		}
 		public String toString(){
 				return employee_number+": "+comp_time_after+": "+comp_time_multiple;
+		}
+		public String getSalary_group_name(){
+				if(bGroup != null)
+						return bGroup.getSalary_group_name();
+				return "";
 		}
 		public boolean isOverTimeElegible(){
 				return overTimeElegible;

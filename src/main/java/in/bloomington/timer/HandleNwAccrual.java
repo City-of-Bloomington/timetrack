@@ -95,7 +95,7 @@ public class HandleNwAccrual{
 				CallableStatement ps = null;
 				ResultSet rs = null;
 				String msg="";
-				double ptoa=0, cua=0, holya=0, scka=0;
+				double ptoa=0, cua=0, holya=0, scka=0, lba=0, vla=0;
 
 				/*
 				 * 6 sick, 8 pto, 9 holiday comp, 15 comp
@@ -135,11 +135,12 @@ public class HandleNwAccrual{
 						}
 						ps = con.prepareCall(qq);
 						ps.setString(1, dept_ref_id);   // "16,17, 24" for two hr depts
-						ps.setString(2, "6,8,9,15"); // sick, pto, holiday, comp
+						ps.setString(2, "6,8,9,15,18,7"); // sick, pto, holiday, comp, leave, vacation
 						ps.setInt(3,258);
 						ps.setString(4, date); // accruals upto end of last payperiod
 						rs = ps.executeQuery();
 						while(rs.next()){
+								double arr[] = {0,0,0,0,0,0};
 								String str  = rs.getString(1); // employeeId
 								String str2 = rs.getString(2); // employee num
 								String str3 = rs.getString(3);  // full name
@@ -148,13 +149,23 @@ public class HandleNwAccrual{
 								ptoa = rs.getDouble(19); // pto accrual id=1
 								holya = rs.getDouble(20); // holiday earned id=4
 								cua = rs.getDouble(21); // cte comp time earned id=3
+								lba = rs.getDouble(22);
+								vla = rs.getDouble(23);
+								arr[0] = ptoa;
+								arr[1] = scka;
+								arr[2] = cua;
+								arr[3] = holya;
+								arr[4] = lba; // police
+								arr[5] = vla; // fire
 								if(empHash.containsKey(str2)){
 										str = empHash.get(str2); 
-										System.err.println("handleNwAccrual: id,emp_num,accruals "+ str+" "+str2+" "+str3+" "+ptoa+" "+scka+" "+holya+" "+cua);
+										System.err.println("handleNwAccrual: id,emp_num,accruals "+ str+" "+str2+" "+str3+" "+ptoa+" "+scka+" "+holya+" "+cua+" "+lba+" "+vla);
 										// sick bank
-										EmployeeAccrual empa = new EmployeeAccrual(""+2,str,scka,end_date);
-										msg = empa.doSaveOnly();
+										// EmployeeAccrual empa = new EmployeeAccrual(""+2,str,scka,end_date);
+										EmployeeAccrual empa = new EmployeeAccrual(str,end_date);
+										msg = empa.doSaveBatch(arr);
 										//
+										/*
 										// pto bank
 										empa.setAccrual_id(""+1);
 										empa.setHours(ptoa);
@@ -168,7 +179,8 @@ public class HandleNwAccrual{
 										// comp time bank
 										empa.setAccrual_id(""+3);
 										empa.setHours(cua);
-										msg += empa.doSaveOnly();										
+										msg += empa.doSaveOnly();
+										*/
 								}
 								else{
 										System.err.println(" emp num not found "+str2);
@@ -184,5 +196,75 @@ public class HandleNwAccrual{
 				}
 				return msg;
 		}
+    public String processSpecial(String empNum){
+		
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				CallableStatement ps = null;
+				ResultSet rs = null;
+				String msg="";
+				double ptoa=0, cua=0, holya=0, scka=0, lba=0,vla=0;
+
+				/*
+				 * 6 sick, 8 pto, 9 holiday comp, 15 comp
+				 *
+				 execute HR.HRReport_AccrualBalance 	@strOrgStructureIDs = '16,17',
+				 @strHourCategory = '6,8,9,15', 
+				 @strEmployeeStatus = 258, 
+				 @EmployeeID = NULL,  
+				 @AsOfDate = '05/05/2014',
+				 @strxGroupHeaderID = NULL, 
+				 @ReportType = 1, 
+				 @CompanyID = 1,   
+				 @IncludeZeroBalance = NULL, 
+				 @IncludeU
+				*/
+				//
+				//
+				String qq = "{call HR.HRReport_AccrualBalance(?,?,?,null,?,null,1,1,null,0)} ";
+				logger.debug(qq);
+				if(dept_ref_id.equals("") || date.equals("")){
+						msg = "Dept or date not set ";
+						return msg;
+				}
+				try{
+						SingleConnect sConnect = SingleConnect.getInstance();
+						con = SingleConnect.getNwConnection();
+						if(con == null){
+								msg = " Could not connect to DB ";
+								System.err.println(msg);
+								logger.error(msg);
+								return msg;
+						}
+						ps = con.prepareCall(qq);
+						ps.setString(1, dept_ref_id);   // "16,17, 24" for two hr depts
+						ps.setString(2, "6,8,9,15,18,7"); // sick, pto, holiday, comp, leave , vacation
+						ps.setInt(3,258);
+						ps.setString(4, date); // accruals upto end of last payperiod
+						rs = ps.executeQuery();
+						while(rs.next()){
+								String str  = rs.getString(1); // employeeId
+								String str2 = rs.getString(2); // employee num
+								// if(!str2.equals(empNum)) continue;
+								String str3 = rs.getString(3);  // full name
+								str ="";
+								scka = rs.getDouble(18);  // sick       id=2
+								ptoa = rs.getDouble(19); // pto accrual id=1
+								holya = rs.getDouble(20); // holiday earned id=4
+								cua = rs.getDouble(21); // cte comp time earned id=3
+								lba = rs.getDouble(22);
+								vla = rs.getDouble(23);
+								System.err.println("emp accrual "+ empNum+" "+str2+" "+str3+" "+ptoa+" "+scka+" "+holya+" "+cua+" "+lba+" "+vla);
+						}
+				}
+				catch (Exception ex) {
+						logger.error(ex);
+						msg += ex;
+				}
+				finally{
+						Helper.databaseDisconnect(ps, rs);
+				}
+				return msg;
+		}		
 
 }

@@ -27,9 +27,11 @@ public class JobTask implements Serializable{
 				salary_group_id="",
 				inactive="",
 				effective_date="", expire_date="", primary_flag="";
+		private String jobTitle="", salary_group_name="";
     //
     // for job change
     String new_group_id = "", pay_period_id="";
+		String department_id = "";
     //
     String clock_time_required="";
     int weekly_regular_hours=40, comp_time_weekly_hours=40;
@@ -210,6 +212,9 @@ public class JobTask implements Serializable{
     // getters
     //
     public String getPosition_id(){
+				if(position_id.equals("")){
+						getPosition();
+				}
 				return position_id;
     }
     public String getEmployee_id(){
@@ -225,6 +230,9 @@ public class JobTask implements Serializable{
 				return employee_number;
     }		
     public String getSalary_group_id(){
+				if(salary_group_id.equals("")){
+						getSalaryGroup();
+				}
 				return salary_group_id;
     }
     public String getEffective_date(){
@@ -303,6 +311,10 @@ public class JobTask implements Serializable{
     public void setGroup_id(String val){
 				if(val != null && !val.equals("-1"))
 						group_id = val;
+    }
+    public void setDepartment_id(String val){
+				if(val != null && !val.equals("-1"))
+						department_id = val;
     }		
     public void setEmployee_number(String val){
 				if(val != null)
@@ -330,6 +342,14 @@ public class JobTask implements Serializable{
     public void setAdded_date(String val){
 				if(val != null)
 						added_date = val;
+    }
+    public void setJobTitle(String val){ // for new employee
+				if(val != null)
+						jobTitle = val.trim();
+    }
+    public void setSalary_group_name(String val){ // for new employee
+				if(val != null)
+						salary_group_name = val.trim();
     }		
     public void setInactive(boolean val){
 				if(val)
@@ -419,6 +439,17 @@ public class JobTask implements Serializable{
 								salaryGroup = one;
 						}
 				}
+				if(salaryGroup == null && !salary_group_name.equals("")){
+						SalaryGroupList sgl = new SalaryGroupList(salary_group_name);
+						String back = sgl.find();
+						if(back.equals("")){
+								List<SalaryGroup> ones = sgl.getSalaryGroups();
+								if(ones != null && ones.size() > 0){
+										salaryGroup = ones.get(0);
+										salary_group_id = salaryGroup.getId();
+								}
+						}
+				}
 				return salaryGroup;
     }
     public Group getGroup(){
@@ -477,6 +508,27 @@ public class JobTask implements Serializable{
 						String back = one.doSelect();
 						if(back.equals("")){
 								position = one;
+						}
+				}
+				// needed for new job through wizard
+				if(position == null && !jobTitle.equals("")){
+						PositionList pl = new PositionList(jobTitle);
+						pl.setExactMatch();
+						String back = pl.find();
+						if(back.equals("")){
+								List<Position> ones = pl.getPositions();
+								if(ones != null && ones.size() > 0){
+										position = ones.get(0);
+										position_id = position.getId();
+								}
+								else{
+										Position pp = new Position(jobTitle, jobTitle, jobTitle);
+										back = pp.doSave();
+										if(back.equals("")){
+												position = pp;
+												position_id = pp.getId();
+										}
+								}
 						}
 				}
 				return position;
@@ -591,8 +643,7 @@ public class JobTask implements Serializable{
 						if(pos_update){
 								boolean found = false;
 								needUpdate = true;
-								PositionList pl = new PositionList();
-								pl.setName(job_name);
+								PositionList pl = new PositionList(job_name);
 								pl.setActiveOnly();
 								pl.setExactMatch();
 								String back = pl.find();
@@ -700,11 +751,37 @@ public class JobTask implements Serializable{
 				}
 				return msg;
     }
-
+		public String doSaveAll(){
+				String back = "";
+				if(!department_id.equals("")){
+						if(effective_date.equals("")){
+								back = "Need to set effective date";
+								return back;
+						}
+						getEmployee();
+						if(employee != null && !employee.hasDepartment()){
+								DepartmentEmployee de = new DepartmentEmployee(employee_id, department_id, effective_date);
+								back = de.doSave();
+						}
+				}
+				if(!new_group_id.equals("") && group_id.equals("")){
+						group_id = new_group_id;
+						new_group_id = "";
+				}
+				if(back.equals("") && !group_id.equals("")){
+						GroupEmployee ge = new GroupEmployee(group_id, employee_id, effective_date);
+						back = ge.doSave();
+						back = ""; // if already in the group we ignore this message
+				}
+				if(back.equals("")){
+						back = doSave();
+				}
+				return back;
+		}
     public String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into jobs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,now(),null) ";
@@ -723,7 +800,7 @@ public class JobTask implements Serializable{
 				if(group_id.equals("")){
 						msg = " group not set ";
 						return msg;
-				}				
+				}
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -761,11 +838,10 @@ public class JobTask implements Serializable{
 								pstmt.setString(12, "y");
 						pstmt.setDouble(13, hourly_rate);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -775,7 +851,7 @@ public class JobTask implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;

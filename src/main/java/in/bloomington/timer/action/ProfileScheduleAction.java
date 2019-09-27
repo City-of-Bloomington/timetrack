@@ -64,6 +64,22 @@ public class ProfileScheduleAction extends TopAction{
 								}
 						}
 				}
+				else if(!action.equals("")){ // looking for one employee
+						HandleProfile handle = new HandleProfile(date);
+						// sibo: 100001341
+						// burns: 100003240 //police
+						// andrews 100001038 //fire
+						// washel 100001036 //fire mgt
+						// union dilman 100003659
+						// parks tem 859
+						back = handle.processOne("859"); 
+						if(!back.equals("")){
+								addActionError(back);
+						}
+						else{
+								addActionMessage("found Successfully");
+						}
+				}
 				return ret;
 		}
 		private void prepareSchedular(){

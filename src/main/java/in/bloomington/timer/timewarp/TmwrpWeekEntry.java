@@ -113,7 +113,7 @@ public class TmwrpWeekEntry{
 				if(val != null){
 						job = val;
 						salaryGroup = job.getSalaryGroup();
-						if(salaryGroup !=null){
+						if(salaryGroup != null){
 								if(salaryGroup.isFireSworn()){
 										st_weekly_hrs = 48;
 										comp_weekly_hrs = 53;

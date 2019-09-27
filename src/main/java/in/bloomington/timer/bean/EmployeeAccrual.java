@@ -32,6 +32,13 @@ public class EmployeeAccrual extends CommonInc{
     public EmployeeAccrual(String val){
 				setId(val);
     }
+		// to save new record in batch
+    public EmployeeAccrual(
+													 String val, // emp_id
+													 String val2){ // date for saving
+				setEmployee_id(val);
+				setDate(val2);
+    }		
     public EmployeeAccrual(String val, // accrual_id
 													 String val2, // emp_id
 													 double val3, // hours
@@ -102,6 +109,9 @@ public class EmployeeAccrual extends CommonInc{
 		public double getHours(){
 				return hours;
     }
+		public boolean hasValue(){
+				return hours > 0;
+		}
 		public String getDate(){
 				return date;
     }
@@ -237,7 +247,7 @@ public class EmployeeAccrual extends CommonInc{
 		public String doSaveOnly(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into employee_accruals values(0,?,?,?,?) ";
@@ -266,13 +276,55 @@ public class EmployeeAccrual extends CommonInc{
 						java.util.Date date_tmp = df.parse(date);
 						pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));								
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}
+		public String doSaveBatch(double arr[]){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "insert into employee_accruals values(0,?,?,?,?) ";
+				if(employee_id.equals("")){
+						msg = " employee id not set ";
+						return msg;
+				}
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}							
+				try{
+						if(date.equals("")){
+								date = Helper.getToday();
+						}
+						java.util.Date date_tmp = df.parse(date);
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						for(double hrs:arr){
+								pstmt.setInt(1, jj);
+								pstmt.setString(2, employee_id);
+								pstmt.setDouble(3, hrs);
+								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+								pstmt.executeUpdate();								
+								jj++;
 						}
 				}
 				catch(Exception ex){
@@ -284,7 +336,7 @@ public class EmployeeAccrual extends CommonInc{
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
-		}
+		}		
 		/**
 		 * we do not change employee
 		 */

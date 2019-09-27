@@ -154,7 +154,7 @@ public class Position implements java.io.Serializable{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
@@ -182,15 +182,14 @@ public class Position implements java.io.Serializable{
 								msg = "This name alrady exist";
 						}
 						else {
-								pstmt = con.prepareStatement(qq2);						
-								msg = setParams(pstmt);
+								pstmt2 = con.prepareStatement(qq2);						
+								msg = setParams(pstmt2);
 								if(msg.equals("")){
-										pstmt.executeUpdate();
-										Helper.databaseDisconnect(pstmt, rs);
+										pstmt2.executeUpdate();
 										//
 										qq = "select LAST_INSERT_ID()";
-										pstmt = con.prepareStatement(qq);
-										rs = pstmt.executeQuery();
+										pstmt3 = con.prepareStatement(qq);
+										rs = pstmt3.executeQuery();
 										if(rs.next()){
 												id = rs.getString(1);
 										}
@@ -202,7 +201,7 @@ public class Position implements java.io.Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;

@@ -34,6 +34,7 @@
 
 			<div class="button-group">
 				<s:submit name="action" accrual="button" value="Update Now" class="button"/>
+				<s:submit name="action" accrual="button" value="Find Employee (Test)" class="button"/>				
 				<s:submit name="action" accrual="button" value="Schedule" class="button"/>
 			</div>
 		</div>

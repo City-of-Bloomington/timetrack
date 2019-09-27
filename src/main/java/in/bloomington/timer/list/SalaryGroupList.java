@@ -24,6 +24,9 @@ public class SalaryGroupList{
 	
     public SalaryGroupList(){
     }
+    public SalaryGroupList(String val){
+				setName(val);
+    }		
     public List<SalaryGroup> getSalaryGroups(){
 				return salaryGroups;
     }
@@ -70,7 +73,7 @@ public class SalaryGroupList{
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						if(!name.equals("")){
-								pstmt.setString(1,"%"+name+"%");
+								pstmt.setString(1,name);
 						}						
 						rs = pstmt.executeQuery();
 						if(salaryGroups == null)

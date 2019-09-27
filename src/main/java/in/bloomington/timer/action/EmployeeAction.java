@@ -27,13 +27,18 @@ public class EmployeeAction extends TopAction{
 																	 "PoliceAdmin","PublicWorksAdmin",
 																	 "Admin"};
 		String emp_id="";
+		// dept_id needed for adding employee by non-admin users
+		String dept_id="";
+		boolean wizard = false;
 		Employee emp = null;
+		Department dept = null;
 		DepartmentEmployee departmentEmployee = null; // for new employee
 		GroupEmployee groupEmployee = null; // for new employee
 		List<Employee> employees = null;
 		String employeesTitle = "Current Employees";
 		List<Type> departments = null;
 		List<PayPeriod> payPeriods = null;
+		List<Group> groups = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -79,6 +84,16 @@ public class EmployeeAction extends TopAction{
 										ret="view";
 								}
 						}
+						else{
+								getUser();
+								if(user != null && !user.isAdmin()){
+										if(user.hasDepartment()){
+												dept = user.getDepartment();
+												dept_id= dept.getId();
+										}
+								}
+						}
+						// not sure about this if still needed
 						getDepartmentEmployee();
 				}
 				return ret;
@@ -90,6 +105,15 @@ public class EmployeeAction extends TopAction{
 				}
 				return emp;
 						
+		}
+		public Department getDept(){
+				if(dept == null){
+						dept = new Department(dept_id);
+						if(!dept_id.equals("")){
+								dept.doSelect();
+						}
+				}
+				return dept;
 		}
 		public DepartmentEmployee getDepartmentEmployee(){
 				if(departmentEmployee == null){
@@ -110,6 +134,11 @@ public class EmployeeAction extends TopAction{
 						emp = val;
 				}
 		}
+		public void setDept(Department val){
+				if(val != null){
+						dept = val;
+				}
+		}
 		public void setEmp_id(String val){
 				if(val != null){
 						emp_id = val;
@@ -120,6 +149,25 @@ public class EmployeeAction extends TopAction{
 						emp_id = emp.getId();
 				}
 				return emp_id;
+		}
+		public void setDept_id(String val){
+				if(val != null){
+						dept_id = val;
+				}
+		}
+		public String getDept_id(){
+				if(dept_id.equals("") && dept != null){
+						dept_id = dept.getId();
+				}
+				return dept_id;
+		}
+		public void setWizard(boolean val){
+				if(val){
+						wizard = true;
+				}
+		}
+		public boolean isWizard(){
+				return wizard;
 		}
 		public void setDepartmentEmployee(DepartmentEmployee val){
 				if(val != null){
@@ -154,16 +202,37 @@ public class EmployeeAction extends TopAction{
 				return employees;
 		}
 		public List<Type> getDepartments(){
-				TypeList tl = new TypeList("departments");
-				tl.setActiveOnly();
-				String back = tl.find();
-				if(back.equals("")){
-						List<Type> ones = tl.getTypes();
-						if(ones != null && ones.size() > 0){
-								departments = ones;
+				if(departments == null){
+						TypeList tl = new TypeList("departments");
+						tl.setActiveOnly();
+						String back = tl.find();
+						if(back.equals("")){
+								List<Type> ones = tl.getTypes();
+								if(ones != null && ones.size() > 0){
+										departments = ones;
+								}
 						}
 				}
 				return departments;
+		}
+		public List<Group> getGroups(){
+				if(groups == null && !dept_id.equals("")){
+						GroupList gl = new GroupList();
+						gl.setDepartment_id(dept_id);
+						gl.setActiveOnly();
+						String back = gl.find();
+						if(back.equals("")){
+								List<Group> ones = gl.getGroups();
+								if(ones != null && ones.size() > 0){
+										groups = ones;
+								}
+						}
+				}
+				return groups;
+		}
+		public boolean hasGroups(){
+				getGroups();
+				return groups != null && groups.size() > 0;
 		}
 		public String[] getRoles(){
 				return roles;
@@ -172,7 +241,10 @@ public class EmployeeAction extends TopAction{
 				if(payPeriods == null){
 						PayPeriodList tl = new PayPeriodList();
 						tl.setTwoPeriodsAheadOnly();
-						tl.setLimit("5");
+						if(wizard)
+								tl.setLimit("4");
+						else
+								tl.setLimit("5");								
 						String back = tl.find();
 						if(back.equals("")){
 								List<PayPeriod> ones = tl.getPeriods();
@@ -183,7 +255,10 @@ public class EmployeeAction extends TopAction{
 				}
 				return payPeriods;
 		}		
-		
+		public boolean canAssignRoles(){
+				getUser();
+				return user.isAdmin();
+		}
 }
 
 

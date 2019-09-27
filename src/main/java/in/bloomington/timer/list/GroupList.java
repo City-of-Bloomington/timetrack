@@ -171,6 +171,7 @@ public class GroupList{
 				if(!qw.equals("")){
 						qq += " where "+qw;
 				}
+				qq += " order by g.name ";
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";

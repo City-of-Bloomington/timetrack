@@ -2,13 +2,25 @@
 <div class="internal-page">
 	<s:form action="employee" id="form_id" method="post">
 		<s:hidden name="action2" id="action2" value="" />
+		<s:if test="isWizard()">
+			<input type="hidden" name="wizard" value="true" />		
+		</s:if>
 		<s:if test="emp_id == ''">
+			<s:if test="!canAssignRoles()">
+				<s:hidden name="emp.department_id" value="%{dept_id}" />				
+			</s:if>
 			<h1>New Employee</h1>
+			<ul>
+				<li>If the new employee is already in Active Directory, you can
+					get his/her info by start typing the first name in the search box below and then pick from the list </li>
+				<li>If the employee is not in Active Directory, enter the info you have: first name, last name, badge ID, employee number (from new world), the group and hit Save</li>
+				<li>If the badge number is not available right now, you can add it later. It is needed for the employee to badge-in and badge-out</li>
+			</ul>
 		</s:if>
 		<s:else>
 			<h1>Employee <s:property value="emp.full_name" /></h1>
 			<s:hidden name="emp.id" value="%{emp.id}" />
-			<s:if test="!user.isAdmin()">
+			<s:if test="!canAssignRoles()">
 				<s:hidden name="emp.rolesText" value="%{emp.rolesText}" />
 			</s:if>
 		</s:else>
@@ -74,45 +86,45 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group">
-					<label>Department</label>
-					<s:select name="emp.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />
-				</div>
-				<div class="form-group">
-					<label>Group</label>
-					<select name="emp.group_id" value="" id="group_id_set"  disabled="disabled"/>
-					<option value="-1">Pick a group</option>
-				</select>(To pick a group you need to pick a department first)					
-				</div>
+				<s:if test="canAssignRoles()">
+					<div class="form-group">
+						<label>Department</label>
+						<s:select name="emp.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />
+					</div>
+					<div class="form-group">
+						<label>Group</label>
+						<select name="emp.group_id" value="" id="group_id_set"  disabled="disabled"/>
+						<option value="-1">Pick a group</option>
+				   </select>(To pick a group you need to pick a department first)
+					</div>
+				</s:if>
+				<s:else>
+					<div class="form-group">
+						<label>Group</label>
+						<s:select name="emp.group_id" value="" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick a Group" />
+					</div>
+				</s:else>
 			</s:if>				
+			<s:if test="canAssignRoles()">			
+				<div class="form-group">
+					<label>Roles</label>
+					<s:checkboxlist key="emp.roles" list="roles" />
+				</div>
+			</s:if>
+			<s:if test="emp.id == ''">
+				<s:submit name="action" type="button" value="Save" class="button"/>
+			</s:if>
 			<s:else>
 				<div class="form-group">
 					<label>Added Date</label>
 					<s:property value="emp.added_date" />
+				</div>				
+				<div class="form-group">
+					<label>Inactive ?</label>
+					<s:checkbox name="emp.inactive" value="%{emp.inactive}" /> Yes (check to disable)
 				</div>
-			</s:else>
-			<div class="form-group">
-				<label>Roles</label>
-				<s:if test="user.isAdmin()">
-					<s:checkboxlist key="emp.roles" list="roles" />
-				</s:if>
-				<s:else>
-					<s:property value="emp.rolesText" />
-				</s:else>
-			</div>
-			<div class="form-group">
-				<label>Inactive ?</label>
-				<s:checkbox name="emp.inactive" value="%{emp.inactive}" /> Yes (check to disable)
-			</div>
-
-			<s:if test="emp.id == ''">
-				<s:submit name="action" type="button" value="Save" class="button"/>
-			</s:if>
-
-			<s:else>
 				<div class="button-group">
 					<s:submit name="action" type="button" value="Save Changes" class="button"/>					
-					<a href="<s:property value='#application.url' />employee.action" class="button">New Employee</a>
 					<s:if test="!emp.hasDepartments()">
 						<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add Employee to Department</a>
 					</s:if>
@@ -122,19 +134,22 @@
 					<s:else>
 						<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add Employee to Another Group</a>
 					</s:else>
-					<s:if test="emp.hasNoJob()">
-						<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />" class="button"> Add A Job</a>
-					</s:if>
-					<s:else>
-						<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />" class="button"> Add Another Job</a>
-						<s:if test="emp.hasOneJobOnly()">
-							<a href="<s:property value='#application.url' />jobChange.action?related_employee_id=<s:property value='emp.id' />&id=<s:property value='emp.job.id' />" class="button">Change Job</a>
+					<s:if test="emp.hasGroups()">
+						<s:if test="emp.hasNoJob()">
+							<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&employee_number=<s:property value='emp.employee_number' />" class="button"> Add A Job</a>
 						</s:if>
 						<s:else>
-							<a href="<s:property value='#application.url' />jobChange.action?related_employee_id=<s:property value='emp.id' />" class="button">Change Job</a>
-							<a href="<s:property value='#application.url' />jobTimeChange.action?related_employee_id=<s:property value='emp.id' />" class="button">Transfer Job Times</a>							
+							<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />" class="button"> Add Another Job</a>
+							<s:if test="emp.hasOneJobOnly()">
+								<a href="<s:property value='#application.url' />jobChange.action?related_employee_id=<s:property value='emp.id' />&id=<s:property value='emp.job.id' />" class="button">Change Job</a>
+							</s:if>
+							<s:else>
+								<a href="<s:property value='#application.url' />jobChange.action?related_employee_id=<s:property value='emp.id' />" class="button">Change Job</a>
+								<a href="<s:property value='#application.url' />jobTimeChange.action?related_employee_id=<s:property value='emp.id' />" class="button">Transfer Job Times</a>							
+							</s:else>
 						</s:else>
-					</s:else>
+					</s:if>
+					<a href="<s:property value='#application.url' />employee.action" class="button">New Employee</a>					
 				</div>
 			</s:else>
 		</div>

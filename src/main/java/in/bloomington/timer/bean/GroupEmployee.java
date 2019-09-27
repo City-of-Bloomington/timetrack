@@ -33,6 +33,12 @@ public class GroupEmployee extends CommonInc implements Serializable{
 		public GroupEmployee(){
 				super();
 		}
+		// for new record
+		public GroupEmployee(String val, String val2, String val3){
+				setGroup_id(val);
+				setEmployee_id(val2);
+				setEffective_date(val3);
+		}		
 		public GroupEmployee(String val,
 												 String val2,
 												 String val3,
@@ -160,9 +166,9 @@ public class GroupEmployee extends CommonInc implements Serializable{
     public String doSave(){
 				String msg = "";
 				Connection con = null;
-				PreparedStatement pstmt = null, pstmt2=null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 				ResultSet rs = null;
-				String qc = " select count(*) from group_employees where group_id=? and employee_id=? and expire_date is null";
+				String qc = " select count(*) from group_employees where expire_date is null and group_id=? and employee_id=?";
 				String qq = " insert into group_employees values(0,?,?,?,?,null) "; 
 				if(employee_id.equals("")){
 						msg = "employee not set ";
@@ -187,39 +193,37 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						return msg;
 				}			
 				try{
+						int cnt = 0;						
 						pstmt = con.prepareStatement(qc);
 						pstmt.setString(1, group_id);
 						pstmt.setString(2, employee_id);
 						rs = pstmt.executeQuery();
-						int cnt = 0;
 						if(rs.next()){
 								cnt = rs.getInt(1);
 						}
-						Helper.databaseDisconnect(pstmt, rs);
 						if(cnt > 0){
 								msg = " Employee is already in this group ";
 								return msg;
 						}
-						//
-						if(cnt == 0){ // avoid dups
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, group_id);
-								pstmt.setString(2, employee_id);								
+						else{
+								pstmt2 = con.prepareStatement(qq);
+								pstmt2.setString(1, group_id);
+								pstmt2.setString(2, employee_id);								
 								if(effective_date.equals(""))
 										effective_date = Helper.getToday();
 								java.util.Date date_tmp = df.parse(effective_date);
-								pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+								pstmt2.setDate(3, new java.sql.Date(date_tmp.getTime()));
 								if(expire_date.equals(""))
-										pstmt.setNull(4, Types.DATE);
+										pstmt2.setNull(4, Types.DATE);
 								else{
 										date_tmp = df.parse(expire_date);
-										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+										pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
 								}
-								pstmt.executeUpdate();
+								pstmt2.executeUpdate();
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt2 = con.prepareStatement(qq);
-								rs = pstmt2.executeQuery();
+								pstmt3 = con.prepareStatement(qq);
+								rs = pstmt3.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -230,7 +234,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						addError(msg);
 				}
 				finally{
-						Helper.databaseDisconnect(rs, pstmt, pstmt2);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;

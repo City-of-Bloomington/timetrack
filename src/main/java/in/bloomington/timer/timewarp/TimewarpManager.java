@@ -71,6 +71,7 @@ public class TimewarpManager{
     public String doProcess(){
 				String back = "";
 				getDocument();
+				// System.err.println(" emp "+document.getEmployee());
 				getHolidayList();
 				if(document != null){
 						TimewarpProcess process =

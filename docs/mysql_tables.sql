@@ -1194,3 +1194,16 @@ update time_block_logs set minutes = hours*60;
 
 ;;
 ;; mark the following earn codes as holiday related H1.0, HCE1.0, HCE1.5, HCE2.0;; and HF
+;;
+
+
+;;
+;; 10/01
+;; to be able to recycle badge numbers we added a new table to hold
+;; the available badge numbers
+;;
+CREATE TABLE available_badges (
+  badge_num int unsigned NOT NULL unique
+) ENGINE=InnoDB;
+
+

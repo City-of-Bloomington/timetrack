@@ -28,6 +28,7 @@ public class HandleProfile{
 		String date="", end_date="", // date of last pay period
 				dept_ref_id=""; // dept referance in NW app, one or more values
 		Hashtable<String, JobTask> ejobHash = null;
+		List<Profile> profiles = null;
 		//
     public HandleProfile(){
     }
@@ -61,6 +62,15 @@ public class HandleProfile{
 						date = val;
 				}
     }
+		public boolean hasProfiles(){
+				return profiles != null && profiles.size() > 0;
+		}
+		public Profile getOneProfile(){
+				if(profiles != null && profiles.size() > 0){
+						return profiles.get(0);
+				}
+				return null;
+		}
 		private String prepareEmployeeJobs(){
 				String msg = "";
 				JobTaskList jbl = new JobTaskList();
@@ -93,7 +103,7 @@ public class HandleProfile{
     public String process(){
 		
 				String msg="";
-				List<Profile> profiles = null;
+				// List<Profile> profiles = null;
 				String date = Helper.getToday();
 				getBenefitGroups();
 				msg = prepareEmployeeJobs();
@@ -141,5 +151,40 @@ public class HandleProfile{
 				}
 				return msg;
 		}
+    public String processOne(String emp_num){
+		
+				String msg="";
+
+				String date = Helper.getToday();
+				getBenefitGroups();
+				ProfileList plist =
+						new ProfileList(date,
+														benefitGroups,
+														emp_num);
+				msg = plist.findOne();
+				if(msg.equals("")){
+						List<Profile> ones = plist.getProfiles();
+						if(ones != null && ones.size() > 0){
+								profiles = ones;
+						}
+				}
+				if(profiles == null){
+						return msg;
+				}
+				if(profiles != null && profiles.size() > 0){
+						Profile pp = profiles.get(0); // we need one
+						String empNum = pp.getEmployee_number();
+						double weekly_hrs = pp.getStWeeklyHrs();
+						double hr_rate = pp.getHourlyRate();
+						double comp_time_after = pp.getCompTimeAfter();
+						double comp_time_multiple = pp.getCompTimeMultiple();
+						double holiday_time_multiple = pp.getHolidayTimeMultiple();
+						String job_name = pp.getJob_name();
+						BenefitGroup bg = pp.getBenefitGroup();
+						System.err.println("Salary group "+bg.getSalary_group_name());
+						System.err.println(weekly_hrs+" "+comp_time_after+" "+comp_time_multiple+" "+holiday_time_multiple+" "+job_name);
+				}
+				return msg;
+		}		
 
 }

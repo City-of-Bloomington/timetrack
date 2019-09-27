@@ -1039,6 +1039,7 @@ public class Document implements Serializable{
 						boolean pendingAccrualAllowed = isPendingAccrualAllowed();
 						if(employeeAccruals != null && usedAccrualTotals != null){
 								for(EmployeeAccrual one: employeeAccruals){
+										if(!one.hasValue()) continue;
 										String accrual_id = one.getAccrual_id();
 										Accrual accrual = one.getAccrual();
 										List<String> list = new ArrayList<>();

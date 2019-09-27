@@ -36,6 +36,14 @@ public class DepartmentEmployee{
     public DepartmentEmployee(String val){
 				setId(val);
     }
+		// for new record
+    public DepartmentEmployee(String val,
+															String val2,
+															String val3){
+				setEmployee_id(val);
+				setDepartment_id(val2);
+				setEffective_date(val3);
+		}
     public DepartmentEmployee(String val,
 															String val2,
 															String val3,
