@@ -99,10 +99,9 @@ public class EmployeeService extends HttpServlet{
     }
 
 		/**
-		 * Creates a JSON array string for a list of users
+		 * Creates a JSON array string for a list of employees
 		 *
-		 * @param users The users
-		 * @param type unused
+		 * @param emps The employees list
 		 * @return The json string
 		 */
 		String writeJson(List<Employee> emps){

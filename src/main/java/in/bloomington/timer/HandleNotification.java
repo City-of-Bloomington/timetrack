@@ -171,6 +171,8 @@ public class HandleNotification{
 				body_text += "After you login, you may need to click on the previous pay period button under 'Time Details' title.\n";
 				body_text += "Then click on 'Submit for Approval' button in the middle of the page.\n\n";
 				body_text += "If you have any questions or support needs, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n";
+				body_text += "Usage guidelines are available here:\n";
+				body_text += "https://docs.google.com/document/d/1krOtCGtJ_SaPCOBF0cv5bMu-q6Buv1KI68PjS0TrZl0/edit#heading=h.ye6yj01u0is4\n\n";
 				body_text +="Thank you\n";
 				body_text +="\n\n";
 				Properties props = new Properties();

@@ -100,7 +100,7 @@ public class Profile extends CommonInc{
 		public void setBenefitGroup(BenefitGroup val){ // benefit Group
 				if(val != null)
 						bGroup = val;
-    }	
+    }
 		public void setGrade(String val){
 				if(val != null){
 						if(val.startsWith("Grade")){

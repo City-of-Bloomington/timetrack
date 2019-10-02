@@ -25,9 +25,11 @@ public class ProfileList{
     Hashtable<String, BenefitGroup> bgroups = null;
     PayPeriod payPeriod = null;
     String end_date = null; // for planning when looking for date range
+		String date = "";
     String selected_dept_ref = "", employee_number="";
     String deptRefs = null;
     List<Profile> profiles = null;
+		List<String> jobTitles = null;
 		Set<String> employeeSet = new HashSet<>();
     //
     // basic constructor
@@ -47,7 +49,7 @@ public class ProfileList{
     public ProfileList(String val,
 											 List<BenefitGroup> vals,
 											 String val2){
-				setEndDate(val);
+				setDate(val);
 				setBenefitGroups(vals);
 				setEmployeeNumber(val2);
 				currentOnly = true;
@@ -110,6 +112,11 @@ public class ProfileList{
 						end_date = val;
 				}
     }
+    public void setDate(String val){
+				if(val != null){
+						date = val;
+				}
+    }		
 		public void setEmployeeNumber(String val){
 				if(val != null){
 					 employee_number = val;
@@ -118,6 +125,10 @@ public class ProfileList{
     public List<Profile> getProfiles(){
 				return profiles;
     }
+		// needed for temp employee with multiple jobs
+		public List<String> getJobTitles(){
+				return jobTitles;
+		}
 		public Set<String> getEmployeeSet(){
 				return employeeSet;
 		}
@@ -131,8 +142,9 @@ public class ProfileList{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String msg="", back="", date = null;
+				String msg="", back="";
 				// using current date
+				/*
 				String qq = "select p.JobTitle, e.EmployeeNumber, p.* "+
 						" from hr.vwEmployeeJobWithPosition p, "+
 						" hr.employee e "+
@@ -141,6 +153,18 @@ public class ProfileList{
 						" and getdate() between PositionDetailESD and PositionDetailEED "+
 						" and e.EmployeeNumber = ? "+
 						" order by e.employeenumber ";
+				*/
+				if(date == null || date.equals("")){
+						date = Helper.getToday();
+				}
+				String qq = "select p.JobTitle, e.EmployeeNumber, p.* "+
+						" from hr.vwEmployeeJobWithPosition p, "+
+						" hr.employee e "+
+						" where e.EmployeeId = p.EmployeeID "+
+						" and ? between EffectiveDate and EffectiveEndDate "+
+						" and ? between PositionDetailESD and PositionDetailEED "+
+						" and e.EmployeeNumber = ? "+
+						" order by e.employeenumber ";				
 				con = SingleConnect.getNwConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -151,20 +175,15 @@ public class ProfileList{
 						if(debug)
 								logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, employee_number);
+						pstmt.setString(1, date);
+						pstmt.setString(2, date);
+						pstmt.setString(3, employee_number);
 						rs = pstmt.executeQuery();
-						ResultSetMetaData rsmd = rs.getMetaData();
-						int columnCount = rsmd.getColumnCount();
-						// The column count starts from 1
-						/*
-						for (int i = 1; i <= columnCount; i++ ) {
-								String str = rsmd.getColumnName(i);
-								System.err.println(i+" "+str);
-						}
-						*/
+						jobTitles = new ArrayList<>();
 						while(rs.next()){
 								String str = rs.getString(1);
-								System.err.println(" job "+str);
+								jobTitles.add(str);
+								System.err.println(employee_number+": "+str);
 						}
 				}
 				catch(Exception ex){
@@ -184,7 +203,7 @@ public class ProfileList{
 				if(payPeriod != null){
 						date = payPeriod.getEnd_date();
 				}
-				else if(!end_date.equals("")){
+				else if(end_date != null && !end_date.equals("")){
 						date = end_date;
 				}
 				if(date == null){
@@ -588,15 +607,17 @@ public class ProfileList{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String msg="", back="", date = null;
-				if(payPeriod != null){
-						date = payPeriod.getEnd_date();
-				}
-				else if(!end_date.equals("")){
-						date = end_date;
-				}
-				if(date == null){
-						date = Helper.getToday();
+				String msg="", back="";
+				if(date.equals("")){
+						if(payPeriod != null){
+								date = payPeriod.getEnd_date();
+						}
+						else if(end_date != null && !end_date.equals("")){
+								date = end_date;
+						}
+						if(date == null){
+								date = Helper.getToday();
+						}
 				}
 				if(employee_number.equals("")){
 						msg = "Employee number not set ";

@@ -103,8 +103,7 @@
 	</div>
 	<div class="button-group">	
 		<s:submit name="action" type="button" value="Save Changes" class="button"/>
-		<a href="<s:property value='#application.url' />jobTask.action" class="button">New Job</a>			
-		<a href="<s:property value='#application.url' />searchJobs.action" class="button">Search Jobs</a>
+		<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='jobTask.employee_id' />&effective_date=<s:property value='jobTask.effective_date' />" class="button">Add Another Job</a>
 	</div>
 </div>
 </s:form>

@@ -51,7 +51,7 @@
 	<div class="button-group">
 		<a href="<s:property value='#application.url' />employee.action?action=Edit&emp_id=<s:property value='emp.id' />" class="button">Edit</a> 
 		<s:if test="!emp.hasDepartments()">
-			<a href="<s:property value='#application.url' />departmentEmployee.action?employee_id=<s:property value='emp.id' />" class="button">Add Employee to Department</a>
+			<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add Employee to Department</a>
 		</s:if>
 		<s:if test="!emp.hasGroupEmployees()">
 			<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add to Group</a>
@@ -60,10 +60,10 @@
 			<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add to Another Group</a>
 		</s:else>
 		<s:if test="emp.hasNoJob()">
-			<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&employee_number=<s:property value='emp.employee_number' />" class="button"> Add A Job</a>
+			<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&employee_number=<s:property value='emp.employee_number' />&effective_date=<s:property value='effective_date' />" class="button"> Add A Job</a>
 		</s:if>
 		<s:else>
-			<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />" class="button"> Add Another Job</a>
+			<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&effective_date=<s:property value='effective_date' />" class="button"> Add Another Job</a>
 		</s:else>
 	</div>
 	<s:if test="emp.hasDepartments()">

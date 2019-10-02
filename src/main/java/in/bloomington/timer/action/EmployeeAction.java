@@ -28,7 +28,7 @@ public class EmployeeAction extends TopAction{
 																	 "Admin"};
 		String emp_id="";
 		// dept_id needed for adding employee by non-admin users
-		String dept_id="";
+		String dept_id="", effective_date=""; // from wizard
 		boolean wizard = false;
 		Employee emp = null;
 		Department dept = null;
@@ -182,7 +182,13 @@ public class EmployeeAction extends TopAction{
 		public String getEmployeesTitle(){
 				return employeesTitle;
 		}
-
+		public String getEffective_date(){
+				return effective_date;
+		}
+		public void setEffective_date(String val){
+				if(val != null)
+						effective_date = val;
+		}		
 		public void setAction2(String val){
 				if(val != null && !val.equals(""))		
 						action = val;

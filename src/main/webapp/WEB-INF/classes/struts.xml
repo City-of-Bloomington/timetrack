@@ -498,7 +498,8 @@
 			<result name="input">/WEB-INF/jsp/jobTask.jsp</result>		
 			<result name="error">/WEB-INF/jsp/jobTask.jsp</result>
 			<result name="success">/WEB-INF/jsp/jobTask.jsp</result>
-			<result name="edit">/WEB-INF/jsp/jobEdit.jsp</result>			
+			<result name="edit">/WEB-INF/jsp/jobEdit.jsp</result>
+			<result name="view">/WEB-INF/jsp/jobView.jsp</result>			
 		</action>
 		<action name="searchGroups" 
 						class="in.bloomington.timer.action.SearchGroupAction" 

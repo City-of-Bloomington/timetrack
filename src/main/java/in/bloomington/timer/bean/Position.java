@@ -5,8 +5,7 @@ package in.bloomington.timer.bean;
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
 import java.sql.*;
-import javax.naming.*;
-import javax.naming.directory.*;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.*;
@@ -206,6 +205,39 @@ public class Position implements java.io.Serializable{
 				}
 				return msg;
 		}
+		public String doSaveBatch(List<String> batch){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="";
+				String qq = " insert into positions values(0,?,?,?,null)";
+				if(batch == null || batch.size() == 0){
+						return ""; // nothing to be done
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}
+				try{
+						pstmt = con.prepareStatement(qq);
+						for(String str:batch){
+								pstmt.setString(1, str);
+								pstmt.setString(2, str);
+								pstmt.setString(3, str);
+								pstmt.executeUpdate();
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}		
 		String setParams(PreparedStatement pstmt){
 				String msg = "";
 				int jj=1;

@@ -238,6 +238,9 @@ public class JobTask implements Serializable{
     public String getEffective_date(){
 				return effective_date;
     }
+		public boolean hasEffective_date(){
+				return !effective_date.equals("");
+		}
     public String getExpire_date(){
 				return expire_date;
     }
@@ -397,7 +400,7 @@ public class JobTask implements Serializable{
     public void setPay_period_id(String val){
 				if(val != null && !val.equals("-1"))
 						pay_period_id = val;
-    }		
+    }
     public String getName(){
 				getPosition();
 				if(position != null) {

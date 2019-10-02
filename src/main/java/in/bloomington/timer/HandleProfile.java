@@ -29,6 +29,8 @@ public class HandleProfile{
 				dept_ref_id=""; // dept referance in NW app, one or more values
 		Hashtable<String, JobTask> ejobHash = null;
 		List<Profile> profiles = null;
+		List<String> jobTitles = null;
+		Profile profile = null;
 		//
     public HandleProfile(){
     }
@@ -66,10 +68,10 @@ public class HandleProfile{
 				return profiles != null && profiles.size() > 0;
 		}
 		public Profile getOneProfile(){
-				if(profiles != null && profiles.size() > 0){
-						return profiles.get(0);
-				}
-				return null;
+				return profile;
+		}
+		public List<String> getJobTitles(){
+				return jobTitles;
 		}
 		private String prepareEmployeeJobs(){
 				String msg = "";
@@ -151,11 +153,19 @@ public class HandleProfile{
 				}
 				return msg;
 		}
-    public String processOne(String emp_num){
-		
+		/**
+		 *
+		 */
+    public String processOne(String emp_num, String effective_date){
+				//
 				String msg="";
-
 				String date = Helper.getToday();
+				if(effective_date == null){
+						date = Helper.getToday();
+				}
+				else{
+						date = effective_date;
+				}
 				getBenefitGroups();
 				ProfileList plist =
 						new ProfileList(date,
@@ -166,11 +176,14 @@ public class HandleProfile{
 						List<Profile> ones = plist.getProfiles();
 						if(ones != null && ones.size() > 0){
 								profiles = ones;
+								profile = ones.get(0);
 						}
 				}
 				if(profiles == null){
 						return msg;
 				}
+				// for test
+				/*
 				if(profiles != null && profiles.size() > 0){
 						Profile pp = profiles.get(0); // we need one
 						String empNum = pp.getEmployee_number();
@@ -184,7 +197,39 @@ public class HandleProfile{
 						System.err.println("Salary group "+bg.getSalary_group_name());
 						System.err.println(weekly_hrs+" "+comp_time_after+" "+comp_time_multiple+" "+holiday_time_multiple+" "+job_name);
 				}
+				*/
 				return msg;
-		}		
+		}
+    public String processJobs(String emp_num){
+		
+				String msg="";
+
+				String date = Helper.getToday();
+				getBenefitGroups();
+				ProfileList plist =
+						new ProfileList(date,
+														benefitGroups,
+														emp_num);
+				msg = plist.findJobs();
+				if(msg.equals("")){
+						jobTitles = plist.getJobTitles();
+				}				
+				return msg;
+		}
+    public String processJobs(String emp_num, String active_date){
+		
+				String msg="";
+
+				getBenefitGroups();
+				ProfileList plist =
+						new ProfileList(active_date,
+														benefitGroups,
+														emp_num);
+				msg = plist.findJobs();
+				if(msg.equals("")){
+						jobTitles = plist.getJobTitles();
+				}
+				return msg;
+		}			
 
 }

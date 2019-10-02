@@ -520,7 +520,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						String back = gl.find();
 						if(back.equals("")){
 								List<Group> ggs = gl.getGroups();
-								if(ggs.size() > 0){
+								if(ggs != null && ggs.size() > 0){
 										groups = ggs;
 								}
 						}

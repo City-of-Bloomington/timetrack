@@ -56,7 +56,7 @@ public class HandleEmployeesUpdate{
     }		
 		//
 		// find all the employees who have initiated document time but
-		// can not submit for approval
+		// did not submit for approval
 		//
    public String process(){
 			 String msg = "", status="Success", errors="";

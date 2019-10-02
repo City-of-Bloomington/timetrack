@@ -72,7 +72,13 @@ public class ProfileScheduleAction extends TopAction{
 						// washel 100001036 //fire mgt
 						// union dilman 100003659
 						// parks tem 859
-						back = handle.processOne("859"); 
+						// back = handle.processOne("859");
+						int[] arr = {100001341,100003240, 100001038, 100001036,100003659, 859, 756, 1633};
+						for(int jj:arr){
+								back = handle.processJobs(""+jj);
+						}
+						back = handle.processJobs("2126","10/07/2019");
+						back = handle.processJobs("2348","09/27/2019");						
 						if(!back.equals("")){
 								addActionError(back);
 						}

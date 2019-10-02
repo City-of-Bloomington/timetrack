@@ -6,6 +6,8 @@ package in.bloomington.timer.action;
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
 import java.util.*;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.io.*;
 import java.text.*;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +25,8 @@ public class JobTaskAction extends TopAction{
 		static Logger logger = LogManager.getLogger(JobTaskAction.class);
 		//
 		String add_employee_id = "", employee_number="";
-		String dept_id = "";
+		String dept_id = "", effective_date="";
+		boolean employee_found = false;
 		Employee emp = null;
 		Department dept = null;
 		JobTask jobTask = null, oldJob=null;
@@ -34,6 +37,10 @@ public class JobTaskAction extends TopAction{
 		List<Employee> employees = null;
 		List<Group> groups = null;
 		List<Type> departments = null;
+		List<String> jobTitles = null; // for new job from NW
+		List<JobTask> jobs = null;
+		List<Position> shortListPositions = null;
+		List<Position> currentPositions = null;		
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -43,8 +50,10 @@ public class JobTaskAction extends TopAction{
 								addError(back);
 								prepareData();
 						}
-						else{
-								ret="edit";
+						else{// for adding another job
+								effective_date = jobTask.getEffective_date();
+								ret="view";
+								id = jobTask.getId();
 								addMessage("Added Successfully");
 						}
 				}				
@@ -54,15 +63,24 @@ public class JobTaskAction extends TopAction{
 								addError(back);
 						}
 						else{
-								ret="edit";
+								id = jobTask.getId();
+								ret="view";
 								addMessage("Saved Successfully");
+								prepareData();
 						}
 				}
-				else if(action.startsWith("Find")){
-						back = fillJobInfo();
+				else if(action.startsWith("Edit")){
+						getJobTask();
+						back = jobTask.doSelect();
 						if(!back.equals("")){
 								addError(back);
 						}
+						else{
+								id = jobTask.getId();
+								ret="edit";
+						}
+				}				
+				else if(action.startsWith("Find")){
 						prepareData();
 				}
 				else{		
@@ -72,18 +90,24 @@ public class JobTaskAction extends TopAction{
 								if(!back.equals("")){
 										addError(back);
 								}
-								ret ="edit";
+								prepareData();
+								ret ="view";
 						}
 						else{
 								prepareData();
 								if(oldJob != null){
 										jobTask.setSalary_group_id(oldJob.getSalary_group_id());
-										jobTask.setEffective_date(oldJob.getEffective_date());
+										if(!jobTask.hasEffective_date()){
+												jobTask.setEffective_date(oldJob.getEffective_date());
+										}
 										jobTask.setWeekly_regular_hours(oldJob.getWeekly_regular_hours());
 										jobTask.setComp_time_weekly_hours(oldJob.getComp_time_weekly_hours());
 										jobTask.setComp_time_factor(oldJob.getComp_time_factor());
 										jobTask.setHoliday_comp_factor(oldJob.getHoliday_comp_factor());
 										jobTask.setClock_time_required(oldJob.getClock_time_required());
+										if(effective_date.equals("")){
+												effective_date = jobTask.getEffective_date();
+										}
 								}
 						}
 				}
@@ -94,10 +118,27 @@ public class JobTaskAction extends TopAction{
 				if(emp != null && emp.hasDepartment()){
 						dept = emp.getDepartment();
 						dept_id = dept.getId();
-						if(emp.hasJobs()){
-								List<JobTask> jobs = emp.getJobs();
-								oldJob = jobs.get(0); // to get some info from
+						employee_number = emp.getEmployee_number();
+						if(effective_date.equals("") && emp.hasGroups()){ 
+								GroupEmployee gemp = emp.getGroupEmployee();
+								if(gemp != null){
+										effective_date = gemp.getEffective_date();
+								}
 						}
+						if(emp.hasAllJobs()){
+								jobs = emp.getAllJobs();
+								oldJob = jobs.get(0); // to get some info from
+								currentPositions = new ArrayList<>();
+								for(JobTask jj:jobs){
+										Position pp = jj.getPosition();
+										if(pp != null)
+												currentPositions.add(pp);
+								}
+						}
+						if(id.equals("") && !employee_number.equals("")){
+								fillJobInfo();
+						}
+						getPositions();
 				}
 				else{
 						getUser();
@@ -151,13 +192,29 @@ public class JobTaskAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						employee_number = val;
 		}
+		// needed for new employee
+		public void setEffective_date(String val){
+				if(val != null && !val.equals(""))		
+						effective_date = val;
+		}		
 		public String getEmployee_number(){
 				return employee_number;
 		}
+		public String getEffective_date(){
+				return effective_date;
+		}		
 		public boolean hasEmployeeNumber(){
 				return !employee_number.equals("");
 		}
-
+		public boolean isEmployeeFound(){
+				return employee_found;
+		}
+		public boolean hasJobs(){
+				return jobs != null && jobs.size() > 0;
+		}
+		public List<JobTask> getJobs(){
+				return jobs;
+		}
 		public List<Type> getSalaryGroups(){
 				TypeList tl = new TypeList("salary_groups");
 				String back = tl.find();
@@ -169,7 +226,7 @@ public class JobTaskAction extends TopAction{
 				}
 				return salaryGroups;
 		}
-		public List<Position> getPositions(){
+		void findPositions(){
 				PositionList tl = new PositionList();
 				String back = tl.find();
 				if(back.equals("")){
@@ -178,20 +235,64 @@ public class JobTaskAction extends TopAction{
 								positions = ones;
 						}
 				}
+		}		
+		public List<Position> getPositions(){
+				if(positions == null){
+						findPositions();
+						findMissingPositions();
+				}
 				return positions;
 		}
-		public List<Employee> getEmployees(){
-				EmployeeList tl = new EmployeeList();
-				tl.setActiveOnly();
-				String back = tl.find();
-				if(back.equals("")){
-						List<Employee> ones = tl.getEmployees();
-						if(ones != null && ones.size() > 0){
-								employees = ones;
+		public boolean hasShortListPositions(){
+				return shortListPositions != null && shortListPositions.size() > 0;
+		}
+		// using streams
+		public List<Position> getShortListPositions(){
+				if(positions != null && jobTitles != null){
+						List<Position> plist = positions.stream()
+								.filter(pos -> jobTitles.stream()
+												.anyMatch(jtitle ->
+																	 jtitle.equals(pos.getName())))
+								.collect(Collectors.toList());
+						shortListPositions = plist;
+						//
+						// now let reduced it to shorter list
+						// if the employee has some jobs
+						//
+						if(currentPositions != null &&
+							 currentPositions.size() > 0
+							 && shortListPositions != null &&
+							 shortListPositions.size() > 0){
+								List<Position> pplist = shortListPositions.stream()
+										.filter(pp -> currentPositions.stream()
+														.noneMatch(pos ->
+																	 pos.equals(pp)))
+										.collect(Collectors.toList());
+								if(pplist != null && pplist.size()> 0){
+										shortListPositions = pplist;
+								}
+								else{ // if all exusted
+										shortListPositions = new ArrayList<>();
+								}
 						}
 				}
-				return employees;
-		}		
+				return shortListPositions;
+		}
+		void findMissingPositions(){
+				if(positions != null && jobTitles != null){
+						List<String> slist = jobTitles.stream()
+								.filter(str -> positions.stream()
+												.noneMatch(pos ->
+																	pos.getName().equals(str)))
+								.collect(Collectors.toList());
+						if(slist != null && slist.size()> 0){
+								Position pos = new Position();
+								pos.doSaveBatch(slist);
+								findPositions(); // repopulate
+						}
+						getShortListPositions();								
+				}
+		}
 		public List<Type> getDepartments(){
 				if(departments == null){
 						TypeList tl = new TypeList();
@@ -249,16 +350,14 @@ public class JobTaskAction extends TopAction{
 		}
 		public String fillJobInfo(){
 				String msg = "";
-				if(employee_number.equals("")){
-						msg = "Employee Number not set ";
-						return msg;
-				}
+				boolean isTemp = false;
 				Profile pp = null;
 				HandleProfile hp = new HandleProfile();
-				msg = hp.processOne(employee_number);
+				msg = hp.processOne(employee_number, effective_date);
 				if(msg.equals("")){
 						if(hp.hasProfiles()){
 								pp = hp.getOneProfile();
+								employee_found = true;
 								getJobTask();
 								jobTask.setWeekly_regular_hours(pp.getStWeeklyHrs());
 								jobTask.setComp_time_weekly_hours(pp.getCompTimeAfter());
@@ -268,6 +367,11 @@ public class JobTaskAction extends TopAction{
 								jobTask.setSalary_group_name(pp.getSalary_group_name());
 								if(pp.getSalary_group_name().equals("Temp")){
 										jobTask.setClock_time_required(true);
+										isTemp = true;
+								}
+								if(isTemp){
+										msg = hp.processJobs(employee_number, effective_date);
+										jobTitles = hp.getJobTitles();
 								}
 						}
 						else{
@@ -277,6 +381,10 @@ public class JobTaskAction extends TopAction{
 				return msg;
 		}
 
+		/**
+			// parks
+			select distinct(p.id), p.name name from positions p join jobs j on p.id=j.position_id join groups g on g.id = j.group_id where g.department_id=5 order by name;
+		 */
 		
 }
 
