@@ -21,6 +21,7 @@ public class GroupShiftList{
     String employee_id = "", group_id="", group_ids="";
     String shift_id="", id="";
     boolean active_only = false, inactive_only=false;
+		boolean current_only = false; // not expired
     List<GroupShift> groupShifts = null;
     public GroupShiftList(){
     }
@@ -78,6 +79,9 @@ public class GroupShiftList{
 						return "Inactive";
 				return "-1";
     }
+		public void setCurrentOnly(){
+				current_only = true;
+		}
     //
     // getters
     //
@@ -122,6 +126,10 @@ public class GroupShiftList{
 						if(!qw.equals("")) qw += " and ";
 						qw += " g.id=ge.group_id ";
 						qw +=	" and ge.employee_id=?";
+				}
+				if(current_only){
+						if(!qw.equals("")) qw += " and ";
+						qw += " (gs.expire_date is null or gs.expire_date > now()) ";
 				}
 				if(!qw.equals("")){
 						qq += " where "+qw;

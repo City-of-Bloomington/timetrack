@@ -42,6 +42,7 @@ public class JobTask implements Serializable{
     Position position = null;
     Employee employee = null;
     Group group = null;
+		Shift shift = null;
 		List<Group> allGroups = null; // all employee groups
     public JobTask(String val,
 									 String val2,
@@ -434,6 +435,14 @@ public class JobTask implements Serializable{
 				}
 				return seed;
     }
+		public boolean hasShift(){
+				if(shift == null)
+						getGroup();
+				return shift != null;
+		}
+		public Shift getShift(){
+				return shift;
+		}
     public SalaryGroup getSalaryGroup(){
 				if(!salary_group_id.equals("") && salaryGroup == null){
 						SalaryGroup one = new SalaryGroup(salary_group_id);
@@ -469,6 +478,9 @@ public class JobTask implements Serializable{
 										group = allGroups.get(0);
 										group_id= group.getId();
 								}
+						}
+						if(group != null && group.hasShift()){
+								shift = group.getShift();
 						}
 				}
 				return group;

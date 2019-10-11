@@ -68,7 +68,6 @@ public class TimeClockAction extends TopAction{
 								String ipAddress = inetAddress.getHostAddress();
 								ip = ipAddress;
 						}
-						// System.err.println(" ip "+ip);
 				}catch(Exception ex){
 						logger.error(ex);
 				}
@@ -86,16 +85,21 @@ public class TimeClockAction extends TopAction{
 												// group locations are assigned 
 												//
 												/**
-												else if(!timeClock.checkIpAddress(ip)){
+												if(!timeClock.checkIpAddress(ip)){
 														back = "This ip address is not allowed at this location ";
 														addError(back);
 														return ret;														
 												}
 												*/
-												else if(!timeClock.hasClockIn() &&
-																timeClock.hasMultipleJobs()){
-														if(action.equals("Submit"))
-																return "pickJob";
+												if(!timeClock.hasClockIn()){
+														if(timeClock.hasMultipleJobs()){
+																if(action.equals("Submit"))
+																		return "pickJob";
+														}
+														if(timeClock.hasNoJob()){
+																addError("No active job found");
+																return ret;
+														}
 												}
 												boolean hasClockIn = timeClock.hasClockIn();
 												back = timeClock.process();

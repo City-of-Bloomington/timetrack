@@ -77,7 +77,6 @@
 			<h2>Timewarp</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>tmwrpWrap.action">Timewarp </a></li>								
-				<li><a href="<s:property value='#application.url'/>timewarp.action">Timewarp (Old)</a></li>
 				<li><a href="<s:property value='#application.url'/>tmwrpInitiate.action">Timewarp Initiatation Process</a></li>				
 			</ul>
 

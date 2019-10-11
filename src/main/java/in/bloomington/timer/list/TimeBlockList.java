@@ -36,6 +36,10 @@ public class TimeBlockList{
     boolean active_only = false, for_today = false, dailyOnly=false,
 				clockInOnly = false, hasClockInAndOut = false;
     double total_hours = 0.0, week1_flsa=0.0, week2_flsa=0.0;
+		//
+		//the following are needed for clocked-In search
+		int clocked_in_hour = -1, clocked_in_minute=-1;
+		//
 		int total_minutes = 0;
     double week1Total = 0, week2Total = 0;
     double week1AmountTotal = 0, week2AmountTotal = 0;
@@ -278,6 +282,12 @@ public class TimeBlockList{
 				}
 				return document;
     }
+		public int getClockedInHour(){
+				return clocked_in_hour;
+		}
+		public int getClockedInMinute(){
+				return clocked_in_minute;
+		}				
     // find employee jobs in this pay period
     //
     // normally one job only per document
@@ -676,7 +686,8 @@ public class TimeBlockList{
 				double dd_time = time_hr+(time_min/60.);
 				Double dd_time2 = dd_time+24;
 				String qq = "select "+
-						" t.document_id "+
+						" t.document_id, "+
+						" t.begin_hour,t.begin_minute "+
 						" from time_blocks t "+
 						" join time_documents d on d.id=t.document_id "+
 						" join pay_periods p on p.id=d.pay_period_id "+
@@ -710,7 +721,9 @@ public class TimeBlockList{
 						pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));						
 						rs = pstmt.executeQuery();
 						if(rs.next()){
-								document_id = rs.getString(1); 
+								document_id = rs.getString(1);
+								clocked_in_hour = rs.getInt(2);
+								clocked_in_minute = rs.getInt(3);
 						}
 				}
 				catch(Exception ex){

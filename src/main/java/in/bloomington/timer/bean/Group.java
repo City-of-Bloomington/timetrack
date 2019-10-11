@@ -226,7 +226,9 @@ public class Group implements Serializable{
 				return groupShifts;
 		}
 		public boolean hasShift(){
-				return hasGroupShifts();
+				if(shift == null)
+						findShifts();
+				return shift != null;
 		}
 		public Shift getShift(){
 				return shift;
@@ -234,6 +236,8 @@ public class Group implements Serializable{
 		void findShifts(){
 				GroupShiftList del = new GroupShiftList();
 				del.setGroup_id(id);
+				del.setCurrentOnly();
+				del.setActiveOnly();
 				String back = del.find();
 				if(back.equals("")){
 						List<GroupShift> ones = del.getGroupShifts();

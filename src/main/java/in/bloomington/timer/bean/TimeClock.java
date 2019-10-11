@@ -31,6 +31,7 @@ public class TimeClock {
     HourCode defaultRegularCode = null;
     boolean new_docuemnt = false;
     int time_hr = -1, time_min = -1; // hour, minute of clock
+		int clocked_in_hour = -1, clocked_in_minute = -1;
 		String ip = ""; // for debug;
     TimeBlock timeBlock = new TimeBlock();
     boolean hasClockIn = false;
@@ -130,34 +131,54 @@ public class TimeClock {
 						setTime(val);
 				}
 		}
+		public boolean hasShift(){
+				if(shift == null){
+						getJob();
+						if(job != null){
+								if(job.hasShift())
+										shift = job.getShift();
+						}
+				}
+				return shift != null;
+		}
     public void setTime(String val) {
 				if (val != null) {
 						getEmployee();
-						if(!hasClockIn()){								
-								return; // already taken care of
-						}						
 						time = Helper.getCurrentTime();
 						int[] timeArr = Helper.getCurrentTimeArr();
 						time_hr = timeArr[0];
 						time_min = timeArr[1];
-						if(shift != null){
-								// needed when clock out within
-								// start time window
-								if(shift.hasClockInWindow()){
-										if(shift.isMinuteWithin(timeArr)){
-												time_min = shift.getStartMinute();
-												time_hr = shift.getStartHour();
-												return;
+						//
+						if(hasShift()){
+								//
+								// if has clock-in then this is clock-out
+								//
+								if(hasClockIn()){	// clock-out
+										//
+										// if we need to compare the time with clock-in times
+										// System.err.println(" in "+clocked_in_hour+" "+clocked_in_minute);
+										//
+										if(shift.hasClockOutWindow()){
+												if(shift.isClockOutMinuteWithin(timeArr)){ // clock-out
+														time_hr = shift.getEndHour();
+														time_min = shift.getEndMinute();
+														return;
+												}
 										}
-								}								
-								if(shift.hasClockOutWindow()){
-										if(shift.isClockOutMinuteWithin(timeArr)){
-												time_hr = shift.getEndHour();
-												time_min = shift.getEndMinute();
-												return;
+								}
+								else{ // clock-in
+										if(shift.hasClockInWindow()){
+												if(shift.isMinuteWithin(timeArr)){ // clock in
+														time_min = shift.getStartMinute();
+														time_hr = shift.getStartHour();
+														return;
+												}
 										}
 								}
 								if(shift.hasRoundedMinute()){
+										//
+										// just rounding
+										//
 										int mm = shift.getRoundedMinute(time_min);
 										if(mm == 60){
 												time_hr += 1;
@@ -169,32 +190,8 @@ public class TimeClock {
 								}
 						}
 				}
-    }		
-		private void setTimeAsIfClockIn(){
-				getEmployee(); 
-				int[] timeArr = Helper.getCurrentTimeArr();
-				time_hr = timeArr[0];
-				time_min  = timeArr[1];
-				if(shift != null){
-						if(shift.hasClockInWindow()){
-								if(shift.isMinuteWithin(timeArr)){
-										time_min = shift.getStartMinute();
-										time_hr = shift.getStartHour();
-										return;
-								}
-						}
-						if(shift.hasRoundedMinute()){
-								int mm = shift.getRoundedMinute(time_min);
-								if(mm == 60){
-										time_hr += 1;
-										time_min = 0;
-								}
-								else{
-										time_min = mm;
-								}
-						}
-				}
-		}
+    }
+		//
     public TimeBlock getTimeBlock() {
 				return timeBlock;
     }
@@ -274,6 +271,13 @@ public class TimeClock {
 				}
 				return job;
     }
+		//
+		// since this run after hasMultipleJobs, we do not need
+		// to run find jobs again (see TimeClockAction class)
+		//
+		public boolean hasNoJob(){
+				return job == null;
+		}
     //
     public boolean hasMultipleJobs() {
 				findJobs();
@@ -298,9 +302,6 @@ public class TimeClock {
 						if(id_code.length() == 8){ 
 								id_code = id_code.substring(0,4);
 						}
-						else if(id_code.length() > 4){ // if it is more we do not accept
-								return null;
-						}
 						Employee one = new Employee();
 						one.setId_code(id_code);
 						String back = one.doSelect();
@@ -309,15 +310,12 @@ public class TimeClock {
 								employee_id = employee.getId();
 						}
 						else{
-								System.err.println(" get employee error "+back+" ID code "+id_code+" ip:"+ip);
+								System.err.println(back+" ID code "+id_code+" ip:"+ip);
 						}
 				}
 				if (employee != null) {
 						if (employee.hasGroups()) {
 								groups = employee.getGroups();
-						}
-						if(employee.hasShift()){
-								shift = employee.getShift();
 						}
 				}				
 				return employee;
@@ -344,11 +342,11 @@ public class TimeClock {
 				}
 				return false;
     }
-
-    // find if hasClockIn
+		//
+    // check if has ClockIn
+		//
     public boolean hasClockIn(){
-				if(!hasClockIn){
-						setTimeAsIfClockIn();
+				if(!hasClockIn && employee != null){
 						getCurrentPayPeriod();
 						TimeBlockList tbl = new TimeBlockList();
 						tbl.setPay_period_id(currentPayPeriod.getId());
@@ -358,6 +356,8 @@ public class TimeClock {
 						if (back.equals("")) {
 								// if we have clock-in, we can get the document
 								document = tbl.getDocument();
+								clocked_in_hour = tbl.getClockedInHour();
+								clocked_in_minute = tbl.getClockedInMinute();
 								if (document != null) {
 										job_id = document.getJob_id();
 										document_id = document.getId();
@@ -379,6 +379,8 @@ public class TimeClock {
 										if (back.equals("")) {
 												// if we have clock-in, we can get the document
 												document = tbl.getDocument();
+												clocked_in_hour = tbl.getClockedInHour();
+												clocked_in_minute = tbl.getClockedInMinute();
 												if (document != null) {
 														job_id = document.getJob_id();
 														document_id = document.getId();
@@ -390,8 +392,9 @@ public class TimeClock {
 				}
 				return hasClockIn;
     }
-    void findJobs(){		
+    void findJobs(){
 				if (jobs == null) {
+						getEmployee();
 						if (employee != null) {
 								JobTaskList jl = new JobTaskList(employee.getId());
 								getCurrentPayPeriod();
@@ -420,10 +423,10 @@ public class TimeClock {
 														job_id = job.getId();
 												}
 										}
-								}
-								if (job == null) {
-										job = jobs.get(0);
-										job_id = job.getId();
+										if (job == null) {
+												job = jobs.get(0);
+												job_id = job.getId();
+										}
 								}
 						}
 				}

@@ -453,12 +453,11 @@ public class TmwrpWrapAction extends TopAction{
 						for(Employee emp:empSet){
 								List<TmwrpRun> runs = employeeRuns.get(emp);
 								emp.setPay_period_id(pay_period_id);
-								boolean multipleJobs = emp.hasMultipleJobs();
+								// boolean multipleJobs = emp.hasMultipleJobs();
 								for(TmwrpRun run:runs){
-										JobTask job = null;
-										if(multipleJobs){
-												job = run.getDocument().getJob();
-										}
+										JobTask job = run.getDocument().getJob();
+										SalaryGroup sgrp = job.getSalaryGroup();
+										//}
 										if(run.hasCsvHourRows()){
 												Map<CodeRef, Double> map = run.getCsvHourRows();
 												Set<CodeRef> refSet = map.keySet();
@@ -473,7 +472,7 @@ public class TmwrpWrapAction extends TopAction{
 																csvLine +=",";
 														}
 														csvLine += line2;
-														if(job != null){
+														if(sgrp != null && sgrp.isTemporary()){
 																csvLine += job.getName();
 														}
 														allCsvLines.add(csvLine);														
@@ -488,7 +487,7 @@ public class TmwrpWrapAction extends TopAction{
 														csvLine += df.format(dd)+",";
 														csvLine += line; // gl_value not needed here
 														csvLine += line2;
-														if(job != null){
+														if(sgrp != null && sgrp.isTemporary()){
 																csvLine += job.getName();
 														}														
 														allCsvLines.add(csvLine);														
@@ -516,12 +515,10 @@ public class TmwrpWrapAction extends TopAction{
 						for(Employee emp:empSet){
 								List<TmwrpRun> runs = employeeRuns.get(emp);
 								emp.setPay_period_id(pay_period_id);
-								boolean multipleJobs = emp.hasMultipleJobs();
+								// boolean multipleJobs = emp.hasMultipleJobs();
 								for(TmwrpRun run:runs){
-										JobTask job = null;
-										if(multipleJobs){
-												job = run.getDocument().getJob();
-										}
+										JobTask job = run.getDocument().getJob();
+										SalaryGroup sgrp = job.getSalaryGroup();
 										if(run.hasCycle1HourRows()){
 												// first pay period ends at 12/31/yyyy
 												Map<CodeRef, Double> map = run.getCycle1HourRows();
@@ -537,7 +534,7 @@ public class TmwrpWrapAction extends TopAction{
 																csvLine +=",";
 														}
 														csvLine += line2;
-														if(job != null){
+														if(sgrp.isTemporary()){
 																csvLine += job.getName();
 														}
 														allCsvLines.add(csvLine);														
@@ -552,7 +549,7 @@ public class TmwrpWrapAction extends TopAction{
 														csvLine += df.format(dd)+",";
 														csvLine += line; // gl_value not needed here
 														csvLine += line2;
-														if(job != null){
+														if(sgrp != null && sgrp.isTemporary()){
 																csvLine += job.getName();
 														}														
 														allCsvLines.add(csvLine);														
@@ -572,7 +569,7 @@ public class TmwrpWrapAction extends TopAction{
 																csvLine +=",";
 														}
 														csvLine += line2;
-														if(job != null){
+														if(sgrp != null && sgrp.isTemporary()){
 																csvLine += job.getName();
 														}
 														allCsvLines.add(csvLine);														
@@ -587,7 +584,7 @@ public class TmwrpWrapAction extends TopAction{
 														csvLine += df.format(dd)+",";
 														csvLine += line; // gl_value not needed here
 														csvLine += line2;
-														if(job != null){
+														if(sgrp != null && sgrp.isTemporary()){
 																csvLine += job.getName();
 														}														
 														allCsvLines.add(csvLine);														
