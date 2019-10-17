@@ -23,7 +23,9 @@ public class JobTask implements Serializable{
     private String id="",
 				employee_id="", group_id="",
 				employee_number="", // needed for update from nw
-				position_id="", added_date="",
+				position_id="",
+				position_id_alt="",// alternative position from all list
+				added_date="",
 				salary_group_id="",
 				inactive="",
 				effective_date="", expire_date="", primary_flag="";
@@ -308,6 +310,10 @@ public class JobTask implements Serializable{
 				if(val != null && !val.equals("-1"))
 						position_id = val;
     }
+    public void setPosition_id_alt (String val){
+				if(val != null && !val.equals("-1"))
+						position_id_alt = val;
+    }		
     public void setEmployee_id(String val){
 				if(val != null && !val.equals("-1"))
 						employee_id = val;
@@ -804,10 +810,13 @@ public class JobTask implements Serializable{
 						msg = " employee_id not set ";
 						return msg;
 				}
-				if(position_id.equals("")){
+				if(position_id.equals("") && !position_id_alt.equals("")){
+						position_id = position_id_alt;
+				}
+				if(position_id.equals("") && position_id_alt.equals("")){
 						msg = " position not set ";
 						return msg;
-				}
+				}				
 				if(salary_group_id.equals("")){
 						msg = " salary group not set ";
 						return msg;

@@ -29,7 +29,11 @@
 			<s:if test="hasShortListPositions()">
 				<div class="form-group">
 					<label>Position</label>
-					<s:select name="jobTask.position_id" value="" list="shortListPositions" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Position" required="true" /> (list of positions from NW)
+					<s:select name="jobTask.position_id" value="" list="shortListPositions" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Position" /> (list of positions from NW) if the needed position is not in the list use 'Alt Position' to pick from instead
+				</div>
+				<div class="form-group">
+					<label>Alt Position</label>
+					<s:select name="jobTask.position_id_alt" value="" list="positions" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Position" /> 
 				</div>
 			</s:if>
 			<s:else>
