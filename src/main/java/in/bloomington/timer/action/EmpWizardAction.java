@@ -50,7 +50,6 @@ public class EmpWizardAction extends TopAction{
 								}
 								try{
 										HttpServletResponse res = ServletActionContext.getResponse();
-										
 										res.sendRedirect(str);
 										return super.execute();
 								}catch(Exception ex){

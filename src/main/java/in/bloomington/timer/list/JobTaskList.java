@@ -516,5 +516,12 @@ public class JobTaskList{
 				}
 				return msg;
     }
-						
+		/**
+;;
+;; find temp employees with their jobs
+;;
+				   select j.id Job_ID,	                                                            e.employee_number,                                                              p.name Job_name                                                                 from jobs j                                                                     join positions p on j.position_id=p.id                                          join employees e on j.employee_id=e.id                                          where j.inactive is null and e.inactive is null                                 and j.salary_group_id=3                                                         and e.employee_number is not null                                               and j.effective_date < now()                                                    and (j.expire_date > now() or j.expire_date is null)                            order by e.employee_number,p.name                                               into outfile '/var/lib/mysql-files/jobs.csv'                                    FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
+
+		 */
+		
 }
