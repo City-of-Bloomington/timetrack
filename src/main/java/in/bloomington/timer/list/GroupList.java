@@ -177,7 +177,8 @@ public class GroupList{
 						}
 						else if(!pay_period_id.equals("")){
 								qq += ", pay_periods pp ";
-								qw +=	" and gu.effective_date <= pp.start_date and (gu.expire_date is null or gu.expire_date > pp.start_date) and pp.id=? ";
+								if(!qw.equals("")) qw += " and ";										
+								qw +=	" gu.effective_date <= pp.start_date and (gu.expire_date is null or gu.expire_date > pp.start_date) and pp.id=? ";
 						}
 				}
 				if(active_only){
