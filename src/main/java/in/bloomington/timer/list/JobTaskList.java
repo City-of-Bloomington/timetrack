@@ -24,7 +24,10 @@ public class JobTaskList{
     boolean active_only = false, current_only = false, inactive_only=false,
 				clock_time_required = false, clock_time_not_required=false,
 				not_expired = false, non_temp_emp = false;
-		boolean avoid_recent_jobs = false; // jobs are recent if entered within 14 days
+		//
+		// jobs are recent if entered within 14 days
+		boolean avoid_recent_jobs = false;
+		//
 		boolean include_future = false, order_by_employee = false,
 				order_by_id = false;
     String salary_group_id="", employee_id="", pay_period_id="";

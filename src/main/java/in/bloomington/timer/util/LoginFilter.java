@@ -39,35 +39,17 @@ public class LoginFilter implements Filter {
 				HttpSession session = req.getSession(false);
 				if(session == null || session.getAttribute("user") == null){
 						// these are our exludes
-						if(uri.indexOf("timeClock") > -1 ||
-							 uri.indexOf("PickJob") > -1 ||	// clockPickJob
-							 uri.matches(".*(css|jpg|png|gif|js)$") ||							 
-							 uri.indexOf("Login") > -1){
+						if(uri.matches(".*(timeClock|PickJob).*") ||
+							 uri.matches(".*(Service|Login|css|jpg|png|gif|js)$")){
 								chain.doFilter(request, response);
 						}
-						else if(uri.indexOf("Service") > -1){
-								/*
-									// handled by apache
-									//
-								String str = req.getHeader("Origin");
-								System.err.println(" origin "+str);									
-								if(str != null)
-										res.setHeader("Access-Control-Allow-Origin", str);
-								else
-										res.setHeader("Access-Control-Allow-Origin", "*");
-								res.setHeader("Access-Control-Allow-Methods","PUT,POST,GET");
-								res.setHeader("Access-Control-Max-Age","3600");
-								res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
-								*/
-								chain.doFilter(request, response);
-						}
-						else if(!(uri.matches(".*(css|jpg|png|gif|js)$"))){
+						else{
 								// everything else we need login
 								res.sendRedirect("Login");
 						}
 				}
 				else{
-						// process the rest of chain
+						// process the rest of the chain
 						chain.doFilter(request, response);
 				}
 		}

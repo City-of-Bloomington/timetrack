@@ -57,7 +57,7 @@ public class EmployeesUpdateScheduleAction extends TopAction{
 						}
 				}
 				else if(action.startsWith("Submit")){
-						HandleEmployeesUpdate handle = new HandleEmployeesUpdate(envBean);
+						HandleEmployeesUpdate handle = new HandleEmployeesUpdate();
 						back = handle.process();
 						if(!back.equals("")){
 								addActionError(back);
@@ -68,7 +68,7 @@ public class EmployeesUpdateScheduleAction extends TopAction{
 						}
 				}
 				else if(action.startsWith("Add")){
-						HandleEmployeesUpdate handle = new HandleEmployeesUpdate(envBean);
+						HandleEmployeesUpdate handle = new HandleEmployeesUpdate();
 						back = handle.process2();
 						if(!back.equals("")){
 								addActionError(back);

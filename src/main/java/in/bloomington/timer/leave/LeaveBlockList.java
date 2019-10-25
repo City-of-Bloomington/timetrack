@@ -201,7 +201,6 @@ public class LeaveBlockList{
 						" t.hours,"+
 						
 						" date_format(t.request_date,'%m/%d/%Y'),"+
-						" t.request_approval,"+
 						" t.action_status,"+
 						" t.action_by,"+
 						" date_format(t.action_date,'%m/%d/%Y'),"+						
@@ -310,16 +309,15 @@ public class LeaveBlockList{
 																	 rs.getDouble(5),
 																	 
 																	 rs.getString(6),
-																	 rs.getString(7) != null,
+																	 rs.getString(7),
 																	 rs.getString(8),
 																	 rs.getString(9),
-																	 rs.getString(10),
 																	 
-																	 rs.getString(11) != null,
-																	 rs.getInt(12),
+																	 rs.getString(10) != null,
+																	 rs.getInt(11),
+																	 rs.getString(12),
 																	 rs.getString(13),
-																	 rs.getString(14),
-																	 rs.getString(15)
+																	 rs.getString(14)
 																	 );
 								if(!leaveBlocks.contains(one)){
 										leaveBlocks.add(one);

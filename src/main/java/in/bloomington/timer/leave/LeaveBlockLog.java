@@ -45,7 +45,6 @@ public class LeaveBlockLog{
 								 
 								 double val6,
 								 String val7,								 
-								 boolean val8,
 								 String val9,
 								 String val10,
 								 
@@ -54,7 +53,7 @@ public class LeaveBlockLog{
 								 String val13,
 								 String val14
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14);
+				setVals(val, val2, val3, val4, val5, val6, val7, val9, val10, val11, val12, val13, val14);
 		}		
 		void setVals(
 								 String val,
@@ -65,7 +64,6 @@ public class LeaveBlockLog{
 								 
 								 double val6,
 								 String val7,								 
-								 boolean val8,
 								 String val9,
 								 String val10,
 								 
@@ -81,7 +79,6 @@ public class LeaveBlockLog{
 				setDate(val5);
 				setHours(""+val6);
 				setRequestDate(val7);
-				setRequestApproval(val8);
 				setActionStatus(val9);
 				setActionBy(val10);
 				setActionDate(val11);
@@ -202,10 +199,7 @@ public class LeaveBlockLog{
 				if(val != null)
 						request_date = val;
     }
-    public void setRequestApproval(boolean val){ 
-				if(val)
-						request_approval = "y";
-    }		
+
     public void setActionStatus(String val){ 
 				if(val != null)
 						action_status = val;
@@ -281,7 +275,7 @@ public class LeaveBlockLog{
 						return errors;
 				}
 				String qq = "insert into leave_block_logs values(0,?,?,?,?, "+
-						"?,?,?,?,?, "+
+						"?,?,?,?, "+
 						"?,?,now(),?) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				if(document_id.equals("")){
@@ -310,27 +304,23 @@ public class LeaveBlockLog{
 						pstmt.setDouble(5, hours);
 						date_tmp = df.parse(request_date);
 						pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));						
-						if(!request_approval.equals(""))
-								pstmt.setString(7, "y");
-						else
-								pstmt.setNull(7, Types.CHAR);
 						if(!action_status.equals(""))
-								pstmt.setString(8, action_status);
+								pstmt.setString(7, action_status);
 						else
-								pstmt.setNull(8, Types.VARCHAR);
+								pstmt.setNull(7, Types.VARCHAR);
 						if(!action_by.equals(""))
-								pstmt.setString(9, action_by);
+								pstmt.setString(8, action_by);
 						else
-								pstmt.setNull(9, Types.INTEGER);
+								pstmt.setNull(8, Types.INTEGER);
 						if(!action_date.equals("")){
 								date_tmp = df.parse(action_date);
-								pstmt.setDate(10, new java.sql.Date(date_tmp.getTime()));
+								pstmt.setDate(9, new java.sql.Date(date_tmp.getTime()));
 						}
 						else{
-								pstmt.setNull(10, Types.DATE);
+								pstmt.setNull(9, Types.DATE);
 						}
-						pstmt.setString(11, change_type);
-						pstmt.setString(12, change_by);						
+						pstmt.setString(10, change_type);
+						pstmt.setString(11, change_by);						
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//						
@@ -366,7 +356,6 @@ public class LeaveBlockLog{
 						
 						" t.hours,"+
 						" date_format(t.request_date,'%m/%d/%Y'),"+
-						" t.request_approval,"+
 						" t.action_status,"+
 						" t.action_by,"+
 						
@@ -396,14 +385,13 @@ public class LeaveBlockLog{
 												
 												rs.getDouble(6),
 												rs.getString(7),														
-												rs.getString(8) != null,
+												rs.getString(8),
 												rs.getString(9),
-												rs.getString(10),
 												
+												rs.getString(10),
 												rs.getString(11),
-												rs.getString(12),
-												rs.getString(13),														
-												rs.getString(14)														
+												rs.getString(12),														
+												rs.getString(13)														
 												);
 						}
 				}

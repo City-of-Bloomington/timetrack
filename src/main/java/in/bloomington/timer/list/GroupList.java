@@ -21,7 +21,9 @@ public class GroupList{
     String employee_id = "",
 				department_ids ="",
 				department_id="",
-				pay_period_id="";
+				pay_period_id="",
+				job_name="", 
+				dept_ref_id = ""; // reference number in NW
     String name="", id="";
     boolean active_only = false, inactive_only=false;
 		boolean allowed = false, not_allowed=false;
@@ -41,8 +43,16 @@ public class GroupList{
 						employee_id = val;
     }
     public void setPay_period_id (String val){
-				if(val != null)
+				if(val != null && !val.equals(""))
 						pay_period_id = val;
+    }
+    public void setDept_ref_id (String val){
+				if(val != null && !val.equals(""))
+						dept_ref_id = val;
+    }
+    public void setJobName(String val){
+				if(val != null && !val.equals(""))
+						job_name = val;
     }		
     public void setDepartment_id (String val){
 				if(val != null && !val.equals("-1")){
@@ -105,9 +115,15 @@ public class GroupList{
     public String getName(){
 				return name;
     }
+    public String getJobName(){
+				return job_name;
+    }		
     public List<Group> getGroups(){
 				return groups;
     }
+    public String getDept_ref_id(){
+				return dept_ref_id;
+    }				
     public String getActive_status(){
 				if(active_only)
 						return "Active";
@@ -126,24 +142,32 @@ public class GroupList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive,d.name from groups g left join departments d on d.id=g.department_id ";
+				String qq = "select g.id,g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive,d.name from groups g join departments d on d.id=g.department_id ";
 				String qw = "";
 				if(!department_ids.equals("")){
 						if(!qw.equals("")) qw += " and ";						
 						qw += "g.department_id in ("+department_ids+") ";
 				}
+				if(!dept_ref_id.equals("")){
+						if(!qw.equals("")) qw += " and ";						
+						qw += " find_in_set (?, d.ref_id) and d.ref_id is not null";
+				}				
 				if(!name.equals("")){
 						if(!qw.equals("")) qw += " and ";						
 						qw += "g.name like ? ";
-				}				
+				}
+				if(!job_name.equals("")){
+						qq += " join jobs j on j.group_id=g.id join positions p on p.id = j.position_id ";
+						if(!qw.equals("")) qw += " and ";						
+						qw += "p.name like ? ";
+				}							
 				if(!employee_id.equals("")
 					 || include_future
 					 || !pay_period_id.equals("")){
-						qq += ", group_employees gu ";						
+						qq += " join group_employees gu on g.id = gu.group_id ";						
 						if(!qw.equals("")) qw += " and ";
-						qw += " g.id=gu.group_id ";
 						if(!employee_id.equals("")){
-								qw +=	" and gu.employee_id=?";
+								qw +=	" gu.employee_id=?";
 						}
 						if(active_only)
 								qw += " and gu.inactive is null ";
@@ -185,8 +209,14 @@ public class GroupList{
 						if(!department_ids.equals("")){
 
 						}
+						if(!dept_ref_id.equals("")){
+								pstmt.setString(jj++, dept_ref_id);
+						}
 						if(!name.equals("")){
 								pstmt.setString(jj++, "%"+name+"%");
+						}
+						if(!job_name.equals("")){
+								pstmt.setString(jj++, job_name);
 						}						
 						if(!employee_id.equals("")){
 								pstmt.setString(jj++, employee_id);

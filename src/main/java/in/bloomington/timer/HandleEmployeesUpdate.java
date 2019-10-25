@@ -12,6 +12,7 @@ import java.text.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
+import javax.servlet.ServletContext;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
@@ -21,15 +22,25 @@ import org.apache.logging.log4j.Logger;
 public class HandleEmployeesUpdate{
 
 		boolean debug = false;
+		//
+		// added this flag so that we do not run this function
+		// on test servers very frequently
+		//
+		boolean run_employee_update = true;
 		static final long serialVersionUID = 53L;
 		static Logger logger = LogManager.getLogger(HandleEmployeesUpdate.class);
 		EnvBean envBean = null;
 		String date="", pay_period_id="";
 		Hashtable<String, Employee> empTable = null, empUsrTable=null;
+    public HandleEmployeesUpdate(){
+				setAllFlags();
+    }		
     public HandleEmployeesUpdate(EnvBean val){
 				if(val != null)
 						envBean = val;
+				setAllFlags();
     }
+		
     //
     // setters
     //
@@ -53,14 +64,48 @@ public class HandleEmployeesUpdate{
 						}
 				}
 				return pay_period_id;
-    }		
+    }
+		void setAllFlags(){
+				ServletContext ctx = SingleContextHolder.getContext();
+				if(ctx != null){
+						System.err.println(" ctx is Ok");				
+						String val = ctx.getInitParameter("run_employee_update");
+						if(val != null){
+								if(val.equals("false")){
+										run_employee_update = false;
+								}
+						}
+						if(envBean == null){
+								envBean = new EnvBean();
+								val = ctx.getInitParameter("ldap_url");
+								if(val != null)
+										envBean.setUrl(val);
+								val = ctx.getInitParameter("ldap_principle");
+								if(val != null)
+										envBean.setPrinciple(val);
+								val = ctx.getInitParameter("ldap_password");
+								if(val != null)
+								envBean.setPassword(val);
+						}
+						System.err.println(" emps run update flag "+run_employee_update);
+				}
+				else{
+						System.err.println(" ctx is null, could not retreive flags ");
+				}
+		}		
 		//
-		// find all the employees who have initiated document time but
-		// did not submit for approval
+		// find employees in AD and check if their info changed during 
+		// the previous time span (normally 2 hours on regular busniss day
+		// check the related schedule for crown day and time schedules
 		//
    public String process(){
 			 String msg = "", status="Success", errors="";
-				List<Employee> dbEmps = null;
+			 
+			 if(!run_employee_update){
+					 System.err.println(" update skipped");
+					 return msg;
+			 }
+			 List<Employee> dbEmps = null;
 				List<Employee> ldapEmps = null;
 				Hashtable<String, Employee> empTable = null;
 				String inactiveSet = "", inactiveLog = "";
@@ -152,7 +197,8 @@ public class HandleEmployeesUpdate{
 				return msg;
 		}
 		//
-		// we run this one time only and net needed after that
+		// we run this one time only and not needed after that
+		// for adding AD sid value
 		//
    public String process2(){
 			 Connection con = null;

@@ -309,11 +309,11 @@ public class EmpList extends CommonInc{
 				if (ret.length()<2) ret = "0"+ret;
 				return ret;
 		}
-				public String simpleFind(){
-						Hashtable<String, String> env = new Hashtable<String, String>(11);
-						String back = "", fullName="", str="";
-						Employee emp = null;
-						if (!connectToServer(env)){
+		public String simpleFind(){
+				Hashtable<String, String> env = new Hashtable<String, String>(11);
+				String back = "", fullName="", str="";
+				Employee emp = null;
+				if (!connectToServer(env)){
 						System.err.println("Unable to connect to ldap");
 						return null;
 				}

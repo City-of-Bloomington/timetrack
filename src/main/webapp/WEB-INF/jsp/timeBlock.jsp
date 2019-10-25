@@ -146,5 +146,4 @@
 		</s:else>
 	</s:form>
 </div>
-
 <%@ include file="footer.jsp" %>

@@ -61,7 +61,7 @@ CREATE TABLE `group_employees` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `group_id` int(10) unsigned NOT NULL,
   `employee_id` int(10) unsigned NOT NULL,
-  `effective_date` date DEFAULT NULL,
+  `effective_date` date NOT NULL,
   `expire_date` date DEFAULT NULL,
   `inactive` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -78,15 +78,15 @@ CREATE TABLE `group_employees` (
   `employee_id` int(10) unsigned NOT NULL,
   `department_id` int(10) unsigned NOT NULL,
   `department2_id` int(10) unsigned DEFAULT NULL,
-  `effective_date` date DEFAULT NULL,
+  `effective_date` date NOT NULL,
   `expire_date` date DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `department_id` (`department_id`),
-  KEY `employee_id` (`employee_id`),
-  KEY `department2_id` (`department2_id`),
-  CONSTRAINT `department_employees_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`),
-  CONSTRAINT `department_employees_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
-  CONSTRAINT `department_employees_ibfk_3` FOREIGN KEY (`department2_id`) REFERENCES `departments` (`id`)
+   PRIMARY KEY (`id`),
+   KEY `department_id` (`department_id`),
+   KEY `employee_id` (`employee_id`),
+   KEY `department2_id` (`department2_id`),
+   CONSTRAINT `department_employees_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`),
+   CONSTRAINT `department_employees_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+   CONSTRAINT `department_employees_ibfk_3` FOREIGN KEY (`department2_id`) REFERENCES `departments` (`id`)
 ) ENGINE=InnoDB;
 ;;
 ;; workflow_nodes table
@@ -121,7 +121,7 @@ CREATE TABLE `group_managers` (
   `group_id` int(10) unsigned NOT NULL,
   `employee_id` int(10) unsigned NOT NULL,
   `wf_node_id` int(10) unsigned NOT NULL,
-  `start_date` date DEFAULT NULL,
+  `start_date` date NOT NULL,
   `expire_date` date DEFAULT NULL,
   `inactive` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -260,10 +260,11 @@ CREATE TABLE `salary_groups` (
 ;; positions table
 ;; 
 CREATE TABLE `positions` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) DEFAULT NULL,
-  `alias varchar(64) not null,                                                     description` varchar(512) DEFAULT NULL,
-  `inactive` char(1) DEFAULT NULL,
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  name varchar(50) DEFAULT NULL,
+  alias varchar(64) not null,
+  description varchar(512) DEFAULT NULL,
+  inactive char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB;
@@ -275,7 +276,7 @@ CREATE TABLE `positions` (
   `hour_code_id` int(10) unsigned NOT NULL,
   `department_id` int(10) unsigned DEFAULT NULL,
   `salary_group_id` int(10) unsigned DEFAULT NULL,
-	group_id int unsigned default null,
+	 group_id int unsigned default null,
   `date` date DEFAULT NULL,
   `inactive` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -720,7 +721,7 @@ alter table employees drop column role;
 ;;
 ;; 1/16/2019
 ;;
-	CREATE TABLE accrual_contributes (			                                        id int(10) unsigned NOT NULL AUTO_INCREMENT,                                    name varchar(80) not null,                                                     accrual_id int unsigned not null,		                                          hour_code_id int unsigned not null,                                            factor decimal(3,1),                                                           primary key(id),                                                               foreign key(accrual_id) references accruals(id),	                              foreign key(hour_code_id) references hour_codes(id)                            )Engine=InnoDB;
+	CREATE TABLE accrual_contributes (			                                        id int(10) unsigned NOT NULL AUTO_INCREMENT,                                    name varchar(80) not null,                                                      accrual_id int unsigned not null,		                                            hour_code_id int unsigned not null,                                             factor decimal(3,1),                                                            primary key(id),                                                                foreign key(accrual_id) references accruals(id),	                              foreign key(hour_code_id) references hour_codes(id)                            )Engine=InnoDB;
 
 ;;
 ;; 1/17/2019
@@ -1038,6 +1039,7 @@ CREATE TABLE leave_documents (
 	job_id int(10) unsigned not null,
   initiated datetime NOT NULL,
   initiated_by int(10) unsigned NOT NULL,
+	request_approval_date date, 
   PRIMARY KEY (id),
 	foreign key(job_id) references jobs(id),
  	FOREIGN KEY (employee_id) REFERENCES employees (id),
@@ -1047,6 +1049,9 @@ CREATE TABLE leave_documents (
 ) ENGINE=InnoDB;
 ;;
 ;;
+alter table leave_documents add request_approval_date date;
+
+;;
 ;; leave_blocks
 ;;
 CREATE TABLE leave_blocks (
@@ -1055,8 +1060,7 @@ CREATE TABLE leave_blocks (
   hour_code_id int(10) unsigned NOT NULL,
   date date NOT NULL,
   hours decimal(5,2),
-  request_date date,
-	request_approval char(1),
+	request_date date default CURR_DATE,
 	action_status  enum('Approved','Denied'),
 	action_by int unsigned,
 	action_date date,
@@ -1066,6 +1070,8 @@ CREATE TABLE leave_blocks (
 	foreign key(hour_code_id) references hour_codes(id),
 	foreign key(action_by) references employees(id)
 ) ENGINE=InnoDB;
+;;
+alter table leave_blocks drop column request_approval;
 
 CREATE TABLE leave_block_logs (
   id int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1074,8 +1080,6 @@ CREATE TABLE leave_block_logs (
   hour_code_id int(10) unsigned NOT NULL,
   date date NOT NULL,
   hours decimal(5,2),
-  request_date date,
-	request_approval char(1),
 	action_status  enum('Approved','Denied'),
 	action_by int unsigned,
 	action_date date,
@@ -1128,7 +1132,7 @@ alter table hour_codes add earn_factor decimal(5,2) default 0 after default_mone
 ;; CEt1.0 1, CEt1.5 1.5, CEt2.0 2,
 ;; HCE1.0 1, HCE1.5 1.5, HCE2.0 2
 ;;
-;; modify earn_codes above and link to accruals id's
+;; modify earn_codes above and link to accruals id
 ;; CE1.0,CE1.5,CE2.0 ==> CUA; HCE1.0, HCE1.5,HCE2.0 ==> HCUA
 ;;
 ;;
@@ -1206,4 +1210,39 @@ CREATE TABLE available_badges (
   badge_num int unsigned NOT NULL unique
 ) ENGINE=InnoDB;
 
+
+
+;;
+;; 10/23/2019
+;; changed:
+;;
+;; updated Login to give warning on reserved email users
+;;
+;; add the following flag to timetrack.xml in tomcat configuration
+;; set the flag to true in production and false in test
+;; the default is true
+;; non production set to false
+ run_employee_update = false;
+;;
+;; need to modify notification_logs table, since the text message is the
+;; same we can put the message and the date in a parent table and
+;; other info in the child table
+;;
+create table notification_logs(
+ id int unsigned auto_increment primary key,
+ message varchar(1024),
+ date date
+ )engine=InnoDB;
+
+create table notification_user_logs(
+ id int unsigned auto_increment primary key,
+ notification_log_id int unsigned,
+ recipient varchar(128),
+ status enum('Success','Failure'),
+ error_msg text,
+ foreign key(notification_log_id) references notification_logs(id)
+ )engine=InnoDB;
+ 
+
+ 
 

@@ -44,7 +44,10 @@ public class GroupService extends HttpServlet{
 				res.setContentType("application/json");
 				PrintWriter out = res.getWriter();
 				String name, value;
-				String term ="", type="", department_id="";
+				String term ="", type="",
+						job_name="",
+						department_id="",
+						dept_ref_id=""; // Dept Ref from NW
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
 				while (values.hasMoreElements()){
@@ -60,19 +63,35 @@ public class GroupService extends HttpServlet{
 										}
 								}
 						}
+						else if (name.equals("dept_ref_id")) {
+								if(value != null && !value.equals("")){
+										try{
+												Integer.parseInt(value);
+												dept_ref_id = value;										
+										}catch(Exception ex){
+										}
+								}
+						}						
 						else if (name.equals("action")){
 								action = value;
 						}
+						else if (name.equals("jobName")){
+								job_name = value;
+						}						
 						else{
 								// System.err.println(name+" "+value);
 						}
 				}
 				GroupList glist =  null;
 				List<Group> groups = null;
-				if(!department_id.equals("")){
+				if(!department_id.equals("") ||
+					 !job_name.equals("") ||
+					 !dept_ref_id.equals("")){
 						//
 						glist = new GroupList();
 						glist.setDepartment_id(department_id);
+						glist.setDept_ref_id(dept_ref_id);
+						glist.setJobName(job_name);
 						String back = glist.find();
 						if(back.equals("")){
 								groups = glist.getGroups();

@@ -23,7 +23,8 @@ public class LeaveBlock{
     String id="",
 				document_id="",
 				hour_code_id="",
-				request_date="", request_approval="", action_status="",
+				action_status="",
+				request_date="", // the date the record was first time added
 				action_by="", action_date="", inactive="",
 				holidayName="";
 		//
@@ -44,9 +45,8 @@ public class LeaveBlock{
 								 String val3,
 								 String val4,
 								 double val5,
-								 
 								 String val6,
-								 boolean val7,
+								 
 								 String val8,
 								 String val9,
 								 String val10,
@@ -57,7 +57,7 @@ public class LeaveBlock{
 								 String val14,
 								 String val15
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11);
+				setVals(val, val2, val3, val4, val5, val6, val8, val9, val10, val11);
 				setOrderIndex(val12);
 				setHourCodeName(val13);
 				setHourCodeDesc(val14);
@@ -70,13 +70,12 @@ public class LeaveBlock{
 								 String val4,
 								 double val5,
 								 String val6,
-								 boolean val7,
 								 String val8,
 								 String val9,
 								 String val10,
 								 boolean val11
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11);
+				setVals(val, val2, val3, val4, val5, val6, val8, val9, val10, val11);
 		}
 		void setVals(
 								 String val,
@@ -85,7 +84,6 @@ public class LeaveBlock{
 								 String val4,
 								 double val5,
 								 String val6,
-								 boolean val7,
 								 String val8,
 								 String val9,
 								 String val10,
@@ -97,7 +95,6 @@ public class LeaveBlock{
 				setDate(val4);
 				setHours(""+val5);
 				setRequestDate(val6);
-				setRequestApproval(val7);
 				setActionStatus(val8);
 				setActionBy(val9);
 				setActionDate(val10);
@@ -128,9 +125,6 @@ public class LeaveBlock{
     public String getDate(){
 				return date;
     }
-    public String getRequestDate(){
-				return request_date;
-    }
     public String getActionStatus(){
 				return action_status;
     }
@@ -140,6 +134,9 @@ public class LeaveBlock{
 		public String getActionDate(){
 				return action_date;
     }
+		public String getRequestDate(){
+				return request_date;
+    }		
 		public boolean getInactive(){
 				return !inactive.equals("");
 		}
@@ -211,14 +208,7 @@ public class LeaveBlock{
 				if(val != null)
 						date = val;
     }
-    public void setRequestDate(String val){ 
-				if(val != null)
-						request_date = val;
-    }
-    public void setRequestApproval(boolean val){ 
-				if(val)
-						request_approval = "y";
-    }		
+
     public void setActionStatus(String val){ 
 				if(val != null)
 						action_status = val;
@@ -231,6 +221,10 @@ public class LeaveBlock{
 				if(val != null)
 						action_date = val;
     }
+    public void setRequestDate(String val){ 
+				if(val != null)
+						request_date = val;
+    }		
     public void setInactive(boolean val){ 
 				if(val)
 						inactive = "y";
@@ -320,7 +314,8 @@ public class LeaveBlock{
 				if(!errors.equals("")){
 						return errors;
 				}
-				String qq = "insert into leave_blocks values(0,?,?,?,now(), ?,?,null,null,null,null) ";
+				request_date = Helper.getToday();
+				String qq = "insert into leave_blocks values(0,?,?,?,?,now(),null,null,null,null) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				if(document_id.equals("")){
 						msg = " document not set ";
@@ -345,11 +340,6 @@ public class LeaveBlock{
 						java.util.Date date_tmp = df.parse(date);
 						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
 						pstmt.setDouble(4, hours);
-						// request_date today
-						if(!request_approval.equals(""))
-								pstmt.setString(5, "y");
-						else
-								pstmt.setNull(5, Types.CHAR);
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
@@ -370,7 +360,6 @@ public class LeaveBlock{
 																									
 																									hours,
 																									request_date,
-																									!request_approval.equals(""),
 																									null, // action_status
 																									null,// action_by
 																									
@@ -399,7 +388,7 @@ public class LeaveBlock{
 				ResultSet rs = null;
 				String msg="", str="";
 				String change_type="";
-				String qq = "update leave_blocks set hour_code_id=?,hours=?,request_approval=?,inactive=? where id=? ";
+				String qq = "update leave_blocks set hour_code_id=?,hours=?,inactive=? where id=? ";
 				if(id.equals("")){
 						msg = " record id not set ";
 						return msg;
@@ -416,15 +405,15 @@ public class LeaveBlock{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, hour_code_id);
 						pstmt.setDouble(2, hours);
-						if(!request_approval.equals(""))
+						if(!inactive.equals("")){
 								pstmt.setString(3, "y");
-						else
+								change_type = "Delete";
+						}
+						else{
 								pstmt.setNull(3, Types.CHAR);
-						if(!inactive.equals(""))
-								pstmt.setString(4, "y");
-						else
-								pstmt.setNull(4, Types.CHAR);
-						pstmt.setString(5, id);
+								change_type = "Update";
+						}
+						pstmt.setString(4, id);
 						pstmt.executeUpdate();
 						doSelect();
 						if(inactive.equals("")){
@@ -441,7 +430,6 @@ public class LeaveBlock{
 																									
 																									hours,
 																									request_date,
-																									!request_approval.equals(""),
 																									null, // action_status
 																									null,// action_by
 																									
@@ -502,7 +490,6 @@ public class LeaveBlock{
 																									
 																									hours,
 																									request_date,
-																									!request_approval.equals(""),
 																									action_status,
 																									action_by,
 																									
@@ -537,7 +524,6 @@ public class LeaveBlock{
 						" t.hours,"+
 						
 						" date_format(t.request_date,'%m/%d/%Y'),"+
-						" t.request_approval,"+
 						" t.action_status,"+
 						" t.action_by,"+
 						" date_format(t.action_date,'%m/%d/%Y'),"+
@@ -563,7 +549,6 @@ public class LeaveBlock{
 												rs.getString(4),
 												rs.getDouble(5),
 												rs.getString(6),
-												rs.getString(7) != null,
 												rs.getString(8),
 												rs.getString(9),
 												rs.getString(10),														

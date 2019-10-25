@@ -9,21 +9,24 @@ import java.sql.*;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import javax.naming.*;
-import javax.naming.directory.*;
 import javax.sql.*;
 import java.net.URL;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import in.bloomington.timer.bean.*;
+import in.bloomington.timer.util.CommonInc;
 
 public class Login extends HttpServlet{
 
     //
 		String cookieName = ""; // "cas_session";
-		String cookieValue = ""; // ".bloomington.in.gov";
+		String cookieValue = "";
     String url="";
+		//
+		// reserved usernames that issue a warning
+		static final List<String> invalid_list = Arrays.asList(CommonInc.invalid_usernames);
+		
 		static final long serialVersionUID = 2700L;
 		static Logger logger = LogManager.getLogger(Login.class);
     /**
@@ -108,29 +111,43 @@ public class Login extends HttpServlet{
 						username = req.getRemoteUser();
 				}
 				if(username != null){
-						session = req.getSession();
-						Employee user = getUser(username);
-						if(session != null){
-								if(user != null){
-										//
-										session.setAttribute("user",user);
-										if(source.equals(""))
-												source = "timeDetails.action";
-										out.println("<head><title></title><META HTTP-EQUIV="+
-																"\"refresh\" CONTENT=\"0; URL=" + source+"\"></head>");
-										out.println("<body>");
-										out.println("</body>");
-										out.println("</html>");
-										out.flush();
-										return;
+						if(invalid_list.contains(username)){
+								message = "<h3>TimeTrack: Error</h3>";
+								message += "Please do not use the usernmae: "+username+" to access your timesheet <br /> ";
+								message += "You need to use your own username to access timetrack<br />\n";
+								message += "Suggestions <br />\n";
+								message += "<ul>";
+								message += "<li>Log out and log in again with your own username </li>";
+								message += "<li>You may close your browser and open it again </li>";
+								message += "<li>Or you may use another browser for timetrack</li>";
+								message += "</ul>";
+						}
+						else{
+								session = req.getSession();
+								Employee user = getUser(username);
+								if(session != null){
+										if(user != null){
+												//
+												session.setAttribute("user",user);
+												if(source.equals(""))
+														source = "timeDetails.action";
+												out.println("<head><title></title><META HTTP-EQUIV="+
+																		"\"refresh\" CONTENT=\"0; URL=" + source+"\"></head>");
+												out.println("<body>");
+												out.println("</body>");
+												out.println("</html>");
+												out.flush();
+												return;
+										}
 								}
 						}
 				}
-				message += " You can not access this system, check with IT or try again later";
-				out.println("<head><title></title><body>");
-				out.println("<p><font color=red>");
+				if(message.equals(""))
+						message += "<p> You can not access this system, check with IT or try again later</p>";
+				out.println("<head><title>TimeTrack</title><body>");
+				out.println("<center>");
 				out.println(message);
-				out.println("</font></p>");
+				out.println("</center>");
 				out.println("</body>");
 				out.println("</html>");
 				out.flush();
@@ -138,7 +155,7 @@ public class Login extends HttpServlet{
 
     /**
      * Procesesses the login and check for authontication.
-     * Uses ldap for authentication.
+     * Uses CAS ldap/AD for authentication.
      * @param req
      * @param res
      */

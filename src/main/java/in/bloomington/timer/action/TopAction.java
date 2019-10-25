@@ -5,6 +5,8 @@
  */
 package in.bloomington.timer.action;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.io.*;
 import java.text.*;
 import javax.servlet.*;
@@ -32,7 +34,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     static String server_path="";
     static EnvBean envBean = null;
     static String mail_host = null;
-    String uri="",url="", proxy_url="";
+    static String uri="",url="", proxy_url="";
 		
     String action="", id="", employee_id="";
     List<String> errors = new ArrayList<>(),
@@ -110,7 +112,8 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 										employee_id = (String) obj;
 								}
 						}
-						setUrls();
+						if(url.equals(""))
+								setUrls();
 						clearAll();
 				}catch(Exception ex){
 						logger.error(ex);
@@ -141,6 +144,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 										String str = user.getId();
 										if(str != null && str.length() > 0){
 												setEmployee_id(str);
+												employee = user;
 										}
 								}
 						}
@@ -151,7 +155,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				if(employee_id.equals("")){
 						getEmployee_id();
 				}
-				if(!employee_id.equals("")){
+				if(employee == null && !employee_id.equals("")){
 						Employee one = new Employee(employee_id);
 						String back = one.doSelect();
 						if(back.equals("")){
@@ -277,12 +281,14 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				}
     }		
     private void setUrls(){
+				System.err.println(" url "+url);
+				if(!url.equals("")) return;
 				HttpServletRequest request = ServletActionContext.getRequest();				
 				String host_forward = request.getHeader("X-Forwarded-Host");
 				String host = request.getHeader("host");				
 
-				// System.err.println(" host forward "+host_forward);
-	
+				System.err.println(" host forward "+host_forward);
+				System.err.println(" host "+host);	
 				if(host_forward != null){
 						if(host_forward.indexOf("/timetrack") == -1)
 								url = host_forward+"/timetrack/";
@@ -296,6 +302,21 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 						else{
 								url = host+"/timetrack/";
 						}
+				}
+				if(true){
+						String pat = "timetrack";
+						Pattern pattern = Pattern.compile(pat);
+						Matcher matcher = pattern.matcher(url);
+						int cnt = 0, end_id=0;
+						while(matcher.find()){
+								if(end_id == 0)
+										end_id = matcher.end();
+								cnt++;
+						}
+						if(cnt > 1){
+								url = url.substring(end_id+1);
+						}				
+						System.err.println(" url "+url);
 				}
     }
 		

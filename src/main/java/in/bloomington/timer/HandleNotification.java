@@ -27,7 +27,7 @@ public class HandleNotification{
     static Logger logger = LogManager.getLogger(HandleNotification.class);
     String date="", dept_id="", pay_period_id="";
     List<Employee> emps = null;
-		
+ 		
     public HandleNotification(String val, String val2, boolean val3){
 				setPay_period_id(val);
 				setMail_host(val2);
@@ -152,29 +152,58 @@ public class HandleNotification{
 				}
 				String to_str = "";
 				if(activeMail){
+						String success_list="";
+						String failure_list="";
+						String failure_error="";
 						for(Employee one:emps){
 								to_str = one.getFull_name()+"<"+one.getEmail()+">";
 								msg = compuseAndSend(to_str);
+								if(msg.equals("")){
+										if(!success_list.equals("")) success_list +=", "; 
+										success_list += to_str;
+								}
+								else{
+										if(!failure_list.equals("")){
+												failure_list +=", ";
+												failure_error += ", ";
+										}
+										failure_list += to_str;
+										if(failure_error.indexOf(msg) == -1){
+												if(!failure_error.equals("")){
+														failure_error += ", ";
+												}										
+												failure_error += msg;
+										}
+								}
 						}
+						if(!success_list.equals("")){
+								NotificationLog nlog = new NotificationLog(success_list, body_text, "Success",null);
+								nlog.doSave();										
+						}
+						if(!failure_list.equals("")){
+								NotificationLog nlog = new NotificationLog(failure_list, body_text, "Failure", failure_error);
+								nlog.doSave();		
+						}						
 				}
 				else{
 						System.err.println(" active mail is turned off, no email sent");
 				}
 				return msg;
     }
+		String body_text ="This is an automated message from the Timetrack timekeeping system.\n\n"+
+				"Today marks the beginning of a new pay period. Our records show you have not yet submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible.\n\n"+
+				"The timetrack system is available here:\n\n"+
+				"https://bloomington.in.gov/timetrack\n\n"+
+				"After you login, you may need to click on the previous pay period button under 'Time Details' title.\n"+
+				"Then click on 'Submit for Approval' button in the middle of the page.\n\n"+
+				"If you have any questions or support needs, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n"+
+				"Usage guidelines are available here:\n"+
+				"https://docs.google.com/document/d/1krOtCGtJ_SaPCOBF0cv5bMu-q6Buv1KI68PjS0TrZl0/edit#heading=h.ye6yj01u0is4\n\n"+
+				"Thank you\n"+
+				"\n\n";
+		
     String compuseAndSend(String to_str){
 				String msg = "";
-				String body_text ="This is an automated message from the Timetrack timekeeping system.\n\n";
-				body_text += "Today marks the beginning of a new pay period. Our records show you have not yet submitted your timesheet for the last pay period. Please complete and review your timesheet as soon as possible.\n\n";
-				body_text += "The timetrack system is available here:\n\n";
-				body_text += "https://bloomington.in.gov/timetrack\n\n";
-				body_text += "After you login, you may need to click on the previous pay period button under 'Time Details' title.\n";
-				body_text += "Then click on 'Submit for Approval' button in the middle of the page.\n\n";
-				body_text += "If you have any questions or support needs, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n";
-				body_text += "Usage guidelines are available here:\n";
-				body_text += "https://docs.google.com/document/d/1krOtCGtJ_SaPCOBF0cv5bMu-q6Buv1KI68PjS0TrZl0/edit#heading=h.ye6yj01u0is4\n\n";
-				body_text +="Thank you\n";
-				body_text +="\n\n";
 				Properties props = new Properties();
 				props.put("mail.smtp.host", mail_host);
 				
@@ -188,14 +217,20 @@ public class HandleNotification{
 						message.setRecipients(Message.RecipientType.TO, addrArray);
 						// message.setRecipients(Message.RecipientType.BCC, addrArray);
 						Transport.send(message);
+						/*
 						NotificationLog nlog = new NotificationLog(to_str, body_text, "Success",null);
 						nlog.doSave();
+						*/
 				}
 				catch (MessagingException mex){
 						//
 						// Failure
+						msg += mex;
+						//
+						/*
 						NotificationLog nlog = new NotificationLog(to_str, body_text,"Failure",""+mex);
 						nlog.doSave();
+						*/
 						//
 						logger.error(mex);
 						Exception ex = mex;

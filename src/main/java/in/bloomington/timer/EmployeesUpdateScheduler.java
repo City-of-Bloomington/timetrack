@@ -85,6 +85,9 @@ public class EmployeesUpdateScheduler {
 						JobDetail job = JobBuilder.newJob(EmployeesUpdateJob.class)
 								.withIdentity(jobName, groupName)
 								.build();
+						//
+						// probably we can skip this as we can get envBean from context
+						//
 						job.getJobDataMap().put("envBean", envBean);						
 						// 
 						// Trigger will run at 7am on the speciified date

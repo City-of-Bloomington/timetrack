@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 public class EmployeesUpdateJob implements Job{
 
     boolean debug = true;
+		boolean run_employee_update = true;
 		static final long serialVersionUID = 55L;		
 		static Logger logger = LogManager.getLogger(EmployeesUpdateJob.class);
 		EnvBean envBean = null;
@@ -54,7 +55,9 @@ public class EmployeesUpdateJob implements Job{
 		public void doDestroy() {
 		}	    
     public void doWork(){
-				HandleEmployeesUpdate handle = new HandleEmployeesUpdate(envBean);
+				// since we can get envBean from context 
+				// HandleEmployeesUpdate handle = new HandleEmployeesUpdate(envBean);
+				HandleEmployeesUpdate handle = new HandleEmployeesUpdate();				
 				String msg = handle.process();
 				if(!msg.equals(""))
 						logger.error(msg);

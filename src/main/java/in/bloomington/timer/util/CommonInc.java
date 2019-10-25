@@ -68,7 +68,9 @@ public class CommonInc{
 		//
 		// the following two array are used in reports
 		public final static String[] quarter_starts = {"","01/01/","04/01/","07/01/","10/01/"};
-		public final static String[] quarter_ends = {"","03/31/","06/30/","09/30/","12/31/"};		
+		public final static String[] quarter_ends = {"","03/31/","06/30/","09/30/","12/31/"};
+		// reserved usernames that can not login, add any username if needed to the list below
+		public final static String[] invalid_usernames = {"hrmail","lineloc","admin","hnd","police","public.works","council","legalarc","mayor"};		
    	String message = "";
 		List<String> errors = null;
 		//

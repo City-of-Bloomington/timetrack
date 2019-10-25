@@ -186,13 +186,14 @@ public class DepartmentList{
 				}
 				return back;
 		}
+
 		public String findDeptRefs(){
 		
 				String back = "";
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				Connection con = UnoConnect.getConnection();
-				String qq = "select t.ref_id from departments t where ref_id is not null and inactive is null";
+				String qq = "select t.ref_id from departments t where t.ref_id is not null and t.inactive is null";
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;
@@ -200,6 +201,7 @@ public class DepartmentList{
 				try{
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
+						rs = pstmt.executeQuery();
 						deptRefs = "";
 						while(rs.next()){
 								String str = rs.getString(1);

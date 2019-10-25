@@ -40,8 +40,12 @@ public class TimeBlockAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("timeBlock.action");
-				if(!back.equals("")){
-						return back; 
+				if(user == null){
+						back = "Session time out, please logout and login again";
+						System.err.println(" TA back 2 "+back);
+						addError(back);
+						System.err.println(" has errors "+hasErrors());
+						System.err.println(" errors "+errors);						
 				}
 				if(action.equals("Save")){
 						if(timeBlock.areAllTimesSet()){

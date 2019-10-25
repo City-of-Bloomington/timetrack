@@ -28,7 +28,8 @@ public class LeaveDocument{
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		DecimalFormat dfn = new DecimalFormat("##0.00");
     private String id="", employee_id="", pay_period_id="",
-				initiated="",initiated_by="", selected_job_id="";
+				initiated="",initiated_by="", selected_job_id="",
+				request_approval_date="";
 		private String job_id="";
 		PayPeriod payPeriod = null;
 		Employee employee = null;
@@ -41,9 +42,7 @@ public class LeaveDocument{
 		List<LeaveBlock> leaveBlocks = null;
 		Map<Integer, List<LeaveBlock>> dailyBlocks = new TreeMap<>();		
 		/*
-
 		Map<String, Map<Integer, String>> daily = null;				
-
 		Map<String, List<String>> allAccruals = new TreeMap<>();
 		Map<Integer, Double> hourCodeTotals = null;
 		Map<Integer, Double> usedAccrualTotals = null;
@@ -54,7 +53,8 @@ public class LeaveDocument{
 												 String val3,
 												 String val4,
 												 String val5,
-												 String val6
+												 String val6,
+												 String val7
 												 ){
 				setId(val);
 				setEmployee_id(val2);				
@@ -62,7 +62,7 @@ public class LeaveDocument{
 				setJob_id(val4);
 				setInitiated(val5);
 				setInitiated_by(val6);
-
+				setRequestApprovalDate(val7);
     }
     public LeaveDocument(String val){
 				setId(val);
@@ -84,6 +84,9 @@ public class LeaveDocument{
     public String getInitiated(){
 				return initiated;
     }
+    public String getRequestApprovalDate(){
+				return request_approval_date;
+    }		
     public String getInitiated_by(){
 				return initiated_by;
     }		
@@ -113,6 +116,10 @@ public class LeaveDocument{
 				if(val != null)
 						initiated = val;
     }
+    public void setRequestApprovalDate(String val){
+				if(val != null)
+						request_approval_date = val;
+    }		
     public void setInitiated_by(String val){
 				if(val != null)
 						initiated_by = val;
@@ -403,7 +410,7 @@ public class LeaveDocument{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,employee_id,pay_period_id,job_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by from leave_documents where id =? ";
+				String qq = "select id,employee_id,pay_period_id,job_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by,date_format(request_approval_date,'%m/%d/%Y') from leave_documents where id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -420,6 +427,7 @@ public class LeaveDocument{
 								setJob_id(rs.getString(4));
 								setInitiated(rs.getString(5));
 								setInitiated_by(rs.getString(6));
+								setRequestApprovalDate(rs.getString(7));
 						}
 				}
 				catch(Exception ex){
@@ -438,10 +446,10 @@ public class LeaveDocument{
 		public String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into leave_documents values(0,?,?,?,now(),?) ";
+				String qq = "insert into leave_documents values(0,?,?,?,now(),?,null) ";
 				if(employee_id.equals("")){
 						msg = " employee ID not set ";
 						return msg;
@@ -471,11 +479,10 @@ public class LeaveDocument{
 						pstmt.setString(3, job_id);
 						pstmt.setString(4, initiated_by);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);						
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -486,10 +493,43 @@ public class LeaveDocument{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}
+		public String doRequestApproval(){
+				//
+				Connection con = null;
+				PreparedStatement pstmt = null, pstmt2=null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "update leave_documents set request_approval_date=now() where id=? ";
+				if(id.equals("")){
+						msg = " leave document id not set ";
+						return msg;
+				}
+				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could do not get connection to DB";
+						return msg;
+				}				
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();
+						//
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(rs, pstmt);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+		}		
 		
 }
