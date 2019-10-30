@@ -64,7 +64,9 @@
 				<s:textfield name="shift.minuteRounding" value="%{shift.minuteRounding}" size="2" maxlength="2" />
 			</div>			
 			<s:if test="shift.id == ''">
+				<div class="button-group">
 				<s:submit name="action" type="button" value="Save" class="button"/>
+				</div>
 			</s:if>
 			<s:else>
 				<div class="button-group">

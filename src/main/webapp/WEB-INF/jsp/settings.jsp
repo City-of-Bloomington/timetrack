@@ -52,7 +52,7 @@
 			<h2>Audit</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>notificationSchedule.action?action=logs">Recent Automated Notification logs</a></li>				
-				<li><a href="<s:property value='#application.url'/>inform.action?action=logs">Approvers/Payroll Email Logs</a></li>
+				<li><a href="<s:property value='#application.url'/>inform.action?action=logs">Email Logs (By Group Managers)</a></li>
 				<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Entry History</a></li>
 				<li><a href="<s:property value='#application.url'/>auditTime.action">Time Active Users (Email list)</a></li>				
 			</ul>

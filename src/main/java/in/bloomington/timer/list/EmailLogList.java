@@ -23,10 +23,12 @@ public class EmailLogList extends CommonInc{
 
 		static Logger logger = LogManager.getLogger(EmailLog.class);
 		final static long serialVersionUID = 302L;
-		static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-		String date_from="", date_to="", date_at="";
+		static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		String date_from="", date_to="", date_at="", limit="50";
 		boolean debug = false;
 		List<EmailLog> emailLogs = null;
+		public EmailLogList(){
+		}		
 		public EmailLogList(boolean val){
 				debug = val;
 		}
@@ -46,13 +48,35 @@ public class EmailLogList extends CommonInc{
 		public List<EmailLog> getEmailLogs(){
 				return emailLogs;
 		}
+		public void setPageSize(String val){
+				if(val != null)
+						limit = val;
+		}
+		public String getPageSize(){
+				return limit;
+		}
 		public String find(){
 				String back = "";
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				// year worth of data
-				String qq = " select id,user_id,email_from,email_to,cc,bcc,subject,text_message,send_errors,date_format(date_time,'%m/%d/%y %H:%i'),type from email_logs order by id desc limit 10 ";
+				String qw = "";
+				String qq = " select id,user_id,email_from,email_to,cc,bcc,subject,text_message,send_errors,date_format(date_time,'%m/%d/%y %H:%i'),type from email_logs ";
+				if(!date_from.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " date_time >= ? ";
+				}
+				if(!date_to.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " date_time <= ? ";
+				}
+				if(!qw.equals("")){
+						qq += " where "+qw;
+				}
+				qq += " order by id desc ";
+				if(limit.equals("")){
+						qq += " limit "+limit;
+				}
 				if(debug)
 						logger.debug(qq);
 				con = UnoConnect.getConnection();
@@ -61,7 +85,16 @@ public class EmailLogList extends CommonInc{
 						return back;
 				}
 				try{
-						pstmt = con.prepareStatement(qq);				
+						int jj=1;
+						pstmt = con.prepareStatement(qq);
+						if(!date_from.equals("")){
+								java.util.Date date_tmp = df.parse(date_from);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						}
+						if(!date_to.equals("")){
+								java.util.Date date_tmp = df.parse(date_to);
+								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						}										
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								EmailLog one =

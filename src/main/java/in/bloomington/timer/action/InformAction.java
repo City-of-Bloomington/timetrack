@@ -26,6 +26,7 @@ public class InformAction extends TopAction{
 		//
 		String pay_period_id="", text_message="", subject="";
 		String type="", inform_type="", email_cc="";
+		String date_from="", date_to="", pageSize="50";
 		String source = "";
 		PayPeriod payPeriod = null;
 		List<Employee> employees = null;
@@ -53,6 +54,9 @@ public class InformAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(action.equals("logs")){
+						ret = "logs";
+				}
+				else if(action.equals("Find")){
 						ret = "logs";
 				}
 				else if(action.equals("Send")){
@@ -154,6 +158,27 @@ public class InformAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						source = val;
 		}
+		public void setDate_from(String val){
+				if(val != null && !val.equals(""))		
+						date_from = val;
+		}
+		public void setDate_to(String val){
+				if(val != null && !val.equals(""))		
+						date_to = val;
+		}
+		public void setPageSize(String val){
+				if(val != null && !val.equals(""))		
+						pageSize = val;
+		}
+		public String getPageSize(){
+				return pageSize;
+		}
+		public String getDate_from(){
+				return date_from;
+		}
+		public String getDate_to(){
+				return date_to;
+		}		
 		public void setApprove(String val){
 				// ignore
 		}
@@ -349,6 +374,9 @@ public class InformAction extends TopAction{
 		public List<EmailLog> getEmailLogs(){
 				if(emailLogs == null){
 						EmailLogList ell = new EmailLogList(debug);
+						ell.setDate_from(date_from);
+						ell.setDate_to(date_to);
+						ell.setPageSize(pageSize);
 						String back = ell.find();
 						if(back.equals("")){
 								List<EmailLog> ones = ell.getEmailLogs();

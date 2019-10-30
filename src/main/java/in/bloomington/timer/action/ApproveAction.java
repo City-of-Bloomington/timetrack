@@ -41,7 +41,8 @@ public class ApproveAction extends TopAction{
 		List<Employee> notApprovedEmps = null;
 		List<Employee> noDocNorSubmitEmps = null;
 		List<Document> notSubmittedDocs = null;
-		boolean notSubmitAndApproveFlag = true;		
+		// boolean notSubmitAndApproveFlag = true;
+		String employee_ids = ""; 
 		String[] document_ids = null;
 		public String execute(){
 				String ret = SUCCESS;
@@ -86,6 +87,19 @@ public class ApproveAction extends TopAction{
 				}
 				selected_group_id = obtainGroupIdFromSession();
 				return ret;
+		}
+		public String getEmployee_ids(){
+				if(employee_ids.equals("")){
+						findNotSubmittedAndNotApprovedEmps();
+						getNonDocEmps();
+						if(noDocNorSubmitEmps != null && noDocNorSubmitEmps.size() > 0){
+								for(Employee emp:noDocNorSubmitEmps){
+										if(!employee_ids.equals("")) employee_ids+="_";
+										employee_ids += emp.getId();
+								}
+						}
+				}
+				return employee_ids;
 		}
 
 		public void setAction2(String val){
@@ -372,7 +386,6 @@ public class ApproveAction extends TopAction{
 		}
 		
 		void findNotSubmittedAndNotApprovedEmps(){
-				notSubmitAndApproveFlag = false; // to turn off
 				getNonDocEmps();
 				if(hasDocuments()){
 						for(Document one:documents){
@@ -398,6 +411,10 @@ public class ApproveAction extends TopAction{
 														notSubmittedDocs = new ArrayList<>();
 												if(!notSubmittedDocs.contains(one))
 														notSubmittedDocs.add(one);
+												if(noDocNorSubmitEmps == null)
+														noDocNorSubmitEmps = new ArrayList<>();
+												if(!noDocNorSubmitEmps.contains(emp))
+														noDocNorSubmitEmps.add(emp);
 										}
 								}
 						}
