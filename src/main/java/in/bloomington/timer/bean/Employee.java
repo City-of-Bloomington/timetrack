@@ -249,8 +249,6 @@ public class Employee implements Serializable, Comparable<Employee>{
     public void setUsername (String val){
 				if(val != null){
 						username = val.trim();
-						if(username.indexOf(".") > 0)
-								receive_email = false;
 				}
     }
     public void setFirst_name (String val){

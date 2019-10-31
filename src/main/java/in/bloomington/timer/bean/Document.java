@@ -1584,8 +1584,6 @@ public class Document implements Serializable{
 				}
 				return msg;
     }		
-
-		
     Workflow findFirstWorkFlow(){
 				Workflow workflow = null;
 				WorkflowList wfl = new WorkflowList();

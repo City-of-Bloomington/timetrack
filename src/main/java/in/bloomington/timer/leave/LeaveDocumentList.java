@@ -78,7 +78,7 @@ public class LeaveDocumentList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by,date_format(d.request_approval_date,'%m/%d/%Y') from leave_documents d, employees e ";
+				String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by,date_format(d.request_approval_time,'%m/%d/%Y %H:%i'),d.request_approval_by from leave_documents d, employees e ";
 				String qw = "d.employee_id=e.id ";
 				if(!employee_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
@@ -94,7 +94,7 @@ public class LeaveDocumentList{
 				}
 				if(request_approve_only){
 						if(!qw.equals("")) qw += " and ";						
-						qw += "d.request_approval_date is not null ";
+						qw += "d.request_approval_time is not null ";
 				}
 				if(!date.equals("")){
 						qq += " join pay_periods pp on pp.id=d.pay_period_id ";
@@ -153,7 +153,8 @@ public class LeaveDocumentList{
 																										 rs.getString(4),
 																										 rs.getString(5),
 																										 rs.getString(6),
-																										 rs.getString(7));
+																										 rs.getString(7),
+																										 rs.getString(8));
 							 if(!documents.contains(one))
 									 documents.add(one);
 						}

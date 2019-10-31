@@ -29,7 +29,7 @@ public class LeaveBlockLog{
 		//
 		int order_index = 0;
 		String hour_code_name = "", hour_code_desc="", job_name="";
-		String date = ""; // the user pick date, needed for PTO, Holiday etc
+		String date = ""; // the user pick date, needed for PTO
 		String errors = "";
 		double hours = 0.0;
 		HourCode hourCode = null;
@@ -45,15 +45,15 @@ public class LeaveBlockLog{
 								 
 								 double val6,
 								 String val7,								 
+								 String val8,
 								 String val9,
-								 String val10,
 								 
+								 String val10,
 								 String val11,
 								 String val12,
-								 String val13,
-								 String val14
+								 String val13
 							 ){
-				setVals(val, val2, val3, val4, val5, val6, val7, val9, val10, val11, val12, val13, val14);
+				setVals(val, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13);
 		}		
 		void setVals(
 								 String val,
@@ -64,13 +64,13 @@ public class LeaveBlockLog{
 								 
 								 double val6,
 								 String val7,								 
+								 String val8,
 								 String val9,
 								 String val10,
 								 
 								 String val11,
 								 String val12,
-								 String val13,
-								 String val14
+								 String val13
 							 ){								
 				setId(val);
 				setDocument_id(val2);
@@ -79,12 +79,12 @@ public class LeaveBlockLog{
 				setDate(val5);
 				setHours(""+val6);
 				setRequestDate(val7);
-				setActionStatus(val9);
-				setActionBy(val10);
-				setActionDate(val11);
-				setChangeType(val12);
-				setChangeTime(val13);
-				setChangeBy(val14);
+				setActionStatus(val8);
+				setActionBy(val9);
+				setActionDate(val10);
+				setChangeType(val11);
+				setChangeTime(val12);
+				setChangeBy(val13);
     }
     public LeaveBlockLog(String val){
 				setId(val);
@@ -275,8 +275,8 @@ public class LeaveBlockLog{
 						return errors;
 				}
 				String qq = "insert into leave_block_logs values(0,?,?,?,?, "+
-						"?,?,?,?, "+
-						"?,?,now(),?) ";
+						"?,?,?,?,?, "+
+						"?,now(),?) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				if(document_id.equals("")){
 						msg = " document not set ";
@@ -355,16 +355,16 @@ public class LeaveBlockLog{
 						" date_format(t.date,'%m/%d/%Y'),"+
 						
 						" t.hours,"+
-						" date_format(t.request_date,'%m/%d/%Y'),"+
+						" date_format(t.request_date,'%m/%d/%Y %H:%i'),"+
 						" t.action_status,"+
 						" t.action_by,"+
-						
 						" date_format(t.action_date,'%m/%d/%Y'),"+
+						
 						" t.change_type,"+
-						" date_format(t.change_time,'%m/%d/%Y '),"+						
-						" t.change_by "+						
-						" from leave_block_logs t "+
-						" where t.id=? ";
+						" date_format(t.change_time,'%m/%d/%y %H:%i'),"+						
+						" t.change_by "+
+						
+						" from leave_block_logs t where t.id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -387,8 +387,8 @@ public class LeaveBlockLog{
 												rs.getString(7),														
 												rs.getString(8),
 												rs.getString(9),
-												
 												rs.getString(10),
+												
 												rs.getString(11),
 												rs.getString(12),														
 												rs.getString(13)														

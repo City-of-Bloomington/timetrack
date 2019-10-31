@@ -13,7 +13,7 @@
 		The following employees will be informed about <s:property value="inform_type" /> <br />
 		Uncheck the ones you do not want to be included in the email.<br />
 		Then modify the email message below if needed. <br />
-		You may add your email or other emails in the 'Email CC' field for information purpose <br />
+		You may add your email or other emails in the 'Email CC' field for information purpose. For multiple emails use comma as separator with no space in between<br />
 		<ul>
 			<s:if test="hasEmployees()">
 				<s:iterator var="one" value="employees" status="row">

@@ -5,6 +5,13 @@
  * @author W. Sibo <sibow@bloomington.in.gov>
  *
 	-->
+<script>
+var myTimer = setInterval(loginTimer, 7200000);
+function loginTimer() {
+	// alert("Session Timeout you are going to be redirected to login page ");
+  window.location = "<s:property value='#application.url' />Login";
+} 
+</script>
 <div class="homepage">
 	<s:if test="hasErrors()">
 		<s:set var="errors" value="%{errors}" />

@@ -451,6 +451,9 @@ public class LeaveBlock{
 		}
 		//
 		// when managers approve or deny
+		// when action_status = Approved we need to copy the data to time_blocks
+		// this should happen when new time_document is created, the system
+		// should look for all the approved blocks and copy accordingly
 		//
 		public String doActionChange(){
 				Connection con = null;
@@ -523,14 +526,13 @@ public class LeaveBlock{
 						" date_format(t.date,'%m/%d/%Y'),"+
 						" t.hours,"+
 						
-						" date_format(t.request_date,'%m/%d/%Y'),"+
+						" date_format(t.request_date,'%m/%d/%Y %H:%i'),"+
 						" t.action_status,"+
 						" t.action_by,"+
-						" date_format(t.action_date,'%m/%d/%Y'),"+
-						
+						" date_format(t.action_date,'%m/%d/%Y %H:%i'),"+
 						" t.inactive "+
-						" from leave_blocks t "+
-						" where t.id=? ";
+						
+						" from leave_blocks t where t.id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){

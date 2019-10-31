@@ -327,25 +327,18 @@ public class InformAction extends TopAction{
 				if(employees == null &&
 					 employee_ids != null &&
 					 !employee_ids.equals("")){
-						String[] emp_arr = null;
+						String emp_set = "";
 						try{
-								if(employee_ids.indexOf("_") > -1)
-										emp_arr = employee_ids.split("_");
+								if(employee_ids.indexOf("_") > -1){
+										emp_set = employee_ids.replace("_",",");
+								}
 								else if(employee_ids.indexOf(",") > -1)
-										emp_arr = employee_ids.split(",");
+										emp_set = employee_ids;
 								else{
-										emp_arr = new String[1];
-										emp_arr[0] = employee_ids;
+										emp_set = employee_ids;
 								}
 						}catch(Exception ex){
 								System.err.println(ex);
-						}
-						String emp_set = "";
-						if(emp_arr != null){
-								for(String str:emp_arr){
-										if(!emp_set.equals("")) emp_set += ","; 
-										emp_set += str;
-								}
 						}
 						EmployeeList empl = new EmployeeList();
 						if(!emp_set.equals("")){

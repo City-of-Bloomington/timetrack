@@ -80,7 +80,7 @@ public class TimeBlockAction extends TopAction{
 								}
 						}
 						else{
-								back = "All fields are required";
+								back = "Not all required fields are set";
 								addError(back);
 								return "json";	
 						}

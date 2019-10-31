@@ -29,11 +29,12 @@ public class LeaveDocument{
 		DecimalFormat dfn = new DecimalFormat("##0.00");
     private String id="", employee_id="", pay_period_id="",
 				initiated="",initiated_by="", selected_job_id="",
-				request_approval_date="";
+				request_approval_time="", request_approval_by="";
 		private String job_id="";
 		PayPeriod payPeriod = null;
 		Employee employee = null;
 		Employee initiater = null;
+		Employee approveRequester = null;
 		JobTask job = null;
 		List<JobTask> jobs = null;
 		SalaryGroup salaryGroup = null;
@@ -54,7 +55,8 @@ public class LeaveDocument{
 												 String val4,
 												 String val5,
 												 String val6,
-												 String val7
+												 String val7,
+												 String val8
 												 ){
 				setId(val);
 				setEmployee_id(val2);				
@@ -62,7 +64,8 @@ public class LeaveDocument{
 				setJob_id(val4);
 				setInitiated(val5);
 				setInitiated_by(val6);
-				setRequestApprovalDate(val7);
+				setRequestApprovalTime(val7);
+				setRequestApprovalBy(val8);				
     }
     public LeaveDocument(String val){
 				setId(val);
@@ -84,8 +87,11 @@ public class LeaveDocument{
     public String getInitiated(){
 				return initiated;
     }
-    public String getRequestApprovalDate(){
-				return request_approval_date;
+    public String getRequestApprovalTime(){
+				return request_approval_time;
+    }
+    public String getRequestApprovalBy(){
+				return request_approval_by;
     }		
     public String getInitiated_by(){
 				return initiated_by;
@@ -116,9 +122,13 @@ public class LeaveDocument{
 				if(val != null)
 						initiated = val;
     }
-    public void setRequestApprovalDate(String val){
+    public void setRequestApprovalTime(String val){
 				if(val != null)
-						request_approval_date = val;
+						request_approval_time = val;
+    }
+    public void setRequestApprovalBy(String val){
+				if(val != null)
+						request_approval_by = val;
     }		
     public void setInitiated_by(String val){
 				if(val != null)
@@ -177,6 +187,16 @@ public class LeaveDocument{
 				}
 				return initiater;
 		}
+		public Employee getApproveRequester(){
+				if(!request_approval_by.equals("") && approveRequester == null){
+						Employee one = new Employee(request_approval_by);
+						String back = one.doSelect();
+						if(back.equals("")){
+								approveRequester = one;
+						}
+				}
+				return approveRequester;
+		}		
 		public JobTask getJob(){
 				if(!job_id.equals("") && job == null){
 						JobTask one = new JobTask(job_id);
@@ -410,7 +430,7 @@ public class LeaveDocument{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,employee_id,pay_period_id,job_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by,date_format(request_approval_date,'%m/%d/%Y') from leave_documents where id =? ";
+				String qq = "select id,employee_id,pay_period_id,job_id,date_format(initiated,'%m/%d/%Y %H;%i'),initiated_by,date_format(request_approval_time,'%m/%d/%Y %H:%i'),request_approval_by from leave_documents where id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -427,7 +447,8 @@ public class LeaveDocument{
 								setJob_id(rs.getString(4));
 								setInitiated(rs.getString(5));
 								setInitiated_by(rs.getString(6));
-								setRequestApprovalDate(rs.getString(7));
+								setRequestApprovalTime(rs.getString(7));
+								setRequestApprovalBy(rs.getString(8));								
 						}
 				}
 				catch(Exception ex){
@@ -449,7 +470,7 @@ public class LeaveDocument{
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into leave_documents values(0,?,?,?,now(),?,null) ";
+				String qq = "insert into leave_documents values(0,?,?,?,now(),?,null,null) ";
 				if(employee_id.equals("")){
 						msg = " employee ID not set ";
 						return msg;
@@ -504,11 +525,15 @@ public class LeaveDocument{
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "update leave_documents set request_approval_date=now() where id=? ";
+				String qq = "update leave_documents set request_approval_time=now(),request_approval_by=? where id=? ";
 				if(id.equals("")){
 						msg = " leave document id not set ";
 						return msg;
 				}
+				if(request_approval_by.equals("")){
+						msg = " approve request user not set ";
+						return msg;
+				}				
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -517,7 +542,8 @@ public class LeaveDocument{
 				}				
 				try{
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, id);
+						pstmt.setString(1, request_approval_by);
+						pstmt.setString(2, id);						
 						pstmt.executeUpdate();
 						//
 				}

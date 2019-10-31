@@ -110,8 +110,14 @@ public class MailHandle{
 								msg.setRecipients(Message.RecipientType.TO, address);
 						}
 						if(cc != null && !cc.equals("")){
-								InternetAddress[] address2 = {new InternetAddress(cc)};
-								msg.setRecipients(Message.RecipientType.CC, address2);
+								if(cc.indexOf(",") == -1){
+										InternetAddress[] address2 = {new InternetAddress(cc)};
+										msg.setRecipients(Message.RecipientType.CC, address2);
+								}
+								else{
+										InternetAddress[] address2 = javax.mail.internet.InternetAddress.parse(cc);
+										msg.setRecipients(Message.RecipientType.CC, address2);
+								}
 						}
 						if(bcc != null && !bcc.equals("")){
 								InternetAddress[] address3 = javax.mail.internet.InternetAddress.parse(bcc);

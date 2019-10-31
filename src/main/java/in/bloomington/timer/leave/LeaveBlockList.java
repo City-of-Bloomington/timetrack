@@ -32,6 +32,7 @@ public class LeaveBlockList{
 		String code = "", code2 = ""; 
 		boolean active_only = false, for_today = false, dailyOnly=false,
 				clockInOnly = false, hasClockInAndOut = false;
+		boolean approved_only = false;
 		List<LeaveBlock> leaveBlocks = null;
 		//
 		// for 14 days pay period
@@ -103,6 +104,10 @@ public class LeaveBlockList{
 		public void setDailyOnly(){
 				dailyOnly = true;
 		}
+		public void setApprovedOnly(){
+				approved_only = true;
+				active_only = true;
+		}		
 		public List<LeaveBlock> getLeaveBlocks(){
 				return leaveBlocks;
 		}
@@ -255,6 +260,10 @@ public class LeaveBlockList{
 				if(active_only){
 						if(!qw.equals("")) qw += " and ";
 						qw += " t.inactive is null ";
+				}
+				if(approved_only){
+						if(!qw.equals("")) qw += " and ";
+						qw += " t.action_status='Approved' ";
 				}
 				if(!qw.equals("")){
 						qq += " where "+qw;
