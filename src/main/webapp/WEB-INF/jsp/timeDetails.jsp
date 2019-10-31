@@ -6,7 +6,7 @@
  *
 	-->
 <script>
-var myTimer = setInterval(loginTimer, 7200000);
+var myTimer = setInterval(loginTimer, 7200000); // 2 hours
 function loginTimer() {
 	// alert("Session Timeout you are going to be redirected to login page ");
   window.location = "<s:property value='#application.url' />Login";
