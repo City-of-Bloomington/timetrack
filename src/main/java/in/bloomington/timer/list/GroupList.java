@@ -165,12 +165,14 @@ public class GroupList{
 					 || include_future
 					 || !pay_period_id.equals("")){
 						qq += " join group_employees gu on g.id = gu.group_id ";						
-						if(!qw.equals("")) qw += " and ";
 						if(!employee_id.equals("")){
+								if(!qw.equals("")) qw += " and ";
 								qw +=	" gu.employee_id=?";
 						}
-						if(active_only)
-								qw += " and gu.inactive is null ";
+						if(active_only){
+								if(!qw.equals("")) qw += " and ";								
+								qw += " gu.inactive is null ";
+						}
 						if(include_future){
 								if(!qw.equals("")) qw += " and ";								
 								qw +=	" (gu.expire_date is null or gu.expire_date >= curdate())";

@@ -9,7 +9,7 @@
 	<!-- to remove .action 
 	<constant name="struts.action.extension" value = ""/>
 	-->
-  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*,/JobTitleService*,/GroupManagerService*,/ManagerService*,/PositionService*,/CodeReasonService*" />
+  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*,/JobTitleService*,/GroupManagerService*,/ManagerService*,/PositionService*,/CodeReasonService*,/NewEmployeeService*" />
 
   <package name="default" extends="struts-default">
 
@@ -102,6 +102,13 @@
       <result name="error">/WEB-INF/jsp/timeIssue.jsp</result>
       <result name="success">/WEB-INF/jsp/timeIssue.jsp</result>
     </action>
+    <action name="serviceKey" 
+	    class="in.bloomington.timer.action.ServiceKeyAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/serviceKey.jsp</result>		
+      <result name="error">/WEB-INF/jsp/serviceKey.jsp</result>
+      <result name="success">/WEB-INF/jsp/serviceKey.jsp</result>
+    </action>		
     <action name="handleIssue" 
 	    class="in.bloomington.timer.action.HandleIssueAction" 
 	    method="execute">

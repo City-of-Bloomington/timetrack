@@ -1227,24 +1227,16 @@ CREATE TABLE available_badges (
 ;; non production set to false
  run_employee_update = false;
 ;;
-;; need to modify notification_logs table, since the text message is the
-;; same we can put the message and the date in a parent table and
-;; other info in the child table
+;; 11/06/2019
 ;;
-create table notification_logs(
+create table service_keys(
  id int unsigned auto_increment primary key,
- message varchar(1024),
- date date
- )engine=InnoDB;
+ key_name varchar(56),
+ key_value varchar(256),
+ inactive char(1)
+)engine=InnoDB;
 
-create table notification_user_logs(
- id int unsigned auto_increment primary key,
- notification_log_id int unsigned,
- recipient varchar(128),
- status enum('Success','Failure'),
- error_msg text,
- foreign key(notification_log_id) references notification_logs(id)
- )engine=InnoDB;
+
  
 
  

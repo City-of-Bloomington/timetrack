@@ -37,6 +37,10 @@
       <servlet-class>in.bloomington.timer.service.EmployeeService</servlet-class>
     </servlet>
     <servlet>
+      <servlet-name>NewEmployeeService</servlet-name>
+      <servlet-class>in.bloomington.timer.service.NewEmployeeService</servlet-class>
+    </servlet>		
+    <servlet>
       <servlet-name>DbEmployeeService</servlet-name>
       <servlet-class>in.bloomington.timer.service.DbEmployeeService</servlet-class>
     </servlet>		
@@ -84,6 +88,10 @@
     <servlet-name>GroupService</servlet-name>
     <url-pattern>/GroupService</url-pattern>
   </servlet-mapping>
+	<servlet-mapping>
+    <servlet-name>NewEmployeeService</servlet-name>
+    <url-pattern>/NewEmployeeService</url-pattern>
+  </servlet-mapping>	
 	<servlet-mapping>
     <servlet-name>CodeReasonService</servlet-name>
     <url-pattern>/CodeReasonService</url-pattern>

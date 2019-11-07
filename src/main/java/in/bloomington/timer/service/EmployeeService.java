@@ -32,7 +32,6 @@ public class EmployeeService extends HttpServlet{
     }
 
     /**
-     * Generates the Group form and processes view, add, update and delete operations.
      *
      * @param req The request input stream
      * @param res The response output stream

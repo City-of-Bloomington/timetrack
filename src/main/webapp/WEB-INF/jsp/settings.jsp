@@ -35,6 +35,7 @@
 				<li><a href="<s:property value='#application.url'/>payperiod.action">Pay Periods</a></li>				
 				<li><a href="<s:property value='#application.url'/>position.action">Positions</a></li>
 				<li><a href="<s:property value='#application.url'/>salaryGroup.action">Salary Groups</a></li>
+				<li><a href="<s:property value='#application.url'/>serviceKey.action">Service Keys</a></li>				
 				<li><a href="<s:property value='#application.url'/>shift.action">Shifts</a></li>				
 				<li><a href="<s:property value='#application.url'/>node.action">Workflow Actions</a></li>
 			</ul>
