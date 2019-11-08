@@ -87,6 +87,10 @@ public class ServiceKey{
 				if(val)
 					 inactive="y";
     }
+		public String toString(){
+				return ""+key_name+" "+key_value;
+		}
+				
 		//
 		public String doSelect(){
 				String back = "";

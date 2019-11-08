@@ -57,7 +57,7 @@ public class ServiceKeyList{
 				try{
 						if(!name.equals("")){
 								if(!qw.equals("")) qw += " and ";
-								qw += " t.name like ? ";
+								qw += " t.key_name like ? ";
 						}
 						if(active_only){
 								if(!qw.equals("")) qw += " and ";

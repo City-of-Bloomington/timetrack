@@ -4,14 +4,15 @@ package in.bloomington.timer.service;
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
-import java.sql.*;
+
 import java.io.*;
 import java.util.Enumeration;
-import javax.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.time.Clock;
 import java.io.UnsupportedEncodingException;
 
 import java.net.URLDecoder;
@@ -30,11 +31,17 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
+//
+// amazon lib
+//
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-// import org.apache.commons.codec.binary.Base64;
-import java.util.Base64;
+import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.signer.Aws4Signer;
+import software.amazon.awssdk.auth.signer.params.Aws4SignerParams;
+import software.amazon.awssdk.regions.Region;
+
 import in.bloomington.timer.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
@@ -82,11 +89,26 @@ public class NewEmployeeService extends HttpServlet{
 				String AccessKeyId="", Signature="",
 						uri="", Service="", employee_number="", employee_name="";
 				String AccountTrackerUsername="", dateTime="";
-
+				String protocol ="", host="",path="", httpMethod="";
+				Integer port = 80;
 				HttpSession session = null;
 				String [] vals = null;
 				ServiceKey key = null;
-				Map<String, String> map = new HashMap<>();
+				Map<String, List<String>> params = new HashMap<>();
+				Map<String, List<String>> headers = new HashMap<>();
+				protocol = req.getScheme();
+				port = req.getServerPort();
+				path = req.getContextPath();
+				host = req.getServerName();
+				//
+				System.err.println(" call prop set ");				
+				setSystemProperties();
+				//
+				httpMethod = req.getMethod();
+				System.err.println(" protocol "+protocol);
+				System.err.println(" port "+port);
+				System.err.println(" path "+path);
+				System.err.println(" host "+host);				
 				Enumeration<String> values = req.getParameterNames();
 				Enumeration<String> headerNames = req.getHeaderNames();
 				while(headerNames.hasMoreElements()){
@@ -94,6 +116,16 @@ public class NewEmployeeService extends HttpServlet{
 						System.err.println(headerName+":");
 						String headerValue = req.getHeader(headerName);
 						System.err.println(headerValue);
+						if(headers.containsKey(headerName)){
+								List<String> list = headers.get(headerName);
+								list.add(headerValue);
+								headers.put(headerName, list);
+						}
+						else{
+								List<String> list = new ArrayList<>();
+								list.add(headerValue);
+								headers.put(headerName, list);
+						}
 						if(headerName.equals("AccountTrackerUsername")){
 								AccountTrackerUsername = headerValue;
 						}
@@ -117,10 +149,14 @@ public class NewEmployeeService extends HttpServlet{
 						if (name.equals("employee_number")) { // this is what jquery sends
 								employee_number = value;
 								System.err.println(" emp # "+employee_number);
-								map.put(name, value);								
+								List<String> list = new ArrayList<>();
+								list.add(value);
+								params.put(name, list);
 						}
 						else{
-								// map.put(name, value);
+								List<String> list = new ArrayList<>();
+								list.add(value);								
+								params.put(name, list);								
 								System.err.println(name+" "+value);
 						}
 				}
@@ -133,18 +169,41 @@ public class NewEmployeeService extends HttpServlet{
 						}
 				}
 				System.err.println(" sig "+Signature);
-				System.err.println(" dateTime "+dateTime);				
+				System.err.println(" dateTime "+dateTime);
+
+				NewEmployeeServiceHelper helper =
+						new NewEmployeeServiceHelper(protocol,
+																				 host,
+																				 port,
+																				 path,
+																				 params,
+																				 httpMethod,
+																				 headers,
+																				 null);
+				System.err.println(" helper "+helper);
+				AwsSessionCredentials awsCreds =
+						AwsSessionCredentials.create(key.getKeyName(),
+																				 key.getKeyValue(),
+																				 "your_token_here");
+
+				DefaultCredentialsProvider dcp = DefaultCredentialsProvider.create();
+				AwsCredentials creds = dcp.resolveCredentials();
+				Aws4SignerParams signParams =
+						Aws4SignerParams.builder()
+						.doubleUrlEncode(true)
+						.awsCredentials(creds)
+						.signingName("account_tracker")
+						.signingRegion(Region.US_EAST_1)
+						.timeOffset(0)
+						// .signingClockOverride(new Clock())
+						.build();
+				Aws4Signer signer = Aws4Signer.create();
+				signer.sign(helper, signParams);
+				
 				// String timestamp = parseTimestamp(dateTime);
 				// System.err.println(" mod timestamp "+timestamp);
 				// map.put("Timestamp", timestamp); // prob need to be in timestamp format
-				map.put("AccessKeyId", awsAccessKeyId);
-				map.put("AccountTrackerUsername", "sibow");				
-				System.err.println(" map "+map);
-				// SignedRequestsHelper();
-				/*
-				String dup_sig = sign(map);
-				System.err.println(" dup_sig "+dup_sig);
-				*/
+
 				message = "Request Received ";
 				out.println("<head><title>New Employee Service</title><body>");
 				out.println("<center>");
@@ -155,7 +214,53 @@ public class NewEmployeeService extends HttpServlet{
 				out.flush();
 				out.close();
     }
+		void setSystemProperties(){
+				ServiceKey key = null;
+				ServiceKeyList skl = new ServiceKeyList("account_tracker");				
+				try{
+						String back = skl.find();
+						if(back.equals("")){
+								List<ServiceKey> ones = skl.getKeys();
+								if(ones != null && ones.size() > 0){
+										key = ones.get(0);
+								}
+						}
+						if(key != null){
+								System.err.println(" found key "+key);
+								Properties p = new Properties();
+								p.setProperty("aws_access_key_id", key.getKeyName());
+								p.setProperty("aws_secret_access_key", key.getKeyValue());
+								// set the system properties
+								System.setProperties(p);
+						}
 
+				}catch(Exception ex){
+						System.err.println(" ex "+ex);
+				}
+				/*
+					//
+					// using the credentials from the system env 
+					//
+					AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+					.withCredentials(new EnvironmentVariableCredentialsProvider())
+					.build();
+
+
+				 */
+		}
+		/*
+			Request<Void> request = new DefaultRequest<Void>("es"); //Request to ElasticSearch
+			request.setHttpMethod(HttpMethodName.GET);
+			request.setEndpoint(URI.create("http://..."));
+
+			//Sign it...
+			AWS4Signer signer = new AWS4Signer();
+			signer.setRegionName("...");
+			signer.setServiceName(request.getServiceName());
+			signer.sign(request, new AwsCredentialsFromSystem());
+			
+
+		 */
 		/*
 		private SecretKeySpec secretKeySpec = null;
 		private Mac mac = null;
