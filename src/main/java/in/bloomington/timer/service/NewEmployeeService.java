@@ -9,11 +9,16 @@ import java.io.*;
 import java.util.Enumeration;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 import java.time.Clock;
 import java.io.UnsupportedEncodingException;
+import software.amazon.awssdk.auth.signer.params.Aws4PresignerParams;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -31,12 +36,13 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
+import java.text.SimpleDateFormat;
 //
 // amazon lib
 //
-
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.utils.http.SdkHttpUtils;
+import software.amazon.awssdk.http.*;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.signer.Aws4Signer;
 import software.amazon.awssdk.auth.signer.params.Aws4SignerParams;
@@ -54,6 +60,10 @@ public class NewEmployeeService extends HttpServlet{
 
 		static final long serialVersionUID = 1200L;
 		static Logger logger = LogManager.getLogger(NewEmployeeService.class);
+		static SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+		static SimpleDateFormat dfm2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");		
+		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimePattern);
+		// DateTimeFormatter formatter2 = DateTimeFormatter.ISO_INSTANT;		
 		static final String UTF8_CHARSET = "UTF-8";
 		static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
 		//
@@ -102,15 +112,19 @@ public class NewEmployeeService extends HttpServlet{
 				host = req.getServerName();
 				//
 				System.err.println(" call prop set ");				
-				setSystemProperties();
+				// setSystemProperties();
 				//
 				httpMethod = req.getMethod();
 				System.err.println(" protocol "+protocol);
 				System.err.println(" port "+port);
 				System.err.println(" path "+path);
-				System.err.println(" host "+host);				
+				System.err.println(" host "+host);
 				Enumeration<String> values = req.getParameterNames();
 				Enumeration<String> headerNames = req.getHeaderNames();
+				// for testing
+				ServiceSigner helper =
+						new ServiceSigner();
+
 				while(headerNames.hasMoreElements()){
 						String headerName = headerNames.nextElement();
 						System.err.println(headerName+":");
@@ -168,41 +182,24 @@ public class NewEmployeeService extends HttpServlet{
 								key = ones.get(0);
 						}
 				}
+				
+				TimeTrackCredentialsProvider awsCreds =
+						new TimeTrackCredentialsProvider(key.getKeyName(),
+																						 key.getKeyValue());				
 				System.err.println(" sig "+Signature);
 				System.err.println(" dateTime "+dateTime);
+				CompletableFuture signedUrl = getSignedUrl(host,
+																									 httpMethod,
+																									 path,
+																									 protocol,
+																									 key,
+																									 awsCreds,
+																									 params,
+																									 headers,
+																									 dateTime
+																									 );
+				System.err.println(" signedUrl "+signedUrl);
 
-				NewEmployeeServiceHelper helper =
-						new NewEmployeeServiceHelper(protocol,
-																				 host,
-																				 port,
-																				 path,
-																				 params,
-																				 httpMethod,
-																				 headers,
-																				 null);
-				System.err.println(" helper "+helper);
-				AwsSessionCredentials awsCreds =
-						AwsSessionCredentials.create(key.getKeyName(),
-																				 key.getKeyValue(),
-																				 "your_token_here");
-
-				DefaultCredentialsProvider dcp = DefaultCredentialsProvider.create();
-				AwsCredentials creds = dcp.resolveCredentials();
-				Aws4SignerParams signParams =
-						Aws4SignerParams.builder()
-						.doubleUrlEncode(true)
-						.awsCredentials(creds)
-						.signingName("account_tracker")
-						.signingRegion(Region.US_EAST_1)
-						.timeOffset(0)
-						// .signingClockOverride(new Clock())
-						.build();
-				Aws4Signer signer = Aws4Signer.create();
-				signer.sign(helper, signParams);
-				
-				// String timestamp = parseTimestamp(dateTime);
-				// System.err.println(" mod timestamp "+timestamp);
-				// map.put("Timestamp", timestamp); // prob need to be in timestamp format
 
 				message = "Request Received ";
 				out.println("<head><title>New Employee Service</title><body>");
@@ -214,191 +211,67 @@ public class NewEmployeeService extends HttpServlet{
 				out.flush();
 				out.close();
     }
-		void setSystemProperties(){
-				ServiceKey key = null;
-				ServiceKeyList skl = new ServiceKeyList("account_tracker");				
+
+		public CompletableFuture<String> getSignedUrl(String host,
+																									String method,
+																									String path,
+																									String protocol,
+																									ServiceKey key,
+																									AwsCredentials credits,
+																									Map<String, List<String>> param,
+																									Map<String, List<String>> headers,
+																									String dateTime
+																									) {
+				Instant instant = null;
 				try{
-						String back = skl.find();
-						if(back.equals("")){
-								List<ServiceKey> ones = skl.getKeys();
-								if(ones != null && ones.size() > 0){
-										key = ones.get(0);
-								}
-						}
-						if(key != null){
-								System.err.println(" found key "+key);
-								Properties p = new Properties();
-								p.setProperty("aws_access_key_id", key.getKeyName());
-								p.setProperty("aws_secret_access_key", key.getKeyValue());
-								// set the system properties
-								System.setProperties(p);
-						}
-
-				}catch(Exception ex){
-						System.err.println(" ex "+ex);
-				}
-				/*
-					//
-					// using the credentials from the system env 
-					//
-					AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-					.withCredentials(new EnvironmentVariableCredentialsProvider())
-					.build();
-
-
-				 */
-		}
-		/*
-			Request<Void> request = new DefaultRequest<Void>("es"); //Request to ElasticSearch
-			request.setHttpMethod(HttpMethodName.GET);
-			request.setEndpoint(URI.create("http://..."));
-
-			//Sign it...
-			AWS4Signer signer = new AWS4Signer();
-			signer.setRegionName("...");
-			signer.setServiceName(request.getServiceName());
-			signer.sign(request, new AwsCredentialsFromSystem());
-			
-
-		 */
-		/*
-		private SecretKeySpec secretKeySpec = null;
-		private Mac mac = null;
-				
-		public void SignedRequestsHelper() {
-				try{
-						byte[] secretyKeyBytes = awsSecretKey.getBytes(UTF8_CHARSET);
-						secretKeySpec =
-								new SecretKeySpec(secretyKeyBytes, HMAC_SHA256_ALGORITHM);
-						mac = Mac.getInstance(HMAC_SHA256_ALGORITHM);
-						mac.init(secretKeySpec);
-
-				}catch(Exception ex){
-						logger.error(ex);
-				}
-		}
-		*/
-		/*
-		public String sign(Map<String, String> params) {
-				// params.put("AWSAccessKeyId", awsAccessKeyId);
-				// params.put("Timestamp", timestamp());
-				SecretKeySpec secretKeySpec = null;
-				Mac mac = null;
-				String sig = "";
-				String signature = null;
-				byte[] data;
-				byte[] rawHmac;				
-				try{
-						byte[] secretyKeyBytes = awsSecretKey.getBytes(UTF8_CHARSET);
-						secretKeySpec =
-								new SecretKeySpec(secretyKeyBytes, HMAC_SHA256_ALGORITHM);
-						mac = Mac.getInstance(HMAC_SHA256_ALGORITHM);
-						mac.init(secretKeySpec);
-				
-						System.err.println(" params "+params);
-						SortedMap<String, String> sortedParamMap =
-								new TreeMap<String, String>(params);
-						String canonicalQS = canonicalize(sortedParamMap);
-						System.err.println(" cano "+canonicalQS);
-						String toSign =
-								"GET\n"+
-								"tomcat2.bloomington.in.gov\n"+
-								"NewEmployeeService\n"+
-								"account_tracker\n"+
-								canonicalQS;
-
-								// String toSign =
-								// REQUEST_METHOD + "\n"
-								// + endpoint + "\n"
-								// + REQUEST_URI + "\n"
-								// + canonicalQS;						
-
-						data = toSign.getBytes(UTF8_CHARSET);
-						System.err.println(" data "+data);
-						System.err.println(" len "+data.length);
+						java.util.Date date = dfm.parse(dateTime);
+						String date2 = dfm2.format(date);
+						System.err.println(" date "+date2);
+						instant = ZonedDateTime.parse(date2).toInstant();
 						
-						rawHmac = mac.doFinal(data);
-						System.err.println(" rawHmac "+rawHmac);
-						System.err.println(" len "+rawHmac.length);
-
-						signature = new String(Base64.getEncoder().encode(rawHmac));
-
-						// Base64 encoder = new Base64();
-						// signature = new String(encoder.encode(rawHmac));
-						// signature =  new String(Base64.encodeBase64(rawHmac));						
-
-
-						// signature = new String(encoder.encode(rawHmac)); 
-						System.err.println(" sig "+signature);
-						//
-						sig = percentEncodeRfc3986(signature);
-
-						// String url = "https://" + endpoint + REQUEST_URI + "?" +
-						 // canonicalQS + "&Signature=" + sig;
-				}catch(Exception ex){
-						System.err.println(" ex "+ex);
-				}
-				return sig;
-		}
-*/
-		/*
-		private String parseTimestamp(String tsmp) {
-				String timestamp = null;
-				Calendar cal = Calendar.getInstance();
-				DateFormat dfm = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
-				dfm.setTimeZone(TimeZone.getTimeZone("GMT"));
-				DateFormat dfm2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-				dfm2.setTimeZone(TimeZone.getTimeZone("GMT"));				
-				// dfm.parse(tsmp);
-				try{
-						System.err.println(" time "+tsmp);
-						java.util.Date tm = dfm.parse(tsmp);
-						System.err.println(" time "+tm);
-						timestamp = dfm2.format(tm.getTime());
-						
+						// print Value 
+						System.out.println("instant: "
+															 + instant);
 				}catch(Exception ex){
 						System.err.println(ex);
 				}
-				return timestamp;
-		}		
-		*/
-		/*
-		private String canonicalize(SortedMap<String, String> sortedParamMap)
-		{
-				if (sortedParamMap.isEmpty()) {
-						return "";
-				}
-				
-				StringBuffer buffer = new StringBuffer();
-				Iterator<Map.Entry<String, String>> iter =
-						sortedParamMap.entrySet().iterator();
-				
-				while (iter.hasNext()) {
-						Map.Entry<String, String> kvpair = iter.next();
-						buffer.append(percentEncodeRfc3986(kvpair.getKey()));
-						buffer.append("=");
-						buffer.append(percentEncodeRfc3986(kvpair.getValue()));
-						if (iter.hasNext()) {
-								buffer.append("&");
+				Aws4PresignerParams params = Aws4PresignerParams.builder()
+						.awsCredentials(credits)
+						.signingName("s4") 
+						.signingRegion(Region.EU_WEST_1) // London
+						.signingClockOverride(Clock.fixed(instant, ZoneId.of("UTC")))
+						.build();
+				SdkHttpFullRequest request = SdkHttpFullRequest.builder()
+						.host(host)
+						.encodedPath(path+"/" + key.getKeyName())
+						// .encodedPath(path)
+						.method(SdkHttpMethod.fromValue(method))
+						.protocol("https")
+						.rawQueryParameters(param)
+						.appendHeader("AccessKeyId","account_tracker")
+						.appendHeader("AccountTrackerUsername","sibow")
+						.build();
+				Aws4Signer signer = Aws4Signer.create();
+				SdkHttpFullRequest result = signer.sign(request, params);
+
+				Map<String, List<String>> heads = result.headers();
+				if(heads != null){
+						Set<String> keys = heads.keySet();
+						for(String kk:keys){
+								List<String> ones = heads.get(kk);
+								System.err.println(kk+" "+ones);
 						}
 				}
-				String canonical = buffer.toString();
-				return canonical;
+
+				return CompletableFuture.completedFuture(result.getUri().toString());
 		}
-		*/
+
 		/*
-		private String percentEncodeRfc3986(String s) {
-				String out;
-				try {
-						out = URLEncoder.encode(s, UTF8_CHARSET)
-								.replace("+", "%20")
-								.replace("*", "%2A")
-								.replace("%7E", "~");
-				} catch (UnsupportedEncodingException e) {
-						out = s;
-				}
-				return out;
-		}
+			AWS4-HMAC-SHA256 Credential=account_tracker/20191113/eu-west-1/s4/aws4_request, SignedHeaders=accesskeyid;accounttrackerusername;host;x-amz-date, Signature=4f58ce0be3350ae5f0595eacf1a4d24e0146d3110525836503e411e901b1d996
+			AWS4-HMAC-SHA256 Credential=account_tracker/20191113/eu-west-1/s4/aws4_request, SignedHeaders=accesskeyid;accounttrackerusername;host;x-amz-date, Signature=71f3a9d9a7119ab0fde9dc590157e60591d8153f7ba16ac229e5b3bcc7f761df
+
 		*/
+
+		
 		
 }
