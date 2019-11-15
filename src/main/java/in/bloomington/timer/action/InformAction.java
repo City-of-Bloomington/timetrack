@@ -60,52 +60,87 @@ public class InformAction extends TopAction{
 						ret = "logs";
 				}
 				else if(action.equals("Send")){
+						String success_list="";
+						String failure_list="";
+						String failure_error="";						
 						if(employee_ids != null){
-								String to = "", email_from="";
-								getEmployee();
-								if(employee != null){
-										email_from = employee.getEmail();
-								}
-								getEmployees();
-								if(employees != null){
-										for(Employee one:employees){
-												to = one.getEmail();
-												MailHandle mail =
-														new MailHandle(mail_host,
-																					 to, 
-																					 email_from,
-																					 email_cc,
-																					 null, // bcc
-																					 subject,
-																					 text_message,
-																					 debug
-																					 );
-												//
-												if(activeMail){
+								if(activeMail){								
+										String to = "", email_from="";
+										getUser();
+										if(user != null){
+												email_from = user.getEmail();
+										}
+										getEmployees();
+										if(employees != null){
+												for(Employee one:employees){
+														to = one.getFull_name()+"<"+one.getEmail()+">";
+														MailHandle mail =
+																new MailHandle(mail_host,
+																							 to, 
+																							 email_from,
+																							 email_cc,
+																							 null, // bcc
+																							 subject,
+																							 text_message,
+																							 debug
+																							 );
+
 														back = mail.send();
+														if(back.equals("")){
+																if(!success_list.equals("")) success_list +=", "; 
+																success_list += to;
+														}
+														else{
+																if(!failure_list.equals("")){
+																		failure_list +=", ";
+																		failure_error += ", ";
+																}
+																failure_list += to;
+																if(failure_error.indexOf(back) == -1){
+																		if(!failure_error.equals("")){
+																				failure_error += ", ";
+																		}										
+																		failure_error += back;
+																}
+														}
 												}
-												else{
-														back = "email activity flag is turned off, if you need to send email this flag need to be turned on in your configuration file";
-												}
-												if(!back.equals("")){
-														addError(back);
+												if(!failure_error.equals("")){
+														addError(failure_error);
 												}
 												else{
 														addMessage("Email send successfully");
 														ret = "informSuccess";
 												}
-												EmailLog elog = new EmailLog(debug,
+												if(!success_list.equals("")){
+														EmailLog elog = new EmailLog(debug,
 																										 user.getId(),
 																										 email_from,
-																										 to, // to
+																										 success_list, 
 																										 email_cc,
 																										 null,
 																										 subject,
 																										 text_message,
-																										 back,
+																										 null,
 																										 type.equals("noSubmit")?"Approvers":"Processors");
-												back = elog.doSave();
+														back = elog.doSave();
+												}
+												if(!failure_list.equals("")){
+														EmailLog elog = new EmailLog(debug,
+																										 user.getId(),
+																										 email_from,
+																										 failure_list, 
+																										 email_cc,
+																										 null,
+																										 subject,
+																										 text_message,
+																										 failure_error,
+																										 type.equals("noSubmit")?"Approvers":"Processors");
+														back = elog.doSave();
+												}												
 										}
+								}
+								else{
+										back = "email activity flag is turned off, if you need to send email this flag need to be turned on in your configuration file";
 								}
 						}
 				}

@@ -217,20 +217,11 @@ public class HandleNotification{
 						message.setRecipients(Message.RecipientType.TO, addrArray);
 						// message.setRecipients(Message.RecipientType.BCC, addrArray);
 						Transport.send(message);
-						/*
-						NotificationLog nlog = new NotificationLog(to_str, body_text, "Success",null);
-						nlog.doSave();
-						*/
 				}
 				catch (MessagingException mex){
 						//
 						// Failure
 						msg += mex;
-						//
-						/*
-						NotificationLog nlog = new NotificationLog(to_str, body_text,"Failure",""+mex);
-						nlog.doSave();
-						*/
 						//
 						logger.error(mex);
 						Exception ex = mex;

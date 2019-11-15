@@ -202,12 +202,16 @@ public class NewEmployeeService extends HttpServlet{
 
 
 				message = "Request Received ";
+				String str = "{\"message\":\""+message+"\"}";
+				out.println(str);
+				/*
 				out.println("<head><title>New Employee Service</title><body>");
 				out.println("<center>");
 				out.println(message);
 				out.println("</center>");
 				out.println("</body>");
 				out.println("</html>");
+				*/
 				out.flush();
 				out.close();
     }
@@ -266,12 +270,4 @@ public class NewEmployeeService extends HttpServlet{
 				return CompletableFuture.completedFuture(result.getUri().toString());
 		}
 
-		/*
-			AWS4-HMAC-SHA256 Credential=account_tracker/20191113/eu-west-1/s4/aws4_request, SignedHeaders=accesskeyid;accounttrackerusername;host;x-amz-date, Signature=4f58ce0be3350ae5f0595eacf1a4d24e0146d3110525836503e411e901b1d996
-			AWS4-HMAC-SHA256 Credential=account_tracker/20191113/eu-west-1/s4/aws4_request, SignedHeaders=accesskeyid;accounttrackerusername;host;x-amz-date, Signature=71f3a9d9a7119ab0fde9dc590157e60591d8153f7ba16ac229e5b3bcc7f761df
-
-		*/
-
-		
-		
 }
