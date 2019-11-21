@@ -23,8 +23,8 @@ public class HandleBatchSubmit{
 		boolean debug = false;
 		static final long serialVersionUID = 53L;
 		static Logger logger = LogManager.getLogger(HandleBatchSubmit.class);
-		String date="", dept_id="", pay_period_id="";
-		List<Employee> emps = null;
+		String admin_id="85"; // from employees table (System user)
+		String pay_period_id="", run_by="";
     public HandleBatchSubmit(String val){
 				setPay_period_id(val);
     }
@@ -36,9 +36,9 @@ public class HandleBatchSubmit{
     //
     // setters
     //
-    public void setDept_id(String val){
+    public void setRun_by(String val){
 				if(val != null){		
-						dept_id = val;
+						run_by = val;
 				}
     }
     public void setPay_period_id(String val){
@@ -46,23 +46,26 @@ public class HandleBatchSubmit{
 						pay_period_id = val;
 				}
     }		
-    public void setDate(String val){
-				if(val != null){		
-						date = val;
-				}
-    }
 		//
 		// find all the employees who have initiated document time but
 		// can not submit for approval
 		//
+		/**
+			 select d.id,concat_ws(' ',e.first_name,e.last_name)                                from time_documents d,                                                          employees e,                                                                    jobs j                                                                          where e.id=d.employee_id                                                        and e.inactive is null                                                          and j.clock_time_required is not null                                           and j.include_in_auto_batch is not null                                         and d.pay_period_id = 571                                                       and d.job_id=j.id                                                               and exists (select * from time_blocks t where t.document_id=d.id and t.inactive is null and (t.hours > 0 or t.amount > 0))                                      and not exists (select * from time_actions a where a.workflow_id=2 and a.document_id=d.id) 
+
+		 */
     public String process(){
 		
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 				ResultSet rs = null;
 				String msg="";
+				if(run_by.equals("")){
+						run_by = admin_id;
+				}
+				Map<String, String> map = new HashMap<>();
 				//
-				// find all non clock employees that have documents for the
+				// find all clock employees that have documents for the
 				// specified pay_period_id but not submitted
 				//
 				String qq = " select d.id,concat_ws(' ',e.first_name,e.last_name) "+
@@ -70,12 +73,16 @@ public class HandleBatchSubmit{
 						" employees e,"+
 						" jobs j "+
 						" where e.id=d.employee_id "+
-						" and e.user_id=u.id "+
 						" and e.inactive is null "+
 						" and j.clock_time_required is not null "+ // punch clock employees
-						" and j.inactive is null "+
+						" and j.include_in_auto_batch is not null "+
+						" and d.job_id=j.id "+
 						" and d.pay_period_id = ? "+
-						" and d.id not in (select a.document_id from time_actions a,time_documents d2 where a.document_id=d2.id and d2.pay_period_id=? and a.workflow_id=2) ";
+						" and exists (select * from time_blocks t where t.document_id=d.id and t.inactive is null and (t.hours > 0 or t.amount > 0)) "+
+						" and not exists (select * from time_actions a where a.workflow_id=2 and a.document_id=d.id) ";
+				String qq2 = "insert into time_actions values(0,?,?,?,now(),null,null)";
+				String qq3 = "insert into batch_logs values(0,?,?,now(),?)";
+				String success_list="", failure_list="", error_msg="";
 				try{
 						con = UnoConnect.getConnection();
 						if(con == null){
@@ -85,32 +92,60 @@ public class HandleBatchSubmit{
 						if(debug){
 								logger.debug(qq);
 						}
-						String admin_id="85"; // from employees table (admin user)
+
 						String workflow_id="2";
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, pay_period_id);
-						pstmt.setString(2, pay_period_id);
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								String doc_id = rs.getString(1);
 								String name = rs.getString(2);
-								TimeAction one = new TimeAction(workflow_id, doc_id, admin_id);
-								String back = one.doSave();
-								String status = "Success";
-								if(!back.equals("")){
-										status = "failure";
-										msg += back;
+								map.put(doc_id, name);
+						}
+						if(!map.isEmpty()){
+								pstmt2 = con.prepareStatement(qq2);
+								pstmt3 = con.prepareStatement(qq3);
+								Set<String> docIdSet = map.keySet();
+								for(String doc_id:docIdSet){
+										String name = map.get(doc_id);
+										pstmt2.setString(1, workflow_id);
+										pstmt2.setString(2, doc_id);
+										pstmt2.setString(3, run_by);
+										try{
+												pstmt2.executeUpdate();
+												if(!success_list.equals("")) success_list+=", ";
+												success_list += doc_id+":"+name;
+										}
+										catch(Exception ex2){
+												if(!failure_list.equals("")) failure_list+=", ";
+												failure_list += doc_id+":"+name;
+												msg ="" + ex2;
+												if(error_msg.indexOf(msg) == -1){
+														if(!error_msg.equals("")) error_msg += ", ";
+														error_msg += msg;
+												}
+										}
 								}
-								BatchLog log = new BatchLog(doc_id,name,status);
-								msg += log.doSave();
-								System.err.println("Submitted document "+doc_id+" for "+name);
+								if(!success_list.equals("")){
+										pstmt3.setString(1, success_list);
+										pstmt3.setString(2, run_by);										
+										pstmt3.setNull(3, Types.VARCHAR);
+										pstmt3.executeUpdate();
+								}
+								if(!failure_list.equals("")){
+										pstmt3.setString(1, failure_list);
+										pstmt3.setString(2, run_by);										
+										pstmt3.setString(3, error_msg);
+										pstmt3.executeUpdate();
+								}								
 						}
 				}catch(Exception ex){
 						msg += ex;
 						System.err.println(ex);
 				}
 				finally{
-						Helper.databaseDisconnect(con, pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
+						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
 		}

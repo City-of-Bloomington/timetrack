@@ -77,9 +77,17 @@
 			</div>
 
 			<div class="form-group">
+				<label>
+				<s:checkbox name="joblst.includeInAutoBatch" value="%{joblst.includeInAutoBatch}" fieldValue="true" />Included in Auto Submit Batch Only</label>
+			</div>
+			<div class="form-group">
+				<label>
+				<s:checkbox name="joblst.irregularWorkDays" value="%{joblst.irregularWorkDays}" fieldValue="true" />Work Irregular Week Days Only</label>
+			</div>			
+			<div class="form-group">
 				<label>Active ?</label>
 				<s:radio name="joblst.active_status" value="%{joblst.active_status}" list="#{'-1':'All','Active':'Yes','Inactive':'No'}" />
-			</div>
+			</div>			
 
 			<div class="button-group">
 				<a href="<s:property value='#application.url' />jobTask.action" class="button">New Job</a>

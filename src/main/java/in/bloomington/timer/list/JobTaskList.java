@@ -30,6 +30,7 @@ public class JobTaskList{
 		//
 		boolean include_future = false, order_by_employee = false,
 				order_by_id = false;
+		boolean irregular_work_days = false, include_in_auto_batch=false;
     String salary_group_id="", employee_id="", pay_period_id="";
     String id="", effective_date = "", which_date="j.effective_date",
 				date_from="", date_to="", position_id="", employee_name="",
@@ -183,8 +184,13 @@ public class JobTaskList{
 				else if(clock_time_not_required)
 						return "n";
 				return "-1";
-
     }
+		public boolean getIncludeInAutoBatch(){
+				return include_in_auto_batch;
+		}
+		public boolean getIrregularWorkDays(){
+				return irregular_work_days;
+		}		
 		public void setNotExpired(){
 				not_expired = true;
 		}
@@ -193,6 +199,14 @@ public class JobTaskList{
 		}
 		public void setIncludeFuture(){
 				include_future = true;
+		}
+		public void setIncludeInAutoBatch(boolean val){
+				if(val)
+						include_in_auto_batch = true;
+		}
+		public void setIrregularWorkDays(boolean val){
+				if(val)
+						irregular_work_days = true;
 		}
 		public void setOrderByEmployee(){
 				order_by_employee = true;
@@ -244,7 +258,8 @@ public class JobTaskList{
 						"j.clock_time_required,"+
 						"j.hourly_rate,"+
 						"date_format(j.added_date,'%m/%d/%Y'),"+
-						
+						"j.include_in_auto_batch,"+
+						"j.irregular_work_days,"+
 						"j.inactive,  "+
 						
 						"sg.name,sg.description,sg.default_regular_id,"+
@@ -266,6 +281,14 @@ public class JobTaskList{
 				}
 				else if(inactive_only){
 						qw += " j.inactive is not null ";
+				}
+				if(include_in_auto_batch){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.include_in_auto_batch is not null ";
+				}
+				if(irregular_work_days){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.irregular_work_days is not null ";
 				}
 				if(not_expired){
 						if(!qw.equals("")) qw += " and ";
@@ -407,12 +430,15 @@ public class JobTaskList{
 																rs.getDouble(14),
 																rs.getString(15),
 																rs.getString(16) != null,
-																rs.getString(17),
-																rs.getString(18),
+																rs.getString(17) != null,
+																rs.getString(18) != null,
 																rs.getString(19),
 																rs.getString(20),
-																rs.getString(21) != null, 
-																rs.getString(22) // position name
+																
+																rs.getString(21),
+																rs.getString(22),
+																rs.getString(23) != null, 
+																rs.getString(24) // position name
 																);
 							 
 								if(!jobTasks.contains(one))
@@ -446,12 +472,13 @@ public class JobTaskList{
 						"j.weekly_regular_hours,"+
 						"j.comp_time_weekly_hours,"+
 						
-						"j.comp_time_factor,"+
-						"j.holiday_comp_factor,"+
-						"j.clock_time_required,"+
-						"j.hourly_rate,"+
-						"date_format(j.added_date,'%m/%d/%Y'),"+
-						
+						" j.comp_time_factor,"+
+						" j.holiday_comp_factor,"+
+						" j.clock_time_required,"+
+						" j.hourly_rate,"+
+						" date_format(j.added_date,'%m/%d/%Y'),"+
+						" j.include_in_auto_batch,"+
+						" j.irregular_work_days,"+
 						" j.inactive,  "+
 						" sg.name,sg.description,sg.default_regular_id,"+
 						" sg.excess_culculation,sg.inactive,"+
@@ -497,13 +524,15 @@ public class JobTaskList{
 																rs.getDouble(14),
 																rs.getString(15),																
 																rs.getString(16) != null,
-																rs.getString(17),
-																rs.getString(18),
+																rs.getString(17) != null,
+																rs.getString(18) != null,
 																rs.getString(19),
 																rs.getString(20),
-																rs.getString(21) != null,
+																rs.getString(21),
 																rs.getString(22),
-																rs.getString(23)
+																rs.getString(23) != null,
+																rs.getString(24),
+																rs.getString(25)
 																);
 								if(!jobTasks.contains(one))
 										jobTasks.add(one);
@@ -521,9 +550,9 @@ public class JobTaskList{
     }
 		/**
 ;;
-;; find temp employees with their jobs
+;; find employees jobs and group names
 ;;
-				   select j.id Job_ID,	                                                            e.employee_number,                                                              p.name Job_name                                                                 from jobs j                                                                     join positions p on j.position_id=p.id                                          join employees e on j.employee_id=e.id                                          where j.inactive is null and e.inactive is null                                 and j.salary_group_id=3                                                         and e.employee_number is not null                                               and j.effective_date < now()                                                    and (j.expire_date > now() or j.expire_date is null)                            order by e.employee_number,p.name                                               into outfile '/var/lib/mysql-files/jobs.csv'                                    FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
+				   select e.employee_number,                                                       concat_ws(' ',e.last_name,e.first_name) full_name,                              p.name job_name,                                                                g.name group_name                                                               from jobs j                                                                     join positions p on j.position_id=p.id                                          join employees e on j.employee_id=e.id                                          join groups g on g.id = j.group_id                                              where j.inactive is null and e.inactive is null                                 and e.employee_number is not null                                               and j.effective_date < now()                                                    and (j.expire_date > now() or j.expire_date is null)                            order by p.name,e.employee_number                                               into outfile '/var/lib/mysql-files/employee_jobs.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
 
 		 */
 		

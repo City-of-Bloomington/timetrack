@@ -33,15 +33,6 @@ public class BatchSubmitJob implements Job{
 		public void execute(JobExecutionContext context)
         throws JobExecutionException {
 				try{
-						/*
-						JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-						if(dataMap != null){
-								String val = dataMap.getString("activeMail");
-								if(val != null && val.equals("true")){
-										activeMail = true;
-								}
-						}
-						*/
 						doInit();
 						doWork();
 						doDestroy();

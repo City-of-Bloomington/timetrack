@@ -320,6 +320,9 @@ CREATE TABLE jobs (
   holiday_comp_factor double(2,1) DEFAULT '1.0',
   clock_time_required char(1) DEFAULT NULL,
 	hourly_rate double(12,2) default 0.00,
+	added_date date,
+	include_in_auto_batch char(1),
+	irregular_work_days char(1),
   inactive char(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `position_id` (`position_id`),
@@ -1226,18 +1229,36 @@ CREATE TABLE available_badges (
 ;; the default is true
 ;; non production set to false
  run_employee_update = false;
+
+
 ;;
 ;; 11/06/2019
 ;;
-create table service_keys(
+ create table service_keys(
  id int unsigned auto_increment primary key,
  key_name varchar(56),
  key_value varchar(256),
  inactive char(1)
 )engine=InnoDB;
 
+;; these were updated on 11/20 
+ alter table batch_logs modify name text;
+ alter table batch_logs drop column status;
+ alter table batch_logs drop column document_id; 
+ alter table batch_logs add failure_reason text; 
+ alter table batch_logs change name names text;
+ alter table batch_logs add run_by int unsigned after names;		
+ alter table batch_logs add foreign key(run_by) references employees(id);
+;;
+;; update admin user
+;; 
+  update employees set first_name='',username='admin.admin',email=null,inactive='y',roles=null where id=85;
+;;
+;; 11/20
+;;
+ alter table jobs add irregular_work_days char(1) after added_date;
+ alter table jobs add include_in_auto_batch char(1) after added_date;
 
- 
 
- 
+
 

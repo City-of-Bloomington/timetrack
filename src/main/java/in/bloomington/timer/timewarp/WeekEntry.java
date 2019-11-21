@@ -37,7 +37,11 @@ public class WeekEntry{
 				holiday_factor = 1;
 		double holy_earn_hrs = 0;
     double prof_hrs = 0, excess_hrs = 0, net_reg_hrs= 0;
-    boolean handSpecial = false; 
+    boolean handSpecial = false;
+		// irregular work days employee do not get overtime or comp time
+		// on week where there is a holiday only
+		boolean isIrregularWorkDayEmployee = false;
+		boolean hasHolidays = false;
     List<HolidayWorkDay> holyWorkDays = null;
     Department department = null;
 		JobTask job = null;
@@ -98,6 +102,9 @@ public class WeekEntry{
     public void setHandSpecial(boolean val){
 				handSpecial = val;
     }
+    public void setHasHolyDays(){
+				hasHolidays = true;
+    }		
     void setDepartment(Department val){
 				if(val != null){
 						department = val;
@@ -109,6 +116,7 @@ public class WeekEntry{
 		void setJob(JobTask val){
 				if(val != null){
 						job = val;
+						isIrregularWorkDayEmployee = job.isIrregularWorkDayEmployee();
 						salaryGroup = job.getSalaryGroup();
 						if(salaryGroup !=null){
 								if(salaryGroup.isFireSworn()){
@@ -147,7 +155,7 @@ public class WeekEntry{
     public void setHolidayWorkDay(HolidayWorkDay val){
 				if(val != null){
 						if(holyWorkDays == null){
-								holyWorkDays = new ArrayList<HolidayWorkDay>();
+								holyWorkDays = new ArrayList<>();
 						}
 						holyWorkDays.add(val);
 				}
@@ -410,6 +418,11 @@ public class WeekEntry{
 				//
 				// for full time working less than 40 hrs
 				//
+				if(isIrregularWorkDayEmployee &&
+					 holyWorkDays != null &&
+					 holyWorkDays.size() > 0){
+						return;
+				}
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
 								excess_hrs = netHours < 40 ? 0: netHours - 40;
@@ -458,7 +471,12 @@ public class WeekEntry{
 				String code = "";
 				double netHours = total_hrs - earned_time;
 				double extra_hrs = 0;
-				System.err.println(" net hours "+netHours);
+				//
+				if(isIrregularWorkDayEmployee &&
+					 holyWorkDays != null &&
+					 holyWorkDays.size() > 0){
+						return;
+				}				
 				//
 				// for full time working less than 40 hrs
 				//

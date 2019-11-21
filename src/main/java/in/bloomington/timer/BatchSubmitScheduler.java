@@ -24,7 +24,7 @@ public class BatchSubmitScheduler {
 
 		static boolean debug = false;
 		static Logger logger = LogManager.getLogger(BatchSubmitScheduler.class);
-		int month = 1, day = 7, year=2017;
+		int month = 11, day = 4, year=2019; // first day of a pay period
 		Date startDate, endDate = null;
 		public BatchSubmitScheduler(String date){
 				try{
@@ -80,41 +80,16 @@ public class BatchSubmitScheduler {
 								.withIdentity(jobName, groupName)
 								.startAt(startDate)
 								.withSchedule(simpleSchedule()
-															// .withIntervalInMinutes(3)
 															.withIntervalInHours(24*14) // 24*14 two weeks
 															.repeatForever()
-															// .withRepeatCount(2) 
-															// .withMisfireHandlingInstructionFireNow())
 															.withMisfireHandlingInstructionIgnoreMisfires())
 								// .endAt(endDate)						  
 								.build();
 		
 						// Tell quartz to schedule the job using our trigger
 						sched.scheduleJob(job, trigger);
-						//  logger.info(job.getKey() + " will run at: " + runTime);  
-
-						// Start up the scheduler (nothing can actually run until the 
-						// scheduler has been started)
 						sched.start();
 
-						/*
-							logger.info("------- Started Scheduler -----------------");
-
-							// wait long enough so that the scheduler as an opportunity to 
-							// run the job!
-							logger.info("------- Waiting 65 seconds... -------------");
-							try {
-							// wait 65 seconds to show job
-							Thread.sleep(65L * 1000L); 
-							// executing...
-							} catch (Exception e) {
-							}
-
-							// shut down the scheduler
-							logger.info("------- Shutting Down ---------------------");
-							sched.shutdown(true);
-							logger.info("------- Shutdown Complete -----------------");
-						*/
 				}catch(Exception ex){
 						logger.error(ex);
 						msg += ex;

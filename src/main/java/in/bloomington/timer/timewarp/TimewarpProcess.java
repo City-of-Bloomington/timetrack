@@ -627,6 +627,14 @@ public class TimewarpProcess{
 								double hours = one.getHours();
 								//
 								if(day > 13) continue;
+								if(holyList.isHoliday(date)){
+										if(day < 7){
+												week1.setHasHolyDays();
+										}
+										else{
+												week2.setHasHolyDays();
+										}										
+								}
 								if(hrCode.isRegular() && hours > 0){
 										if(holyList.isHoliday(date)){
 												HolidayWorkDay hday = new HolidayWorkDay(debug, hours, payPeriod.getEnd_date(), day, employee.getId());

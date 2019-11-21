@@ -1,11 +1,15 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
 	<s:form action="batchSchedule" id="form_id" method="post" >
-		<s:hidden name="action2" id="action2" value="" />
 		<h1>Batch Submission Schedular</h1>
-
-	  <%@ include file="strutMessages.jsp" %>
-
+		<s:if test="hasErrors()">
+			<s:set var="errors" value="errors" />
+			<%@ include file="errors.jsp" %>
+		</s:if>
+		<s:elseif test="hasMessages()">
+			<s:set var="messages" value="messages" />
+			<%@ include file="messages.jsp" %>
+		</s:elseif>
 	  <p>This function is designed to be run only once to schedule batch submission for punch clock employees who do not submit their work times. This is designed to run on Monday morning at 7:30am the day next to the last day of previous pay period.</p>
 		<p>Run the schedule if the 'Next Schedule Date' and 'Previous Schedule Date' are not shown.</p>
 		<p>To submit right now, pick pay period and click on 'Submit Now'.</p>
@@ -37,4 +41,8 @@
 		</div>
 	</s:form>
 </div>
+<s:if test="hasLogs()">
+	<s:set var="batch_logs" value="%{batch_logs}" />
+	<%@ include file="batch_logs.jsp" %>	
+</s:if>
 <%@ include file="footer.jsp" %>

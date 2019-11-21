@@ -13,12 +13,13 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.time.Clock;
 import java.io.UnsupportedEncodingException;
-import software.amazon.awssdk.auth.signer.params.Aws4PresignerParams;
+
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -40,6 +41,8 @@ import java.text.SimpleDateFormat;
 //
 // amazon lib
 //
+/*
+import software.amazon.awssdk.auth.signer.params.Aws4PresignerParams;
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.utils.http.SdkHttpUtils;
 import software.amazon.awssdk.http.*;
@@ -47,7 +50,7 @@ import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.signer.Aws4Signer;
 import software.amazon.awssdk.auth.signer.params.Aws4SignerParams;
 import software.amazon.awssdk.regions.Region;
-
+*/
 import in.bloomington.timer.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
@@ -62,16 +65,7 @@ public class NewEmployeeService extends HttpServlet{
 		static Logger logger = LogManager.getLogger(NewEmployeeService.class);
 		static SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
 		static SimpleDateFormat dfm2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");		
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimePattern);
-		// DateTimeFormatter formatter2 = DateTimeFormatter.ISO_INSTANT;		
-		static final String UTF8_CHARSET = "UTF-8";
-		static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
 		//
-		// /onca/xml
-		static final String REQUEST_URI = "/NewEmployeeService/json"; 
-		static final String REQUEST_METHOD = "GET";
-		String awsAccessKeyId = "account_tracker";
-		String awsSecretKey = "";
 		//
 		// must be lowercase
 		String endpoint = "tomcat2.bloomington.in.gov"; 
@@ -81,7 +75,7 @@ public class NewEmployeeService extends HttpServlet{
     public void doPost(HttpServletRequest req,
 											HttpServletResponse res)
 				throws ServletException, IOException {
-				doGet(req, res);
+				handle(req, res);
     }
     /**
      *
@@ -91,34 +85,66 @@ public class NewEmployeeService extends HttpServlet{
     public void doGet(HttpServletRequest req,
 											 HttpServletResponse res)
 				throws ServletException, IOException {
-				
+				handle(req, res);
+		}
+    public void handle(HttpServletRequest req,
+											 HttpServletResponse res)
+				throws ServletException, IOException {				
 				String message="", action="";
 				res.setContentType("application/json");
 				PrintWriter out = res.getWriter();
 				String name, value;
-				String AccessKeyId="", Signature="",
+				String Signature="",
 						uri="", Service="", employee_number="", employee_name="";
-				String AccountTrackerUsername="", dateTime="";
-				String protocol ="", host="",path="", httpMethod="";
+				String username="", request_target="";
+				String protocol ="", host="",path="", method="",
+						signatureHeaders="", created="", expires="", algorithm="",
+						content_type="", content_length="";
+				String keyId = "account_tracker";
+				String headers_order = "";
 				Integer port = 80;
 				HttpSession session = null;
 				String [] vals = null;
 				ServiceKey key = null;
-				Map<String, List<String>> params = new HashMap<>();
-				Map<String, List<String>> headers = new HashMap<>();
+				// Map<String, List<String>> params = new HashMap<>();				
+				// Map<String, List<String>> headers = new HashMap<>();
+				// Read from request
+				StringBuilder buffer = new StringBuilder();
+				BufferedReader reader = req.getReader();
+				List<String> list_order = null;
+				String line;
+				while ((line = reader.readLine()) != null) {
+						buffer.append(line);
+				}
+				String body = buffer.toString();
+				System.err.println(" body "+body); // needed for digest in post
 				protocol = req.getScheme();
 				port = req.getServerPort();
 				path = req.getContextPath();
-				host = req.getServerName();
+				host = req.getServerName(); // tomcat2.bloomington.in.gov
+				uri = req.getRequestURI(); // /timetrack/NewEmployeeService
+				method = req.getMethod();				
+				String path2 = req.getServletPath();
+				request_target = method.toLowerCase()+" "+path2;
 				//
-				System.err.println(" call prop set ");				
-				// setSystemProperties();
+				System.err.println(" uri "+uri);
+				System.err.println(" path2 "+path2);	// /NewEmployeeService			
 				//
-				httpMethod = req.getMethod();
 				System.err.println(" protocol "+protocol);
 				System.err.println(" port "+port);
 				System.err.println(" path "+path);
 				System.err.println(" host "+host);
+				System.err.println(" method "+method);
+				System.err.println(" req target "+request_target);
+				try{
+						//
+						// it will change to local timestamp
+						//
+						long epoch = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-06-07 15:51:35").getTime() / 1000;
+						System.err.println(" time stamp in unix "+epoch);
+				}catch(Exception ex){
+						System.err.println(ex);
+				}
 				Enumeration<String> values = req.getParameterNames();
 				Enumeration<String> headerNames = req.getHeaderNames();
 				// for testing
@@ -130,30 +156,39 @@ public class NewEmployeeService extends HttpServlet{
 						System.err.println(headerName+":");
 						String headerValue = req.getHeader(headerName);
 						System.err.println(headerValue);
-						if(headers.containsKey(headerName)){
-								List<String> list = headers.get(headerName);
-								list.add(headerValue);
-								headers.put(headerName, list);
+						if(headerName.equals("Username")){
+								username = headerValue;
 						}
-						else{
-								List<String> list = new ArrayList<>();
-								list.add(headerValue);
-								headers.put(headerName, list);
+						else if(headerName.equals("content_type")){
+								content_type = headerValue;
 						}
-						if(headerName.equals("AccountTrackerUsername")){
-								AccountTrackerUsername = headerValue;
-						}
-						else if(headerName.equals("authorization")){
-								if(headerValue.indexOf("Signature") > 0){
-										Signature = headerValue.substring(headerValue.indexOf("Signature")+10);
+						else if(headerName.equals("content_length")){
+								content_length = headerValue;
+						}						
+						else if(headerName.equals("Signature")){
+								signatureHeaders = headerValue;
+								if(headerValue.indexOf("signature") > 0){
+										Signature = headerValue.substring(headerValue.indexOf("signature")+10);
 										
 								}
 						}
-						else if(headerName.indexOf("Amz-Date") > -1){
-								dateTime = headerValue;
+						else if(headerName.equals("Authorization")){
+								if(headerValue.indexOf("Signature") > -1){
+										signatureHeaders = headerValue.substring(headerValue.indexOf("Signature")+1);
+								}
+								else{
+										signatureHeaders = headerValue;
+								}
+								if(headerValue.indexOf("signature") > 0){
+										Signature = headerValue.substring(headerValue.indexOf("signature")+10);
+										
+								}
 						}
-						else if(headerName.equals("AccessKeyId")){
-								AccessKeyId = headerValue;
+						else if(headerName.indexOf("Created") > -1){ // not needed
+								created = headerValue;
+						}
+						else if(headerName.equals("keyId")){ 
+								keyId = headerValue;
 						}						
 				}
 				while (values.hasMoreElements()){
@@ -163,14 +198,8 @@ public class NewEmployeeService extends HttpServlet{
 						if (name.equals("employee_number")) { // this is what jquery sends
 								employee_number = value;
 								System.err.println(" emp # "+employee_number);
-								List<String> list = new ArrayList<>();
-								list.add(value);
-								params.put(name, list);
 						}
 						else{
-								List<String> list = new ArrayList<>();
-								list.add(value);								
-								params.put(name, list);								
 								System.err.println(name+" "+value);
 						}
 				}
@@ -182,40 +211,76 @@ public class NewEmployeeService extends HttpServlet{
 								key = ones.get(0);
 						}
 				}
-				
-				TimeTrackCredentialsProvider awsCreds =
-						new TimeTrackCredentialsProvider(key.getKeyName(),
-																						 key.getKeyValue());				
+				signatureHeaders = "keyId=\"mykeyid\",algorithm=\"hs2019\",created=1402170695,headers=\"(request-target) (created) host digest content-length\",signature=\"Base64(RSA-SHA512(signing string))\"";
+				if(!signatureHeaders.equals("")){
+						try{
+								String[] str_arr = signatureHeaders.split(",");
+								for(String str:str_arr){
+										if(str.startsWith("keyId")){
+												keyId = getItemValue(str);
+												System.err.println(" keyId "+keyId);
+										}
+										else if(str.startsWith("algorithm")){
+												algorithm = getItemValue(str);
+												System.err.println(" algorithm "+algorithm);
+										}
+										else if(str.startsWith("created")){
+												created = getItemValue(str);;
+												System.err.println(" created "+created);
+										}
+										else if(str.startsWith("expires")){
+												expires = getItemValue(str);
+												System.err.println(" expires "+expires);
+										}
+										else if(str.startsWith("headers")){
+												headers_order = getItemValue(str);
+												System.err.println(" order "+headers_order);
+										}
+										else if(str.startsWith("signature")){
+												Signature = getItemValue(str);
+												System.err.println(" sig "+Signature);
+										}
+										else{
+												System.err.println(" unknown header "+str);
+										}
+								}
+						}
+						catch(Exception ex){
+								System.err.println(ex);
+						}
+				}
+				if(!headers_order.equals("")){
+						String[] str_arr = headers_order.split("\\s+");
+						// System.err.println(" arr order "+str_arr);
+						list_order = Arrays.asList(str_arr);
+						System.err.println(" list order "+list_order);
+						int jj=1;
+						for(String str:list_order){
+								System.err.println("order "+(jj++)+" "+str);
+						}
+				}
+				ServiceSigner signer =
+						new ServiceSigner(key.getKeyValue(),
+															request_target,
+															created,
+															expires,
+															host,
+															body,
+															content_type,
+															content_length,
+															Signature,
+															list_order);
+				boolean match = signer.verify();
+				System.err.println(" sig match "+match);
 				System.err.println(" sig "+Signature);
-				System.err.println(" dateTime "+dateTime);
-				CompletableFuture signedUrl = getSignedUrl(host,
-																									 httpMethod,
-																									 path,
-																									 protocol,
-																									 key,
-																									 awsCreds,
-																									 params,
-																									 headers,
-																									 dateTime
-																									 );
-				System.err.println(" signedUrl "+signedUrl);
-
 
 				message = "Request Received ";
 				String str = "{\"message\":\""+message+"\"}";
 				out.println(str);
-				/*
-				out.println("<head><title>New Employee Service</title><body>");
-				out.println("<center>");
-				out.println(message);
-				out.println("</center>");
-				out.println("</body>");
-				out.println("</html>");
-				*/
 				out.flush();
 				out.close();
     }
-
+		/*
 		public CompletableFuture<String> getSignedUrl(String host,
 																									String method,
 																									String path,
@@ -269,5 +334,15 @@ public class NewEmployeeService extends HttpServlet{
 
 				return CompletableFuture.completedFuture(result.getUri().toString());
 		}
-
+		*/
+		String getItemValue(String val){
+				String str = "";
+				if(val != null){
+						str = val.substring(val.indexOf("=")+1);
+						if(str.indexOf("\"") > -1){
+								str = str.replaceAll("\"","").trim();
+						}
+				}
+				return str;
+		}
 }

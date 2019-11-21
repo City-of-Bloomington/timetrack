@@ -106,6 +106,14 @@
 				<label>Holiday Comp Multiple Factor </label>
 				<s:textfield name="jobTask.holiday_comp_factor" value="%{jobTask.holiday_comp_factor}" size="3" maxlength="3" required="true" id="holiday_factor_id" />(normally 1.5 for non-exempt and 1 for  exempt)
 			</div>
+			<div class="form-group">
+				<label>Irregular Work Days?</label>
+				<s:checkbox name="jobTask.irregularWorkDays" value="%{jobTask.irregularWorkDays}" fieldValue="true" id="irregular_work_days" />Yes (Employee may required to work on Saturday and/or Sunday)
+			</div>
+			<div class="form-group">
+				<label>Include in Auto Submit Batch?</label>
+				<s:checkbox name="jobTask.includeInAutoBatch" value="%{jobTask.includeInAutoBatch}" fieldValue="true" id="include_in_auto_batch" />Yes (The system will auto submit timesheet for approval. Limited to certain employees only)
+			</div>			
 		</div>
 		<div class="button-group">
 			<s:if test="hasEmployeeNumber() && !isEmployeeFound()">

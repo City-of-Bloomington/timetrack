@@ -48,6 +48,10 @@ public class TmwrpWeekEntry{
 		SalaryGroup salaryGroup = null;
 		Group group = null;
 		Shift shift = null;
+		// irregular work days employee do not get overtime or comp time
+		// on week where there is a holiday only
+		boolean isIrregularWorkDayEmployee = false;
+		boolean hasHolidays = false;		
 		//
 		String excess_hours_earn_type = "";
     //
@@ -101,6 +105,9 @@ public class TmwrpWeekEntry{
     public void setHandSpecial(boolean val){
 				handSpecial = val;
     }
+		public void setHasHolyDays(){
+				hasHolidays = true;
+		}
     void setDepartment(Department val){
 				if(val != null){
 						department = val;
@@ -112,6 +119,7 @@ public class TmwrpWeekEntry{
 		void setJob(JobTask val){
 				if(val != null){
 						job = val;
+						isIrregularWorkDayEmployee = job.isIrregularWorkDayEmployee();
 						salaryGroup = job.getSalaryGroup();
 						if(salaryGroup != null){
 								if(salaryGroup.isFireSworn()){
@@ -352,7 +360,7 @@ public class TmwrpWeekEntry{
 				//
 				// everybody else
 				//
-				prof_hrs = total_hrs - st_weekly_hrs - earned_time;
+				prof_hrs = total_hrs - st_weekly_hrs - earned_time - holy_earn_hrs;
 				if(prof_hrs < CommonInc.critical_small){
 						prof_hrs = 0;
 				}
@@ -420,6 +428,9 @@ public class TmwrpWeekEntry{
 				//
 				// for full time working less than 40 hrs
 				//
+				if(isIrregularWorkDayEmployee && hasHolidays){
+						return;
+				}
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
 								excess_hrs = netHours < 40 ? 0: netHours - 40;
@@ -481,7 +492,11 @@ public class TmwrpWeekEntry{
 				//
 				if(holyWorkDays == null) return;
 				//
+				if(isIrregularWorkDayEmployee && hasHolidays){
+						return;
+				}				
 				String code_id = "";
+				total_hrs = total_mints/60.;
 				double netHours = total_hrs - earned_time;
 				double extra_hrs = 0;
 				//

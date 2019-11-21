@@ -100,9 +100,7 @@
 				<li><a href="<s:property value='#application.url'/>profileSchedule.action">Employees Profile Update</a></li>
 				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees' Update from AD (ldap)</a></li>				
 				<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
-				<!-- currently not used 
-				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch clock batch submission </a></li>
-				-->
+				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch Clock Batch Auto Submission </a></li>
 			</ul>
 		</div>
 	</s:if>

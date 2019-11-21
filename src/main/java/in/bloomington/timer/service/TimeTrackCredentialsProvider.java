@@ -1,11 +1,11 @@
 package in.bloomington.timer.service;
 
-import software.amazon.awssdk.auth.credentials.*;
-import software.amazon.awssdk.annotations.SdkPublicApi;
+// import software.amazon.awssdk.auth.credentials.*;
+// import software.amazon.awssdk.annotations.SdkPublicApi;
 
-@SdkPublicApi
-public class TimeTrackCredentialsProvider implements AwsCredentials{
-
+// @SdkPublicApi
+// public class TimeTrackCredentialsProvider implements AwsCredentials{
+public class TimeTrackCredentialsProvider{
 		String access_key_id = "";
 		String secret_access_key = "";
 

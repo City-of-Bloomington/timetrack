@@ -66,46 +66,47 @@
 			<label>Primary Job?</label>
 			<s:checkbox name="jobTask.primary_flag" value="%{jobTask.primary_flag}" fieldValue="true" />Yes
 		</div>
-
 		<div class="form-group">
 			<label>Clock Time Required?</label>
 			<s:checkbox name="jobTask.clock_time_required" value="%{jobTask.clock_time_required}" fieldValue="true" id="clock_required_id" />Yes (Employees who are required to use punch clock)
 		</div>
-
 		<div class="form-group">
 			<label>Weekly Reg Hours </label>
 			<s:textfield name="jobTask.weekly_regular_hours" value="%{jobTask.weekly_regular_hours}" size="3" maxlength="3" required="true" id="weekly_hrs_id" />(normally 40)
 		</div>
-
 		<div class="form-group">
 			<label>Comp Time Weekly Hours </label>
 			<s:textfield name="jobTask.comp_time_weekly_hours" value="%{jobTask.comp_time_weekly_hours}" size="3" maxlength="3" required="true" />(normally 40 for non-exempt)
 		</div>
-
 		<div class="form-group">
 			<label>Comp Time Multiple Factor </label>
 			<s:textfield name="jobTask.comp_time_factor" value="%{jobTask.comp_time_factor}" size="3" maxlength="3" required="true" id="comp_factor_id" />(normally 1.5 for non-exempt and 1 for exempt)
 		</div>
-
 		<div class="form-group">
 			<label>Holiday Comp Multiple Factor </label>
 			<s:textfield name="jobTask.holiday_comp_factor" value="%{jobTask.holiday_comp_factor}" size="3" maxlength="3" required="true" id="holiday_factor_id" />(normally 1.5 for non-exempt and 1 for  exempt)
 		</div>
-		
+		<div class="form-group">
+			<label>Irregular Work Days?</label>
+			<s:checkbox name="jobTask.irregularWorkDays" value="%{jobTask.irregularWorkDays}" fieldValue="true" id="irregularWorkDays" />Yes (Employee may required to work on Saturday and/or Sunday)
+		</div>
+		<div class="form-group">
+			<label>Include in Auto Submit Batch?</label>
+			<s:checkbox name="jobTask.includeInAutoBatch" value="%{jobTask.includeInAutoBatch}" fieldValue="true" id="include_in_auto_batch" />Yes (The system will auto submit timesheet for approval. Limited to certain employees only)
+		</div>		
+		<div class="form-group">
+			<label>Added Date </label>
+			<s:property value="jobTask.added_date" />
+		</div>
+		<div class="form-group">
+			<label>Inactive?</label>
+			<s:checkbox name="jobTask.inactive" value="%{jobTask.inactive}" fieldValue="true" />Yes
+		</div>
+		<div class="button-group">	
+			<s:submit name="action" type="button" value="Save Changes" class="button"/>
+			<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='jobTask.employee_id' />&effective_date=<s:property value='jobTask.effective_date' />" class="button">Add Another Job</a>
+		</div>
 	</div>
-	<div class="form-group">
-		<label>Added Date </label>
-		<s:property value="jobTask.added_date" />
-	</div>
-	<div class="form-group">
-		<label>Inactive?</label>
-		<s:checkbox name="jobTask.inactive" value="%{jobTask.inactive}" fieldValue="true" />Yes
-	</div>
-	<div class="button-group">	
-		<s:submit name="action" type="button" value="Save Changes" class="button"/>
-		<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='jobTask.employee_id' />&effective_date=<s:property value='jobTask.effective_date' />" class="button">Add Another Job</a>
-	</div>
-</div>
 </s:form>
-
+</div>
 <%@ include file="footer.jsp" %>

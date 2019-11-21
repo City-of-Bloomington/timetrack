@@ -25,9 +25,10 @@ public class BatchSubmitScheduleAction extends TopAction{
 				LogManager.getLogger(BatchSubmitScheduleAction.class);
 		//
 		List<PayPeriod> periods = null;
-		String batchSubmitSchedulesTitle = "Batch Schedules";
+		String batchSubmitSchedulesTitle = "Submint Batch Schedules";
 		QuartzMisc quartzMisc = null;
 		BatchSubmitScheduler schedular = null;
+		List<BatchLog> logs = null;
 		String prev_date="", next_date="", pay_period_id="", date="";
 		public String execute(){
 				String ret = SUCCESS;
@@ -36,13 +37,11 @@ public class BatchSubmitScheduleAction extends TopAction{
 				if(action.equals("Schedule")){
 						back = doClean();
 						if(!back.equals("")){
-								addActionError(back);
 								addError(back);
 						}
 						try{
 								back = schedular.run();
 								if(!back.equals("")){
-										addActionError(back);
 										addError(back);
 								}
 								else{
@@ -52,7 +51,6 @@ public class BatchSubmitScheduleAction extends TopAction{
 														prev_date = "No Previous date found";
 												next_date = quartzMisc.getNextScheduleDate();
 										}
-										addActionMessage("Scheduled Successfully");
 										addMessage("Scheduled Successfully");
 								}
 						}catch(Exception ex){
@@ -61,17 +59,16 @@ public class BatchSubmitScheduleAction extends TopAction{
 				}
 				else if(action.startsWith("Submit")){ 
 						if(pay_period_id.equals("")){
-								addActionError("Pay period not selected");
 								addError("Pay period not selected");
 						}
 						else{
 								HandleBatchSubmit handle = new HandleBatchSubmit(pay_period_id);
+								handle.setRun_by(user.getId());
 								back = handle.process();
 								if(!back.equals("")){
 										addActionError(back);
 								}
 								else{
-										addActionMessage("Batch Submitted Successfully");
 										addMessage("Batch Submitted Successfully");
 								}
 						}
@@ -170,7 +167,23 @@ public class BatchSubmitScheduleAction extends TopAction{
 				getPeriods();
 				return periods != null && periods.size() > 0;
 		}		
-		
+		public boolean hasLogs(){
+				getBatch_logs();
+				return logs != null && logs.size() > 0;
+		}
+		public List<BatchLog> getBatch_logs(){
+				if(logs == null){
+						BatchLogList bll = new BatchLogList();
+						String back = bll.find();
+						if(back.equals("")){
+								List<BatchLog> ones = bll.getLogs();
+								if(ones != null && ones.size() > 0){
+										logs = ones;
+								}
+						}
+				}
+				return logs;
+		}
 }
 
 

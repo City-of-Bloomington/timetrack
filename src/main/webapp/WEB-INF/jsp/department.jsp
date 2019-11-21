@@ -5,14 +5,19 @@
 		<s:if test="department.id == ''">
 			<h1>New Department</h1>
 		</s:if>
-
 		<s:else>
 			<h1>Edit <s:property value="%{department.name}" /></h1>
 			<s:hidden name="department.id" value="%{department.id}" />
 			<s:hidden name="department.oldAllowPendingAccrual" value="%{department.allowPendingAccrual}" />			
 		</s:else>
-	  <%@ include file="strutMessages.jsp" %>
-
+		<s:if test="hasErrors()">
+			<s:set var="errors" value="errors" />
+			<%@ include file="errors.jsp" %>
+		</s:if>
+		<s:elseif test="hasMessages()">
+			<s:set var="messages" value="messages" />
+			<%@ include file="messages.jsp" %>
+		</s:elseif>
 	  <p><strong>Note:</strong> Reference ID is New World app ID for the specified department.<br /> Ldap/AD name is the department name in ldap, needed for data import.
 		</p>
 

@@ -42,7 +42,7 @@ public class QuartzMisc{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = " select from_unixtime(prev_fire_time/1000),from_unixtime(next_fire_time/1000) from qrtz_triggers where job_group like '"+type+"'";
+				String qq = " select from_unixtime(prev_fire_time/1000), from_unixtime(next_fire_time/1000) from qrtz_triggers where job_group like '"+type+"'";
 				try{
 						con = UnoConnect.getConnection();
 						if(con == null){
@@ -58,11 +58,23 @@ public class QuartzMisc{
 						rs = pstmt.executeQuery();
 						if(rs.next()){
 								String str = rs.getString(1);
-								if(str != null)
-										prevScheduleDate = str;
+								if(str != null){
+										if(str.length() > 16){
+												prevScheduleDate = str.substring(0, 16);
+										}
+										else{
+												prevScheduleDate = str;
+										}
+								}
 								str = rs.getString(2);
-								if(str != null)
-										nextScheduleDate = str;				
+								if(str != null){
+										if(str.length() > 16){										
+												nextScheduleDate = str.substring(0, 16);
+										}
+										else{
+												nextScheduleDate = str;
+										}
+								}
 						}
 				}catch(Exception ex){
 						msg += ex;

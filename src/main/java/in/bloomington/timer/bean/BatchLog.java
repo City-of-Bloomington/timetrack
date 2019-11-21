@@ -17,29 +17,33 @@ public class BatchLog{
 
 		static final long serialVersionUID = 3700L;	
 		static Logger logger = LogManager.getLogger(BatchLog.class);
-    String id="", document_id="", name="",date="", status="";
+    String id="", names="",date="", failure_reason="", run_by="";
+		Employee runner = null;
 		//
 		public BatchLog(String val){
 				//
 				setId(val);
     }
 		// for saving
-		public BatchLog(String val, String val2,
-													 String val3
+		public BatchLog(String val,
+										String val2,
+										String val3
 													 ){
-				setDocument_id(val);
-				setName(val2);
-				setStatus(val3);
+				setNames(val);
+				setRun_by(val2);
+				setFailureReason(val3);
     }				
-		public BatchLog(String val, String val2,
-													 String val3, String val4,
-													 String val5
-													 ){
+		public BatchLog(String val,
+										String val2,
+										String val3,
+										String val4,
+										String val5
+										){
 				setId(val);
-				setDocument_id(val2);
-				setName(val3);
+				setNames(val2);
+				setRun_by(val3);
 				setDate(val4);
-				setStatus(val5);
+				setFailureReason(val5);
     }		
     //
     // getters
@@ -47,18 +51,23 @@ public class BatchLog{
     public String getId(){
 				return id;
     }
-    public String getDocument_id(){
-				return document_id;
+    public String getRun_by(){
+				return run_by;
     }
-    public String getName(){
-				return name;
+    public String getNames(){
+				return names;
     }		
     public String getDate(){
 				return date;
     }
-		public String getStatus(){
-				return status;
+		public String getFailureReason(){
+				return failure_reason;
     }
+		public String getStatus(){
+				String status = "Success";
+				if(!failure_reason.equals("")) status = "Failure";
+				return status;
+		}
     //
     // setters
     //
@@ -66,24 +75,34 @@ public class BatchLog{
 				if(val != null)
 						id = val;
     }
-    public void setDocument_id(String val){
+    public void setRun_by(String val){
 				if(val != null)
-						document_id = val.trim();
+						run_by = val;
     }
-    public void setName(String val){
+    public void setNames(String val){
 				if(val != null)
-						name = val.trim();
+						names = val;
     }
-    public void setStatus(String val){
+    public void setFailureReason(String val){
 				if(val != null)
-						status = val;
+						failure_reason = val;
     }
     public void setDate(String val){
 				if(val != null)
 						date = val;
     }
+		public Employee getRunner(){
+				if(runner == null && !run_by.equals("")){
+						Employee one = new Employee(run_by);
+						String back = one.doSelect();
+						if(back.equals("")){
+								runner = one;
+						}
+				}
+				return runner;
+		}		
     public String toString(){
-				return name;
+				return names;
     }
 		//
 		public String doSelect(){
@@ -91,7 +110,7 @@ public class BatchLog{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select id,document_id,name,date_format(date,'%m/%d/%Y %h:%i'),status from batch_logs where id=?";
+				String qq = "select id,names,run_by,date_format(date,'%m/%d/%Y %h:%i'),failure_reason from batch_logs where id=?";
 				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
@@ -103,10 +122,10 @@ public class BatchLog{
 						pstmt.setString(1,id);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
-								setDocument_id(rs.getString(2));
-								setName(rs.getString(3));
+								setNames(rs.getString(2));
+								setRun_by(rs.getString(3));
 								setDate(rs.getString(4));
-								setStatus(rs.getString(5));
+								setFailureReason(rs.getString(5));
 						}
 						else{
 								back ="Record "+id+" Not found";
@@ -124,7 +143,7 @@ public class BatchLog{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into batch_logs values(0,?,?,now(),?)";
@@ -136,15 +155,18 @@ public class BatchLog{
 				try{
 
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, document_id);
-						pstmt.setString(2, name);
-						pstmt.setString(3, status);
+						pstmt.setString(1, names);
+						pstmt.setString(2, run_by);
+						if(failure_reason.equals(""))
+								pstmt.setNull(3, Types.VARCHAR);
+						else
+								pstmt.setString(3, failure_reason);
 						pstmt.executeUpdate();
 						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -154,7 +176,7 @@ public class BatchLog{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
