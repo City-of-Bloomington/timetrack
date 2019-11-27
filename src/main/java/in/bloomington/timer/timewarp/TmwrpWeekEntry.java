@@ -398,7 +398,7 @@ public class TmwrpWeekEntry{
 								return;
 						}
 				}
-				net_reg_hrs = regular_hrs - earned_time - prof_hrs;
+				net_reg_hrs = regular_hrs - earned_time - prof_hrs - holy_earn_hrs;
 				//
     }
     //
