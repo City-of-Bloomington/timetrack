@@ -14,6 +14,7 @@
 				<h3>New Service Key</h3>
 			</s:if>
 			<s:else>
+				<s:hidden name="key.id" id="key_id" value="%{key.id}" />
 				<h3>Edit Service Key </h3>
 			</s:else>
 			<s:if test="hasErrors()">
@@ -36,6 +37,12 @@
 				<label>Key Value </label>
 				<s:textfield name="key.keyValue" value="%{key.keyValue}" size="80" required="true" /> 
 			</div>
+			<s:if test="!(key.id == '')">		
+				<div class="form-group">
+					<label>Inactive?</label>
+					<s:checkbox name="key.inactive" value="%{ke.inactive}" fieldValue="true" />Yes
+				</div>
+			</s:if>
 			<div class="button-group">
 				<s:if test="key.id == ''">		
 					<s:submit name="action" type="button" value="Save"/></dd>

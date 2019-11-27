@@ -83,205 +83,203 @@ public class NewEmployeeService extends HttpServlet{
      * @param res The response output stream
      */
     public void doGet(HttpServletRequest req,
-		      HttpServletResponse res)
-	throws ServletException, IOException {
-	handle(req, res);
+											HttpServletResponse res)
+				throws ServletException, IOException {
+				handle(req, res);
     }
     public void handle(HttpServletRequest req,
-		       HttpServletResponse res)
-	throws ServletException, IOException {				
-	String message="", action="";
-	res.setContentType("application/json");
-	PrintWriter out = res.getWriter();
-	String name, value;
-	String Signature="",
-	    uri="", Service="", employee_number="", employee_name="";
-	String username="", request_target="";
-	String protocol ="", host="",path="", method="",
-	    signatureHeaders="", created="", expires="", algorithm="",
-	    content_type="", content_length="";
-	String keyId = "";
-	String headers_order = "";
-	Integer port = 80;
-	HttpSession session = null;
-	String [] vals = null;
-	ServiceKey key = null;
+											 HttpServletResponse res)
+				throws ServletException, IOException {				
+				String message="", action="";
+				res.setContentType("application/json");
+				PrintWriter out = res.getWriter();
+				String name, value;
+				String Signature="",
+						uri="", Service="", employee_number="", employee_name="";
+				String username="", request_target="";
+				String protocol ="", host="",path="", method="",
+						signatureHeaders="", created="", expires="", algorithm="",
+						content_type="", content_length="";
+				String keyId = "";
+				String headers_order = "";
+				Integer port = 80;
+				HttpSession session = null;
+				String [] vals = null;
+				ServiceKey key = null;
 
-	StringBuilder buffer = new StringBuilder();
-	BufferedReader reader = req.getReader();
-	List<String> list_order = null;
-	String line;
-	while ((line = reader.readLine()) != null) {
-	    buffer.append(line);
-	}
-	String body = buffer.toString();
-	System.err.println(" body "+body); // needed for digest in post
-	protocol = req.getScheme();
-	port = req.getServerPort();
-	path = req.getContextPath();
-	host = req.getServerName(); // tomcat2.bloomington.in.gov
-	uri = req.getRequestURI(); // /timetrack/NewEmployeeService
-	method = req.getMethod();				
-	String path2 = req.getServletPath();
+				StringBuilder buffer = new StringBuilder();
+				BufferedReader reader = req.getReader();
+				List<String> list_order = null;
+				String line;
+				while ((line = reader.readLine()) != null) {
+						buffer.append(line);
+				}
+				String body = buffer.toString();
+				System.err.println(" body "+body); // needed for digest in post
+				protocol = req.getScheme();
+				port = req.getServerPort();
+				path = req.getContextPath();
+				host = req.getServerName(); // tomcat2.bloomington.in.gov
+				uri = req.getRequestURI(); // /timetrack/NewEmployeeService
+				method = req.getMethod();				
+				String path2 = req.getServletPath();
+				//
+				System.err.println(" uri "+uri);
+				System.err.println(" path2 "+path2);	// /NewEmployeeService			
+				//
+				System.err.println(" protocol "+protocol);
+				System.err.println(" port "+port);
+				System.err.println(" path "+path);
+				System.err.println(" host "+host);
+				System.err.println(" method "+method);
+				System.err.println(" req target "+request_target);
+				try{
+						//
+						// it will change to local timestamp
+						//
+						long epoch = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-06-07 15:51:35").getTime() / 1000;
+						System.err.println(" time stamp in unix "+epoch);
+				}catch(Exception ex){
+						System.err.println(ex);
+				}
+				Enumeration<String> values = req.getParameterNames();
+				Enumeration<String> headerNames = req.getHeaderNames();
+				// for testing
+				ServiceSigner helper =
+						new ServiceSigner();
 
-	//
-	System.err.println(" uri "+uri);
-	System.err.println(" path2 "+path2);	// /NewEmployeeService			
-	//
-	System.err.println(" protocol "+protocol);
-	System.err.println(" port "+port);
-	System.err.println(" path "+path);
-	System.err.println(" host "+host);
-	System.err.println(" method "+method);
-	System.err.println(" req target "+request_target);
-	try{
-	    //
-	    // it will change to local timestamp
-	    //
-	    long epoch = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-06-07 15:51:35").getTime() / 1000;
-	    System.err.println(" time stamp in unix "+epoch);
-	}catch(Exception ex){
-	    System.err.println(ex);
-	}
-	Enumeration<String> values = req.getParameterNames();
-	Enumeration<String> headerNames = req.getHeaderNames();
-	// for testing
-	ServiceSigner helper =
-	    new ServiceSigner();
-
-	while(headerNames.hasMoreElements()){
-	    String headerName = headerNames.nextElement();
-	    System.err.println(headerName+":");
-	    String headerValue = req.getHeader(headerName);
-	    System.err.println(headerValue);
-	    if(headerName.equals("username")){
-		username = headerValue;
-	    }
-	    else if(headerName.equals("content_type")){
-		content_type = headerValue;
-	    }
-	    else if(headerName.equals("content_length")){
-		content_length = headerValue;
-	    }						
-	    else if(headerName.equals("Signature")){
-		signatureHeaders = headerValue;
-		if(headerValue.indexOf("signature") > 0){
-		    Signature = headerValue.substring(headerValue.indexOf("signature")+10);
+				while(headerNames.hasMoreElements()){
+						String headerName = headerNames.nextElement();
+						System.err.println(headerName+":");
+						String headerValue = req.getHeader(headerName);
+						System.err.println(headerValue);
+						if(headerName.equals("username")){
+								username = headerValue;
+						}
+						else if(headerName.equals("content_type")){
+								content_type = headerValue;
+						}
+						else if(headerName.equals("content_length")){
+								content_length = headerValue;
+						}						
+						else if(headerName.equals("Signature")){
+								signatureHeaders = headerValue;
+								if(headerValue.indexOf("signature") > 0){
+										Signature = headerValue.substring(headerValue.indexOf("signature")+10);
 										
-		}
-	    }
-	    else if(headerName.equals("Authorization")){
-		if(headerValue.indexOf("Signature") > -1){
-		    signatureHeaders = headerValue.substring(headerValue.indexOf("Signature")+1);
-		}
-		else{
-		    signatureHeaders = headerValue;
-		}
-		if(headerValue.indexOf("signature") > 0){
-		    Signature = headerValue.substring(headerValue.indexOf("signature")+10);
-										
-		}
-	    }
-	    else if(headerName.indexOf("Created") > -1){ // not needed
-		created = headerValue;
-	    }
-	    else if(headerName.equals("keyId")){ 
-		keyId = headerValue;
-	    }						
-	}
-	while (values.hasMoreElements()){
-	    name = values.nextElement().trim();
-	    vals = req.getParameterValues(name);
-	    value = vals[vals.length-1].trim();
-	    if (name.equals("employee_number")) { // this is what jquery sends
-		employee_number = value;
-		System.err.println(" emp # "+employee_number);
-	    }
-	    else{
-		System.err.println(name+" "+value);
-	    }
-	}
-	request_target = method.toLowerCase()+" "+path2;// "?employee_number="+employee_number;
-	ServiceKeyList skl = new ServiceKeyList("account_tracker");
-	String back = skl.find();
-	if(back.equals("")){
-	    List<ServiceKey> ones = skl.getKeys();
-	    if(ones != null && ones.size() > 0){
-		key = ones.get(0);
-	    }
-	}
-	if(!signatureHeaders.equals("")){
-	    try{
-		String[] str_arr = signatureHeaders.split(",");
-		for(String str:str_arr){
-		    if(str.startsWith("keyId")){
-			keyId = getItemValue(str);
-			System.err.println(" keyId "+keyId);
-		    }
-		    else if(str.startsWith("algorithm")){
-			algorithm = getItemValue(str);
-			System.err.println(" algorithm "+algorithm);
-		    }
-		    else if(str.startsWith("created")){
-			created = getItemValue(str);;
-			System.err.println(" created "+created);
-		    }
-		    else if(str.startsWith("expires")){
-			expires = getItemValue(str);
-			System.err.println(" expires "+expires);
-		    }
-		    else if(str.startsWith("username")){
-			username = getItemValue(str);
-			System.err.println(" username "+username);
-		    }
-		    else if(str.startsWith("headers")){
-			headers_order = getItemValue(str);
-			System.err.println(" order "+headers_order);
-		    }
-		    else if(str.startsWith("signature")){
-			Signature = getItemValue(str);
-			System.err.println(" sig "+Signature);
-		    }
-		    else{
-			System.err.println(" unknown header "+str);
-		    }
-		}
-	    }
-	    catch(Exception ex){
-		System.err.println(ex);
-	    }
-	}
-	if(!headers_order.equals("")){
-	    String[] str_arr = headers_order.split("\\s+");
-	    // System.err.println(" arr order "+str_arr);
-	    list_order = Arrays.asList(str_arr);
-	    System.err.println(" list order "+list_order);
-	    int jj=1;
-	    for(String str:list_order){
-		System.err.println("order "+(jj++)+" "+str);
-	    }
-	}
-	ServiceSigner signer =
-	    new ServiceSigner(key.getKeyValue(),
-			      request_target,
-			      created,
-			      expires,
-			      username,
-			      host,
-			      body,
-			      content_type,
-			      content_length,
-			      Signature,
-			      list_order);
-	boolean match = signer.verify();
-	System.err.println(" sig match "+match);
-	System.err.println(" sig "+Signature);
+								}
+						}
+						else if(headerName.equals("Authorization")){
+								if(headerValue.indexOf("Signature") > -1){
+										signatureHeaders = headerValue.substring(headerValue.indexOf("Signature")+1);
+								}
+								else{
+										signatureHeaders = headerValue;
+								}
+								if(headerValue.indexOf("signature") > 0){
+										Signature = headerValue.substring(headerValue.indexOf("signature")+10);
+								}
+						}
+						else if(headerName.indexOf("Created") > -1){ // not needed
+								created = headerValue;
+						}
+						else if(headerName.equals("keyId")){ 
+								keyId = headerValue;
+						}						
+				}
+				while (values.hasMoreElements()){
+						name = values.nextElement().trim();
+						vals = req.getParameterValues(name);
+						value = vals[vals.length-1].trim();
+						if (name.equals("employee_number")) { // this is what jquery sends
+								employee_number = value;
+								System.err.println(" emp # "+employee_number);
+						}
+						else{
+								System.err.println(name+" "+value);
+						}
+				}
+				request_target = method.toLowerCase()+" "+path2+"?employee_number="+employee_number;
+				ServiceKeyList skl = new ServiceKeyList("account_tracker");
+				String back = skl.find();
+				if(back.equals("")){
+						List<ServiceKey> ones = skl.getKeys();
+						if(ones != null && ones.size() > 0){
+								key = ones.get(0);
+						}
+				}
+				if(!signatureHeaders.equals("")){
+						try{
+								String[] str_arr = signatureHeaders.split(",");
+								for(String str:str_arr){
+										if(str.startsWith("keyId")){
+												keyId = getItemValue(str);
+												System.err.println(" keyId "+keyId);
+										}
+										else if(str.startsWith("algorithm")){
+												algorithm = getItemValue(str);
+												System.err.println(" algorithm "+algorithm);
+										}
+										else if(str.startsWith("created")){
+												created = getItemValue(str);;
+												System.err.println(" created "+created);
+										}
+										else if(str.startsWith("expires")){
+												expires = getItemValue(str);
+												System.err.println(" expires "+expires);
+										}
+										else if(str.startsWith("username")){
+												username = getItemValue(str);
+												System.err.println(" username "+username);
+										}
+										else if(str.startsWith("headers")){
+												headers_order = getItemValue(str);
+												System.err.println(" order "+headers_order);
+										}
+										else if(str.startsWith("signature")){
+												Signature = getItemValue(str);
+												System.err.println(" sig "+Signature);
+										}
+										else{
+												System.err.println(" unknown header "+str);
+										}
+								}
+						}
+						catch(Exception ex){
+								System.err.println(ex);
+						}
+				}
+				if(!headers_order.equals("")){
+						String[] str_arr = headers_order.split("\\s+");
+						// System.err.println(" arr order "+str_arr);
+						list_order = Arrays.asList(str_arr);
+						System.err.println(" list order "+list_order);
+						int jj=1;
+						for(String str:list_order){
+								System.err.println("order "+(jj++)+" "+str);
+						}
+				}
+				ServiceSigner signer =
+						new ServiceSigner(key.getKeyValue(),
+															request_target,
+															created,
+															expires,
+															username,
+															host,
+															body,
+															content_type,
+															content_length,
+															Signature,
+															list_order);
+				boolean match = signer.verify();
+				System.err.println(" sig match "+match);
+				System.err.println(" sig "+Signature);
 
-	message = "Request Received ";
-	String str = "{\"message\":\""+message+"\"}";
-	out.println(str);
-	out.flush();
-	out.close();
+				message = "Request Received ";
+				String str = "{\"message\":\""+message+"\"}";
+				out.println(str);
+				out.flush();
+				out.close();
     }
     /*
       public CompletableFuture<String> getSignedUrl(String host,
