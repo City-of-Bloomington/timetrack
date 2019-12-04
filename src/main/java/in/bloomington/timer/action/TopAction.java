@@ -237,6 +237,11 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     public List<String> getErrors(){
 				return errors;
     }
+		public void setErrors(List<String> vals){
+				if(vals != null)
+						errors = vals;
+		}
+													
     public String getErrorsAll(){
 				String ret = "";
 				if(hasErrors()){

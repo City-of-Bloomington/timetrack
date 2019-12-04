@@ -19,9 +19,11 @@ public class HolidayWorkDay{
 		//
 		// holiday work day info
 		//
+		// for regular hours only, H1.0 not included
+		//
 		double hours = 0;
 		String date_to = ""; // report date (end of pay period)
-		String employee_id = ""; // principal_id 
+		String employee_id = ""; 
 		int seq = -1;
 		//	
     public HolidayWorkDay(){

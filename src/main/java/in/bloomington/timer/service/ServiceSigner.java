@@ -7,6 +7,8 @@ package in.bloomington.timer.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Base64;
 import java.util.Formatter;
 import javax.servlet.*;
@@ -22,54 +24,35 @@ final class ServiceSigner {
 
     String key = "";
     String keyId = "";
-    String request_target = "";
-    String created = "", expires="";
-    String host = "", username="";
-    String date = "";
-    String content_type="";
     String digest = "", body="";
-    String content_length="";
     String signature = "", new_signature="";
-    String sign_str = "";
+    String sign_str = "", algorithm="";
     List<String> items_order = null;
+		Map<String, String> headerMap = null;
+		static final Map<String, String> algos = new HashMap<>();
+		static {
+				algos.put("hmac-sha256","HmacSHA256");
+				algos.put("hmac-sha512","HmacSHA512");
+		};
     //
-    // Signature
     // Signature: KeyId="mykeyid",algorithm="hs2019",created=1402170695,
     //          headers="(request-target) (created) host digest content-length",
     //          signature="Base64(RSA-SHA512(signing string))"
     //
-    // the singing string will be
-		// (request-target): get /NewEmployeeService?employee_number=100001341 (created): 1574693202 username: sibow
-		//
-		// created time 100001341
-		// signature
-		// kUBNCXe2giUAlqzeyRHg5Xn/7hlO8bg5SYbzGkKPkHRGWsv8HWMEPQB1jFk6gqI/OKnS056kgklLouVVYJTKjA==
-    //
     ServiceSigner(String _key,
-									String _request_taget,
-									String _created,
-									String _expires,
-									String _username,
-									String _host,
 									String _body,
-									String _content_type,
-									String _content_length,
 									String _signature,
-									List<String> items){
+									String _algorithm,
+									List<String> itemsOrder,
+									Map<String, String> map){
 				setKey(_key);
-				setRequestTarget(_request_taget);
-				setCreated(_created);
-				setExpires(_expires);
-				setUsername(_username);
-				setHost(_host);
 				setBody(_body);
-				setContentLength(_content_length);
-				setContentType(_content_type);
 				setSignature(_signature);
-				setItemsOrder(items);
+				setAlgorithm(_algorithm);				
+				setItemsOrder(itemsOrder);
+				setHeaderMap(map);
 				//
 				try{
-						System.err.println("secret key "+key);
 						if(key == null || key.equals("")){
 								System.err.println(" key value not set ");
 								return;
@@ -78,78 +61,64 @@ final class ServiceSigner {
 								//
 								// checksum the digest
 								//
-								if(body != null && !body.equals("")){
-										digest = "SHA-256="+sign(key, body);
-										System.err.println(" digest "+digest);
+								String digest2 = "SHA256="+sign(key, body, algorithm);
+								System.err.println(" digest2 "+digest2);
+								if(headerMap.containsKey("digest")){
+										digest = headerMap.get("digest");
+								}
+								if(!digest.equals(digest2)){
+										System.err.println(" digests are not equal");
+								}
+								else{
+										System.err.println(" digests are equal");
 								}
 						}
-
 						composeSigningString();
 						System.err.println(" str to sign "+sign_str);
-						new_signature = sign(key, sign_str);
+						new_signature = sign(key, sign_str, algorithm);
 						System.err.println(" new sign "+new_signature);				
 				}catch(Exception ex){
 						System.err.println(ex);				
 				}
-    }
-    ServiceSigner(){
-				try{
-						System.err.println(" sign key ");
-						String sig = ""; // sign(key, timestamp, serviceName);
-						System.err.println(" sig = "+sig);
-				}catch(Exception ex){
-						System.err.println(ex);
-				}
-    }
+    }		
+
+		void setHeaderMap(Map<String, String> map){
+				headerMap = map;
+		}
     /**
-     * if the two signatures match, return true;
+     * check if the two signatures match
      */
     boolean verify(){
 				return !signature.equals("") &&
 						!new_signature.equals("") &&
 						signature.equals(new_signature);
     }		
-    void composeSigningString(){
+		void composeSigningString(){
 				sign_str = "";
 				for(String str:items_order){
-						if(str.equals("(request-target)")){
-								addToString("(request-target)", request_target);
+						if(headerMap.containsKey(str)){
+								addToString(str, headerMap.get(str));
 						}
-						else if(str.equals("(created)")){
-								addToString("(created)", created);
+						else{
+								System.err.println(" key "+str+" not in map");
 						}
-						else if(str.equals("(expires)")){
-								addToString("(expires)", expires);
-						}						
-						else if(str.equals("host")){
-								addToString("host", host);
-						}
-						else if(str.equals("username")){
-								addToString("username", username);
-						}	    
-						else if(str.equals("digest")){
-								addToString("digest", digest);
-						}
-						else if(str.equals("content-type")){
-								addToString("content-type,", content_type);
-						}
-						else if(str.equals("content-length")){
-								addToString("content-length", content_length);
-						}						
 				}
 				sign_str = sign_str.trim();
-    }
+		}
     void addToString(String name, String value){
-				if(!sign_str.equals("")) sign_str+=" ";
+				if(!sign_str.equals("")) sign_str+="\n";
 				sign_str += name += ":";
 				if(value != null && !value.equals("")){
-						sign_str += " "+value;
+						sign_str += " "+value.trim();
+				}
+				else{
+						sign_str += " ";
 				}
     }
-    static byte[] HmacSHA256(String data, byte[] key){
+    static byte[] HmacSHA(String data, byte[] key, String algorithm){
 				byte[] ret = null;
 				try{
-						String algorithm="HmacSHA512";
+						// String algorithm="HmacSHA256";
 						Mac mac = Mac.getInstance(algorithm);
 						mac.init(new SecretKeySpec(key, algorithm));
 						ret =  mac.doFinal(data.getBytes("UTF-8"));
@@ -158,47 +127,28 @@ final class ServiceSigner {
 				}
 				return ret;
     }
-    static String sign(String secretKey, String data) throws Exception {
+    static String sign(String secretKey, String data, String algorithm) throws Exception {
 				String signature = "";
 				byte[] kSecret = secretKey.getBytes("UTF-8");
-				byte[] kSigning = HmacSHA256(data, kSecret);
-				signature = toHexString(kSigning);				
+				byte[] kSigning = HmacSHA(data, kSecret, algorithm);
+				signature = Base64.getEncoder().encodeToString(kSigning);
 				return signature;
-    }		
-    private static String toHexString(byte[] bytes) {
-				String str = Base64.getEncoder().encodeToString(bytes);
-				return str;
     }
     void setKeyId(String val){
 				if(val != null)
 						keyId = val;
     }
-    void setUsername(String val){
-				if(val != null)
-						username = val;
-    }    
+    void setAlgorithm(String val){
+				if(val != null){
+						if(algos.containsKey(val)){
+								algorithm = algos.get(val);
+						}
+				}
+    }		
     void setKey(String val){
 				if(val != null)
 						key = val;
     }		
-    void setRequestTarget(String val){
-				if(val != null)
-						request_target = val;
-    }
-    void setCreated(String val){
-				if(val != null){
-						// created = val;
-						created = "1574693202";
-				}
-    }
-    void setExpires(String val){
-				if(val != null)
-						expires = val;
-    }
-    void setHost(String val){
-				if(val != null)
-						host = val;
-    }
     void setDigest(String val){
 				if(val != null)
 						digest = val;
@@ -207,14 +157,6 @@ final class ServiceSigner {
 				if(val != null)
 						body = val;
     }		
-    void setContentLength(String val){
-				if(val != null)
-						content_length = val;
-    }
-    void setContentType(String val){
-				if(val != null)
-						content_type = val;
-    }
     void setSignature(String val){
 				if(val != null)
 						signature = val;

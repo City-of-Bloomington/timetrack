@@ -147,9 +147,7 @@ public class HandleProfile{
 																		job_name,
 																		bGroup);
 								}
-								
 						}
-
 				}
 				return msg;
 		}

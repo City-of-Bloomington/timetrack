@@ -12,6 +12,8 @@ import javax.servlet.http.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Set;
@@ -39,18 +41,7 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.text.SimpleDateFormat;
 //
-// amazon lib
 //
-/*
-import software.amazon.awssdk.auth.signer.params.Aws4PresignerParams;
-import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
-import software.amazon.awssdk.utils.http.SdkHttpUtils;
-import software.amazon.awssdk.http.*;
-import software.amazon.awssdk.auth.credentials.AwsCredentials;
-import software.amazon.awssdk.auth.signer.Aws4Signer;
-import software.amazon.awssdk.auth.signer.params.Aws4SignerParams;
-import software.amazon.awssdk.regions.Region;
-*/
 import in.bloomington.timer.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
@@ -64,7 +55,8 @@ public class NewEmployeeService extends HttpServlet{
     static final long serialVersionUID = 1200L;
     static Logger logger = LogManager.getLogger(NewEmployeeService.class);
     static SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
-    static SimpleDateFormat dfm2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");		
+    static SimpleDateFormat dfm2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm");		
     //
     //
     // must be lowercase
@@ -74,8 +66,8 @@ public class NewEmployeeService extends HttpServlet{
 		
     public void doPost(HttpServletRequest req,
 		       HttpServletResponse res)
-	throws ServletException, IOException {
-	handle(req, res);
+				throws ServletException, IOException {
+				handle(req, res);
     }
     /**
      *
@@ -100,7 +92,7 @@ public class NewEmployeeService extends HttpServlet{
 				String protocol ="", host="",path="", method="",
 						signatureHeaders="", created="", expires="", algorithm="",
 						content_type="", content_length="";
-				String keyId = "";
+				String keyId = "", digest="";
 				String headers_order = "";
 				Integer port = 80;
 				HttpSession session = null;
@@ -133,59 +125,45 @@ public class NewEmployeeService extends HttpServlet{
 				System.err.println(" host "+host);
 				System.err.println(" method "+method);
 				System.err.println(" req target "+request_target);
-				try{
-						//
-						// it will change to local timestamp
-						//
-						long epoch = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-06-07 15:51:35").getTime() / 1000;
-						System.err.println(" time stamp in unix "+epoch);
-				}catch(Exception ex){
-						System.err.println(ex);
-				}
+
 				Enumeration<String> values = req.getParameterNames();
 				Enumeration<String> headerNames = req.getHeaderNames();
-				// for testing
-				ServiceSigner helper =
-						new ServiceSigner();
 
+				Map<String, String> headerMap = new HashMap<>();
 				while(headerNames.hasMoreElements()){
 						String headerName = headerNames.nextElement();
-						System.err.println(headerName+":");
 						String headerValue = req.getHeader(headerName);
-						System.err.println(headerValue);
+						System.err.println(headerName +" : "+headerValue);
 						if(headerName.equals("username")){
 								username = headerValue;
+								headerMap.put(headerName, headerValue);								
 						}
-						else if(headerName.equals("content_type")){
-								content_type = headerValue;
+						else if(headerName.equals("user-agent")){
+								// skip
 						}
-						else if(headerName.equals("content_length")){
-								content_length = headerValue;
+						else if(headerName.equals("Authorization")){
+								// skip
+						}
+						else if(headerName.equals("authorization")){
+								// skip
 						}						
+						else if(headerName.equals("Digest")){
+								digest = headerValue;
+								headerMap.put("digest", headerValue);
+						}
 						else if(headerName.equals("Signature")){
 								signatureHeaders = headerValue;
 								if(headerValue.indexOf("signature") > 0){
 										Signature = headerValue.substring(headerValue.indexOf("signature")+10);
-										
 								}
 						}
-						else if(headerName.equals("Authorization")){
-								if(headerValue.indexOf("Signature") > -1){
-										signatureHeaders = headerValue.substring(headerValue.indexOf("Signature")+1);
-								}
-								else{
-										signatureHeaders = headerValue;
-								}
-								if(headerValue.indexOf("signature") > 0){
-										Signature = headerValue.substring(headerValue.indexOf("signature")+10);
-								}
-						}
-						else if(headerName.indexOf("Created") > -1){ // not needed
+						else if(headerName.indexOf("Created") > -1){ 
 								created = headerValue;
+								headerMap.put("(created)", headerValue);								
 						}
-						else if(headerName.equals("keyId")){ 
-								keyId = headerValue;
-						}						
+						else{
+								headerMap.put(headerName.toLowerCase(), headerValue);
+						}
 				}
 				while (values.hasMoreElements()){
 						name = values.nextElement().trim();
@@ -199,8 +177,11 @@ public class NewEmployeeService extends HttpServlet{
 								System.err.println(name+" "+value);
 						}
 				}
-				request_target = method.toLowerCase()+" "+path2+"?employee_number="+employee_number;
-				ServiceKeyList skl = new ServiceKeyList("account_tracker");
+				request_target = method.toLowerCase()+" "+uri+"?employee_number="+employee_number;
+				headerMap.put("(request-target)", request_target);
+				System.err.println(" map: "+headerMap);
+				// get the key
+				ServiceKeyList skl = new ServiceKeyList(keyId);
 				String back = skl.find();
 				if(back.equals("")){
 						List<ServiceKey> ones = skl.getKeys();
@@ -222,10 +203,12 @@ public class NewEmployeeService extends HttpServlet{
 										}
 										else if(str.startsWith("created")){
 												created = getItemValue(str);;
+												headerMap.put("(created)", created);
 												System.err.println(" created "+created);
 										}
 										else if(str.startsWith("expires")){
 												expires = getItemValue(str);
+												headerMap.put("(expires)", expires);
 												System.err.println(" expires "+expires);
 										}
 										else if(str.startsWith("username")){
@@ -251,7 +234,6 @@ public class NewEmployeeService extends HttpServlet{
 				}
 				if(!headers_order.equals("")){
 						String[] str_arr = headers_order.split("\\s+");
-						// System.err.println(" arr order "+str_arr);
 						list_order = Arrays.asList(str_arr);
 						System.err.println(" list order "+list_order);
 						int jj=1;
@@ -261,27 +243,76 @@ public class NewEmployeeService extends HttpServlet{
 				}
 				ServiceSigner signer =
 						new ServiceSigner(key.getKeyValue(),
-															request_target,
-															created,
-															expires,
-															username,
-															host,
 															body,
-															content_type,
-															content_length,
 															Signature,
-															list_order);
+															algorithm,
+															list_order,
+															headerMap);
+				
 				boolean match = signer.verify();
+				if(!expires.equals("")){
+						// even if the match is true, if expired
+						// the signing becomes false
+						if(isRequestExpired(expires)){
+								match = false;
+						}
+						System.err.println(" is expired "+isRequestExpired(expires));
+				}
 				System.err.println(" sig match "+match);
-				System.err.println(" sig "+Signature);
-
+				
 				message = "Request Received ";
 				String str = "{\"message\":\""+message+"\"}";
 				out.println(str);
 				out.flush();
 				out.close();
     }
-    /*
+    String getItemValue(String val){
+				String str = "";
+				if(val != null){
+						str = val.substring(val.indexOf("=")+1);
+						if(str.indexOf("\"") > -1){
+								str = str.replaceAll("\"","").trim();
+						}
+				}
+				return str;
+    }
+		/**
+		 * check if the request is expired based on the expires parameter
+		 * if present
+		 */
+		boolean isRequestExpired(String expires){
+				boolean ret = false;
+				if(expires != null){
+						try{
+								long timeStamp = Long.parseLong(expires);
+								java.util.Date dtime =new java.util.Date((long)timeStamp*1000);
+								String dtimeStr = df.format(dtime);
+								System.err.println(" expire time "+dtimeStr);								
+								java.util.Date date = new java.util.Date();
+								System.err.println(" current time "+df.format(date));
+								Long now_time = new Long(date.getTime()/1000);
+								long now_long = now_time;
+								System.err.println(" now "+now_long);
+								if(now_long > timeStamp){
+										ret = true;
+								}
+						}catch(Exception ex){
+								System.err.println(ex);
+						}
+				}
+				return ret;
+		}
+		/*
+			try{
+			//
+			// it will change to local timestamp
+			//
+			long epoch = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-06-07 15:51:35").getTime() / 1000;
+			System.err.println(" time stamp in unix "+epoch);
+			}catch(Exception ex){
+			   System.err.println(ex);
+			}
+
       public CompletableFuture<String> getSignedUrl(String host,
       String method,
       String path,
@@ -336,14 +367,5 @@ public class NewEmployeeService extends HttpServlet{
       return CompletableFuture.completedFuture(result.getUri().toString());
       }
     */
-    String getItemValue(String val){
-	String str = "";
-	if(val != null){
-	    str = val.substring(val.indexOf("=")+1);
-	    if(str.indexOf("\"") > -1){
-		str = str.replaceAll("\"","").trim();
-	    }
-	}
-	return str;
-    }
+
 }

@@ -87,10 +87,10 @@ public class TmwrpWeekEntry{
 
     }
     public TmwrpWeekEntry(boolean deb,
-										 Department val,
-										 JobTask val2,										 
-										 int val3 // split day
-										 ){
+													Department val,
+													JobTask val2,										 
+													int val3 // split day
+													){
 				//
 				this(deb, // val,
 						 val, val2);
@@ -255,10 +255,9 @@ public class TmwrpWeekEntry{
 	
 				splitOne.doCalculations();
 				splitTwo.doCalculations();
-				// total_hrs = splitOne.getTotalHours()+splitTwo.getTotalHours();
-				// regular_hrs = splitOne.getRegularHours()+splitTwo.getRegularHours();
 				total_mints = splitOne.getTotalMinutes()+splitTwo.getTotalMinutes();
-				regular_mints = splitOne.getRegularMinutes()+splitTwo.getRegularMinutes();				
+				regular_mints = splitOne.getRegularMinutes()+splitTwo.getRegularMinutes();
+				regular_hrs = regular_mints/60.;
 				//
 				// the following earned_time are the overtime for certain employees
 				// from dialy earns (union)
@@ -398,7 +397,14 @@ public class TmwrpWeekEntry{
 								return;
 						}
 				}
+				System.err.println(" total "+total_hrs);
+				System.err.println(" reg "+regular_hrs);
+				System.err.println(" earned "+earned_time);
+				System.err.println(" holy earned "+holy_earn_hrs);
+				System.err.println(" prof "+prof_hrs);				
 				net_reg_hrs = regular_hrs - earned_time - prof_hrs - holy_earn_hrs;
+				System.err.println(" net reg "+net_reg_hrs);
+				System.err.println(" ");				
 				//
     }
     //
@@ -422,41 +428,53 @@ public class TmwrpWeekEntry{
     public void findExessHours(){
 	
 				excess_hrs = 0;
-				regular_hrs = regular_mints/60.;
+				// regular_hrs = regular_mints/60.;
 				total_hrs = total_mints/60.;
 				double netHours = total_hrs - earned_time - holy_earn_hrs;
 				//
 				// for full time working less than 40 hrs
 				//
 				if(isIrregularWorkDayEmployee && hasHolidays){
+						//
+						// we use only regular hours to find if more than 40
+						//
+						excess_hrs = regular_hrs -
+								comp_weekly_hrs -
+								holy_earn_hrs -
+								earned_time_daily;
+						if(excess_hrs > CommonInc.critical_small){
+								earned_time = excess_hrs;
+						}
 						return;
 				}
-				if(salaryGroup != null){
-						if(salaryGroup.isTemporary()){
-								excess_hrs = netHours < 40 ? 0: netHours - 40;
-						}
-						else if(salaryGroup.isUnionned()){ // union AFCSME employee
-								//
-								if(netHours > comp_weekly_hrs){
-										excess_hrs = netHours - comp_weekly_hrs;
+				else{
+						if(salaryGroup != null){
+								if(salaryGroup.isTemporary()){
+										excess_hrs = netHours < 40 ? 0: netHours - 40;
 								}
-						}
-						else if(salaryGroup.isFireSworn()){
-								// fire excess is handled by NW
-						}
-						else if(salaryGroup.isFireSworn5x8()){
-								// fire excess is handled by NW
-								//
-						}
-						else if(salaryGroup.isPoliceSworn()){
-								// fire excess is handled by NW
-						}						
-						else{
-								if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){
-										excess_hrs = netHours - st_weekly_hrs;
+								else if(salaryGroup.isUnionned()){ // union AFCSME employee
+										//
+										if(netHours > comp_weekly_hrs){
+												excess_hrs = netHours - comp_weekly_hrs;
+										}
 								}
-								else if(netHours > comp_weekly_hrs){
-										excess_hrs = netHours - comp_weekly_hrs;
+								else if(salaryGroup.isFireSworn()){
+										// fire excess is handled by NW
+								}
+								else if(salaryGroup.isFireSworn5x8()){
+										// fire excess is handled by NW
+										//
+								}
+								else if(salaryGroup.isPoliceSworn()){
+										// fire excess is handled by NW
+								}						
+								else{
+										if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){
+												excess_hrs = netHours - st_weekly_hrs;
+										}
+										else if(netHours > comp_weekly_hrs){
+												excess_hrs = netHours - comp_weekly_hrs;
+										}
 								}
 						}
 				}
@@ -469,93 +487,6 @@ public class TmwrpWeekEntry{
 				}
 				if(excess_hrs > CommonInc.critical_small){
 						earned_time = excess_hrs;
-				}
-    }
-    public boolean hasExessHours(){
-				return excess_hrs > CommonInc.critical_small;
-    }
-    public boolean hasInsufficientTotalHours(){
-				boolean ret = false;
-				
-				if(salaryGroup != null && !salaryGroup.isTemporary()){
-						if(total_hrs + CommonInc.critical_small < st_weekly_hrs){
-								ret = true;
-						}
-				}
-				return ret;
-    }
-    /**
-     * this method create the holiday earned hours
-     * and add the time to earned_time (if any)
-     */
-    private void findHolidayEarned(){
-				//
-				if(holyWorkDays == null) return;
-				//
-				if(isIrregularWorkDayEmployee && hasHolidays){
-						return;
-				}				
-				String code_id = "";
-				total_hrs = total_mints/60.;
-				double netHours = total_hrs - earned_time;
-				double extra_hrs = 0;
-				//
-				// for full time working less than 40 hrs
-				//
-				if(salaryGroup != null){
-						if(salaryGroup.isTemporary()){
-								extra_hrs = netHours < 40 ? 0: netHours - 40;
-						}
-						else if(salaryGroup.isExcessCulculationDaily()){
-								// union, police,
-								// compute daily see below
-						}
-						else if(salaryGroup.isFireSworn()){
-								// ignore
-						}
-						else if(salaryGroup.isFireSworn5x8()){
-								// ignore
-						}						
-						else{
-								if(netHours > st_weekly_hrs)
-										extra_hrs = netHours - st_weekly_hrs;
-						}
-				}
-				if(extra_hrs > CommonInc.critical_small){
-						double holy_hours = 0;
-						for(HolidayWorkDay one: holyWorkDays){
-								holy_hours += one.getHours();
-						}
-						if(extra_hrs >= holy_hours){
-								holy_earn_hrs = holy_hours;
-						}
-						else{
-								holy_earn_hrs = extra_hrs;
-						}
-						String dstr = ndf.format(holy_earn_hrs);
-						holy_earn_hrs = (double)(new Double(dstr));
-						//
-						if(holy_earn_hrs > CommonInc.critical_small){
-								// 
-								// earned_time += holy_earn_hrs;
-								//
-								// create earn codes
-								if(salaryGroup != null && salaryGroup.isUnionned()){
-										code_id = CommonInc.holyCompTime20EarnCodeID; // "HCE2.0";
-								}
-								else{
-										if(holiday_factor > 1.5){
-												code_id = CommonInc.holyCompTime20EarnCodeID;// "HCE2.0";
-										}
-										else if(holiday_factor > 1.0){
-												code_id = CommonInc.holyCompTime15EarnCodeID; // "HCE1.5";
-										}
-										else{
-												code_id = CommonInc.holyCompTime10EarnCodeID; // "HCE1.0";
-										}
-								}
-								addToEarnedHash(code_id, holy_earn_hrs);
-						}
 				}
     }
     /**
@@ -628,7 +559,94 @@ public class TmwrpWeekEntry{
 						excess_hrs2 = (double) (new Double(dstr));
 						addToEarnedHash(code_id, excess_hrs2);								
 				}
+    }		
+    public boolean hasExessHours(){
+				return excess_hrs > CommonInc.critical_small;
     }
+    public boolean hasInsufficientTotalHours(){
+				boolean ret = false;
+				
+				if(salaryGroup != null && !salaryGroup.isTemporary()){
+						if(total_hrs + CommonInc.critical_small < st_weekly_hrs){
+								ret = true;
+						}
+				}
+				return ret;
+    }
+    /**
+     * this method create the holiday earned hours
+     * and add the time to earned_time (if any)
+     */
+    private void findHolidayEarned(){
+				//
+				if(holyWorkDays == null) return;
+				//
+				if(isIrregularWorkDayEmployee && hasHolidays){
+						return;
+				}				
+				String code_id = "";
+				total_hrs = total_mints/60.;
+				double netHours = total_hrs - earned_time;
+				double extra_hrs = 0;
+				//
+				// for full time working less than 40 hrs
+				//
+				if(salaryGroup != null){
+						if(salaryGroup.isTemporary()){
+								extra_hrs = netHours < 40 ? 0: netHours - 40;
+						}
+						else if(salaryGroup.isExcessCulculationDaily()){
+								// union, police,
+								// compute daily see below
+						}
+						else if(salaryGroup.isFireSworn()){
+								// ignore
+						}
+						else if(salaryGroup.isFireSworn5x8()){
+								// ignore
+						}						
+						else{
+								if(netHours > st_weekly_hrs)
+										extra_hrs = netHours - st_weekly_hrs;
+						}
+				}
+				if(extra_hrs > CommonInc.critical_small){
+						double holy_hours = 0;
+						for(HolidayWorkDay one: holyWorkDays){
+								holy_hours += one.getHours();
+						}
+						if(extra_hrs >= holy_hours){
+								holy_earn_hrs = holy_hours;
+						}
+						else{
+								holy_earn_hrs = extra_hrs;
+						}
+						String dstr = ndf.format(holy_earn_hrs);
+						holy_earn_hrs = (double)(new Double(dstr));
+						//
+						if(holy_earn_hrs > CommonInc.critical_small){
+								// 
+								//
+								// create earn codes
+								if(salaryGroup != null && salaryGroup.isUnionned()){
+										code_id = CommonInc.holyCompTime20EarnCodeID; // "HCE2.0";
+								}
+								else{
+										if(holiday_factor > 1.5){
+												code_id = CommonInc.holyCompTime20EarnCodeID;// "HCE2.0";
+										}
+										else if(holiday_factor > 1.0){
+												code_id = CommonInc.holyCompTime15EarnCodeID; // "HCE1.5";
+										}
+										else{
+												code_id = CommonInc.holyCompTime10EarnCodeID; // "HCE1.0";
+										}
+								}
+								addToEarnedHash(code_id, holy_earn_hrs);
+						}
+				}
+    }
+
     public void createProfRecord(){
 				//
 				String code_id = CommonInc.profHoursEarnCodeID ;// "PROF HRS";	

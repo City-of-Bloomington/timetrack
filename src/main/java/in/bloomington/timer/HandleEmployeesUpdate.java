@@ -68,7 +68,6 @@ public class HandleEmployeesUpdate{
 		void setAllFlags(){
 				ServletContext ctx = SingleContextHolder.getContext();
 				if(ctx != null){
-						System.err.println(" ctx is Ok");				
 						String val = ctx.getInitParameter("run_employee_update");
 						if(val != null){
 								if(val.equals("false")){
@@ -110,7 +109,7 @@ public class HandleEmployeesUpdate{
 				Hashtable<String, Employee> empTable = null;
 				String inactiveSet = "", inactiveLog = "";
 				EmployeeList ul = new EmployeeList();
-				ul.setExclude_name("Admin");// exlude admin emp
+				ul.setExclude_name("System");// exlude admin emp
 				// ul.setHasAdSid();
 				//
 				String back = ul.find();
@@ -142,7 +141,6 @@ public class HandleEmployeesUpdate{
 								errors = "Error get emps from ldap "+msg;								
 						}
 				}
-				System.err.println(" msg "+msg);
 				if(msg.equals("")){
 						// changes
 						int jj=1;
@@ -151,7 +149,7 @@ public class HandleEmployeesUpdate{
 										if(empTable.containsKey(one.getAd_sid())){
 												Employee ldapEmp = empTable.get(one.getAd_sid());
 												if(!one.isSameEntity(ldapEmp)){
-														System.err.println(" emp "+one.getInfo());
+														System.err.println(" emp using AdSid "+one.getInfo());
 														System.err.println((jj++)+" found "+ldapEmp.getInfo());
 														// System.err.println(" update "+one.getInfo());
 														// System.err.println(" to => "+ldapEmp.getInfo());
@@ -271,8 +269,6 @@ public class HandleEmployeesUpdate{
 				}
 				return msg;
 		}
-		/*
-			j445566n:42a6d2b7f0
-		*/		
+
 
 }
