@@ -255,8 +255,8 @@ public class NewEmployeeService extends HttpServlet{
 						// the signing becomes false
 						if(isRequestExpired(expires)){
 								match = false;
+								System.err.println(" is expired: yes");								
 						}
-						System.err.println(" is expired "+isRequestExpired(expires));
 				}
 				System.err.println(" sig match "+match);
 				
@@ -303,7 +303,6 @@ public class NewEmployeeService extends HttpServlet{
 				return ret;
 		}
 		/*
-			try{
 			//
 			// it will change to local timestamp
 			//
@@ -312,60 +311,60 @@ public class NewEmployeeService extends HttpServlet{
 			}catch(Exception ex){
 			   System.err.println(ex);
 			}
-
-      public CompletableFuture<String> getSignedUrl(String host,
-      String method,
-      String path,
-      String protocol,
-      ServiceKey key,
-      AwsCredentials credits,
-      Map<String, List<String>> param,
-      Map<String, List<String>> headers,
-      String dateTime
-      ) {
-      Instant instant = null;
-      try{
-      java.util.Date date = dfm.parse(dateTime);
-      String date2 = dfm2.format(date);
-      System.err.println(" date "+date2);
-      instant = ZonedDateTime.parse(date2).toInstant();
+		*/
+		/*
+		public CompletableFuture<String>
+				getSignedUrl(String host,
+										 String method,
+										 String path,
+										 String protocol,
+										 ServiceKey key,
+										 AwsCredentials credits,
+										 Map<String, List<String>> param,
+										 Map<String, List<String>> headers,
+										 String dateTime
+										 ) {
+				Instant instant = null;
+				try{
+						java.util.Date date = dfm.parse(dateTime);
+						String date2 = dfm2.format(date);
+						System.err.println(" date "+date2);
+						instant = ZonedDateTime.parse(date2).toInstant();
 						
-      // print Value 
-      System.out.println("instant: "
-      + instant);
-      }catch(Exception ex){
-      System.err.println(ex);
-      }
-      Aws4PresignerParams params = Aws4PresignerParams.builder()
-      .awsCredentials(credits)
-      .signingName("s4") 
-      .signingRegion(Region.EU_WEST_1) // London
-      .signingClockOverride(Clock.fixed(instant, ZoneId.of("UTC")))
-      .build();
-      SdkHttpFullRequest request = SdkHttpFullRequest.builder()
-      .host(host)
-      .encodedPath(path+"/" + key.getKeyName())
-      // .encodedPath(path)
-      .method(SdkHttpMethod.fromValue(method))
-      .protocol("https")
-      .rawQueryParameters(param)
-      .appendHeader("AccessKeyId","account_tracker")
-      .appendHeader("AccountTrackerUsername","sibow")
-      .build();
-      Aws4Signer signer = Aws4Signer.create();
-      SdkHttpFullRequest result = signer.sign(request, params);
+						// print Value 
+						System.out.println("instant: "+ instant);
+				}catch(Exception ex){
+						System.err.println(ex);
+				}
+				Aws4PresignerParams params = Aws4PresignerParams.builder()
+						.awsCredentials(credits)
+						.signingName("s4") 
+						.signingRegion(Region.EU_WEST_1) // London
+						.signingClockOverride(Clock.fixed(instant, ZoneId.of("UTC")))
+						.build();
+				SdkHttpFullRequest request = SdkHttpFullRequest.builder()
+						.host(host)
+						.encodedPath(path+"/" + key.getKeyName())
+						// .encodedPath(path)
+						.method(SdkHttpMethod.fromValue(method))
+						.protocol("https")
+						.rawQueryParameters(param)
+						.appendHeader("AccessKeyId","account_tracker")
+						.appendHeader("AccountTrackerUsername","sibow")
+						.build();
+				Aws4Signer signer = Aws4Signer.create();
+				SdkHttpFullRequest result = signer.sign(request, params);
 
-      Map<String, List<String>> heads = result.headers();
-      if(heads != null){
-      Set<String> keys = heads.keySet();
-      for(String kk:keys){
-      List<String> ones = heads.get(kk);
-      System.err.println(kk+" "+ones);
-      }
-      }
-
-      return CompletableFuture.completedFuture(result.getUri().toString());
-      }
-    */
+				Map<String, List<String>> heads = result.headers();
+				if(heads != null){
+						Set<String> keys = heads.keySet();
+						for(String kk:keys){
+								List<String> ones = heads.get(kk);
+								System.err.println(kk+" "+ones);
+						}
+				}
+				return CompletableFuture.completedFuture(result.getUri().toString());
+		}
+		*/
 
 }

@@ -29,7 +29,7 @@ public class TimewarpManager{
 		String prof_hrs_id = CommonInc.profHoursEarnCodeID;
 		PayPeriod payPeriod = null;
 		JobTask job = null;
-		Group group = null; // needed for Fire BC earn code
+		Group group = null; // needed for Fire - BC earn code
 		Document document = null;
 		HolidayList holys = null;
 		SalaryGroup salaryGroup = null;
@@ -71,7 +71,7 @@ public class TimewarpManager{
     public String doProcess(){
 				String back = "";
 				getDocument();
-				// System.err.println(" emp "+document.getEmployee());
+				// 
 				getHolidayList();
 				if(document != null){
 						TimewarpProcess process =
@@ -106,7 +106,7 @@ public class TimewarpManager{
 						return back;
 				}				
 				String reg_code_id = salaryGroup.getDefault_regular_id();
-				if(group != null && group.getName().equals("Fire BC")){
+				if(group != null && group.getName().equals("Fire - BC")){
 						reg_code_id = CommonInc.regEarnCodeFireBCGroupID;// REG FIRE BC
 				}
 				week1_grs_reg_hrs = process.getWeek1Regular();

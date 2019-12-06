@@ -47,8 +47,7 @@ public class TmwrpRun{
 		HourCode regCode = null;
 
 		List<TmwrpBlock> blocks = null;
-		// for display
-    // Map<String, List<String>> week1Rows = null, week2Rows = null;
+
     List<List<String>> week1Rows = null, week2Rows = null;
 		List<String> cycleTotalRow = null; // pay period row 
 		Map<CodeRef, Double> csvHourRows = null;

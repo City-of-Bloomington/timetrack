@@ -397,15 +397,7 @@ public class TmwrpWeekEntry{
 								return;
 						}
 				}
-				System.err.println(" total "+total_hrs);
-				System.err.println(" reg "+regular_hrs);
-				System.err.println(" earned "+earned_time);
-				System.err.println(" holy earned "+holy_earn_hrs);
-				System.err.println(" prof "+prof_hrs);				
 				net_reg_hrs = regular_hrs - earned_time - prof_hrs - holy_earn_hrs;
-				System.err.println(" net reg "+net_reg_hrs);
-				System.err.println(" ");				
-				//
     }
     //
     public double getNonRegularHrs(){
