@@ -43,34 +43,50 @@ public class CommonInc{
 		// related code strring
 		public final static String profHoursEarnCodeStr = "PROF HRS";		
 		//
-		// Reg code ID used by many (from database)
-		public final static String regEarnCodeID = "1";
+		// default regualar (Reg) earn code and related ID used by many 
+		// for full time employees (match the database earn codes)
 		public final static String regEarnCodeStr = "Reg";
+		public final static String regEarnCodeID = "1";		
+		// for temp employees
+		public final static String tempEarnCodeStr = "TEMP";
 		public final static String tempEarnCodeID = "14";
-		public final static String tempEarnCodeStr = "TEMP";		
 		//
 		// Fire depart special reg code for BC group only
+		public final static String regEarnCodeFireBCGroupStr = "REG FIRE BC";		
 		public final static String regEarnCodeFireBCGroupID = "111";
-		public final static String regEarnCodeFireBCGroupStr = "REG FIRE BC";
-		public final static String regEarnCodeFireID = "93";
+		//
+		// earn code for fire sworn 
 		public final static String regEarnCodeFireStr = "REG FIRE";
+		public final static String regEarnCodeFireID = "93";
+		//
+		// overtime earn codes
 		public final static String overTime10EarnCodeID = "78"; // OT1.0		
 		public final static String overTime15EarnCodeID = "43"; // OT1.5
 		public final static String overTime20EarnCodeID = "44"; // OT2.0
+		//
+		// comp time earned earn codes
 		public final static String compTime10EarnCodeID = "71"; // CE1.0
 		public final static String compTime15EarnCodeID = "34"; // CE1.5
 		public final static String compTime20EarnCodeID = "45"; // CE2.0
+		//
+		// holiday earned earn codes
 		public final static String holyCompTime10EarnCodeID = "50"; // HCE1.0		
 		public final static String holyCompTime15EarnCodeID = "79"; // HCE1.5
-		public final static String holyCompTime20EarnCodeID = "48"; // HCE2.0			
+		public final static String holyCompTime20EarnCodeID = "48"; // HCE2.0
+		//
+		// max monetary value allowed that can be earned when used
+		// with monetary earn codes that does not have default value
 		public final static double maxMonetaryAmount = 1000.0; // CA for example
 		public final static double critical_small = 0.01;
 		//
-		// the following two array are used in reports
+		// the following two array are used in reports month/day in mm/dd format
 		public final static String[] quarter_starts = {"","01/01/","04/01/","07/01/","10/01/"};
 		public final static String[] quarter_ends = {"","03/31/","06/30/","09/30/","12/31/"};
-		// reserved usernames that can not login, add any username if needed to the list below
-		public final static String[] invalid_usernames = {"hrmail","lineloc","admin","hnd","police","public.works","council","legalarc","mayor","recruits"};		
+		//
+		// list of reserved usernames that can not be used to login in timetrack,
+		// add any username if needed to the list below
+		// remove the ones that are not used
+		public final static String[] invalid_usernames = {"clerk","hrmail","lineloc","admin","hnd","police","public.works","council","legalarc","mayor","recruits"};		
    	String message = "";
 		List<String> errors = null;
 		//
@@ -79,7 +95,7 @@ public class CommonInc{
 		public CommonInc(boolean deb){
 				debug = deb;
 		}
-
+		/*
 		public String getMessage(){
 				return message;
 		}
@@ -97,5 +113,6 @@ public class CommonInc{
 						errors = new ArrayList<>();
 				errors.add(val);
 		}
+		*/
 
 }

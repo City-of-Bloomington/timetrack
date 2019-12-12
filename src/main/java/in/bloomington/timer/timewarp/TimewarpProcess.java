@@ -164,39 +164,47 @@ public class TimewarpProcess{
 								weekOneHasSplit = true;
 								noWeekSplit = false;
 								week1 = new TmwrpWeekEntry(debug,
-																			department,
-																			job,
-																			splitDay);
+																					 department,
+																					 job,
+																					 splitDay,
+																					"week1");
 								week2 = new TmwrpWeekEntry(debug,
-																			department,
-																			job);
+																					 department,
+																					 job,
+																					 "week2");
 						}
 						else if(splitDay == 7){ // no split day two weeks are separate
 								week1 = new TmwrpWeekEntry(debug,
 																					 department,
-																					 job);
+																					 job,
+																					 "week1");
 								week2 = new TmwrpWeekEntry(debug,
 																					 department,
-																					 job);
+																					 job,
+																					 "week2");
 						}						
-						else{
+						else{ // second week split
 								noWeekSplit = false;
 								week1 = new TmwrpWeekEntry(debug,
 																			department,
-																			job);
+																					 job,
+																					 "week1");
 								week2 = new TmwrpWeekEntry(debug,
-																			department,
-																			job,
-																			splitDay-7);
+																					 department,
+																					 job,
+																					 splitDay-7,
+																					 "week2");
 						}
 				}
-				else{
+				else{ // not split
 						week1 = new TmwrpWeekEntry(debug, 
-																	department,
-																	job);
+																			 department,
+																			 job,
+																			 "week1");
 						week2 = new TmwrpWeekEntry(debug, 
-																	department,
-																	job);
+																			 department,
+																			 job,
+																			 "week2");
 				}
     }
     //
@@ -339,16 +347,16 @@ public class TimewarpProcess{
 				}
 				else{
 						if(weekOneHasSplit){
-						// week 1 split 1 only
-						nreg  =  getWeekSplitNonRegularHours(1, 1);
+								// week 1 split 1 only
+								nreg  =  getWeekSplitNonRegularHours(1, 1);
 						}
 						else{
 								// all week 1 
 								nreg  =  getWeek1All();
 								// plus week 2 split 1
 								Hashtable<String, Double> nreg2  =	getWeekSplitNonRegularHours(2, 1); // week 2 split 1
-						if(!nreg2.isEmpty())
-								mergeTwoHashes(nreg2, nreg);
+								if(!nreg2.isEmpty())
+										mergeTwoHashes(nreg2, nreg);
 						}
 				}
 				nregFirstPay = nreg; // considerOnCall(nreg);
@@ -400,7 +408,7 @@ public class TimewarpProcess{
 								}
 						}
 						else{
-								// all week 2 split 2 only
+								// week 2 split 2 only
 								table  =  getWeekSplitMonetaryHash(2, 2);
 						}
 				}						
@@ -427,7 +435,7 @@ public class TimewarpProcess{
 										mergeTwoHashes(nreg2, nreg);
 						}
 						else{
-								// all week 2 split 2 only
+								// week 2 split 2 only
 								nreg  =  getWeekSplitNonRegularHours(2, 2);
 								Hashtable<String, Double> nreg2 = week1.getEarnedHours();
 								if(!nreg2.isEmpty())

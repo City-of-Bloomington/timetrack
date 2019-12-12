@@ -25,7 +25,7 @@ public class TmwrpWeekEntry{
     static DecimalFormat ndf = new DecimalFormat("#0.00");		
     static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		//     static final double critical_small = 0.01;
-		
+		String week_title = ""; 
     double total_hrs = 0, regular_hrs = 0,
 				non_reg_hrs = 0, earn_time_used = 0,
 				earned_time = 0, earned_time_daily=0,
@@ -74,10 +74,12 @@ public class TmwrpWeekEntry{
     
     public TmwrpWeekEntry(boolean deb,
 													Department val,
-													JobTask val2){ 
+													JobTask val2,
+													String val3){ 
 				debug = deb;
 				setDepartment(val);
 				setJob(val2);
+				setWeekTitle(val3);
 				splitOne = new TmwrpWeekSplit(debug,
 																			val,
 																			val2);
@@ -88,12 +90,12 @@ public class TmwrpWeekEntry{
     }
     public TmwrpWeekEntry(boolean deb,
 													Department val,
-													JobTask val2,										 
-													int val3 // split day
+													JobTask val2,
+													int val3, // split day
+													String val4
 													){
 				//
-				this(deb, // val,
-						 val, val2);
+				this(deb, val, val2, val4);
 				//
 				// if splitDay = 0 ignore, it just start of a new week
 				// day 7 is day 0 in next week (7 - 7 = 0)
@@ -107,6 +109,11 @@ public class TmwrpWeekEntry{
     }
 		public void setHasHolyDays(){
 				hasHolidays = true;
+		}
+		public void setWeekTitle(String val){
+				if(val != null)
+						week_title = val;
+								
 		}
     void setDepartment(Department val){
 				if(val != null){
@@ -247,23 +254,47 @@ public class TmwrpWeekEntry{
 				}
 				if(handSpecial){
 						// already taken care of
-						// mergeTwoHashes(regHash, all);						
 				}
 				return all;
     }
     public void doCalculations(){
-	
+
 				splitOne.doCalculations();
 				splitTwo.doCalculations();
-				total_mints = splitOne.getTotalMinutes()+splitTwo.getTotalMinutes();
-				regular_mints = splitOne.getRegularMinutes()+splitTwo.getRegularMinutes();
-				regular_hrs = regular_mints/60.;
-				//
-				// the following earned_time are the overtime for certain employees
-				// from dialy earns (union)
-				earned_time_daily = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
-				earn_time_used = splitOne.getEarnedTimeUsed()+splitTwo.getEarnedTimeUsed();
-				unpaid_hrs = splitOne.getUnpaidHrs()+splitTwo.getUnpaidHrs();
+				if(hasSplitDay()){
+						/*
+						System.err.println(week_title+" split 1 ");
+						splitOne.showInfo();
+						System.err.println(week_title+" split 2 ");						
+						splitTwo.showInfo();
+						*/
+						total_mints = splitOne.getTotalMinutes()+splitTwo.getTotalMinutes();
+						regular_mints = splitOne.getRegularMinutes()+splitTwo.getRegularMinutes();
+						//
+						regular_hrs = regular_mints/60.;
+						//
+						// the following earned_time are the overtime for certain employees
+						// from daily earns (union)
+						earned_time_daily = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
+						earn_time_used = splitOne.getEarnedTimeUsed()+splitTwo.getEarnedTimeUsed();
+						unpaid_hrs = splitOne.getUnpaidHrs()+splitTwo.getUnpaidHrs();
+				}
+				else{
+						/*
+						System.err.println(week_title+" split 1 ");
+						splitOne.showInfo();
+						*/
+						total_mints = splitOne.getTotalMinutes();
+						regular_mints = splitOne.getRegularMinutes();
+						//
+						regular_hrs = regular_mints/60.;
+						//
+						// the following earned_time are the overtime for certain employees
+						// from daily earns (union)
+						earned_time_daily = splitOne.getEarnedTime();
+						earn_time_used = splitOne.getEarnedTimeUsed();
+						unpaid_hrs = splitOne.getUnpaidHrs();						
+				}
 				//
 				mergeMonetaryHashtablesFromSplits(); // monetary if any
 				findHolidayEarned(); // if any				
@@ -283,7 +314,9 @@ public class TmwrpWeekEntry{
 						if(regular_hrs > CommonInc.critical_small && net_reg_hrs + CommonInc.critical_small < regular_hrs){
 								double ratio = net_reg_hrs / regular_hrs; 
 								splitOne.adjustRegHashBy(ratio);
-								splitTwo.adjustRegHashBy(ratio);
+								if(hasSplitDay()){								
+										splitTwo.adjustRegHashBy(ratio);
+								}
 						}
 						mergeRegHashtablesFromSplits();
 				}
@@ -293,21 +326,25 @@ public class TmwrpWeekEntry{
 				//
 				// non regular hours
 				Hashtable<String, Double> table = splitOne.getNonRegularHours();
-				Hashtable<String, Double> table2 = splitTwo.getNonRegularHours();
 				if(!table.isEmpty())
 						mergeWithHash(table, hash);
-				if(!table2.isEmpty())
-						mergeWithHash(table2, hash);
+				if(hasSplitDay()){
+						Hashtable<String, Double> table2 = splitTwo.getNonRegularHours();
+						if(!table2.isEmpty())
+								mergeWithHash(table2, hash);
+				}
     }
     // reg
     void mergeRegHashtablesFromSplits(){
 				//
 				Hashtable<String, Double> table = splitOne.getRegularHash();
-				Hashtable<String, Double> table2 = splitTwo.getRegularHash();
 				if(!table.isEmpty())				
 						mergeWithHash(table, regHash);
-				if(!table2.isEmpty())
-						mergeWithHash(table2, regHash);
+				if(hasSplitDay()){
+						Hashtable<String, Double> table2 = splitTwo.getRegularHash();
+						if(!table2.isEmpty())
+								mergeWithHash(table2, regHash);
+				}
 				// to all
 				// if(!hash.isEmpty())
 				mergeWithHash(regHash, hash);				
@@ -320,9 +357,11 @@ public class TmwrpWeekEntry{
 						table = splitOne.getMonetaryHash();
 						mergeWithHash(table, monetaryHash);
 				}
-				if(splitTwo.hasMonetary()){
-						table = splitTwo.getMonetaryHash();
-						mergeWithHash(table, monetaryHash);						
+				if(hasSplitDay()){				
+						if(splitTwo.hasMonetary()){
+								table = splitTwo.getMonetaryHash();
+								mergeWithHash(table, monetaryHash);						
+						}
 				}
     }		
     //
@@ -368,7 +407,7 @@ public class TmwrpWeekEntry{
 				return prof_hrs > CommonInc.critical_small;
     }
     boolean hasSplitDay(){
-				return splitDay < 7;
+				return splitDay < 7 && splitDay > 0;
     }
     public double getNetRegular(){
 				return net_reg_hrs;

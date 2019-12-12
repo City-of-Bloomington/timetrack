@@ -172,7 +172,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				String qq = " insert into group_employees values(0,?,?,?,?,null) "; 
 				if(employee_id.equals("")){
 						msg = "employee not set ";
-						addError(msg);
 						return msg;
 				}
 				if(group_id.equals("") && !new_group_id.equals("")){
@@ -180,7 +179,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				}
 				if(group_id.equals("")){
 						msg = "group not set ";
-						addError(msg);
 						return msg;
 				}
 				if(debug){
@@ -189,7 +187,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB";
-						addError(msg);
 						return msg;
 				}			
 				try{
@@ -231,7 +228,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				}catch(Exception ex){
 						logger.error(ex+" : "+qq);
 						msg += " "+ex;
-						addError(msg);
 				}
 				finally{
 						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
@@ -270,7 +266,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB";
-						addError(msg);
 						return msg;
 				}			
 				try{
@@ -298,7 +293,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				}catch(Exception ex){
 						logger.error(ex+" : "+qq);
 						msg += " "+ex;
-						addError(msg);
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
@@ -360,7 +354,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB";
-						addError(msg);
 						return msg;
 				}			
 				try{
@@ -372,7 +365,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				}catch(Exception ex){
 						logger.error(ex+" : "+qq);
 						msg += " "+ex;
-						addError(msg);
 				}
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
@@ -425,7 +417,6 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB";
-						addError(msg);
 						return msg;
 				}							
 				try{

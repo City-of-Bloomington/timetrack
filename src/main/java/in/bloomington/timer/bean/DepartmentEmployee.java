@@ -264,10 +264,11 @@ public class DepartmentEmployee{
 		public String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null, pstmt2=null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into department_employees values(0,?,?,?,?,?) ";
+				String qq = " select id from department_employees where employee_id = ? and department_id=? and expire_date is null ";
+				String qq2 = " insert into department_employees values(0,?,?,?,?,?) ";
 				if(employee_id.equals("")){
 						msg = " employee id not set ";
 						return msg;
@@ -277,43 +278,56 @@ public class DepartmentEmployee{
 						return msg;
 				}				
 				logger.debug(qq);
-				con = UnoConnect.getConnection();				
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "No DB connections ";
+						return msg;
+				}
 				try{
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, employee_id);
-								pstmt.setString(2, department_id);
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, employee_id);
+						pstmt.setString(2, department_id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								id = rs.getString(1);
+						}
+						if(id.equals("")){
+								qq = qq2;
+								pstmt2 = con.prepareStatement(qq2);
+								pstmt2.setString(1, employee_id);
+								pstmt2.setString(2, department_id);
 								if(department2_id.equals("")){
-										pstmt.setNull(3, Types.INTEGER);
+										pstmt2.setNull(3, Types.INTEGER);
 								}
 								else{
-										pstmt.setString(3, department2_id);
+										pstmt2.setString(3, department2_id);
 								}
 								if(effective_date.equals(""))
 										effective_date = Helper.getToday();
 								java.util.Date date_tmp = df.parse(effective_date);
-								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
+								pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
 								if(expire_date.equals(""))
-										pstmt.setNull(5, Types.DATE);
+										pstmt2.setNull(5, Types.DATE);
 								else{
 										date_tmp = df.parse(expire_date);
-										pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
+										pstmt2.setDate(5, new java.sql.Date(date_tmp.getTime()));
 								}
-								pstmt.executeUpdate();
+								pstmt2.executeUpdate();
+								qq = "select LAST_INSERT_ID()";
+								pstmt3 = con.prepareStatement(qq);
+								rs = pstmt3.executeQuery();
+								if(rs.next()){
+										id = rs.getString(1);
+								}								
 						}
-						qq = "select LAST_INSERT_ID()";
-						pstmt2 = con.prepareStatement(qq);
-						rs = pstmt2.executeQuery();
-						if(rs.next()){
-								id = rs.getString(1);
-						}
+
 				}
 				catch(Exception ex){
 						msg += " "+ex;
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(rs, pstmt, pstmt2);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;

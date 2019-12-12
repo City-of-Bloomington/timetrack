@@ -16,10 +16,11 @@ public class WarpEntry{
 
 		String code="", fullname="", hoursStr="", emp_num="", date="";
 		//
-		// added to handle Planning dept report
-
+		// added to handle dept report
+		//
 		double hours = 0, hourlyRate = 0;
-		final static double AnnualHours = 2080; // number of hours per year
+		String hourlyRateStr = "0.00";
+		final static double AnnualHours = 2080; // number of work hours per year
 		DecimalFormat df = new DecimalFormat("#0.00");	
 		boolean debug = false;
 		static Logger logger = LogManager.getLogger(WarpEntry.class);
@@ -76,6 +77,9 @@ public class WarpEntry{
 		public double getHourlyRate(){
 				return hourlyRate;
     }
+		public String getHourlyRateStr(){
+				return hourlyRateStr;
+		}
 		public double getAmount(){
 				return hours*hourlyRate;
 		}
@@ -125,6 +129,7 @@ public class WarpEntry{
 				if(val > 0){
 						if(val > AnnualHours){
 								hourlyRate = val/AnnualHours;
+								hourlyRateStr = df.format(hourlyRate);
 						}
 						else
 								hourlyRate = val;

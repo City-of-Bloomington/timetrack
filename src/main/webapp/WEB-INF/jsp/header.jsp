@@ -6,6 +6,7 @@
  *
 	-->
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
@@ -64,6 +65,9 @@
       <s:if test="user.canRunMpoReport()">
         <a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a>
       </s:if>
+      <s:if test="user.canRunHandReport()">
+        <a href="<s:property value='#application.url'/>reportHand.action">HAND MPO Report</a>
+      </s:if>			
       <s:if test="user.canRunFireReport()">
         <a href="<s:property value='#application.url'/>shiftTime.action?department_id=16">Employee Shift Times</a>
       </s:if>						

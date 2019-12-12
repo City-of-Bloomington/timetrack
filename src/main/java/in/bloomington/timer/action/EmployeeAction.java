@@ -22,6 +22,7 @@ public class EmployeeAction extends TopAction{
 		static Logger logger = LogManager.getLogger(EmployeeAction.class);
 		//
 		static final String[] roles = {"Employee","Timewarp","FMLAReport",
+																	 "HANDReport",
 																	 "MPOReport","TargetEmployee","ParkReport",
 																	 "FireReport","HrAdmin", "ITSAdmin",
 																	 "PoliceAdmin","PublicWorksAdmin",

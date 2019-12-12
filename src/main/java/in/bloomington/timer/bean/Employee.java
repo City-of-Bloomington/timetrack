@@ -479,6 +479,9 @@ public class Employee implements Serializable, Comparable<Employee>{
     public boolean canRunMpoReport(){
 				return hasRole("MPOReport");
     }
+    public boolean canRunHandReport(){
+				return hasRole("HANDReport");
+    }		
     public boolean canRunParkReport(){
 				return hasRole("ParkReport");
     }
@@ -674,6 +677,15 @@ public class Employee implements Serializable, Comparable<Employee>{
     //
     public boolean hasDepartment(){
 				getDepartment();
+				return department != null;
+    }
+    public boolean hasDepartment(boolean includeFutureDate){
+				if(hasDepartments()){ // include future dates
+						getDepartmentEmployees();
+						if(departmentEmployee != null){
+								department = departmentEmployee.getDepartment();
+						}
+				}
 				return department != null;
     }
     public Department getDepartment(){

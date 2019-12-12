@@ -30,7 +30,7 @@ public class Document implements Serializable{
     DecimalFormat dfn = new DecimalFormat("##0.00");
     private String id="", employee_id="", pay_period_id="",
 				initiated="",initiated_by="", selected_job_id="";
-    private String job_id="";
+    private String job_id="", accrual_as_of_date="";
     double week1Total = 0, week2Total = 0, week1_flsa=0, week2_flsa=0;
 		double week1AmountTotal=0,week2AmountTotal=0;
     PayPeriod payPeriod = null;
@@ -880,6 +880,7 @@ public class Document implements Serializable{
 						String back = tl.findUsedAccruals();
 						if(back.equals("")){
 								usedAccrualTotals = tl.getUsedAccrualTotals();
+								accrual_as_of_date = tl.getAccrualAsOfDate();
 						}
 						else{
 								logger.error(back);
@@ -902,7 +903,10 @@ public class Document implements Serializable{
     }
     public Map<Integer, Double> getEarnedAccrualTotals(){
 				return earnedAccrualTotals;
-    }		
+    }
+		public String getAccrualAsOfDate(){
+				return accrual_as_of_date;
+		}		
 		public boolean hasUsedAccruals(){
 				getUsedAccrualTotals();
 				return usedAccrualTotals != null && !usedAccrualTotals.isEmpty();

@@ -115,7 +115,14 @@ public class TmwrpWeekSplit{
 		}
 		int getRegularMinutes(){
 				return regular_mints;
-		}		
+		}
+		void showInfo(){
+				System.err.println(" non regular hash "+hash);
+				System.err.println(" regular hash "+regHash);				
+				System.err.println(" nonetary hash "+monetaryHash);
+				System.err.println(" reg hrs "+regular_mints/60.);
+				System.err.println(" daily "+dailyArr);				
+		}
 		//
 		void add(TimeBlock te){
 				//
@@ -435,8 +442,6 @@ public class TmwrpWeekSplit{
 						}
 				}
 		}
-		
-		
 		/**
 		 * regular hours when added to non regular we get 40
 		 */

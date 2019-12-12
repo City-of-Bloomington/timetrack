@@ -243,6 +243,7 @@
 			<result name="error">/WEB-INF/jsp/payperiods.jsp</result>
 			<result name="success">/WEB-INF/jsp/payperiods.jsp</result>
 		</action>
+		<!--
 		<action name="timewarp" 
 						class="in.bloomington.timer.action.TimewarpAction" 
 						method="execute">
@@ -254,6 +255,7 @@
 			<result name="handCsv">/WEB-INF/jsp/timewarp/payperiodProcessHandCsv.jsp</result>
 
 		</action>
+		-->
 		<action name="tmwrpWrap" 
 						class="in.bloomington.timer.action.TmwrpWrapAction" 
 						method="execute">

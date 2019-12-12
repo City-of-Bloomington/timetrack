@@ -191,14 +191,33 @@ public class PayPeriod implements Serializable{
 		// by special case
 		//
 		public boolean hasTwoDifferentYears(){
-				return startYear < endYear; 
+				// return startYear < endYear;
+				return true; // test
 		}
 		// this is needed in December (31 days) only
 		// to find the split day for the end of the year
 		// pay period
 		public int getDaysToYearEnd(){
-				return 31 - startDay + 1;
+				// return 31 - startDay + 1;
+				return 2; // test
 		}
+		/*
+		 * for the end of the year, the pay period is divided
+		 * into two ranges from (start_date, to 12/31/first year)
+		 * and (01/01/second year to end_date)
+		*/
+		public String getFirstPayEndDate(){
+				String ret = "";
+				if(hasTwoDifferentYears()){
+						// ret = "12/31/"+startYear;
+						ret = "12/03/2019"; // test
+				}
+				else{
+						ret = end_date;
+				}
+				return ret;
+		}
+		
 		public String getDateRange(){
 				return start_date+" - "+end_date;
 		}
@@ -251,21 +270,7 @@ public class PayPeriod implements Serializable{
 				String today = Helper.getToday();
 				return start_date.equals(today);
 		}
-		/*
-		 * for the end of the year, the pay period is divided
-		 * into two ranges from (start_date, to 12/31/first year)
-		 * and (01/01/second year to end_date)
-		*/
-		public String getFirstPayEndDate(){
-				String ret = "";
-				if(hasTwoDifferentYears()){
-						ret = "12/31/"+startYear;
-				}
-				else{
-						ret = end_date;
-				}
-				return ret;
-		}
+
 		public int findDateDiffWithDate(String date){
 				Connection con = null;
 				PreparedStatement pstmt = null;

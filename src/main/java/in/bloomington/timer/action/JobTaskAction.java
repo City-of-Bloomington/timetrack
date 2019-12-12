@@ -115,7 +115,8 @@ public class JobTaskAction extends TopAction{
 		}
 		void prepareData(){
 				getEmp(); // employee other than user
-				if(emp != null && emp.hasDepartment()){
+				boolean includeFutureDate = id.equals("");
+				if(emp != null && emp.hasDepartment(includeFutureDate)){
 						dept = emp.getDepartment();
 						dept_id = dept.getId();
 						employee_number = emp.getEmployee_number();

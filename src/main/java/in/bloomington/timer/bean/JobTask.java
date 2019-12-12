@@ -815,7 +815,7 @@ public class JobTask implements Serializable{
 								return back;
 						}
 						getEmployee();
-						if(employee != null && !employee.hasDepartment()){
+						if(employee != null && !employee.hasDepartment(true)){
 								DepartmentEmployee de = new DepartmentEmployee(employee_id, department_id, effective_date);
 								back = de.doSave();
 						}

@@ -116,8 +116,12 @@ public class TimewarpManager{
 				if(payPeriod.hasTwoDifferentYears()){
 						twoDifferentYears = true;
 						splitDay = payPeriod.getDaysToYearEnd();
-						if(splitDay < 7){
+						if(splitDay == 0 || splitDay == 7){
+								noWeekSplit = true;
+						}
+						else if(splitDay < 7){
 								weekOneHasSplit = true;
+								noWeekSplit = false;
 						}
 						//
 						if(splitDay < 14){						
@@ -125,6 +129,7 @@ public class TimewarpManager{
 								cycle2_net_reg_hrs = process.getNetRegularHoursForSecondPay();
 						}
 				}
+
 				TmwrpRun tmwrpRun = new TmwrpRun(document_id,
 																				 reg_code_id,
 																				 week1_grs_reg_hrs,
@@ -219,10 +224,6 @@ public class TimewarpManager{
 												if(!hash2.isEmpty()){
 														mergeTwoHashes(hash2, hash);
 												}
-												hash2  = process.getWeekSplitRegularHours(1, 2);
-												if(!hash2.isEmpty()){										
-														mergeTwoHashes(hash2, hash);
-												}
 												if(!hash.isEmpty()){										
 														back += block.doSaveBolk(hash, "Week 1",2, "Hours");
 												}
@@ -238,7 +239,6 @@ public class TimewarpManager{
 												if(!hash.isEmpty()){
 														back += block.doSaveBolk(hash, "Week 1",2, "Amount");
 												}
-												
 												//
 												hash =  process.getWeek2MonetaryHash();
 												if(!hash.isEmpty()){										

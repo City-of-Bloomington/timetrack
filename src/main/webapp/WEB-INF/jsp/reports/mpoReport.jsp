@@ -11,6 +11,7 @@
 	<tr>
 		<td align="center"><b>Earn Code</b></td>
 		<td align="center"><b>Hours</b></td>
+		<td align="center"><b>Percent (%)</b></td>		
 	</tr>
 	<s:iterator var="row" value="#hoursSums">
 		<s:set var="code" value="#row.key" />
@@ -18,10 +19,11 @@
 		<tr>
 			<td><s:property value="#code" /></td>
 			<td align="right"><s:property value="#hours" /></td>
+			<td align="right"><fmt:formatNumber value="${((row.value)*100 div totalHours)}" maxFractionDigits="2" /> 
 		</tr>
 	</s:iterator>
 	<tr>
-		<td><b>Total</b></td><td align="right"><s:property value="#totalHours" /></td>
+		<td><b>Total</b></td><td align="right"><s:property value="#totalHours" /></td><td align="right">100</td>
 	</tr>
 </table>
 
@@ -48,7 +50,7 @@
 						<td><s:property value="#entry.empNum" /></td>
 						<td><s:property value="#entry.code" /></td>
 						<td align="right"><s:property value="#entry.hoursStr" /></td>
-						<td align="right">$<s:property value="#entry.hourlyRate" /></td>
+						<td align="right">$<s:property value="#entry.hourlyRateStr" /></td>
 						<td align="right">$<s:property value="#entry.amountStr" /></td>
 					</tr>
 				</s:iterator>

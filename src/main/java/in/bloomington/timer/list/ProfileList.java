@@ -183,7 +183,7 @@ public class ProfileList{
 						while(rs.next()){
 								String str = rs.getString(1);
 								jobTitles.add(str);
-								System.err.println(employee_number+": "+str);
+								// System.err.println(employee_number+": "+str);
 						}
 				}
 				catch(Exception ex){
@@ -532,14 +532,11 @@ public class ProfileList{
 								String str11 = rs.getString(14); // job title
 								String str12 = rs.getString(8); // cycle hours
 								String str13 = rs.getString(9); // daily
-								System.err.println("weekly "+str6+" daily:"+str13+" cycle "+str12);
 								BenefitGroup bg = null;
 								if(bgroups != null
 									 && str2 != null
 									 && bgroups.containsKey(str2)){
 										bg = bgroups.get(str2);
-										// System.err.println(jj+" "+str10+" bg code "+str2+" :"+str11);
-										// System.err.println(" bg "+bg);
 										jj++;
 								}
 								else{
@@ -579,7 +576,6 @@ public class ProfileList{
 										}
 										prev_id = str;
 										if(prevProfile != null){ // for the first time
-												// System.err.println(" prof list "+str5+" "+str10+" "+fstr9);
 												profiles.add(prevProfile);
 										}
 										prevProfile = pp;
@@ -792,8 +788,6 @@ public class ProfileList{
 									 && str2 != null
 									 && bgroups.containsKey(str2)){
 										bg = bgroups.get(str2);
-										// System.err.println(jj+" "+str10+" bg code "+str2+" :"+str11);
-										// System.err.println(" bg "+bg);
 										jj++;
 								}
 								else{
@@ -833,7 +827,6 @@ public class ProfileList{
 										}
 										prev_id = str;
 										if(prevProfile != null){ // for the first time
-												// System.err.println(" prof list "+str5+" "+str10+" "+fstr9);
 												profiles.add(prevProfile);
 										}
 										prevProfile = pp;
