@@ -308,8 +308,7 @@ public class TimeBlockList{
 						" from positions ps join jobs j on ps.id=j.position_id, "+
 						" time_documents d,"+
 						" pay_periods p ";
-				String qw = "d.id=? and d.job_id=j.id and p.id=d.pay_period_id and ps.inactive is null and j.inactive is null and (j.expire_date is null or "+
-						" j.expire_date <= p.end_date) and j.effective_date <= p.start_date ";
+				String qw = "d.id=? and d.job_id=j.id ";
 				qq = qq +" where "+qw;
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -405,27 +404,30 @@ public class TimeBlockList{
 						
 						"from time_blocks_view v ";
 				String qw = "";
-				if(!department_id.equals("")){
-						qq += ", department_employees de ";
-						if(!qw.equals("")) qw += " and ";								
-						qw += "  de.employee_id=v.employee_id and de.department_id=? ";
-				}
-				if(!pay_period_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
-						qw += "v.pay_period_id=? ";
-				}
+
 				if(!document_id.equals("")){
 						if(!qw.equals("")) qw += " and ";						
 						qw += "v.document_id=? ";
-				}				
-				if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
-						qw += "v.employee_id=? ";
 				}
-				if(!job_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
-						qw += "v.job_id=? ";
-				}				
+				else{
+						if(!department_id.equals("")){
+								qq += ", department_employees de ";
+								if(!qw.equals("")) qw += " and ";								
+								qw += "  de.employee_id=v.employee_id and de.department_id=? ";
+						}
+						if(!pay_period_id.equals("")){
+								if(!qw.equals("")) qw += " and ";						
+								qw += "v.pay_period_id=? ";
+						}
+						if(!employee_id.equals("")){
+								if(!qw.equals("")) qw += " and ";
+								qw += "v.employee_id=? ";
+						}
+						if(!job_id.equals("")){
+								if(!qw.equals("")) qw += " and ";
+								qw += "v.job_id=? ";
+						}
+				}
 				if(!date_from.equals("")){
 						if(!qw.equals("")) qw += " and ";
 						qw += "v.date >= ? ";
@@ -472,21 +474,23 @@ public class TimeBlockList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!department_id.equals("")){
-								pstmt.setString(jj++, department_id);
-						}										
-						if(!pay_period_id.equals("")){
-								pstmt.setString(jj++, pay_period_id);
-						}
 						if(!document_id.equals("")){
 								pstmt.setString(jj++, document_id);
-						}						
-						if(!employee_id.equals("")){
-								pstmt.setString(jj++, employee_id);
 						}
-						if(!job_id.equals("")){
-								pstmt.setString(jj++, job_id);
-						}						
+						else{
+								if(!department_id.equals("")){
+										pstmt.setString(jj++, department_id);
+								}										
+								if(!pay_period_id.equals("")){
+										pstmt.setString(jj++, pay_period_id);
+								}
+								if(!employee_id.equals("")){
+										pstmt.setString(jj++, employee_id);
+								}
+								if(!job_id.equals("")){
+										pstmt.setString(jj++, job_id);
+								}
+						}
 						if(!date_from.equals("")){
 								java.util.Date date_tmp = df.parse(date_from);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
@@ -1313,6 +1317,16 @@ public class TimeBlockList{
 				}catch(Exception ex){
 						logger.error(ex);
 				}
-    }		
+    }
+
+		/*
+		 *
+		 // look for records for employees who worked on holidays
+		 //
+		 
+		 select e.id,concat_ws(' ',e.first_name,e.last_name), t.hours,t.date             from time_blocks t,time_documents d, employees e,tmwrp_runs r,jobs j            where d.id=t.document_id  and d.employee_id=e.id and r.document_id=d.id         and d.job_id=j.id                                                               and t.inactive is null and t.hour_code_id=1                                     and (r.week1_grs_reg_hrs > 32 or r.week2_grs_reg_hrs >32)                       and t.date in ('2019-11-05','2019-11-11')                                       and j.salary_group_id in (1,2,5,11,12)                                          order by e.first_name,e.last_name,t.date
+		
+		 */
+			
 		
 }

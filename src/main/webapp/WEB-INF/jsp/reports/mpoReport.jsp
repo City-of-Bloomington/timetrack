@@ -19,16 +19,16 @@
 		<tr>
 			<td><s:property value="#code" /></td>
 			<td align="right"><s:property value="#hours" /></td>
-			<td align="right"><fmt:formatNumber value="${((row.value)*100 div totalHours)}" maxFractionDigits="2" /> 
+			<td align="right"><fmt:formatNumber value="${((row.value)*100 div totalHours)}" maxFractionDigits="2" minFractionDigits="2" /></td> 
 		</tr>
 	</s:iterator>
 	<tr>
-		<td><b>Total</b></td><td align="right"><s:property value="#totalHours" /></td><td align="right">100</td>
+		<td><b>Total</b></td><td align="right"><s:property value="#totalHours" /></td><td align="right">100.00</td>
 	</tr>
 </table>
 
 <table width="80%" border="1">
-	<caption>Hours Classified by Employees & Hour Codes</caption>
+	<caption>Hours Classified by Employees & Earn Codes</caption>
 	<tr>
 		<td>Employee</td>
 		<td>Employee Number</td>		
@@ -36,6 +36,7 @@
 		<td>Hours</td>
 		<td>Hourly Rate</td>
 		<td>Amount</td>
+		<td>(Amount/Total Amount)%</td>
 	</tr>
 	<s:iterator var="row" value="#hoursSums">
 		<s:set var="code" value="#row.key" />
@@ -51,7 +52,8 @@
 						<td><s:property value="#entry.code" /></td>
 						<td align="right"><s:property value="#entry.hoursStr" /></td>
 						<td align="right">$<s:property value="#entry.hourlyRateStr" /></td>
-						<td align="right">$<s:property value="#entry.amountStr" /></td>
+						<td align="right"><fmt:formatNumber type="currency" value="${entry.amount}" maxFractionDigits="2" minFractionDigits="2" /></td>						
+						<td align="right"><fmt:formatNumber value="${((entry.amount)*100 div totalAmount)}" maxFractionDigits="2" minFractionDigits="2" /></td>
 					</tr>
 				</s:iterator>
 			</s:if>
@@ -66,7 +68,8 @@
 				<s:set var="code3" value="#row3.key" />
 				<s:set var="amount" value="#row3.value" />
 				<s:if test="#code == #code3">
-					<td align="right">$<s:property value="#amount" /></td>
+					<td align="right"><fmt:formatNumber type="currency" value="${amount}" maxFractionDigits="2" minFractionDigits="2" /></td>								
+					<td align="right"><fmt:formatNumber value="${((amount)*100 div totalAmount)}" maxFractionDigits="2" minFractionDigits="2" /> </td>
 				</s:if>
 			</s:iterator>
 		</tr>
@@ -76,11 +79,13 @@
 	</s:iterator>
 	<tr>
 		<td colspan="3"><b>Total</b></td>
-		<td align="right"><s:property value="#totalHours" /></td>
+		<td align="right"><s:property value="#totalHours" /></td>		
 		<td>&nbsp;</td>
-		<td align="right">$<s:property value="#totalAmount" /></td>
+		<td align="right"><fmt:formatNumber type="currency" value="${totalAmount}" maxFractionDigits="2" minFractionDigits="2" /></td>				
+		<td align="right">100.00</td>		
 	</tr>
 </table>
+
 <s:if test="#hasDaily">
 	<table border="1" width="90%">
 		<caption>Hours Classified by Employeee, Date, Hour Codes</caption>

@@ -78,7 +78,7 @@ public class Document implements Serializable{
     HolidayList holidays = null;
 		TmwrpRun tmwrpRun = null;
 		boolean accrualAdjusted = false, warning_flag_set=false,
-				need_warning = true;
+				need_warning = true, prepare_called=false;
     public Document(String val,
 										String val2,
 										String val3,
@@ -499,7 +499,9 @@ public class Document implements Serializable{
     }
 		
     public void prepareDaily(boolean includeEmptyBlocks){
-				if(daily == null && !id.equals("")){
+
+				if(daily == null && !id.equals("") && !prepare_called){
+						prepare_called = true;						
 						TimeBlockList tl = new TimeBlockList();
 						tl.setDocument_id(id);
 						tl.setActiveOnly();
@@ -916,7 +918,7 @@ public class Document implements Serializable{
 				return earnedAccrualTotals != null && !earnedAccrualTotals.isEmpty();
 		}		
     public void findHourCodeTotals(){
-				if(hourCodeTotals == null){
+				if(hourCodeTotals == null && !prepare_called){
 						TimeBlockList tl = new TimeBlockList();
 						tl.setActiveOnly();
 						tl.setDocument_id(id);
@@ -927,6 +929,7 @@ public class Document implements Serializable{
 				}
     }
     public boolean hasDailyBlocks(){
+				getDailyBlocks();
 				return dailyBlocks != null;
     }
     public boolean hasTimeBlocks(){

@@ -105,7 +105,6 @@ public class HandleProfile{
     public String process(){
 		
 				String msg="";
-				// List<Profile> profiles = null;
 				String date = Helper.getToday();
 				getBenefitGroups();
 				msg = prepareEmployeeJobs();
@@ -157,13 +156,25 @@ public class HandleProfile{
     public String processOne(String emp_num, String effective_date){
 				//
 				String msg="";
-				String date = Helper.getToday();
-				if(effective_date == null){
-						date = Helper.getToday();
+				String date = "";
+				System.err.println(" process one ed "+effective_date);
+				
+				String dt = Helper.getToday();
+				if(effective_date == null || effective_date.equals("")){
+						date = Helper.getDateAfter(dt, 21); // two weeks from now
 				}
 				else{
-						date = effective_date;
+						if(effective_date.equals(dt)){
+								date = Helper.getDateAfter(dt, 21); // two weeks from now
+						}
+						else if(Helper.isOldDate(effective_date)){
+								date = Helper.getDateAfter(dt, 21); // two weeks from now
+						}
+						else{
+								date = effective_date;
+						}
 				}
+				System.err.println(" process one ed "+date);				
 				getBenefitGroups();
 				ProfileList plist =
 						new ProfileList(date,
@@ -174,34 +185,19 @@ public class HandleProfile{
 						List<Profile> ones = plist.getProfiles();
 						if(ones != null && ones.size() > 0){
 								profiles = ones;
+								System.err.println(" size "+ones.size());
 								profile = ones.get(0);
 						}
 				}
 				if(profiles == null){
 						return msg;
 				}
-				// for test
-				/*
-				if(profiles != null && profiles.size() > 0){
-						Profile pp = profiles.get(0); // we need one
-						String empNum = pp.getEmployee_number();
-						double weekly_hrs = pp.getStWeeklyHrs();
-						double hr_rate = pp.getHourlyRate();
-						double comp_time_after = pp.getCompTimeAfter();
-						double comp_time_multiple = pp.getCompTimeMultiple();
-						double holiday_time_multiple = pp.getHolidayTimeMultiple();
-						String job_name = pp.getJob_name();
-						BenefitGroup bg = pp.getBenefitGroup();
-						System.err.println("Salary group "+bg.getSalary_group_name());
-						System.err.println(weekly_hrs+" "+comp_time_after+" "+comp_time_multiple+" "+holiday_time_multiple+" "+job_name);
-				}
-				*/
 				return msg;
 		}
     public String processJobs(String emp_num){
 		
 				String msg="";
-
+				
 				String date = Helper.getToday();
 				getBenefitGroups();
 				ProfileList plist =

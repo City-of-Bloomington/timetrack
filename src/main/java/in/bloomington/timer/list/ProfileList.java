@@ -615,6 +615,7 @@ public class ProfileList{
 								date = Helper.getToday();
 						}
 				}
+				System.err.println(" date "+date);
 				if(employee_number.equals("")){
 						msg = "Employee number not set ";
 						return msg;
@@ -664,7 +665,9 @@ public class ProfileList{
 				*/
 				String qq = "select ejp.*, g.GradeCode, ei.*, "+
 						" ej.StandardWeeklyHours, "+
-						" ur.UDFAttributeID,ur.valInt,ur.valDecimal "+ 
+						" ur.UDFAttributeID,ur.valInt,ur.valDecimal, "+
+						// " ej.effectivedate "+// added
+						" ejp.PositionDetailESD  "+
 						" from HR.vwEmployeeJobWithPosition ejp,"+
 						" (SELECT  "+
 						" E.EmployeeId, "+  
@@ -777,6 +780,10 @@ public class ProfileList{
 								double fstr9 = rs.getDouble(11); // hourly rate
 								String str10 = rs.getString(34); // last name
 								String str11 = rs.getString(14); // job title
+								String effective_date = rs.getString(2);
+								System.err.println(" ed "+effective_date);
+								effective_date = rs.getString(42);
+								System.err.println(" ed "+effective_date);								
 								/*
 								String str12 = rs.getString(8); // cycle hours
 								String str13 = rs.getString(9); // daily

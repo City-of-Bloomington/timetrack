@@ -21,7 +21,8 @@ public class Helper{
 
 		static final long serialVersionUID = 2300L;
 		static Logger logger = LogManager.getLogger(Helper.class);
-		
+		final static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        		
 		static int c_con = 0;
 		final static String bgcolor = "silver";// #bfbfbf gray
 		final static String fgcolor = "navy";// for titles
@@ -470,56 +471,7 @@ public class Helper{
 						}
 				}
     }				
-    /**
-     * Write the number in bbbb.bb format needed for currency.
-     *
-     * = toFixed(2)
-     * @param dd The input double number
-     * @return The formated number as string
-     */
-    public final static String formatNumber(double dd){
-				//
-				String str = ""+dd;
-				String ret="";
-				int l = str.length();
-				int i = str.indexOf('.');
-				int r = i+3;  // required length to keep only two decimal
-				// System.err.println(str+" "+l+" "+r);
-				if(i > -1 && r<l){
-						ret = str.substring(0,r);
-				}
-				else{
-						ret = str;
-				}
-				return ret;
-    }
 
-		/**
-		 * Formats a number with only 2 decimal
-		 *
-     * Useful for currency numbers
-     *
-     * @param that The number string to format
-     * @return The formatted number string
-     */
-    final static String formatNumber(String that){
-
-				int ind = that.indexOf(".");
-				int len = that.length();
-				String str = "";
-				if(ind == -1){  // whole integer
-						str = that + ".00";
-				}
-				else if(len-ind == 2){  // one decimal
-						str = that + "0";
-				}
-				else if(len - ind > 3){ // more than two
-						str = that.substring(0,ind+3);
-				}
-				else str = that;
-
-				return str;
-    }
 		public final static String getCurrentTime(){
 				Calendar cal = Calendar.getInstance();
 				String time = timeFormat.format(cal.getTime());
@@ -547,17 +499,8 @@ public class Helper{
     }
     public final static String getToday(){
 
-				String day="",month="",year="";
 				GregorianCalendar cal = new GregorianCalendar(tzone, local);
-				
-				int mm =  (cal.get(Calendar.MONTH)+1);
-				int dd =   cal.get(Calendar.DATE);
-				year = ""+ cal.get(Calendar.YEAR);
-				if(mm < 10) month = "0";
-				month += mm;
-				if(dd < 10) day = "0";
-				day += dd;
-				return month+"/"+day+"/"+year;
+				return getToday(cal);
     }
     public final static String getYesterday(){
 
@@ -588,81 +531,6 @@ public class Helper{
 				ret_val[2] = cal.get(Calendar.YEAR);
 				return ret_val;
     }
-
-    /**
-     * Gets matching list from ldap for a given substring of a user name.
-     *
-     * @param subid the substring of the userid, subid has to be at least
-     * two characters otherwise the ldap will hang for some reason.
-     * @return a list of matching caases.
-     */
-    public final static String[] getMatchList(String subid){
-				Hashtable<String, String> env = new Hashtable<String, String>(11);
-				Vector<String> vec = new Vector<String>();
-				String userid = "";
-				vec.add(userid);
-				//
-				if (!connectToServer(env)){
-						System.err.println("Error Connecting to LDAp Server");
-						return null;
-				}
-				try{
-						DirContext ctx = new InitialDirContext(env);
-						SearchControls ctls = new SearchControls();
-						String[] attrIDs = {"uid"};
-						//
-						ctls.setReturningAttributes(attrIDs);
-						ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-						String filter = "(uid="+subid+"*)";
-						NamingEnumeration<SearchResult> answer = ctx.search("", filter, ctls);
-						while(answer.hasMore()){
-								//
-								SearchResult sr = answer.next();
-								Attributes atts = sr.getAttributes();
-
-								Attribute user = atts.get("uid");
-								if (user != null){
-										userid = user.get().toString();
-										vec.add(userid);
-								}
-						}
-				}
-				catch(Exception ex){
-						System.err.println(ex);
-				}
-				int size = vec.size();
-				String str[] = new String[size];
-				for(int i=0;i<size;i++){
-						str[i] = vec.get(i);
-				}
-				vec = null;
-				return str;
-    }
-
-    /**
-     * Connect to ldap server.
-     *
-     * @return boolean true if ok or false of not
-     */
-		final static boolean connectToServer(Hashtable<String, String> env){
-
-				String providerUtil ="ldap://ldap.cityhall.city.bloomington.in.us:389/o=city.bloomington.in.us";
-				env.put(Context.INITIAL_CONTEXT_FACTORY,
-								"com.sun.jndi.ldap.LdapCtxFactory");
-				env.put(Context.PROVIDER_URL, providerUtil);
-				env.put(Context.SECURITY_AUTHENTICATION, "simple");
-				env.put(Context.SECURITY_PRINCIPAL,
-								"uid=admin, o=city.bloomington.in.us");
-				env.put(Context.SECURITY_CREDENTIALS, "your pass goes here");
-				try {
-						DirContext ctx = new InitialDirContext(env);
-				} catch (NamingException ex) {
-						return false;
-				}
-				return true;
-    }
-
-
     /**
      * Applies initial caps to a word
      *
@@ -706,22 +574,9 @@ public class Helper{
 				}
 				return ret;
     }
-
-    //
-    // check the user privileges
-    //
-    final static void forceLogout(PrintWriter out,
-																	String title,
-																	String url){
-				out.println("<HTML><HEAD><TITLE>"+title+" </TITLE>");
-				out.println("</HEAD><BODY>");
-				out.println("<h3>Session timed out. <a href="+
-										url+"Login>Click here to login "+
-										"again</a></h3>");
-				out.println("</body>");
-				out.println("</html>");
-				out.close();
-    }
+		/**
+		 * find date from dt by adding (+days) or subtraction (-days)
+		 */
 		public final static String getDateAfter(final String dt, final int days){
 				return getDateFrom(dt, days);
 		}
@@ -731,7 +586,8 @@ public class Helper{
 		public final static String getDateFrom(final String dt, final int days){
 				String dt2 = "";
 				if(days == 0){
-						return dt;
+						dt2 = dt;
+						return dt2;
 				}
 				try{
 						GregorianCalendar cal = new GregorianCalendar(tzone, local);
@@ -786,7 +642,32 @@ public class Helper{
 				}
 				return ret;
 		}
-
+		public final static boolean isOldDate(final String date){
+				if(date == null || date.equals("")) return false;
+				String dt = getToday();
+				try{
+						java.util.Date today = sdf.parse(dt);
+						java.util.Date date2 = sdf.parse(date);
+						return date2.compareTo(today) < 0;
+				}
+				catch(Exception ex){
+						System.err.println(ex);
+				}
+				return false;
+		}
+		public final static boolean isFutureDate(final String date){
+				if(date == null || date.equals("")) return false;
+				String dt = getToday();
+				try{
+						java.util.Date today = sdf.parse(dt);
+						java.util.Date date2 = sdf.parse(date);
+						return date2.compareTo(today) > 0;
+				}
+				catch(Exception ex){
+						System.err.println(ex);
+				}
+				return false;				
+		}		
 		final static int[] getStartPayPeriod(int dd, int mm, int yy, Calendar cal){
 
 				// int yy = 2014, mm = 3, dd=2;

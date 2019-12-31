@@ -1,7 +1,7 @@
 
 <s:if test="#hasEntries" >
 	<h4><s:property value="#reportTitle" /></h4>	
-	<table border="1" width="40%">
+	<table border="1" width="70%">
 		<caption>Hours Classified by Earn Code and Reason</caption>
 		<tr>
 			<td align="center"><b>Earn Code - Reason</b></td>
@@ -46,6 +46,7 @@
 				</s:if>
 			</s:iterator>
 			<tr>
+				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td><b>Sub Total</b></td>
 				<td align="right"><s:property value="#hours" /></td>

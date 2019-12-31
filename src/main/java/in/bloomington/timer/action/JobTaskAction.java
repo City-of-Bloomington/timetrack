@@ -353,6 +353,7 @@ public class JobTaskAction extends TopAction{
 				String msg = "";
 				boolean isTemp = false;
 				Profile pp = null;
+				System.err.println(" fill job info ");
 				HandleProfile hp = new HandleProfile();
 				msg = hp.processOne(employee_number, effective_date);
 				if(msg.equals("")){
@@ -366,6 +367,9 @@ public class JobTaskAction extends TopAction{
 								jobTask.setHoliday_comp_factor(pp.getHolidayTimeMultiple());
 								jobTask.setJobTitle(pp.getJobTitle());
 								jobTask.setSalary_group_name(pp.getSalary_group_name());
+								//
+								System.err.println(" salary group "+pp.getSalary_group_name());
+								//
 								if(pp.getSalary_group_name().equals("Temp")){
 										jobTask.setClock_time_required(true);
 										isTemp = true;

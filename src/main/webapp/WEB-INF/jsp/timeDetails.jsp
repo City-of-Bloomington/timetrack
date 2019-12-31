@@ -22,8 +22,9 @@ function loginTimer() {
 			<s:set var="messages" value="%{messages}" />
 			<%@ include file="messages.jsp" %>
 		</s:if>
-
-		<s:set var="dailyBlocks" value="document.dailyBlocks" />
+		<s:if test="document.hasDailyBlocks()">
+			<s:set var="dailyBlocks" value="document.dailyBlocks" />
+		</s:if>
 		<s:if test="isNotEditable()">
 			<div class="alert"><p><b>Note:</b> Time Details (View Only)</p></div>
 			<%@ include file="calendarTopDetails.jsp" %>
