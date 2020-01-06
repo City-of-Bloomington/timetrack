@@ -86,7 +86,7 @@ public class CommonInc{
 		// list of reserved usernames that can not be used to login in timetrack,
 		// add any username if needed to the list below
 		// remove the ones that are not used
-		public final static String[] invalid_usernames = {"clerk","hrmail","lineloc","admin","hnd","police","public.works","council","legalarc","mayor","recruits"};		
+		public final static String[] invalid_usernames = {"clerk","hrmail","lineloc","admin","hnd","police","public.works","council","legalarc","mayor","recruits","util-purchasing"};		
    	String message = "";
 		List<String> errors = null;
 		//

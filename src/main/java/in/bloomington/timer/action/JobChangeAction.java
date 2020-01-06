@@ -39,7 +39,7 @@ public class JobChangeAction extends TopAction{
 								addMessage("changed Successfully");
 								related_employee_id = jobTask.getEmployee_id();
 								getJobs();
-								return "pickJob";
+								return "jobs";
 						}
 				}
 				else{
@@ -84,6 +84,11 @@ public class JobChangeAction extends TopAction{
 			 }
 			 return jobs;
 		}
+		public boolean hasJobs(){
+				getJobs();
+				return jobs  != null && jobs.size() > 0;
+		}
+				
 		public JobTask getJobTask(){ 
 				if(jobTask == null){
 						jobTask = new JobTask(id);
@@ -95,6 +100,16 @@ public class JobChangeAction extends TopAction{
 				if(val != null){
 						jobTask = val;
 				}
+		}
+		public Employee getRelatedEmployee(){
+				if(relatedEmployee == null && !related_employee_id.equals("")){
+						Employee one = new Employee(related_employee_id);
+						String back = one.doSelect();
+						if(back.equals("")){
+								relatedEmployee = one;
+						}
+				}
+				return relatedEmployee;
 		}
 
 		public void setAction2(String val){

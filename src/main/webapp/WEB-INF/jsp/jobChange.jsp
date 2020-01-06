@@ -20,15 +20,13 @@
 			<s:set var="errors" value="%{errors}" />			
 			<%@ include file="errors.jsp" %>
 		</s:elseif>
-		Note: To change employee's job to another job
+		Note: To change employee job to another job, such as promoted, moved to another department, etc.
 		<ul>
-			<li> If the employee switched department, you need to change the employee
-				department first, then come here and change the job and group.</li>
-			<li> If the department is changed or no need to change the department continue</li>
 			<li> A new job will be created to replace the selected job </li>
-			<li> Pick the new job Start Date (It is pay period start date)</li>
-			<li> The old job will be to expire to one day before the new job Start Date picked above. </li> 
-			<li>Pick the employee group from the list </li>
+			<li> Pick the department (if different from existing one) </li>
+			<li> Pick the group (if different from existing one) </li>			
+			<li> Pick the new job start date (pay period start date)</li>
+			<li> The old job will be set to expire to the preceding payperiod end date. </li> 
 			<li>Fill the rest of fields to create the new job and click on 'Change'</li>
 		</ul>
 		<div class="width-one-half">
@@ -81,7 +79,15 @@
 			<div class="form-group">
 				<label>Holiday Comp Multiple Factor </label>
 				<s:textfield name="jobTask.holiday_comp_factor" value="%{jobTask.holiday_comp_factor}" size="3" maxlength="3" required="true" />(normally 1.5 for non-exempt and 1 for  exempt)
-			</div>			
+			</div>
+			<div class="form-group">
+				<label>Irregular Work Days?</label>
+				<s:checkbox name="jobTask.irregularWorkDays" value="%{jobTask.irregularWorkDays}" fieldValue="true" id="irregular_work_days" />Yes (Employee may required to work on Saturday and/or Sunday)
+			</div>
+			<div class="form-group">
+				<label>Include in Auto Submit Batch?</label>
+				<s:checkbox name="jobTask.includeInAutoBatch" value="%{jobTask.includeInAutoBatch}" fieldValue="true" id="include_in_auto_batch" />Yes (The system will auto submit timesheet for approval. Limited to certain employees only)
+			</div>						
 			<div class="button-group">	
 				<s:submit name="action" type="button" value="Change Job"/>		
 			</div>

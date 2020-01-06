@@ -18,15 +18,15 @@
 			<s:set var="errors" value="%{errors}" />			
 			<%@ include file="errors.jsp" %>
 		</s:elseif>
-		Note: To transfer employee's times from job to another
+		Note: To transfer employee's times from one job to another
 		<ul>
 			<li> We assume the employee has at least two active jobs for the related pay period </li>
 			<li> We want to transfer time blocks from one job to another </li>
 			<li> Pick the pay period </li>
-			<li> Pick the 'From Job' that we want the times to be transfered from </li>
-			<li> Pick the 'To Job' that  we want the times to be transfered to </li>
-			<li> Then click on  'Change'</li>
-			<li> Now you can go to employee jobs list and expire the 'From Job' to the desired date, normally the day before the related pay period </li>
+			<li> Pick the 'From Job' that you want the times to be transfered from </li>
+			<li> Pick the 'To Job' that you want the times to be transfered to </li>
+			<li> Then click on 'Change'</li>
+			<li> If needed, you can go to employee jobs list and expire the 'From Job' to the desired date, normally the day before the related pay period </li>
 		</ul>
 		<div class="width-one-half">
 			<div class="form-group">

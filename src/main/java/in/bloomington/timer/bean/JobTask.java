@@ -33,8 +33,7 @@ public class JobTask implements Serializable{
 				effective_date="", expire_date="", primary_flag="";
 		private String jobTitle="", salary_group_name="";
     //
-    // for job change
-    String new_group_id = "", pay_period_id="";
+    // for job change    String new_group_id = "", pay_period_id="";
 		String department_id = "";
     //
     String clock_time_required="";

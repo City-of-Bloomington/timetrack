@@ -454,9 +454,9 @@
 						class="in.bloomington.timer.action.JobChangeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/jobChange.jsp</result>		
-			<result name="error">/WEB-INF/jsp/jobChage.jsp</result>
+			<result name="error">/WEB-INF/jsp/jobChange.jsp</result>
 			<result name="success">/WEB-INF/jsp/jobChange.jsp</result>
-			<result name="pickJob">/WEB-INF/jsp/jobsChange.jsp</result>			
+			<result name="jobs">/WEB-INF/jsp/jobsChange.jsp</result>			
 		</action>
 		<action name="jobTimeChange" 
 						class="in.bloomington.timer.action.JobTimesChangeAction" 
