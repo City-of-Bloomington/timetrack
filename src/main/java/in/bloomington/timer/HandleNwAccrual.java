@@ -24,7 +24,7 @@ public class HandleNwAccrual{
 		static Logger logger = LogManager.getLogger(HandleNwAccrual.class);
 		static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		static DecimalFormat df = new DecimalFormat("#0.00");
-		String date="", end_date="", // date of last pay period
+		String date="", write_date="", // date of last pay period
 				dept_ref_id=""; // dept referance in NW app, one or more values
 		Hashtable<String, String> empHash = null;
 		//
@@ -37,7 +37,7 @@ public class HandleNwAccrual{
 													 String val3){
 				setDept_ref_id(val);
 				setDate(val2);
-				setEnd_date(val3);
+				setWriteDate(val3);
     }
     public HandleNwAccrual(boolean deb,
 													 String val,
@@ -45,11 +45,13 @@ public class HandleNwAccrual{
 				debug = deb;
 				setDept_ref_id(val);
 				if(val2 != null){
-						setEnd_date(val2.getEnd_date()); // last day of pay period
+						setWriteDate(val2.getEnd_date()); // last day of pay period
 				}
-				if(date.equals("") && !end_date.equals("")){
+				/*
+				if(date.equals("") && !write_date.equals("")){
 						date = Helper.getDateAfter(end_date, 5);
 				}
+				*/
     }	
     //
     // setters
@@ -64,9 +66,9 @@ public class HandleNwAccrual{
 						date = val;
 				}
     }
-    public void setEnd_date(String val){
+    public void setWriteDate(String val){
 				if(val != null){		
-						end_date = val;
+						write_date = val;
 				}
     }		
 		private String prepareEmployee(){
@@ -162,25 +164,9 @@ public class HandleNwAccrual{
 										System.err.println("handleNwAccrual: id,emp_num,accruals "+ str+" "+str2+" "+str3+" "+ptoa+" "+scka+" "+holya+" "+cua+" "+lba+" "+vla);
 										// sick bank
 										// EmployeeAccrual empa = new EmployeeAccrual(""+2,str,scka,end_date);
-										EmployeeAccrual empa = new EmployeeAccrual(str,end_date);
+										EmployeeAccrual empa = new EmployeeAccrual(str, write_date);
 										msg = empa.doSaveBatch(arr);
 										//
-										/*
-										// pto bank
-										empa.setAccrual_id(""+1);
-										empa.setHours(ptoa);
-										msg += empa.doSaveOnly();
-										//
-										// holiday bank
-										empa.setAccrual_id(""+4);
-										empa.setHours(holya);
-										msg += empa.doSaveOnly();
-										//
-										// comp time bank
-										empa.setAccrual_id(""+3);
-										empa.setHours(cua);
-										msg += empa.doSaveOnly();
-										*/
 								}
 								else{
 										System.err.println(" emp num not found "+str2);
@@ -206,10 +192,10 @@ public class HandleNwAccrual{
 				double ptoa=0, cua=0, holya=0, scka=0, lba=0,vla=0;
 
 				/*
-				 * 6 sick, 8 pto, 9 holiday comp, 15 comp
+				 * 6 sick, 8 pto, 9 holiday comp, 15 comp, 18 leave, 7 vacation 
 				 *
 				 execute HR.HRReport_AccrualBalance 	@strOrgStructureIDs = '16,17',
-				 @strHourCategory = '6,8,9,15', 
+				 @strHourCategory = '6,8,9,15,18,7', 
 				 @strEmployeeStatus = 258, 
 				 @EmployeeID = NULL,  
 				 @AsOfDate = '05/05/2014',

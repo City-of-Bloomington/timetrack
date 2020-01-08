@@ -72,7 +72,12 @@
 			</div>
 			<div class="form-group">
 				<label>AD Sid </label>
-				<s:textfield name="emp.ad_sid" value="%{emp.ad_sid}" size="8" maxlength="8" id="ad_sid_id" readonly="true" /><br />(AD Object SID)
+				<s:if test="emp.hasNoAdSid()">
+					<s:textfield name="emp.ad_sid" value="%{emp.ad_sid}" size="8" maxlength="8" id="ad_sid_id" /><br />(AD Object SID)
+				</s:if>
+				<s:else>
+					<s:textfield name="emp.ad_sid" value="%{emp.ad_sid}" size="8" maxlength="8" id="ad_sid_id" readonly="true" /><br />(AD Object SID)
+				</s:else>
 			</div>
 			<div class="form-group">
 				<label>Email</label>

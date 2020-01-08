@@ -33,7 +33,8 @@ public class JobTask implements Serializable{
 				effective_date="", expire_date="", primary_flag="";
 		private String jobTitle="", salary_group_name="";
     //
-    // for job change    String new_group_id = "", pay_period_id="";
+    // for job change
+		String new_group_id = "", pay_period_id="";
 		String department_id = "";
     //
     String clock_time_required="";
@@ -1034,16 +1035,21 @@ public class JobTask implements Serializable{
 
 				return msg;
     }
+		/*
+   update department_employees set expire_date = null where employee_id=1343 and department_id=42 and expire_date is not null 
+
+		 */
 		//
     public String doChange(){
 				Connection con = null;
-				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null, pstmt4=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				boolean add_group = false;
 				String qq = "select expire_date from jobs where id=? ";
 				String qq2 = "update jobs set expire_date = ? where id = ? and expire_date is null";
-				String qq3 = "update time_documents set job_id=? where job_id=? and pay_period_id >= ? ";
+				String qq3 = "update time_documents t set t.job_id=? where t.job_id=? and pay_period_id >= ? ";
+				String qq4 = "update department_employees set expire_date = ? where employee_id=? and department_id=? and expire_date is null ";
 				if(new_group_id.equals("")){
 						msg = "group is required";
 						return msg;
@@ -1060,6 +1066,9 @@ public class JobTask implements Serializable{
 						msg = "salary group is required";
 						return msg;
 				}
+				//
+				// ToDo check if we need to change department
+				//
 				String start_date = effective_date;
 				String old_expire_date = Helper.getDateFrom(start_date,-1);
 				logger.debug(qq);
@@ -1088,18 +1097,25 @@ public class JobTask implements Serializable{
 								pstmt2.executeUpdate();
 								//
 						}
+						//
 						String old_group_id = group_id;
-
 						group_id = new_group_id;
 						id = "";
 						msg = doSave();
 						if(!alreadyExpired){
-								qq = qq3;
-								pstmt3 = con.prepareStatement(qq);
-								pstmt3.setString(1, id);
-								pstmt3.setString(2, old_job_id);
-								pstmt3.setString(3, pay_period_id);
-								pstmt3.executeUpdate();
+								String pp_id = ""; // pay period id
+								PayPeriod pp = new PayPeriod();
+								pp.setDate(start_date);
+								msg = pp.find(); // find the pay period the date is in
+								if(msg.equals("")){
+										pp_id = pp.getId();
+										qq = qq3;
+										pstmt3 = con.prepareStatement(qq);										
+										pstmt3.setString(1, id);
+										pstmt3.setString(2, old_job_id);
+										pstmt3.setString(3, pp_id);
+										pstmt3.executeUpdate();
+								}
 						}
 						//
 						if(add_group){
@@ -1124,6 +1140,37 @@ public class JobTask implements Serializable{
 														ge.doUpdate();
 												}
 										}
+										//
+										// work with department
+										//
+										String old_dept_id = "", new_dept_id="";										
+										Group oldGroup = new Group(old_group_id);
+										msg = oldGroup.doSelect();
+										if(msg.equals("")){
+												old_dept_id = oldGroup.getDepartment_id();
+										}
+										Group group = new Group(group_id);
+										msg = group.doSelect();
+										if(msg.equals("")){
+												new_dept_id = group.getDepartment_id();
+										}
+										if(!old_dept_id.equals("") && !new_dept_id.equals("") &&
+											 !old_dept_id.equals(new_dept_id)){
+												// expire old dept
+												qq = qq4; 
+												pstmt4 = con.prepareStatement(qq);
+												java.util.Date date_tmp = df.parse(old_expire_date);
+												pstmt4.setDate(1, new java.sql.Date(date_tmp.getTime()));												
+												pstmt4.setString(2, employee_id);
+												pstmt4.setString(3, old_dept_id);
+												pstmt4.executeUpdate();
+												DepartmentEmployee deptEmp =
+														new DepartmentEmployee(employee_id,
+																									 new_dept_id,
+																									 start_date);
+												// it will check if such record exists before saving
+												msg = deptEmp.doSave();
+										}
 								}
 						}
 				}
@@ -1132,7 +1179,7 @@ public class JobTask implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3, pstmt4);
 						UnoConnect.databaseDisconnect(con);
 				}						
 				return msg;
@@ -1391,3 +1438,4 @@ public class JobTask implements Serializable{
 		}
 
 }
+

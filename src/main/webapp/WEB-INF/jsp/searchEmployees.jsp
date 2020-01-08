@@ -38,7 +38,6 @@
 			<div class="form-group">
 				<label>AD Sid</label>
 				<s:textfield name="emplst.ad_sid" value="%{emplst.ad_sid}" size="10" maxlength="10" /><br />
-				(The number on City ID)
 			</div>			
 			<div class="form-group">
 				<label>Department</label>
@@ -79,3 +78,4 @@
 	<%@ include file="employees.jsp" %>
 </s:if>
 <%@ include file="footer.jsp" %>
+

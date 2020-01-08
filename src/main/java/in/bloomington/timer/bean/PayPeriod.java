@@ -320,11 +320,9 @@ public class PayPeriod implements Serializable{
 						"datediff(p.end_date,p.start_date) "+
 						"from pay_periods p where ";
 				if(!id.equals("")){
-						qq += " p.id=? ";
+						return doSelect();
 				}
-				else{
-						qq += " ? between p.start_date and p.end_date ";
-				}
+				qq += " ? between p.start_date and p.end_date ";
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = " could not connect to Database ";

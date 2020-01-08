@@ -25,6 +25,7 @@ public class PayPeriodList{
     String next_to_id = "", previous_to_id="", order_by= " id desc ";
     boolean currentOnly = false,
 				twoPeriodsAheadOnly=false,
+				onePeriodAheadOnly=false,
 				lastPayPeriod=false, previousOnly=false, nextOnly=false;
     boolean avoidFuturePeriods = false;
     boolean approveSuitable = false;
@@ -70,6 +71,9 @@ public class PayPeriodList{
     public void setTwoPeriodsAheadOnly(){
 				twoPeriodsAheadOnly = true;
     }
+    public void setOnePeriodAheadOnly(){
+				onePeriodAheadOnly = true;
+    }		
     public void setLastPayPeriod(){
 				lastPayPeriod = true;
     }
@@ -132,6 +136,14 @@ public class PayPeriodList{
 										" and p2.start_date > date_sub(curdate(), interval 90 day) ";
 						}
 				}
+				else if(onePeriodAheadOnly){
+						qw = " p.start_date <= date_add(curdate(), interval 14 day) ";
+						if(!employee_id.equals("")){
+								qq2 += ", time_documents d  "+
+										" where d.pay_period_id=p2.id and d.employee_id=? "+
+										" and p2.start_date > date_sub(curdate(), interval 90 day) ";
+						}
+				}				
 				else if(avoidFuturePeriods){
 						qw = " p.start_date <= curdate() ";
 				}

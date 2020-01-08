@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
-// import org.apache.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 import org.apache.logging.log4j.LogManager;
@@ -37,18 +36,15 @@ public class AccrualAction extends TopAction{
 						}
 						else{
 								addMessage("Saved Successfully");
-								addActionMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = accrual.doUpdate();
 						if(!back.equals("")){
 								addError(back);
-								addActionError(back);
 						}
 						else{
 								addMessage("Saved Successfully");
-								addActionMessage("Saved Successfully");
 						}
 				}
 				else{		
@@ -57,7 +53,6 @@ public class AccrualAction extends TopAction{
 								back = accrual.doSelect();
 								if(!back.equals("")){
 										addError(back);
-										addActionError(back);
 								}
 						}
 				}

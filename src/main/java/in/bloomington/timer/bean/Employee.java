@@ -492,8 +492,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 				return hasRole("TargetEmployee");
     }
 		public boolean hasAdSid(){
-				return !ad_sid.equals("");
+				return !ad_sid.equals("") && !id.equals("");
 		}
+		public boolean hasNoAdSid(){
+				return ad_sid.equals("") && !id.equals("");
+		}		
     void findPayPeriod(){
 				if(pay_period_id.equals("")){
 						PayPeriodList ppl = new PayPeriodList();

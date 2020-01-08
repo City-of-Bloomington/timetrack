@@ -566,6 +566,13 @@
 			<result name="error">/WEB-INF/jsp/searchEmployees.jsp</result>
 			<result name="success">/WEB-INF/jsp/searchEmployees.jsp</result>
 		</action>
+		<action name="searchDeptEmployees" 
+						class="in.bloomington.timer.action.SearchDeptEmployeeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/searchDeptEmployees.jsp</result>		
+			<result name="error">/WEB-INF/jsp/searchDeptEmployees.jsp</result>
+			<result name="success">/WEB-INF/jsp/searchDeptEmployees.jsp</result>
+		</action>		
 		<action name="empWizard" 
 						class="in.bloomington.timer.action.EmpWizardAction" 
 						method="execute">

@@ -27,7 +27,8 @@ public class AccrualScheduleAction extends TopAction{
 		String accrualSchedulesTitle = "Accrual Schedules";
 		QuartzMisc quartzMisc = null;
 		AccrualScheduler schedular = null;
-		String date = "", prev_date="", next_date="", dept_ref_id="";
+		List<PayPeriod> payPeriods = null;
+		String date = "", write_date="", prev_date="", next_date="", dept_ref_id="";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -35,47 +36,35 @@ public class AccrualScheduleAction extends TopAction{
 				if(action.equals("Schedule")){
 						back = doClean();
 						if(!back.equals("")){
-								addActionError(back);
+								addError(back);
 						}
 						try{
 								back = schedular.run();
 								if(!back.equals("")){
-										addActionError(back);
+										addError(back);
 								}
 								else{
-										addActionMessage("Scheduled Successfully");
+										addMessage("Scheduled Successfully");
 								}
 						}catch(Exception ex){
-								addActionError(""+ex);
+								addError(""+ex);
 						}
 				}
 				else if(action.startsWith("Import")){ // import now given the date
 						if(dept_ref_id.equals("") || date.equals("")){
-								addActionError("dept ref and/or date not set");
+								addError("dept ref and/or date not set");
 						}
 						else{
-								HandleNwAccrual handle = new HandleNwAccrual(dept_ref_id, date, date);
+								HandleNwAccrual handle = new HandleNwAccrual(dept_ref_id, date, write_date);
 								back = handle.process();
 								if(!back.equals("")){
-										addActionError(back);
+										addError(back);
 								}
 								else{
-										addActionMessage("Imported Successfully");
+										addMessage("Imported Successfully");
 								}
 						}
 				}
-				/*
-				else if(!action.equals("")){ // for testing
-						HandleNwAccrual handle = new HandleNwAccrual(dept_ref_id, date, date);
-						back = handle.processSpecial("100003240"); // for testing
-						if(!back.equals("")){
-								addActionError(back);
-						}
-						else{
-								addActionMessage("Imported Successfully");
-						}
-				}
-				*/
 				return ret;
 		}
 		private void prepareSchedular(){
@@ -126,6 +115,10 @@ public class AccrualScheduleAction extends TopAction{
 				if(val != null && !val.equals(""))		
 						date = val;
 		}
+		public void setWriteDate(String val){
+				if(val != null && !val.equals("-1"))		
+						write_date = val;
+		}		
 		public void setDept_ref_id(String val){
 				if(val != null && !val.equals("-1"))		
 						dept_ref_id = val;
@@ -134,6 +127,9 @@ public class AccrualScheduleAction extends TopAction{
 		public String getDate(){
 				return date;
 		}
+		public String getWriteDate(){
+				return write_date;
+		}		
 		public String getPrev_date(){
 				return prev_date;
 		}
@@ -165,7 +161,21 @@ public class AccrualScheduleAction extends TopAction{
 				getDepts();
 				return depts != null && depts.size() > 0;
 		}
-		
+		public List<PayPeriod> getPayPeriods(){
+				if(payPeriods == null){
+						PayPeriodList tl = new PayPeriodList();
+						tl.setOnePeriodAheadOnly();
+						tl.setLimit("3");
+						String back = tl.find();
+						if(back.equals("")){
+								List<PayPeriod> ones = tl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										payPeriods = ones;
+								}
+						}
+				}
+				return payPeriods;
+		}			
 }
 
 
