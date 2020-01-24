@@ -128,7 +128,10 @@
 		<dependency>
 			<groupId>ognl</groupId>
 			<artifactId>ognl</artifactId>
+			<version>3.1.26</version>
+			<!-- old
 			<version>3.1.20</version>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
