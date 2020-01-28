@@ -24,7 +24,7 @@ public class JobTaskAction extends TopAction{
 		static final long serialVersionUID = 1800L;	
 		static Logger logger = LogManager.getLogger(JobTaskAction.class);
 		//
-		String add_employee_id = "", employee_number="";
+		String add_employee_id = "", employee_number="", first_name="", last_name="";
 		String dept_id = "", effective_date="";
 		boolean employee_found = false;
 		Employee emp = null;
@@ -120,6 +120,8 @@ public class JobTaskAction extends TopAction{
 						dept = emp.getDepartment();
 						dept_id = dept.getId();
 						employee_number = emp.getEmployee_number();
+						first_name = emp.getFirst_name();
+						last_name = emp.getLast_name();
 						if(effective_date.equals("") && emp.hasGroups()){ 
 								GroupEmployee gemp = emp.getGroupEmployee();
 								if(gemp != null){
@@ -136,7 +138,7 @@ public class JobTaskAction extends TopAction{
 												currentPositions.add(pp);
 								}
 						}
-						if(id.equals("") && !employee_number.equals("")){
+						if(id.equals("")){ //  && !employee_number.equals("")){
 								fillJobInfo();
 						}
 						getPositions();
@@ -353,13 +355,20 @@ public class JobTaskAction extends TopAction{
 				String msg = "";
 				boolean isTemp = false;
 				Profile pp = null;
-				System.err.println(" fill job info ");
+				boolean emp_num_needed = employee_number.equals("")? true:false;
+				
 				HandleProfile hp = new HandleProfile();
-				msg = hp.processOne(employee_number, effective_date);
+				msg = hp.processOne(effective_date,
+														employee_number,
+														first_name,
+														last_name);
 				if(msg.equals("")){
 						if(hp.hasProfiles()){
 								pp = hp.getOneProfile();
 								employee_found = true;
+								if(emp_num_needed){
+										employee_number = pp.getEmployee_number();
+								}
 								getJobTask();
 								jobTask.setWeekly_regular_hours(pp.getStWeeklyHrs());
 								jobTask.setComp_time_weekly_hours(pp.getCompTimeAfter());
@@ -368,8 +377,6 @@ public class JobTaskAction extends TopAction{
 								jobTask.setJobTitle(pp.getJobTitle());
 								jobTask.setSalary_group_name(pp.getSalary_group_name());
 								//
-								System.err.println(" salary group "+pp.getSalary_group_name());
-								//
 								if(pp.getSalary_group_name().equals("Temp")){
 										jobTask.setClock_time_required(true);
 										isTemp = true;
@@ -377,6 +384,12 @@ public class JobTaskAction extends TopAction{
 								if(isTemp){
 										msg = hp.processJobs(employee_number, effective_date);
 										jobTitles = hp.getJobTitles();
+								}
+								if(emp_num_needed){
+										if(emp != null){
+												emp.setEmployee_number(employee_number);
+												emp.doUpdate();
+										}
 								}
 						}
 						else{

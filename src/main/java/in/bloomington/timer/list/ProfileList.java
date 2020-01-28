@@ -26,7 +26,8 @@ public class ProfileList{
     PayPeriod payPeriod = null;
     String end_date = null; // for planning when looking for date range
 		String date = "";
-    String selected_dept_ref = "", employee_number="";
+    String selected_dept_ref = "", employee_number="",
+				first_name="", last_name=""; // for search one employee
     String deptRefs = null;
     List<Profile> profiles = null;
 		List<String> jobTitles = null;
@@ -48,10 +49,20 @@ public class ProfileList{
 		// looking for one employee using employee number
     public ProfileList(String val,
 											 List<BenefitGroup> vals,
-											 String val2){
+											 String val2){ // employee_number
 				setDate(val);
 				setBenefitGroups(vals);
 				setEmployeeNumber(val2);
+				currentOnly = true;
+    }
+    public ProfileList(String val,
+											 List<BenefitGroup> vals,
+											 String val2,// first name
+											 String val3){ // last
+				setDate(val);
+				setBenefitGroups(vals);
+				setFirst_name(val2);
+				setLast_name(val3);				
 				currentOnly = true;
     }		
 		
@@ -122,6 +133,16 @@ public class ProfileList{
 					 employee_number = val;
 				}
 		}
+    public void setFirst_name(String val){
+				if(val != null){
+						first_name = val;
+				}
+    }
+    public void setLast_name(String val){
+				if(val != null){
+						last_name = val;
+				}
+    }		
     public List<Profile> getProfiles(){
 				return profiles;
     }
@@ -162,9 +183,14 @@ public class ProfileList{
 						" hr.employee e "+
 						" where e.EmployeeId = p.EmployeeID "+
 						" and ? between EffectiveDate and EffectiveEndDate "+
-						" and ? between PositionDetailESD and PositionDetailEED "+
-						" and e.EmployeeNumber = ? "+
-						" order by e.employeenumber ";				
+						" and ? between PositionDetailESD and PositionDetailEED ";
+				if(!employee_number.equals("")){
+						qq += " and e.EmployeeNumber = ? ";
+				}
+				else{
+						qq += " and e.LastName like ? and e.FirstName like ? ";
+				}
+
 				con = SingleConnect.getNwConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -177,13 +203,18 @@ public class ProfileList{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, date);
 						pstmt.setString(2, date);
-						pstmt.setString(3, employee_number);
+						if(!employee_number.equals("")){
+								pstmt.setString(3, employee_number);
+						}
+						else{
+								pstmt.setString(3, last_name);
+								pstmt.setString(4, first_name);								
+						}
 						rs = pstmt.executeQuery();
 						jobTitles = new ArrayList<>();
 						while(rs.next()){
 								String str = rs.getString(1);
 								jobTitles.add(str);
-								// System.err.println(employee_number+": "+str);
 						}
 				}
 				catch(Exception ex){
@@ -615,9 +646,9 @@ public class ProfileList{
 								date = Helper.getToday();
 						}
 				}
-				System.err.println(" date "+date);
-				if(employee_number.equals("")){
-						msg = "Employee number not set ";
+				if(employee_number.equals("") &&
+					 first_name.equals("") && last_name.equals("")){
+						msg = "Employee number, or first name and last not set ";
 						return msg;
 				}
 				/*
@@ -666,8 +697,7 @@ public class ProfileList{
 				String qq = "select ejp.*, g.GradeCode, ei.*, "+
 						" ej.StandardWeeklyHours, "+
 						" ur.UDFAttributeID,ur.valInt,ur.valDecimal, "+
-						// " ej.effectivedate "+// added
-						" ejp.PositionDetailESD  "+
+						" ej.effectivedate "+// added
 						" from HR.vwEmployeeJobWithPosition ejp,"+
 						" (SELECT  "+
 						" E.EmployeeId, "+  
@@ -742,9 +772,16 @@ public class ProfileList{
 						" and ejp.PositionDetailEED >= '"+date+"' "+
 						" and ejp.PositionDetailESD <= '"+date+"' "+
 						" and ejp.IsPrimaryJob = 1 ";
-				qq +=	" and ei.vsEmploymentStatusId = 258 ";				
-				qq += " and ei.EmployeeNumber = ? ";
-				System.err.println(" emp # "+employee_number);
+				qq +=	" and ei.vsEmploymentStatusId = 258 ";
+				if(!employee_number.equals("")){
+						qq += " and ei.EmployeeNumber = ? ";
+						// System.err.println(" emp # "+employee_number);						
+				}
+				else{
+						qq += " and ei.LastName like ? and ei.FirstName like ? ";
+						// System.err.println(" last name "+last_name);
+						// System.err.println(" first name "+first_name);						
+				}
 				con = SingleConnect.getNwConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -754,7 +791,13 @@ public class ProfileList{
 				try{
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
-						pstmt.setString(1, employee_number);
+						if(!employee_number.equals("")){						
+								pstmt.setString(1, employee_number);
+						}
+						else{
+								pstmt.setString(1, last_name);
+								pstmt.setString(2, first_name);								
+						}
 						rs = pstmt.executeQuery();
 						Profile prevProfile = null, pp=null;
 						String prev_id = "";
@@ -764,7 +807,7 @@ public class ProfileList{
 						}
 						int jj=1;
 						while(rs.next()){
-								String str = rs.getString(4); // nw employeeId 
+								String emp_id = rs.getString(4); // nw employeeId 
 								String str2 = rs.getString(25); // benefit group id
 								String str3 = ""; // rs.getString(3); //full time/part time, exempt/non-exempt
 								String str4 = rs.getString(20); // grade info
@@ -781,10 +824,11 @@ public class ProfileList{
 								String str10 = rs.getString(34); // last name
 								String str11 = rs.getString(14); // job title
 								String effective_date = rs.getString(2);
-								System.err.println(" ed "+effective_date);
-								effective_date = rs.getString(42);
-								System.err.println(" ed "+effective_date);								
 								/*
+								System.err.println(" ef date "+effective_date);
+								System.err.println(" job title "+str11);
+								System.err.println(" emp # "+str5);
+								//
 								String str12 = rs.getString(8); // cycle hours
 								String str13 = rs.getString(9); // daily
 								System.err.println("weekly "+str6+" daily:"+str13+" cycle "+str12);
@@ -800,7 +844,7 @@ public class ProfileList{
 								else{
 										System.err.println(str10+" bg not found "+str2);
 								}
-								if(str.equals(prev_id)){
+								if(emp_id.equals(prev_id)){
 										if(factorId == 36){
 												if(str8 != null){
 														prevProfile.setException("multiple factor", str8);
@@ -816,7 +860,7 @@ public class ProfileList{
 								}
 								else{
 										pp = new Profile(debug,
-																		 str, str2, str3,
+																		 emp_id, str2, str3,
 																		 str4, str5, bg, str6,
 																		 fstr9,
 																		 str11); //job_name
@@ -832,7 +876,7 @@ public class ProfileList{
 														pp.setException("comp time after", str7);
 												}
 										}
-										prev_id = str;
+										prev_id = emp_id;
 										if(prevProfile != null){ // for the first time
 												profiles.add(prevProfile);
 										}

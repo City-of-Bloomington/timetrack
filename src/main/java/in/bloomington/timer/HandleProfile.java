@@ -153,12 +153,14 @@ public class HandleProfile{
 		/**
 		 *
 		 */
-    public String processOne(String emp_num, String effective_date){
+    public String processOne(String effective_date,
+														 String emp_num,
+														 String first_name,
+														 String last_name
+														 ){
 				//
 				String msg="";
 				String date = "";
-				System.err.println(" process one ed "+effective_date);
-				
 				String dt = Helper.getToday();
 				if(effective_date == null || effective_date.equals("")){
 						date = Helper.getDateAfter(dt, 21); // two weeks from now
@@ -167,25 +169,31 @@ public class HandleProfile{
 						if(effective_date.equals(dt)){
 								date = Helper.getDateAfter(dt, 21); // two weeks from now
 						}
-						else if(Helper.isOldDate(effective_date)){
+						else if(Helper.isOldDate(effective_date)){ // ignore effective date
 								date = Helper.getDateAfter(dt, 21); // two weeks from now
 						}
 						else{
 								date = effective_date;
 						}
 				}
-				System.err.println(" process one ed "+date);				
 				getBenefitGroups();
-				ProfileList plist =
-						new ProfileList(date,
+				ProfileList plist = null;
+				if(!emp_num.equals("")){
+						plist = new ProfileList(date,
 														benefitGroups,
 														emp_num);
+				}
+				else{
+						plist = new ProfileList(date,
+																		benefitGroups,
+																		first_name,
+																		last_name);
+				}
 				msg = plist.findOne();
 				if(msg.equals("")){
 						List<Profile> ones = plist.getProfiles();
 						if(ones != null && ones.size() > 0){
 								profiles = ones;
-								System.err.println(" size "+ones.size());
 								profile = ones.get(0);
 						}
 				}

@@ -4,7 +4,6 @@
 		<s:hidden name="action2" id="action2" value="" />
 		<s:if test="isWizard()">
 			<input type="hidden" name="wizard" value="true" />
-			<input type="hidden" name="effective_date" value="%{effective_date}" />
 		</s:if>
 		<s:if test="emp_id == ''">
 			<s:if test="!canAssignRoles()">
@@ -137,7 +136,7 @@
 					<s:if test="emp.hasGroupEmployees()">
 						<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add Employee to Another Group</a>						
 						<s:if test="emp.hasNoJob()">
-							<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&effective_date=<s:property value='effective_date' />" class="button"> Add A Job</a>
+							<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&effective_date=<s:property value='emp.effective_date' />" class="button"> Add A Job</a>
 						</s:if>
 						<s:else>
 							<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />" class="button"> Add Another Job</a>

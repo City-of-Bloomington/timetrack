@@ -19,9 +19,9 @@
 				<s:textfield name="emplst.id" value="%{emplst.id}" size="10" id="employee_id" />
 			</div>
 			<div class="form-group">
-				<label>Name</label>
+				<label>Full Name</label>
 				<s:textfield name="emplst.name" value="%{emplst.name}" size="30" id="employee_name" /><br />
-				(key words)
+				(start typing to pick from list)
 			</div>
 
 			<div class="form-group">

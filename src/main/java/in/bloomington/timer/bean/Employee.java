@@ -242,7 +242,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						ad_sid = val;
     }		
     public void setEmployee_number(String val){
-				if(val != null)
+				if(val != null && !val.trim().equals(""))
 						employee_number = val.trim();
     }
 
@@ -329,6 +329,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 						groupEmployee.setEffective_date(val);
 				}
     }
+		public String getEffective_date(){// needed for wizard
+				return effective_date;
+		}
+				
     public void setDepartmentEmployee(DepartmentEmployee val){
 				if(val != null)
 						departmentEmployee = val;
@@ -1292,8 +1296,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 						if(email.equals(""))
 								pstmt.setNull(5, Types.VARCHAR);
 						else
-								pstmt.setString(5, email);						
-						pstmt.setString(6, employee_number);
+								pstmt.setString(5, email);
+						if(employee_number.equals(""))
+								pstmt.setNull(6, Types.VARCHAR);
+						else						
+								pstmt.setString(6, employee_number);
 						if(ad_sid.equals(""))
 								pstmt.setNull(7, Types.VARCHAR);
 						else
