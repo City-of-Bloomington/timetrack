@@ -58,7 +58,8 @@ public class JobTimesChangeAction extends TopAction{
 					 jtl.setActiveOnly();
 					 jtl.setOrderById();
 					 String back = jtl.find();
-					 if(back.equals("")){ 
+					 back += jtl.addJobsUsedInPayPeriod();
+					 if(back.equals("")){
 							 List<JobTask> ones = jtl.getJobs();
 							 if(ones != null && ones.size() > 0){
 									 jobs = ones;

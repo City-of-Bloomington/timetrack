@@ -79,8 +79,6 @@ public class JobTimesChange implements Serializable{
 				String qq3 = " select id from tmwrp_runs where document_id=? ";
 				String qq4 = " delete from tmwrp_blocks where run_id =? ";
 				String qq5 = " delete from tmwrp_runs where id=? ";
-				// String qq6 = " delete from time_actions where document_id=? ";
-				// String qq7 = " delete from time_documents where id=? ";				
 				if(employee_id.equals("")){
 						msg = " Employee not set ";
 						return msg;

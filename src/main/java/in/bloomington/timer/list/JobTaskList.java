@@ -484,7 +484,7 @@ public class JobTaskList{
 						" sg.excess_culculation,sg.inactive,"+
 						" p.name, "+
 						" e.employee_number "+
-						" from jobs j,employees e, "+
+						" from jobs j, employees e, "+
 						" salary_groups sg, "+
 						" positions p ";
 				qq += " where sg.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null and j.position_id=p.id "+
@@ -548,6 +548,117 @@ public class JobTaskList{
 				}
 				return msg;
     }
+		/**
+		 * in additon to find above we are looking for certain jobs that were
+		 * used in certain pay period to enter times
+		 */
+    public String addJobsUsedInPayPeriod(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", qw="";
+				String qq = "select j.id,"+
+						"j.position_id,"+
+						"j.salary_group_id,"+
+						"j.employee_id,"+
+						"j.group_id,"+
+						
+						"date_format(j.effective_date,'%m/%d/%Y'),"+
+						"date_format(j.expire_date,'%m/%d/%Y'),"+
+						"j.primary_flag,"+
+						"j.weekly_regular_hours,"+
+						"j.comp_time_weekly_hours,"+
+						
+						" j.comp_time_factor,"+
+						" j.holiday_comp_factor,"+
+						" j.clock_time_required,"+
+						" j.hourly_rate,"+
+						" date_format(j.added_date,'%m/%d/%Y'),"+
+						" j.include_in_auto_batch,"+
+						" j.irregular_work_days,"+
+						" j.inactive,  "+
+						" sg.name,sg.description,sg.default_regular_id,"+
+						" sg.excess_culculation,sg.inactive,"+
+						" p.name, "+
+						" e.employee_number "+
+						" from jobs j, employees e, "+
+						" salary_groups sg, "+
+						" positions p ";
+				qw = " where sg.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null and j.position_id=p.id "+
+						" and e.inactive is null ";
+				if(!employee_id.equals("")){
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.employee_id = ? ";
+				}
+				if(!pay_period_id.equals("")){
+						qq += ", time_documents d ";
+						if(!qw.equals("")) qw += " and ";
+						qw += " j.id = d.job_id and d.pay_period_id = ? ";
+				}				
+				qq += qw;
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						return msg;
+				}				
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						if(!employee_id.equals("")){
+								pstmt.setString(jj++, employee_id);
+						}
+						if(!pay_period_id.equals("")){
+								pstmt.setString(jj++, pay_period_id);
+						}
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								if(jobTasks == null)
+										jobTasks = new ArrayList<>();
+								JobTask one =
+										new JobTask(
+																rs.getString(1),
+																rs.getString(2),
+																rs.getString(3),
+																rs.getString(4),
+																rs.getString(5),
+																rs.getString(6),
+																rs.getString(7),
+																rs.getString(8) != null,
+																rs.getInt(9),
+																rs.getInt(10),
+																rs.getDouble(11),
+																rs.getDouble(12),
+																rs.getString(13) != null,
+																rs.getDouble(14),
+																rs.getString(15),																
+																rs.getString(16) != null,
+																rs.getString(17) != null,
+																rs.getString(18) != null,
+																rs.getString(19),
+																rs.getString(20),
+																rs.getString(21),
+																rs.getString(22),
+																rs.getString(23) != null,
+																rs.getString(24),
+																rs.getString(25)
+																);
+								if(!jobTasks.contains(one))
+										jobTasks.add(one);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+    }		
+
+		
 		/**
 ;;
 ;; find employees jobs and group names

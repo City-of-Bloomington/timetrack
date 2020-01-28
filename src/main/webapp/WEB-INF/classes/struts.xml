@@ -398,6 +398,13 @@
 			<result name="error">/WEB-INF/jsp/switch.jsp</result>
 			<result name="success">/WEB-INF/jsp/switch.jsp</result>
 		</action>
+		<action name="empTimeChange" 
+						class="in.bloomington.timer.action.EmpTimeChangeAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/empTimeChange.jsp</result>		
+			<result name="error">/WEB-INF/jsp/empTimeChange.jsp</result>
+			<result name="success">/WEB-INF/jsp/empTimeChange.jsp</result>
+		</action>		
 		<action name="timeClock" 
 						class="in.bloomington.timer.action.TimeClockAction" 
 						method="execute">
