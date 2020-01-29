@@ -70,15 +70,16 @@ public class JobTimesChange implements Serializable{
 		//
     public String doChange(){
 				Connection con = null;
-				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null,
-						pstmt4=null, pstmt5=null;
+				PreparedStatement pstmt = null,
+						pstmt2=null,
+						pstmt3=null,
+						pstmt4=null;
 				ResultSet rs = null;
 				String msg="";
 				String qq = " update time_blocks set document_id=? where document_id=?";
 				String qq2 = " update time_block_logs set document_id=? where document_id=?";
-				String qq3 = " select id from tmwrp_runs where document_id=? ";
-				String qq4 = " delete from tmwrp_blocks where run_id =? ";
-				String qq5 = " delete from tmwrp_runs where id=? ";
+				String qq3 = " update time_actions set document_id=? where document_id=? and workflow_id > 1 ";
+				String qq4 = " update tmwrp_runs set document_id=? where document_id=? ";
 				if(employee_id.equals("")){
 						msg = " Employee not set ";
 						return msg;
@@ -162,40 +163,32 @@ public class JobTimesChange implements Serializable{
 						pstmt2 = con.prepareStatement(qq);
 						pstmt2.setString(1, toDocument.getId());
 						pstmt2.setString(2, fromDocument.getId());
-						pstmt2.executeUpdate();						
+						pstmt2.executeUpdate();
 						//
-						// find run_id
+						// time actions
 						qq = qq3;						
 						logger.debug(qq);
 						pstmt3 = con.prepareStatement(qq);
-						pstmt3.setString(1, fromDocument.getId());
-						rs = pstmt3.executeQuery();
-						String run_id = "";
-						if(rs.next()){
-								run_id = rs.getString(1);
-						}
-						if(!run_id.equals("")){
-								qq = qq4;								
-								logger.debug(qq);
+						pstmt3.setString(1, toDocument.getId());
+						pstmt3.setString(2, fromDocument.getId());
+						pstmt3.executeUpdate();
 
-								pstmt4 = con.prepareStatement(qq);
-								pstmt4.setString(1, run_id);
-								pstmt4.executeUpdate();
-								qq = qq5;								
-								logger.debug(qq);
-								pstmt5 = con.prepareStatement(qq);
-								pstmt5.setString(1, run_id);
-								pstmt5.executeUpdate();
-						}
-						TimewarpManager manager = new TimewarpManager(toDocument.getId());
-						msg = manager.doProcess();
+						
+						qq = qq4;						
+						logger.debug(qq);
+						pstmt4 = con.prepareStatement(qq);
+						pstmt4.setString(1, toDocument.getId());
+						pstmt4.setString(2, fromDocument.getId());
+						pstmt4.executeUpdate();						
+						//
+						//
 				}
 				catch(Exception ex){
 						msg += " "+ex;
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3, pstmt4, pstmt5);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3, pstmt4);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
