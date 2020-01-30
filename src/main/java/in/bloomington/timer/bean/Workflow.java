@@ -80,10 +80,10 @@ public class Workflow implements Serializable{
 				setId(val);
 				setNode_id(val2);
 				setNext_node_id(val3);
-				if(!node_id.equals("") && val4 != null){
+				if(!node_id.isEmpty() && val4 != null){
 						node = new Node(node_id, val4, val5, val6, val7, val8);
 				}
-				if(!next_node_id.equals("") && val9 != null){
+				if(!next_node_id.isEmpty() && val9 != null){
 						nextNode = new Node(next_node_id, val9, val10, val11, val12, val13);
 				}				
     }		
@@ -100,19 +100,19 @@ public class Workflow implements Serializable{
 				return next_node_id;
     }		
 		public boolean isLastNode(){
-				return next_node_id.equals("");
+				return next_node_id.isEmpty();
 		}
 		public boolean hasNextNode(){
-				return !next_node_id.equals("");
+				return !next_node_id.isEmpty();
 		}
 		public Node getNode(){
-				if(node == null && !id.equals("")){
+				if(node == null && !id.isEmpty()){
 						doSelect();
 				}
 				return node;
 		}
 		public Node getNextNode(){
-				if(node == null && !id.equals("")){
+				if(node == null && !id.isEmpty()){
 						doSelect();
 				}
 				return nextNode;
@@ -151,7 +151,7 @@ public class Workflow implements Serializable{
 		}
 		public int hashCode(){
 				int seed = 31;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*47;
 						}catch(Exception ex){
@@ -216,10 +216,10 @@ public class Workflow implements Serializable{
 						" join workflow_nodes s on w.node_id=s.id "+
 						" left join workflow_nodes s2 on w.next_node_id=s2.id "+
 						" where ";
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						qq += " w.id = ? ";
 				}
-				else if(!node_id.equals("")){
+				else if(!node_id.isEmpty()){
 						qq += " w.node_id = ? ";
 				}
 				else{
@@ -234,7 +234,7 @@ public class Workflow implements Serializable{
 				}
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								pstmt.setString(1, id);
 						}
 						else{
@@ -276,11 +276,11 @@ public class Workflow implements Serializable{
 		}
 		String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into workflows values(0,?,?)";
-				if(node_id.equals("")){
+				if(node_id.isEmpty()){
 						msg = "node id is required";
 						return msg;
 				}
@@ -292,13 +292,12 @@ public class Workflow implements Serializable{
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								pstmt.executeUpdate();
-								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt2 = con.prepareStatement(qq);
+								rs = pstmt2.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -309,7 +308,7 @@ public class Workflow implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				msg += doSelect();
@@ -320,7 +319,7 @@ public class Workflow implements Serializable{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, node_id);
-						if(next_node_id.equals(""))
+						if(next_node_id.isEmpty())
 								pstmt.setNull(jj++, Types.INTEGER);
 						else
 								pstmt.setString(jj++, next_node_id);								
@@ -337,7 +336,7 @@ public class Workflow implements Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update workflows set node_id=?, next_node_id=? where id=?";
-				if(node_id.equals("")){
+				if(node_id.isEmpty()){
 						msg = "node is required";
 						return msg;
 				}

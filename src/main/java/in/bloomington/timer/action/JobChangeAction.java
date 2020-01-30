@@ -32,7 +32,7 @@ public class JobChangeAction extends TopAction{
 				String back = doPrepare();
 				if(action.startsWith("Change")){ 
 						back = jobTask.doChange();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -43,10 +43,10 @@ public class JobChangeAction extends TopAction{
 						}
 				}
 				else{
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								getJobTask();
 								back = jobTask.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -69,13 +69,13 @@ public class JobChangeAction extends TopAction{
 				return ret;
 		}
 	 public List<JobTask> getJobs(){
-			 if(jobs == null && !related_employee_id.equals("")){
+			 if(jobs == null && !related_employee_id.isEmpty()){
 					 JobTaskList jtl = new JobTaskList();
 					 jtl.setEmployee_id(related_employee_id);
 					 jtl.setCurrentOnly();
 					 jtl.setActiveOnly();
 					 String back = jtl.find();
-					 if(back.equals("")){
+					 if(back.isEmpty()){
 							 List<JobTask> ones = jtl.getJobs();
 							 if(ones != null && ones.size() > 0){
 									 jobs = ones;
@@ -102,10 +102,10 @@ public class JobChangeAction extends TopAction{
 				}
 		}
 		public Employee getRelatedEmployee(){
-				if(relatedEmployee == null && !related_employee_id.equals("")){
+				if(relatedEmployee == null && !related_employee_id.isEmpty()){
 						Employee one = new Employee(related_employee_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								relatedEmployee = one;
 						}
 				}
@@ -113,7 +113,7 @@ public class JobChangeAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setRelated_employee_id(String val){
@@ -130,7 +130,7 @@ public class JobChangeAction extends TopAction{
 						tl.setTable_name("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -145,7 +145,7 @@ public class JobChangeAction extends TopAction{
 						tl.setTwoPeriodsAheadOnly();
 						tl.setLimit("5");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
@@ -157,7 +157,7 @@ public class JobChangeAction extends TopAction{
 		public List<Type> getSalaryGroups(){
 				TypeList tl = new TypeList("salary_groups");
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Type> ones = tl.getTypes();
 						if(ones != null && ones.size() > 0){
 								salaryGroups = ones;
@@ -168,7 +168,7 @@ public class JobChangeAction extends TopAction{
 		public List<Position> getPositions(){
 				PositionList tl = new PositionList();
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Position> ones = tl.getPositions();
 						if(ones != null && ones.size() > 0){
 								positions = ones;

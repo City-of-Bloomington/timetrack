@@ -30,7 +30,7 @@ public class LocationAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = location.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -39,7 +39,7 @@ public class LocationAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = location.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -48,7 +48,7 @@ public class LocationAction extends TopAction{
 				}
 				else if(action.startsWith("Delete")){
 						back = location.doDelete();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -59,9 +59,9 @@ public class LocationAction extends TopAction{
 				}				
 				else{		
 						getLocation();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = location.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -87,14 +87,14 @@ public class LocationAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<Location> getLocations(){
 				if(locations == null){
 						LocationList tl = new LocationList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Location> ones = tl.getLocations();
 								if(ones != null && ones.size() > 0){
 										locations = ones;

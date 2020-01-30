@@ -48,7 +48,7 @@ public class ProfileJob implements Job{
 				dl.setActiveOnly();
 				dl.hasRefIds();
 				String msg = dl.find();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						logger.error(msg);
 				}
 				else{
@@ -70,7 +70,7 @@ public class ProfileJob implements Job{
 				PayPeriodList ppl = new PayPeriodList();
 				ppl.setLastPayPeriod();
 				msg = ppl.find();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						logger.error(msg);
 						return;
 				}
@@ -83,14 +83,14 @@ public class ProfileJob implements Job{
 						}
 				}
 				/*
-				if(!date.equals("") && depts != null){
+				if(!date.isEmpty() && depts != null){
 						for(Department dept:depts){
 								HandleProfile handle = new HandleProfile();
 								msg = handle.process();
 						}
 				}
 				*/
-				if(!date.equals("")){
+				if(!date.isEmpty()){
 						HandleProfile handle = new HandleProfile(date);
 						msg = handle.process();
 				}

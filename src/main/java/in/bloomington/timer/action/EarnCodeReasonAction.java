@@ -30,7 +30,7 @@ public class EarnCodeReasonAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = reason.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -39,7 +39,7 @@ public class EarnCodeReasonAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = reason.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -48,9 +48,9 @@ public class EarnCodeReasonAction extends TopAction{
 				}
 				else{		
 						getReason();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = reason.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -74,7 +74,7 @@ public class EarnCodeReasonAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public boolean hasReasons(){
@@ -85,7 +85,7 @@ public class EarnCodeReasonAction extends TopAction{
 				if(reasons == null){
 						EarnCodeReasonList tl = new EarnCodeReasonList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<EarnCodeReason> ones = tl.getReasons();
 								if(ones != null && ones.size() > 0){
 										reasons = ones;
@@ -102,7 +102,7 @@ public class EarnCodeReasonAction extends TopAction{
 				if(categories == null){
 						ReasonCategoryList tl = new ReasonCategoryList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<ReasonCategory> ones = tl.getReasonCategories();
 								if(ones != null && ones.size() > 0){
 										categories = ones;

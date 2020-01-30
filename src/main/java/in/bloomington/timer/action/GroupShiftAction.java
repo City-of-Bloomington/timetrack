@@ -33,8 +33,7 @@ public class GroupShiftAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = groupShift.doSave();
-						if(!back.equals("")){
-								addActionError(back);
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -45,9 +44,8 @@ public class GroupShiftAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){ 
 						back = groupShift.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
-								addActionError(back);
 						}
 						else{
 								group_id = groupShift.getGroup_id();
@@ -62,7 +60,7 @@ public class GroupShiftAction extends TopAction{
 						id = "";
 						groupShift = new GroupShift();
 						groupShift.setGroup_id(group_id);
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -71,9 +69,9 @@ public class GroupShiftAction extends TopAction{
 				}				
 				else{		
 						getGroupShift();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = groupShift.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								shift_id = groupShift.getShift_id();
@@ -97,7 +95,7 @@ public class GroupShiftAction extends TopAction{
 				}
 		}
 		public String getDepartment_id(){
-				if(department_id.equals("") && !group_id.equals("")){
+				if(department_id.isEmpty() && !group_id.isEmpty()){
 						getGroup();
 						if(group != null){
 								department_id = group.getDepartment_id();
@@ -106,20 +104,20 @@ public class GroupShiftAction extends TopAction{
 				return department_id;
 		}
 		public Shift getShift(){
-				if(shift == null && !shift_id.equals("")){
+				if(shift == null && !shift_id.isEmpty()){
 						Shift one = new Shift(shift_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								shift = one;
 						}
 				}
 				return shift;
 		}
 		public Group getGroup(){
-				if(group == null && !group_id.equals("")){
+				if(group == null && !group_id.isEmpty()){
 						Group one = new Group(group_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								group = one;
 						}
 				}
@@ -130,7 +128,7 @@ public class GroupShiftAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setGroup_id(String val){
@@ -146,7 +144,7 @@ public class GroupShiftAction extends TopAction{
 						department_id = val;
 		}					
 		public List<Group> getGroups(){
-				if(groups == null && !department_id.equals("")){
+				if(groups == null && !department_id.isEmpty()){
 						// we are interested in the group of the shift department
 						// we need this list just in case we need to change
 						// shift group
@@ -154,7 +152,7 @@ public class GroupShiftAction extends TopAction{
 						tl.setDepartment_id(department_id);
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ones = tl.getGroups();
 								if(ones != null && ones.size() > 0){
 										groups = ones;
@@ -172,7 +170,7 @@ public class GroupShiftAction extends TopAction{
 						GroupShiftList gel = new GroupShiftList();
 						gel.setGroup_id(group_id);
 						String back = gel.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupShift> ones = gel.getGroupShifts();
 								if(ones != null && ones.size() > 0){
 										groupShifts = ones;
@@ -186,7 +184,7 @@ public class GroupShiftAction extends TopAction{
 						ShiftList gel = new ShiftList();
 						gel.setActiveOnly();
 						String back = gel.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Shift> ones = gel.getShifts();
 								if(ones != null && ones.size() > 0){
 										shifts = ones;
@@ -200,7 +198,7 @@ public class GroupShiftAction extends TopAction{
 						DepartmentList tl = new DepartmentList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Department> ones = tl.getDepartments();
 								if(ones != null && ones.size() > 0){
 										departments = ones;

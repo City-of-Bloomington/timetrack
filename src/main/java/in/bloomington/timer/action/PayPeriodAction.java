@@ -32,14 +32,14 @@ public class PayPeriodAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						getPayPeriods();
 				}
 				return ret;
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setYear(Integer val){
@@ -54,7 +54,7 @@ public class PayPeriodAction extends TopAction{
 						pay_period_id = val;
 		}
 		public String getPay_period_id(){
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						getCurrentPayPeriod();
 				}
 				return pay_period_id;
@@ -64,7 +64,7 @@ public class PayPeriodAction extends TopAction{
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										currentPayPeriod = ones.get(0);
@@ -80,7 +80,7 @@ public class PayPeriodAction extends TopAction{
 						tl.setYear(""+year);
 						tl.setOrderBy(" id asc ");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
@@ -97,7 +97,7 @@ public class PayPeriodAction extends TopAction{
 				if(years == null){
 						PayPeriodList ppl = new PayPeriodList();
 						String back = ppl.findYearList();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								years = ppl.getYears();
 						}
 						else{

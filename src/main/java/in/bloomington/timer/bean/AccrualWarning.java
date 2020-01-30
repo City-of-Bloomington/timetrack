@@ -74,7 +74,7 @@ public class AccrualWarning{
 		}
 		public int hashCode(){
 				int seed = 29;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -155,23 +155,12 @@ public class AccrualWarning{
 				if(val != null)
 						excess_warning_text = val;
     }
-		/*
-		public HourCode getHourCode(){
-				if(hourCode == null && !hour_code_id.equals("")){
-						HourCode one = new HourCode(hour_code_id);
-						String back = one.doSelect();
-						if(back.equals("")){
-								hourCode = one;
-						}
-				}
-				return hourCode;
-		}
-		*/
+
 		public Accrual getAccrual(){
-				if(accrual == null && !accrual_id.equals("")){
+				if(accrual == null && !accrual_id.isEmpty()){
 						Accrual one = new Accrual(accrual_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								accrual = one;
 						}
 				}
@@ -189,12 +178,12 @@ public class AccrualWarning{
         return hourCodes != null && hourCodes.size() > 0;
     }
 		public void findHourCodes() {
-        if (hourCodes == null && !accrual_id.equals("")) {
+        if (hourCodes == null && !accrual_id.isEmpty()) {
             HourCodeList hcl = new HourCodeList();
             hcl.setAccrual_id(accrual_id);
             hcl.setActiveOnly();
             String back = hcl.find();
-            if (back.equals("")) {
+            if (back.isEmpty()) {
                 List<HourCode> ones = hcl.getHourCodes();
                 if (ones != null && ones.size() > 0) {
                     hourCodes = ones;
@@ -207,7 +196,7 @@ public class AccrualWarning{
         String ret = "";
         if (hasHourCodes()) {
             for (HourCode one : hourCodes) {
-                if (!ret.equals("")) { ret += ", "; }
+                if (!ret.isEmpty()) { ret += ", "; }
                 ret += one.getCodeInfo();
             }
         }
@@ -261,14 +250,14 @@ public class AccrualWarning{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(accrual_id.equals("")){
+				if(accrual_id.isEmpty()){
 						msg = " accrual not set ";
 						return msg;
 				}				
-				if(excess_warning_text.equals("")){
+				if(excess_warning_text.isEmpty()){
 						msg = " Excess warning test not set ";
 						return msg;
 				}				
@@ -281,13 +270,12 @@ public class AccrualWarning{
 						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								pstmt.executeUpdate();
-								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt2 = con.prepareStatement(qq);
+								rs = pstmt2.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -298,7 +286,7 @@ public class AccrualWarning{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -311,17 +299,17 @@ public class AccrualWarning{
 						pstmt.setDouble(jj++, min_hrs);
 						pstmt.setDouble(jj++, step_hrs);
 						pstmt.setDouble(jj++, related_accrual_max_leval);
-						if(step_warning_text.equals("")){
+						if(step_warning_text.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else
 								pstmt.setString(jj++, step_warning_text);										
-						if(min_warning_text.equals("")){
+						if(min_warning_text.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else
 								pstmt.setString(jj++, min_warning_text);
-						if(excess_warning_text.equals("")){
+						if(excess_warning_text.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else
@@ -343,11 +331,11 @@ public class AccrualWarning{
 						" related_accrual_max_leval=?, step_warning_text=?,"+
 						" min_warning_text=?,excess_warning_text=? "+
 						" where id=? ";
-				if(accrual_id.equals("")){
+				if(accrual_id.isEmpty()){
 						msg = "Accrual is required";
 						return msg;
 				}
-				if(excess_warning_text.equals("")){
+				if(excess_warning_text.isEmpty()){
 						msg = " Excess warning test not set ";
 						return msg;
 				}								

@@ -100,15 +100,15 @@ public class HourCodeList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				Connection con = null;
-				if(employee_id.equals("") && (department_id.equals("") || salary_group_id.equals(""))){
+				if(employee_id.isEmpty() && (department_id.isEmpty() || salary_group_id.isEmpty())){
 						back = " employee not set or salary group not set";
 				}
-				if(employee_id.equals("")){
-						if(department_id.equals("")){
+				if(employee_id.isEmpty()){
+						if(department_id.isEmpty()){
 								back = " department not set ";
 								return back;
 						}
-						if(salary_group_id.equals("")){
+						if(salary_group_id.isEmpty()){
 								back = " salary grop not set ";
 								return back;
 						}
@@ -138,39 +138,39 @@ public class HourCodeList{
 								}
 						}
 						if(current_only){
-								if(!qw.equals("")) qw += " and "; 
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " e.inactive is null ";
 						}
-						else if(!effective_date_before.equals("")){
-								if(!qw.equals("")) qw += " and "; 
+						else if(!effective_date_before.isEmpty()){
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " c.date <= ? ";
 						}
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								qq +=" join jobs j on j.salary_group_id=c.salary_group_id ";
 								qq += " join department_employees de on de.employee_id=j.employee_id and c.department_id=de.department_id ";
-								if(!qw.equals("")) qw += " and "; 
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " j.employee_id = ? ";
 								qw += " and (j.group_id = c.group_id or c.grou_id is null)";
 						}
 						else{								
-								if(!department_id.equals("")){
-										if(!qw.equals("")) qw += " and "; 
+								if(!department_id.isEmpty()){
+										if(!qw.isEmpty()) qw += " and "; 
 										qw += " (c.department_id = ? or c.department_id is null)";
 								}
-								if(!salary_group_id.equals("")){
-										if(!qw.equals("")) qw += " and "; 
+								if(!salary_group_id.isEmpty()){
+										if(!qw.isEmpty()) qw += " and "; 
 										qw += " c.salary_group_id = ? ";
 								}
-								if(!group_id.equals("")){
-										if(!qw.equals("")) qw += " and "; 
+								if(!group_id.isEmpty()){
+										if(!qw.isEmpty()) qw += " and "; 
 										qw += " (c.group_id = ? or c.group_id is null)";
 								}								
 						}
 						if(active_only){
-								if(!qw.equals("")) qw += " and "; 								
+								if(!qw.isEmpty()) qw += " and "; 								
 								qw += " e.inactive is null "; 
 						}						
-						if(!qw.equals("")){
+						if(!qw.isEmpty()){
 								qw = " where "+qw;
 						}
 						qw += " order by e.name";
@@ -181,21 +181,21 @@ public class HourCodeList{
 						int jj=1;
 						if(current_only){
 						}
-						else if(!effective_date_before.equals("")){
+						else if(!effective_date_before.isEmpty()){
 								java.util.Date date_tmp = df.parse(effective_date_before);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
 						else{
-								if(!department_id.equals("")){
+								if(!department_id.isEmpty()){
 										pstmt.setString(jj++, department_id);
 								}
-								if(!salary_group_id.equals("")){
+								if(!salary_group_id.isEmpty()){
 										pstmt.setString(jj++, salary_group_id);
 								}
-								if(!group_id.equals("")){
+								if(!group_id.isEmpty()){
 										pstmt.setString(jj++, group_id);
 								}								
 						}
@@ -261,40 +261,40 @@ public class HourCodeList{
 				}							
 				try{
 						if(current_only){
-								if(!qw.equals("")) qw += " and "; 
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " e.inactive is null ";
 						}
-						else if(!effective_date_before.equals("")){
-								if(!qw.equals("")) qw += " and "; 
+						else if(!effective_date_before.isEmpty()){
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " c.date <= ? ";
 						}
 						if(related_to_accruals_only){
-								if(!qw.equals("")) qw += " and "; 
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " e.accrual_id is not null ";
 						}
-						if(!accrual_id.equals("")){
-								if(!qw.equals("")) qw += " and "; 
+						if(!accrual_id.isEmpty()){
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " e.accrual_id = ?  ";
 						}
-						if(!type.equals("")){
-								if(!qw.equals("")) qw += " and "; 
+						if(!type.isEmpty()){
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " e.type = ?  ";
 						}
-						if(!name.equals("")){
-								if(!qw.equals("")) qw += " and "; 
+						if(!name.isEmpty()){
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " e.name = ?  ";
 						}						
 						if(allEarnTypes){
-								if(!qw.equals("")) qw += " and "; 
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " (e.type = 'Earned' or e.type ='Overtime')  ";
 						}
-						if(!record_method.equals("")){
-								if(!qw.equals("")) qw += " and "; 
+						if(!record_method.isEmpty()){
+								if(!qw.isEmpty()) qw += " and "; 
 								qw += " e.record_method = ?  ";
 
 						}
 						if(default_regular_only){
-								if(!qw.equals("")) qw += " and ";
+								if(!qw.isEmpty()) qw += " and ";
 								if(include_holidays){
 										qw += " (e.reg_default is not null or (e.holiday_related is not null and e.type <> 'Earned')) ";
 								}
@@ -303,10 +303,10 @@ public class HourCodeList{
 								}
 						}
 						if(active_only){
-								if(!qw.equals("")) qw += " and "; 								
+								if(!qw.isEmpty()) qw += " and "; 								
 								qw += " e.inactive is null "; 
 						}
-						if(!qw.equals("")){
+						if(!qw.isEmpty()){
 								qw = " where "+qw;
 						}
 						qw += " order by e.name";
@@ -317,16 +317,16 @@ public class HourCodeList{
 						int jj=1;
 						if(current_only){
 						}
-						if(!accrual_id.equals("")){
+						if(!accrual_id.isEmpty()){
 								pstmt.setString(jj++, accrual_id);
 						}
-						if(!type.equals("")){
+						if(!type.isEmpty()){
 								pstmt.setString(jj++, type);
 						}
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								pstmt.setString(jj++, name);
 						}
-						if(!record_method.equals("")){
+						if(!record_method.isEmpty()){
 								pstmt.setString(jj++, record_method);
 						}						
 						rs = pstmt.executeQuery();

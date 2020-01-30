@@ -35,15 +35,15 @@ public class FmlaReport extends MpoReport{
 						dept_ref_id = val;
 		}
 		public String getDepartment_id(){
-				if(department_id.equals(""))
+				if(department_id.isEmpty())
 						return "-1";
 				return department_id;
 		}
 		public Department getDepartment(){
-				if(department == null && !department_id.equals("")){
+				if(department == null && !department_id.isEmpty()){
 						Department one = new Department(department_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department = one;
 								dept_ref_id = one.getRef_id();
 						}

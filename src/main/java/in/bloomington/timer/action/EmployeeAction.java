@@ -45,12 +45,12 @@ public class EmployeeAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = emp.validate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 								return ret;
 						}
 						back = emp.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -59,7 +59,7 @@ public class EmployeeAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = emp.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -69,16 +69,16 @@ public class EmployeeAction extends TopAction{
 				else if(action.startsWith("Edit")){
 						getEmp();
 						back = emp.doSelect();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						getDepartmentEmployee();
 				}				
 				else{		
 						getEmp();
-						if(!emp_id.equals("")){
+						if(!emp_id.isEmpty()){
 								back = emp.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{
@@ -110,7 +110,7 @@ public class EmployeeAction extends TopAction{
 		public Department getDept(){
 				if(dept == null){
 						dept = new Department(dept_id);
-						if(!dept_id.equals("")){
+						if(!dept_id.isEmpty()){
 								dept.doSelect();
 						}
 				}
@@ -146,7 +146,7 @@ public class EmployeeAction extends TopAction{
 				}
 		}
 		public String getEmp_id(){
-				if(emp_id.equals("") && emp != null){
+				if(emp_id.isEmpty() && emp != null){
 						emp_id = emp.getId();
 				}
 				return emp_id;
@@ -157,7 +157,7 @@ public class EmployeeAction extends TopAction{
 				}
 		}
 		public String getDept_id(){
-				if(dept_id.equals("") && dept != null){
+				if(dept_id.isEmpty() && dept != null){
 						dept_id = dept.getId();
 				}
 				return dept_id;
@@ -191,7 +191,7 @@ public class EmployeeAction extends TopAction{
 						effective_date = val;
 		}		
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<Employee> getEmployees(){
@@ -199,7 +199,7 @@ public class EmployeeAction extends TopAction{
 						EmployeeList tl = new EmployeeList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Employee> ones = tl.getEmployees();
 								if(ones != null && ones.size() > 0){
 										employees = ones;
@@ -213,7 +213,7 @@ public class EmployeeAction extends TopAction{
 						TypeList tl = new TypeList("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -223,12 +223,12 @@ public class EmployeeAction extends TopAction{
 				return departments;
 		}
 		public List<Group> getGroups(){
-				if(groups == null && !dept_id.equals("")){
+				if(groups == null && !dept_id.isEmpty()){
 						GroupList gl = new GroupList();
 						gl.setDepartment_id(dept_id);
 						gl.setActiveOnly();
 						String back = gl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ones = gl.getGroups();
 								if(ones != null && ones.size() > 0){
 										groups = ones;
@@ -253,7 +253,7 @@ public class EmployeeAction extends TopAction{
 						else
 								tl.setLimit("5");								
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;

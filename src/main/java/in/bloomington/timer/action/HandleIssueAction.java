@@ -32,7 +32,7 @@ public class HandleIssueAction extends TopAction{
 				if(action.startsWith("Close")){
 						timeIssue.setClosed_by(user.getId());
 						back = timeIssue.doClose();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -41,9 +41,9 @@ public class HandleIssueAction extends TopAction{
 				}				
 				else{		
 						getTimeIssue();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = timeIssue.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								time_block_id = timeIssue.getTime_block_id();
@@ -69,15 +69,15 @@ public class HandleIssueAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDocument_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						document_id = val;
 		}
 		public void setTime_block_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						time_block_id = val;
 		}		
 		public List<TimeIssue> getTimeIssues(){
@@ -86,7 +86,7 @@ public class HandleIssueAction extends TopAction{
 						tl.setTime_block_id(time_block_id);
 						tl.setDocument_id(document_id);
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<TimeIssue> ones = tl.getTimeIssues();
 								if(ones != null && ones.size() > 0){
 										timeIssues = ones;

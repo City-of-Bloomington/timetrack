@@ -36,7 +36,7 @@ public class ShiftTimeAction extends TopAction{
 						getUser();
 						shift.setAdded_by_id(user.getId());
 						back = shift.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -49,7 +49,7 @@ public class ShiftTimeAction extends TopAction{
 						back = shift.doUpdate();
 						Group group = shift.getGroup();
 						department_id = group.getDepartment_id();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);								
 						}
 						else{
@@ -62,7 +62,7 @@ public class ShiftTimeAction extends TopAction{
 						back = shift.doProcess();
 						Group group = shift.getGroup();
 						department_id = group.getDepartment_id();						
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);								
 						}
 						else{
@@ -71,11 +71,11 @@ public class ShiftTimeAction extends TopAction{
 				}				
 				else{		
 						getShift();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = shift.doSelect();
 								Group group = shift.getGroup();
 								department_id = group.getDepartment_id();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}								
 						}
@@ -106,10 +106,10 @@ public class ShiftTimeAction extends TopAction{
 				}
 		}
 		public boolean hasDepartment(){
-				return !department_id.equals("");
+				return !department_id.isEmpty();
 		}
 		public String getDepartment_id(){
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						return "-1";
 				}
 				return department_id;
@@ -124,14 +124,14 @@ public class ShiftTimeAction extends TopAction{
 				return "";
 		}		
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<ShiftTime> getShifts(){
 				if(shifts == null){
 						ShiftTimeList tl = new ShiftTimeList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<ShiftTime> ones = tl.getShifts();
 								if(ones != null && ones.size() > 0){
 										shifts = ones;
@@ -148,11 +148,11 @@ public class ShiftTimeAction extends TopAction{
 		}
 		public List<Group> getGroups(){
 				if(groups == null){
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								GroupList gsl = new GroupList();
 								gsl.setDepartment_id(department_id);
 								String back = gsl.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<Group> ones = gsl.getGroups();
 										if(ones != null && ones.size() > 0){
 												groups = ones;
@@ -163,10 +163,10 @@ public class ShiftTimeAction extends TopAction{
 				return groups;
 		}
 		public Department getDepartment(){
-				if(department == null && !department_id.equals("")){
+				if(department == null && !department_id.isEmpty()){
 						Department one = new Department(department_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department = one;
 						}
 				}
@@ -177,7 +177,7 @@ public class ShiftTimeAction extends TopAction{
 						DepartmentList gsl = new DepartmentList();
 						gsl.ignoreSpecialDepts();
 						String back = gsl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Department> ones = gsl.getDepartments();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -192,7 +192,7 @@ public class ShiftTimeAction extends TopAction{
 						gsl.setDefaultRegularOnly();
 						gsl.setIncludeHolidays();
 						String back = gsl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<HourCode> ones = gsl.getHourCodes();
 								if(ones != null && ones.size() > 0){
 										hourCodes = ones;
@@ -207,7 +207,7 @@ public class ShiftTimeAction extends TopAction{
 						gsl.setTwoPeriodsAheadOnly();
 						gsl.setLimit("4");
 						String back = gsl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = gsl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;

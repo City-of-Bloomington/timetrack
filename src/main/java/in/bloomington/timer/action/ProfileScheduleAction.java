@@ -34,12 +34,12 @@ public class ProfileScheduleAction extends TopAction{
 				prepareSchedular();				
 				if(action.equals("Schedule")){
 						back = doClean();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 						}
 						try{
 								back = schedular.run();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 								}
 								else{
@@ -50,13 +50,13 @@ public class ProfileScheduleAction extends TopAction{
 						}
 				}
 				else if(action.startsWith("Update")){ // import now given the date
-						if(dept_ref_id.equals("") || date.equals("")){
+						if(dept_ref_id.isEmpty() || date.isEmpty()){
 								addActionError("dept ref and/or date not set");
 						}
 						else{
 								HandleProfile handle = new HandleProfile(dept_ref_id, date);
 								back = handle.process();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 								}
 								else{
@@ -64,7 +64,7 @@ public class ProfileScheduleAction extends TopAction{
 								}
 						}
 				}
-				else if(!action.equals("")){ // looking for one employee
+				else if(!action.isEmpty()){ // looking for one employee
 						HandleProfile handle = new HandleProfile(date);
 						// sibo: 100001341
 						// burns: 100003240 //police
@@ -79,7 +79,7 @@ public class ProfileScheduleAction extends TopAction{
 						}
 						back = handle.processJobs("2126","10/07/2019");
 						back = handle.processJobs("2348","09/27/2019");						
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 						}
 						else{
@@ -91,10 +91,10 @@ public class ProfileScheduleAction extends TopAction{
 		private void prepareSchedular(){
 				String msg = "";
 				PayPeriodList pl = new PayPeriodList();
-				if(date.equals("")){
+				if(date.isEmpty()){
 						pl.setLastPayPeriod();
 						msg = pl.find();
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								List<PayPeriod> ones = pl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										PayPeriod one = ones.get(0);
@@ -103,12 +103,12 @@ public class ProfileScheduleAction extends TopAction{
 								}
 						}
 				}
-				if(!date.equals("")){
+				if(!date.isEmpty()){
 						schedular = new ProfileScheduler(date);
 				}
 				quartzMisc = new QuartzMisc("profile"); 
 				msg = quartzMisc.findScheduledDates();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						prev_date = quartzMisc.getPrevScheduleDate();
 						if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
 								prev_date = "No Previous date found";
@@ -129,11 +129,11 @@ public class ProfileScheduleAction extends TopAction{
 
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDate(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						date = val;
 		}
 		public void setDept_ref_id(String val){
@@ -151,7 +151,7 @@ public class ProfileScheduleAction extends TopAction{
 				return next_date;
 		}
 		public boolean hasPrevDates(){
-				return !prev_date.equals("");
+				return !prev_date.isEmpty();
 		}
 		public List<Department> getDepts(){
 				if(depts == null){
@@ -159,7 +159,7 @@ public class ProfileScheduleAction extends TopAction{
 						dl.setActiveOnly();
 						dl.hasRefIds();
 						String msg = dl.find();
-						if(!msg.equals("")){
+						if(!msg.isEmpty()){
 								logger.error(msg);
 						}
 						else{

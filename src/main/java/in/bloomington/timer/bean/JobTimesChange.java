@@ -62,7 +62,7 @@ public class JobTimesChange implements Serializable{
 						pay_period_id = val;
     }		
     public String toString(){
-				String str = employee_id+" "+to_job_id+" "+from_job_id;
+				String str = employee_id+" "+pay_period_id+" "+to_job_id+" "+from_job_id;
 				return str;
     }
     //
@@ -80,19 +80,19 @@ public class JobTimesChange implements Serializable{
 				String qq2 = " update time_block_logs set document_id=? where document_id=?";
 				String qq3 = " update time_actions set document_id=? where document_id=? and workflow_id > 1 ";
 				String qq4 = " update tmwrp_runs set document_id=? where document_id=? ";
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						msg = " Employee not set ";
 						return msg;
 				}
-				if(to_job_id.equals("")){
+				if(to_job_id.isEmpty()){
 						msg = " To job not set ";
 						return msg;
 				}
-				if(from_job_id.equals("")){
+				if(from_job_id.isEmpty()){
 						msg = " From job not set ";
 						return msg;
 				}
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						msg = " Pay period not set ";
 						return msg;
 				}
@@ -101,7 +101,7 @@ public class JobTimesChange implements Serializable{
 				dl.setPay_period_id(pay_period_id);
 				dl.setJob_id(from_job_id);
 				msg = dl.find();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						List<Document> ones = dl.getDocuments();
 						if(ones != null && ones.size() > 0){
 								fromDocument = ones.get(0);
@@ -118,7 +118,7 @@ public class JobTimesChange implements Serializable{
 				dl.setPay_period_id(pay_period_id);
 				dl.setJob_id(to_job_id);
 				msg = dl.find();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						List<Document> ones = dl.getDocuments();
 						if(ones != null && ones.size() > 0){
 								toDocument = ones.get(0);
@@ -132,7 +132,7 @@ public class JobTimesChange implements Serializable{
 				if(fromDocument != null && toDocument == null){
 						fromDocument.setJob_id(to_job_id);
 						msg = fromDocument.doUpdateJob();
-						if(!msg.equals("")){
+						if(!msg.isEmpty()){
 								return msg;
 						}
 				}

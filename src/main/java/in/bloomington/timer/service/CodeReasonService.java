@@ -54,7 +54,7 @@ public class CodeReasonService extends HttpServlet{
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
 						if (name.equals("salary_group_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												salary_group_id = value;										
@@ -63,7 +63,7 @@ public class CodeReasonService extends HttpServlet{
 								}
 						}
 						else if (name.equals("group_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												group_id = value;										
@@ -72,7 +72,7 @@ public class CodeReasonService extends HttpServlet{
 								}
 						}						
 						else if(name.equals("hour_code_id")){
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												hour_code_id = value;										
@@ -89,14 +89,14 @@ public class CodeReasonService extends HttpServlet{
 				}
 				CodeReasonConditionList crcl = null;
 				List<EarnCodeReason> reasons = null;
-				if(!salary_group_id.equals("") && !hour_code_id.equals("")){
+				if(!salary_group_id.isEmpty() && !hour_code_id.isEmpty()){
 						//
 						crcl = new CodeReasonConditionList();
 						crcl.setSalary_group_id(salary_group_id);
 						crcl.setHour_code_id(hour_code_id);
 						crcl.setGroup_id(group_id);
 						String back = crcl.lookFor();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								reasons = crcl.getReasons();
 						}
 						if(reasons != null && reasons.size() > 0){
@@ -120,7 +120,7 @@ public class CodeReasonService extends HttpServlet{
 		String writeJson(List<EarnCodeReason> ones){
 				String json="";
 				for(EarnCodeReason one:ones){
-						if(!json.equals("")) json += ",";
+						if(!json.isEmpty()) json += ",";
 						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getDescription()+"\"}";
 				}
 				json = "["+json+"]";

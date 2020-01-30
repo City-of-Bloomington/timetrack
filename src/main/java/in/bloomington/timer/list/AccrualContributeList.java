@@ -54,31 +54,31 @@ public class AccrualContributeList{
 						return back;
 				}
 				try{
-						if(!name.equals("")){
-								if(!qw.equals("")) qw += " and ";
+						if(!name.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " c.name like ? ";
 						}
-						if(!accrual_id.equals("")){
-								if(!qw.equals("")) qw += " and ";								
+						if(!accrual_id.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";								
 								qw += " c.accrual_id = ? ";
 						}
-						if(!hour_code_id.equals("")){
-								if(!qw.equals("")) qw += " and ";								
+						if(!hour_code_id.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";								
 								qw += " c.hour_code_id = ? ";
 						}
-						if(!qw.equals("")){
+						if(!qw.isEmpty()){
 								qq += " where "+qw;
 						}
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								pstmt.setString(jj++,"%"+name+"%");
 						}
-						if(!accrual_id.equals("")){
+						if(!accrual_id.isEmpty()){
 								pstmt.setString(jj++,accrual_id);
 						}
-						if(!hour_code_id.equals("")){
+						if(!hour_code_id.isEmpty()){
 								pstmt.setString(jj++,hour_code_id);
 						}						
 						rs = pstmt.executeQuery();

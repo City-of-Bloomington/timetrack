@@ -36,7 +36,7 @@ public class CodeReasonConditionAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = condition.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -46,7 +46,7 @@ public class CodeReasonConditionAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = condition.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -55,7 +55,7 @@ public class CodeReasonConditionAction extends TopAction{
 				}
 				else if(action.startsWith("Delete")){
 						back = condition.doDelete();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -66,9 +66,9 @@ public class CodeReasonConditionAction extends TopAction{
 				}				
 				else{		
 						getCondition();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = condition.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}								
 						}
@@ -92,7 +92,7 @@ public class CodeReasonConditionAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDepartment_id(String val){
@@ -100,7 +100,7 @@ public class CodeReasonConditionAction extends TopAction{
 						department_id = val;
 		}
 		public String getDepartment_id(){
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						return "-1";
 				}
 				return department_id;
@@ -109,7 +109,7 @@ public class CodeReasonConditionAction extends TopAction{
 				if(conditions == null){
 						CodeReasonConditionList tl = new CodeReasonConditionList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<CodeReasonCondition> ones = tl.getConditions();
 								if(ones != null && ones.size() > 0){
 										conditions = ones;
@@ -128,7 +128,7 @@ public class CodeReasonConditionAction extends TopAction{
 						tl.setEarnTypesOnly(); // only earned or overtime
 						tl.setRecord_method("Time");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<HourCode> ones = tl.getHourCodes();
 								if(ones != null && ones.size() > 0){
 										hourcodes = ones;
@@ -141,7 +141,7 @@ public class CodeReasonConditionAction extends TopAction{
 				if(departments == null){
 						TypeList tl = new TypeList("departments");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -154,7 +154,7 @@ public class CodeReasonConditionAction extends TopAction{
 				if(salaryGroups == null){
 						TypeList tl = new TypeList("salary_groups");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										salaryGroups = ones;
@@ -166,15 +166,15 @@ public class CodeReasonConditionAction extends TopAction{
 		public List<Group> getGroups(){
 				if(groups == null){
 						GroupList tl = new GroupList();
-						if(department_id.equals("")){
+						if(department_id.isEmpty()){
 								getCondition();
 								department_id = condition.getDepartment_id();
 						}
-						if(!(department_id.equals("") || department_id.equals("-1"))){
+						if(!(department_id.isEmpty() || department_id.equals("-1"))){
 								tl.setDepartment_id(department_id);
 						}
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ones = tl.getGroups();
 								if(ones != null && ones.size() > 0){
 										groups = ones;
@@ -191,7 +191,7 @@ public class CodeReasonConditionAction extends TopAction{
 				if(reasons == null){
 						EarnCodeReasonList tl = new EarnCodeReasonList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<EarnCodeReason> ones = tl.getReasons();
 								if(ones != null && ones.size() > 0){
 										reasons = ones;

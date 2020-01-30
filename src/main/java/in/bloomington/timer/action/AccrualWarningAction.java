@@ -31,7 +31,7 @@ public class AccrualWarningAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = accrualWarning.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);
 						}
@@ -42,7 +42,7 @@ public class AccrualWarningAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = accrualWarning.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 								addActionError(back);
 						}
@@ -53,9 +53,9 @@ public class AccrualWarningAction extends TopAction{
 				}
 				else{		
 						getAccrualWarning();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = accrualWarning.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 										addActionError(back);
 								}
@@ -86,14 +86,14 @@ public class AccrualWarningAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<AccrualWarning> getAccrualWarnings(){
 				if(accrualWarnings == null){
 						AccrualWarningList tl = new AccrualWarningList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<AccrualWarning> ones = tl.getAccrualWarnings();
 								if(ones != null && ones.size() > 0){
 										accrualWarnings = ones;
@@ -107,7 +107,7 @@ public class AccrualWarningAction extends TopAction{
 				HourCodeList hcl = new HourCodeList();
 				hcl.relatedToAccrualsOnly();
 				String back = hcl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<HourCode> ones = hcl.getHourCodes();
 						if(ones != null && ones.size() > 0){
 								hourCodes = ones;

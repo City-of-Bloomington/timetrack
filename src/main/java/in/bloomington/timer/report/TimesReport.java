@@ -66,10 +66,10 @@ public class TimesReport{
 				return type;
 		}
 		public boolean hasDepartment(){
-				return !department_id.equals("");
+				return !department_id.isEmpty();
 		}
 		public String getDepartment_id(){
-				if(department_id.equals(""))  return "-1";
+				if(department_id.isEmpty())  return "-1";
 				return department_id;
 		}		
 		public void setEmploymentType(String val){
@@ -78,15 +78,15 @@ public class TimesReport{
 				}
 		}
 		public String getEmploymentType(){
-				if(employmentType.equals(""))
+				if(employmentType.isEmpty())
 						return "-1";
 				return employmentType;
 		}
 		public Department getDepartment(){
-				if(department == null && !department_id.equals("")){
+				if(department == null && !department_id.isEmpty()){
 						Department one = new Department(department_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department = one;
 						}
 				}
@@ -209,11 +209,11 @@ public class TimesReport{
 						end_date = CommonInc.quarter_ends[quarter]+year;
 				}
 				start_date = start_date.trim();
-				if(start_date.equals("")){
+				if(start_date.isEmpty()){
 						msg = "Year and quarter or start date not set ";
 						return msg;
 				}
-				if(end_date.equals("")){
+				if(end_date.isEmpty()){
 						end_date = Helper.getToday();
 				}
 				return msg;
@@ -231,7 +231,7 @@ public class TimesReport{
 				// planning department
 				//
 				msg = setStartAndEndDates();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				//
@@ -252,15 +252,15 @@ public class TimesReport{
 						logger.error(msg);
 						return msg;
 				}
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						msg = "Need to select a Department ";
 						return msg;
 				}
-				if(start_date.equals("")){
+				if(start_date.isEmpty()){
 						msg = "start date not set ";
 						return msg;
 				}
-				if(end_date.equals("")){
+				if(end_date.isEmpty()){
 						msg = "end date not set ";
 						return msg;
 				}				
@@ -306,7 +306,7 @@ public class TimesReport{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						createOutput();
 				}
 				return msg;
@@ -320,7 +320,7 @@ public class TimesReport{
 				for(String[] arr:arrAll){
 						String line = "";
 						for(int jj=0;jj< arr.length;jj++){
-								if(!line.equals("")) line += ", ";
+								if(!line.isEmpty()) line += ", ";
 								line += arr[jj];
 						}
 						System.err.println(line);

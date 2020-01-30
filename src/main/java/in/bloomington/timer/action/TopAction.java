@@ -49,7 +49,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 						action = val;
     }
     public void setAction2(String val){
-				if(val != null && !val.equals(""))
+				if(val != null && !val.isEmpty())
 						action = val;
     }		
     public String getAction(){
@@ -68,7 +68,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     String doPrepare(String source){
 				String back = "", val="";
 				try{
-						if(url.equals("")){
+						if(url.isEmpty()){
 								val = ctx.getInitParameter("url");
 								if(val != null)
 										url = val;
@@ -112,7 +112,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 										employee_id = (String) obj;
 								}
 						}
-						if(url.equals(""))
+						if(url.isEmpty())
 								setUrls();
 						clearAll();
 				}catch(Exception ex){
@@ -124,7 +124,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				return doPrepare(null);
     }
     public void setEmployee_id(String val){
-				if(val != null && !val.equals("")){		
+				if(val != null && !val.isEmpty()){		
 						employee_id = val;
 						if(sessionMap != null){
 								sessionMap.put("employee_id", employee_id);
@@ -132,7 +132,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				}
     }
     public String getEmployee_id(){
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						if(sessionMap != null && sessionMap.containsKey("employee_id")){
 								Object obj = sessionMap.get("employee_id");
 								if(obj != null){
@@ -152,13 +152,13 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				return employee_id;
     }
     public Employee getEmployee(){
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						getEmployee_id();
 				}
-				if(employee == null && !employee_id.equals("")){
+				if(employee == null && !employee_id.isEmpty()){
 						Employee one = new Employee(employee_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								employee = one;
 						}
 				}				
@@ -246,7 +246,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				String ret = "";
 				if(hasErrors()){
 						for(String str:errors){
-								if(!ret.equals("")) ret += ", ";
+								if(!ret.isEmpty()) ret += ", ";
 								ret += str;
 						}
 				}
@@ -275,7 +275,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 				return val;
     }
     void addGroupIdToSession(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						if(sessionMap != null){						
 								try{
 										sessionMap.put("selected_group_id", val);						
@@ -287,7 +287,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     }		
     private void setUrls(){
 				System.err.println(" url "+url);
-				if(!url.equals("")) return;
+				if(!url.isEmpty()) return;
 				HttpServletRequest request = ServletActionContext.getRequest();				
 				String host_forward = request.getHeader("X-Forwarded-Host");
 				String host = request.getHeader("host");				

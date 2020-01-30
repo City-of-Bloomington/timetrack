@@ -66,7 +66,7 @@ public class Shift implements Serializable{
     }
     public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -125,13 +125,13 @@ public class Shift implements Serializable{
     }
 		
     public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
     public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
     public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
     }
     public boolean hasRoundedMinute(){
 				return minute_rounding > 0;
@@ -156,29 +156,29 @@ public class Shift implements Serializable{
 		}
 		public String getInfo(){
 				String ret = getStartHourMinute();
-				if(!ret.equals("")){
+				if(!ret.isEmpty()){
 						ret = "Start time "+ret;
 				}
 				if(duration > 0){
-						if(!ret.equals("")){
+						if(!ret.isEmpty()){
 								ret += ", ";
 						}						
 						ret += "Duration "+(duration/60.);
 				}
 				if(start_minute_window > 0){
-						if(!ret.equals("")){
+						if(!ret.isEmpty()){
 								ret += ", ";
 						}
 						ret += "Start window: "+start_minute_window;
 				}
 				if(end_minute_window > 0){
-						if(!ret.equals("")){
+						if(!ret.isEmpty()){
 								ret += ", ";
 						}						
 						ret += "End window: "+end_minute_window;
 				}
 				if(minute_rounding > 0){
-						if(!ret.equals("")){
+						if(!ret.isEmpty()){
 								ret += ", ";
 						}						
 						ret += "Rounding: "+minute_rounding;;
@@ -321,8 +321,8 @@ public class Shift implements Serializable{
 						back = "Could not connect to DB";
 						return back;
 				}
+				logger.debug(qq);				
 				try{
-						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1,id);
 						rs = pstmt.executeQuery();
@@ -353,12 +353,12 @@ public class Shift implements Serializable{
     }
     public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
 				String qq = " insert into shifts values(0,?,?,?,?, ?,?,?,null)";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Name is required";
 						return msg;
 				}
@@ -367,6 +367,7 @@ public class Shift implements Serializable{
 						msg = "Could not connect to DB ";
 						return msg;
 				}
+				logger.debug(qq);		
 				try{
 						int cnt = 0;
 						pstmt = con.prepareStatement(qq);
@@ -378,11 +379,10 @@ public class Shift implements Serializable{
 						pstmt.setInt(6, end_minute_window);						
 						pstmt.setInt(7, minute_rounding);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -392,7 +392,7 @@ public class Shift implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				setEndHourMinute();
@@ -407,7 +407,7 @@ public class Shift implements Serializable{
 						"duration=?,start_minute_window=?,end_minute_window=?,"+
 						"minute_rounding=?,"+
 						"inactive=? where id=?";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Earn code name is required";
 						return msg;
 				}
@@ -415,7 +415,8 @@ public class Shift implements Serializable{
 				if(con == null){
 						msg = "Could not connect to DB ";
 						return msg;
-				}				
+				}
+				logger.debug(qq);		
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, name);
@@ -425,7 +426,7 @@ public class Shift implements Serializable{
 						pstmt.setInt(5, start_minute_window);
 						pstmt.setInt(6, end_minute_window);						
 						pstmt.setInt(7, minute_rounding);
-						if(inactive.equals("")){
+						if(inactive.isEmpty()){
 								pstmt.setNull(8, Types.CHAR);
 						}
 						else

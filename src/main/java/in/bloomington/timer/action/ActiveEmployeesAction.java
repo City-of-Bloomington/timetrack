@@ -29,9 +29,9 @@ public class ActiveEmployeesAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						back = findEmployees();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 				}				
@@ -41,11 +41,11 @@ public class ActiveEmployeesAction extends TopAction{
 				EmployeeList empl = new EmployeeList();
 				empl.setActiveOnly();
 				empl.setUsedTimeTrack();
-				if(!department_id.equals("")){
+				if(!department_id.isEmpty()){
 						empl.setDepartment_id(department_id);
 				}
 				String back = empl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Employee> ones = empl.getEmployees();
 						if(ones != null && ones.size() > 0)
 								employees = ones;
@@ -57,7 +57,7 @@ public class ActiveEmployeesAction extends TopAction{
 				return activeEmployeesTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDepartment_id(String val){
@@ -65,7 +65,7 @@ public class ActiveEmployeesAction extends TopAction{
 						department_id = val;
 		}
 		public String getDepartment_id(){
-				if(department_id.equals(""))
+				if(department_id.isEmpty())
 						return "-1"; // for all
 				return department_id;
 		}
@@ -80,7 +80,7 @@ public class ActiveEmployeesAction extends TopAction{
 						TypeList tl = new TypeList("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;

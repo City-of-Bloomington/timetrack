@@ -51,11 +51,11 @@ public class HandleEmployeesUpdate{
     }
     public String getPay_period_id(){
 				//
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 									 PayPeriod payPeriod = ones.get(0);
@@ -113,7 +113,7 @@ public class HandleEmployeesUpdate{
 				// ul.setHasAdSid();
 				//
 				String back = ul.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Employee> ones = ul.getEmployees();
 						if(ones != null && ones.size() > 0){
 								dbEmps = ones;
@@ -124,10 +124,10 @@ public class HandleEmployeesUpdate{
 						status = "Failure";
 						errors = "Error get employee list from DB "+msg;
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						EmpList el = new EmpList(envBean);
 						back = el.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								ldapEmps = el.getEmps();
 								empTable = new Hashtable<>();
 								for(Employee one:ldapEmps){
@@ -141,7 +141,7 @@ public class HandleEmployeesUpdate{
 								errors = "Error get emps from ldap "+msg;								
 						}
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						// changes
 						int jj=1;
 						for(Employee one:dbEmps){
@@ -165,8 +165,6 @@ public class HandleEmployeesUpdate{
 												if(!one.isSameEntity(ldapEmp)){
 														System.err.println(" emp using username "+one.getInfo());
 														System.err.println((jj++)+" found "+ldapEmp.getInfo());
-														// System.err.println(" update "+one.getInfo());
-														// System.err.println(" to => "+ldapEmp.getInfo());
 														msg += one.doUpdateFromLdap(ldapEmp);
 												}										
 										}
@@ -176,14 +174,14 @@ public class HandleEmployeesUpdate{
 						//
 						/*
 							// we do not need this feature any more
-						if(inactiveSet.equals("")){
+						if(inactiveSet.isEmpty()){
 								System.err.println(" No employees found that need change ");
 						}
 						else{
 								System.err.println(" The following id list of inactive employees "+inactiveSet);
 								Employee emp = new Employee();
 								msg = emp.updateInactiveStatus(inactiveSet);
-								if(!msg.equals("")){
+								if(!msg.isEmpty()){
 										status = "Failure";
 										errors =" error updating emps status "+msg;
 								}
@@ -209,10 +207,10 @@ public class HandleEmployeesUpdate{
 				String inactiveSet = "", inactiveLog = "";
 				EmployeeList ul = new EmployeeList();
 				// ul.setActiveOnly();
-				ul.setExclude_name("Admin");// exlude admin emp
+				ul.setExclude_name("System");// exlude admin emp
 				//
 				String back = ul.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Employee> ones = ul.getEmployees();
 						if(ones != null && ones.size() > 0){
 								dbEmps = ones;
@@ -223,10 +221,10 @@ public class HandleEmployeesUpdate{
 						status = "Failure";
 						errors = "Error get employee list from DB "+msg;
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						EmpList el = new EmpList(envBean);
 						back = el.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								ldapEmps = el.getEmps();
 								empUsrTable = new Hashtable<>();
 								for(Employee one:ldapEmps){
@@ -238,7 +236,7 @@ public class HandleEmployeesUpdate{
 								System.err.println(back);
 						}
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						//
 						String qq = " update employees set ad_sid=? where id=?";						
 						con = UnoConnect.getConnection();

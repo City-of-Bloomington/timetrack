@@ -30,7 +30,7 @@ public class SalaryGroupAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = salaryGroup.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -39,7 +39,7 @@ public class SalaryGroupAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = salaryGroup.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -48,9 +48,9 @@ public class SalaryGroupAction extends TopAction{
 				}
 				else{		
 						getSalaryGroup();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = salaryGroup.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -74,7 +74,7 @@ public class SalaryGroupAction extends TopAction{
 				return salaryGroupsTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 
@@ -86,7 +86,7 @@ public class SalaryGroupAction extends TopAction{
 				//
 				SalaryGroupList gml = new SalaryGroupList();
 				String back = gml.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<SalaryGroup> ones = gml.getSalaryGroups();
 						if(ones != null && ones.size() > 0){
 								salaryGroups = ones;
@@ -99,7 +99,7 @@ public class SalaryGroupAction extends TopAction{
 				HourCodeList gml = new HourCodeList();
 				gml.setDefaultRegularOnly();
 				String back = gml.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<HourCode> ones = gml.getHourCodes();
 						if(ones != null && ones.size() > 0){
 								hourCodes = ones;

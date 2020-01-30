@@ -65,7 +65,7 @@ public class CodeRef implements Serializable, Comparable<CodeRef>{
     }
 		public int getPto_ratio_int(){
 				int ret = 0;
-				if(!pto_ratio.equals("")){
+				if(!pto_ratio.isEmpty()){
 						try{
 								ret = Integer.parseInt(pto_ratio);
 						}catch(Exception ex){}
@@ -105,8 +105,8 @@ public class CodeRef implements Serializable, Comparable<CodeRef>{
     }
 		public String getInfo(){
 				String ret = code;
-				if(!nw_code.equals("")){
-						if(!ret.equals(""))
+				if(!nw_code.isEmpty()){
+						if(!ret.isEmpty())
 								ret += ": ";
 						ret += nw_code;
 				}
@@ -122,7 +122,7 @@ public class CodeRef implements Serializable, Comparable<CodeRef>{
     }
     public int hashCode(){
 				int seed = 47;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*29;
 						}catch(Exception ex){
@@ -140,13 +140,13 @@ public class CodeRef implements Serializable, Comparable<CodeRef>{
 		public  String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 		
 				String qq = 
 						" insert into code_cross_ref values(0,?,?,?,?,?)";
 				String back = "";
-				if(nw_code.equals("")){
+				if(nw_code.isEmpty()){
 						back = " nw_code not set ";
 						return back;
 				}
@@ -159,31 +159,30 @@ public class CodeRef implements Serializable, Comparable<CodeRef>{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
-						if(code_id.equals(""))
+						if(code_id.isEmpty())
 								pstmt.setNull(jj++,Types.INTEGER);
 						else
 								pstmt.setString(jj++, code_id);
-						if(code.equals(""))
+						if(code.isEmpty())
 								pstmt.setNull(jj++,Types.VARCHAR);
 						else
 								pstmt.setString(jj++, code);						
 						pstmt.setString(jj++, nw_code);
 												
-						if(gl_value.equals(""))
+						if(gl_value.isEmpty())
 								pstmt.setNull(jj++,Types.VARCHAR);
 						else
 								pstmt.setString(jj++, gl_value);
-						if(pto_ratio.equals(""))
+						if(pto_ratio.isEmpty())
 								pstmt.setNull(jj++,Types.INTEGER);
 						else
 								pstmt.setString(jj++, pto_ratio);						
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID() ";
 						logger.debug(qq);
-						pstmt = con.prepareStatement(qq);			
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);			
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}				
@@ -193,7 +192,7 @@ public class CodeRef implements Serializable, Comparable<CodeRef>{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
@@ -209,7 +208,7 @@ public class CodeRef implements Serializable, Comparable<CodeRef>{
 						" set code_id=?,code=?, nw_code=?, gl_string=?,pto_ratio=? "+			
 						" where id = ? ";
 				String back = "";
-				if(id.equals("") || code.equals("") || nw_code.equals("")){
+				if(id.isEmpty() || code.isEmpty() || nw_code.isEmpty()){
 						back = " code,nw_code or id not set ";
 						return back;
 				}
@@ -223,21 +222,21 @@ public class CodeRef implements Serializable, Comparable<CodeRef>{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
-						if(code_id.equals(""))
+						if(code_id.isEmpty())
 								pstmt.setNull(jj++,Types.INTEGER);
 						else
 								pstmt.setString(jj++, code_id);
-						if(code.equals(""))
+						if(code.isEmpty())
 								pstmt.setNull(jj++,Types.VARCHAR);
 						else
 								pstmt.setString(jj++, code);
 						pstmt.setString(jj++, nw_code);
 												
-						if(gl_value.equals(""))
+						if(gl_value.isEmpty())
 								pstmt.setNull(jj++,Types.VARCHAR);
 						else
 								pstmt.setString(jj++, gl_value);
-						if(pto_ratio.equals(""))
+						if(pto_ratio.isEmpty())
 								pstmt.setNull(jj++,Types.INTEGER);
 						else
 								pstmt.setString(jj++, pto_ratio);						

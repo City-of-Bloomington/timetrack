@@ -34,14 +34,14 @@ public class TmwrpInitiateAction extends TopAction{
     public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("tmwrpWrapInitiate.action");
-				if(!action.equals("")){
-						if(!pay_period_id.equals("")){
+				if(!action.isEmpty()){
+						if(!pay_period_id.isEmpty()){
 								getTmwrp();
 								tmwrp.setPay_period_id(pay_period_id);
-								if(!group_id.equals("")){
+								if(!group_id.isEmpty()){
 										tmwrp.setGroup_id(group_id);		
 										back = tmwrp.doProcessGroup();
-										if(!back.equals("")){
+										if(!back.isEmpty()){
 												addMessage(back);
 										}
 										else{
@@ -49,10 +49,10 @@ public class TmwrpInitiateAction extends TopAction{
 										}
 										emps = tmwrp.getEmps();
 								}
-								else if(!department_id.equals("")){
+								else if(!department_id.isEmpty()){
 										tmwrp.setDepartment_id(department_id);		
 										back = tmwrp.doProcessDept();
-										if(!back.equals("")){
+										if(!back.isEmpty()){
 												addMessage(back);
 										}
 										else{
@@ -60,10 +60,10 @@ public class TmwrpInitiateAction extends TopAction{
 										}
 										emps = tmwrp.getEmps();
 								}								
-								else if(!new_employee_id.equals("")){
+								else if(!new_employee_id.isEmpty()){
 										tmwrp.setEmployee_id(new_employee_id);
 										back = tmwrp.doProcessOne();
-										if(!back.equals("")){
+										if(!back.isEmpty()){
 												addMessage(back);
 										}
 										else{
@@ -72,7 +72,7 @@ public class TmwrpInitiateAction extends TopAction{
 								}
 								else { // all
 										back = tmwrp.doProcess();
-										if(!back.equals("")){
+										if(!back.isEmpty()){
 												addMessage(back);
 										}
 										else{
@@ -89,23 +89,23 @@ public class TmwrpInitiateAction extends TopAction{
 				return ret;
     }
     public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
     }
     public void setSource(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						source = val;
     }		
     public void setPay_period_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						pay_period_id = val;
     }
   public void setGroup_id(String val){
-			if(val != null && !val.equals("-1") && !val.equals(""))		
+			if(val != null && !val.equals("-1") && !val.isEmpty())		
 						group_id = val;
     }		
 		public void setNew_employee_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						new_employee_id = val;
 		}
 		// 
@@ -128,14 +128,14 @@ public class TmwrpInitiateAction extends TopAction{
 				return new_employee_id;
 		}				
 		public void setEmployee_name(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						employee_name = val;
 		}		
     public String getSource(){
 				return source;
     }		
     public String getPay_period_id(){
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						getPayPeriod();
 				}
 				return pay_period_id;
@@ -156,7 +156,7 @@ public class TmwrpInitiateAction extends TopAction{
 						PayPeriodList tl = new PayPeriodList();
 						tl.avoidFuturePeriods();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
@@ -171,13 +171,13 @@ public class TmwrpInitiateAction extends TopAction{
 				// if not set we look for current one
 				//
 				if(payPeriod == null){
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								getCurrentPayPeriod();
 						}
 						else{
 								PayPeriod one = new PayPeriod(pay_period_id);
 								String back = one.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										payPeriod = one;
 								}
 						}
@@ -190,11 +190,11 @@ public class TmwrpInitiateAction extends TopAction{
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										currentPayPeriod = ones.get(0);
-										if(pay_period_id.equals("")){
+										if(pay_period_id.isEmpty()){
 												pay_period_id = currentPayPeriod.getId();
 												payPeriod = currentPayPeriod;
 										}
@@ -216,7 +216,7 @@ public class TmwrpInitiateAction extends TopAction{
 				if(departments == null){
 						TypeList tl = new TypeList("departments");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 								departments = ones;

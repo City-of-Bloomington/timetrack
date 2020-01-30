@@ -48,7 +48,7 @@ public class HandleNwAccrual{
 						setWriteDate(val2.getEnd_date()); // last day of pay period
 				}
 				/*
-				if(date.equals("") && !write_date.equals("")){
+				if(date.isEmpty() && !write_date.isEmpty()){
 						date = Helper.getDateAfter(end_date, 5);
 				}
 				*/
@@ -77,7 +77,7 @@ public class HandleNwAccrual{
 				empl.setDept_ref_id(dept_ref_id);
 				empl.setHasEmployeeNumber();
 				msg = empl.find();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						List<Employee> emps = empl.getEmployees();
 						if(emps != null && emps.size() > 0){
 								empHash = new Hashtable<>();
@@ -117,12 +117,12 @@ public class HandleNwAccrual{
 				//
 				String qq = "{call HR.HRReport_AccrualBalance(?,?,?,null,?,null,1,1,null,0)} ";
 				logger.debug(qq);
-				if(dept_ref_id.equals("") || date.equals("")){
+				if(dept_ref_id.isEmpty() || date.isEmpty()){
 						msg = "Dept or date not set ";
 						return msg;
 				}
 				msg = prepareEmployee();
-				if(!msg.equals("") || empHash == null){
+				if(!msg.isEmpty() || empHash == null){
 						msg += " could not find related employees ";
 						return msg;
 				}
@@ -209,7 +209,7 @@ public class HandleNwAccrual{
 				//
 				String qq = "{call HR.HRReport_AccrualBalance(?,?,?,null,?,null,1,1,null,0)} ";
 				logger.debug(qq);
-				if(dept_ref_id.equals("") || date.equals("")){
+				if(dept_ref_id.isEmpty() || date.isEmpty()){
 						msg = "Dept or date not set ";
 						return msg;
 				}

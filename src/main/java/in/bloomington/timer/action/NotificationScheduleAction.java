@@ -39,12 +39,12 @@ public class NotificationScheduleAction extends TopAction{
 				else if(action.equals("Schedule")){
 						prepareSchedular();
 						back = doClean();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						try{
 								back = schedular.run();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{
@@ -63,14 +63,14 @@ public class NotificationScheduleAction extends TopAction{
 				}
 				else if(action.startsWith("Notify")){
 						prepareSchedular();
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								addActionError("Pay period not selected");
 								addError("Pay period not selected");
 						}
 						else{
 								HandleNotification handle = new HandleNotification(pay_period_id, mail_host, activeMail);
 								back = handle.process();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{
@@ -83,11 +83,11 @@ public class NotificationScheduleAction extends TopAction{
 		private void prepareSchedular(){
 				String msg = "";
 				PayPeriodList pl = new PayPeriodList();
-				if(date.equals("")){
-						if(!pay_period_id.equals("")){
+				if(date.isEmpty()){
+						if(!pay_period_id.isEmpty()){
 								PayPeriod pp = new PayPeriod(pay_period_id);
 								msg = pp.doSelect();
-								if(msg.equals("")){
+								if(msg.isEmpty()){
 										String end_date = pp.getEnd_date();
 										date = Helper.getDateAfter(end_date, 1);										
 								}
@@ -95,7 +95,7 @@ public class NotificationScheduleAction extends TopAction{
 						else {
 								pl.setPreviousOnly();
 								msg = pl.find();
-								if(msg.equals("")){
+								if(msg.isEmpty()){
 										List<PayPeriod> ones = pl.getPeriods();
 										if(ones != null && ones.size() > 0){
 												PayPeriod one = ones.get(0);
@@ -105,12 +105,12 @@ public class NotificationScheduleAction extends TopAction{
 								}
 						}
 				}
-				if(!date.equals("")){
+				if(!date.isEmpty()){
 						// System.err.println(" scheduled date "+date);
 						schedular = new NotificationScheduler(date, mail_host, activeMail);
 				}quartzMisc = new QuartzMisc("notification");
 				msg = quartzMisc.findScheduledDates();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						prev_date = quartzMisc.getPrevScheduleDate();
 						if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
 								prev_date = "No Previous date found";
@@ -130,11 +130,11 @@ public class NotificationScheduleAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDate(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						date = val;
 		}
 		public void setPay_period_id(String val){
@@ -142,7 +142,7 @@ public class NotificationScheduleAction extends TopAction{
 						pay_period_id = val;
 		}
 		public String getPay_period_id(){
-				if(pay_period_id.equals(""))
+				if(pay_period_id.isEmpty())
 						return "-1";
 				return pay_period_id;
 		}
@@ -157,7 +157,7 @@ public class NotificationScheduleAction extends TopAction{
 				return next_date;
 		}
 		public boolean hasPrevDates(){
-				return !prev_date.equals("");
+				return !prev_date.isEmpty();
 		}
 		public List<PayPeriod> getPeriods(){
 				if(periods == null){
@@ -165,7 +165,7 @@ public class NotificationScheduleAction extends TopAction{
 						dl.avoidFuturePeriods();
 						dl.setLimit("3");
 						String msg = dl.find();
-						if(!msg.equals("")){
+						if(!msg.isEmpty()){
 								logger.error(msg);
 						}
 						else{
@@ -189,7 +189,7 @@ public class NotificationScheduleAction extends TopAction{
 				if(logs == null){
 						NotificationLogList nll = new NotificationLogList();
 						String back = nll.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<NotificationLog> ones = nll.getLogs();
 								if(ones != null && ones.size() > 0)
 										logs = ones;

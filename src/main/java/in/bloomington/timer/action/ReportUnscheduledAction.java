@@ -26,9 +26,9 @@ public class ReportUnscheduledAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						back = report.find();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -59,7 +59,7 @@ public class ReportUnscheduledAction extends TopAction{
 				return reportTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 

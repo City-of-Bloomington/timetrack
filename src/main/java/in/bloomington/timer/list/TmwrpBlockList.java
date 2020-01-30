@@ -40,18 +40,18 @@ public class TmwrpBlockList{
     }		
 
     public String getRun_id(){
-				if(run_id.equals(""))
+				if(run_id.isEmpty())
 						return "-1";
 				return run_id;
     }
     public String getDocument_id(){
-				if(document_id.equals(""))
+				if(document_id.isEmpty())
 						return "-1";
 				return document_id;
     }		
 		
     public String getPay_period_id(){
-				if(pay_period_id.equals(""))
+				if(pay_period_id.isEmpty())
 						return "-1";
 				return pay_period_id;
     }		
@@ -77,11 +77,11 @@ public class TmwrpBlockList{
 						" join hour_codes h on h.id=g.hour_code_id "+
 						" left join code_cross_ref f on f.code_id=h.id ";					
 				String qw = "";
-				if(!run_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!run_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "g.run_id = ? ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				con = UnoConnect.getConnection();
@@ -94,7 +94,7 @@ public class TmwrpBlockList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!run_id.equals("")){
+						if(!run_id.isEmpty()){
 								pstmt.setString(jj++, run_id);
 						}
 						rs = pstmt.executeQuery();

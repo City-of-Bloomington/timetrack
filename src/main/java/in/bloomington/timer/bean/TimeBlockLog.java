@@ -113,10 +113,10 @@ public class TimeBlockLog extends Block{
 						action_time = val;
 		}		
 		public Employee getAction_by(){
-				if(action_by == null && !action_by_id.equals("")){
+				if(action_by == null && !action_by_id.isEmpty()){
 						Employee one = new Employee(action_by_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								action_by = one;
 						}
 				}
@@ -190,11 +190,11 @@ public class TimeBlockLog extends Block{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into time_block_logs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,now()) ";
-				if(document_id.equals("")){
+				if(document_id.isEmpty()){
 						msg = " document not set ";
 						return msg;
 				}
-				if(hour_code_id.equals("")){
+				if(hour_code_id.isEmpty()){
 						msg = " hour code not set ";
 						return msg;
 				}				
@@ -209,7 +209,7 @@ public class TimeBlockLog extends Block{
 						int jj=1;
 						pstmt.setString(jj++, document_id);
 						pstmt.setString(jj++, hour_code_id);
-						if(earn_code_reason_id.equals(""))
+						if(earn_code_reason_id.isEmpty())
 								pstmt.setNull(jj++, Types.INTEGER);
 						else
 								pstmt.setString(jj++, earn_code_reason_id);						
@@ -224,11 +224,11 @@ public class TimeBlockLog extends Block{
 						pstmt.setInt(jj++, minutes);
 						
 						pstmt.setDouble(jj++, amount);						
-						if(clock_in.equals(""))
+						if(clock_in.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");
-						if(clock_out.equals(""))
+						if(clock_out.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");								

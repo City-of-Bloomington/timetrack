@@ -161,11 +161,11 @@ public class MpoReport{
 						end_date = CommonInc.quarter_ends[quarter]+year;
 				}
 				start_date = start_date.trim();
-				if(start_date.equals("")){
+				if(start_date.isEmpty()){
 						msg = "Year and quarter or start date not set ";
 						return msg;
 				}
-				if(end_date.equals("")){
+				if(end_date.isEmpty()){
 						end_date = Helper.getToday();
 				}
 				return msg;
@@ -174,7 +174,7 @@ public class MpoReport{
 				if(benefitGroups == null){
 						BenefitGroupList tl = new BenefitGroupList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<BenefitGroup> ones = tl.getBenefitGroups();
 								if(ones != null && ones.size() > 0){
 										benefitGroups = ones;
@@ -192,11 +192,11 @@ public class MpoReport{
 																						 benefitGroups); 
 						msg = pl.find();
 						List<Profile> ones = pl.getProfiles();
-						if(msg.equals("") && ones.size() > 0){
+						if(msg.isEmpty() && ones.size() > 0){
 								profiles = new Hashtable<String, Profile>(ones.size());
 								for(Profile one:ones){
 								String str = one.getEmployee_number();
-								if(str != null && !str.equals(""))
+								if(str != null && !str.isEmpty())
 										profiles.put(str, one);
 								}
 						}
@@ -210,7 +210,7 @@ public class MpoReport{
 				//
 				String msg = errors;
 				msg += setStartAndEndDates();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				TimeBlockList tbl = new TimeBlockList();
@@ -218,11 +218,11 @@ public class MpoReport{
 				tbl.setDate_to(end_date);
 				tbl.setCode(code);
 				tbl.setCode2(code2);
-				if(!department_id.equals("")){
+				if(!department_id.isEmpty()){
 						tbl.setDepartment_id(department_id);
 				}
 				msg = tbl.find();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}				
 				List<TimeBlock> ones = tbl.getTimeBlocks();
@@ -241,12 +241,12 @@ public class MpoReport{
 				// planning department
 				//
 				msg = setStartAndEndDates();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}				
 				if(!ignoreProfiles){
 						msg = setProfiles();
-						if(!msg.equals("")){
+						if(!msg.isEmpty()){
 								return msg;
 						}
 				}
@@ -268,13 +268,13 @@ public class MpoReport{
 						" join employees e on d.employee_id=e.id "+
 						" where t.inactive is null and "+
 						" p.start_date >= ? and p.end_date <= ? ";
-				if(!code2.equals("")){
+				if(!code2.isEmpty()){
 						qq += " and (c.name like ? or c.name like ?) ";
 				}
 				else{
 						qq += " and c.name like ? ";
 				}
-				if(!department_id.equals("")){
+				if(!department_id.isEmpty()){
 						qq += " and de.department_id = ? ";
 				}
 				qq += " ) tt ";
@@ -295,9 +295,9 @@ public class MpoReport{
 						date_tmp = dateFormat.parse(end_date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						pstmt.setString(jj++, code);
-						if(!code2.equals(""))
+						if(!code2.isEmpty())
 								pstmt.setString(jj++, code2);
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								pstmt.setString(jj++, department_id);
 						}
 						rs = pstmt.executeQuery();
@@ -347,12 +347,12 @@ public class MpoReport{
 				// planning department
 				//
 				msg = setStartAndEndDates();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				if(!ignoreProfiles){
 						msg = setProfiles();
-						if(!msg.equals("")){
+						if(!msg.isEmpty()){
 								return msg;
 						}
 				}
@@ -373,13 +373,13 @@ public class MpoReport{
 						" join employees e on d.employee_id=e.id "+
 						" where t.inactive is null and "+
 						" p.start_date >= ? and p.end_date <= ? ";
-				if(!code2.equals("")){
+				if(!code2.isEmpty()){
 						qq += " and (c.name like ? or c.name like ?) ";
 				}
 				else{
 						qq += " and c.name like ? ";
 				}
-				if(!department_id.equals("")){
+				if(!department_id.isEmpty()){
 						qq += " and de.department_id = ? ";
 				}				
 				qq += " ) tt ";
@@ -401,9 +401,9 @@ public class MpoReport{
 						date_tmp = dateFormat.parse(end_date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						pstmt.setString(jj++, code);
-						if(!code2.equals(""))
+						if(!code2.isEmpty())
 								pstmt.setString(jj++, code2);
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								pstmt.setString(jj++, department_id);
 						}
 						rs = pstmt.executeQuery();

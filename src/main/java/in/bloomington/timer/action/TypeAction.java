@@ -41,7 +41,7 @@ public class TypeAction extends TopAction{
 				if(action.equals("Save")){
 						type.setTable_name(table_name);
 						back = type.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -51,7 +51,7 @@ public class TypeAction extends TopAction{
 				else if(action.startsWith("Save")){
 						type.setTable_name(table_name);
 						back = type.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);
 						}
@@ -61,9 +61,9 @@ public class TypeAction extends TopAction{
 				}
 				else{		
 						getType();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = type.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 										addError(back);
 								}
@@ -109,7 +109,7 @@ public class TypeAction extends TopAction{
 		}		
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<Type> getTypes(){
@@ -118,7 +118,7 @@ public class TypeAction extends TopAction{
 						tl.setTable_name(table_name);
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										types = ones;

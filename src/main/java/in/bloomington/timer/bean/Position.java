@@ -54,7 +54,7 @@ public class Position implements java.io.Serializable{
 		}
 		public int hashCode(){
 				int seed = 17;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -78,13 +78,13 @@ public class Position implements java.io.Serializable{
 				return description;
     }		
     public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
 		public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
 		}
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
 		}		
     //
     // setters
@@ -160,7 +160,7 @@ public class Position implements java.io.Serializable{
 				String qq = "select count(*) "+
 						"from positions where name like ?";
 				String qq2 = " insert into positions values(0,?,?,?,?)";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Name is required";
 						return msg;
 				}
@@ -183,7 +183,7 @@ public class Position implements java.io.Serializable{
 						else {
 								pstmt2 = con.prepareStatement(qq2);						
 								msg = setParams(pstmt2);
-								if(msg.equals("")){
+								if(msg.isEmpty()){
 										pstmt2.executeUpdate();
 										//
 										qq = "select LAST_INSERT_ID()";
@@ -243,15 +243,15 @@ public class Position implements java.io.Serializable{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, name);
-						if(alias.equals("")){
+						if(alias.isEmpty()){
 								alias = name;
 						}
 						pstmt.setString(jj++, alias);
-						if(description.equals("")){
+						if(description.isEmpty()){
 								description = name;
 						}
 						pstmt.setString(jj++, description);										
-						if(inactive.equals(""))
+						if(inactive.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");						
@@ -268,7 +268,7 @@ public class Position implements java.io.Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update positions set name=?, alias=?, description=?,inactive=? where id=?";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Earn code name is required";
 						return msg;
 				}

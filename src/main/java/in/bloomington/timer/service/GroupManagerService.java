@@ -52,7 +52,7 @@ public class GroupManagerService extends HttpServlet{
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
 						if (name.equals("group_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												group_id = value;										
@@ -69,13 +69,13 @@ public class GroupManagerService extends HttpServlet{
 				}
 				GroupManagerList glist =  null;
 				List<GroupManager> managers = null;
-				if(!group_id.equals("")){
+				if(!group_id.isEmpty()){
 						//
 						glist = new GroupManagerList();
 						glist.setGroup_id(group_id);
 						glist.excludeReviewers();
 						String back = glist.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								managers = glist.getManagers();
 						}
 				}
@@ -99,7 +99,7 @@ public class GroupManagerService extends HttpServlet{
 		String writeJson(List<GroupManager> ones){
 				String json="";
 				for(GroupManager one:ones){
-						if(!json.equals("")) json += ",";
+						if(!json.isEmpty()) json += ",";
 						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getEmployee()+"\",\"email\":\""+one.getEmployee().getEmail()+"\",\"workflow\":\""+one.getNode()+"\"}";
 				}
 				json = "["+json+"]";

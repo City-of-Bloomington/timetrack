@@ -32,7 +32,7 @@ public class TimeNoteAction extends TopAction{
 				if(action.equals("Save")){
 						timeNote.setReported_by(user.getId());
 						back = timeNote.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -42,7 +42,7 @@ public class TimeNoteAction extends TopAction{
 				else if(action.equals("Delete")){
 						getTimeNote();
 						back = timeNote.doDelete();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -61,9 +61,9 @@ public class TimeNoteAction extends TopAction{
 				}
 				else{		
 						getTimeNote();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = timeNote.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -89,11 +89,11 @@ public class TimeNoteAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDocument_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						document_id = val;
 		}
 		public String getDocument_id(){
@@ -104,7 +104,7 @@ public class TimeNoteAction extends TopAction{
 						TimeNoteList tl = new TimeNoteList();
 						tl.setDocument_id(document_id);
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<TimeNote> ones = tl.getTimeNotes();
 								if(ones != null && ones.size() > 0){
 										timeNotes = ones;

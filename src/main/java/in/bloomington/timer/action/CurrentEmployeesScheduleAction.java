@@ -34,12 +34,12 @@ public class CurrentEmployeesScheduleAction extends TopAction{
 				prepareSchedular();				
 				if(action.equals("Schedule")){
 						back = doClean();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 						}
 						try{
 								back = schedular.run();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 								}
 								else{
@@ -59,7 +59,7 @@ public class CurrentEmployeesScheduleAction extends TopAction{
 						System.err.println(" envBean "+envBean);
 						HandleCurrentEmployees handle = new HandleCurrentEmployees(envBean);
 						back = handle.process();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 						}
 						else{
@@ -70,12 +70,12 @@ public class CurrentEmployeesScheduleAction extends TopAction{
 		}
 		private void prepareSchedular(){
 				String msg = "";
-				if(date.equals("")){
+				if(date.isEmpty()){
 						// if no date is set we find the current pay period
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.setLastPayPeriod();
 						msg = ppl.find();
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										PayPeriod pp = ones.get(0);
@@ -84,12 +84,12 @@ public class CurrentEmployeesScheduleAction extends TopAction{
 								}
 						}
 				}
-				if(!date.equals("")){
+				if(!date.isEmpty()){
 						schedular = new CurrentEmployeesScheduler(envBean, date);
 				}
 				quartzMisc = new QuartzMisc("emps");
 				msg = quartzMisc.findScheduledDates();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						prev_date = quartzMisc.getPrevScheduleDate();
 						if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
 								prev_date = "No Previous date found";
@@ -109,11 +109,11 @@ public class CurrentEmployeesScheduleAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDate(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						date = val;
 		}
 		public String getDate(){
@@ -126,7 +126,7 @@ public class CurrentEmployeesScheduleAction extends TopAction{
 				return next_date;
 		}
 		public boolean hasPrevDates(){
-				return !prev_date.equals("");
+				return !prev_date.isEmpty();
 		}
 		
 }

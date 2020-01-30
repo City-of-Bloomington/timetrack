@@ -51,24 +51,24 @@ public class AccrualList{
 				}
 				String qw = "";
 				try{
-						if(!name.equals("")){
-								if(!qw.equals("")) qw += " and ";
+						if(!name.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " t.name like ? ";
 						}
 						if(has_pref_max_level){
-								if(!qw.equals("")) qw += " and ";								
+								if(!qw.isEmpty()) qw += " and ";								
 								qw += " t.pref_max_level > 0 ";
 						}
 						if(active_only){
-								if(!qw.equals("")) qw += " and ";
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " t.inactive is null ";
 						}
-						if(!qw.equals("")){
+						if(!qw.isEmpty()){
 								qq += " where "+qw;
 						}
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								pstmt.setString(1,"%"+name+"%");
 						}						
 						rs = pstmt.executeQuery();

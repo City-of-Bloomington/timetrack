@@ -28,8 +28,7 @@ public class ProfileScheduler {
 		Date startDate, endDate = null;
 		public ProfileScheduler(String date){
 				try{
-						if(!date.equals("")){
-								// startDate = new Date(date);
+						if(!date.isEmpty()){
 								String strArr[] = date.split("/");
 								month = Integer.parseInt(strArr[0]);
 								day = Integer.parseInt(strArr[1]);

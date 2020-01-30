@@ -114,42 +114,42 @@ public class DepartmentEmployeeList{
 						" date_format(de.expire_date,'%m/%d/%Y') "+
 						" from department_employees de "+
 						" join employees e on de.employee_id=e.id ";
-				if(!employee_id.equals("")){
+				if(!employee_id.isEmpty()){
 						qw += " de.employee_id=? ";
 				}
-				else if(!id_code.equals("")){
+				else if(!id_code.isEmpty()){
 						qw += " e.id_code=? ";
 				}
-				else if(!employee_number.equals("")){
+				else if(!employee_number.isEmpty()){
 						qw += " e.employee_number = ? ";
 				}
-				if(!department_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!department_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " (de.department_id=? or de.department2_id=?)";
 				}
 				if(include_future){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " (de.expire_date is null or de.expire_date >= curdate())";
 				}
-				else if(!pay_period_id.equals("")){
+				else if(!pay_period_id.isEmpty()){
 						qq += ", pay_periods pp ";
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " de.effective_date <= pp.start_date and (de.expire_date is null or de.expire_date >= pp.end_date) and pp.id=? ";		
 				}
 				if(no_expire_date){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " de.effective_date < curdate() and de.expire_date is null";		
 				}				
 				else if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " de.effective_date < curdate() and (de.expire_date is null or de.expire_date > curdate())";		
 				}
 				else if(inactive_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " de.expire_date < curdate() ";	
 				}
 				if(emp_active_only){
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += " e.inactive is null ";
 				}
 				con = UnoConnect.getConnection();
@@ -158,27 +158,27 @@ public class DepartmentEmployeeList{
 						logger.error(msg);
 						return msg;
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
-						else if(!id_code.equals("")){
+						else if(!id_code.isEmpty()){
 								pstmt.setString(jj++, id_code);
 						}
-						else if(!employee_number.equals("")){
+						else if(!employee_number.isEmpty()){
 								pstmt.setString(jj++, employee_number);
 						}						
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								pstmt.setString(jj++, department_id);
 								pstmt.setString(jj++, department_id);								
 						}
-						if(!include_future && !pay_period_id.equals("")){
+						if(!include_future && !pay_period_id.isEmpty()){
 								pstmt.setString(jj++, pay_period_id);
 						}						
 						rs = pstmt.executeQuery();

@@ -63,7 +63,7 @@ public class NotificationJob implements Job{
 				PayPeriodList ppl = new PayPeriodList();
 				ppl.setLastPayPeriod();
 				String msg = ppl.find();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						logger.error(msg);
 						return;
 				}
@@ -93,7 +93,7 @@ public class NotificationJob implements Job{
 																	 mail_host,
 																	 activeMail);
 						String msg = handle.process();
-						if(!msg.equals(""))
+						if(!msg.isEmpty())
 								logger.error(msg);
 				}
 		}

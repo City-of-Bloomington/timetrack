@@ -35,7 +35,7 @@ public class Location{
     }
 		public int hashCode(){
 				int seed = 29;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -114,11 +114,11 @@ public class Location{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into locations values(0,?,?)";
-				if(ip_address.equals("")){
+				if(ip_address.isEmpty()){
 						msg = "ip address is required";
 						return msg;
 				}
@@ -130,16 +130,15 @@ public class Location{
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, ip_address);
-						if(name.equals(""))
+						if(name.isEmpty())
 								pstmt.setNull(2, Types.VARCHAR);
 						else
 								pstmt.setString(2, name);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -149,7 +148,7 @@ public class Location{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -160,7 +159,7 @@ public class Location{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update locations set ip_address=?,name=? where id=?";
-				if(ip_address.equals("")){
+				if(ip_address.isEmpty()){
 						msg = "ip address is required";
 						return msg;
 				}
@@ -172,7 +171,7 @@ public class Location{
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, ip_address);
-						if(name.equals(""))
+						if(name.isEmpty())
 								pstmt.setNull(2, Types.VARCHAR);
 						else
 								pstmt.setString(2, name);
@@ -195,7 +194,7 @@ public class Location{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " delete from locations where id=?";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = "id is required";
 						return msg;
 				}

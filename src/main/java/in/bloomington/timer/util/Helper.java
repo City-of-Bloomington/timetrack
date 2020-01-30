@@ -619,7 +619,7 @@ public class Helper{
 		// original date in mm/dd/yyyy or mm-dd-yyyy format
 		// returns date in yymmdd format
 		public final static String getYymmddDate(final String dt){
-				if(dt == null || dt.equals("")) return dt;
+				if(dt == null || dt.isEmpty()) return dt;
 				String ret = "", yy="", mm="", dd="";
 				String separator="/";
 				if(dt.indexOf("-") > 0){
@@ -643,7 +643,7 @@ public class Helper{
 				return ret;
 		}
 		public final static boolean isOldDate(final String date){
-				if(date == null || date.equals("")) return false;
+				if(date == null || date.isEmpty()) return false;
 				String dt = getToday();
 				try{
 						java.util.Date today = sdf.parse(dt);
@@ -656,7 +656,7 @@ public class Helper{
 				return false;
 		}
 		public final static boolean isFutureDate(final String date){
-				if(date == null || date.equals("")) return false;
+				if(date == null || date.isEmpty()) return false;
 				String dt = getToday();
 				try{
 						java.util.Date today = sdf.parse(dt);
@@ -754,7 +754,7 @@ public class Helper{
 				String day = "";
 
 				String days[] = {"","Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
-				if(!dt.equals("")){
+				if(!dt.isEmpty()){
 						try{
 								int yy = Integer.parseInt(dt.substring(dt.lastIndexOf("/")+1));
 								int mm = Integer.parseInt(dt.substring(0,dt.indexOf("/")));

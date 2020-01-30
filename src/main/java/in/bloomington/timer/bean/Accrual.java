@@ -165,7 +165,7 @@ public class Accrual{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
@@ -187,8 +187,8 @@ public class Accrual{
 								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt2 = con.prepareStatement(qq);
+								rs = pstmt2.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -199,7 +199,7 @@ public class Accrual{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);						
 				}
 				return msg;
@@ -209,13 +209,13 @@ public class Accrual{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, name);
-						if(description.equals("")){
+						if(description.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else
 								pstmt.setString(jj++, description);
 						pstmt.setInt(jj++, pref_max_level);
-						if(inactive.equals(""))
+						if(inactive.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");						

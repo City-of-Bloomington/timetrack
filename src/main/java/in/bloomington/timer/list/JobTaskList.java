@@ -138,18 +138,18 @@ public class JobTaskList{
 				return id;
     }
     public String getSalary_group_id(){
-				if(salary_group_id.equals(""))
+				if(salary_group_id.isEmpty())
 						return "-1";
 				return salary_group_id;
     }
     public String getGroup_id(){
-				if(group_id.equals(""))
+				if(group_id.isEmpty())
 						return "-1";
 
 				return group_id;
     }		
     public String getPosition_id(){
-				if(position_id.equals(""))
+				if(position_id.isEmpty())
 						return "-1";
 				return position_id;
     }
@@ -158,7 +158,7 @@ public class JobTaskList{
 				return employee_id;
     }
     public String getDepartment_id(){
-				if(department_id.equals(""))
+				if(department_id.isEmpty())
 						return "-1";				
 				return department_id;
     }		
@@ -216,12 +216,12 @@ public class JobTaskList{
 		}		
     public List<Group> getGroups(){
 				if(groups == null){
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								GroupList gl = new GroupList();
 								gl.setDepartment_id(department_id);
 								gl.setActiveOnly();
 								String back = gl.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<Group> ones = gl.getGroups();
 										if(ones != null && ones.size() > 0)
 												groups = ones;
@@ -283,80 +283,80 @@ public class JobTaskList{
 						qw += " j.inactive is not null ";
 				}
 				if(include_in_auto_batch){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.include_in_auto_batch is not null ";
 				}
 				if(irregular_work_days){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.irregular_work_days is not null ";
 				}
 				if(not_expired){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.expire_date is null "; 						
 				}
 				if(current_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.effective_date <= curdate() and (j.expire_date >= curdate() or j.exire_date is null) ";
 				}
 				if(avoid_recent_jobs){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.added_date < date_add(curdate(),INTERVAL 10 DAY) ";
 				}				
 				if(clock_time_required){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.clock_time_required is not null ";
 				}
 				else if(clock_time_not_required){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.clock_time_required is null ";
 				}
 				if(include_future){
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += " (j.expire_date > curdate() or j.expire_date is null) ";
 				}
-				if(!salary_group_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!salary_group_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.salary_group_id = ? ";
 				}
 				else if(non_temp_emp){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.salary_group_id <> 3 "; // Temp salary is 3
 				}
-				if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!employee_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.employee_id = ? ";
 				}
-				if(!group_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!group_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.group_id = ? ";
 				}						
-				if(!effective_date.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!effective_date.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.effective_date <= ? and (j.expire_date > ? or j.expire_date is null)";
 				}
-				if(!pay_period_id.equals("")){
+				if(!pay_period_id.isEmpty()){
 						qq += ", pay_periods pp ";
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.effective_date <= pp.start_date and (j.expire_date >= pp.end_date or j.expire_date is null) and pp.id = ?";
 				}
-				if(!position_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!position_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.position_id = ? ";
 				}
-				if(!department_id.equals("")){
+				if(!department_id.isEmpty()){
 						qq += " inner join department_employees de on de.employee_id=j.employee_id and g.department_id=de.department_id";
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " de.department_id = ? ";
 						if(current_only){
 								qw += " and (de.expire_date >= now() or de.expire_date is null) ";
 						}
 				}
-				if(!date_from.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date_from.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += which_date+" >= ? ";
 				}
-				if(!date_to.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date_to.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += which_date+" <= ? ";
 				}
 				if(order_by_employee){
@@ -369,7 +369,7 @@ public class JobTaskList{
 				else{
 						qo = " order by p.name ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += qo;
@@ -378,33 +378,33 @@ public class JobTaskList{
 						
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!salary_group_id.equals("")){
+						if(!salary_group_id.isEmpty()){
 								pstmt.setString(jj++, salary_group_id);								
 						}
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								pstmt.setString(jj++, group_id);
 						}						
-						if(!effective_date.equals("")){
+						if(!effective_date.isEmpty()){
 								java.util.Date date_tmp = df.parse(effective_date);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								pstmt.setString(jj++, pay_period_id);
 						}
-						if(!position_id.equals("")){
+						if(!position_id.isEmpty()){
 								pstmt.setString(jj++, position_id);
 						}
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								pstmt.setString(jj++, department_id);
 						}
-						if(!date_from.equals("")){
+						if(!date_from.isEmpty()){
 								java.util.Date date_tmp = df.parse(date_from);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!date_to.equals("")){
+						if(!date_to.isEmpty()){
 								java.util.Date date_tmp = df.parse(date_to);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}						
@@ -586,13 +586,13 @@ public class JobTaskList{
 						" positions p ";
 				qw = " where sg.id=j.salary_group_id and e.id=j.employee_id and e.employee_number is not null and j.position_id=p.id "+
 						" and e.inactive is null ";
-				if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!employee_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.employee_id = ? ";
 				}
-				if(!pay_period_id.equals("")){
+				if(!pay_period_id.isEmpty()){
 						qq += ", time_documents d ";
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " j.id = d.job_id and d.pay_period_id = ? ";
 				}				
 				qq += qw;
@@ -605,10 +605,10 @@ public class JobTaskList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								pstmt.setString(jj++, pay_period_id);
 						}
 						rs = pstmt.executeQuery();

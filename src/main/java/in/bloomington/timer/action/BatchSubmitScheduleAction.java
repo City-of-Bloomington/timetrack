@@ -36,12 +36,12 @@ public class BatchSubmitScheduleAction extends TopAction{
 				prepareSchedular();				
 				if(action.equals("Schedule")){
 						back = doClean();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						try{
 								back = schedular.run();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{
@@ -58,14 +58,14 @@ public class BatchSubmitScheduleAction extends TopAction{
 						}
 				}
 				else if(action.startsWith("Submit")){ 
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								addError("Pay period not selected");
 						}
 						else{
 								HandleBatchSubmit handle = new HandleBatchSubmit(pay_period_id);
 								handle.setRun_by(user.getId());
 								back = handle.process();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 								}
 								else{
@@ -78,10 +78,10 @@ public class BatchSubmitScheduleAction extends TopAction{
 		private void prepareSchedular(){
 				String msg = "";
 				PayPeriodList pl = new PayPeriodList();
-				if(date.equals("")){
+				if(date.isEmpty()){
 						pl.setLastPayPeriod();
 						msg = pl.find();
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								List<PayPeriod> ones = pl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										PayPeriod one = ones.get(0);
@@ -90,12 +90,12 @@ public class BatchSubmitScheduleAction extends TopAction{
 								}
 						}
 				}
-				if(!date.equals("")){
+				if(!date.isEmpty()){
 						schedular = new BatchSubmitScheduler(date);
 				}
 				quartzMisc = new QuartzMisc("batch");
 				msg = quartzMisc.findScheduledDates();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						prev_date = quartzMisc.getPrevScheduleDate();
 						if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
 								prev_date = "No Previous date found";
@@ -115,11 +115,11 @@ public class BatchSubmitScheduleAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDate(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						date = val;
 		}
 		public void setPay_period_id(String val){
@@ -127,7 +127,7 @@ public class BatchSubmitScheduleAction extends TopAction{
 						pay_period_id = val;
 		}
 		public String getPay_period_id(){
-				if(pay_period_id.equals(""))
+				if(pay_period_id.isEmpty())
 						return "-1";
 				return pay_period_id;
 		}
@@ -142,7 +142,7 @@ public class BatchSubmitScheduleAction extends TopAction{
 				return next_date;
 		}
 		public boolean hasPrevDates(){
-				return !prev_date.equals("");
+				return !prev_date.isEmpty();
 		}
 		public List<PayPeriod> getPeriods(){
 				if(periods == null){
@@ -150,7 +150,7 @@ public class BatchSubmitScheduleAction extends TopAction{
 						dl.avoidFuturePeriods();
 						dl.setLimit("5");
 						String msg = dl.find();
-						if(!msg.equals("")){
+						if(!msg.isEmpty()){
 								addError(msg);
 								logger.error(msg);
 						}
@@ -175,7 +175,7 @@ public class BatchSubmitScheduleAction extends TopAction{
 				if(logs == null){
 						BatchLogList bll = new BatchLogList();
 						String back = bll.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<BatchLog> ones = bll.getLogs();
 								if(ones != null && ones.size() > 0){
 										logs = ones;

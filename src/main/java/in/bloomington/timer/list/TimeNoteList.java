@@ -23,72 +23,72 @@ public class TimeNoteList{
     public TimeNoteList(){
     }
     public TimeNoteList(String val){
-	setDocument_id(val);
+				setDocument_id(val);
     }
     public List<TimeNote> getTimeNotes(){
-	return timeNotes;
+				return timeNotes;
     }
 		
     public void setDocument_id(String val){
-	if(val != null)
-	    document_id = val;
+				if(val != null)
+						document_id = val;
     }
 
     public void setSortBy(String val){
-	if(val != null)
-	    sortBy = val;
+				if(val != null)
+						sortBy = val;
     }
     public String find(){
 		
-	String back = "";
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	Connection con = UnoConnect.getConnection();
-	String qq = "select t.id,t.document_id,t.reported_by,date_format(t.date,'%m/%d/%y %H:%i'),notes from time_notes t ";
-	if(con == null){
-	    back = "Could not connect to DB";
-	    return back;
-	}
-	String qw = "";
-	try{
-	    if(!document_id.equals("")){
-		if(!qw.equals("")) qw += " and ";
-		qw += " t.document_id = ? ";
-	    }
-	    if(!qw.equals("")){
-		qq += " where "+qw;
-	    }
-	    if(!sortBy.equals("")){
-		qq += " order by "+sortBy;
-	    }
-	    logger.debug(qq);
-	    pstmt = con.prepareStatement(qq);
-	    if(!document_id.equals("")){
-		pstmt.setString(1, document_id);
-	    }						
-	    rs = pstmt.executeQuery();
-	    if(timeNotes == null)
-		timeNotes = new ArrayList<TimeNote>();
-	    while(rs.next()){
-		TimeNote one =
-		    new TimeNote(rs.getString(1),
-				 rs.getString(2),
-				 rs.getString(3),
-				 rs.getString(4),
-				 rs.getString(5));
-		if(!timeNotes.contains(one))
-		    timeNotes.add(one);
-	    }
-	}
-	catch(Exception ex){
-	    back += ex+" : "+qq;
-	    logger.error(back);
-	}
-	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return back;
+				String back = "";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				Connection con = UnoConnect.getConnection();
+				String qq = "select t.id,t.document_id,t.reported_by,date_format(t.date,'%m/%d/%y %H:%i'),notes from time_notes t ";
+				if(con == null){
+						back = "Could not connect to DB";
+						return back;
+				}
+				String qw = "";
+				try{
+						if(!document_id.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
+								qw += " t.document_id = ? ";
+						}
+						if(!qw.isEmpty()){
+								qq += " where "+qw;
+						}
+						if(!sortBy.isEmpty()){
+								qq += " order by "+sortBy;
+						}
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						if(!document_id.isEmpty()){
+								pstmt.setString(1, document_id);
+						}						
+						rs = pstmt.executeQuery();
+						if(timeNotes == null)
+								timeNotes = new ArrayList<TimeNote>();
+						while(rs.next()){
+								TimeNote one =
+										new TimeNote(rs.getString(1),
+																 rs.getString(2),
+																 rs.getString(3),
+																 rs.getString(4),
+																 rs.getString(5));
+								if(!timeNotes.contains(one))
+										timeNotes.add(one);
+						}
+				}
+				catch(Exception ex){
+						back += ex+" : "+qq;
+						logger.error(back);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return back;
     }
 }
 

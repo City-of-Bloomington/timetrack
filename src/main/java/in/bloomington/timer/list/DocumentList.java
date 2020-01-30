@@ -54,7 +54,7 @@ public class DocumentList{
     public void setGroup_id (String val){
 				if(val != null && !val.equals("-1")){
 						if(!group_id_set.contains(val)){
-								if(!group_ids.equals(""))
+								if(!group_ids.isEmpty())
 										group_ids += ",";
 								group_ids += val;
 								group_id_set.add(val);
@@ -91,34 +91,34 @@ public class DocumentList{
 				String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e,pay_periods pp,jobs j ";
 				String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id ";				
 				boolean periodTbl = false;
-				if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!employee_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "d.employee_id=? ";
 				}
-				if(!pay_period_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!pay_period_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "d.pay_period_id=? ";
 				}
-				if(!job_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!job_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "d.job_id=? ";
 				}				
-				if(!date.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "pp.start_date <= ? and pp.end_date >= ?";
 				}
-				if(!department_id.equals("")){
+				if(!department_id.isEmpty()){
 						qq += ", groups g, group_employees ge ";
 						qc += ", groups g, group_employees ge ";
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "ge.effective_date <= pp.start_date and (ge.expire_date is null or ge.expire_date >= pp.end_date) "; 
 						qw += " and g.department_id=? and g.id=ge.group_id and ge.employee_id=d.employee_id ";
 				}
-				if(!group_ids.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!group_ids.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "j.group_id in ("+group_ids+")";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qc += " where "+qw;
 						qq += " where "+qw;
 				}
@@ -133,21 +133,21 @@ public class DocumentList{
 				try{
 						pstmt = con.prepareStatement(qc);
 						int jj=1;
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								pstmt.setString(jj++, pay_period_id);
 						}
-						if(!job_id.equals("")){
+						if(!job_id.isEmpty()){
 								pstmt.setString(jj++, job_id);
 						}						
-						if(!date.equals("")){
+						if(!date.isEmpty()){
 								java.util.Date date_tmp = df.parse(date);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								pstmt.setString(jj++, department_id);
 						}
 						rs = pstmt.executeQuery();
@@ -164,21 +164,21 @@ public class DocumentList{
 								}
 								pstmt = con.prepareStatement(qq);
 								jj=1;
-								if(!employee_id.equals("")){
+								if(!employee_id.isEmpty()){
 										pstmt.setString(jj++, employee_id);
 								}
-								if(!pay_period_id.equals("")){
+								if(!pay_period_id.isEmpty()){
 										pstmt.setString(jj++, pay_period_id);
 								}
-								if(!job_id.equals("")){
+								if(!job_id.isEmpty()){
 										pstmt.setString(jj++, job_id);
 								}						
-								if(!date.equals("")){
+								if(!date.isEmpty()){
 										java.util.Date date_tmp = df.parse(date);
 										pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 										pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 								}
-								if(!department_id.equals("")){
+								if(!department_id.isEmpty()){
 										pstmt.setString(jj++, department_id);
 								}
 								rs = pstmt.executeQuery();						

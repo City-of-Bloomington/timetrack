@@ -93,7 +93,7 @@ public class ShiftTime{
     }
     public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -115,7 +115,7 @@ public class ShiftTime{
 				return default_hour_code_id;
     }
 		public String getId_compound(){
-				if(!default_hour_code_id.equals("")){
+				if(!default_hour_code_id.isEmpty()){
 						getDefaultHourCode();
 						if(defaultHourCode != null){
 								return defaultHourCode.getId_compound();
@@ -145,7 +145,7 @@ public class ShiftTime{
 				return ""+amount;
     }		
 		public boolean getProcessed(){
-				return !processed.equals("");
+				return !processed.isEmpty();
 		}
     //
     // setters
@@ -181,14 +181,14 @@ public class ShiftTime{
 						end_time = val;
     }
     public void setHours(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						try{
 								hours = Double.parseDouble(val);
 						}catch(Exception ex){}
 				}
     }
     public void setAmount(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						try{
 								amount = Double.parseDouble(val);
 						}catch(Exception ex){}								
@@ -196,9 +196,9 @@ public class ShiftTime{
     }		
 		public String getStartEndTimes(){
 				String ret = "";
-				if(!start_time.equals("")){
+				if(!start_time.isEmpty()){
 						ret = start_time;
-						if(!end_time.equals("")){
+						if(!end_time.isEmpty()){
 								ret += " - "+end_time;
 						}
 				}
@@ -222,20 +222,20 @@ public class ShiftTime{
 
 		}
 		public Employee getAddedBy(){
-				if(addedBy == null && !added_by_id.equals("")){
+				if(addedBy == null && !added_by_id.isEmpty()){
 						Employee one = new Employee(added_by_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								addedBy = one;
 						}
 				}
 				return addedBy;
 		}
 		public Group getGroup(){
-				if(group == null && !group_id.equals("")){
+				if(group == null && !group_id.isEmpty()){
 						Group one = new Group(group_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								group = one;
 						}
 				}
@@ -243,10 +243,10 @@ public class ShiftTime{
 
 		}
 		public PayPeriod getPayPeriod(){
-				if(payPeriod == null && !pay_period_id.equals("")){
+				if(payPeriod == null && !pay_period_id.isEmpty()){
 						PayPeriod one = new PayPeriod(pay_period_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								payPeriod = one;
 						}
 				}
@@ -254,10 +254,10 @@ public class ShiftTime{
 
 		}
 		public HourCode getDefaultHourCode(){
-				if(defaultHourCode == null && !default_hour_code_id.equals("")){
+				if(defaultHourCode == null && !default_hour_code_id.isEmpty()){
 						HourCode one = new HourCode(default_hour_code_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								defaultHourCode = one;
 						}
 				}
@@ -269,7 +269,7 @@ public class ShiftTime{
     }
 		void findDatesArray(){
 				if(datesArr == null){
-						if(dates != null && !dates.trim().equals("")){
+						if(dates != null && !dates.trim().isEmpty()){
 								try{
 										datesArr = dates.split(",");
 								}
@@ -301,9 +301,9 @@ public class ShiftTime{
 				return back;
 		}
 		void findHours(){
-				if(!start_time.equals("") &&
+				if(!start_time.isEmpty() &&
 					 start_time.indexOf(":") > -1 &&
-					 !end_time.equals("") &&
+					 !end_time.isEmpty() &&
 					 end_time.indexOf(":") > -1 ){
 						try{
 								String[] arr = start_time.split(":");
@@ -328,12 +328,12 @@ public class ShiftTime{
 				String msg = "";
 				TimewarpManager tmwrpManager = null;
 				List<JobTask> jobs = null;
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = " id not set ";
 						return msg;
 				}
 				
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = " group not found ";
 						return msg;
 				}
@@ -346,7 +346,7 @@ public class ShiftTime{
 				// check dates are withing pay period
 				//
 				msg = checkDates();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				getDefaultHourCode();
@@ -377,7 +377,7 @@ public class ShiftTime{
 				jl.setGroup_id(group_id);
 				jl.setPay_period_id(pay_period_id);
 				msg = jl.find();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				jobs = jl.getJobs();
@@ -395,7 +395,7 @@ public class ShiftTime{
 																		job.getId(),
 																		added_by_id);
 						msg = document.findOrSave();
-						if(!msg.equals("")){
+						if(!msg.isEmpty()){
 								System.err.println(" doc error "+msg);
 								return msg;
 						}
@@ -426,7 +426,7 @@ public class ShiftTime{
 						tmwrpManager = new TimewarpManager(document_id);
 						msg += tmwrpManager.doProcess();
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						msg = doUpdateProcessed();
 				}
 				return msg;
@@ -446,8 +446,9 @@ public class ShiftTime{
 						back = "Could not connect to DB";
 						return back;
 				}
+				logger.debug(qq);				
 				try{
-						logger.debug(qq);
+
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1,id);
 						rs = pstmt.executeQuery();
@@ -485,15 +486,15 @@ public class ShiftTime{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into shift_times values(0,?,?,?,?, ?,?,?,?,?, now(),null)";
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						msg = "Pay period not set";
 						return msg;
 				}
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = "Group not set";
 						return msg;
 				}
-				if(default_hour_code_id.equals("")){
+				if(default_hour_code_id.isEmpty()){
 						msg = "Default hour code not set";
 						return msg;
 				}
@@ -515,11 +516,11 @@ public class ShiftTime{
 						}
 				}
 				else{ // time based
-						if(start_time.equals("")){
+						if(start_time.isEmpty()){
 								msg = "Start time not set";
 								return msg;
 						}
-						if(end_time.equals("")){
+						if(end_time.isEmpty()){
 								msg = "End time not set";
 								return msg;
 						}
@@ -535,7 +536,7 @@ public class ShiftTime{
 						return msg;
 				}
 				msg = checkDates();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				con = UnoConnect.getConnection();
@@ -543,24 +544,25 @@ public class ShiftTime{
 						msg = "Could not connect to DB ";
 						return msg;
 				}
+				logger.debug(qq);
 				try{
 						int cnt = 0;
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, pay_period_id);
 						pstmt.setString(2, group_id);
 						pstmt.setString(3, default_hour_code_id);
-						if(start_time.equals(""))
+						if(start_time.isEmpty())
 								pstmt.setNull(4, Types.VARCHAR);
 						else
 								pstmt.setString(4, start_time);
-						if(end_time.equals(""))
+						if(end_time.isEmpty())
 								pstmt.setNull(5, Types.VARCHAR);
 						else
 								pstmt.setString(5, end_time);
 						pstmt.setString(6, ""+hours);						
 						pstmt.setString(7, ""+amount);
 						pstmt.setString(8, dates);						
-						if(added_by_id.equals("")){
+						if(added_by_id.isEmpty()){
 								pstmt.setNull(9, Types.INTEGER);
 						}
 						else
@@ -583,7 +585,7 @@ public class ShiftTime{
 						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						msg = doSelect();
 				}
 				return msg;
@@ -601,7 +603,8 @@ public class ShiftTime{
 				if(con == null){
 						msg = "Could not connect to DB ";
 						return msg;
-				}				
+				}
+				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, id);
@@ -627,27 +630,27 @@ public class ShiftTime{
 						" start_time=?,end_time=?,"+
 						" dates=? "+
 						" where id=?";
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						msg = "Pay period not set";
 						return msg;
 				}
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = "Group not set";
 						return msg;
 				}
-				if(default_hour_code_id.equals("")){
+				if(default_hour_code_id.isEmpty()){
 						msg = "Default hour code not set";
 						return msg;
 				}
-				if(start_time.equals("")){
+				if(start_time.isEmpty()){
 						msg = "Start time not set";
 						return msg;
 				}
-				if(end_time.equals("")){
+				if(end_time.isEmpty()){
 						msg = "End time not set";
 						return msg;
 				}
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = "Id not set";
 						return msg;
 				}
@@ -665,7 +668,8 @@ public class ShiftTime{
 				if(con == null){
 						msg = "Could not connect to DB ";
 						return msg;
-				}				
+				}
+				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, pay_period_id);

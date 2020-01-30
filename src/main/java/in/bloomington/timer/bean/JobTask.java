@@ -212,10 +212,10 @@ public class JobTask implements Serializable{
 				setIncludeInAutoBatch(val16);
 				setIrregularWorkDays(val17);
 				setInactive(val18);
-				if(!salary_group_id.equals("")){
+				if(!salary_group_id.isEmpty()){
 						salaryGroup = new SalaryGroup(salary_group_id, val19,val20,val21, val22, val23);
 				}
-				if(val24 != null && !position_id.equals("")){
+				if(val24 != null && !position_id.isEmpty()){
 						position = new Position(position_id, val24);
 				}				
 
@@ -229,7 +229,7 @@ public class JobTask implements Serializable{
     // getters
     //
     public String getPosition_id(){
-				if(position_id.equals("")){
+				if(position_id.isEmpty()){
 						getPosition();
 				}
 				return position_id;
@@ -238,7 +238,7 @@ public class JobTask implements Serializable{
 				return employee_id;
     }
     public String getGroup_id(){
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						getGroup();
 				}
 				return group_id;
@@ -247,7 +247,7 @@ public class JobTask implements Serializable{
 				return employee_number;
     }		
     public String getSalary_group_id(){
-				if(salary_group_id.equals("")){
+				if(salary_group_id.isEmpty()){
 						getSalaryGroup();
 				}
 				return salary_group_id;
@@ -256,7 +256,7 @@ public class JobTask implements Serializable{
 				return effective_date;
     }
 		public boolean hasEffective_date(){
-				return !effective_date.equals("");
+				return !effective_date.isEmpty();
 		}
     public String getExpire_date(){
 				return expire_date;
@@ -265,42 +265,42 @@ public class JobTask implements Serializable{
 				return added_date;
     }
 		public boolean hasExpireDate(){
-				return !expire_date.equals("");
+				return !expire_date.isEmpty();
 		}
     public boolean getPrimary_flag(){
-				if(id.equals(""))
+				if(id.isEmpty())
 						return true; // default
-				return !primary_flag.equals("");
+				return !primary_flag.isEmpty();
     }
     public boolean isPrimary(){
 				return getPrimary_flag();
     }
     public boolean hasNoGroup(){
-				return group_id.equals("");
+				return group_id.isEmpty();
     }
     public boolean hasGroup(){
-				return !group_id.equals("");
+				return !group_id.isEmpty();
     }		
     public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
     public boolean getClock_time_required(){
-				return !clock_time_required.equals("");
+				return !clock_time_required.isEmpty();
     }
     public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
     }
     public boolean getIncludeInAutoBatch(){
-				return !include_in_auto_batch.equals("");
+				return !include_in_auto_batch.isEmpty();
     }
 		public boolean getIrregularWorkDays(){
-				return !irregular_work_days.equals("");
+				return !irregular_work_days.isEmpty();
 		}
 		public boolean isIrregularWorkDayEmployee(){
-				return !irregular_work_days.equals("");
+				return !irregular_work_days.isEmpty();
 		}		
     public boolean isPunchClockOnly(){
-				return !clock_time_required.equals("");
+				return !clock_time_required.isEmpty();
     }
     public boolean isLeaveEligible(){
 				getSalaryGroup();
@@ -425,7 +425,7 @@ public class JobTask implements Serializable{
 						hourly_rate = val;
     }
     public void setHourlyRate(String val){
-				if(val  != null && !val.equals("")){
+				if(val  != null && !val.isEmpty()){
 						try{
 								hourly_rate = Double.parseDouble(val);
 						}catch(Exception ex){}
@@ -448,7 +448,7 @@ public class JobTask implements Serializable{
     }
     public String toString(){
 				String str = getName();
-				if(str != null && !str.equals("")){
+				if(str != null && !str.isEmpty()){
 						return str;
 				}
 				return id;
@@ -463,7 +463,7 @@ public class JobTask implements Serializable{
     }
     public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -481,17 +481,17 @@ public class JobTask implements Serializable{
 				return shift;
 		}
     public SalaryGroup getSalaryGroup(){
-				if(!salary_group_id.equals("") && salaryGroup == null){
+				if(!salary_group_id.isEmpty() && salaryGroup == null){
 						SalaryGroup one = new SalaryGroup(salary_group_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								salaryGroup = one;
 						}
 				}
-				if(salaryGroup == null && !salary_group_name.equals("")){
+				if(salaryGroup == null && !salary_group_name.isEmpty()){
 						SalaryGroupList sgl = new SalaryGroupList(salary_group_name);
 						String back = sgl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<SalaryGroup> ones = sgl.getSalaryGroups();
 								if(ones != null && ones.size() > 0){
 										salaryGroup = ones.get(0);
@@ -503,10 +503,10 @@ public class JobTask implements Serializable{
     }
     public Group getGroup(){
 				if(group == null){
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								Group one = new Group(group_id);
 								String back = one.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										group = one;
 								}
 						}
@@ -524,12 +524,12 @@ public class JobTask implements Serializable{
     }
 		void findAllGroups(){
 				if(allGroups == null){
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								GroupEmployeeList gel = new GroupEmployeeList();
 								gel.setEmployee_id(employee_id);
 								gel.setIncludeFuture();
 								String back = gel.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<GroupEmployee> ones = gel.getGroupEmployees();
 										if(ones != null){
 												for(GroupEmployee one:ones){
@@ -555,19 +555,19 @@ public class JobTask implements Serializable{
 				return allGroups;
 		}
     public Position getPosition(){
-				if(!position_id.equals("") && position == null){
+				if(!position_id.isEmpty() && position == null){
 						Position one = new Position(position_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								position = one;
 						}
 				}
 				// needed for new job through wizard
-				if(position == null && !jobTitle.equals("")){
+				if(position == null && !jobTitle.isEmpty()){
 						PositionList pl = new PositionList(jobTitle);
 						pl.setExactMatch();
 						String back = pl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Position> ones = pl.getPositions();
 								if(ones != null && ones.size() > 0){
 										position = ones.get(0);
@@ -576,7 +576,7 @@ public class JobTask implements Serializable{
 								else{
 										Position pp = new Position(jobTitle, jobTitle, jobTitle);
 										back = pp.doSave();
-										if(back.equals("")){
+										if(back.isEmpty()){
 												position = pp;
 												position_id = pp.getId();
 										}
@@ -586,10 +586,10 @@ public class JobTask implements Serializable{
 				return position;
     }		
     public Employee getEmployee(){
-				if(!employee_id.equals("") && employee == null){
+				if(!employee_id.isEmpty() && employee == null){
 						Employee one = new Employee(employee_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								employee = one;
 						}
 				}
@@ -651,7 +651,7 @@ public class JobTask implements Serializable{
 				else if(bGroup.isUnioned()){
 						new_salary_group_id = "4";
 				}
-				if(!new_salary_group_id.equals("")){
+				if(!new_salary_group_id.isEmpty()){
 						if(!salary_group_id.equals(new_salary_group_id)){
 								salary_group_id = new_salary_group_id;
 								needUpdate = true;
@@ -680,7 +680,7 @@ public class JobTask implements Serializable{
 						hourly_rate = hr_rate;
 						needUpdate = true;							
 				}
-				if(!job_name.equals("")){
+				if(!job_name.isEmpty()){
 						getPosition();
 						boolean pos_update = false;
 						if(position != null){
@@ -699,7 +699,7 @@ public class JobTask implements Serializable{
 								pl.setActiveOnly();
 								pl.setExactMatch();
 								String back = pl.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<Position> ones = pl.getPositions();
 										if(ones != null && ones.size() > 0){
 												position = ones.get(0);
@@ -710,7 +710,7 @@ public class JobTask implements Serializable{
 								if(!found){
 										Position pos = new Position(job_name, job_name, job_name);
 										back = pos.doSave();
-										if(back.equals("")){
+										if(back.isEmpty()){
 												position = pos;												
 												position_id = pos.getId();
 										}
@@ -719,7 +719,7 @@ public class JobTask implements Serializable{
 				}
 				if(needUpdate){
 						String back = doPartialUpdate();
-						if(!back.equals(""))
+						if(!back.isEmpty())
 								System.err.println(back);
 				}
     }
@@ -809,8 +809,8 @@ public class JobTask implements Serializable{
     }
 		public String doSaveAll(){
 				String back = "";
-				if(!department_id.equals("")){
-						if(effective_date.equals("")){
+				if(!department_id.isEmpty()){
+						if(effective_date.isEmpty()){
 								back = "Need to set effective date";
 								return back;
 						}
@@ -820,16 +820,16 @@ public class JobTask implements Serializable{
 								back = de.doSave();
 						}
 				}
-				if(!new_group_id.equals("") && group_id.equals("")){
+				if(!new_group_id.isEmpty() && group_id.isEmpty()){
 						group_id = new_group_id;
 						new_group_id = "";
 				}
-				if(back.equals("") && !group_id.equals("")){
+				if(back.isEmpty() && !group_id.isEmpty()){
 						GroupEmployee ge = new GroupEmployee(group_id, employee_id, effective_date);
 						back = ge.doSave();
 						back = ""; // if already in the group we ignore this message
 				}
-				if(back.equals("")){
+				if(back.isEmpty()){
 						back = doSave();
 				}
 				return back;
@@ -841,22 +841,22 @@ public class JobTask implements Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into jobs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,now(),?,?,null) ";
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						msg = " employee_id not set ";
 						return msg;
 				}
-				if(position_id.equals("") && !position_id_alt.equals("")){
+				if(position_id.isEmpty() && !position_id_alt.isEmpty()){
 						position_id = position_id_alt;
 				}
-				if(position_id.equals("") && position_id_alt.equals("")){
+				if(position_id.isEmpty() && position_id_alt.isEmpty()){
 						msg = " position not set ";
 						return msg;
 				}				
-				if(salary_group_id.equals("")){
+				if(salary_group_id.isEmpty()){
 						msg = " salary group not set ";
 						return msg;
 				}
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = " group not set ";
 						return msg;
 				}
@@ -873,17 +873,17 @@ public class JobTask implements Serializable{
 						pstmt.setString(3, employee_id);
 						pstmt.setString(4, group_id);						
 						
-						if(effective_date.equals(""))
+						if(effective_date.isEmpty())
 								effective_date = Helper.getToday();
 						java.util.Date date_tmp = df.parse(effective_date);
 						pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
-						if(!expire_date.equals("")){
+						if(!expire_date.isEmpty()){
 								date_tmp = df.parse(expire_date);								
 								pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));
 						}
 						else
 								pstmt.setNull(6, Types.DATE);	
-						if(primary_flag.equals(""))
+						if(primary_flag.isEmpty())
 								pstmt.setNull(7, Types.CHAR);
 						else
 								pstmt.setString(7, "y");
@@ -891,16 +891,16 @@ public class JobTask implements Serializable{
 						pstmt.setInt(9, comp_time_weekly_hours);
 						pstmt.setDouble(10, comp_time_factor);
 						pstmt.setDouble(11, holiday_comp_factor);
-						if(clock_time_required.equals(""))
+						if(clock_time_required.isEmpty())
 								pstmt.setNull(12, Types.CHAR);
 						else
 								pstmt.setString(12, "y");
 						pstmt.setDouble(13, hourly_rate);
-						if(include_in_auto_batch.equals(""))
+						if(include_in_auto_batch.isEmpty())
 								pstmt.setNull(14, Types.CHAR);
 						else
 								pstmt.setString(14, "y");
-						if(irregular_work_days.equals(""))
+						if(irregular_work_days.isEmpty())
 								pstmt.setNull(15, Types.CHAR);
 						else
 								pstmt.setString(15, "y");
@@ -933,22 +933,22 @@ public class JobTask implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						return " job id not set ";
 				}
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						msg = " employee_id not set ";
 						return msg;
 				}
-				if(position_id.equals("")){
+				if(position_id.isEmpty()){
 						msg = " position not set ";
 						return msg;
 				}
-				if(salary_group_id.equals("")){
+				if(salary_group_id.isEmpty()){
 						msg = " salary group not set ";
 						return msg;
 				}
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = " group not set ";
 						return msg;
 				}				
@@ -983,17 +983,17 @@ public class JobTask implements Serializable{
 						pstmt.setString(2, salary_group_id);
 						pstmt.setString(3, employee_id);
 						pstmt.setString(4, group_id);
-						if(effective_date.equals(""))
+						if(effective_date.isEmpty())
 								effective_date = Helper.getToday();
 						java.util.Date date_tmp = df.parse(effective_date);
 						pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
-						if(!expire_date.equals("")){
+						if(!expire_date.isEmpty()){
 								date_tmp = df.parse(expire_date);
 								pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));
 						}
 						else
 								pstmt.setNull(6, Types.DATE);										
-						if(primary_flag.equals(""))
+						if(primary_flag.isEmpty())
 								pstmt.setNull(7, Types.CHAR);
 						else
 								pstmt.setString(7, "y");
@@ -1001,20 +1001,20 @@ public class JobTask implements Serializable{
 						pstmt.setInt(9, comp_time_weekly_hours);
 						pstmt.setDouble(10, comp_time_factor);
 						pstmt.setDouble(11,holiday_comp_factor);
-						if(clock_time_required.equals(""))
+						if(clock_time_required.isEmpty())
 								pstmt.setNull(12, Types.CHAR);
 						else
 								pstmt.setString(12, "y");								
 						pstmt.setDouble(13, hourly_rate);
-						if(include_in_auto_batch.equals(""))
+						if(include_in_auto_batch.isEmpty())
 								pstmt.setNull(14, Types.CHAR);
 						else
 								pstmt.setString(14, "y");						
-						if(irregular_work_days.equals(""))
+						if(irregular_work_days.isEmpty())
 								pstmt.setNull(15, Types.CHAR);
 						else
 								pstmt.setString(15, "y");
-						if(inactive.equals(""))
+						if(inactive.isEmpty())
 								pstmt.setNull(16, Types.CHAR);
 						else
 								pstmt.setString(16, "y");
@@ -1029,16 +1029,12 @@ public class JobTask implements Serializable{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						doSelect();
 				}
 
 				return msg;
     }
-		/*
-   update department_employees set expire_date = null where employee_id=1343 and department_id=42 and expire_date is not null 
-
-		 */
 		//
     public String doChange(){
 				Connection con = null;
@@ -1050,7 +1046,7 @@ public class JobTask implements Serializable{
 				String qq2 = "update jobs set expire_date = ? where id = ? and expire_date is null";
 				String qq3 = "update time_documents t set t.job_id=? where t.job_id=? and pay_period_id >= ? ";
 				String qq4 = "update department_employees set expire_date = ? where employee_id=? and department_id=? and expire_date is null ";
-				if(new_group_id.equals("")){
+				if(new_group_id.isEmpty()){
 						msg = "group is required";
 						return msg;
 				}				
@@ -1058,11 +1054,11 @@ public class JobTask implements Serializable{
 						// a new group
 						add_group = true;
 				}
-				if(position_id.equals("")){
+				if(position_id.isEmpty()){
 						msg = "position is required";
 						return msg;
 				}
-				if(salary_group_id.equals("")){
+				if(salary_group_id.isEmpty()){
 						msg = "salary group is required";
 						return msg;
 				}
@@ -1107,7 +1103,7 @@ public class JobTask implements Serializable{
 								PayPeriod pp = new PayPeriod();
 								pp.setDate(start_date);
 								msg = pp.find(); // find the pay period the date is in
-								if(msg.equals("")){
+								if(msg.isEmpty()){
 										pp_id = pp.getId();
 										qq = qq3;
 										pstmt3 = con.prepareStatement(qq);										
@@ -1125,14 +1121,14 @@ public class JobTask implements Serializable{
 								ge.setEmployee_id(employee_id);
 								ge.setEffective_date(start_date);
 								msg = ge.doSave();
-								if(msg.equals("")){
+								if(msg.isEmpty()){
 										// find the old employee group
 										GroupEmployeeList gel = new GroupEmployeeList();
 										gel.setGroup_id(old_group_id);
 										gel.setEmployee_id(employee_id);
 										gel.setActiveOnly();
 										msg = gel.find();
-										if(msg.equals("")){
+										if(msg.isEmpty()){
 												List<GroupEmployee> ones = gel.getGroupEmployees();
 												if(ones != null && ones.size() > 0){
 														ge = ones.get(0);
@@ -1146,15 +1142,15 @@ public class JobTask implements Serializable{
 										String old_dept_id = "", new_dept_id="";										
 										Group oldGroup = new Group(old_group_id);
 										msg = oldGroup.doSelect();
-										if(msg.equals("")){
+										if(msg.isEmpty()){
 												old_dept_id = oldGroup.getDepartment_id();
 										}
 										Group group = new Group(group_id);
 										msg = group.doSelect();
-										if(msg.equals("")){
+										if(msg.isEmpty()){
 												new_dept_id = group.getDepartment_id();
 										}
-										if(!old_dept_id.equals("") && !new_dept_id.equals("") &&
+										if(!old_dept_id.isEmpty() && !new_dept_id.isEmpty() &&
 											 !old_dept_id.equals(new_dept_id)){
 												// expire old dept
 												qq = qq4; 
@@ -1192,14 +1188,14 @@ public class JobTask implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						return " id not set ";
 				}
-				if(position_id.equals("")){
+				if(position_id.isEmpty()){
 						msg = " position not set ";
 						return msg;
 				}
-				if(salary_group_id.equals("")){
+				if(salary_group_id.isEmpty()){
 						msg = " salary group not set ";
 						return msg;
 				}								
@@ -1352,11 +1348,11 @@ public class JobTask implements Serializable{
 				return msg;
     }		
 		public boolean checkIfJobIsUsed(){
-				if(id.equals("")) return false;
+				if(id.isEmpty()) return false;
 				DocumentList dl = new DocumentList();
 				dl.setJob_id(id);
 				String back = dl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Document> ones = dl.getDocuments();
 						return ones != null && ones.size() > 0;
 				}
@@ -1404,7 +1400,7 @@ public class JobTask implements Serializable{
 						msg = "no job list provided";
 						return msg;
 				}
-				if(date == null || date.equals("")){
+				if(date == null || date.isEmpty()){
 						msg = "No date is set ";
 						return msg;
 				}

@@ -319,7 +319,7 @@ public class PayPeriod implements Serializable{
 						"year(p.end_date),month(p.end_date),day(p.end_date), "+
 						"datediff(p.end_date,p.start_date) "+
 						"from pay_periods p where ";
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						return doSelect();
 				}
 				qq += " ? between p.start_date and p.end_date ";
@@ -332,7 +332,7 @@ public class PayPeriod implements Serializable{
 				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								pstmt.setString(1, id);
 						}
 						else{
@@ -378,7 +378,7 @@ public class PayPeriod implements Serializable{
 						"year(p.end_date),month(p.end_date),day(p.end_date), "+
 						"p.start_date,p.end_date "+
 						"from pay_periods p where id=?";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = " id not set ";
 						logger.error(msg);
 						return msg;

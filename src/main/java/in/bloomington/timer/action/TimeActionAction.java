@@ -34,7 +34,7 @@ public class TimeActionAction extends TopAction{
 						if(user != null){
 								timeAction.setAction_by(user.getId());
 								back = timeAction.doSave();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{ // normally we return to TimeDetails
@@ -48,7 +48,7 @@ public class TimeActionAction extends TopAction{
 						if(user != null){
 								timeAction.setCancelled_by(user.getId());
 								back = timeAction.doCancel();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{ // normally we return to TimeDetails
@@ -59,9 +59,9 @@ public class TimeActionAction extends TopAction{
 				}				
 				else{		
 						getTimeAction();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = timeAction.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{
@@ -70,7 +70,7 @@ public class TimeActionAction extends TopAction{
 								}
 						}
 				}
-				if(!source.equals("")){
+				if(!source.isEmpty()){
 						return source;
 				}
 				return ret;
@@ -93,27 +93,27 @@ public class TimeActionAction extends TopAction{
 				return timeActionsTitle;
     }
     public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
     }
     public void setSource(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						source = val;
     }		
     //
     // this is passed through the link
     public String getDocument_id(){
-				if(document_id.equals("") && timeAction != null){
+				if(document_id.isEmpty() && timeAction != null){
 						document_id = timeAction.getDocument_id();
 				}
 				return document_id;
     }
     public void setDocument_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						document_id = val;
     }
     public void setWorkflow_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						workflow_id = val;
     }		
     public String getWorkflow_id(){

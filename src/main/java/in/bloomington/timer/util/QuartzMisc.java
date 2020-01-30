@@ -23,7 +23,7 @@ public class QuartzMisc{
 				debug = deb;
     }
     public QuartzMisc(String val){
-				if(val != null && !val.equals(""))
+				if(val != null && !val.isEmpty())
 						type = val;
     }		
 		public String getPrevScheduleDate(){

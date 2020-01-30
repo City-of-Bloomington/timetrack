@@ -29,8 +29,8 @@ public class SwitchAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("switch.action");
-				if(!action.equals("")){ // normally 'Change'
-						if(!new_employee_id.equals("")){
+				if(!action.isEmpty()){ // normally 'Change'
+						if(!new_employee_id.isEmpty()){
 								setEmployee_id(new_employee_id);
 								getEmployee();
 								if(employee == null){
@@ -42,10 +42,10 @@ public class SwitchAction extends TopAction{
 												HttpServletResponse res = ServletActionContext.getResponse();
 												// we do not need the url here
 												String str = "timeDetails.action?";
-												if(!document_id.equals("")){
+												if(!document_id.isEmpty()){
 														str += "document_id="+document_id;
 												}
-												if(!source.equals("")){
+												if(!source.isEmpty()){
 														str += "&source="+source;
 												}
 												res.sendRedirect(str);
@@ -73,11 +73,11 @@ public class SwitchAction extends TopAction{
 				return department_id;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setNew_employee_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						new_employee_id = val;
 		}
 		
@@ -85,15 +85,15 @@ public class SwitchAction extends TopAction{
 				// for auto complete
 		}
 		public void setDocument_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						document_id = val;
 		}
 		public void setDepartment_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						department_id = val;
 		}		
 		public void setSource(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 					 source = val;
 		}		
 		public String getEmployee_name(){

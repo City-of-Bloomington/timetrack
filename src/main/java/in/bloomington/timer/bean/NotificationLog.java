@@ -138,7 +138,7 @@ public class NotificationLog{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into notification_logs values(0,?,?,now(),?,?)";
@@ -152,16 +152,15 @@ public class NotificationLog{
 						pstmt.setString(1, receipiants);
 						pstmt.setString(2, message);
 						pstmt.setString(3, status);
-						if(error_msg.equals(""))
+						if(error_msg.isEmpty())
 								pstmt.setNull(4, Types.VARCHAR);
 						else
 								pstmt.setString(4, error_msg);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -171,7 +170,7 @@ public class NotificationLog{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;

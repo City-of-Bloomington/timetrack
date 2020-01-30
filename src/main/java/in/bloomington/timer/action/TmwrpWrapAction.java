@@ -45,7 +45,7 @@ public class TmwrpWrapAction extends TopAction{
     public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("tmwrpWrap.action");
-				if(!action.equals("") && !department_id.equals("")){
+				if(!action.isEmpty() && !department_id.isEmpty()){
 						if(department == null)
 								getDepartment();
 						if(department.isUtilities()) 
@@ -53,7 +53,7 @@ public class TmwrpWrapAction extends TopAction{
 						else if(department.isHand())
 								isHand = true;
 						back = prepareEmployeeSet();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						getEmployees();
@@ -81,15 +81,15 @@ public class TmwrpWrapAction extends TopAction{
 				return ret;
     }
     public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
     }
     public void setSource(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						source = val;
     }		
     public void setType(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						type = val;
     }		
     public void setDepartment_id(String val){
@@ -97,10 +97,10 @@ public class TmwrpWrapAction extends TopAction{
 						department_id = val;
     }
     public String getDepartment_id(){
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						if(user != null ){
 								if(user.isAdmin()){
-										if(department_id.equals(""))
+										if(department_id.isEmpty())
 												return "-1";
 								}
 								else{
@@ -114,7 +114,7 @@ public class TmwrpWrapAction extends TopAction{
 				return department_id;
     }
     public void setPay_period_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						pay_period_id = val;
     }
     public void setIsHand(boolean val){
@@ -148,12 +148,12 @@ public class TmwrpWrapAction extends TopAction{
 						group_id = val;
 		}
 		public String getGroup_id(){
-				if(group_id.equals(""))
+				if(group_id.isEmpty())
 						return "-1";
 				return group_id;
 		}
     public String getPay_period_id(){
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						getPayPeriod();
 				}
 				return pay_period_id;
@@ -173,7 +173,7 @@ public class TmwrpWrapAction extends TopAction{
 				if(employees == null){
 						// isHand is set here
 						back = findEmployees();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								return back;
 						}
 				}
@@ -188,7 +188,7 @@ public class TmwrpWrapAction extends TopAction{
 						TmwrpRunList trl = new TmwrpRunList(emp.getId(),
 																								pay_period_id);
 						back = trl.find();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -221,7 +221,7 @@ public class TmwrpWrapAction extends TopAction{
 						// tl.avoidFuturePeriods();
 						tl.setTwoPeriodsAheadOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
@@ -235,7 +235,7 @@ public class TmwrpWrapAction extends TopAction{
 						DepartmentList tl = new DepartmentList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Department> ones = tl.getDepartments();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -245,10 +245,10 @@ public class TmwrpWrapAction extends TopAction{
 				return departments;
     }
     public Department getDepartment(){
-				if(department == null && !department_id.equals("")){
+				if(department == null && !department_id.isEmpty()){
 						Department one = new Department(department_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department = one;
 						}
 				}
@@ -262,7 +262,7 @@ public class TmwrpWrapAction extends TopAction{
 						ProfileList pfl = new ProfileList(payPeriod.getEnd_date(),
 																							department.getRef_id());
 						back = pfl.findEmployeeSet();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								Set<String> set = pfl.getEmployeeSet();
 								if(set != null && set.size() > 0){
 										employeeSet = set;
@@ -280,11 +280,11 @@ public class TmwrpWrapAction extends TopAction{
 								el.setPay_period_id(pay_period_id);
 								el.setHasNoEmployeeNumber();
 								el.setActiveOnly();
-								if(!group_id.equals("")){
+								if(!group_id.isEmpty()){
 										el.setGroup_id(group_id);
 								}
 								String back = el.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<Employee> ones = el.getEmployees();
 										if(ones != null && ones.size() > 0){
 												empsWithNoEmpNum = ones;
@@ -310,11 +310,11 @@ public class TmwrpWrapAction extends TopAction{
 								el.setDepartment_id(department.getId());
 								el.setPay_period_id(pay_period_id);
 								el.setHasEmployeeNumber();
-								if(!group_id.equals("")){
+								if(!group_id.isEmpty()){
 										el.setGroup_id(group_id);
 								}
 								back = el.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<Employee> ones = el.getEmployees();
 										if(ones != null && ones.size() > 0){
 												employees = new ArrayList<>();
@@ -349,12 +349,12 @@ public class TmwrpWrapAction extends TopAction{
 				return groups != null && groups.size() > 0;
 		}
 		void findGroups(){
-				if(groups == null && !department_id.equals("")){
+				if(groups == null && !department_id.isEmpty()){
 						GroupList gl = new GroupList();
 						gl.setDepartment_id(department_id);
 						gl.setPay_period_id(pay_period_id);
 						String back = gl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ones = gl.getGroups();
 								if(ones != null && ones.size() > 0)
 										groups = ones;
@@ -366,11 +366,11 @@ public class TmwrpWrapAction extends TopAction{
 				// if pay period is not set, we look for previous one
 				//
 				if(payPeriod == null){
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								PayPeriodList ppl = new PayPeriodList();
 								ppl.setApproveSuitable();
 								String back = ppl.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<PayPeriod> ones = ppl.getPeriods();
 										if(ones != null && ones.size() > 0){
 												payPeriod = ones.get(0);
@@ -381,7 +381,7 @@ public class TmwrpWrapAction extends TopAction{
 						else{
 								PayPeriod one = new PayPeriod(pay_period_id);
 								String back = one.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										payPeriod = one;
 								}
 						}
@@ -394,11 +394,11 @@ public class TmwrpWrapAction extends TopAction{
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										currentPayPeriod = ones.get(0);
-										if(pay_period_id.equals("")){
+										if(pay_period_id.isEmpty()){
 												pay_period_id = currentPayPeriod.getId();
 												payPeriod = currentPayPeriod;
 										}

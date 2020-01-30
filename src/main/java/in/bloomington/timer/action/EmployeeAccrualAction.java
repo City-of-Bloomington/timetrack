@@ -33,7 +33,7 @@ public class EmployeeAccrualAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = empAccrual.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);
 						}
@@ -43,7 +43,7 @@ public class EmployeeAccrualAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = empAccrual.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);
 						}
@@ -55,17 +55,17 @@ public class EmployeeAccrualAction extends TopAction{
 						getEmpAccrual();
 						empAccrual.setEmployee_id(employee_selected_id);
 				}
-				else if(!id.equals("")){
+				else if(!id.isEmpty()){
 						getEmpAccrual();
 						back = empAccrual.doSelect();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 						}
 						else{
 								employee_selected_id = empAccrual.getEmployee_id();
 						}
 				}
-				else if(!employee_selected_id.equals("")){
+				else if(!employee_selected_id.isEmpty()){
 						getEmpAccrual();
 						empAccrual.setEmployee_id(employee_selected_id);
 				}
@@ -92,7 +92,7 @@ public class EmployeeAccrualAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setEmployee_selected_id(String val){
@@ -100,7 +100,7 @@ public class EmployeeAccrualAction extends TopAction{
 						employee_selected_id = val;
 		}
 		public String getEmployee_selected_id(){
-				if(employee_selected_id.equals("")){
+				if(employee_selected_id.isEmpty()){
 						return "-1"; // for list
 				}
 				return employee_selected_id;
@@ -109,7 +109,7 @@ public class EmployeeAccrualAction extends TopAction{
 				TypeList tl = new TypeList("accruals");
 				tl.setActiveOnly();
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Type> ones = tl.getTypes();
 						if(ones != null && ones.size() > 0){
 								accruals = ones;
@@ -124,7 +124,7 @@ public class EmployeeAccrualAction extends TopAction{
 						ecl.setActiveOnly();
 						ecl.relatedToAccrualsOnly();
 						String back = ecl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<HourCode> ones = ecl.getHourCodes();
 								if(ones != null && ones.size() > 0){
 										hourCodes = ones;
@@ -140,7 +140,7 @@ public class EmployeeAccrualAction extends TopAction{
 						eal.setEmployee_id(employee_selected_id);
 						eal.setMostCurrent();
 						String back = eal.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<EmployeeAccrual> ones = eal.getEmployeeAccruals();
 								if(ones != null && ones.size() > 0){
 										empAccruals = ones;
@@ -164,7 +164,7 @@ public class EmployeeAccrualAction extends TopAction{
 				return empAccruals != null && empAccruals.size() > 0;
 		}
 		public boolean isEmployeeSelected(){
-				return !employee_selected_id.equals("");
+				return !employee_selected_id.isEmpty();
 		}
 		
 }

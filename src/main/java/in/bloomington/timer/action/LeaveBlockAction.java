@@ -39,7 +39,7 @@ public class LeaveBlockAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("leaveBlock.action");
-				if(!back.equals("")){
+				if(!back.isEmpty()){
 						return "login";
 				}
 				if(action.equals("Save")){
@@ -47,7 +47,7 @@ public class LeaveBlockAction extends TopAction{
 						if(leaveBlock.areAllTimesSet()){
 								leaveBlock.setAction_by_id(user.getId());
 								back = leaveBlock.doSave();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 										return "json";
 								}
@@ -67,7 +67,7 @@ public class LeaveBlockAction extends TopAction{
 						if(leaveBlock.areAllTimesSet()){						
 								leaveBlock.setAction_by_id(user.getId());
 								back = leaveBlock.doUpdate();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);								
 										return "json";
 								}
@@ -93,7 +93,7 @@ public class LeaveBlockAction extends TopAction{
 						leaveBlock.setInactive(true);
 						leaveBlock.setChange_by(user.getId());
 						back = leaveBlock.doPartialUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);
 						}
@@ -110,9 +110,9 @@ public class LeaveBlockAction extends TopAction{
 				}
 				else{		
 						getLeaveBlock();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = leaveBlock.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 										addError(back);
 								}
@@ -125,11 +125,11 @@ public class LeaveBlockAction extends TopAction{
 		public LeaveBlock getLeaveBlock(){ 
 				if(leaveBlock == null){
 						leaveBlock = new LeaveBlock();
-						if(!id.equals(""))
+						if(!id.isEmpty())
 								leaveBlock.setId(id);
-						if(!document_id.equals(""))
+						if(!document_id.isEmpty())
 								leaveBlock.setDocument_id(document_id);
-						if(!date.equals(""))
+						if(!date.isEmpty())
 								leaveBlock.setDate(date);
 						leaveBlock.setOrderIndex(order_index);
 				}
@@ -145,7 +145,7 @@ public class LeaveBlockAction extends TopAction{
 				return leaveBlocksTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setOrder_index(int val){
@@ -164,20 +164,20 @@ public class LeaveBlockAction extends TopAction{
 		//
 		// this is passed through the link
 		public String getDocument_id(){
-				if(document_id.equals("") && leaveBlock != null){
+				if(document_id.isEmpty() && leaveBlock != null){
 						document_id = leaveBlock.getDocument_id();
 				}
 				return document_id;
 		}
 		public LeaveDocument getDocument(){
 				if(document == null){
-						if(document_id.equals("")){
+						if(document_id.isEmpty()){
 								getDocument_id();
 						}
-						if(!document_id.equals("")){
+						if(!document_id.isEmpty()){
 								LeaveDocument one = new LeaveDocument(document_id);
 								String back = one.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										document = one;
 										employee = document.getEmployee();
 										payPeriod = document.getPayPeriod();
@@ -197,12 +197,12 @@ public class LeaveBlockAction extends TopAction{
 								jl.setPay_period_id(payPeriod.getId());
 						}
 						String back = jl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<JobTask> ones = jl.getJobTasks();
 								if(ones != null && ones.size() > 0){
 										jobs = ones;
 										if(jobs.size() > 0){
-												if(selected_job_id.equals("")){
+												if(selected_job_id.isEmpty()){
 														for(JobTask one:jobs){
 																if(one.isPrimary()){
 																		selectedJob = one; // get one
@@ -234,11 +234,11 @@ public class LeaveBlockAction extends TopAction{
 		*/
 		
 		public void setDocument_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						document_id = val;
 		}
 		public void setDate(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						date = val;
 		}
 		/*
@@ -270,7 +270,7 @@ public class LeaveBlockAction extends TopAction{
 								// hour codes that can be usef for leave only
 								ecl.relatedToAccrualsOnly();
 								String back = ecl.lookFor();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<HourCode> ones = ecl.getHourCodes();
 										if(ones != null && ones.size() > 0){
 												hourCodes = ones;

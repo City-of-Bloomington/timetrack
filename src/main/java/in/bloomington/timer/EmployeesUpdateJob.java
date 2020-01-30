@@ -59,7 +59,7 @@ public class EmployeesUpdateJob implements Job{
 				// HandleEmployeesUpdate handle = new HandleEmployeesUpdate(envBean);
 				HandleEmployeesUpdate handle = new HandleEmployeesUpdate();				
 				String msg = handle.process();
-				if(!msg.equals(""))
+				if(!msg.isEmpty())
 						logger.error(msg);
 		}
 		

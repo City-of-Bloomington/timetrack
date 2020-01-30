@@ -52,7 +52,7 @@ public class HandleCurrentEmployees{
 				ul.setActiveOnly();
 				ul.setExclude_name("Admin");// exlude admin user
 				String back = ul.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Employee> ones = ul.getEmployees();
 						if(ones != null && ones.size() > 0){
 								dbUsers = ones;
@@ -63,10 +63,10 @@ public class HandleCurrentEmployees{
 						status = "Failure";
 						errors = "Error get emps from DB "+msg;
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						EmpList el = new EmpList(envBean);
 						back = el.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								ldapUsers = el.getEmps();
 								empTable = new Hashtable<>();
 								for(Employee one:ldapUsers){
@@ -81,7 +81,7 @@ public class HandleCurrentEmployees{
 								errors = "Error get emps from ldap "+msg;								
 						}
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						if(dbUsers != null){
 								/*
 								System.err.println(" DB users ");
@@ -101,7 +101,7 @@ public class HandleCurrentEmployees{
 						*/
 						for(Employee one:dbUsers){
 								if(!empTable.containsKey(one.getUsername())){
-										if(!inactiveSet.equals("")){
+										if(!inactiveSet.isEmpty()){
 												inactiveSet += ",";
 												inactiveLog += ", ";
 										}
@@ -111,10 +111,10 @@ public class HandleCurrentEmployees{
 						}
 						System.err.println("the following emps will change to inactive "+inactiveLog);
 						/*
-						if(!inactiveSet.equals("")){
+						if(!inactiveSet.isEmpty()){
 								Employee user = new Employee();
 								msg = user.updateInactiveStatus(inactiveSet);
-								if(!msg.equals("")){
+								if(!msg.isEmpty()){
 										status = "Failure";
 										errors =" error updating emps status "+msg;
 								}

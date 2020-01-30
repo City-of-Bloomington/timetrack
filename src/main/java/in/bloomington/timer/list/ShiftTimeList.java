@@ -52,15 +52,15 @@ public class ShiftTimeList{
 						" s.processed "+
 						" from shift_times s,groups g ";
 				String qw = "s.group_id=g.id ";
-				if(!department_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!department_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "g.department_id = ? ";
 				}
-				if(!group_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!group_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "g.id = ? ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by s.id desc ";
@@ -74,10 +74,10 @@ public class ShiftTimeList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								pstmt.setString(jj++, department_id);
 						}
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								pstmt.setString(jj++, group_id);
 						}						
 						rs = pstmt.executeQuery();

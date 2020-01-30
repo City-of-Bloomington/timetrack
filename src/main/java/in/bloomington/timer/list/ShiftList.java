@@ -83,15 +83,15 @@ public class ShiftList{
 						"g.minute_rounding,"+
 						"g.inactive from shifts g ";
 				String qw = "";
-				if(!name.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!name.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "g.name like ? ";
 				}				
 				if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " g.inactive is null ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				con = UnoConnect.getConnection();
@@ -104,7 +104,7 @@ public class ShiftList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								pstmt.setString(jj++, "%"+name+"%");
 						}						
 						rs = pstmt.executeQuery();

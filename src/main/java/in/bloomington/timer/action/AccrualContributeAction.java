@@ -32,7 +32,7 @@ public class AccrualContributeAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = contribute.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -41,7 +41,7 @@ public class AccrualContributeAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = contribute.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -50,9 +50,9 @@ public class AccrualContributeAction extends TopAction{
 				}
 				else{		
 						getContribute();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = contribute.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -79,14 +79,14 @@ public class AccrualContributeAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<AccrualContribute> getContributes(){
 				if(contributes == null){
 						AccrualContributeList tl = new AccrualContributeList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<AccrualContribute> ones = tl.getContributes();
 								if(ones != null && ones.size() > 0){
 										contributes = ones;
@@ -100,7 +100,7 @@ public class AccrualContributeAction extends TopAction{
 						AccrualList tl = new AccrualList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Accrual> ones = tl.getAccruals();
 								if(ones != null && ones.size() > 0){
 										accruals = ones;
@@ -114,7 +114,7 @@ public class AccrualContributeAction extends TopAction{
 						HourCodeList tl = new HourCodeList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<HourCode> ones = tl.getHourCodes();
 								if(ones != null && ones.size() > 0){
 										hourCodes = ones;

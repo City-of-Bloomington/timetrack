@@ -278,10 +278,10 @@ public class TimeBlockList{
 		}
 				
     public Document getDocument(){
-				if(!document_id.equals("")){
+				if(!document_id.isEmpty()){
 						Document one = new Document(document_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								document = one;
 						}
 				}
@@ -405,62 +405,62 @@ public class TimeBlockList{
 						"from time_blocks_view v ";
 				String qw = "";
 
-				if(!document_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!document_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "v.document_id=? ";
 				}
 				else{
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								qq += ", department_employees de ";
-								if(!qw.equals("")) qw += " and ";								
+								if(!qw.isEmpty()) qw += " and ";								
 								qw += "  de.employee_id=v.employee_id and de.department_id=? ";
 						}
-						if(!pay_period_id.equals("")){
-								if(!qw.equals("")) qw += " and ";						
+						if(!pay_period_id.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";						
 								qw += "v.pay_period_id=? ";
 						}
-						if(!employee_id.equals("")){
-								if(!qw.equals("")) qw += " and ";
+						if(!employee_id.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
 								qw += "v.employee_id=? ";
 						}
-						if(!job_id.equals("")){
-								if(!qw.equals("")) qw += " and ";
+						if(!job_id.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
 								qw += "v.job_id=? ";
 						}
 				}
-				if(!date_from.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date_from.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "v.date >= ? ";
 				}
-				if(!date_to.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date_to.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "v.date <= ? ";
 				}
-				if(!date.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "v.date = ? ";
 				}
-				if(!code.equals("") && !code2.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!code.isEmpty() && !code2.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "(v.code_name like ? or v.code_name like ?)";
 				}
-				else if(!code.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				else if(!code.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "v.code_name like ? ";
 				}
 				if(clockInOnly){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " v.clock_in is not null and v.clock_out is null ";
 				}
 				else if(hasClockInAndOut){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " v.clock_in is not null and v.clock_out is not null ";
 				}
 				if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " v.inactive is null ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by v.date, v.begin_hour ";
@@ -474,40 +474,40 @@ public class TimeBlockList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!document_id.equals("")){
+						if(!document_id.isEmpty()){
 								pstmt.setString(jj++, document_id);
 						}
 						else{
-								if(!department_id.equals("")){
+								if(!department_id.isEmpty()){
 										pstmt.setString(jj++, department_id);
 								}										
-								if(!pay_period_id.equals("")){
+								if(!pay_period_id.isEmpty()){
 										pstmt.setString(jj++, pay_period_id);
 								}
-								if(!employee_id.equals("")){
+								if(!employee_id.isEmpty()){
 										pstmt.setString(jj++, employee_id);
 								}
-								if(!job_id.equals("")){
+								if(!job_id.isEmpty()){
 										pstmt.setString(jj++, job_id);
 								}
 						}
-						if(!date_from.equals("")){
+						if(!date_from.isEmpty()){
 								java.util.Date date_tmp = df.parse(date_from);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!date_to.equals("")){
+						if(!date_to.isEmpty()){
 								java.util.Date date_tmp = df.parse(date_to);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!date.equals("")){
+						if(!date.isEmpty()){
 								java.util.Date date_tmp = df.parse(date);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!code.equals("") && !code2.equals("")){
+						if(!code.isEmpty() && !code2.isEmpty()){
 								pstmt.setString(jj++, code);
 								pstmt.setString(jj++, code2);								
 						}
-						else if(!code.equals("")){
+						else if(!code.isEmpty()){
 								pstmt.setString(jj++, code);
 						}						
 						rs = pstmt.executeQuery();
@@ -524,7 +524,7 @@ public class TimeBlockList{
 								String record_method = rs.getString(19);
 								String related_accrual_id = "";
 								str = rs.getString(20);
-								if(str != null && !str.equals("")){
+								if(str != null && !str.isEmpty()){
 										related_accrual_id = str;
 								}
 								String reason = "";
@@ -598,7 +598,7 @@ public class TimeBlockList{
 										one.setHourCode(hrCode); 
 										timeBlocks.add(one);
 										addToBlocks(order_id, one);
-										if(!related_accrual_id.equals("") &&
+										if(!related_accrual_id.isEmpty() &&
 											 code_type.equals("Used")){
 												addToUsedAccruals(order_id, code_id, hrs);
 										}
@@ -609,7 +609,7 @@ public class TimeBlockList{
 										else
 												week2_flsa += hrs;
 								}
-								if(!reason.equals("")){
+								if(!reason.isEmpty()){
 										reason = code_name+" - "+reason;
 										addToReasons(order_id, reason, hrs);
 								}
@@ -781,45 +781,45 @@ public class TimeBlockList{
 							
 						" from time_blocks t,time_documents d,pay_periods p ";
 				String qw = " t.document_id=d.id and d.pay_period_id=p.id ";
-				if(!pay_period_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!pay_period_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "d.pay_period_id=? ";
 				}
-				if(!document_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!document_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "t.document_id=? ";
 				}				
-				if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!employee_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "d.employee_id=? ";
 				}
-				if(!job_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!job_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "d.job_id=? ";
 				}				
-				if(!date_from.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date_from.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "t.date >= ? ";
 				}
-				if(!date_to.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date_to.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += "t.date <= ? ";
 				}
 				if(clockInOnly){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " t.clock_in is not null and t.clock_out is null ";
 				}
-				if(!duration.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!duration.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " ((("+dd_time+" - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?) "+
 						"  or "+
 								" (("+dd_time2+" - (t.begin_hour+t.begin_minute/60.)) between 0 and ? and t.date=?)) ";
 				}
 				if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " t.inactive is null ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				// qq += " order by t.date, t.begin_hour ";
@@ -833,27 +833,27 @@ public class TimeBlockList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								pstmt.setString(jj++, pay_period_id);
 						}
-						if(!document_id.equals("")){
+						if(!document_id.isEmpty()){
 								pstmt.setString(jj++, document_id);
 						}						
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
-						if(!job_id.equals("")){
+						if(!job_id.isEmpty()){
 								pstmt.setString(jj++, job_id);
 						}						
-						if(!date_from.equals("")){
+						if(!date_from.isEmpty()){
 								java.util.Date date_tmp = df.parse(date_from);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!date_to.equals("")){
+						if(!date_to.isEmpty()){
 								java.util.Date date_tmp = df.parse(date_to);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!duration.equals("")){
+						if(!duration.isEmpty()){
 								pstmt.setString(jj++, duration);
 								java.util.Date date_tmp = df.parse(date_to);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
@@ -1140,17 +1140,17 @@ public class TimeBlockList{
     }
     void prepareHolidays(){
 				HolidayList hl = new HolidayList(debug);
-				if(!pay_period_id.equals("")){
+				if(!pay_period_id.isEmpty()){
 						hl.setPay_period_id(pay_period_id);
 				}
 				else{
-						if(!date_from.equals(""))
+						if(!date_from.isEmpty())
 								hl.setDate_from(date_from);
-						if(!date_to.equals(""))
+						if(!date_to.isEmpty())
 								hl.setDate_to(date_to);
 				}
 				String back = hl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						holidays = hl;
 				}
     }

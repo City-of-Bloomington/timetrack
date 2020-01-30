@@ -209,7 +209,7 @@ public class TmwrpBlock{
     }
     public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -223,10 +223,10 @@ public class TmwrpBlock{
     }
 		
     public HourCode getHourCode(){
-				if(hourCode == null && !hour_code_id.equals("")){
+				if(hourCode == null && !hour_code_id.isEmpty()){
 						HourCode one = new HourCode(hour_code_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								hourCode = one;
 						}
 				}
@@ -278,16 +278,16 @@ public class TmwrpBlock{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into tmwrp_blocks values(?,?,?,?,?, ?,?) ";
-				if(run_id.equals("")){
+				if(run_id.isEmpty()){
 						msg = " timewarp run not set ";
 						return msg;
 				}
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = " timewarp id not set ";
 						return msg;
 				}
 								
-				if(hour_code_id.equals("")){
+				if(hour_code_id.isEmpty()){
 						msg = " hour code id not set ";
 						return msg;
 				}
@@ -332,7 +332,7 @@ public class TmwrpBlock{
 				if(code_type.equals("Amount")){
 						qq = "insert into tmwrp_blocks values(?,?,?,?,?, 0,?) ";
 				}
-				if(run_id.equals("")){
+				if(run_id.isEmpty()){
 						msg = " timewarp run not set ";
 						return msg;
 				}

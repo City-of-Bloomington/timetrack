@@ -46,7 +46,7 @@ public class Node extends Type{
     // getters
     //
 		public boolean getManagers_only(){
-				return !managers_only.equals("");
+				return !managers_only.isEmpty();
     }
 		public String getAnnotation(){
 				return annotation;
@@ -74,7 +74,7 @@ public class Node extends Type{
 		}
 		public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -123,11 +123,11 @@ public class Node extends Type{
 		public String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into workflow_nodes values(0,?,?,?,?,null) ";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = " name not set ";
 						return msg;
 				}
@@ -140,24 +140,23 @@ public class Node extends Type{
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, name);
-						if(description.equals(""))
+						if(description.isEmpty())
 								pstmt.setNull(2, Types.VARCHAR);
 						else
 								pstmt.setString(2, description);
-						if(managers_only.equals(""))
+						if(managers_only.isEmpty())
 								pstmt.setNull(3, Types.CHAR);
 						else
 								pstmt.setString(3, "y");
-						if(annotation.equals(""))
+						if(annotation.isEmpty())
 								pstmt.setNull(4, Types.VARCHAR);
 						else
 								pstmt.setString(4, annotation);								
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -167,7 +166,7 @@ public class Node extends Type{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -179,7 +178,7 @@ public class Node extends Type{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						return " name not set ";
 				}
 				String qq = "update workflow_nodes set name=?,description=?,managers_only=?,annotation=?,inactive=? where id=? ";
@@ -192,21 +191,21 @@ public class Node extends Type{
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, name);
-						if(description.equals(""))
+						if(description.isEmpty())
 								pstmt.setNull(2, Types.VARCHAR);
 						else
 								pstmt.setString(2, description);
-						if(managers_only.equals("")){
+						if(managers_only.isEmpty()){
 								pstmt.setNull(3, Types.CHAR);
 						}
 						else{
 								pstmt.setString(3,"y");
 						}
-						if(annotation.equals(""))
+						if(annotation.isEmpty())
 								pstmt.setNull(4, Types.VARCHAR);
 						else
 								pstmt.setString(4, annotation);								
-						if(inactive.equals("")){
+						if(inactive.isEmpty()){
 								pstmt.setNull(5, Types.CHAR);
 						}
 						else{

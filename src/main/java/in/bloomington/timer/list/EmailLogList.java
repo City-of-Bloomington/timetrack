@@ -62,19 +62,19 @@ public class EmailLogList extends CommonInc{
 				ResultSet rs = null;
 				String qw = "";
 				String qq = " select id,user_id,email_from,email_to,cc,bcc,subject,text_message,send_errors,date_format(date_time,'%m/%d/%y %H:%i'),type from email_logs ";
-				if(!date_from.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date_from.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " date_time >= ? ";
 				}
-				if(!date_to.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!date_to.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " date_time <= ? ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by id desc ";
-				if(limit.equals("")){
+				if(limit.isEmpty()){
 						qq += " limit "+limit;
 				}
 				if(debug)
@@ -87,11 +87,11 @@ public class EmailLogList extends CommonInc{
 				try{
 						int jj=1;
 						pstmt = con.prepareStatement(qq);
-						if(!date_from.equals("")){
+						if(!date_from.isEmpty()){
 								java.util.Date date_tmp = df.parse(date_from);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(!date_to.equals("")){
+						if(!date_to.isEmpty()){
 								java.util.Date date_tmp = df.parse(date_to);
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						}										

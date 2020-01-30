@@ -55,7 +55,7 @@ public class SalaryGroup implements Serializable{
 		}
 		public int hashCode(){
 				int seed = 17;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -82,13 +82,13 @@ public class SalaryGroup implements Serializable{
 				return excess_culculation;
     }				
     public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
 		public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
 		}
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
 		}
 		public boolean isExempt(){
 				return name.equals("Exempt");
@@ -166,10 +166,10 @@ public class SalaryGroup implements Serializable{
 						default_regular_id = val;
     }
 		public HourCode getDefaultRegularCode(){
-				if(defaultRegularCode == null && !default_regular_id.equals("")){
+				if(defaultRegularCode == null && !default_regular_id.isEmpty()){
 						HourCode one = new HourCode(default_regular_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								defaultRegularCode = one;
 						}
 				}
@@ -196,8 +196,8 @@ public class SalaryGroup implements Serializable{
 						back = "Could not connect to DB";
 						return back;
 				}
+				logger.debug(qq);				
 				try{
-						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1,id);
 						rs = pstmt.executeQuery();
@@ -224,12 +224,12 @@ public class SalaryGroup implements Serializable{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
 				String qq = " insert into salary_groups values(0,?,?,?,?,?)";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Earn code name is required";
 						return msg;
 				}
@@ -238,16 +238,16 @@ public class SalaryGroup implements Serializable{
 						msg = "Could not connect to DB ";
 						return msg;
 				}
+				logger.debug(qq);
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								pstmt.executeUpdate();
-								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt2 = con.prepareStatement(qq);
+								rs = pstmt2.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -258,7 +258,7 @@ public class SalaryGroup implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -268,20 +268,20 @@ public class SalaryGroup implements Serializable{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, name);
-						if(description.equals("")){
+						if(description.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else
 								pstmt.setString(jj++, description);
-						if(default_regular_id.equals(""))
+						if(default_regular_id.isEmpty())
 								default_regular_id = "1"; // Reg hour code
 						pstmt.setString(jj++, default_regular_id);
-						if(excess_culculation.equals("")){
+						if(excess_culculation.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else
 								pstmt.setString(jj++, excess_culculation);
-						if(inactive.equals(""))
+						if(inactive.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");						
@@ -298,7 +298,7 @@ public class SalaryGroup implements Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update salary_groups set name=?, description=?,default_regular_id=?,excess_culculation=?, inactive=? where id=?";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Earn code name is required";
 						return msg;
 				}

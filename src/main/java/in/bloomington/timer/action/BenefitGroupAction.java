@@ -30,7 +30,7 @@ public class BenefitGroupAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = benefitGroup.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 						}
 						else{
@@ -39,7 +39,7 @@ public class BenefitGroupAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = benefitGroup.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);
 						}
@@ -50,7 +50,7 @@ public class BenefitGroupAction extends TopAction{
 				}
 				else if(action.startsWith("Delete")){
 						back = benefitGroup.doDelete();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 						}
 						else{
@@ -62,9 +62,9 @@ public class BenefitGroupAction extends TopAction{
 				}				
 				else{		
 						getBenefitGroup();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = benefitGroup.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 										addError(back);
 								}
@@ -91,14 +91,14 @@ public class BenefitGroupAction extends TopAction{
 				return benefitGroupsTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<BenefitGroup> getBenefitGroups(){
 				if(benefitGroups == null){
 						BenefitGroupList tl = new BenefitGroupList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<BenefitGroup> ones = tl.getBenefitGroups();
 								if(ones != null && ones.size() > 0){
 										benefitGroups = ones;

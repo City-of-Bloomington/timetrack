@@ -89,10 +89,10 @@ public class GroupLocation{
     }		
 		public int hashCode(){
 				int seed = 29;
-				if(!group_id.equals("")){
+				if(!group_id.isEmpty()){
 						try{
 								seed += Integer.parseInt(group_id);
-								if(!location_id.equals("")){
+								if(!location_id.isEmpty()){
 										seed += Integer.parseInt(location_id);
 								}
 						}catch(Exception ex){
@@ -137,20 +137,20 @@ public class GroupLocation{
 				return group_id+" "+location_id;
     }
 		public Location getLocation(){
-				if(location == null && !location_id.equals("")){
+				if(location == null && !location_id.isEmpty()){
 						Location one = new Location(location_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								location = one;
 						}
 				}
 				return location;
 		}
 		public Group getGroup(){
-				if(group == null && !group_id.equals("")){
+				if(group == null && !group_id.isEmpty()){
 						Group one = new Group(group_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								group = one;
 						}
 				}
@@ -210,16 +210,16 @@ public class GroupLocation{
 				return back;
 		}
 		public String doSave(){
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				Connection con = null;
 				String msg="", str="";
 				String qq = " insert into group_locations values(0,?,?)";
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = "group id is required";
 						return msg;
 				}
-				if(location_id.equals("")){
+				if(location_id.isEmpty()){
 						msg = "location id is required";
 						return msg;
 				}
@@ -233,11 +233,10 @@ public class GroupLocation{
 						pstmt.setString(1, group_id);
 						pstmt.setString(2, location_id);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -247,7 +246,7 @@ public class GroupLocation{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -259,11 +258,11 @@ public class GroupLocation{
 				Connection con = null;
 				String msg="", str="";
 				String qq = " update group_locations set group_id=?,location_id=? where id=?";
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = "group id not set";
 						return msg;
 				}
-				if(location_id.equals("")){
+				if(location_id.isEmpty()){
 						msg = "location id not set";
 						return msg;
 				}
@@ -295,7 +294,7 @@ public class GroupLocation{
 				Connection con = null;
 				String msg="", str="";
 				String qq = " delete from group_locations where id=?";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = "id is required";
 						return msg;
 				}

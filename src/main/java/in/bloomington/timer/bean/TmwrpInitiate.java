@@ -68,7 +68,7 @@ public class TmwrpInitiate{
     }
     public int hashCode(){
 				int seed = 37;
-				if(!pay_period_id.equals("")){
+				if(!pay_period_id.isEmpty()){
 						try{
 								seed += Integer.parseInt(pay_period_id)*31;
 						}catch(Exception ex){
@@ -129,9 +129,9 @@ public class TmwrpInitiate{
 								manager = new TimewarpManager();
 								manager.setDocument_id(id);
 								String back = manager.doProcess();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										if(msg.indexOf(back) == -1){
-												if(!msg.equals("")) msg += ", ";
+												if(!msg.isEmpty()) msg += ", ";
 												msg += back;												
 										}
 								}
@@ -194,9 +194,9 @@ public class TmwrpInitiate{
 								manager = new TimewarpManager();
 								manager.setDocument_id(id);
 								String back = manager.doProcess();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										if(msg.indexOf(back) == -1){
-												if(!msg.equals("")) msg += ", ";
+												if(!msg.isEmpty()) msg += ", ";
 												msg += back;												
 										}
 								}
@@ -259,9 +259,9 @@ public class TmwrpInitiate{
 								manager = new TimewarpManager();
 								manager.setDocument_id(id);
 								String back = manager.doProcess();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										if(msg.indexOf(back) == -1){
-												if(!msg.equals("")) msg += ", ";
+												if(!msg.isEmpty()) msg += ", ";
 												msg += back;												
 										}
 								}
@@ -315,11 +315,11 @@ public class TmwrpInitiate{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(!doc_id.equals("")){
+				if(!doc_id.isEmpty()){
 						TimewarpManager manager = new TimewarpManager();
 						manager.setDocument_id(doc_id);
 						String back = manager.doProcess();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								msg += back;												
 						}
 						else{

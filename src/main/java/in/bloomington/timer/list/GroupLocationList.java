@@ -61,16 +61,16 @@ public class GroupLocationList{
 						return back;
 				}
 				String qw = "";
-				if(!group_id.equals("")){
+				if(!group_id.isEmpty()){
 						qw  += " t.group_id = ? ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				try{
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								pstmt.setString(1, group_id);
 						}						
 						rs = pstmt.executeQuery();

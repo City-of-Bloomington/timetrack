@@ -398,7 +398,7 @@ public class Block{
 						minutes = val;
 		}		
     public void setHours(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						try{
 								hours = Double.parseDouble(val);
 								hours_set = true;
@@ -411,7 +411,7 @@ public class Block{
 				}
     }
     public void setMinutes(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						try{
 								minutes = Integer.parseInt(val);
 						}catch(Exception ex){
@@ -420,7 +420,7 @@ public class Block{
 				}
     }		
     public void setAmount(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						try{
 								amount = Double.parseDouble(val);
 								amount_set = true;
@@ -453,7 +453,7 @@ public class Block{
 		}
 		public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -470,10 +470,10 @@ public class Block{
 		}
 		public HourCode getHourCode(){
 				if(!hourCodeSet){
-						if(!hour_code_id.equals("")){
+						if(!hour_code_id.isEmpty()){
 								HourCode one = new HourCode(hour_code_id);
 								String back = one.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										hourCode = one;
 										hourCodeSet = true;
 								}
@@ -486,10 +486,10 @@ public class Block{
 		}
 		public EarnCodeReason getEarnCodeReason(){
 				if(earnCodeReason == null){
-						if(!earn_code_reason_id.equals("")){
+						if(!earn_code_reason_id.isEmpty()){
 								EarnCodeReason one = new EarnCodeReason(earn_code_reason_id);
 								String back = one.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										earnCodeReason = one;
 								}
 						}
@@ -508,12 +508,12 @@ public class Block{
 		// for export purpose
 		//
 		public CodeRef getCodeRef(){
-				if(codeRef == null && !hour_code_id.equals("")){
+				if(codeRef == null && !hour_code_id.isEmpty()){
 						CodeRefList cdr = new CodeRefList();
 						cdr.setCode_id(hour_code_id);
 						cdr.setIgnoreHash();
 						String back = cdr.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<CodeRef> ones = cdr.getCodeRefs();
 								if(ones != null && ones.size() == 1){
 										codeRef = ones.get(0);
@@ -523,17 +523,17 @@ public class Block{
 				return codeRef;
 		}		
 		public Document getDocument(){
-				if(!document_id.equals("") && document == null){
+				if(!document_id.isEmpty() && document == null){
 						Document one = new Document(document_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 							 document = one;
 						}
 				}
 				return document;
 		}
 		public String getSalary_group_id(){
-				if(salary_group_id.equals("")){
+				if(salary_group_id.isEmpty()){
 						if(jobTask == null){
 								getDocument();
 								if(document != null){
@@ -548,7 +548,7 @@ public class Block{
 				return salary_group_id;
 		}
 		public String getGroup_id(){
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						getSalary_group_id(); // we use this to find group_id as well
 				}
 				return group_id;
@@ -562,10 +562,10 @@ public class Block{
 						group_id = val;
 		}		
 		public boolean isClockIn(){
-				return !clock_in.equals("");
+				return !clock_in.isEmpty();
 		}
 		public boolean isClockOut(){
-				return !clock_out.equals("");
+				return !clock_out.isEmpty();
 		}
 		public boolean isClockInOnly(){
 				return isClockIn() && !isClockOut();

@@ -33,9 +33,9 @@ public class ReportJobAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						back = findJobs();						
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -62,7 +62,7 @@ public class ReportJobAction extends TopAction{
 				return jobsTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		// 
@@ -83,7 +83,7 @@ public class ReportJobAction extends TopAction{
 				return filename;
 		}
 		public String getEmploymentType(){
-				if(employmentType.equals(""))
+				if(employmentType.isEmpty())
 						return "-1";
 				return employmentType;
 		}
@@ -98,19 +98,19 @@ public class ReportJobAction extends TopAction{
 				}
 		}
 		public boolean hasDepartment(){
-				return !department_id.equals("");
+				return !department_id.isEmpty();
 		}
 		public String getDepartment_id(){
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						return "-1";
 				}
 				return department_id;
 		}				
 		public Department getDepartment(){
-				if(department == null && !department_id.equals("")){
+				if(department == null && !department_id.isEmpty()){
 						Department one = new Department(department_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department = one;
 						}
 				}
@@ -121,7 +121,7 @@ public class ReportJobAction extends TopAction{
 						DepartmentList gsl = new DepartmentList();
 						gsl.ignoreSpecialDepts();
 						String back = gsl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Department> ones = gsl.getDepartments();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -132,7 +132,7 @@ public class ReportJobAction extends TopAction{
 		}				
 		public String findJobs(){
 				String back = "";
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						back ="You need to pick a department";
 						return back;
 				}
@@ -151,7 +151,7 @@ public class ReportJobAction extends TopAction{
 						jobsTitle = jobsTitle+" (Full Time)";						
 				}
 				back = jtl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<JobTask> ones = jtl.getJobs();
 						if(ones != null && ones.size() > 0)
 								jobs = ones;

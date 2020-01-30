@@ -99,7 +99,7 @@ public class GroupShift implements Serializable{
 		}
 		public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -124,13 +124,13 @@ public class GroupShift implements Serializable{
 				return expire_date;
 		}		
     public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
 		public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
 		}
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
 		}
     //
     // setters
@@ -164,20 +164,20 @@ public class GroupShift implements Serializable{
 				return id;
     }
 		public Group getGroup(){
-				if(group == null && !group_id.equals("")){
+				if(group == null && !group_id.isEmpty()){
 						Group dd = new Group(group_id);
 						String back = dd.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								group = dd;
 						}
 				}
 				return group;				
 		}
 		public Shift getShift(){
-				if(shift == null && !shift_id.equals("")){
+				if(shift == null && !shift_id.isEmpty()){
 						Shift dd = new Shift(shift_id);
 						String back = dd.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								shift = dd;
 						}
 				}
@@ -224,17 +224,17 @@ public class GroupShift implements Serializable{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
 				String qq = " select count(*) from group_shifts where group_id=? and inactive is null and expire_date is null";
 				String qq2 = " insert into group_shifts values(0,?,?,?,?,null)";
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = "Group is required";
 						return msg;
 				}
-				if(shift_id.equals("")){
+				if(shift_id.isEmpty()){
 						msg = "Shift is required";
 						return msg;
 				}				
@@ -260,23 +260,22 @@ public class GroupShift implements Serializable{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, group_id);
 						pstmt.setString(2, shift_id);						
-						if(start_date.equals("")){
+						if(start_date.isEmpty()){
 								start_date = Helper.getToday();
 						}
 						java.util.Date date_tmp = df.parse(start_date);
 						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
-						if(expire_date.equals(""))
+						if(expire_date.isEmpty())
 								pstmt.setNull(4, Types.DATE);
 						else{
 								date_tmp = df.parse(expire_date);
 								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 						}
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -286,7 +285,7 @@ public class GroupShift implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -299,11 +298,11 @@ public class GroupShift implements Serializable{
 				String qq = " update group_shifts set group_id=?, shift_id=?,"+
 						"start_date=?,expire_date=?,"+
 						"inactive=? where id=?";
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = "Group is required";
 						return msg;
 				}
-				if(shift_id.equals("")){
+				if(shift_id.isEmpty()){
 						msg = "Shift is required";
 						return msg;
 				}				
@@ -316,19 +315,19 @@ public class GroupShift implements Serializable{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, group_id);
 						pstmt.setString(2, shift_id);
-						if(start_date.equals("")){
+						if(start_date.isEmpty()){
 								start_date = Helper.getToday();
 						}
 						java.util.Date date_tmp = df.parse(start_date);
 						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
-						if(expire_date.equals(""))
+						if(expire_date.isEmpty())
 								pstmt.setNull(4, Types.DATE);
 						else{
 								date_tmp = df.parse(expire_date);
 								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 						}						
 
-						if(inactive.equals("")){
+						if(inactive.isEmpty()){
 								pstmt.setNull(5, Types.CHAR);
 						}
 						else

@@ -68,7 +68,7 @@ public class DepartmentService extends HttpServlet{
 				dlist = new DepartmentList();
 				dlist.ignoreSpecialDepts(); //ignore City Directors, Training
 				String back = dlist.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						departments = dlist.getDepartments();
 				}
 				if(departments != null && departments.size() > 0){
@@ -92,7 +92,7 @@ public class DepartmentService extends HttpServlet{
 		String writeJson(List<Department> departments){
 				String json="";
 				for(Department one:departments){
-						if(!json.equals("")) json += ",";
+						if(!json.isEmpty()) json += ",";
 						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getName()+"\",\"ldap_name\":\""+one.getLdap_name()+"\"}";
 				}
 				json = "["+json+"]";

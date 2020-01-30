@@ -31,37 +31,31 @@ public class HolidayAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = holiday.doSave();
-						if(!back.equals("")){
-								addActionError(back);
+						if(!back.isEmpty()){
 								addError(back);
 																
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = holiday.doUpdate();
-						if(!back.equals("")){
-								addActionError(back);
+						if(!back.isEmpty()){
 								addError(back);
 																
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");								
 						}
 				}
 				else if(action.startsWith("Delete")){
 						back = holiday.doDelete();
-						if(!back.equals("")){
-								addActionError(back);
+						if(!back.isEmpty()){
 								addError(back);
 																
 						}
 						else{
-								addActionMessage("Deleted Successfully");
 								addMessage("Deleted Successfully");
 								id="";
 								holiday = new Holiday(debug);
@@ -69,9 +63,9 @@ public class HolidayAction extends TopAction{
 				}				
 				else{		
 						getHoliday();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = holiday.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 										addError(back);
 								}
@@ -98,7 +92,7 @@ public class HolidayAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setYear(int val){
@@ -115,7 +109,7 @@ public class HolidayAction extends TopAction{
 						HolidayList tl = new HolidayList(debug);
 						tl.setYear(""+year);
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Holiday> ones = tl.getHolidays();
 								if(ones != null && ones.size() > 0){
 										holidays = ones;

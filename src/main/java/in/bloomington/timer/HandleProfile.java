@@ -77,7 +77,7 @@ public class HandleProfile{
 				String msg = "";
 				JobTaskList jbl = new JobTaskList();
 				msg = jbl.findForUpdate();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						List<JobTask> ejobs = jbl.getJobs();
 						if(ejobs != null && ejobs.size() > 0){
 								ejobHash = new Hashtable<>();
@@ -93,7 +93,7 @@ public class HandleProfile{
 				if(benefitGroups == null){
 						BenefitGroupList tl = new BenefitGroupList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<BenefitGroup> ones = tl.getBenefitGroups();
 								if(ones != null && ones.size() > 0){
 										benefitGroups = ones;
@@ -108,7 +108,7 @@ public class HandleProfile{
 				String date = Helper.getToday();
 				getBenefitGroups();
 				msg = prepareEmployeeJobs();
-				if(!msg.equals("") || ejobHash == null){
+				if(!msg.isEmpty() || ejobHash == null){
 						msg += " could not find related employee jobs ";
 						return msg;
 				}
@@ -119,7 +119,7 @@ public class HandleProfile{
 														dept_ref_id, // could be empty for all
 														true); // current only
 				msg = plist.find();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						List<Profile> ones = plist.getProfiles();
 						if(ones != null && ones.size() > 0){
 								profiles = ones;
@@ -162,7 +162,7 @@ public class HandleProfile{
 				String msg="";
 				String date = "";
 				String dt = Helper.getToday();
-				if(effective_date == null || effective_date.equals("")){
+				if(effective_date == null || effective_date.isEmpty()){
 						date = Helper.getDateAfter(dt, 21); // two weeks from now
 				}
 				else{
@@ -178,7 +178,7 @@ public class HandleProfile{
 				}
 				getBenefitGroups();
 				ProfileList plist = null;
-				if(!emp_num.equals("")){
+				if(!emp_num.isEmpty()){
 						plist = new ProfileList(date,
 														benefitGroups,
 														emp_num);
@@ -190,7 +190,7 @@ public class HandleProfile{
 																		last_name);
 				}
 				msg = plist.findOne();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						List<Profile> ones = plist.getProfiles();
 						if(ones != null && ones.size() > 0){
 								profiles = ones;
@@ -213,7 +213,7 @@ public class HandleProfile{
 														benefitGroups,
 														emp_num);
 				msg = plist.findJobs();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						jobTitles = plist.getJobTitles();
 				}				
 				return msg;
@@ -228,7 +228,7 @@ public class HandleProfile{
 														benefitGroups,
 														emp_num);
 				msg = plist.findJobs();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						jobTitles = plist.getJobTitles();
 				}
 				return msg;

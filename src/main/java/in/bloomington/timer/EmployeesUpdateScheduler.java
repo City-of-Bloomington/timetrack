@@ -43,7 +43,7 @@ public class EmployeesUpdateScheduler {
 						//
 						// for cron date is not needed
 						//
-						if(!date.equals("")){
+						if(!date.isEmpty()){
 								String strArr[] = date.split("/");
 								month = Integer.parseInt(strArr[0]);
 								day = Integer.parseInt(strArr[1]);

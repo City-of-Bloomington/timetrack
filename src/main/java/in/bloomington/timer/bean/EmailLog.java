@@ -116,12 +116,12 @@ public class EmailLog{
 		}
 		public String getReceipiants(){
 				String ret = email_to;
-				if(!cc.equals("")){
-						if(!ret.equals("")) ret += ", ";						
+				if(!cc.isEmpty()){
+						if(!ret.isEmpty()) ret += ", ";						
 						ret += cc;
 				}
-				if(!bcc.equals("")){
-						if(!ret.equals("")) ret += ", ";
+				if(!bcc.isEmpty()){
+						if(!ret.isEmpty()) ret += ", ";
 						if(bcc.indexOf(",") > -1){
 								ret += bcc.replace(",",", ");
 						}
@@ -144,19 +144,19 @@ public class EmailLog{
 				return send_errors;
 		}
 		public String getStatus(){
-			  return send_errors.equals("")? "Success":"Failure";
+			  return send_errors.isEmpty()? "Success":"Failure";
 		}
 		public boolean isFailure(){
-				return !send_errors.equals("");
+				return !send_errors.isEmpty();
 		}
 		public boolean isSuccess(){
-				return send_errors.equals("");
+				return send_errors.isEmpty();
 		}
 		public Employee getRunBy(){
-				if(user == null && !user_id.equals("")){
+				if(user == null && !user_id.isEmpty()){
 						Employee one = new Employee(user_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								user = one;
 						}
 				}
@@ -215,50 +215,49 @@ public class EmailLog{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
+				String qq = " insert into email_logs values(0,?,now(),?,?, "+
+								"?,?,?,?,?,"+
+								"?)";				
 				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to Database ";
 						return back;
 				}
-				String qq = " insert into email_logs values(0,?,now(),?,?, "+
-								"?,?,?,?,?,"+
-								"?)";
-				
 				try{
 						if(debug){
 								logger.debug(qq);
 						}
 						pstmt = con.prepareStatement(qq);			
 						pstmt.setString(1, user_id);
-						if(email_from.equals(""))
+						if(email_from.isEmpty())
 								pstmt.setNull(2, Types.VARCHAR);								
 						else
 								pstmt.setString(2, email_from);
-						if(email_to.equals(""))
+						if(email_to.isEmpty())
 								pstmt.setNull(3, Types.VARCHAR);								
 						else
 								pstmt.setString(3, email_to);						
-						if(cc.equals(""))
+						if(cc.isEmpty())
 								pstmt.setNull(4, Types.VARCHAR);								
 						else
 								pstmt.setString(4, cc);
-						if(bcc.equals(""))
+						if(bcc.isEmpty())
 								pstmt.setNull(5, Types.VARCHAR);								
 						else
 								pstmt.setString(5, bcc);
-						if(subject.equals(""))
+						if(subject.isEmpty())
 								pstmt.setNull(6, Types.VARCHAR);								
 						else
 								pstmt.setString(6, subject);
-						if(text_message.equals(""))
+						if(text_message.isEmpty())
 								pstmt.setNull(7, Types.VARCHAR);								
 						else
 								pstmt.setString(7, text_message);
-						if(send_errors.equals(""))
+						if(send_errors.isEmpty())
 								pstmt.setNull(8, Types.VARCHAR);								
 						else
 								pstmt.setString(8, send_errors);
-						if(type.equals(""))
+						if(type.isEmpty())
 								pstmt.setNull(9, Types.VARCHAR);								
 						else
 								pstmt.setString(9, type);						

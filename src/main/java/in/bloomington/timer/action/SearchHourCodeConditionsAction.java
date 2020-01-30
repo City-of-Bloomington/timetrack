@@ -29,13 +29,13 @@ public class SearchHourCodeConditionsAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						HourCodeConditionList hcl = new HourCodeConditionList();
 						hcl.setDepartment_id(dept_id);
 						hcl.setSalary_group_id(salary_group_id);
 						hcl.setHour_code_id(hour_code_id);
 						back = hcl.find();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -56,35 +56,35 @@ public class SearchHourCodeConditionsAction extends TopAction{
 				return conditionsTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDept_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						dept_id = val;
 		}
 		public String getDept_id(){
-				if(dept_id.equals("")){
+				if(dept_id.isEmpty()){
 						return "-1";
 				}
 				return dept_id;
 		}
 		public void setHour_code_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						hour_code_id = val;
 		}
 		public String getHour_code_id(){
-				if(hour_code_id.equals("")){
+				if(hour_code_id.isEmpty()){
 						return "-1";
 				}
 				return hour_code_id;
 		}		
 		public void setSalary_group_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						salary_group_id = val;
 		}
 		public String getSalary_group_id(){
-				if(salary_group_id.equals("")){
+				if(salary_group_id.isEmpty()){
 						return "-1";
 				}
 				return salary_group_id;
@@ -103,7 +103,7 @@ public class SearchHourCodeConditionsAction extends TopAction{
 						tl.setTable_name("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -116,7 +116,7 @@ public class SearchHourCodeConditionsAction extends TopAction{
 				if(salaryGroups == null){
 						SalaryGroupList sgl = new SalaryGroupList();
 						String back = sgl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<SalaryGroup> ones = sgl.getSalaryGroups();
 								if(ones != null && ones.size() > 0){
 										salaryGroups = ones;
@@ -130,7 +130,7 @@ public class SearchHourCodeConditionsAction extends TopAction{
 				if(hourCodes == null){
 						HourCodeList sgl = new HourCodeList();
 						String back = sgl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<HourCode> ones = sgl.getHourCodes();
 								if(ones != null && ones.size() > 0){
 										hourCodes = ones;

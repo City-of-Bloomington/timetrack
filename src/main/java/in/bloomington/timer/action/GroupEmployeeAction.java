@@ -32,7 +32,7 @@ public class GroupEmployeeAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = groupEmployee.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -43,7 +43,7 @@ public class GroupEmployeeAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){ 
 						back = groupEmployee.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -54,7 +54,7 @@ public class GroupEmployeeAction extends TopAction{
 				}
 				else if(action.startsWith("Change")){ 
 						back = groupEmployee.doChange();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -63,9 +63,9 @@ public class GroupEmployeeAction extends TopAction{
 				}				
 				else{		
 						getGroupEmployee();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = groupEmployee.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								emp_id = groupEmployee.getEmployee_id();
@@ -89,7 +89,7 @@ public class GroupEmployeeAction extends TopAction{
 				}
 		}
 		public String getDepartment_id(){
-				if(department_id.equals("") && !emp_id.equals("")){
+				if(department_id.isEmpty() && !emp_id.isEmpty()){
 						getEmp();
 						if(emp != null){
 								department_id = emp.getDepartment_id();
@@ -101,10 +101,10 @@ public class GroupEmployeeAction extends TopAction{
 				return department_id;
 		}
 		public Employee getEmp(){
-				if(emp == null && !emp_id.equals("")){
+				if(emp == null && !emp_id.isEmpty()){
 						Employee ee = new Employee(emp_id);
 						String back = ee.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								emp = ee;
 						}
 				}
@@ -115,7 +115,7 @@ public class GroupEmployeeAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setGroup_id(String val){
@@ -135,7 +135,7 @@ public class GroupEmployeeAction extends TopAction{
 						// we are interested in the group of the employee department
 						// we need this list just in case we need to change
 						// employee group
-						if(department_id.equals("")){
+						if(department_id.isEmpty()){
 								getDepartment_id();
 						}
 						getEmp();
@@ -143,15 +143,15 @@ public class GroupEmployeeAction extends TopAction{
 								department2_id = employee.getDepartment2_id();
 						}
 						GroupList tl = new GroupList();
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								tl.setDepartment_id(department_id);
-								if(!department2_id.equals("")){
+								if(!department2_id.isEmpty()){
 										tl.setDepartment_id(department2_id);
 								}
 						}
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ones = tl.getGroups();
 								if(ones != null && ones.size() > 0){
 										groups = ones;
@@ -167,13 +167,13 @@ public class GroupEmployeeAction extends TopAction{
 		public List<GroupEmployee> getGroupEmployees(){
 				if(groupEmployees == null){
 						GroupEmployeeList gel = new GroupEmployeeList();
-						if(group_id.equals("")){
+						if(group_id.isEmpty()){
 								getGroupEmployee();
 								group_id = groupEmployee.getGroup_id();
 						}
 						gel.setGroup_id(group_id);
 						String back = gel.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupEmployee> ones = gel.getGroupEmployees();
 								if(ones != null && ones.size() > 0){
 										groupEmployees = ones;
@@ -188,7 +188,7 @@ public class GroupEmployeeAction extends TopAction{
 						tl.setTwoPeriodsAheadOnly();
 						tl.setLimit("5");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;

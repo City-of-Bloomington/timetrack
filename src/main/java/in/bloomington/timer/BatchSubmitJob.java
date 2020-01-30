@@ -46,7 +46,7 @@ public class BatchSubmitJob implements Job{
 				PayPeriodList ppl = new PayPeriodList();
 				ppl.setLastPayPeriod();
 				String msg = ppl.find();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						logger.error(msg);
 						return;
 				}
@@ -64,7 +64,7 @@ public class BatchSubmitJob implements Job{
 				if(lastPayPeriod != null){
 						HandleBatchSubmit handle = new HandleBatchSubmit(lastPayPeriod);
 						String msg = handle.process();
-						if(!msg.equals(""))
+						if(!msg.isEmpty())
 								logger.error(msg);
 				}
 		}

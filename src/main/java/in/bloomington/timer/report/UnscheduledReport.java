@@ -39,7 +39,7 @@ public class UnscheduledReport{
 						date = val;
 		}
 		public String getDate(){
-				if(date.equals(""))
+				if(date.isEmpty())
 						date = Helper.getToday();
 				return date;
 		}
@@ -56,7 +56,7 @@ public class UnscheduledReport{
     // setters
     //
 		void findStartDates(){
-				if(!date.equals("") && date.indexOf("/") > -1){
+				if(!date.isEmpty() && date.indexOf("/") > -1){
 						try{
 								int month=1, day=1,year=2018;
 								String strArr[] = date.split("/");

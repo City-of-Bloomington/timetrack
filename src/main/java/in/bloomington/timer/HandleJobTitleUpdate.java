@@ -103,7 +103,7 @@ public class HandleJobTitleUpdate{
 			 for(Employee emp:set){
 					 Set<JobTask> jset = empJobs.get(emp);
 					 String emp_num = emp.getEmployee_number();
-					 if(emp_num == null || emp_num.equals("")) continue;
+					 if(emp_num == null || emp_num.isEmpty()) continue;
 					 if(empNwJobs.containsKey(emp_num)){
 							 Set<String> sst2 = empNwJobs.get(emp_num);
 							 for(JobTask job:jset){
@@ -174,7 +174,7 @@ public class HandleJobTitleUpdate{
 				dempl.setNoExpireDate();
 				dempl.setEmployeeActiveOnly();
 				String back = dempl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<DepartmentEmployee> ones = dempl.getDepartmentEmployees();
 						if(ones != null && ones.size() > 0){
 								for(DepartmentEmployee demp:ones){
@@ -266,8 +266,6 @@ public class HandleJobTitleUpdate{
 						while(rs.next()){
 								String str = rs.getString(1); // emp number
 								String str2 = rs.getString(6).trim(); //title
-								// String str3 = rs.getString(9); // rate
-								// System.err.println(str+" rate: "+str3);
 								if(str2.indexOf("-") > -1){
 										str2 = str2.replace('-',' ');
 								}
@@ -296,10 +294,10 @@ public class HandleJobTitleUpdate{
     public PayPeriod getPayPeriod(){
 				//
 				if(payPeriod == null){
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								PayPeriod pp = new PayPeriod(pay_period_id);
 								String back = pp.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										payPeriod = pp;
 										pay_period_id = payPeriod.getId();
 								}
@@ -308,7 +306,7 @@ public class HandleJobTitleUpdate{
 								PayPeriodList ppl = new PayPeriodList();
 								ppl.currentOnly(); 
 								String back = ppl.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<PayPeriod> ones = ppl.getPeriods();
 										if(ones != null && ones.size() > 0){
 												payPeriod = ones.get(0);

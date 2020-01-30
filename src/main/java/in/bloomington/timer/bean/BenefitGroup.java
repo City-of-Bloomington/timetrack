@@ -307,22 +307,21 @@ public class BenefitGroup{
    public  String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 		
 				String qq = "insert into benefit_groups "+ 
 						"  values(0,?,?,?,?) ";
 				String back = "";
-
+				if(debug){
+						logger.debug(qq);
+				}
+				con = UnoConnect.getConnection();				
+				if(con == null){
+						back = "Could not connect to DB ";
+						return back;
+				}
 				try{
-						if(debug){
-								logger.debug(qq);
-						}
-						con = UnoConnect.getConnection();				
-						if(con == null){
-								back = "Could not connect to DB ";
-								return back;
-						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						pstmt.setString(jj++, name);
@@ -339,11 +338,10 @@ public class BenefitGroup{
 						else
 								pstmt.setNull(jj++,Types.CHAR);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}						
@@ -353,7 +351,7 @@ public class BenefitGroup{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return back;

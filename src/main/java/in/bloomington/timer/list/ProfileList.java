@@ -114,7 +114,7 @@ public class ProfileList{
 						payPeriod = val;
     }
     public void setSelectedDeptRef(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						selected_dept_ref = val;
 				}
     }
@@ -175,7 +175,7 @@ public class ProfileList{
 						" and e.EmployeeNumber = ? "+
 						" order by e.employeenumber ";
 				*/
-				if(date == null || date.equals("")){
+				if(date == null || date.isEmpty()){
 						date = Helper.getToday();
 				}
 				String qq = "select p.JobTitle, e.EmployeeNumber, p.* "+
@@ -184,7 +184,7 @@ public class ProfileList{
 						" where e.EmployeeId = p.EmployeeID "+
 						" and ? between EffectiveDate and EffectiveEndDate "+
 						" and ? between PositionDetailESD and PositionDetailEED ";
-				if(!employee_number.equals("")){
+				if(!employee_number.isEmpty()){
 						qq += " and e.EmployeeNumber = ? ";
 				}
 				else{
@@ -203,7 +203,7 @@ public class ProfileList{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, date);
 						pstmt.setString(2, date);
-						if(!employee_number.equals("")){
+						if(!employee_number.isEmpty()){
 								pstmt.setString(3, employee_number);
 						}
 						else{
@@ -234,17 +234,17 @@ public class ProfileList{
 				if(payPeriod != null){
 						date = payPeriod.getEnd_date();
 				}
-				else if(end_date != null && !end_date.equals("")){
+				else if(end_date != null && !end_date.isEmpty()){
 						date = end_date;
 				}
 				if(date == null){
 						date = Helper.getToday();
 				}
-				if(selected_dept_ref.equals("")){
+				if(selected_dept_ref.isEmpty()){
 						if(deptRefs == null){
 								DepartmentList dl = new DepartmentList();
 								msg = dl.findDeptRefs();
-								if(msg.equals("")){
+								if(msg.isEmpty()){
 										deptRefs = dl.getDeptRefs();
 								}
 						}
@@ -329,7 +329,7 @@ public class ProfileList{
 				
 				//" and (ejp.jobEventReasonId is null or ejp.jobEventReasonId in(2,5))";
 				// one dept may be with one or multiple refs				
-				if(!selected_dept_ref.equals("")){
+				if(!selected_dept_ref.isEmpty()){
 						qq += " and ejp.departmentID in ("+selected_dept_ref+") ";// list of all depts
 				}
 				else{ // all departments at once
@@ -379,17 +379,17 @@ public class ProfileList{
 				if(payPeriod != null){
 						date = payPeriod.getEnd_date();
 				}
-				else if(!end_date.equals("")){
+				else if(!end_date.isEmpty()){
 						date = end_date;
 				}
 				if(date == null){
 						date = Helper.getToday();
 				}
-				if(selected_dept_ref.equals("") || deptRefs == null){
+				if(selected_dept_ref.isEmpty() || deptRefs == null){
 						if(deptRefs == null){
 								DepartmentList dl = new DepartmentList();
 								msg = dl.findDeptRefs();
-								if(msg.equals("")){
+								if(msg.isEmpty()){
 										deptRefs = dl.getDeptRefs();
 								}
 						}
@@ -517,7 +517,7 @@ public class ProfileList{
 				
 				//" and (ejp.jobEventReasonId is null or ejp.jobEventReasonId in(2,5))";
 				// one dept may be with one or multiple refs				
-				if(!selected_dept_ref.equals("")){
+				if(!selected_dept_ref.isEmpty()){
 						qq += " and ejp.departmentID in ("+selected_dept_ref+") ";// list of all depts
 				}
 				else{ // all departments at once
@@ -635,19 +635,19 @@ public class ProfileList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", back="";
-				if(date.equals("")){
+				if(date.isEmpty()){
 						if(payPeriod != null){
 								date = payPeriod.getEnd_date();
 						}
-						else if(end_date != null && !end_date.equals("")){
+						else if(end_date != null && !end_date.isEmpty()){
 								date = end_date;
 						}
 						if(date == null){
 								date = Helper.getToday();
 						}
 				}
-				if(employee_number.equals("") &&
-					 first_name.equals("") && last_name.equals("")){
+				if(employee_number.isEmpty() &&
+					 first_name.isEmpty() && last_name.isEmpty()){
 						msg = "Employee number, or first name and last not set ";
 						return msg;
 				}
@@ -773,7 +773,7 @@ public class ProfileList{
 						" and ejp.PositionDetailESD <= '"+date+"' "+
 						" and ejp.IsPrimaryJob = 1 ";
 				qq +=	" and ei.vsEmploymentStatusId = 258 ";
-				if(!employee_number.equals("")){
+				if(!employee_number.isEmpty()){
 						qq += " and ei.EmployeeNumber = ? ";
 						// System.err.println(" emp # "+employee_number);						
 				}
@@ -791,7 +791,7 @@ public class ProfileList{
 				try{
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
-						if(!employee_number.equals("")){						
+						if(!employee_number.isEmpty()){						
 								pstmt.setString(1, employee_number);
 						}
 						else{

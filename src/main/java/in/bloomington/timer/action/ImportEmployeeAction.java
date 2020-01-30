@@ -31,7 +31,7 @@ public class ImportEmployeeAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(action.equals("Import")){
-						if(department_id.equals("") && dept_name.equals("")){
+						if(department_id.isEmpty() && dept_name.isEmpty()){
 								back = "Department is required";
 						}
 						else{
@@ -42,11 +42,11 @@ public class ImportEmployeeAction extends TopAction{
 								}
 								else
 										el.setDept_name(dept_name);
-								if(!group_name.equals("")){
+								if(!group_name.isEmpty()){
 										el.setGroup_name(group_name);
 								}
 								back = el.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<Employee> ones = el.getEmps();
 										if(ones != null && ones.size() > 0){
 												employees = ones;
@@ -56,18 +56,18 @@ public class ImportEmployeeAction extends TopAction{
 										for(Employee one:employees){
 												/*
 												String str = one.doSave();
-												if(!str.equals("")){
+												if(!str.isEmpty()){
 														System.err.println(" error "+str);
 														back += str;
 												}
 												*/
 										}
-										if(back.equals("")){
+										if(back.isEmpty()){
 												addMessage("Imported successfully");
 										}
 								}
 						}
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 								return ret;
 						}
@@ -80,7 +80,7 @@ public class ImportEmployeeAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDepartment_id(String val){
@@ -92,14 +92,14 @@ public class ImportEmployeeAction extends TopAction{
 						group_name = val;
 		}
 		public void setDept_name(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						dept_name = val;
 		}
 		public Department getDepartment(){
-				if(department == null && !department_id.equals("")){
+				if(department == null && !department_id.isEmpty()){
 						Department dp = new Department(department_id);
 						String back = dp.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department = dp;
 						}
 				}
@@ -112,16 +112,16 @@ public class ImportEmployeeAction extends TopAction{
 				return group_name;
 		}
 		public void setEffective_date(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						effective_date = val;
 		}
 		public List<Group> getGroups(){
-				if(!department_id.equals("")){
+				if(!department_id.isEmpty()){
 						GroupList gl = new GroupList();
 						gl.setActiveOnly();
 						gl.setDepartment_id(department_id);
 						String back = gl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								groups = gl.getGroups();
 						}
 				}
@@ -136,7 +136,7 @@ public class ImportEmployeeAction extends TopAction{
 						DepartmentList tl = new DepartmentList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Department> ones = tl.getDepartments();
 								if(ones != null && ones.size() > 0){
 										departments = ones;

@@ -45,7 +45,7 @@ public class ServiceKey{
 		}
 		public int hashCode(){
 				int seed = 17;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -66,7 +66,7 @@ public class ServiceKey{
 				return key_value;
     }		
 		public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
 		}
     //
     // setters
@@ -134,11 +134,11 @@ public class ServiceKey{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into service_keys values(0,?,?,null)";
-				if(key_name.equals("")){
+				if(key_name.isEmpty()){
 						msg = "key name is required";
 						return msg;
 				}
-				if(key_value.equals("")){
+				if(key_value.isEmpty()){
 						msg = "key value is required";
 						return msg;
 				}				
@@ -176,11 +176,11 @@ public class ServiceKey{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update service_keys set key_name=?,key_value=?,inactive=? where id=?";
-				if(key_name.equals("")){
+				if(key_name.isEmpty()){
 						msg = "key name is required";
 						return msg;
 				}
-				if(key_value.equals("")){
+				if(key_value.isEmpty()){
 						msg = "key value is required";
 						return msg;
 				}				
@@ -193,7 +193,7 @@ public class ServiceKey{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, key_name);
 						pstmt.setString(2, key_value);
-						if(inactive.equals(""))
+						if(inactive.isEmpty())
 								pstmt.setNull(3, Types.CHAR);
 						else
 								pstmt.setString(3, "y");								

@@ -30,13 +30,13 @@ public class JobTimesChangeAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				getJobTime();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						jobTime.setEmployee_id(related_employee_id);
 						jobTime.setPay_period_id(pay_period_id);
 						jobTime.setTo_job_id(to_job_id);
 						jobTime.setFrom_job_id(from_job_id);
 						back = jobTime.doChange();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -46,12 +46,12 @@ public class JobTimesChangeAction extends TopAction{
 				return ret;
 		}
 		public List<JobTask> getJobs(){
-			 if(pay_period_id.equals("")){
+			 if(pay_period_id.isEmpty()){
 					 getPay_period_id();
 			 }
 			 if(jobs == null &&
-					!pay_period_id.equals("") &&
-					!related_employee_id.equals("")){
+					!pay_period_id.isEmpty() &&
+					!related_employee_id.isEmpty()){
 					 JobTaskList jtl = new JobTaskList();
 					 jtl.setEmployee_id(related_employee_id);
 					 jtl.setPay_period_id(pay_period_id);
@@ -59,7 +59,7 @@ public class JobTimesChangeAction extends TopAction{
 					 jtl.setOrderById();
 					 String back = jtl.find();
 					 back += jtl.addJobsUsedInPayPeriod();
-					 if(back.equals("")){
+					 if(back.isEmpty()){
 							 List<JobTask> ones = jtl.getJobs();
 							 if(ones != null && ones.size() > 0){
 									 jobs = ones;
@@ -79,7 +79,7 @@ public class JobTimesChangeAction extends TopAction{
 				}
 		}		
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setRelated_employee_id(String val){
@@ -94,7 +94,7 @@ public class JobTimesChangeAction extends TopAction{
 						pay_period_id = val;
 		}
 		public String getPay_period_id(){
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						getCurrentPayPeriod();
 				}
 				return pay_period_id;
@@ -115,7 +115,7 @@ public class JobTimesChangeAction extends TopAction{
 		}
 		public Employee getRelatedEmployee(){
 				if(relatedEmployee == null){
-						if(!related_employee_id.equals("")){
+						if(!related_employee_id.isEmpty()){
 								Employee emp = new Employee(related_employee_id);
 								String back = emp.doSelect();
 								if(emp != null){
@@ -131,11 +131,11 @@ public class JobTimesChangeAction extends TopAction{
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										currentPayPeriod = ones.get(0);
-										if(pay_period_id.equals("")){
+										if(pay_period_id.isEmpty()){
 												pay_period_id = currentPayPeriod.getId();
 												payPeriod = currentPayPeriod;
 										}
@@ -150,7 +150,7 @@ public class JobTimesChangeAction extends TopAction{
 						tl.avoidFuturePeriods();
 						tl.setLimit("3");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
@@ -162,12 +162,12 @@ public class JobTimesChangeAction extends TopAction{
 		public PayPeriod getPreviousPayPeriod(){
 				//
 				if(previousPayPeriod == null){
-						if(pay_period_id.equals(""))
+						if(pay_period_id.isEmpty())
 								getPay_period_id();
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.setPreviousTo(pay_period_id); // relative to currently used
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										previousPayPeriod = ones.get(0);
@@ -179,12 +179,12 @@ public class JobTimesChangeAction extends TopAction{
 		public PayPeriod getNextPayPeriod(){
 				//
 				if(nextPayPeriod == null){
-						if(pay_period_id.equals(""))
+						if(pay_period_id.isEmpty())
 								getPay_period_id();						
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.setNextTo(pay_period_id); 						
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										nextPayPeriod = ones.get(0);

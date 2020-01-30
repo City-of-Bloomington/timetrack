@@ -50,7 +50,7 @@ public class GroupManagerList{
     }
     public void addGroup_id(String val){
 				if(val != null){
-						if(!group_ids.equals("")) group_ids +=",";
+						if(!group_ids.isEmpty()) group_ids +=",";
 						group_ids += val;
 				}
     }
@@ -98,60 +98,60 @@ public class GroupManagerList{
 				String msg="", str="";
 				String qq = "select gm.id,gm.group_id,gm.employee_id,gm.wf_node_id,date_format(gm.start_date,'%m/%d/%Y'),date_format(gm.expire_date,'%m/%d/%Y'),gm.primary_flag,gm.inactive,wn.name from group_managers gm join groups g on g.id=gm.group_id join workflow_nodes wn on wn.id=gm.wf_node_id ";
 				String qw = "";
-				if(!group_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!group_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " gm.group_id=? ";
 				}
-				else if(!group_ids.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				else if(!group_ids.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " gm.group_id in ("+group_ids+")";
 				}
-				if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!employee_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " gm.employee_id=?";
 				}
-				if(!wf_node_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!wf_node_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " gm.wf_node_id=?";
 				}				
-				if(!execludeManager_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!execludeManager_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " gm.employee_id <> ?";
 				}
 				if(exclude_reviewers){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " gm.wf_node_id <> 6";
 				}
-				if(!pay_period_id.equals("")){
+				if(!pay_period_id.isEmpty()){
 						qq += ", pay_periods pp ";
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " pp.id=? and pp.start_date >= gm.start_date and (gm.expire_date is null or gm.expire_date > pp.start_date)";
 				}
 				if(approversOnly){
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += " wn.name like 'Approve'";
 				}
 				else if(processorsOnly){
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += " wn.name like 'Payroll%'";
 				}
 				else if(reviewersOnly){
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += " wn.name like 'Review'";
 				}
 				else if(timeMaintainOnly){
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += " wn.name like 'Time%'";
 				}
 				else if(approversAndProcessorsOnly){
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "(wn.name like 'Approve' or wn.name like 'Payroll%')";
 				}
 				if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " gm.inactive is null ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by gm.primary_flag desc,g.name ";
@@ -165,19 +165,19 @@ public class GroupManagerList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								pstmt.setString(jj++, group_id);
 						}						
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
-						if(!wf_node_id.equals("")){
+						if(!wf_node_id.isEmpty()){
 								pstmt.setString(jj++, wf_node_id);
 						}						
-						if(!execludeManager_id.equals("")){
+						if(!execludeManager_id.isEmpty()){
 								pstmt.setString(jj++, execludeManager_id);
 						}
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								pstmt.setString(jj++, pay_period_id);
 						}						
 						rs = pstmt.executeQuery();

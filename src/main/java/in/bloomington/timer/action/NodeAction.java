@@ -29,7 +29,7 @@ public class NodeAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = node.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -39,7 +39,7 @@ public class NodeAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = node.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -48,9 +48,9 @@ public class NodeAction extends TopAction{
 				}
 				else{		
 						getNode();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = node.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -74,16 +74,16 @@ public class NodeAction extends TopAction{
 				return nodesTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 
 		public void setNode_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						node_id = val;
 		}
 		public String getNode_id(){
-				if(node_id.equals("")){
+				if(node_id.isEmpty()){
 						if(node != null){
 								node_id = node.getId();
 						}
@@ -98,7 +98,7 @@ public class NodeAction extends TopAction{
 				//
 				NodeList gml = new NodeList();
 				String back = gml.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Node> ones = gml.getNodes();
 						if(ones != null && ones.size() > 0){
 								nodes = ones;

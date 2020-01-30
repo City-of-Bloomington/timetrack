@@ -56,7 +56,7 @@ public class SingleConnect implements ServletContextListener{
     }
 		public static Connection getNwConnection(){
 				boolean pass = false;
-				if(dbName.equals("") || dbUser.equals("")){
+				if(dbName.isEmpty() || dbUser.isEmpty()){
 						System.err.println("MS sql database: no database specified");
 						return null;
 				}

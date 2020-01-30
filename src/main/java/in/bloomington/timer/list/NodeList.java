@@ -25,83 +25,83 @@ public class NodeList{
     public NodeList(){
     }
     public List<Node> getNodes(){
-	return nodes;
+				return nodes;
     }
 		
     public void setName(String val){
-	if(val != null)
-	    name = val;
+				if(val != null)
+						name = val;
     }
     public void setActiveOnly(){
-	active_only = true;
+				active_only = true;
     }
     public void setManagers_only(){
-	managers_only = true;
+				managers_only = true;
     }
     public void setSortBy(String val){
-	if(val != null)
-	    sortBy = val;
+				if(val != null)
+						sortBy = val;
     }
     public String find(){
 		
-	String back = "";
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	Connection con = UnoConnect.getConnection();
-	String qq = "select t.id,t.name,t.description,t.managers_only,t.annotation,t.inactive from workflow_nodes t ";
-	if(con == null){
-	    back = "Could not connect to DB";
-	    return back;
-	}
-	String qw = "";
-	try{
-	    if(!name.equals("")){
-		if(!qw.equals("")) qw += " and ";
-		qw += " t.name like ? ";
-	    }
-	    if(active_only){
-		if(!qw.equals("")) qw += " and ";
-		qw += " t.inactive is null ";
-	    }
-	    if(managers_only){
-		if(!qw.equals("")) qw += " and ";
-		qw += " t.managers_only is not null ";
-	    }
-	    if(!qw.equals("")){
-		qq += " where "+qw;
-	    }
-	    if(!sortBy.equals("")){
-		qq += " order by "+sortBy;
-	    }
-	    logger.debug(qq);
-	    pstmt = con.prepareStatement(qq);
-	    if(!name.equals("")){
-		pstmt.setString(1,"%"+name+"%");
-	    }						
-	    rs = pstmt.executeQuery();
-	    if(nodes == null)
-		nodes = new ArrayList<Node>();
-	    while(rs.next()){
-		Node one =
-		    new Node(rs.getString(1),
-			     rs.getString(2),
-			     rs.getString(3),
-			     rs.getString(4) != null,
-			     rs.getString(5),
-			     rs.getString(6) != null);
-		if(!nodes.contains(one))
-		    nodes.add(one);
-	    }
-	}
-	catch(Exception ex){
-	    back += ex+" : "+qq;
-	    logger.error(back);
-	}
-	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return back;
+				String back = "";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				Connection con = UnoConnect.getConnection();
+				String qq = "select t.id,t.name,t.description,t.managers_only,t.annotation,t.inactive from workflow_nodes t ";
+				if(con == null){
+						back = "Could not connect to DB";
+						return back;
+				}
+				String qw = "";
+				try{
+						if(!name.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
+								qw += " t.name like ? ";
+						}
+						if(active_only){
+								if(!qw.isEmpty()) qw += " and ";
+								qw += " t.inactive is null ";
+						}
+						if(managers_only){
+								if(!qw.isEmpty()) qw += " and ";
+								qw += " t.managers_only is not null ";
+						}
+						if(!qw.isEmpty()){
+								qq += " where "+qw;
+						}
+						if(!sortBy.isEmpty()){
+								qq += " order by "+sortBy;
+						}
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						if(!name.isEmpty()){
+								pstmt.setString(1,"%"+name+"%");
+						}						
+						rs = pstmt.executeQuery();
+						if(nodes == null)
+								nodes = new ArrayList<Node>();
+						while(rs.next()){
+								Node one =
+										new Node(rs.getString(1),
+														 rs.getString(2),
+														 rs.getString(3),
+														 rs.getString(4) != null,
+														 rs.getString(5),
+														 rs.getString(6) != null);
+								if(!nodes.contains(one))
+										nodes.add(one);
+						}
+				}
+				catch(Exception ex){
+						back += ex+" : "+qq;
+						logger.error(back);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return back;
     }
 }
 

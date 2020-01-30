@@ -30,7 +30,7 @@ public class AccrualAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = accrual.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 								addActionError(back);
 						}
@@ -40,7 +40,7 @@ public class AccrualAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = accrual.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -49,9 +49,9 @@ public class AccrualAction extends TopAction{
 				}
 				else{		
 						getAccrual();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = accrual.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -78,7 +78,7 @@ public class AccrualAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<Accrual> getAccruals(){
@@ -86,7 +86,7 @@ public class AccrualAction extends TopAction{
 						AccrualList tl = new AccrualList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Accrual> ones = tl.getAccruals();
 								if(ones != null && ones.size() > 0){
 										accruals = ones;

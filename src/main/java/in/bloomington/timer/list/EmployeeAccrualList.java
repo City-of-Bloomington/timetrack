@@ -82,45 +82,45 @@ public class EmployeeAccrualList{
 				ResultSet rs = null;
 				String msg="", qw="";
 				String qq = "select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.description,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id ";
-				if(!document_id.equals("")){
+				if(!document_id.isEmpty()){
 						qq += " join time_documents d on d.employee_id=a.employee_id ";
 						qq += " join pay_periods p on p.id = d.pay_period_id ";						
-						if(!qw.equals("")) qw += " and "; // the last date
+						if(!qw.isEmpty()) qw += " and "; // the last date
 						qw += " a.date = (select a2.date from employee_accruals a2 where a2.date <= p.end_date and a2.employee_id=d.employee_id order by a2.id desc limit 1) ";
 						qw += " and d.id = ? and ec.type='Used' ";
 				}				
-				else if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";				
+				else if(!employee_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";				
 						qw += " a.employee_id = ? ";
 						if(most_current){
 								// we are looking for the last one
-								if(!qw.equals("")) qw += " and ";								
+								if(!qw.isEmpty()) qw += " and ";								
 								qw += " a.date = (select a2.date from employee_accruals a2 where a2.accrual_id = a.accrual_id order by a2.id desc limit 1)  ";
 						}
-						else if(!pay_period_id.equals("")){
+						else if(!pay_period_id.isEmpty()){
 								qq += ", pay_periods p ";
-								if(!qw.equals("")) qw += " and ";
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " p.id=? and a.date <= p.end_date ";
 						}
 				}
 				else{
 						// this will be the usual use
-						if(!date.equals("")){
-								if(!qw.equals("")) qw += " and ";													
+						if(!date.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";													
 								qw += " a.date=? ";
 						}
 						else {
-								if(!date_from.equals("")){
-										if(!qw.equals("")) qw += " and ";								
+								if(!date_from.isEmpty()){
+										if(!qw.isEmpty()) qw += " and ";								
 										qw += " a.date >= ? ";
 								}
-								if(!date_to.equals("")){
-										if(!qw.equals("")) qw += " and ";
+								if(!date_to.isEmpty()){
+										if(!qw.isEmpty()) qw += " and ";
 										qw += " a.date <= ? ";
 								}
 						}
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by a.id desc ";
@@ -133,28 +133,28 @@ public class EmployeeAccrualList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!document_id.equals("")){
+						if(!document_id.isEmpty()){
 								pstmt.setString(jj++, document_id);
 						}								
-						else if(!employee_id.equals("")){
+						else if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 								if(most_current){
 										// 
 								}
-								else if(!pay_period_id.equals("")){
+								else if(!pay_period_id.isEmpty()){
 										pstmt.setString(jj++, pay_period_id);										
 								}
 								else{
-										if(!date.equals("")){
+										if(!date.isEmpty()){
 												java.util.Date date_tmp = df.parse(date);
 												pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 										}
 										else {
-												if(!date_from.equals("")){
+												if(!date_from.isEmpty()){
 														java.util.Date date_tmp = df.parse(date_from);
 														pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 												}
-												if(!date_to.equals("")){
+												if(!date_to.isEmpty()){
 														java.util.Date date_tmp = df.parse(date_to);
 														pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 												}
@@ -212,7 +212,7 @@ public class EmployeeAccrualList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", qw="";
-				if(document_id.equals("")){
+				if(document_id.isEmpty()){
 						msg = " document id not set ";
 						return msg;
 				}

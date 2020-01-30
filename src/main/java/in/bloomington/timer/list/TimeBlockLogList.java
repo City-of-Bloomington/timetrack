@@ -56,14 +56,14 @@ public class TimeBlockLogList{
 				String msg="", qw="";
 				String qq = "select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,minutes,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs ";
 
-				if(!document_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!document_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " document_id = ? ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
-				if(!sortBy.equals("")){
+				if(!sortBy.isEmpty()){
 						qq += " order by "+sortBy;
 				}
 				con = UnoConnect.getConnection();
@@ -76,7 +76,7 @@ public class TimeBlockLogList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!document_id.equals("")){
+						if(!document_id.isEmpty()){
 								pstmt.setString(1, document_id);
 						}
 						rs = pstmt.executeQuery();

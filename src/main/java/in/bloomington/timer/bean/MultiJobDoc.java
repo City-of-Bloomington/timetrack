@@ -80,11 +80,11 @@ public class MultiJobDoc{
 		public String findDocuments(){
 				String back = "";
 				if(documents == null &&
-					 !employee_id.equals("") && !pay_period_id.equals("")){
+					 !employee_id.isEmpty() && !pay_period_id.isEmpty()){
 						DocumentList dl = new DocumentList(employee_id);
 						dl.setPay_period_id(pay_period_id);
 						back = dl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Document> ones = dl.getDocuments();
 								if(ones != null && ones.size() > 0){
 										documents = ones;
@@ -144,14 +144,14 @@ public class MultiJobDoc{
 		}
 		public int hashCode(){
 				int seed = 23;
-				if(!employee_id.equals("")){
+				if(!employee_id.isEmpty()){
 						try{
 								seed += Integer.parseInt(employee_id)*31;
 								
 						}catch(Exception ex){
 						}
 				}
-				if(!pay_period_id.equals("")){
+				if(!pay_period_id.isEmpty()){
 						try{
 								seed += Integer.parseInt(pay_period_id)*37;
 								
@@ -161,20 +161,20 @@ public class MultiJobDoc{
 				return seed;
 		}
 		public PayPeriod getPayPeriod(){
-				if(!pay_period_id.equals("") && payPeriod == null){
+				if(!pay_period_id.isEmpty() && payPeriod == null){
 						PayPeriod one = new PayPeriod(pay_period_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								payPeriod = one;
 						}
 				}
 				return payPeriod;
 		}				
 		public Employee getEmployee(){
-				if(!employee_id.equals("") && employee == null){
+				if(!employee_id.isEmpty() && employee == null){
 						Employee one = new Employee(employee_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								employee = one;
 						}
 				}
@@ -183,11 +183,11 @@ public class MultiJobDoc{
 
 		public List<JobTask> getJobs(){
 				if(jobs == null){
-						if(!employee_id.equals("") && !pay_period_id.equals("")){
+						if(!employee_id.isEmpty() && !pay_period_id.isEmpty()){
 								JobTaskList jl = new JobTaskList(employee_id, pay_period_id);
 								jl.setActiveOnly();
 								String back = jl.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<JobTask> ones = jl.getJobs();
 										if(ones != null && ones.size() > 0){
 												jobs = ones;
@@ -219,7 +219,7 @@ public class MultiJobDoc{
 		private void fillWarningMap(){
 				AccrualWarningList tl = new AccrualWarningList();
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<AccrualWarning> ones = tl.getAccrualWarnings();
 						if(ones != null && ones.size() > 0){
 								for(AccrualWarning one:ones){
@@ -621,7 +621,7 @@ public class MultiJobDoc{
 								if(one.getHours() > 0){
 										String str = one.getAccrual().getName();
 										if(ret.indexOf(str) == -1){
-												if(!ret.equals("")) ret += ", ";
+												if(!ret.isEmpty()) ret += ", ";
 												ret += str+": "+dfn.format(one.getHours());
 										}
 								}
@@ -724,7 +724,7 @@ public class MultiJobDoc{
 								if(accDesc == null) accDesc="";
 								String codeInfo = accName+": "+accDesc;
 								//
-								if(accrual_id != null && !accrual_id.equals("")){
+								if(accrual_id != null && !accrual_id.isEmpty()){
 										double hrs_total = one.getHours();
 										list.add(""+dfn.format(hrs_total));
 										try{
@@ -773,11 +773,11 @@ public class MultiJobDoc{
 		}
 		void prepareHolidays(){
 				HolidayList hl = new HolidayList(debug);
-				if(!pay_period_id.equals("")){
+				if(!pay_period_id.isEmpty()){
 						hl.setPay_period_id(pay_period_id);
 				}
 				String back = hl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						holidays = hl;
 				}
 		}
@@ -845,7 +845,7 @@ public class MultiJobDoc{
 																if(used <= week_excess_adj){
 																		HourCode hrc = new HourCode(""+key);
 																		String back = hrc.doSelect();
-																		if(back.equals("")){
+																		if(back.isEmpty()){
 																				str = "Week "+whichWeek+" excess of ("+dfn.format(used)+" hrs) of ("+hrc.getName()+") used ";
 																				if(!warnings.contains(str))
 																						warnings.add(str);
@@ -863,7 +863,7 @@ public class MultiJobDoc{
 																		HourCode hrc = new HourCode(""+key);
 																		String back = hrc.doSelect();
 																		double min_hrs = 0;
-																		if(back.equals("")){
+																		if(back.isEmpty()){
 																				if(hrc.hasAccrualWarning()){
 																						AccrualWarning acw = hrc.getAccrualWarning();
 																						if(acw.require_min()){
@@ -929,7 +929,7 @@ public class MultiJobDoc{
 						for(TimeBlock one:timeBlocks){
 								String str = one.getHour_code();
 								int order_index = one.getOrder_index();
-								if(str != null && !str.equals("")){
+								if(str != null && !str.isEmpty()){
 										if(str.startsWith("H1.0") || str.startsWith("UA")){
 												if(day < 0){
 														day = order_index;

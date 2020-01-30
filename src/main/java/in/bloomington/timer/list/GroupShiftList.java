@@ -105,33 +105,33 @@ public class GroupShiftList{
 						" from group_shifts gs, groups g,departments d, shifts s ";
 				String qw = "d.id=g.department_id and gs.group_id=g.id ";
 				qw += " and gs.shift_id=s.id ";
-				if(!group_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!group_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "gs.group_id = ? ";
 				}
-				if(!group_ids.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!group_ids.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "gs.group_id in ("+group_ids+")";
 				}				
-				if(!shift_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!shift_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "gs.shift_id = ? ";
 				}								
 				if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " gs.inactive is null and g.inactive is null ";
 				}
-				if(!employee_id.equals("")){
+				if(!employee_id.isEmpty()){
 						qq += ", group_employees ge ";						
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " g.id=ge.group_id ";
 						qw +=	" and ge.employee_id=?";
 				}
 				if(current_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " (gs.expire_date is null or gs.expire_date > now()) ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				con = UnoConnect.getConnection();
@@ -144,13 +144,13 @@ public class GroupShiftList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								pstmt.setString(jj++, group_id);
 						}
-						if(!shift_id.equals("")){
+						if(!shift_id.isEmpty()){
 								pstmt.setString(jj++, shift_id);
 						}
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}						
 						rs = pstmt.executeQuery();

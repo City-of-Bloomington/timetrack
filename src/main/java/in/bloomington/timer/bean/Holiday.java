@@ -68,7 +68,7 @@ public class Holiday{
 				String qq = "insert into "+ 
 						" holidays values(0,?,?) ";
 				String back = "";
-				if(date.equals("") || description.equals("")){
+				if(date.isEmpty() || description.isEmpty()){
 						back = " date or description not set ";
 						return back;
 				}
@@ -120,7 +120,7 @@ public class Holiday{
 						" set date=?, description=? "+			
 						" where id = ? ";
 				String back = "";
-				if(id.equals("") || date.equals("") || description.equals("")){
+				if(id.isEmpty() || date.isEmpty() || description.isEmpty()){
 						back = " date, description or id not set ";
 						return back;
 				}
@@ -161,7 +161,7 @@ public class Holiday{
 						" delete from holidays "+
 						" where id = ? ";
 				String back = "";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						back = " holiday id not set ";
 						return back;
 				}

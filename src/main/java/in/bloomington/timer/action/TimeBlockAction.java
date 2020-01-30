@@ -49,7 +49,7 @@ public class TimeBlockAction extends TopAction{
 						if(timeBlock.areAllTimesSet()){
 								timeBlock.setAction_by_id(user.getId());
 								back = timeBlock.doSave();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 										return "json";
 								}
@@ -69,7 +69,7 @@ public class TimeBlockAction extends TopAction{
 						if(timeBlock.areAllTimesSet()){						
 								timeBlock.setAction_by_id(user.getId());
 								back = timeBlock.doUpdate();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);								
 										return "json";
 								}
@@ -96,7 +96,7 @@ public class TimeBlockAction extends TopAction{
 						document_id = timeBlock.getDocument_id();
 						timeBlock.setAction_by_id(user.getId());
 						back = timeBlock.doDelete();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);
 						}
@@ -114,9 +114,9 @@ public class TimeBlockAction extends TopAction{
 				}
 				else{		
 						getTimeBlock();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = timeBlock.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 										addError(back);
 								}
@@ -129,13 +129,13 @@ public class TimeBlockAction extends TopAction{
 				if(timeBlock == null){
 						timeBlock = new TimeBlock();
 						timewarpManager = new TimewarpManager();
-						if(!id.equals(""))
+						if(!id.isEmpty())
 								timeBlock.setId(id);
-						if(!document_id.equals("")){
+						if(!document_id.isEmpty()){
 								timeBlock.setDocument_id(document_id);
 								timewarpManager.setDocument_id(document_id);
 						}
-						if(!date.equals(""))
+						if(!date.isEmpty())
 								timeBlock.setDate(date);
 						timeBlock.setOrder_index(order_index);
 				}
@@ -151,7 +151,7 @@ public class TimeBlockAction extends TopAction{
 				return timeBlocksTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setOrder_index(int val){
@@ -170,20 +170,20 @@ public class TimeBlockAction extends TopAction{
 		//
 		// this is passed through the link
 		public String getDocument_id(){
-				if(document_id.equals("") && timeBlock != null){
+				if(document_id.isEmpty() && timeBlock != null){
 						document_id = timeBlock.getDocument_id();
 				}
 				return document_id;
 		}
 		public Document getDocument(){
 				if(document == null){
-						if(document_id.equals("")){
+						if(document_id.isEmpty()){
 								getDocument_id();
 						}
-						if(!document_id.equals("")){
+						if(!document_id.isEmpty()){
 								Document one = new Document(document_id);
 								String back = one.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										document = one;
 										employee = document.getEmployee();
 										payPeriod = document.getPayPeriod();
@@ -200,11 +200,11 @@ public class TimeBlockAction extends TopAction{
 		}
 		
 		public void setDocument_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						document_id = val;
 		}
 		public void setDate(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						date = val;
 		}
 		public List<HourCode> getHourCodes(){
@@ -228,7 +228,7 @@ public class TimeBlockAction extends TopAction{
 								ecl.setGroup_id(group_id);
 								ecl.setActiveOnly();
 								String back = ecl.lookFor();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<HourCode> ones = ecl.getHourCodes();
 										if(ones != null && ones.size() > 0){
 												hourCodes = ones;
@@ -253,7 +253,7 @@ public class TimeBlockAction extends TopAction{
 										}
 										crcl.setActiveOnly();
 										String back = crcl.lookFor();
-										if(back.equals("")){
+										if(back.isEmpty()){
 												List<EarnCodeReason> ones = crcl.getReasons();
 												if(ones != null && ones.size() > 0){
 														earnReasons = ones;

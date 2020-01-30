@@ -33,6 +33,7 @@ public class JobType extends Type implements java.io.Serializable, Comparable<Jo
 				//
 				super(val, val2);
     }
+		@Override
 		public boolean equals(Object obj){
 				if(obj instanceof JobType){
 						JobType one =(JobType)obj;
@@ -40,9 +41,10 @@ public class JobType extends Type implements java.io.Serializable, Comparable<Jo
 				}
 				return false;				
 		}
+		@Override
 		public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){

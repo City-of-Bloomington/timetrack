@@ -68,34 +68,34 @@ public class PositionList{
 				}
 				String qw = "";
 				try{
-						if(!name.equals("")){
-								if(!qw.equals("")) qw += " and ";
+						if(!name.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " (p.name like ? or p.alias like ?) ";
 						}
 						if(active_only){
-								if(!qw.equals("")) qw += " and ";
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " p.inactive is null ";
 						}
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								qq += ", jobs j ";
-								if(!qw.equals("")) qw += " and ";								
+								if(!qw.isEmpty()) qw += " and ";								
 								qw += " j.position_id=p.id and j.group_id=? ";
 						}
-						else if(!department_id.equals("")){
+						else if(!department_id.isEmpty()){
 								qq += ", jobs j, groups g ";
-								if(!qw.equals("")) qw += " and ";								
+								if(!qw.isEmpty()) qw += " and ";								
 								qw += " j.position_id=p.id and j.group_id=g.id and g.department_id=? ";
 						}
-						if(!qw.equals("")){
+						if(!qw.isEmpty()){
 								qq += " where "+qw;
 						}
-						if(!sortBy.equals("")){
+						if(!sortBy.isEmpty()){
 								qq += " order by "+sortBy;
 						}
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								if(exact_match){
 										pstmt.setString(jj++, name);
 										pstmt.setString(jj++, name);
@@ -105,10 +105,10 @@ public class PositionList{
 										pstmt.setString(jj++,"%"+name+"%");										
 								}
 						}
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								pstmt.setString(jj++, group_id);
 						}
-						else if(!department_id.equals("")){
+						else if(!department_id.isEmpty()){
 								pstmt.setString(jj++, department_id);								
 						}						
 						rs = pstmt.executeQuery();

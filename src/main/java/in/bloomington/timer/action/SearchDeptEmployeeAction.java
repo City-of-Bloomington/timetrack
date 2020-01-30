@@ -28,9 +28,9 @@ public class SearchDeptEmployeeAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						back = deptEmpLst.find();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -88,7 +88,7 @@ public class SearchDeptEmployeeAction extends TopAction{
 				return deptEmployeesTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public boolean hasDepartmentEmployees(){
@@ -104,7 +104,7 @@ public class SearchDeptEmployeeAction extends TopAction{
 						tl.setTable_name("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;

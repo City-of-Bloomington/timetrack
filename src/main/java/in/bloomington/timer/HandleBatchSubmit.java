@@ -60,7 +60,7 @@ public class HandleBatchSubmit{
 				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 				ResultSet rs = null;
 				String msg="";
-				if(run_by.equals("")){
+				if(run_by.isEmpty()){
 						run_by = admin_id;
 				}
 				Map<String, String> map = new HashMap<>();
@@ -113,26 +113,26 @@ public class HandleBatchSubmit{
 										pstmt2.setString(3, run_by);
 										try{
 												pstmt2.executeUpdate();
-												if(!success_list.equals("")) success_list+=", ";
+												if(!success_list.isEmpty()) success_list+=", ";
 												success_list += doc_id+":"+name;
 										}
 										catch(Exception ex2){
-												if(!failure_list.equals("")) failure_list+=", ";
+												if(!failure_list.isEmpty()) failure_list+=", ";
 												failure_list += doc_id+":"+name;
 												msg ="" + ex2;
 												if(error_msg.indexOf(msg) == -1){
-														if(!error_msg.equals("")) error_msg += ", ";
+														if(!error_msg.isEmpty()) error_msg += ", ";
 														error_msg += msg;
 												}
 										}
 								}
-								if(!success_list.equals("")){
+								if(!success_list.isEmpty()){
 										pstmt3.setString(1, success_list);
 										pstmt3.setString(2, run_by);										
 										pstmt3.setNull(3, Types.VARCHAR);
 										pstmt3.executeUpdate();
 								}
-								if(!failure_list.equals("")){
+								if(!failure_list.isEmpty()){
 										pstmt3.setString(1, failure_list);
 										pstmt3.setString(2, run_by);										
 										pstmt3.setString(3, error_msg);

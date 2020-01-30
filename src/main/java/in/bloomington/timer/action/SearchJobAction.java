@@ -30,9 +30,9 @@ public class SearchJobAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						back = joblst.find();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -80,7 +80,7 @@ public class SearchJobAction extends TopAction{
 				return jobTasksTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		// todo
@@ -94,7 +94,7 @@ public class SearchJobAction extends TopAction{
 		public List<Type> getSalaryGroups(){
 				TypeList tl = new TypeList("salary_groups");
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Type> ones = tl.getTypes();
 						if(ones != null && ones.size() > 0){
 								salaryGroups = ones;
@@ -105,7 +105,7 @@ public class SearchJobAction extends TopAction{
 		public List<Type> getPositions(){
 				TypeList tl = new TypeList("positions");
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Type> ones = tl.getTypes();
 						if(ones != null && ones.size() > 0){
 								positions = ones;
@@ -117,7 +117,7 @@ public class SearchJobAction extends TopAction{
 				EmployeeList tl = new EmployeeList();
 				tl.setActiveOnly();
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Employee> ones = tl.getEmployees();
 						if(ones != null && ones.size() > 0){
 								employees = ones;
@@ -131,7 +131,7 @@ public class SearchJobAction extends TopAction{
 						tl.setTable_name("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;

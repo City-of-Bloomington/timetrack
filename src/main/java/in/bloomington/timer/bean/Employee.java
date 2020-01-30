@@ -154,13 +154,13 @@ public class Employee implements Serializable, Comparable<Employee>{
 				return ad_sid;
     }		
     public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
     public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
     }
     public boolean hasNoEmployeeNumber(){
-				return employee_number.equals("");
+				return employee_number.isEmpty();
     }
     public boolean hasOneGroup(){
 				getGroups();
@@ -182,16 +182,16 @@ public class Employee implements Serializable, Comparable<Employee>{
 				return username;
     }
     public String getFull_name(){
-				if(full_name.equals("")){
+				if(full_name.isEmpty()){
 						full_name = first_name;
-						if(!full_name.equals("")) full_name += " ";
+						if(!full_name.isEmpty()) full_name += " ";
 						full_name += last_name;
 				}
 				return full_name;
     }
     public String getNameLastFirst(){
 				String ret = last_name;
-				if(!ret.equals("")) ret += ", ";
+				if(!ret.isEmpty()) ret += ", ";
 				ret += first_name;
 				return ret;
     }		
@@ -212,7 +212,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 				if(!roleSet.isEmpty()){
 						for(String str:roleSet){
 								if(ret.indexOf(str) > -1) continue;
-								if(!ret.equals("")) ret += ", ";
+								if(!ret.isEmpty()) ret += ", ";
 								ret += str.trim();
 						}
 				}
@@ -238,11 +238,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 						id_code = val.trim();
     }
     public void setAd_sid(String val){
-				if(val != null && !val.equals(""))
+				if(val != null && !val.isEmpty())
 						ad_sid = val;
     }		
     public void setEmployee_number(String val){
-				if(val != null && !val.trim().equals(""))
+				if(val != null && !val.trim().isEmpty())
 						employee_number = val.trim();
     }
 
@@ -269,14 +269,14 @@ public class Employee implements Serializable, Comparable<Employee>{
     }
     // sometimes in AD email is set as N/A
     public void setEmail(String val){
-				if(val != null && !val.equals("N/A") && !val.equals("")){
+				if(val != null && !val.equals("N/A") && !val.isEmpty()){
 						email = val.trim();
 				}
-				if(email.equals(""))
+				if(email.isEmpty())
 						receive_email = false;
     }
     public void setRolesText (String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						if(val.indexOf(",") > -1){
 								roles = val.split(",");
 								for(String str:roles){
@@ -352,8 +352,8 @@ public class Employee implements Serializable, Comparable<Employee>{
 				}
     }
     public void addGroup_id(String val){
-				if(val != null && !val.equals("")){
-						if(!group_ids.equals("")) group_ids +=",";
+				if(val != null && !val.isEmpty()){
+						if(!group_ids.isEmpty()) group_ids +=",";
 						group_ids += val;
 				}
     }		
@@ -370,7 +370,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						selected_job_id = val;
     }
     public String getDepartment_id(){
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						getDepartmentEmployees();
 						if(departmentEmployee != null){
 								department_id = departmentEmployee.getDepartment_id();
@@ -382,7 +382,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 				return department_id;
     }
     public String getGroup_id(){
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						getGroupEmployee();
 						if(groupEmployee != null){
 								group_id = groupEmployee.getGroup_id();
@@ -410,7 +410,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 		@Override
     public int hashCode(){
 				int seed = 31;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*47;
 						}catch(Exception ex){
@@ -426,26 +426,26 @@ public class Employee implements Serializable, Comparable<Employee>{
     }
     public String getInfo(){
 				String ret="";
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						ret = "id = "+id+", ";
 				}
 				ret += "username = "+username;
-				if(!first_name.equals("")){
+				if(!first_name.isEmpty()){
 						ret += ", first name = "+first_name;
 				}
-				if(!last_name.equals("")){
+				if(!last_name.isEmpty()){
 						ret += ", last name = "+last_name;
 				}
-				if(!employee_number.equals("")){
+				if(!employee_number.isEmpty()){
 						ret += ", emp # = "+employee_number;
 				}
-				if(!id_code.equals("")){
+				if(!id_code.isEmpty()){
 						ret += ", id code = "+id_code;
 				}
-				if(!ad_sid.equals("")){
+				if(!ad_sid.isEmpty()){
 						ret += ", AD Sid = "+ad_sid;
 				}				
-				if(!email.equals(""))
+				if(!email.isEmpty())
 						ret += ", email = "+email;
 				return ret;
     }
@@ -496,17 +496,17 @@ public class Employee implements Serializable, Comparable<Employee>{
 				return hasRole("TargetEmployee");
     }
 		public boolean hasAdSid(){
-				return !ad_sid.equals("") && !id.equals("");
+				return !ad_sid.isEmpty() && !id.isEmpty();
 		}
 		public boolean hasNoAdSid(){
-				return ad_sid.equals("") && !id.equals("");
+				return ad_sid.isEmpty() && !id.isEmpty();
 		}		
     void findPayPeriod(){
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										PayPeriod one = ones.get(0);
@@ -516,17 +516,17 @@ public class Employee implements Serializable, Comparable<Employee>{
 				}
     }
     public List<Group> getGroups(){
-				if(groups == null && !id.equals("")){
+				if(groups == null && !id.isEmpty()){
 						GroupList gl = new GroupList(id);
 						gl.setActiveOnly();
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								findPayPeriod();
 						}
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								gl.setPay_period_id(pay_period_id);
 						}
 						String back = gl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ggs = gl.getGroups();
 								if(ggs != null && ggs.size() > 0){
 										groups = ggs;
@@ -566,16 +566,16 @@ public class Employee implements Serializable, Comparable<Employee>{
 				String group_ids = "";
 				if(groups != null && groups.size() > 0){
 						for(Group one:groups){
-								if(!group_ids.equals("")) group_ids +=","; 
+								if(!group_ids.isEmpty()) group_ids +=","; 
 								group_ids += one.getId();
 						}
 				}
-				if(!group_ids.equals("")){
+				if(!group_ids.isEmpty()){
 						GroupShiftList gsl = new GroupShiftList();
 						gsl.setGroup_ids(group_ids);
 						gsl.setActiveOnly();
 						String back = gsl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupShift> ones = gsl.getGroupShifts();
 								if(ones != null && ones.size() > 0){
 										groupShifts = ones;
@@ -595,12 +595,12 @@ public class Employee implements Serializable, Comparable<Employee>{
 						gml.setActiveOnly();
 						gml.setApproversOnly();
 						gml.setActiveOnly();
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								findPayPeriod();
 						}
 						gml.setPay_period_id(pay_period_id);
 						String back = gml.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupManager> ones = gml.getManagers();
 								if(ones != null){
 										approvers = ones;
@@ -626,12 +626,12 @@ public class Employee implements Serializable, Comparable<Employee>{
 						GroupManagerList gml = new GroupManagerList(id);
 						gml.setActiveOnly();
 						gml.setProcessorsOnly();
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								findPayPeriod();
 						}
 						gml.setPay_period_id(pay_period_id);						
 						String back = gml.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupManager> ones = gml.getManagers();
 								if(ones != null){
 										processors = ones;
@@ -645,12 +645,12 @@ public class Employee implements Serializable, Comparable<Employee>{
 						GroupManagerList gml = new GroupManagerList(id);
 						gml.setActiveOnly();
 						gml.setReviewersOnly();
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								findPayPeriod();
 						}
 						gml.setPay_period_id(pay_period_id);	
 						String back = gml.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupManager> ones = gml.getManagers();
 								if(ones != null){
 										reviewers = ones;
@@ -667,12 +667,12 @@ public class Employee implements Serializable, Comparable<Employee>{
 						GroupManagerList gml = new GroupManagerList(id);
 						gml.setActiveOnly();
 						gml.setTimeMaintainerOnly();
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								findPayPeriod();
 						}
 						gml.setPay_period_id(pay_period_id);
 						String back = gml.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupManager> ones = gml.getManagers();
 								if(ones != null){
 										enterors = ones;
@@ -696,16 +696,16 @@ public class Employee implements Serializable, Comparable<Employee>{
 				return department != null;
     }
     public Department getDepartment(){
-				if(department == null && !id.equals("")){
+				if(department == null && !id.isEmpty()){
 						DepartmentEmployeeList del = new DepartmentEmployeeList(id);
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								findPayPeriod();
 						}
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								del.setPay_period_id(pay_period_id);
 						}
 						String back = del.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<DepartmentEmployee> des = del.getDepartmentEmployees();
 								if(des != null && des.size() > 0){
 										DepartmentEmployee one = des.get(0);// first
@@ -720,11 +720,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 				return departmentEmployees != null;
     }		
     public List<DepartmentEmployee> getDepartmentEmployees(){
-				if(departmentEmployees == null && !id.equals("")){
+				if(departmentEmployees == null && !id.isEmpty()){
 						DepartmentEmployeeList del = new DepartmentEmployeeList(id);
 						del.setIncludeFuture();
 						String back = del.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<DepartmentEmployee> des = del.getDepartmentEmployees();
 								if(des != null && des.size() > 0){
 										departmentEmployees = des;
@@ -759,18 +759,18 @@ public class Employee implements Serializable, Comparable<Employee>{
 		}
 		public boolean hasTwoDepartments(){
 				getDepartment_id();
-				return !department_id.equals("") && !department2_id.equals("");
+				return !department_id.isEmpty() && !department2_id.isEmpty();
 		}
 		public boolean hasGroupEmployees(){
 				getGroupEmployees(); // include future
 				return groupEmployees != null && groupEmployees.size() > 0;
 		}
     public List<GroupEmployee> getGroupEmployees(){
-				if(groupEmployees == null && !id.equals("")){
+				if(groupEmployees == null && !id.isEmpty()){
 						GroupEmployeeList del = new GroupEmployeeList(id);
 						del.setIncludeFuture();
 						String back = del.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupEmployee> ones = del.getGroupEmployees();
 								if(ones != null && ones.size() > 0){
 										groupEmployees = ones;
@@ -807,27 +807,27 @@ public class Employee implements Serializable, Comparable<Employee>{
     }
     public String validate(){
 				String msg = "";
-				if(username.equals("")){
+				if(username.isEmpty()){
 						msg = "username";
 				}
-				if(last_name.equals("")){
-						if(!msg.equals("")) msg += ", ";
+				if(last_name.isEmpty()){
+						if(!msg.isEmpty()) msg += ", ";
 						msg += "last name";
 				}
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						msg += " required but not set";
 				}
 				return msg;
     }
     public List<JobTask> getJobs(){
-				if(!id.equals("") && jobs == null){
+				if(!id.isEmpty() && jobs == null){
 						JobTaskList jtl = new JobTaskList();
 						jtl.setEmployee_id(id);
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								jtl.setPay_period_id(pay_period_id);
 						}
 						String back = jtl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<JobTask> ones = jtl.getJobs();
 								if(ones != null && ones.size() > 0){
 										jobs = ones;
@@ -841,12 +841,12 @@ public class Employee implements Serializable, Comparable<Employee>{
 				return allJobs != null && allJobs.size() > 0;
 		}
     public List<JobTask> getAllJobs(){
-				if(!id.equals("") && allJobs == null){
+				if(!id.isEmpty() && allJobs == null){
 						JobTaskList jtl = new JobTaskList();
 						jtl.setEmployee_id(id);
 						jtl.setIncludeFuture();
 						String back = jtl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<JobTask> ones = jtl.getJobs();
 								if(ones != null && ones.size() > 0){
 										allJobs = ones;
@@ -891,24 +891,24 @@ public class Employee implements Serializable, Comparable<Employee>{
 						one.getFirst_name().equals(first_name) &&
 						one.getAd_sid().equals(ad_sid);
 				if(!ret) return ret;
-				if(employee_number.equals("")){
-						if(!one.getEmployee_number().equals("")){
+				if(employee_number.isEmpty()){
+						if(!one.getEmployee_number().isEmpty()){
 								return false;
 						}
 				}
-				else if(one.getEmployee_number().equals("")){
+				else if(one.getEmployee_number().isEmpty()){
 						//if ldap no employee number 
 						// we ignore
 				}
 				else {
 						ret = ret && employee_number.equals(one.getEmployee_number());
 				}
-				if(id_code.equals("")){
-						if(!one.getId_code().equals("")){
+				if(id_code.isEmpty()){
+						if(!one.getId_code().isEmpty()){
 								return false;
 						}
 				}
-				else if(one.getId_code().equals("")){
+				else if(one.getId_code().isEmpty()){
 						// if Ldap has no id Code
 						// we ignore
 				}
@@ -1007,16 +1007,16 @@ public class Employee implements Serializable, Comparable<Employee>{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.ad_sid,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive from employees e where ";
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						qq += " e.id = ? ";
 				}
-				else if(!id_code.equals("")){ // for punch clock machines
+				else if(!id_code.isEmpty()){ // for punch clock machines
 						qq += " e.id_code = ? ";		
 				}
-				else if(!username.equals("")){ // for login
+				else if(!username.isEmpty()){ // for login
 						qq += " e.username like ? ";		
 				}
-				else if(!ad_sid.equals("")){ 
+				else if(!ad_sid.isEmpty()){ 
 						qq += " e.ad_sid like ? ";		
 				}				
 				else{
@@ -1028,16 +1028,16 @@ public class Employee implements Serializable, Comparable<Employee>{
 						con = UnoConnect.getConnection();
 						if(con != null){
 								pstmt = con.prepareStatement(qq);
-								if(!id.equals("")){
+								if(!id.isEmpty()){
 										pstmt.setString(1, id);
 								}
-								else if(!id_code.equals("")){
+								else if(!id_code.isEmpty()){
 										pstmt.setString(1, id_code);
 								}								
-								else if(!username.equals("")){
+								else if(!username.isEmpty()){
 										pstmt.setString(1, username);
 								}
-								else if(!ad_sid.equals("")){
+								else if(!ad_sid.isEmpty()){
 										pstmt.setString(1, ad_sid);
 								}											
 								rs = pstmt.executeQuery();
@@ -1079,9 +1079,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;		
 				String msg="", str="";
+				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,?,now(),?)";				
 				inactive=""; // default
 				msg = validate();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				con = UnoConnect.getConnection();
@@ -1089,11 +1090,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 						msg = "Could not connect to DB ";
 						return msg;
 				}
-				String qq = " insert into employees values(0,?,?,?,?, ?,?,?,?,now(),?)";
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								pstmt.executeUpdate();
 								//
 								qq = "select LAST_INSERT_ID()";
@@ -1107,14 +1107,14 @@ public class Employee implements Serializable, Comparable<Employee>{
 										departmentEmployee.setEffective_date(effective_date);
 										msg = departmentEmployee.doSave();
 								}
-								if(!group_id.equals("")){
+								if(!group_id.isEmpty()){
 										if(groupEmployee != null){
 												groupEmployee.setEmployee_id(id);
 												groupEmployee.setEffective_date(effective_date);
 												msg = groupEmployee.doSave();
 										}
 								}
-								else if(!group_ids.equals("")){
+								else if(!group_ids.isEmpty()){
 										String[] g_arr = null;
 										try{
 												g_arr = group_ids.split(",");
@@ -1141,7 +1141,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals(""))
+				if(msg.isEmpty())
 						msg = doSelect();
 				return msg;
     }
@@ -1150,24 +1150,24 @@ public class Employee implements Serializable, Comparable<Employee>{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, username);
-						if(first_name.equals(""))
+						if(first_name.isEmpty())
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
 								pstmt.setString(jj++, first_name);
 						pstmt.setString(jj++, last_name);
-						if(id_code.equals("") || id_code.equals("0"))
+						if(id_code.isEmpty() || id_code.equals("0"))
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
 								pstmt.setString(jj++, id_code);
-						if(employee_number.equals(""))
+						if(employee_number.isEmpty())
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
 								pstmt.setString(jj++, employee_number);
-						if(ad_sid.equals(""))
+						if(ad_sid.isEmpty())
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
 								pstmt.setString(jj++, ad_sid);						
-						if(email.equals("")){
+						if(email.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else{
@@ -1176,7 +1176,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						String role = "";						
 						if(!roleSet.isEmpty()){
 								for(String str:roleSet){
-										if(!role.equals("")) role +=",";
+										if(!role.isEmpty()) role +=",";
 										role += str.trim();
 								}
 						}
@@ -1184,8 +1184,8 @@ public class Employee implements Serializable, Comparable<Employee>{
 							 role = "Employee";	
 						}
 						pstmt.setString(jj++, role);
-						if(id.equals("")) inactive = ""; // new record
-						if(inactive.equals(""))
+						if(id.isEmpty()) inactive = ""; // new record
+						if(inactive.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");						
@@ -1202,12 +1202,12 @@ public class Employee implements Serializable, Comparable<Employee>{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update employees set username=?,first_name=?,last_name=?,id_code=?, employee_number=?, ad_sid=?, email=?,roles=?,inactive=? where id=?";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = "id is required";
 						return msg;
 				}
 				msg = validate();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				con = UnoConnect.getConnection();
@@ -1238,7 +1238,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						departmentEmployee.setEmployee_id(id);
 						msg = departmentEmployee.doSave();
 				}
-				if(!group_id.equals("")){
+				if(!group_id.isEmpty()){
 						if(groupEmployee != null){
 								groupEmployee.setEmployee_id(id);
 								msg = groupEmployee.doSave();
@@ -1255,7 +1255,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 						" last_name=?,id_code=?, email=?, employee_number=?, "+
 						" ad_sid=? "+
 						" where id=? ";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = "id is required";
 						return msg;
 				}
@@ -1263,6 +1263,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 						msg = "ldap employee info not provided";
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
 						setUsername(ldapEmp.getUsername());
 						setFirst_name(ldapEmp.getFirst_name());
@@ -1270,38 +1275,34 @@ public class Employee implements Serializable, Comparable<Employee>{
 						//
 						// in case not in ldap yet and entered mannually
 						// we ignore ldap code if not set yet
-						if(!ldapEmp.getId_code().equals("")) 
+						if(!ldapEmp.getId_code().isEmpty()) 
 								setId_code(ldapEmp.getId_code());
 						// same apply for employee number
-						if(!ldapEmp.getEmployee_number().equals(""))						
+						if(!ldapEmp.getEmployee_number().isEmpty())						
 								setEmployee_number(ldapEmp.getEmployee_number());
 						setEmail(ldapEmp.getEmail());
 						setAd_sid(ldapEmp.getAd_sid());
-						con = UnoConnect.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
+						// 
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, username);
-						if(first_name.equals(""))
+						if(first_name.isEmpty())
 								pstmt.setNull(2, Types.VARCHAR);
 						else
 								pstmt.setString(2, first_name);
 						pstmt.setString(3, last_name);
-						if(id_code.equals(""))
+						if(id_code.isEmpty())
 								pstmt.setNull(4, Types.VARCHAR);
 						else
 								pstmt.setString(4, id_code);
-						if(email.equals(""))
+						if(email.isEmpty())
 								pstmt.setNull(5, Types.VARCHAR);
 						else
 								pstmt.setString(5, email);
-						if(employee_number.equals(""))
+						if(employee_number.isEmpty())
 								pstmt.setNull(6, Types.VARCHAR);
 						else						
 								pstmt.setString(6, employee_number);
-						if(ad_sid.equals(""))
+						if(ad_sid.isEmpty())
 								pstmt.setNull(7, Types.VARCHAR);
 						else
 								pstmt.setString(7, ad_sid);
@@ -1328,15 +1329,15 @@ public class Employee implements Serializable, Comparable<Employee>{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update employees set inactive='y' where id in ("+idSet+")";
-				if(idSet == null || idSet.equals("")){
+				if(idSet == null || idSet.isEmpty()){
 						return msg;
 				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "Could not connect to DB ";
+						return msg;
+				}				
 				try{
-						con = UnoConnect.getConnection();
-						if(con == null){
-								msg = "Could not connect to DB ";
-								return msg;
-						}
 						pstmt = con.prepareStatement(qq);
 						pstmt.executeUpdate();
 				}

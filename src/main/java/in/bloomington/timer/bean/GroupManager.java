@@ -63,27 +63,27 @@ public class GroupManager implements Serializable{
 				return group_id;
     }
     public String getEmployee_id(){
-				if(employee_id.equals(""))
+				if(employee_id.isEmpty())
 						return "-1";
 				return employee_id;
     }
     public String getWf_node_id(){
-				if(wf_node_id.equals(""))
+				if(wf_node_id.isEmpty())
 						return "-1";
 				return wf_node_id;
     }
     public String getEmployee_id2(){
-				if(employee_id2.equals(""))
+				if(employee_id2.isEmpty())
 						return "-1";
 				return employee_id2;
     }
     public String getWf_node_id2(){
-				if(wf_node_id2.equals(""))
+				if(wf_node_id2.isEmpty())
 						return "-1";						
 				return wf_node_id2;
     }		
     public String getStart_date(){
-				if(id.equals(""))
+				if(id.isEmpty())
 						return CommonInc.default_effective_date;
 				return start_date;
     }
@@ -91,19 +91,19 @@ public class GroupManager implements Serializable{
 				return expire_date;
     }		
 		public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
 		public boolean getPrimary(){
-				return !primary.equals("");
+				return !primary.isEmpty();
     }
 		public boolean isPrimary(){
-				return !primary.equals("");
+				return !primary.isEmpty();
 		}
 		public String getId(){
 				return id;
     }
     public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
     }
 		public boolean canTimeMaintain(){
 				getNode();
@@ -134,10 +134,10 @@ public class GroupManager implements Serializable{
 				return false;
 		}		
 		public Node getNode(){
-				if(!wf_node_id.equals("") && node == null){
+				if(!wf_node_id.isEmpty() && node == null){
 						Node one = new Node(wf_node_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								node = one;
 						}
 				}
@@ -199,7 +199,7 @@ public class GroupManager implements Serializable{
 		}
 		public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -209,11 +209,11 @@ public class GroupManager implements Serializable{
 				return seed;
 		}
 		public List<Employee> getEmployees(){
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						EmployeeList ul = new EmployeeList();
 						ul.setGroup_id(group_id); // group id
 						String back = ul.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Employee> el = ul.getEmployees();
 								if(el != null && el.size() > 0){
 										employees = el;
@@ -223,20 +223,20 @@ public class GroupManager implements Serializable{
 				return employees;
 		}
 		public Group getGroup(){
-				if(!group_id.equals("") && group == null){
+				if(!group_id.isEmpty() && group == null){
 						Group one = new Group(group_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								group = one;
 						}
 				}
 				return group;
 		}
 		public Employee getEmployee(){
-				if(!employee_id.equals("") && employee == null){
+				if(!employee_id.isEmpty() && employee == null){
 						Employee one = new Employee(employee_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								employee = one;
 						}
 				}
@@ -284,12 +284,12 @@ public class GroupManager implements Serializable{
 		public String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select count(*) from group_managers gm where gm.group_id=? and gm.employee_id=? and gm.wf_node_id=? and gm.inactive is null and gm.expire_date is null";
 				String qq2 = "insert into group_managers values(0,?,?,?,?,?,null,null) ";
-				if(employee_id.equals("") || group_id.equals("") || wf_node_id.equals("")){
+				if(employee_id.isEmpty() || group_id.isEmpty() || wf_node_id.isEmpty()){
 						msg = " group, employee or role not set ";
 						return msg;
 				}
@@ -313,42 +313,40 @@ public class GroupManager implements Serializable{
 						if(rs.next()){
 								cnt = rs.getInt(1);
 						}
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						if(cnt == 0){ // if not set 
 								qq = qq2;
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, group_id);
-								pstmt.setString(2, employee_id);
-								pstmt.setString(3, wf_node_id);								
-								if(start_date.equals("")){
+								pstmt2 = con.prepareStatement(qq);
+								pstmt2.setString(1, group_id);
+								pstmt2.setString(2, employee_id);
+								pstmt2.setString(3, wf_node_id);								
+								if(start_date.isEmpty()){
 										start_date = Helper.getToday();
 								}
 								java.util.Date date_tmp = df.parse(start_date);
-								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
-								if(primary.equals(""))
-										pstmt.setNull(5, Types.CHAR);
+								pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
+								if(primary.isEmpty())
+										pstmt2.setNull(5, Types.CHAR);
 								else
-										pstmt.setString(5, "y");
-								pstmt.executeUpdate();
+										pstmt2.setString(5, "y");
+								pstmt2.executeUpdate();
 								//
 								// secnod record
-								if(!employee_id2.equals("") && !wf_node_id2.equals("")){
-										pstmt.setString(1, group_id);
-										pstmt.setString(2, employee_id2);
-										pstmt.setString(3, wf_node_id2);
-										pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
-										if(primary.equals(""))
-												pstmt.setNull(5, Types.CHAR);
+								if(!employee_id2.isEmpty() && !wf_node_id2.isEmpty()){
+										pstmt2.setString(1, group_id);
+										pstmt2.setString(2, employee_id2);
+										pstmt2.setString(3, wf_node_id2);
+										pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
+										if(primary.isEmpty())
+												pstmt2.setNull(5, Types.CHAR);
 										else
-												pstmt.setString(5, "y");										
-										pstmt.executeUpdate();
+												pstmt2.setString(5, "y");										
+										pstmt2.executeUpdate();
 								}
-								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt3 = con.prepareStatement(qq);
+								rs = pstmt3.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -359,10 +357,10 @@ public class GroupManager implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						msg = doSelect();
 				}
 				return msg;
@@ -376,7 +374,7 @@ public class GroupManager implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						return " id not set ";
 				}
 				String qq = "update group_managers set start_date=?,expire_date=?,primary_flag=?,inactive=? where id=? ";
@@ -388,25 +386,25 @@ public class GroupManager implements Serializable{
 				}			
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(start_date.equals("")){
+						if(start_date.isEmpty()){
 								start_date = Helper.getToday();
 						}
 						java.util.Date date_tmp = df.parse(start_date);
 						pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
-						if(expire_date.equals("")){
+						if(expire_date.isEmpty()){
 								pstmt.setNull(2, Types.DATE);
 						}
 						else{
 								date_tmp = df.parse(expire_date);
 								pstmt.setDate(2, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(primary.equals("")){
+						if(primary.isEmpty()){
 								pstmt.setNull(3, Types.CHAR);
 						}
 						else{
 								pstmt.setString(3,"y");
 						}
-						if(inactive.equals("")){
+						if(inactive.isEmpty()){
 								pstmt.setNull(4, Types.CHAR);
 						}
 						else{
@@ -423,7 +421,7 @@ public class GroupManager implements Serializable{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						doSelect();
 				}
 
@@ -443,11 +441,9 @@ public class GroupManager implements Serializable{
 						return msg;
 				}							
 				try{
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								pstmt.setString(1, id);
-								pstmt.executeUpdate();
-						}
+						pstmt = con.prepareStatement(qq);
+						pstmt.setString(1, id);
+						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
 						msg += " "+ex;

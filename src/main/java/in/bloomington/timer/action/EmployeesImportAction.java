@@ -38,11 +38,11 @@ public class EmployeesImportAction extends TopAction{
 										addError("Table max error:  this may cause the unsuccessful import roll back");
 								}
 								getEmpImport();
-								if(multiJob.equals(""))
+								if(multiJob.isEmpty())
 										back += empImport.doImport(file);
 								else
 										back += empImport.doImportMultiJobs(file);
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{
@@ -56,7 +56,7 @@ public class EmployeesImportAction extends TopAction{
 				if(action.equals("Rollback")){
 						roll = new RollBack();
 						back = roll.doRollback();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -107,10 +107,10 @@ public class EmployeesImportAction extends TopAction{
 						file_name = val;
 		}
 		public boolean getMultiJob(){
-				return !multiJob.equals("");
+				return !multiJob.isEmpty();
 		}
 		public void setMultiJob(String val){
-				if(val != null && !val.equals(""))
+				if(val != null && !val.isEmpty())
 						multiJob = "y";
 		}
 

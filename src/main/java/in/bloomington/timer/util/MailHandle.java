@@ -105,11 +105,11 @@ public class MailHandle{
 						//
 						Message msg = new MimeMessage(session);
 						msg.setFrom(new InternetAddress(from));
-						if(to != null && !to.equals("")){
+						if(to != null && !to.isEmpty()){
 								InternetAddress[] address = {new InternetAddress(to)};
 								msg.setRecipients(Message.RecipientType.TO, address);
 						}
-						if(cc != null && !cc.equals("")){
+						if(cc != null && !cc.isEmpty()){
 								if(cc.indexOf(",") == -1){
 										InternetAddress[] address2 = {new InternetAddress(cc)};
 										msg.setRecipients(Message.RecipientType.CC, address2);
@@ -119,7 +119,7 @@ public class MailHandle{
 										msg.setRecipients(Message.RecipientType.CC, address2);
 								}
 						}
-						if(bcc != null && !bcc.equals("")){
+						if(bcc != null && !bcc.isEmpty()){
 								InternetAddress[] address3 = javax.mail.internet.InternetAddress.parse(bcc);
 								msg.setRecipients(Message.RecipientType.BCC, address3);
 						}
@@ -193,15 +193,15 @@ public class MailHandle{
 						//
 						Message msg = new MimeMessage(session);
 						msg.setFrom(new InternetAddress(from));
-						if(to != null && !to.equals("")){
+						if(to != null && !to.isEmpty()){
 								InternetAddress[] address = {new InternetAddress(to)};
 								msg.setRecipients(Message.RecipientType.TO, address);
 						}
-						if(cc != null && !cc.equals("")){
+						if(cc != null && !cc.isEmpty()){
 								InternetAddress[] address2 = {new InternetAddress(cc)};
 								msg.setRecipients(Message.RecipientType.CC, address2);
 						}
-						if(bcc != null && !bcc.equals("")){
+						if(bcc != null && !bcc.isEmpty()){
 								InternetAddress[] address3 = javax.mail.internet.InternetAddress.parse(bcc);
 								msg.setRecipients(Message.RecipientType.BCC, address3);
 						}

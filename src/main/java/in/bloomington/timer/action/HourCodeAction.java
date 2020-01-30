@@ -31,7 +31,7 @@ public class HourCodeAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = hourcode.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -40,7 +40,7 @@ public class HourCodeAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = hourcode.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -49,10 +49,9 @@ public class HourCodeAction extends TopAction{
 				}
 				else{		
 						getHourcode();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = hourcode.doSelect();
-								if(!back.equals("")){
-										addActionError(back);
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -76,7 +75,7 @@ public class HourCodeAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public boolean hasHourcodes(){
@@ -87,7 +86,7 @@ public class HourCodeAction extends TopAction{
 				if(hourcodes == null){
 						HourCodeList tl = new HourCodeList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<HourCode> ones = tl.getHourCodes();
 								if(ones != null && ones.size() > 0){
 										hourcodes = ones;
@@ -100,7 +99,7 @@ public class HourCodeAction extends TopAction{
 				if(accruals == null){
 						TypeList tl = new TypeList("accruals");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										accruals = ones;

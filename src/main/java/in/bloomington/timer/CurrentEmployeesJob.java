@@ -58,7 +58,7 @@ public class CurrentEmployeesJob implements Job{
     public void doWork(){
 				HandleCurrentEmployees handle = new HandleCurrentEmployees(envBean);
 				String msg = handle.process();
-				if(!msg.equals(""))
+				if(!msg.isEmpty())
 						logger.error(msg);
 		}
 		

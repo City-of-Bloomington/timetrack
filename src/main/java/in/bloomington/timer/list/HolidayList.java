@@ -99,26 +99,26 @@ public class HolidayList{
 		
 				String qq = "select h.id,date_format(h.date,'%m/%d/%Y'),h.description from "+
 						" holidays h", qw = "";
-				if(!year.equals("")){
+				if(!year.isEmpty()){
 						qw += " year(h.date) = ? ";
 				}
 				else{
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								qq += ", pay_periods p ";
-								if(!qw.equals("")) qw += " and ";				
+								if(!qw.isEmpty()) qw += " and ";				
 								qw += " p.id = ? and h.date >= p.start_date and h.date <= p.end_date ";
 						}
 						else {
-								if(!date_from.equals("")){
+								if(!date_from.isEmpty()){
 										qw += " h.date >= ? ";
 								}
-								if(!date_to.equals("")){
-										if(!qw.equals("")) qw += " and ";
+								if(!date_to.isEmpty()){
+										if(!qw.isEmpty()) qw += " and ";
 										qw += " h.date <= ? ";
 								}
 						}
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by date ";
@@ -134,19 +134,19 @@ public class HolidayList{
 						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
-						if(!year.equals("")){
+						if(!year.isEmpty()){
 								pstmt.setString(jj,year);
 
 						}
 						else{
-								if(!pay_period_id.equals("")){
+								if(!pay_period_id.isEmpty()){
 										pstmt.setString(jj,pay_period_id);
 								}
 								else{
-										if(!date_from.equals("")){
+										if(!date_from.isEmpty()){
 												pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date_from).getTime()));						
 										}
-										if(!date_to.equals("")){
+										if(!date_to.isEmpty()){
 												pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date_to).getTime()));							
 										}
 								}

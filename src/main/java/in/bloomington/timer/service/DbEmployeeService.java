@@ -81,7 +81,7 @@ public class DbEmployeeService extends HttpServlet{
 						empList.setDepartment_id(department_id);
 						empList.setName(term);
 						String back = empList.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								emps = empList.getEmployees();
 						}
 				}
@@ -103,7 +103,7 @@ public class DbEmployeeService extends HttpServlet{
 		String writeJson(List<Employee> emps, String type){
 				String json="";
 				for(Employee one:emps){
-						if(!json.equals("")) json += ",";
+						if(!json.isEmpty()) json += ",";
 						json += "{\"id\":\""+one.getId()+"\",\"value\":\""+one.getFull_name()+"\",\"full_name\":\""+one.getFull_name()+"\"}";
 				}
 				json = "["+json+"]";

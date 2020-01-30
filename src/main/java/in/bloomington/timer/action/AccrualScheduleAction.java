@@ -35,12 +35,12 @@ public class AccrualScheduleAction extends TopAction{
 				prepareSchedular();				
 				if(action.equals("Schedule")){
 						back = doClean();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						try{
 								back = schedular.run();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{
@@ -51,13 +51,13 @@ public class AccrualScheduleAction extends TopAction{
 						}
 				}
 				else if(action.startsWith("Import")){ // import now given the date
-						if(dept_ref_id.equals("") || date.equals("")){
+						if(dept_ref_id.isEmpty() || date.isEmpty()){
 								addError("dept ref and/or date not set");
 						}
 						else{
 								HandleNwAccrual handle = new HandleNwAccrual(dept_ref_id, date, write_date);
 								back = handle.process();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								else{
@@ -70,10 +70,10 @@ public class AccrualScheduleAction extends TopAction{
 		private void prepareSchedular(){
 				String msg = "";
 				PayPeriodList pl = new PayPeriodList();
-				if(date.equals("")){
+				if(date.isEmpty()){
 						pl.setLastPayPeriod();
 						msg = pl.find();
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								List<PayPeriod> ones = pl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										PayPeriod one = ones.get(0);
@@ -82,12 +82,12 @@ public class AccrualScheduleAction extends TopAction{
 								}
 						}
 				}
-				if(!date.equals("")){
+				if(!date.isEmpty()){
 						schedular = new AccrualScheduler(date);
 				}
 				quartzMisc = new QuartzMisc(debug); // default type:accrual
 				msg = quartzMisc.findScheduledDates();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						prev_date = quartzMisc.getPrevScheduleDate();
 						if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
 								prev_date = "No Previous date found";
@@ -108,11 +108,11 @@ public class AccrualScheduleAction extends TopAction{
 
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDate(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						date = val;
 		}
 		public void setWriteDate(String val){
@@ -137,7 +137,7 @@ public class AccrualScheduleAction extends TopAction{
 				return next_date;
 		}
 		public boolean hasPrevDates(){
-				return !prev_date.equals("");
+				return !prev_date.isEmpty();
 		}
 		public List<Department> getDepts(){
 				if(depts == null){
@@ -145,7 +145,7 @@ public class AccrualScheduleAction extends TopAction{
 						dl.setActiveOnly();
 						dl.hasRefIds();
 						String msg = dl.find();
-						if(!msg.equals("")){
+						if(!msg.isEmpty()){
 								logger.error(msg);
 						}
 						else{
@@ -167,7 +167,7 @@ public class AccrualScheduleAction extends TopAction{
 						tl.setOnePeriodAheadOnly();
 						tl.setLimit("3");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;

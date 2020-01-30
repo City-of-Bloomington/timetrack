@@ -86,7 +86,7 @@ public class AccrualContribute{
 		}
 		public int hashCode(){
 				int seed = 29;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -113,20 +113,20 @@ public class AccrualContribute{
 				return factor;
 		}
 		public Accrual getAccrual(){
-				if(accrual == null && !accrual_id.equals("")){
+				if(accrual == null && !accrual_id.isEmpty()){
 						Accrual one = new Accrual(accrual_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								accrual = one;
 						}
 				}
 				return accrual;
 		}
 		public HourCode getHourCode(){
-				if(hourCode == null && !hour_code_id.equals("")){
+				if(hourCode == null && !hour_code_id.isEmpty()){
 						HourCode one = new HourCode(hour_code_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								hourCode = one;
 						}
 				}
@@ -209,11 +209,11 @@ public class AccrualContribute{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into accrual_contributes values(0,?,?,?,?)";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Earn code name is required";
 						return msg;
 				}
@@ -225,13 +225,12 @@ public class AccrualContribute{
 						}
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								pstmt.executeUpdate();
-								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt2 = con.prepareStatement(qq);
+								rs = pstmt2.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -242,7 +241,7 @@ public class AccrualContribute{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);						
 				}
 				return msg;
@@ -268,7 +267,7 @@ public class AccrualContribute{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update accrual_contributes set name=?, description=?,accrual_id=?,hour_code_id=?,factor=? where id=?";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Earn code name is required";
 						return msg;
 				}

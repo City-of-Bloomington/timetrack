@@ -160,13 +160,13 @@ public class TimeBlock extends Block{
     // getters
     //
 		public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
     }
 		public boolean hasData(){
-				return !id.equals("");
+				return !id.isEmpty();
 		}
 		public String getHour_code(){
 				return hour_code;
@@ -181,13 +181,13 @@ public class TimeBlock extends Block{
 				return job_name;
 		}		
 		public String getStart_date(){
-				if(start_date.equals("")){
+				if(start_date.isEmpty()){
 						start_date = Helper.changeDateFormat(date);
 				}
 				return start_date;
 		}
 		public String getEnd_date(){
-				if(end_date.equals("")){
+				if(end_date.isEmpty()){
 						end_date = Helper.changeDateFormat(date);
 				}				
 				return end_date;
@@ -281,7 +281,7 @@ public class TimeBlock extends Block{
 						job_id = val;
 		}		
 		public void setRepeat_count(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						try{
 								repeat_count = Integer.parseInt(val);
 						}catch(Exception ex){}
@@ -315,13 +315,13 @@ public class TimeBlock extends Block{
 		}
 		// do display in calendar view
 		public int getDayInt(){
-				if(date.equals("")){
+				if(date.isEmpty()){
 						return 0;
 				}
 				return Helper.getDayInt(date);
 		}
 		public void setTime_in(String val){
-				if(val != null && !val.trim().equals("")){
+				if(val != null && !val.trim().isEmpty()){
 						time_in_changed = true;
 						splitTimes(val, false);
 						time_in_set = true;
@@ -331,7 +331,7 @@ public class TimeBlock extends Block{
 				}
 		}
 		public void setTime_out(String val){
-				if(val != null && !val.trim().equals("")){
+				if(val != null && !val.trim().isEmpty()){
 						time_out_changed = true;
 						splitTimes(val, true);
 						time_out_set = true;
@@ -342,12 +342,12 @@ public class TimeBlock extends Block{
 		}
 		private String splitTimes(String val, boolean isOut){
 				String msg = "";
-				if(val != null && !val.trim().equals("")){
+				if(val != null && !val.trim().isEmpty()){
 						int hrs = 0, mins=0;
 						boolean is_pm = false, is_am=false;
 						String dd[] = {"",""};
 						String val2 = val.trim().toLowerCase();
-						if(val2 != null && !val2.equals("")){
+						if(val2 != null && !val2.isEmpty()){
 								if(val2.indexOf("a") > -1){
 										val2 = val2.substring(0,val2.indexOf("a"));
 										is_am = true;
@@ -387,7 +387,7 @@ public class TimeBlock extends Block{
 										logger.error(msg);
 										errors += msg;
 								}
-								if(msg.equals("")){
+								if(msg.isEmpty()){
 										if(dd != null){
 												try{
 														if(dd[0].startsWith("0")){
@@ -432,7 +432,7 @@ public class TimeBlock extends Block{
 		}				
 		public String getTime_in(){
 				String ret = "";
-				if(id.equals(""))
+				if(id.isEmpty())
 						return ret;
 				String am_pm = "AM";
 				if(begin_hour > 24){
@@ -466,11 +466,11 @@ public class TimeBlock extends Block{
 		public boolean areAllTimesSet(){
 				//
 				// for clock-in only
-				if(id.equals("")){
+				if(id.isEmpty()){
 						if(isMonetaryType()){
 								return amount > 0;
 						}
-						if(start_date.equals(end_date) && !start_date.equals("")){
+						if(start_date.equals(end_date) && !start_date.isEmpty()){
 								if(!date.equals(start_date)){
 										date = start_date;
 								}
@@ -494,7 +494,7 @@ public class TimeBlock extends Block{
 				String ret = "";
 				int e_hour=end_hour;
 				int e_minute=end_minute;
-				if(id.equals(""))
+				if(id.isEmpty())
 						return ret;
 				if(isClockInOnly()){
 						return ret;
@@ -539,7 +539,7 @@ public class TimeBlock extends Block{
 				return ret;
 		}
 		public String getTimeInfo(){
-				if(timeInfo.equals("")){
+				if(timeInfo.isEmpty()){
 						String ret = "";
 						if(isHourType()){
 								ret += getHours()+" "+getHour_code();
@@ -574,7 +574,7 @@ public class TimeBlock extends Block{
 		 * service to provide the list
 		 */
 		public void findEarnReasons(){
-				if(earnReasons == null && !id.equals("")){
+				if(earnReasons == null && !id.isEmpty()){
 						getDocument();
 						if(document != null){
 								Employee emp = document.getEmployee();
@@ -591,7 +591,7 @@ public class TimeBlock extends Block{
 										crcl.setHour_code_id(hour_code_id);
 										crcl.setActiveOnly();
 										String back = crcl.lookFor();
-										if(back.equals("")){
+										if(back.isEmpty()){
 												List<EarnCodeReason> ones = crcl.getReasons();
 												if(ones != null && ones.size() > 0){
 														earnReasons = ones;
@@ -645,7 +645,7 @@ public class TimeBlock extends Block{
 								String val = accrualBalance.get(hour_code_id);
 								try{
 										double aval = Double.parseDouble(val);
-										if(!id.equals("") && hour_code_id_old.equals(hour_code_id)){
+										if(!id.isEmpty() && hour_code_id_old.equals(hour_code_id)){
 												if(hours_old > 0){
 														aval += hours_old; // add old ones to balance
 												}
@@ -729,7 +729,7 @@ public class TimeBlock extends Block{
 				String qq = " select d.id from time_documents d,time_documents d2 "+
 						" where d.pay_period_id = d2.pay_period_id "+
 						" and d.employee_id=d2.employee_id and d2.id = ? ";				
-				if(!document_id.equals("") && document_ids == null){
+				if(!document_id.isEmpty() && document_ids == null){
 						logger.debug(qq);
 						con = UnoConnect.getConnection();				
 						if(con == null){
@@ -781,14 +781,14 @@ public class TimeBlock extends Block{
 						"t.inactive is null and "+
 						" ((t.clock_in is null and t.clock_out is null) or "+
 						" (t.clock_in is not null and t.clock_out is not null)) ";
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						qq += " and t.id <> ? "; // 5
 				}
 				String qq2 = " select t.id,t.hour_code_id from time_blocks t "+
 						" where t.document_id=? and t.date = ? and "+
 						"t.inactive is null and "+
 						" t.clock_in is not null and t.clock_out is null ";
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						qq2 += " and t.id <> ? ";
 				}								
 				qq2 += " and ? <= t.begin_hour+t.begin_minute/60. "+ 
@@ -837,7 +837,7 @@ public class TimeBlock extends Block{
 				}
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(date.equals(""))
+						if(date.isEmpty())
 								date = today;
 						java.util.Date date_tmp = df.parse(date);						
 						for(String doc_id: document_ids){
@@ -845,13 +845,13 @@ public class TimeBlock extends Block{
 								pstmt.setString(jj++, doc_id); // 1
 								pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); // 2
 								//
-								if(!id.equals("")){
+								if(!id.isEmpty()){
 										pstmt.setString(jj++, id); // 3
 								}														
 								pstmt.setDouble(jj++, timeIn); // time in between
 								pstmt.setDouble(jj++, timeIn); // 5
-								if((clock_in.equals("") && clock_out.equals(""))
-									 || (!clock_in.equals("") && !clock_out.equals(""))){
+								if((clock_in.isEmpty() && clock_out.isEmpty())
+									 || (!clock_in.isEmpty() && !clock_out.isEmpty())){
 										
 										pstmt.setDouble(jj++, timeOut); //6 time out between
 										pstmt.setDouble(jj++, timeOut);
@@ -867,7 +867,7 @@ public class TimeBlock extends Block{
 										// for qq2
 										pstmt.setString(jj++, document_id); // 12
 										pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); //13
-										if(!id.equals("")){
+										if(!id.isEmpty()){
 												pstmt.setString(jj++, id); //14
 										}
 										pstmt.setDouble(jj++, timeIn); //15
@@ -1108,22 +1108,22 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(!errors.equals("")){
+				if(!errors.isEmpty()){
 						return errors;
 				}
-				if(action_type.equals("")) action_type="Add";
+				if(action_type.isEmpty()) action_type="Add";
 				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?, null) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				msg = checkForConflicts();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						System.err.println(" conflict "+msg);
 						return msg;
 				}
-				if(document_id.equals("")){
+				if(document_id.isEmpty()){
 						msg = " document not set ";
 						return msg;
 				}
-				if(hour_code_id.equals("")){
+				if(hour_code_id.isEmpty()){
 						msg = " hour code not set ";
 						return msg;
 				}
@@ -1133,14 +1133,14 @@ public class TimeBlock extends Block{
 						return msg;
 				}
 				logger.debug(qq);
-				if(date.equals(""))
+				if(date.isEmpty())
 						date = Helper.getToday();
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
 						pstmt.setString(jj++, document_id);
 						pstmt.setString(jj++, hour_code_id);
-						if(earn_code_reason_id.equals(""))
+						if(earn_code_reason_id.isEmpty())
 								pstmt.setNull(jj++, Types.INTEGER);
 						else
 								pstmt.setString(jj++, earn_code_reason_id);								
@@ -1200,25 +1200,25 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="", mgtext="";
-				if(!errors.equals("")){
+				if(!errors.isEmpty()){
 						return errors;
 				}
-				if(action_type.equals("")) action_type="Add";
+				if(action_type.isEmpty()) action_type="Add";
 				String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,null) ";
 				String qq2 = "select LAST_INSERT_ID()";
 				checkForOvernight();
-				if((clock_in.equals("") && clock_out.equals(""))
-					 || (!clock_in.equals("") && !clock_out.equals(""))){
+				if((clock_in.isEmpty() && clock_out.isEmpty())
+					 || (!clock_in.isEmpty() && !clock_out.isEmpty())){
 						msg = prepareTimes();
 				}
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}				
-				if(document_id.equals("")){
+				if(document_id.isEmpty()){
 						msg = " document not set ";
 						return msg;
 				}
-				if(hour_code_id.equals("")){
+				if(hour_code_id.isEmpty()){
 						msg = " hour code not set ";
 						return msg;
 				}
@@ -1235,7 +1235,7 @@ public class TimeBlock extends Block{
 						}
 				}
 				if(hourCode != null){
-						if(hourCode.requireReason() && earn_code_reason_id.equals("")){
+						if(hourCode.requireReason() && earn_code_reason_id.isEmpty()){
 								msg = "You need to pick a reason for ean code ";
 								return msg;
 						}
@@ -1243,14 +1243,14 @@ public class TimeBlock extends Block{
 				//
 				if(!start_date.equals(end_date)){
 						msg = prepareDateSet();
-						if(!msg.equals(""))
+						if(!msg.isEmpty())
 								return msg;
 				}
 				else{
-						if(date.equals("")){
+						if(date.isEmpty()){
 								date = start_date;
 						}
-						if(date.equals(""))
+						if(date.isEmpty())
 								date = today;
 						rangeDateSet.add(date); // one date
 				}
@@ -1266,10 +1266,10 @@ public class TimeBlock extends Block{
 								date = dd;
 								if(isHourType()){
 										mgtext = checkWithAvailableBalance();
-										if(mgtext.equals("")){
+										if(mgtext.isEmpty()){
 												mgtext = checkForMinOrStep();
 										}
-										if(mgtext.equals("")){
+										if(mgtext.isEmpty()){
 												mgtext = checkHourCodeForHoliday();
 										}
 								}
@@ -1277,7 +1277,7 @@ public class TimeBlock extends Block{
 										// some earn codes are monetary but holiday related
 										// such as HF (holiday firke)
 										mgtext = checkHourCodeForHoliday();
-										if(!mgtext.equals("")){
+										if(!mgtext.isEmpty()){
 												return mgtext;
 										}
 								}
@@ -1285,7 +1285,7 @@ public class TimeBlock extends Block{
 										id=""; // for multiple input
 										mgtext = checkForConflicts();
 								}
-								if(!mgtext.equals("")){
+								if(!mgtext.isEmpty()){
 										// we do not show the conflict for multiple entries
 										if(rangeDateSet.size() == 1){ 
 												msg += mgtext;
@@ -1296,7 +1296,7 @@ public class TimeBlock extends Block{
 										int jj=1;
 										pstmt.setString(jj++, document_id);
 										pstmt.setString(jj++, hour_code_id);
-										if(earn_code_reason_id.equals(""))
+										if(earn_code_reason_id.isEmpty())
 												pstmt.setNull(jj++, Types.INTEGER);
 										else
 												pstmt.setString(jj++, earn_code_reason_id);
@@ -1309,11 +1309,11 @@ public class TimeBlock extends Block{
 										pstmt.setDouble(jj++, hours);
 										pstmt.setInt(jj++, minutes);
 										pstmt.setDouble(jj++, amount);
-										if(clock_in.equals(""))
+										if(clock_in.isEmpty())
 												pstmt.setNull(jj++,Types.CHAR);
 										else
 												pstmt.setString(jj++, "y");
-										if(clock_out.equals(""))
+										if(clock_out.isEmpty())
 												pstmt.setNull(jj++,Types.CHAR);
 										else
 												pstmt.setString(jj++, "y");								
@@ -1368,12 +1368,12 @@ public class TimeBlock extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(action_type.equals("")) action_type="Update";
-				if(id.equals("")){
+				if(action_type.isEmpty()) action_type="Update";
+				if(id.isEmpty()){
 						return " id not set ";
 				}
 				msg = checkForConflicts();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				String qq = "update time_blocks set begin_hour=?,begin_minute=? where id=? ";
@@ -1397,10 +1397,10 @@ public class TimeBlock extends Block{
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						msg = doSelect(); // to get the other info for logging
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						TimeBlockLog tbl = new TimeBlockLog(null,
 																								document_id,
 																								hour_code_id,
@@ -1433,30 +1433,30 @@ public class TimeBlock extends Block{
 								setAction_type("ClockOut");
 						}
 				}
-				if(action_type.equals("")) action_type="Update";
-				if((clock_in.equals("") && clock_out.equals(""))
-					 || (!clock_in.equals("") && !clock_out.equals(""))){				
+				if(action_type.isEmpty()) action_type="Update";
+				if((clock_in.isEmpty() && clock_out.isEmpty())
+					 || (!clock_in.isEmpty() && !clock_out.isEmpty())){				
 						msg = prepareTimes();
 				}
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
-				if(!errors.equals("")){
+				if(!errors.isEmpty()){
 						return errors;
 				}
-				if(id.equals("")){
+				if(id.isEmpty()){
 						return " id not set ";
 				}
-				if(hour_code_id.equals("")){
+				if(hour_code_id.isEmpty()){
 						msg = " hour code not set ";
 						return msg;
 				}
 				if(isHourType()){
 						msg = checkWithAvailableBalance();
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								msg = checkForMinOrStep();
 						}
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								msg = checkHourCodeForHoliday();
 						}
 						amount = 0;
@@ -1471,14 +1471,14 @@ public class TimeBlock extends Block{
 				}
 				else{
 						if(hourCode != null){
-								if(hourCode.requireReason() && earn_code_reason_id.equals("")){
+								if(hourCode.requireReason() && earn_code_reason_id.isEmpty()){
 										msg = "You need to pick a reason for ean code ";
 										return msg;
 								}
 						}						
 						msg = checkForConflicts();
 				}				
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				String qq = "update time_blocks set hour_code_id=?,earn_code_reason_id=?,begin_hour=?,begin_minute=?,end_hour=?,end_minute=?,hours=?,minutes=?,amount=?,clock_in=?,clock_out=? where id=? ";
@@ -1492,7 +1492,7 @@ public class TimeBlock extends Block{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
 						pstmt.setString(jj++, hour_code_id);
-						if(earn_code_reason_id.equals(""))
+						if(earn_code_reason_id.isEmpty())
 								pstmt.setNull(jj++, Types.INTEGER);
 						else						
 								pstmt.setString(jj++, earn_code_reason_id);
@@ -1503,11 +1503,11 @@ public class TimeBlock extends Block{
 						pstmt.setDouble(jj++, hours);
 						pstmt.setInt(jj++, minutes);
 						pstmt.setDouble(jj++, amount);						
-						if(clock_in.equals(""))
+						if(clock_in.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 										pstmt.setString(jj++, "y");
-						if(clock_out.equals(""))
+						if(clock_out.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");	
@@ -1524,7 +1524,7 @@ public class TimeBlock extends Block{
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						TimeBlockLog tbl = new TimeBlockLog(null,
 																								document_id,
 																								hour_code_id,
@@ -1574,7 +1574,7 @@ public class TimeBlock extends Block{
 						Helper.databaseDisconnect(pstmt, rs);
 				}
 				msg = doSelect();
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						TimeBlockLog tbl = new TimeBlockLog(null,
 																								document_id,
 																								hour_code_id,

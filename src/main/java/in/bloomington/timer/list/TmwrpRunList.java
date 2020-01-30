@@ -47,17 +47,17 @@ public class TmwrpRunList{
     }		
 
     public String getDocument_id(){
-				if(document_id.equals(""))
+				if(document_id.isEmpty())
 						return "-1";
 				return document_id;
     }
     public String getPay_period_id(){
-				if(pay_period_id.equals(""))
+				if(pay_period_id.isEmpty())
 						return "-1";
 				return pay_period_id;
     }
     public String getEmployee_id(){
-				if(employee_id.equals(""))
+				if(employee_id.isEmpty())
 						return "-1";
 				return employee_id;
     }		
@@ -87,19 +87,19 @@ public class TmwrpRunList{
 						" join time_documents d on d.id=g.document_id";
 
 				String qw = "";
-				if(!document_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!document_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "g.document_id = ? ";
 				}
-				if(!pay_period_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!pay_period_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "d.pay_period_id = ? ";
 				}
-				if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!employee_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "d.employee_id = ? ";
 				}				
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by g.run_time desc ";
@@ -116,13 +116,13 @@ public class TmwrpRunList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!document_id.equals("")){
+						if(!document_id.isEmpty()){
 								pstmt.setString(jj++, document_id);
 						}
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								pstmt.setString(jj++, pay_period_id);
 						}
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}						
 						rs = pstmt.executeQuery();

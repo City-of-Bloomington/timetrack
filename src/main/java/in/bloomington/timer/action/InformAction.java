@@ -86,32 +86,32 @@ public class InformAction extends TopAction{
 																							 );
 
 														back = mail.send();
-														if(back.equals("")){
-																if(!success_list.equals("")) success_list +=", "; 
+														if(back.isEmpty()){
+																if(!success_list.isEmpty()) success_list +=", "; 
 																success_list += to;
 														}
 														else{
-																if(!failure_list.equals("")){
+																if(!failure_list.isEmpty()){
 																		failure_list +=", ";
 																		failure_error += ", ";
 																}
 																failure_list += to;
 																if(failure_error.indexOf(back) == -1){
-																		if(!failure_error.equals("")){
+																		if(!failure_error.isEmpty()){
 																				failure_error += ", ";
 																		}										
 																		failure_error += back;
 																}
 														}
 												}
-												if(!failure_error.equals("")){
+												if(!failure_error.isEmpty()){
 														addError(failure_error);
 												}
 												else{
 														addMessage("Email send successfully");
 														ret = "informSuccess";
 												}
-												if(!success_list.equals("")){
+												if(!success_list.isEmpty()){
 														EmailLog elog = new EmailLog(debug,
 																										 user.getId(),
 																										 email_from,
@@ -124,7 +124,7 @@ public class InformAction extends TopAction{
 																										 type.equals("noSubmit")?"Approvers":"Processors");
 														back = elog.doSave();
 												}
-												if(!failure_list.equals("")){
+												if(!failure_list.isEmpty()){
 														EmailLog elog = new EmailLog(debug,
 																										 user.getId(),
 																										 email_from,
@@ -156,20 +156,20 @@ public class InformAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setEmployee_ids(String val){
-				if(val != null && !val.equals("")){		
+				if(val != null && !val.isEmpty()){		
 					 employee_ids = val;
 				}
 		}
 		public void setGroup_ids(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 					 group_ids = val;
 		}		
 		public void setType(String val){
-				if(val != null && !val.equals("")){		
+				if(val != null && !val.isEmpty()){		
 						type = val;
 						if(typeMap.containsKey(type)){
 								inform_type = typeMap.get(type);
@@ -177,7 +177,7 @@ public class InformAction extends TopAction{
 				}
 		}
 		public void setInform_type(String val){
-				if(val != null && !val.equals("")){
+				if(val != null && !val.isEmpty()){
 						inform_type = val;
 				}
 		}		
@@ -186,23 +186,23 @@ public class InformAction extends TopAction{
 						email_cc = val;
 		}		
 		public void setSubject(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						subject = val;
 		}
 		public void setSource(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						source = val;
 		}
 		public void setDate_from(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						date_from = val;
 		}
 		public void setDate_to(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						date_to = val;
 		}
 		public void setPageSize(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						pageSize = val;
 		}
 		public String getPageSize(){
@@ -218,7 +218,7 @@ public class InformAction extends TopAction{
 				// ignore
 		}
 		public void setText_message(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						text_message = val;
 		}		
 		public void setPay_period_id(String val){
@@ -226,7 +226,7 @@ public class InformAction extends TopAction{
 						pay_period_id = val;
 		}
 		public String getInform_type(){
-				if(inform_type.equals("") && !type.equals("")){
+				if(inform_type.isEmpty() && !type.isEmpty()){
 						if(typeMap.containsKey(type)){
 								inform_type = typeMap.get(type);
 						}
@@ -237,7 +237,7 @@ public class InformAction extends TopAction{
 				return type;
 		}		
 		public String getSubject(){
-				if(subject.equals("") && !type.equals("")){
+				if(subject.isEmpty() && !type.isEmpty()){
 						if(subjectMap.containsKey(type)){
 								subject = subjectMap.get(type);
 						}						
@@ -264,7 +264,7 @@ public class InformAction extends TopAction{
 										}
 								}
 								String back = gml.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<GroupManager> ones = gml.getManagers();
 										if(ones != null && ones.size() > 0){
 												managers = ones;
@@ -314,9 +314,9 @@ public class InformAction extends TopAction{
 				return "Remind Employees";
 		}
 		public String getText_message(){
-				if(text_message.equals("")){
+				if(text_message.isEmpty()){
 						text_message = "\n";
-						if(!type.equals("")){
+						if(!type.isEmpty()){
 								if(messageMap.containsKey(type)){
 										text_message += messageMap.get(type)+"\n\n "+proxy_url+"\n\n";
 								}
@@ -328,10 +328,10 @@ public class InformAction extends TopAction{
 		public PayPeriod getPayPeriod(){
 				//
 				if(payPeriod == null){
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								PayPeriod one = new PayPeriod(pay_period_id);
 								String back = one.doSelect();
-								if(back.equals(""))
+								if(back.isEmpty())
 										payPeriod = one;
 						}
 						else {
@@ -346,11 +346,11 @@ public class InformAction extends TopAction{
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriod = ones.get(0);
-										if(pay_period_id.equals("")){
+										if(pay_period_id.isEmpty()){
 												pay_period_id = payPeriod.getId();
 										}
 								}
@@ -361,7 +361,7 @@ public class InformAction extends TopAction{
 		public List<Employee> getEmployees(){
 				if(employees == null &&
 					 employee_ids != null &&
-					 !employee_ids.equals("")){
+					 !employee_ids.isEmpty()){
 						String emp_set = "";
 						try{
 								if(employee_ids.indexOf("_") > -1){
@@ -376,10 +376,10 @@ public class InformAction extends TopAction{
 								System.err.println(ex);
 						}
 						EmployeeList empl = new EmployeeList();
-						if(!emp_set.equals("")){
+						if(!emp_set.isEmpty()){
 								empl.setEmployee_ids(emp_set);
 								String back = empl.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<Employee> ones = empl.getEmployees();
 										if(employees == null)
 												employees = new ArrayList<>();
@@ -406,7 +406,7 @@ public class InformAction extends TopAction{
 						ell.setDate_to(date_to);
 						ell.setPageSize(pageSize);
 						String back = ell.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<EmailLog> ones = ell.getEmailLogs();
 								if(ones != null &&  ones.size() > 0){
 										emailLogs = ones;

@@ -78,7 +78,7 @@ public class TimewarpManager{
 								new TimewarpProcess(document,
 																		 holys);
 					  back = process.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								back = processData(process);
 						}
 				}
@@ -146,7 +146,7 @@ public class TimewarpManager{
 				// non regular hours
 				TmwrpBlock block = new TmwrpBlock();
 				block.setRun_id(run_id);
-				if(back.equals("") && !run_id.equals("")){
+				if(back.isEmpty() && !run_id.isEmpty()){
 						Hashtable<String, Double> hash = new Hashtable<>();;
 						Hashtable<String, Double> hash2 = null;						
 						if(!twoDifferentYears){
@@ -318,10 +318,10 @@ public class TimewarpManager{
     }
     public PayPeriod getPayPeriod(){
 				//
-				if(payPeriod == null && !pay_period_id.equals("")){
+				if(payPeriod == null && !pay_period_id.isEmpty()){
 						PayPeriod one = new PayPeriod(pay_period_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								payPeriod = one;
 						}
 				}
@@ -329,10 +329,10 @@ public class TimewarpManager{
     }
     public Document getDocument(){
 				//
-				if(document == null && !document_id.equals("")){
+				if(document == null && !document_id.isEmpty()){
 						Document one = new Document(document_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								document = one;
 								payPeriod = document.getPayPeriod();
 								pay_period_id = document.getPay_period_id();

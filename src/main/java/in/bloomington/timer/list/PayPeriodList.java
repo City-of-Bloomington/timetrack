@@ -61,11 +61,11 @@ public class PayPeriodList{
 				previousOnly = true;
     }
     public void setNextTo(String val){
-				if(val != null && !val.equals(""))				
+				if(val != null && !val.isEmpty())				
 						next_to_id = val;
     }
     public void setPreviousTo(String val){
-				if(val != null && !val.equals(""))
+				if(val != null && !val.isEmpty())
 						previous_to_id = val;
     }		
     public void setTwoPeriodsAheadOnly(){
@@ -130,7 +130,7 @@ public class PayPeriodList{
 				}
 				else if(twoPeriodsAheadOnly){
 						qw = " p.start_date <= date_add(curdate(), interval 28 day) ";
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								qq2 += ", time_documents d  "+
 										" where d.pay_period_id=p2.id and d.employee_id=? "+
 										" and p2.start_date > date_sub(curdate(), interval 90 day) ";
@@ -138,7 +138,7 @@ public class PayPeriodList{
 				}
 				else if(onePeriodAheadOnly){
 						qw = " p.start_date <= date_add(curdate(), interval 14 day) ";
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								qq2 += ", time_documents d  "+
 										" where d.pay_period_id=p2.id and d.employee_id=? "+
 										" and p2.start_date > date_sub(curdate(), interval 90 day) ";
@@ -158,25 +158,25 @@ public class PayPeriodList{
 						qw += " or ((p.start_date <= date_sub(curdate(), interval 14 day)) and (p.end_date >= date_sub(curdate(), interval 14 day)))) ";						
 						qo += " limit 1 ";
 				}				
-				else if(!year.equals("")){
+				else if(!year.isEmpty()){
 						qw = " (year(p.start_date) = ? or year(p.end_date) = ?) ";
 				}
-				else if(!previous_to_id.equals("")){
+				else if(!previous_to_id.isEmpty()){
 						qw = " p.id < ? ";
 						qo += " limit 1 ";
 				}
-				else if(!next_to_id.equals("")){
+				else if(!next_to_id.isEmpty()){
 						qw = " p.id > ? ";
 						qo = " order by id asc limit 1 ";
 				}				
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
-				if(twoPeriodsAheadOnly && !employee_id.equals("")){
+				if(twoPeriodsAheadOnly && !employee_id.isEmpty()){
 						qq += " union "+qq2;
 						
 				}
-				if(!limit.equals("") && qo.indexOf("limit") == -1){
+				if(!limit.isEmpty() && qo.indexOf("limit") == -1){
 						qo += " limit "+limit;
 				}
 				qq += qo;
@@ -191,17 +191,17 @@ public class PayPeriodList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!currentOnly && !year.equals("")){
+						if(!currentOnly && !year.isEmpty()){
 								pstmt.setString(jj++, year);
 								pstmt.setString(jj++, year);								
 						}
-						if(twoPeriodsAheadOnly && !employee_id.equals("")){
+						if(twoPeriodsAheadOnly && !employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
-						else if(!previous_to_id.equals("")){
+						else if(!previous_to_id.isEmpty()){
 								pstmt.setString(jj++, previous_to_id);								
 						}
-						else if(!next_to_id.equals("")){
+						else if(!next_to_id.isEmpty()){
 								pstmt.setString(jj++, next_to_id);			
 						}								
 						rs = pstmt.executeQuery();

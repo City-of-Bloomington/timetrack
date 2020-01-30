@@ -43,23 +43,23 @@ public class GroupList{
 						employee_id = val;
     }
     public void setPay_period_id (String val){
-				if(val != null && !val.equals(""))
+				if(val != null && !val.isEmpty())
 						pay_period_id = val;
     }
     public void setDept_ref_id (String val){
-				if(val != null && !val.equals(""))
+				if(val != null && !val.isEmpty())
 						dept_ref_id = val;
     }
     public void setJobName(String val){
-				if(val != null && !val.equals(""))
+				if(val != null && !val.isEmpty())
 						job_name = val;
     }		
     public void setDepartment_id (String val){
 				if(val != null && !val.equals("-1")){
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								department_id = val;
 						}
-						if(!department_ids.equals("")){
+						if(!department_ids.isEmpty()){
 								department_ids +=",";
 						}
 						department_ids += val;
@@ -97,7 +97,7 @@ public class GroupList{
 				active_only = true;
     }
     public String getDepartment_id(){
-				if(!department_ids.equals("")){
+				if(!department_ids.isEmpty()){
 						if(department_ids.indexOf(",") > -1){
 								department_id = department_ids.substring(0, department_ids.indexOf(","));
 						}
@@ -105,7 +105,7 @@ public class GroupList{
 								department_id = department_ids;
 						}
 				}
-				if(department_id.equals(""))
+				if(department_id.isEmpty())
 						return "-1";
 				return department_id;
     }
@@ -144,58 +144,58 @@ public class GroupList{
 				String msg="", str="";
 				String qq = "select g.id,g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive,d.name from groups g join departments d on d.id=g.department_id ";
 				String qw = "";
-				if(!department_ids.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!department_ids.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "g.department_id in ("+department_ids+") ";
 				}
-				if(!dept_ref_id.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!dept_ref_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += " find_in_set (?, d.ref_id) and d.ref_id is not null";
 				}				
-				if(!name.equals("")){
-						if(!qw.equals("")) qw += " and ";						
+				if(!name.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "g.name like ? ";
 				}
-				if(!job_name.equals("")){
+				if(!job_name.isEmpty()){
 						qq += " join jobs j on j.group_id=g.id join positions p on p.id = j.position_id ";
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += "p.name like ? ";
 				}							
-				if(!employee_id.equals("")
+				if(!employee_id.isEmpty()
 					 || include_future
-					 || !pay_period_id.equals("")){
+					 || !pay_period_id.isEmpty()){
 						qq += " join group_employees gu on g.id = gu.group_id ";						
-						if(!employee_id.equals("")){
-								if(!qw.equals("")) qw += " and ";
+						if(!employee_id.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
 								qw +=	" gu.employee_id=?";
 						}
 						if(active_only){
-								if(!qw.equals("")) qw += " and ";								
+								if(!qw.isEmpty()) qw += " and ";								
 								qw += " gu.inactive is null ";
 						}
 						if(include_future){
-								if(!qw.equals("")) qw += " and ";								
+								if(!qw.isEmpty()) qw += " and ";								
 								qw +=	" (gu.expire_date is null or gu.expire_date >= curdate())";
 						}
-						else if(!pay_period_id.equals("")){
+						else if(!pay_period_id.isEmpty()){
 								qq += ", pay_periods pp ";
-								if(!qw.equals("")) qw += " and ";										
+								if(!qw.isEmpty()) qw += " and ";										
 								qw +=	" gu.effective_date <= pp.start_date and (gu.expire_date is null or gu.expire_date > pp.start_date) and pp.id=? ";
 						}
 				}
 				if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " g.inactive is null ";
 				}
 				if(allowed){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " g.allow_pending_accrual is not null ";
 				}
 				if(not_allowed){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " g.allow_pending_accrual is null ";
 				}				
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by g.name ";
@@ -209,22 +209,22 @@ public class GroupList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!department_ids.equals("")){
+						if(!department_ids.isEmpty()){
 
 						}
-						if(!dept_ref_id.equals("")){
+						if(!dept_ref_id.isEmpty()){
 								pstmt.setString(jj++, dept_ref_id);
 						}
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								pstmt.setString(jj++, "%"+name+"%");
 						}
-						if(!job_name.equals("")){
+						if(!job_name.isEmpty()){
 								pstmt.setString(jj++, job_name);
 						}						
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
-						if(!include_future && !pay_period_id.equals("")){
+						if(!include_future && !pay_period_id.isEmpty()){
 								pstmt.setString(jj++, pay_period_id);
 						}	    
 						rs = pstmt.executeQuery();

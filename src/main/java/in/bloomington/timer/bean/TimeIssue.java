@@ -50,7 +50,7 @@ public class TimeIssue{
 		}
 		public int hashCode(){
 				int seed = 23;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -92,20 +92,20 @@ public class TimeIssue{
 				return status.equals("Closed");
 		}
 		public Employee getReporter(){
-				if(reporter == null && !reported_by.equals("")){
+				if(reporter == null && !reported_by.isEmpty()){
 						Employee one = new Employee(reported_by);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								reporter = one;
 						}
 				}
 				return reporter;
 		}
 		public Employee getClosed_by_emp(){
-				if(closed_by_emp == null && !closed_by.equals("")){
+				if(closed_by_emp == null && !closed_by.isEmpty()){
 						Employee one = new Employee(closed_by);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								closed_by_emp = one;
 						}
 				}
@@ -158,8 +158,9 @@ public class TimeIssue{
 						back = "Could not connect to DB";
 						return back;
 				}
+				logger.debug(qq);				
 				try{
-						logger.debug(qq);
+
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1,id);
 						rs = pstmt.executeQuery();
@@ -189,11 +190,11 @@ public class TimeIssue{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into time_issues values(0,?,?,now(),?,'Open',null,null)";
-				if(issue_notes.equals("")){
+				if(issue_notes.isEmpty()){
 						msg = "notes are required";
 						return msg;
 				}
@@ -208,11 +209,10 @@ public class TimeIssue{
 						pstmt.setString(2, reported_by);
 						pstmt.setString(3, issue_notes);		
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -222,10 +222,10 @@ public class TimeIssue{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						msg = doSelect();
 				}
 				return msg;
@@ -236,7 +236,7 @@ public class TimeIssue{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update time_issues set status='Closed',closed_date=now(),closed_by=? where id=? ";
-				if(issue_notes.equals("")){
+				if(issue_notes.isEmpty()){
 						msg = "notes are required";
 						return msg;
 				}
@@ -244,7 +244,8 @@ public class TimeIssue{
 				if(con == null){
 						msg = "Could not connect to DB ";
 						return msg;
-				}				
+				}
+				logger.debug(qq);				
 				try{
 
 						pstmt = con.prepareStatement(qq);
@@ -260,7 +261,7 @@ public class TimeIssue{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						msg = doSelect();
 				}
 				return msg;

@@ -63,31 +63,31 @@ public class GroupEmployeeList{
 				String msg="", str="";
 				String qq = "select g.id,g.group_id,g.employee_id,date_format(g.effective_date,'%m/%d/%Y'),date_format(g.expire_date,'%m/%d/%Y'),g.inactive from group_employees g ";
 				String qw = "";
-				if(!group_id.equals("")){
+				if(!group_id.isEmpty()){
 						qw += " g.group_id=? ";
 				}
-				if(!employee_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!employee_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " g.employee_id=?";
 				}
-				if(!pay_period_id.equals("")){
+				if(!pay_period_id.isEmpty()){
 						qq += ", pay_periods pp ";
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " pp.id=? and pp.start_date >= g.effective_date and (g.expire_date is null or g.expire_date >= pp.start_date )";
 				}
 				else if(current_only){
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += " g.effective_date <= curdate() and (g.expire_date is null or g.expire_date >= curdate())";
 				}
 				else if(include_future){
-						if(!qw.equals("")) qw += " and ";						
+						if(!qw.isEmpty()) qw += " and ";						
 						qw += " (g.expire_date is null or g.expire_date >= curdate())";
 				}
 				if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " g.inactive is null ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by g.effective_date desc ";
@@ -101,13 +101,13 @@ public class GroupEmployeeList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								pstmt.setString(jj++, group_id);
 						}						
-						if(!employee_id.equals("")){
+						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
 						}
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								pstmt.setString(jj++, pay_period_id);
 						}						
 						rs = pstmt.executeQuery();

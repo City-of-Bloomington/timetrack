@@ -63,17 +63,17 @@ public class EarnCodeReasonList{
 		
 				String qq = "select h.id,h.name,h.description,h.reason_category_id,h.inactive from "+
 						" earn_code_reasons h", qw = "";
-				if(!name.equals("")){
+				if(!name.isEmpty()){
 						qw += " name like ? ";
 				}
-				if(!reason_category_id.equals("")){
+				if(!reason_category_id.isEmpty()){
 						qw += " reason_category_id = ? ";
 				}				
 				if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " inactive is null ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by description ";
@@ -89,10 +89,10 @@ public class EarnCodeReasonList{
 						}
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								pstmt.setString(jj,"%"+name+"%");
 						}
-						if(!reason_category_id.equals("")){
+						if(!reason_category_id.isEmpty()){
 								pstmt.setString(jj, reason_category_id);
 						}						
 						rs = pstmt.executeQuery();

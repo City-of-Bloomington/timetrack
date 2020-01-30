@@ -57,29 +57,29 @@ public class AccrualWarningList{
 				}
 				String qw = "";
 				try{
-						if(!hour_code_id.equals("")){
+						if(!hour_code_id.isEmpty()){
 								qq +=", hour_codes c ";
-								if(!qw.equals("")) qw += " and ";
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " c.accrual_id=w.accrual_id and ";
 								qw += " c.id = ? ";
 						}
-						if(!accrual_id.equals("")){
-								if(!qw.equals("")) qw += " and ";
+						if(!accrual_id.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " w.accrual_id = ? ";
 						}
-						if(!qw.equals("")){
+						if(!qw.isEmpty()){
 								qq += " where "+qw;
 						}
-						if(!sortBy.equals("")){
+						if(!sortBy.isEmpty()){
 								qq += " order by "+sortBy;
 						}
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!hour_code_id.equals("")){
+						if(!hour_code_id.isEmpty()){
 								pstmt.setString(jj++, hour_code_id);
 						}
-						if(!accrual_id.equals("")){
+						if(!accrual_id.isEmpty()){
 								pstmt.setString(jj++, accrual_id);
 						}						
 						rs = pstmt.executeQuery();

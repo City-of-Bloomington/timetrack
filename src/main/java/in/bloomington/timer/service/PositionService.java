@@ -52,7 +52,7 @@ public class PositionService extends HttpServlet{
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
 						if (name.equals("department_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												department_id = value;										
@@ -61,7 +61,7 @@ public class PositionService extends HttpServlet{
 								}
 						}
 						else if (name.equals("group_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												group_id = value;										
@@ -78,20 +78,20 @@ public class PositionService extends HttpServlet{
 				}
 				PositionList plist =  null;
 				List<Position> positions = null;
-				if(!department_id.equals("")){
+				if(!department_id.isEmpty()){
 						//
 						plist = new PositionList();
 						plist.setDepartment_id(department_id);
 						String back = plist.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								positions = plist.getPositions();
 						}
 				}
-				else if(!group_id.equals("")){
+				else if(!group_id.isEmpty()){
 						plist = new PositionList();
 						plist.setGroup_id(group_id);
 						String back = plist.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 							 positions = plist.getPositions();
 						}
 				}
@@ -115,7 +115,7 @@ public class PositionService extends HttpServlet{
 		String writeJson(List<Position> positions){
 				String json="";
 				for(Position one:positions){
-						if(!json.equals("")) json += ",";
+						if(!json.isEmpty()) json += ",";
 						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getName()+"\"}";
 				}
 				json = "["+json+"]";

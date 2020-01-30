@@ -56,10 +56,10 @@ public class EarnCodeReason{
 				return description;
     }
 		public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
 		}
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
 		}
     //
     // setters
@@ -90,7 +90,7 @@ public class EarnCodeReason{
 		}
     public int hashCode(){
 				int seed = 47;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*29;
 						}catch(Exception ex){
@@ -105,17 +105,17 @@ public class EarnCodeReason{
    public  String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 		
 				String qq = "insert into "+ 
 						" earn_code_reasons values(0,?,?,?,null) ";
 				String back = "";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						back = "Name not set ";
 						return back;
 				}
-				if(reason_category_id.equals("")){
+				if(reason_category_id.isEmpty()){
 						back = "Need to select reason category ";
 						return back;
 				}				
@@ -131,7 +131,7 @@ public class EarnCodeReason{
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						pstmt.setString(jj++, name);
-						if(description.equals("")){
+						if(description.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else{
@@ -139,14 +139,13 @@ public class EarnCodeReason{
 						}
 						pstmt.setString(jj++, reason_category_id);						
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID() ";
 						if(debug){
 								logger.debug(qq);
 						}
-						pstmt = con.prepareStatement(qq);			
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);			
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}				
@@ -157,7 +156,7 @@ public class EarnCodeReason{
 						logger.error(ex+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return back;
@@ -173,11 +172,11 @@ public class EarnCodeReason{
 						" set name=?, description=?,reason_category_id=?,inactive=? "+			
 						" where id = ? ";
 				String back = "";
-				if(id.equals("") || name.equals("")){
+				if(id.isEmpty() || name.isEmpty()){
 						back = " Name or id not set ";
 						return back;
 				}
-				if(reason_category_id.equals("")){
+				if(reason_category_id.isEmpty()){
 						back = "Need to select reason category ";
 						return back;
 				}				
@@ -193,14 +192,14 @@ public class EarnCodeReason{
 						pstmt = con.prepareStatement(qq);
 						int jj = 1;
 						pstmt.setString(jj++, name);
-						if(description.equals("")){
+						if(description.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else{						
 								pstmt.setString(jj++,description);
 						}
 						pstmt.setString(jj++, reason_category_id);						
-						if(inactive.equals("")){
+						if(inactive.isEmpty()){
 								pstmt.setNull(jj++, Types.CHAR);
 						}
 						else{
@@ -230,7 +229,7 @@ public class EarnCodeReason{
 						" delete from earn_code_reasons "+
 						" where id = ? ";
 				String back = "";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						back = " earnCodeReason id not set ";
 						return back;
 				}

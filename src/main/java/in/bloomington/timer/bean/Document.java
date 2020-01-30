@@ -174,7 +174,7 @@ public class Document implements Serializable{
     }
     public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -184,41 +184,41 @@ public class Document implements Serializable{
 				return seed;
     }
     public PayPeriod getPayPeriod(){
-				if(!pay_period_id.equals("") && payPeriod == null){
+				if(!pay_period_id.isEmpty() && payPeriod == null){
 						PayPeriod one = new PayPeriod(pay_period_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								payPeriod = one;
 						}
 				}
 				return payPeriod;
     }				
     public Employee getEmployee(){
-				if(!employee_id.equals("") && employee == null){
+				if(!employee_id.isEmpty() && employee == null){
 						Employee one = new Employee(employee_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								employee = one;
 						}
 				}
 				return employee;
     }
     public Employee getInitiater(){
-				if(!initiated_by.equals("") && initiater == null){
+				if(!initiated_by.isEmpty() && initiater == null){
 						Employee one = new Employee(initiated_by);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								initiater = one;
 						}
 				}
 				return initiater;
     }
     public List<TimeAction> getTimeActions(){
-				if(timeActions == null && !id.equals("")){
+				if(timeActions == null && !id.isEmpty()){
 						TimeActionList tal = new TimeActionList(id);
 						tal.setSortby("a.id desc");
 						String back = tal.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<TimeAction> ones = tal.getTimeActions();
 								if(ones != null && ones.size() > 0){
 										timeActions = ones;
@@ -296,7 +296,7 @@ public class Document implements Serializable{
 				gml.setGroup_id(job.getGroup_id());
 				gml.setActiveOnly();
 				String back = gml.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<GroupManager> ones = gml.getManagers();
 						if(ones != null && ones.size() > 0){
 								editors = ones;
@@ -310,7 +310,7 @@ public class Document implements Serializable{
 				gml.setGroup_id(job.getGroup_id());
 				gml.setActiveOnly();
 				String back = gml.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<GroupManager> ones = gml.getManagers();
 						if(ones != null && ones.size() > 0){
 								processors = ones;
@@ -350,7 +350,7 @@ public class Document implements Serializable{
 										gml.setActiveOnly();
 										gml.setPay_period_id(pay_period_id);
 										String back = gml.find();
-										if(back.equals("")){
+										if(back.isEmpty()){
 												List<GroupManager> ones = gml.getManagers();
 												if(ones != null){
 														for(GroupManager one:ones){
@@ -376,17 +376,17 @@ public class Document implements Serializable{
 				String ret = "";
 				if(hasNextActioners()){
 						for(Employee one:nextActioners){
-								if(!ret.equals("")) ret += ", ";
+								if(!ret.isEmpty()) ret += ", ";
 								ret += one.getFull_name();
 						}
 				}
 				return ret;
     }
     public JobTask getJob(){
-				if(!job_id.equals("") && job == null){
+				if(!job_id.isEmpty() && job == null){
 						JobTask one = new JobTask(job_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								job = one;
 								group = job.getGroup();
 						}
@@ -399,7 +399,7 @@ public class Document implements Serializable{
     private void fillWarningMap(){
 				AccrualWarningList tl = new AccrualWarningList();
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<AccrualWarning> ones = tl.getAccrualWarnings();
 						if(ones != null && ones.size() > 0){
 								for(AccrualWarning one:ones){
@@ -500,13 +500,13 @@ public class Document implements Serializable{
 		
     public void prepareDaily(boolean includeEmptyBlocks){
 
-				if(daily == null && !id.equals("") && !prepare_called){
+				if(daily == null && !id.isEmpty() && !prepare_called){
 						prepare_called = true;						
 						TimeBlockList tl = new TimeBlockList();
 						tl.setDocument_id(id);
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								Map<JobType, Map<Integer, String>> ones = tl.getDaily();
 								if(ones != null && ones.size() > 0){
 										daily = tl.getDaily();
@@ -621,10 +621,10 @@ public class Document implements Serializable{
 				return tmwrpRun != null;
 		}
 		public void findTmwrpRun(){
-				if(tmwrpRun == null && !id.equals("")){
+				if(tmwrpRun == null && !id.isEmpty()){
 						TmwrpRun one = new TmwrpRun();
 						String back = one.doFind(id);
-						if(back.equals("")){
+						if(back.isEmpty()){
 								tmwrpRun = one;
 						}
 				}
@@ -663,7 +663,7 @@ public class Document implements Serializable{
 						if(jobs.size() == 1){
 								job = jobs.get(0);
 						}
-						else if(!selected_job_id.equals("")){
+						else if(!selected_job_id.isEmpty()){
 								for(JobTask one:jobs){
 										if(one.getId().equals(selected_job_id)){
 												job = one;
@@ -691,7 +691,7 @@ public class Document implements Serializable{
 						JobTaskList jl = new JobTaskList(employee_id);
 						jl.setPay_period_id(pay_period_id);
 						String back = jl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<JobTask> ones = jl.getJobTasks();
 								if(ones != null && ones.size() > 0){
 										jobs = ones; // get one
@@ -751,7 +751,7 @@ public class Document implements Serializable{
 						EmployeeAccrualList al = new EmployeeAccrualList();						
 						al.setDocument_id(id);
 						String back = al.findForDocument();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<EmployeeAccrual> ones = al.getEmployeeAccruals();
 								if(ones != null && ones.size() > 0){
 										employeeAccruals = ones;
@@ -785,7 +785,7 @@ public class Document implements Serializable{
 																if(used <= week_excess_adj){
 																		HourCode hrc = new HourCode(""+key);
 																		String back = hrc.doSelect();
-																		if(back.equals("")){
+																		if(back.isEmpty()){
 																				str = "Week "+whichWeek+" excess of ("+dfn.format(used)+" hrs) of ("+hrc.getName()+") used ";
 																				if(!warnings.contains(str))
 																						warnings.add(str);
@@ -803,7 +803,7 @@ public class Document implements Serializable{
 																		HourCode hrc = new HourCode(""+key);
 																		String back = hrc.doSelect();
 																		double min_hrs = 0;
-																		if(back.equals("")){
+																		if(back.isEmpty()){
 																				if(hrc.hasAccrualWarning()){
 																						AccrualWarning acw = hrc.getAccrualWarning();
 																						if(acw.require_min()){
@@ -865,7 +865,7 @@ public class Document implements Serializable{
 								if(one.getHours() > 0){
 										String str = one.getAccrual().getName();
 										if(ret.indexOf(str) == -1){
-												if(!ret.equals("")) ret += ", ";
+												if(!ret.isEmpty()) ret += ", ";
 												ret += str+": "+dfn.format(one.getHours());
 										}
 								}
@@ -880,7 +880,7 @@ public class Document implements Serializable{
 						tl.setEmployee_id(employee_id);
 						tl.setPay_period_id(pay_period_id);
 						String back = tl.findUsedAccruals();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								usedAccrualTotals = tl.getUsedAccrualTotals();
 								accrual_as_of_date = tl.getAccrualAsOfDate();
 						}
@@ -889,7 +889,7 @@ public class Document implements Serializable{
 						}
 						if(isPendingAccrualAllowed()){
 								back = tl.findEarnedAccruals();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										earnedAccrualTotals = tl.getEarnedAccrualTotals();
 								}
 								else{
@@ -923,7 +923,7 @@ public class Document implements Serializable{
 						tl.setActiveOnly();
 						tl.setDocument_id(id);
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								hourCodeTotals = tl.getHourCodeTotals();
 						}
 				}
@@ -1055,7 +1055,7 @@ public class Document implements Serializable{
 										if(accDesc == null) accDesc="";
 										String codeInfo = accName+": "+accDesc;
 										//
-										if(accrual_id != null && !accrual_id.equals("")){
+										if(accrual_id != null && !accrual_id.isEmpty()){
 												double hrs_total = one.getHours();
 												list.add(""+dfn.format(hrs_total));
 												try{
@@ -1119,11 +1119,11 @@ public class Document implements Serializable{
     }
     public void prepareHolidays(){
 				HolidayList hl = new HolidayList(debug);
-				if(!pay_period_id.equals("")){
+				if(!pay_period_id.isEmpty()){
 						hl.setPay_period_id(pay_period_id);
 				}
 				String back = hl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						holidays = hl;
 				}
     }
@@ -1261,7 +1261,7 @@ public class Document implements Serializable{
 						for(TimeBlock one:timeBlocks){
 								String str = one.getHour_code();
 								int order_index = one.getOrder_index();
-								if(str != null && !str.equals("")){
+								if(str != null && !str.isEmpty()){
 										if(str.startsWith("H1.0") || str.startsWith("UA")){
 												if(day < 0){
 														day = order_index;
@@ -1413,10 +1413,10 @@ public class Document implements Serializable{
 				return timeNotes != null && timeNotes.size() > 0;
     }
     public List<TimeNote> getTimeNotes(){
-				if(timeNotes == null && !id.equals("")){
+				if(timeNotes == null && !id.isEmpty()){
 						TimeNoteList tnl = new TimeNoteList(id);
 						String back = tnl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<TimeNote> ones = tnl.getTimeNotes();
 								if(ones != null && ones.size() > 0){
 										timeNotes = ones;
@@ -1430,11 +1430,11 @@ public class Document implements Serializable{
 				return timeIssues != null && timeIssues.size() > 0;
     }
     public List<TimeIssue> getTimeIssues(){
-				if(timeIssues == null && !id.equals("")){
+				if(timeIssues == null && !id.isEmpty()){
 						TimeIssueList tnl = new TimeIssueList(id);
 						tnl.setOpenOnly();
 						String back = tnl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<TimeIssue> ones = tnl.getTimeIssues();
 								if(ones != null && ones.size() > 0){
 										timeIssues = ones;
@@ -1491,57 +1491,59 @@ public class Document implements Serializable{
 				String qqs = "select id from time_documents where employee_id=? "+
 						" and pay_period_id=? and job_id=? ";
 				String qq = "insert into time_documents values(0,?,?,?,now(),?) ";
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						msg = " employee ID not set ";
 						return msg;
 				}
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						msg = " pay period not set ";
 						return msg;
 				}
-				if(job_id.equals("")){
+				if(job_id.isEmpty()){
 						msg = " job not set ";
 						return msg;
 				}				
-				if(initiated_by.equals("")){
+				if(initiated_by.isEmpty()){
 						msg = " initiater not set ";
 						return msg;
 				}				
 				logger.debug(qq);
-				con = UnoConnect.getConnection();				
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = "no DB connection";
+						return msg;
+				}
 				try{
-						if(con != null){
-								pstmt = con.prepareStatement(qqs);
-								pstmt.setString(1, employee_id);
-								pstmt.setString(2, pay_period_id);
-								pstmt.setString(3, job_id);
-								rs = pstmt.executeQuery();
+						pstmt = con.prepareStatement(qqs);
+						pstmt.setString(1, employee_id);
+						pstmt.setString(2, pay_period_id);
+						pstmt.setString(3, job_id);
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								id = rs.getString(1);
+						}
+						else{
+								pstmt2 = con.prepareStatement(qq);
+								pstmt2.setString(1, employee_id);
+								pstmt2.setString(2, pay_period_id);
+								pstmt2.setString(3, job_id);
+								pstmt2.setString(4, initiated_by);
+								pstmt2.executeUpdate();
+								//
+								qq = "select LAST_INSERT_ID()";
+								pstmt3 = con.prepareStatement(qq);
+								rs = pstmt3.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
-								else{
-										pstmt2 = con.prepareStatement(qq);
-										pstmt2.setString(1, employee_id);
-										pstmt2.setString(2, pay_period_id);
-										pstmt2.setString(3, job_id);
-										pstmt2.setString(4, initiated_by);
-										pstmt2.executeUpdate();
-										//
-										qq = "select LAST_INSERT_ID()";
-										pstmt3 = con.prepareStatement(qq);
-										rs = pstmt3.executeQuery();
-										if(rs.next()){
-												id = rs.getString(1);
-										}
-										//
-										// we look for first workflow 
-										//
-										Workflow wf = findFirstWorkFlow();
-										if(wf != null){
-												TimeAction ta = new TimeAction(wf.getId(), id, initiated_by);
-												msg = ta.doSave();
-										}										
-								}
+								//
+								// we look for first workflow 
+								//
+								Workflow wf = findFirstWorkFlow();
+								if(wf != null){
+										TimeAction ta = new TimeAction(wf.getId(), id, initiated_by);
+										msg = ta.doSave();
+								}										
 						}
 				}
 				catch(Exception ex){
@@ -1561,11 +1563,11 @@ public class Document implements Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "update time_documents set job_id=? where id=? ";
-				if(job_id.equals("")){
+				if(job_id.isEmpty()){
 						msg = " job not set ";
 						return msg;
 				}				
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = " id not set ";
 						return msg;
 				}				
@@ -1596,7 +1598,7 @@ public class Document implements Serializable{
 				WorkflowList wfl = new WorkflowList();
 				wfl.forFirstWorkflow();
 				String back = wfl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Workflow> ones = wfl.getWorkflows();
 						if(ones != null && ones.size() == 1)
 								workflow = ones.get(0);

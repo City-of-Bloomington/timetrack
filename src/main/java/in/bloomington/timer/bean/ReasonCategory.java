@@ -45,7 +45,7 @@ public class ReasonCategory implements java.io.Serializable{
 		}
 		public int hashCode(){
 				int seed = 17;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -63,13 +63,13 @@ public class ReasonCategory implements java.io.Serializable{
 				return name;
     }
     public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
 		public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
 		}
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
 		}
     //
     // setters
@@ -128,14 +128,14 @@ public class ReasonCategory implements java.io.Serializable{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
 				String qq = "select count(*) "+
 						"from reason_categories where name like ?";
 				String qq2 = " insert into reason_categories values(0,?,?)";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Name is required";
 						return msg;
 				}
@@ -158,13 +158,12 @@ public class ReasonCategory implements java.io.Serializable{
 						else {
 								pstmt = con.prepareStatement(qq2);						
 								msg = setParams(pstmt);
-								if(msg.equals("")){
+								if(msg.isEmpty()){
 										pstmt.executeUpdate();
-										Helper.databaseDisconnect(pstmt, rs);
 										//
 										qq = "select LAST_INSERT_ID()";
-										pstmt = con.prepareStatement(qq);
-										rs = pstmt.executeQuery();
+										pstmt2 = con.prepareStatement(qq);
+										rs = pstmt2.executeQuery();
 										if(rs.next()){
 												id = rs.getString(1);
 										}
@@ -176,7 +175,7 @@ public class ReasonCategory implements java.io.Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -186,7 +185,7 @@ public class ReasonCategory implements java.io.Serializable{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, name);
-						if(inactive.equals(""))
+						if(inactive.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");						
@@ -203,7 +202,7 @@ public class ReasonCategory implements java.io.Serializable{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update reason_categories set name=?, inactive=? where id=?";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Earn code name is required";
 						return msg;
 				}

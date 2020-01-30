@@ -36,7 +36,7 @@ public class GroupAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = group.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -46,7 +46,7 @@ public class GroupAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = group.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);								
 						}
 						else{
@@ -56,18 +56,18 @@ public class GroupAction extends TopAction{
 				}
 				else if(action.startsWith("Edit")){
 						getGroup();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = group.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);								
 								}
 						}
 				}				
 				else{		
 						getGroup();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = group.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								ret = "view";
@@ -94,22 +94,22 @@ public class GroupAction extends TopAction{
 				return groupsTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDepartment_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						department_id = val;
 		}		
 		public List<Group> getGroups(){
 				if(groups == null){
 						GroupList tl = new GroupList();
 						tl.setActiveOnly();
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								tl.setDepartment_id(department_id);
 						}
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ones = tl.getGroups();
 								if(ones != null && ones.size() > 0){
 										groups = ones;
@@ -121,7 +121,7 @@ public class GroupAction extends TopAction{
 		public List<Type> getDepartments(){
 				TypeList tl = new TypeList("departments");
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Type> ones = tl.getTypes();
 						if(ones != null && ones.size() > 0){
 								departments = ones;
@@ -139,7 +139,7 @@ public class GroupAction extends TopAction{
 						GroupManagerList gml = new GroupManagerList();
 						gml.setGroup_id(id);
 						String back = gml.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupManager> ones = gml.getManagers();
 								if(ones != null && ones.size() > 0){
 										groupManagers = ones;
@@ -154,7 +154,7 @@ public class GroupAction extends TopAction{
 						gml.setEarnTypesOnly();
 						gml.setCurrentOnly();
 						String back = gml.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<HourCode> ones = gml.getHourCodes();
 								if(ones != null && ones.size() > 0){
 										hourCodes = ones;

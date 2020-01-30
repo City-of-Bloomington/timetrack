@@ -33,34 +33,29 @@ public class DeptAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = department.doSave();
-						if(!back.equals("")){
-								addActionError(back);
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
 								id = department.getId();
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = department.doUpdate();
-						if(!back.equals("")){
-								addActionError(back);
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
 								id = department.getId();
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
 						}
 				}
 				else{		
 						getDepartment();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = department.doSelect();
-								if(!back.equals("")){
-										addActionError(back);
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -86,7 +81,7 @@ public class DeptAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<Department> getDepartments(){
@@ -94,7 +89,7 @@ public class DeptAction extends TopAction{
 						DepartmentList tl = new DepartmentList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Department> ones = tl.getDepartments();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -104,11 +99,11 @@ public class DeptAction extends TopAction{
 				return departments;
 		}
 		public List<Group> getGroups(){
-				if(department != null && !department.getId().equals("")){
+				if(department != null && !department.getId().isEmpty()){
 						GroupList gl = new GroupList();
 						gl.setDepartment_id(department.getId());
 						String back = gl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ones = gl.getGroups();
 								if(ones != null && ones.size() > 0){
 										groups = ones;
@@ -118,12 +113,12 @@ public class DeptAction extends TopAction{
 				return groups;
 		}
 		public List<Employee> getEmployees(){
-				if(employees == null && !id.equals("")){
+				if(employees == null && !id.isEmpty()){
 						EmployeeList tl = new EmployeeList();
 						tl.setDepartment_id(id);
 						// tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Employee> ones = tl.getEmployees();
 								if(ones != null && ones.size() > 0){
 										employees = ones;
@@ -133,11 +128,11 @@ public class DeptAction extends TopAction{
 				return employees;
 		}
 		public List<DepartmentEmployee> getDepartmentEmployees(){
-				if(departmentEmployees == null && !id.equals("")){
+				if(departmentEmployees == null && !id.isEmpty()){
 						DepartmentEmployeeList tl = new DepartmentEmployeeList();
 						tl.setDepartment_id(id);
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<DepartmentEmployee> ones = tl.getDepartmentEmployees();
 								if(ones != null && ones.size() > 0){
 										departmentEmployees = ones;

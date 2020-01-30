@@ -53,7 +53,7 @@ public class Department implements java.io.Serializable{
 		}
 		public int hashCode(){
 				int seed = 17;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -81,25 +81,25 @@ public class Department implements java.io.Serializable{
 				return ref_id;
     }		
     public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
 		public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
 		}
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
 		}
 		public boolean isHand(){
-				return !name.equals("") && name.equals("HAND");
+				return !name.isEmpty() && name.equals("HAND");
 		}
 		public boolean isSanitation(){
-				return !name.equals("") && name.equals("Sanitation");
+				return !name.isEmpty() && name.equals("Sanitation");
 		}
 		public boolean isUtilities(){
-				return !name.equals("") && name.equals("Utilities");
+				return !name.isEmpty() && name.equals("Utilities");
 		}
     public boolean getAllowPendingAccrual(){
-				return !allow_pending_accrual.equals("");
+				return !allow_pending_accrual.isEmpty();
     }				
     //
     // setters
@@ -140,12 +140,12 @@ public class Department implements java.io.Serializable{
 				return name;
     }
 		public List<Group> getGroups(){
-				if(!id.equals("") && groups == null){
+				if(!id.isEmpty() && groups == null){
 						GroupList gl = new GroupList();
 						gl.setDepartment_id(id);
 						gl.setActiveOnly();
 						String back = gl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ones = gl.getGroups();
 								if(ones != null && ones.size() > 0){
 										groups = ones;
@@ -200,12 +200,12 @@ public class Department implements java.io.Serializable{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				inactive=""; // default
 				String qq = " insert into departments values(0,?,?,?,?,?,?)";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "name is required";
 						return msg;
 				}
@@ -218,13 +218,12 @@ public class Department implements java.io.Serializable{
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								pstmt.executeUpdate();
-								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt2 = con.prepareStatement(qq);
+								rs = pstmt2.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -235,7 +234,7 @@ public class Department implements java.io.Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -245,26 +244,26 @@ public class Department implements java.io.Serializable{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, name);
-						if(description.equals("")){
+						if(description.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else
 								pstmt.setString(jj++, description);
-						if(ref_id.equals("")){
+						if(ref_id.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else
 								pstmt.setString(jj++, ref_id);
-						if(ldap_name.equals("")){
+						if(ldap_name.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else
 								pstmt.setString(jj++, ldap_name);
-						if(allow_pending_accrual.equals(""))
+						if(allow_pending_accrual.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");							
-						if(inactive.equals(""))
+						if(inactive.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");						
@@ -282,13 +281,13 @@ public class Department implements java.io.Serializable{
 				String msg="", str="", qq2="";
 				boolean changeGroupAllowPending = false;
 				String qq = " update departments set name=?, description=?,ref_id=?,ldap_name=?,allow_pending_accrual=?,inactive=? where id=?";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "name is required";
 						return msg;
 				}
 				if(!allow_pending_accrual.equals(old_allow_pending_accrual)){
 						changeGroupAllowPending = true;						
-						if(!allow_pending_accrual.equals("")){
+						if(!allow_pending_accrual.isEmpty()){
 								// turn it on for all groups in this department
 								qq2 = "update groups g set g.allow_pending_accrual='y' where g.department_id=? and g.inactive is null "; 
 						}

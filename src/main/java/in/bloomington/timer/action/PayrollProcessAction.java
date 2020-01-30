@@ -54,8 +54,8 @@ public class PayrollProcessAction extends TopAction{
 																	 document_id,
 																	 user.getId());
 								back = one.doSave();
-								if(!back.equals("")){
-										if(!back.equals("")){
+								if(!back.isEmpty()){
+										if(!back.isEmpty()){
 												addError(back);
 										}
 								}
@@ -72,8 +72,8 @@ public class PayrollProcessAction extends TopAction{
 																			 doc_id,
 																			 user.getId());
 										back = one.doSave();
-										if(!back.equals("")){
-												if(!back.equals("")){
+										if(!back.isEmpty()){
+												if(!back.isEmpty()){
 														addError(back);
 												}
 										}
@@ -88,7 +88,7 @@ public class PayrollProcessAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setPay_period_id(String val){
@@ -96,7 +96,7 @@ public class PayrollProcessAction extends TopAction{
 						pay_period_id = val;
 		}
 		public void setGroup_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						group_id = val;
 				selected_group_id = group_id;
 				addGroupIdToSession(selected_group_id);
@@ -110,9 +110,9 @@ public class PayrollProcessAction extends TopAction{
 						document_id = val;
 		}		
 		public String getGroup_id(){
-				if(!selected_group_id.equals(""))
+				if(!selected_group_id.isEmpty())
 						group_id = selected_group_id;
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						getGroup();
 				}
 				return group_id;
@@ -124,11 +124,11 @@ public class PayrollProcessAction extends TopAction{
 				
 				getGroups();
 				if(hasGroups()){
-						if(group == null && !group_id.equals("")){
+						if(group == null && !group_id.isEmpty()){
 								if(!group_id.equals("all")){
 										Group one = new Group(group_id);
 										String back = one.doSelect();
-										if(back.equals("")){
+										if(back.isEmpty()){
 												group = one;
 										}
 								}
@@ -151,7 +151,7 @@ public class PayrollProcessAction extends TopAction{
 				gml.setPay_period_id(pay_period_id);
 				gml.setProcessorsOnly();
 				String back = gml.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<GroupManager> ones = gml.getManagers();
 						if(ones != null && ones.size() > 0){
 								managers = ones;
@@ -174,11 +174,11 @@ public class PayrollProcessAction extends TopAction{
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										currentPayPeriod = ones.get(0);
-										if(pay_period_id.equals("")){
+										if(pay_period_id.isEmpty()){
 												pay_period_id = currentPayPeriod.getId();
 										}
 								}
@@ -189,10 +189,10 @@ public class PayrollProcessAction extends TopAction{
 		public PayPeriod getPayPeriod(){
 				//
 				if(payPeriod == null){
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								PayPeriod one = new PayPeriod(pay_period_id);
 								String back = one.doSelect();
-								if(back.equals(""))
+								if(back.isEmpty())
 										payPeriod = one;								
 						}
 						else {
@@ -208,11 +208,11 @@ public class PayrollProcessAction extends TopAction{
 				return groups;
 		}
 		public String getPay_period_id(){
-				if(pay_period_id.equals("")){
+				if(pay_period_id.isEmpty()){
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.setApproveSuitable();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriod = ones.get(0);
@@ -228,7 +228,7 @@ public class PayrollProcessAction extends TopAction{
 						PayPeriodList tl = new PayPeriodList();
 						tl.setTwoPeriodsAheadOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
@@ -244,12 +244,12 @@ public class PayrollProcessAction extends TopAction{
 		}
 		public List<Document> getDocuments(){
 				if(hasGroups()){
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								getPay_period_id(); // current
 						}
 						DocumentList dl = new DocumentList();
 						dl.setPay_period_id(pay_period_id);
-						if(!group_id.equals("") && !group_id.equals("all")){
+						if(!group_id.isEmpty() && !group_id.equals("all")){
 								dl.setGroup_id(group_id);
 						}
 						else if(groups != null && groups.size() > 0){
@@ -258,7 +258,7 @@ public class PayrollProcessAction extends TopAction{
 								}
 						}
 						String back = dl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Document> ones = dl.getDocuments();
 								if(ones != null && ones.size() > 0){
 										documents = ones;
@@ -270,7 +270,7 @@ public class PayrollProcessAction extends TopAction{
 		public List<Employee> getNonDocEmps(){
 				if(nonDocEmps == null){
 						EmployeeList empl = new EmployeeList();
-						if(!group_id.equals("") && !group_id.equals("all")){
+						if(!group_id.isEmpty() && !group_id.equals("all")){
 								empl.setGroup_id(group_id);
 						}
 						else if(groups != null && groups.size() > 0){
@@ -278,13 +278,13 @@ public class PayrollProcessAction extends TopAction{
 										empl.setGroup_id(one.getId());										
 								}
 						}
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								getPay_period_id(); // current
 						}				
 						empl.setNoDocumentForPayPeriodId(pay_period_id);
 						empl.setActiveOnly();
 						String back = empl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Employee> ones = empl.getEmployees();
 								if(ones != null && ones.size() > 0){
 										nonDocEmps = ones;
@@ -308,12 +308,12 @@ public class PayrollProcessAction extends TopAction{
 		public PayPeriod getPreviousPayPeriod(){
 				//
 				if(previousPayPeriod == null){
-						if(pay_period_id.equals(""))
+						if(pay_period_id.isEmpty())
 								getPay_period_id();						
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.setPreviousTo(pay_period_id); 
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										previousPayPeriod = ones.get(0);
@@ -325,12 +325,12 @@ public class PayrollProcessAction extends TopAction{
 		public PayPeriod getNextPayPeriod(){
 				//
 				if(nextPayPeriod == null){
-						if(pay_period_id.equals(""))
+						if(pay_period_id.isEmpty())
 								getPay_period_id();
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.setNextTo(pay_period_id); 
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										nextPayPeriod = ones.get(0);
@@ -409,7 +409,7 @@ public class PayrollProcessAction extends TopAction{
 				// will do nothing
 		}
 		public String getDepartment_id(){
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						findDepartment();
 				}
 				return department_id;

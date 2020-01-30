@@ -31,7 +31,7 @@ public class DepartmentEmployeeAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = departmentEmployee.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);
 						}
@@ -41,7 +41,7 @@ public class DepartmentEmployeeAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){ 
 						back = departmentEmployee.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -50,9 +50,9 @@ public class DepartmentEmployeeAction extends TopAction{
 				}
 				else{		
 						getDepartmentEmployee();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = departmentEmployee.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 										addActionError(back);
 								}								
@@ -78,7 +78,7 @@ public class DepartmentEmployeeAction extends TopAction{
 				return departmentEmployeesTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDepartment_id(String val){
@@ -95,7 +95,7 @@ public class DepartmentEmployeeAction extends TopAction{
 						tl.setTable_name("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -110,7 +110,7 @@ public class DepartmentEmployeeAction extends TopAction{
 						tl.setTwoPeriodsAheadOnly();
 						tl.setLimit("5");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;

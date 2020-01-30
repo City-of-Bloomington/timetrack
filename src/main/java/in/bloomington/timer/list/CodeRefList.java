@@ -76,11 +76,11 @@ public class CodeRefList{
 				if(handOnly){
 						qw = " gl_string is not null ";
 				}
-				if(!code_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!code_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " code_id=? ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by nw_code ";
@@ -93,7 +93,7 @@ public class CodeRefList{
 				}				
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(!code_id.equals("")){
+						if(!code_id.isEmpty()){
 								pstmt.setString(1, code_id);
 						}
 						rs = pstmt.executeQuery();

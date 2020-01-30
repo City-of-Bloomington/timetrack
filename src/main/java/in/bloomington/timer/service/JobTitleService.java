@@ -52,7 +52,7 @@ public class JobTitleService extends HttpServlet{
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
 						if (name.equals("department_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												department_id = value;										
@@ -61,7 +61,7 @@ public class JobTitleService extends HttpServlet{
 								}
 						}
 						else if (name.equals("group_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												group_id = value;										
@@ -78,18 +78,18 @@ public class JobTitleService extends HttpServlet{
 				}
 				JobTaskList jlist = null;
 				List<JobTask> jobs = null;
-				if(!department_id.equals("") || !group_id.equals("")){
+				if(!department_id.isEmpty() || !group_id.isEmpty()){
 						//
 						jlist = new JobTaskList();
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								jlist.setDepartment_id(department_id);
 						}
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								jlist.setGroup_id(group_id);
 						}
 						jlist.setCurrentOnly();
 						String back = jlist.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								jobs = jlist.getJobs();
 						}
 				}
@@ -113,7 +113,7 @@ public class JobTitleService extends HttpServlet{
 		String writeJson(List<JobTask> jobs){
 				String json="";
 				for(JobTask one:jobs){
-						if(!json.equals("")) json += ",";
+						if(!json.isEmpty()) json += ",";
 						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getPosition()+"\",\"salaryGroup\":\""+one.getSalaryGroup()+"\",\"clockInRequired\":\""+one.getClock_time_required()+"\"}";
 				}
 				json = "["+json+"]";

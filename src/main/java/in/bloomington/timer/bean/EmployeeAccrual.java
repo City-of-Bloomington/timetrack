@@ -158,10 +158,10 @@ public class EmployeeAccrual extends CommonInc{
 		@Override
     public int hashCode(){
 				int seed = 31;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*43;
-								if(!related_hour_code_id.equals("")){
+								if(!related_hour_code_id.isEmpty()){
 										seed += Integer.parseInt(related_hour_code_id)*31;
 								}
 						}catch(Exception ex){
@@ -172,17 +172,17 @@ public class EmployeeAccrual extends CommonInc{
     }
 		
 		public Accrual getAccrual(){
-				if(accrual == null && !accrual_id.equals("")){
+				if(accrual == null && !accrual_id.isEmpty()){
 						Accrual one = new Accrual(accrual_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								accrual = one;
 						}
 				}
 				return accrual;
 		}
 		public Employee getEmployee(){
-				if(employee == null && !employee_id.equals("")){
+				if(employee == null && !employee_id.isEmpty()){
 						employee = new Employee(employee_id);
 						String back = employee.doSelect();
 				}
@@ -196,7 +196,7 @@ public class EmployeeAccrual extends CommonInc{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "select a.id,a.accrual_id,ec.id,a.employee_id,a.hours,date_format(a.date,'%m/%d/%Y'),t.name,t.description,t.pref_max_level,ec.name from employee_accruals a join accruals t on t.id=a.accrual_id join hour_codes ec on ec.accrual_id=a.accrual_id where a.id=?";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = "accrual id is not set";
 						return msg;
 				}
@@ -208,7 +208,7 @@ public class EmployeeAccrual extends CommonInc{
 				}				
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								pstmt.setString(1, id);
 						}
 						rs = pstmt.executeQuery();
@@ -251,11 +251,11 @@ public class EmployeeAccrual extends CommonInc{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into employee_accruals values(0,?,?,?,?) ";
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						msg = " employee id not set ";
 						return msg;
 				}
-				if(accrual_id.equals("")){
+				if(accrual_id.isEmpty()){
 						msg = " accrual type not set ";
 						return msg;
 				}
@@ -270,7 +270,7 @@ public class EmployeeAccrual extends CommonInc{
 						pstmt.setString(1, accrual_id);
 						pstmt.setString(2, employee_id);
 						pstmt.setDouble(3, hours);
-						if(date.equals("")){
+						if(date.isEmpty()){
 								date = Helper.getToday();
 						}
 						java.util.Date date_tmp = df.parse(date);
@@ -301,7 +301,7 @@ public class EmployeeAccrual extends CommonInc{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into employee_accruals values(0,?,?,?,?) ";
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						msg = " employee id not set ";
 						return msg;
 				}
@@ -312,7 +312,7 @@ public class EmployeeAccrual extends CommonInc{
 						return msg;
 				}							
 				try{
-						if(date.equals("")){
+						if(date.isEmpty()){
 								date = Helper.getToday();
 						}
 						java.util.Date date_tmp = df.parse(date);
@@ -348,7 +348,7 @@ public class EmployeeAccrual extends CommonInc{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "update employee_accruals set accrual_id=?,hours=?,date=? where id=?";
-				if(accrual_id.equals("")){
+				if(accrual_id.isEmpty()){
 						msg = " accrual type not set ";
 						return msg;
 				}

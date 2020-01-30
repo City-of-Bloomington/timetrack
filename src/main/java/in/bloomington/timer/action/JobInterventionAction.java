@@ -37,12 +37,12 @@ public class JobInterventionAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						JobTask job = new JobTask();
 						// do delete or update here
 						if(del_jobs != null){
 								back = job.doDeleteJobAndDoc(del_jobs);
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -51,7 +51,7 @@ public class JobInterventionAction extends TopAction{
 								String date = payPeriod.getEnd_date();
 								System.err.println(" date "+date);
 								back = job.doExpireJobs(exp_jobs, date);
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -113,7 +113,7 @@ public class JobInterventionAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<String> getJobTitles(){
@@ -144,10 +144,10 @@ public class JobInterventionAction extends TopAction{
     public PayPeriod getPayPeriod(){
 				//
 				if(payPeriod == null){
-						if(!pay_period_id.equals("")){
+						if(!pay_period_id.isEmpty()){
 								PayPeriod pp = new PayPeriod(pay_period_id);
 								String back = pp.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										payPeriod = pp;
 										pay_period_id = payPeriod.getId();
 								}
@@ -156,7 +156,7 @@ public class JobInterventionAction extends TopAction{
 								PayPeriodList ppl = new PayPeriodList();
 								ppl.setLastPayPeriod(); 
 								String back = ppl.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<PayPeriod> ones = ppl.getPeriods();
 										if(ones != null && ones.size() > 0){
 												payPeriod = ones.get(0);

@@ -55,7 +55,7 @@ public class GroupService extends HttpServlet{
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
 						if (name.equals("department_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												department_id = value;										
@@ -64,7 +64,7 @@ public class GroupService extends HttpServlet{
 								}
 						}
 						else if (name.equals("dept_ref_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												dept_ref_id = value;										
@@ -84,16 +84,16 @@ public class GroupService extends HttpServlet{
 				}
 				GroupList glist =  null;
 				List<Group> groups = null;
-				if(!department_id.equals("") ||
-					 !job_name.equals("") ||
-					 !dept_ref_id.equals("")){
+				if(!department_id.isEmpty() ||
+					 !job_name.isEmpty() ||
+					 !dept_ref_id.isEmpty()){
 						//
 						glist = new GroupList();
 						glist.setDepartment_id(department_id);
 						glist.setDept_ref_id(dept_ref_id);
 						glist.setJobName(job_name);
 						String back = glist.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								groups = glist.getGroups();
 						}
 				}
@@ -117,7 +117,7 @@ public class GroupService extends HttpServlet{
 		String writeJson(List<Group> groups){
 				String json="";
 				for(Group one:groups){
-						if(!json.equals("")) json += ",";
+						if(!json.isEmpty()) json += ",";
 						json += "{\"id\":"+one.getId()+",\"name\":\""+one.getName()+"\"}";
 				}
 				json = "["+json+"]";

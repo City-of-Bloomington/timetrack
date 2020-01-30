@@ -85,7 +85,7 @@ public class EmpList extends CommonInc{
 				DepartmentList dl = new DepartmentList();
 				dl.setActiveOnly();
 				String back = dl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Department> depts = dl.getDepartments();
 						if(depts != null && depts.size() > 0){
 								if(deptTable == null){
@@ -99,7 +99,7 @@ public class EmpList extends CommonInc{
 				GroupList gl = new GroupList();
 				gl.setActiveOnly();
 				back = gl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Group> groups = gl.getGroups();
 						if(groups != null && groups.size() > 0){
 								grpTable = new Hashtable<>();
@@ -173,14 +173,14 @@ public class EmpList extends CommonInc{
 						ctls.setReturningAttributes(attrIDs);
 						ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 						String filter = "";
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								filter = "(sAMAccountName="+name+"*)";
 						}
-						else if(!id_code.equals("")){
+						else if(!id_code.isEmpty()){
 								filter = "(employeeId="+id_code+")";
 								
 						}
-						else if (!dept_name.equals("")){
+						else if (!dept_name.isEmpty()){
 								// we are excluding disabled users and any user that
 								// givenName starts with * (code \2a)
 								filter ="(&(objectCategory=person)(objectCategory=user)(!(givenName=\2*)))";
@@ -201,22 +201,22 @@ public class EmpList extends CommonInc{
 								Attribute dn = atts.get("distinguishedName");
 								if (dn != null){
 										str = dn.get().toString();
-										if(!dept_name.equals("")){
+										if(!dept_name.isEmpty()){
 												if(str.indexOf(dept_name) == -1) continue;
 												/*
-												if(!group_name.equals(""))
+												if(!group_name.isEmpty())
 														if(str.indexOf(group_name) == -1) continue;
 												*/
 										}
 										// System.err.println("dn "+str);										
 										String strArr[] = setDn(str);
 										String deptId = "", grpId="";
-										if(!strArr[0].equals("")){
+										if(!strArr[0].isEmpty()){
 												if(deptTable.containsKey(strArr[0])){
 														deptId = deptTable.get(strArr[0]);
 												}
 												/*
-												if(!deptId.equals("")){
+												if(!deptId.isEmpty()){
 														if(grpTable.containsKey(deptId)){
 																Hashtable<String, String> ttable = grpTable.get(deptId);
 																if(ttable.containsKey(strArr[1])){
@@ -226,7 +226,7 @@ public class EmpList extends CommonInc{
 												}
 												*/
 										}
-										if(!deptId.equals("")){
+										if(!deptId.isEmpty()){
 												emp.setDepartment_id(deptId);
 										}
 								}
@@ -339,19 +339,19 @@ public class EmpList extends CommonInc{
 						ctls.setReturningAttributes(attrIDs);
 						ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 						String filter = "";
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								filter = "(sAMAccountName="+name+"*)";
 						}
-						else if(!id_code.equals("")){
+						else if(!id_code.isEmpty()){
 								filter = "(employeeId="+id_code+")";
 								
 						}						
-						else if (!dept_name.equals("")){
+						else if (!dept_name.isEmpty()){
 								/*
 									// we can not use wildcard in AD so we have to do
 									// it ourselves by bringing all users and search for 
 									// dept name and group (if any)
-								if(!group_name.equals("")){
+								if(!group_name.isEmpty()){
 										filter = "(&(ou="+group_name+")(ou="+dept_name+"))";
 								}
 								else
@@ -483,18 +483,18 @@ public class EmpList extends CommonInc{
 														}
 												}
 										}
-										if(!dept.equals("")){
+										if(!dept.isEmpty()){
 												dept = dept.substring(dept.indexOf("=")+1);
 												retArr[0] = dept;
 										}
-										if(!grp.equals("")){
+										if(!grp.isEmpty()){
 												grp = grp.substring(grp.indexOf("=")+1);
 												if(grp.equals("Showers")) grp="Staff";
 										}
 										else{
 												grp = "Staff";
 										}
-										if(!sub_grp.equals("")){
+										if(!sub_grp.isEmpty()){
 												sub_grp = sub_grp.substring(sub_grp.indexOf("=")+1);
 												grp = grp+" - "+sub_grp;
 										}

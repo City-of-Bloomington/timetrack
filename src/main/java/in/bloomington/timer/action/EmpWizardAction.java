@@ -29,13 +29,13 @@ public class EmpWizardAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("") && effective_date.equals("")){
+				if(!action.isEmpty() && effective_date.isEmpty()){
 						addError("Start date is required ");
 						action = "";
 				}
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						back = emplst.find();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -45,7 +45,7 @@ public class EmpWizardAction extends TopAction{
 										String emp_id = ones.get(0).getId();
 										str += "&emp_id="+emp_id;
 								}
-								if(!effective_date.equals("")){
+								if(!effective_date.isEmpty()){
 										str += "&effective_date="+effective_date;
 								}
 								try{
@@ -81,7 +81,7 @@ public class EmpWizardAction extends TopAction{
 						tl.setTwoPeriodsAheadOnly();
 						tl.setLimit("4");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
@@ -116,7 +116,7 @@ public class EmpWizardAction extends TopAction{
 				return employeesTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public boolean hasEmployees(){
@@ -132,7 +132,7 @@ public class EmpWizardAction extends TopAction{
 						tl.setTable_name("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;

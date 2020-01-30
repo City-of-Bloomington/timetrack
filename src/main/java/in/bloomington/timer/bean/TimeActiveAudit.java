@@ -74,7 +74,7 @@ public class TimeActiveAudit{
 						" d.employee_id=e.id "+
 						" and l.document_id=d.id "+
 						" and not (e.email is null or e.email = '')";
-				if(!end_date.equals("")){
+				if(!end_date.isEmpty()){
 						qq += " and (date(l.action_time) = str_to_date(?,'%m/%d/%Y') or date(l.action_time) = str_to_date(?,'%m/%d/%Y')) ";
 				}
 				else{
@@ -89,10 +89,11 @@ public class TimeActiveAudit{
 						back = "Could not connect to DB";
 						return back;
 				}
+				logger.debug(qq);				
 				try{
-						logger.debug(qq);
+
 						pstmt = con.prepareStatement(qq);
-						if(!end_date.equals("")){
+						if(!end_date.isEmpty()){
 								pstmt.setString(1, start_date);
 								pstmt.setString(2, end_date);								
 

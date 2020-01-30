@@ -25,99 +25,99 @@ public class WorkflowList{
     public WorkflowList(){
     }
     public void setId (String val){
-	if(val != null)
-	    id = val;
+				if(val != null)
+						id = val;
     }		
     public void setNode_id (String val){
-	if(val != null)
-	    node_id = val;
+				if(val != null)
+						node_id = val;
     }
     public void setActiveOnly(){
-	active_only = true;
+				active_only = true;
     }
     public void forFirstWorkflow(){
-	sortBy = " w.id asc limit 1 ";
+				sortBy = " w.id asc limit 1 ";
     }
     public List<Workflow> getWorkflows(){
-	return workflows;
+				return workflows;
     }
     //
     // find the list
     //
     public String find(){
-	Connection con = null;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	String msg="", qw="";
-	String qq = "select w.id,w.node_id,w.next_node_id,"+
-	    " s.name,s.description,s.managers_only,s.annotation,s.inactive, "+
-	    " s2.name,s2.description,s2.managers_only,s2.annotation,s2.inactive "+						
-	    " from workflows w "+
-	    " join workflow_nodes s on w.node_id=s.id "+
-	    " left join workflow_nodes s2 on w.next_node_id=s2.id ";
-	if(!id.equals("")){
-	    qw += " w.id = ? ";
-	}
-	if(!node_id.equals("")){
-	    if(!qw.equals("")) qw += " and ";
-	    qw += " (w.node_id = ? or w.next_node_id=?) ";
-	}
-	if(!qw.equals("")){
-	    qq += " where "+qw;
-	}
-	if(!sortBy.equals("")){
-	    qq += " order by "+sortBy;
-	}
-	con = UnoConnect.getConnection();
-	if(con == null){
-	    msg = " Could not connect to DB ";
-	    logger.error(msg);
-	    return msg;
-	}
-	logger.debug(qq);
-	try{
-	    pstmt = con.prepareStatement(qq);
-	    int jj=1;
-	    if(!id.equals("")){
-		pstmt.setString(jj++, id);
-	    }
-	    if(!node_id.equals("")){
-		pstmt.setString(jj++, node_id);
-		pstmt.setString(jj++, node_id);
-	    }						
-	    rs = pstmt.executeQuery();
-	    while(rs.next()){
-		if(workflows == null)
-		    workflows = new ArrayList<>();
-		Workflow one = new Workflow(
-					    rs.getString(1),
-					    rs.getString(2),
-					    rs.getString(3),
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", qw="";
+				String qq = "select w.id,w.node_id,w.next_node_id,"+
+						" s.name,s.description,s.managers_only,s.annotation,s.inactive, "+
+						" s2.name,s2.description,s2.managers_only,s2.annotation,s2.inactive "+						
+						" from workflows w "+
+						" join workflow_nodes s on w.node_id=s.id "+
+						" left join workflow_nodes s2 on w.next_node_id=s2.id ";
+				if(!id.isEmpty()){
+						qw += " w.id = ? ";
+				}
+				if(!node_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
+						qw += " (w.node_id = ? or w.next_node_id=?) ";
+				}
+				if(!qw.isEmpty()){
+						qq += " where "+qw;
+				}
+				if(!sortBy.isEmpty()){
+						qq += " order by "+sortBy;
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						if(!id.isEmpty()){
+								pstmt.setString(jj++, id);
+						}
+						if(!node_id.isEmpty()){
+								pstmt.setString(jj++, node_id);
+								pstmt.setString(jj++, node_id);
+						}						
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								if(workflows == null)
+										workflows = new ArrayList<>();
+								Workflow one = new Workflow(
+																						rs.getString(1),
+																						rs.getString(2),
+																						rs.getString(3),
 																		 
-					    rs.getString(4),
-					    rs.getString(5),
-					    rs.getString(6) != null,
-					    rs.getString(7),
-					    rs.getString(8) != null,
+																						rs.getString(4),
+																						rs.getString(5),
+																						rs.getString(6) != null,
+																						rs.getString(7),
+																						rs.getString(8) != null,
 																		 
-					    rs.getString(9),
-					    rs.getString(10),
-					    rs.getString(11) != null,
-					    rs.getString(12),
-					    rs.getString(13) != null
-					    );
-		workflows.add(one);
-	    }
-	}
-	catch(Exception ex){
-	    msg += " "+ex;
-	    logger.error(msg+":"+qq);
-	}
-	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return msg;
+																						rs.getString(9),
+																						rs.getString(10),
+																						rs.getString(11) != null,
+																						rs.getString(12),
+																						rs.getString(13) != null
+																						);
+								workflows.add(one);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
     }
 
 }

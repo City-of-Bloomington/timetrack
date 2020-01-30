@@ -28,8 +28,8 @@ public class EmpTimeChangeAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("empTimeChange.action");
-				if(!action.equals("")){ // 'Next'
-						if(!related_employee_id.equals("")){
+				if(!action.isEmpty()){ // 'Next'
+						if(!related_employee_id.isEmpty()){
 								getEmp();
 								if(emp == null){
 										back = "could not get employee info ";
@@ -39,7 +39,7 @@ public class EmpTimeChangeAction extends TopAction{
 										try{
 												HttpServletResponse res = ServletActionContext.getResponse();
 												String str = "jobTimeChange.action?related_employee_id="+related_employee_id;
-												if(!source.equals("")){
+												if(!source.isEmpty()){
 														str += "&source="+source;
 												}
 												res.sendRedirect(str);
@@ -67,11 +67,11 @@ public class EmpTimeChangeAction extends TopAction{
 				return department_id;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setRelated_employee_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						related_employee_id = val;
 		}
 		
@@ -79,21 +79,21 @@ public class EmpTimeChangeAction extends TopAction{
 				// for auto complete
 		}
 		public void setDepartment_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						department_id = val;
 		}		
 		public void setSource(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 					 source = val;
 		}		
 		public String getEmployee_name(){
 				return "";
 		}
     public Employee getEmp(){
-				if(emp == null && !related_employee_id.equals("")){
+				if(emp == null && !related_employee_id.isEmpty()){
 						Employee one = new Employee(related_employee_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								emp = one;
 						}
 				}				

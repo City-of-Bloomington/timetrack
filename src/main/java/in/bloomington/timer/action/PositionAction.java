@@ -32,7 +32,7 @@ public class PositionAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = position.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -41,7 +41,7 @@ public class PositionAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = position.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -50,9 +50,9 @@ public class PositionAction extends TopAction{
 				}
 				else{		
 						getPosition();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = position.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -78,7 +78,7 @@ public class PositionAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<Position> getPositions(){
@@ -86,7 +86,7 @@ public class PositionAction extends TopAction{
 						PositionList tl = new PositionList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Position> ones = tl.getPositions();
 								if(ones != null && ones.size() > 0){
 										positions = ones;

@@ -34,7 +34,7 @@ public class SearchReasonConditionsAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						CodeReasonConditionList crl = new CodeReasonConditionList();
 						crl.setDepartment_id(dept_id);
 						crl.setSalary_group_id(salary_group_id);
@@ -42,7 +42,7 @@ public class SearchReasonConditionsAction extends TopAction{
 						crl.setReason_id(reason_id);
 						crl.setGroup_id(group_id);
 						back = crl.find();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -63,7 +63,7 @@ public class SearchReasonConditionsAction extends TopAction{
 				return conditionsTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDept_id(String val){
@@ -71,7 +71,7 @@ public class SearchReasonConditionsAction extends TopAction{
 						dept_id = val;
 		}
 		public String getDept_id(){
-				if(dept_id.equals("")){
+				if(dept_id.isEmpty()){
 						return "-1";
 				}
 				return dept_id;
@@ -81,7 +81,7 @@ public class SearchReasonConditionsAction extends TopAction{
 						hour_code_id = val;
 		}
 		public String getHour_code_id(){
-				if(hour_code_id.equals("")){
+				if(hour_code_id.isEmpty()){
 						return "-1";
 				}
 				return hour_code_id;
@@ -91,7 +91,7 @@ public class SearchReasonConditionsAction extends TopAction{
 						salary_group_id = val;
 		}
 		public String getSalary_group_id(){
-				if(salary_group_id.equals("")){
+				if(salary_group_id.isEmpty()){
 						return "-1";
 				}
 				return salary_group_id;
@@ -101,7 +101,7 @@ public class SearchReasonConditionsAction extends TopAction{
 						group_id = val;
 		}
 		public String getGroup_id(){
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						return "-1";
 				}
 				return group_id;
@@ -111,7 +111,7 @@ public class SearchReasonConditionsAction extends TopAction{
 						reason_id = val;
 		}
 		public String getReason_id(){
-				if(reason_id.equals("")){
+				if(reason_id.isEmpty()){
 						return "-1";
 				}
 				return reason_id;
@@ -123,7 +123,7 @@ public class SearchReasonConditionsAction extends TopAction{
 						tl.setTable_name("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -136,7 +136,7 @@ public class SearchReasonConditionsAction extends TopAction{
 				if(salaryGroups == null){
 						SalaryGroupList sgl = new SalaryGroupList();
 						String back = sgl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<SalaryGroup> ones = sgl.getSalaryGroups();
 								if(ones != null && ones.size() > 0){
 										salaryGroups = ones;
@@ -152,7 +152,7 @@ public class SearchReasonConditionsAction extends TopAction{
 						sgl.setEarnTypesOnly(); // only earned or overtime
 						sgl.setRecord_method("Time");
 						String back = sgl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<HourCode> ones = sgl.getHourCodes();
 								if(ones != null && ones.size() > 0){
 										hourCodes = ones;
@@ -165,7 +165,7 @@ public class SearchReasonConditionsAction extends TopAction{
 				if(reasons == null){
 						EarnCodeReasonList tl = new EarnCodeReasonList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<EarnCodeReason> ones = tl.getReasons();
 								if(ones != null && ones.size() > 0){
 										reasons = ones;

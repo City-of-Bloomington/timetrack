@@ -221,7 +221,7 @@ public class TmwrpRun{
     }
     public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -238,10 +238,10 @@ public class TmwrpRun{
 		}
 		
     public Document getDocument(){
-				if(document == null && !document_id.equals("")){
+				if(document == null && !document_id.isEmpty()){
 						Document one = new Document(document_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								document = one;
 								Employee employee = document.getEmployee();
 								if(employee != null){
@@ -254,10 +254,10 @@ public class TmwrpRun{
 				return document;
     }
     public HourCode getRegCode(){
-				if(regCode == null && !reg_code_id.equals("")){
+				if(regCode == null && !reg_code_id.isEmpty()){
 						HourCode one = new HourCode(reg_code_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								regCode = one;
 						}
 						else{
@@ -282,10 +282,10 @@ public class TmwrpRun{
 		// include totals
 		//
 		public void findBlocks(){
-				if(blocks == null && !id.equals("")){
+				if(blocks == null && !id.isEmpty()){
 						TmwrpBlockList tbl = new TmwrpBlockList(id);
 						String back = tbl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<TmwrpBlock> ones = tbl.getBlocks();
 								if(ones != null && ones.size() > 0){
 										blocks = ones;
@@ -787,11 +787,11 @@ public class TmwrpRun{
 						"cycle1_net_reg_hrs=?,"+
 						"cycle2_net_reg_hrs=? "+						
 						"where id=? ";				
-				if(document_id.equals("")){
+				if(document_id.isEmpty()){
 						msg = " document not set ";
 						return msg;
 				}
-				if(reg_code_id.equals("")){
+				if(reg_code_id.isEmpty()){
 						msg = " regular earn code not set ";
 						return msg;
 				}								
@@ -865,7 +865,7 @@ public class TmwrpRun{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "delete from tmwrp_blocks where run_id=? ";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = " run id not set ";
 						return msg;
 				}

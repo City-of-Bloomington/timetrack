@@ -34,31 +34,28 @@ public class GroupManagerAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = groupManager.doSave();
-						if(!back.equals("")){
-								addActionError(back);
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");			
 						}
 				}				
 				else if(action.startsWith("Save")){
 						back = groupManager.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");			
 						}
 				}
 				else{		
 						getGroupManager();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = groupManager.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addActionError(back);
 										addError(back);
 								}
@@ -72,7 +69,7 @@ public class GroupManagerAction extends TopAction{
 		public GroupManager getGroupManager(){ 
 				if(groupManager == null){
 						groupManager = new GroupManager(id);
-						if(!group_id.equals(""))
+						if(!group_id.isEmpty())
 								groupManager.setGroup_id(group_id);
 				}		
 				return groupManager;
@@ -88,16 +85,16 @@ public class GroupManagerAction extends TopAction{
 				return groupManagersTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 
 		public void setGroup_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						group_id = val;
 		}
 		public String getGroup_id(){
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						if(group != null){
 								group_id = group.getId();
 						}
@@ -109,10 +106,10 @@ public class GroupManagerAction extends TopAction{
 		}
 		public Group getGroup(){
 				getGroup_id();
-				if(!group_id.equals("")){
+				if(!group_id.isEmpty()){
 						Group one = new Group(group_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								group = one;
 								department_id = group.getDepartment_id();
 						}
@@ -124,7 +121,7 @@ public class GroupManagerAction extends TopAction{
 						NodeList nl = new NodeList();
 						nl.setManagers_only();
 						String back = nl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Node> ones = nl.getNodes();
 								if(ones != null)
 										nodes = ones;
@@ -145,11 +142,11 @@ public class GroupManagerAction extends TopAction{
 				// given a group we will find employees in the related department
 				//
 				if(employees == null){
-						if(department_id.equals("")){
+						if(department_id.isEmpty()){
 								getGroup();
 						}
 						EmployeeList empl = new EmployeeList();
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								empl.setDepartment_id(department_id);
 						}
 						empl.includeAllDirectors();
@@ -158,7 +155,7 @@ public class GroupManagerAction extends TopAction{
 						//
 						empl.setExclude_group_id(group_id);
 						String back = empl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Employee> ones = empl.getEmployees();
 								if(ones != null && ones.size() > 0){
 										employees = ones;
@@ -177,7 +174,7 @@ public class GroupManagerAction extends TopAction{
 				GroupManagerList gml = new GroupManagerList();
 				gml.setGroup_id(group_id);
 				String back = gml.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<GroupManager> ones = gml.getManagers();
 						if(ones != null && ones.size() > 0){
 								groupManagers = ones;

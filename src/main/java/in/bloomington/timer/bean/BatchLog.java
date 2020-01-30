@@ -65,7 +65,7 @@ public class BatchLog{
     }
 		public String getStatus(){
 				String status = "Success";
-				if(!failure_reason.equals("")) status = "Failure";
+				if(!failure_reason.isEmpty()) status = "Failure";
 				return status;
 		}
     //
@@ -92,10 +92,10 @@ public class BatchLog{
 						date = val;
     }
 		public Employee getRunner(){
-				if(runner == null && !run_by.equals("")){
+				if(runner == null && !run_by.isEmpty()){
 						Employee one = new Employee(run_by);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								runner = one;
 						}
 				}
@@ -157,12 +157,11 @@ public class BatchLog{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, names);
 						pstmt.setString(2, run_by);
-						if(failure_reason.equals(""))
+						if(failure_reason.isEmpty())
 								pstmt.setNull(3, Types.VARCHAR);
 						else
 								pstmt.setString(3, failure_reason);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
 						pstmt2 = con.prepareStatement(qq);

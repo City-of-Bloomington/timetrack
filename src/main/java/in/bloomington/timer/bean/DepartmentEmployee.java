@@ -80,7 +80,7 @@ public class DepartmentEmployee{
 				return department_id;
     }
 		public String getDepartment2_id(){
-				if(department2_id.equals(""))
+				if(department2_id.isEmpty())
 						return "-1";
 				return department2_id;
     }		
@@ -88,7 +88,7 @@ public class DepartmentEmployee{
 				return new_department_id;
     }		
 		public String getEffective_date(){
-				if(id.equals(""))
+				if(id.isEmpty())
 						return CommonInc.default_effective_date;
 				return effective_date;
     }
@@ -96,13 +96,13 @@ public class DepartmentEmployee{
 				return expire_date;
     }
 		public boolean hasExpireDate(){
-				return !expire_date.equals("");
+				return !expire_date.isEmpty();
 		}
     public String getChange_date(){
 				return change_date;
     }
 		public boolean hasSecondaryDept(){
-				return !department2_id.equals("");
+				return !department2_id.isEmpty();
 		}
     //
     // setters
@@ -140,10 +140,10 @@ public class DepartmentEmployee{
 						expire_date = val;
     }
 		public Department getDepartment(){
-				if(department == null && !department_id.equals("")){
+				if(department == null && !department_id.isEmpty()){
 						Department dd = new Department(department_id);
 						String back = dd.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department = dd;
 						}
 
@@ -151,10 +151,10 @@ public class DepartmentEmployee{
 				return department;
 		}
 		public Department getDepartment2(){
-				if(department2 == null && !department2_id.equals("")){
+				if(department2 == null && !department2_id.isEmpty()){
 						Department dd = new Department(department2_id);
 						String back = dd.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department2 = dd;
 						}
 
@@ -162,10 +162,10 @@ public class DepartmentEmployee{
 				return department2;
 		}		
 		public Employee getEmployee(){
-				if(employee == null && !employee_id.equals("")){
+				if(employee == null && !employee_id.isEmpty()){
 						Employee dd = new Employee(employee_id);
 						String back = dd.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								employee = dd;
 						}
 						else{
@@ -189,7 +189,7 @@ public class DepartmentEmployee{
 		}
 		public int hashCode(){
 				int seed = 31;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*47;
 						}catch(Exception ex){
@@ -208,13 +208,13 @@ public class DepartmentEmployee{
 						" date_format(effective_date,'%m/%d/%Y'),"+
 						" date_format(expire_date,'%m/%d/%Y') "+
 						" from department_employees where ";
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						qq += " id = ? ";
 				}
-				else if(!employee_id.equals("")){
+				else if(!employee_id.isEmpty()){
 						qq += " employee_id = ? ";
 				}
-				else if(!department_id.equals("")){
+				else if(!department_id.isEmpty()){
 						qq += " (department_id = ? or department_id2=?)";
 				}
 				else{
@@ -222,33 +222,34 @@ public class DepartmentEmployee{
 						return msg;
 				}
 				logger.debug(qq);
+				con = UnoConnect.getConnection();
+				if(con == null){
+						return "No db connection";
+				}
 				try{
-						con = UnoConnect.getConnection();
-						if(con != null){
-								pstmt = con.prepareStatement(qq);
-								if(!id.equals("")){
-										pstmt.setString(1, id);
-								}
-								else if(!employee_id.equals("")){
-										pstmt.setString(1, employee_id);
-								}
-								else{
-										pstmt.setString(1, department_id);
-										pstmt.setString(2, department_id);										
-								}
-								rs = pstmt.executeQuery();
-								//
-								if(rs.next()){
-										setVals(rs.getString(1),
-														rs.getString(2),
-														rs.getString(3),
-														rs.getString(4),
-														rs.getString(5),
-														rs.getString(6));
-								}
-								else{
-										msg = "Department Employee not found";
-								}
+						pstmt = con.prepareStatement(qq);
+						if(!id.isEmpty()){
+								pstmt.setString(1, id);
+						}
+						else if(!employee_id.isEmpty()){
+								pstmt.setString(1, employee_id);
+						}
+						else{
+								pstmt.setString(1, department_id);
+								pstmt.setString(2, department_id);										
+						}
+						rs = pstmt.executeQuery();
+						//
+						if(rs.next()){
+								setVals(rs.getString(1),
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getString(5),
+												rs.getString(6));
+						}
+						else{
+								msg = "Department Employee not found";
 						}
 				}
 				catch(Exception ex){
@@ -269,11 +270,11 @@ public class DepartmentEmployee{
 				String msg="", str="";
 				String qq = " select id from department_employees where employee_id = ? and department_id=? and expire_date is null ";
 				String qq2 = " insert into department_employees values(0,?,?,?,?,?) ";
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						msg = " employee id not set ";
 						return msg;
 				}
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						msg = " department not set ";
 						return msg;
 				}				
@@ -291,22 +292,22 @@ public class DepartmentEmployee{
 						if(rs.next()){
 								id = rs.getString(1);
 						}
-						if(id.equals("")){
+						if(id.isEmpty()){
 								qq = qq2;
 								pstmt2 = con.prepareStatement(qq2);
 								pstmt2.setString(1, employee_id);
 								pstmt2.setString(2, department_id);
-								if(department2_id.equals("")){
+								if(department2_id.isEmpty()){
 										pstmt2.setNull(3, Types.INTEGER);
 								}
 								else{
 										pstmt2.setString(3, department2_id);
 								}
-								if(effective_date.equals(""))
+								if(effective_date.isEmpty())
 										effective_date = Helper.getToday();
 								java.util.Date date_tmp = df.parse(effective_date);
 								pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
-								if(expire_date.equals(""))
+								if(expire_date.isEmpty())
 										pstmt2.setNull(5, Types.DATE);
 								else{
 										date_tmp = df.parse(expire_date);
@@ -338,13 +339,12 @@ public class DepartmentEmployee{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						return " employee id not set ";
 				}
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						return " department id not set ";
 				}
-				System.err.println(" department2 "+department2_id);
 				String qq = "update department_employees set employee_id=?,department_id=?,department2_id=?,effective_date=?,expire_date=? where id=? ";
 				logger.debug(qq);
 				try{
@@ -353,7 +353,7 @@ public class DepartmentEmployee{
 								pstmt = con.prepareStatement(qq);
 								pstmt.setString(1, employee_id);
 								pstmt.setString(2, department_id);
-								if(department2_id.equals("")){
+								if(department2_id.isEmpty()){
 										pstmt.setNull(3, Types.INTEGER);
 								}
 								else{
@@ -361,7 +361,7 @@ public class DepartmentEmployee{
 								}								
 								java.util.Date date_tmp = df.parse(effective_date);
 								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
-								if(expire_date.equals(""))
+								if(expire_date.isEmpty())
 										pstmt.setNull(5, Types.DATE);
 								else{
 										date_tmp = df.parse(expire_date);
@@ -391,10 +391,10 @@ public class DepartmentEmployee{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						return " id not set ";
 				}
-				if(new_department_id.equals("")){
+				if(new_department_id.isEmpty()){
 						return " new department id not set ";
 				}
 				String start_date = effective_date; 
@@ -419,7 +419,7 @@ public class DepartmentEmployee{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						// effective_date = start_date;
 						department_id = new_department_id;
 						id="";

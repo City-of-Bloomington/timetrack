@@ -60,7 +60,7 @@ public class TimeClockAction extends TopAction{
 										 ip = ip2;
 								}
 						}
-						if(ip.equals("")){
+						if(ip.isEmpty()){
 								ip = req.getRemoteAddr();
 						}
 						if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
@@ -71,7 +71,7 @@ public class TimeClockAction extends TopAction{
 				}catch(Exception ex){
 						logger.error(ex);
 				}
-				if(!action.equals("")){
+				if(!action.isEmpty()){
 						if(ipSet != null){
 								if(ipSet.contains(ip)){
 										try{
@@ -103,7 +103,7 @@ public class TimeClockAction extends TopAction{
 												}
 												boolean hasClockIn = timeClock.hasClockIn();
 												back = timeClock.process();
-												if(!back.equals("")){
+												if(!back.isEmpty()){
 														addError(back);
 												}
 												else{
@@ -148,7 +148,7 @@ public class TimeClockAction extends TopAction{
 				return timeClocksTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		private void prepareIps(){
@@ -168,7 +168,7 @@ public class TimeClockAction extends TopAction{
 						needUpdate = false;
 						LocationList ial = new LocationList();
 						String back = ial.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Location> ones = ial.getLocations();
 								if(ones != null && ones.size() > 0){
 										ipSet = new HashSet<>();

@@ -29,7 +29,7 @@ public class ReasonCategoryAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = reasonCategory.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -38,7 +38,7 @@ public class ReasonCategoryAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = reasonCategory.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -47,9 +47,9 @@ public class ReasonCategoryAction extends TopAction{
 				}
 				else{		
 						getReasonCategory();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = reasonCategory.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -73,7 +73,7 @@ public class ReasonCategoryAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public boolean hasCategories(){
@@ -84,7 +84,7 @@ public class ReasonCategoryAction extends TopAction{
 				if(categories == null){
 						ReasonCategoryList tl = new ReasonCategoryList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<ReasonCategory> ones = tl.getReasonCategories();
 								if(ones != null && ones.size() > 0){
 										categories = ones;

@@ -32,7 +32,7 @@ public class GroupLocationAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = groupLocation.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -41,7 +41,7 @@ public class GroupLocationAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = groupLocation.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -50,7 +50,7 @@ public class GroupLocationAction extends TopAction{
 				}
 				else if(action.startsWith("Delete")){
 						back = groupLocation.doDelete();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -62,9 +62,9 @@ public class GroupLocationAction extends TopAction{
 				else{		
 						getGroupLocation();
 						groupLocation.setGroup_id(group_id);
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = groupLocation.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -90,7 +90,7 @@ public class GroupLocationAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setGroup_id(String val){
@@ -102,7 +102,7 @@ public class GroupLocationAction extends TopAction{
 						GroupLocationList tl = new GroupLocationList();
 						tl.setGroup_id(group_id);
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<GroupLocation> ones = tl.getGroupLocations();
 								if(ones != null && ones.size() > 0){
 										groupLocations = ones;
@@ -115,7 +115,7 @@ public class GroupLocationAction extends TopAction{
 				if(locations == null){
 						LocationList tl = new LocationList();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Location> ones = tl.getLocations();
 								if(ones != null && ones.size() > 0){
 										locations = ones;
@@ -130,7 +130,7 @@ public class GroupLocationAction extends TopAction{
 						tl.setTable_name("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;

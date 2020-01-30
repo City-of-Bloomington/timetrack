@@ -102,7 +102,7 @@ public class TimeAction implements Serializable{
 				return cancelled_by;
     }
 		public boolean isCancelled(){
-				return !cancelled_time.equals("");
+				return !cancelled_time.isEmpty();
 		}
 		public String getCancelInfo(){
 				if(isCancelled()){
@@ -112,7 +112,7 @@ public class TimeAction implements Serializable{
 		}
 		// only Payroll approve can be cancelled
 		public boolean canBeCancelled(){
-				if(id.equals("") || isCancelled()) return false;
+				if(id.isEmpty() || isCancelled()) return false;
 				getWorkflow();
 				return workflow != null && workflow.isProcessed();
 		}
@@ -148,30 +148,30 @@ public class TimeAction implements Serializable{
 						cancelled_time = val;
     }		
 		public Workflow getWorkflow(){
-				if(workflow == null && !workflow_id.equals("")){
+				if(workflow == null && !workflow_id.isEmpty()){
 						Workflow one = new Workflow(workflow_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								workflow = one;
 						}
 				}
 				return workflow;
 		}
 		public Employee getActioner(){
-				if(actioner == null && !action_by.equals("")){
+				if(actioner == null && !action_by.isEmpty()){
 						Employee one = new Employee(action_by);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								actioner = one;
 						}
 				}
 				return actioner;
 		}
 		public Employee getCanceller(){
-				if(canceller == null && !cancelled_by.equals("")){
+				if(canceller == null && !cancelled_by.isEmpty()){
 						Employee one = new Employee(cancelled_by);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								canceller = one;
 						}
 				}
@@ -190,7 +190,7 @@ public class TimeAction implements Serializable{
 		}
 		public int hashCode(){
 				int seed = 31;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*47;
 						}catch(Exception ex){
@@ -211,12 +211,13 @@ public class TimeAction implements Serializable{
 						" a.cancelled_by, date_format(a.cancelled_time,'%m/%d/%Y %H:%i'),"+
 						" w.node_id,w.next_node_id from time_actions a "+
 						" join workflows w on a.workflow_id=w.id where a.id=? ";
-				logger.debug(qq);
+
 				con = UnoConnect.getConnection();
 				if(con == null){
 						msg = "Could not connect to DB ";
 						return msg;
-				}				
+				}
+				logger.debug(qq);				
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, id);
@@ -252,22 +253,22 @@ public class TimeAction implements Serializable{
 		//
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				//
 				// check if it is not performed yet (approve or else)
 				String qq = " select count(*) from time_actions where document_id=? and workflow_id=? and cancelled_time is null";
 				String qq2 = " insert into time_actions values(0,?,?,?,now(),null,null)";
-				if(workflow_id.equals("")){
+				if(workflow_id.isEmpty()){
 						msg = "workflow id not set ";
 						return msg;
 				}
-				if(document_id.equals("")){
+				if(document_id.isEmpty()){
 						msg = "document id not set ";
 						return msg;
 				}
-				if(action_by.equals("")){
+				if(action_by.isEmpty()){
 						msg = "action user not set ";
 						return msg;
 				}
@@ -275,7 +276,9 @@ public class TimeAction implements Serializable{
 				if(con == null){
 						msg = "Could not connect to DB ";
 						return msg;
-				}				
+				}
+				logger.debug(qq);			 
+				
 				try{
 						// to avoid multiple approve
 						pstmt = con.prepareStatement(qq);
@@ -288,16 +291,16 @@ public class TimeAction implements Serializable{
 						}
 						if(cnt == 0){
 								qq = qq2;
-								pstmt = con.prepareStatement(qq);								
-								pstmt.setString(1, workflow_id);
-								pstmt.setString(2, document_id);
-								pstmt.setString(3, action_by);
-								pstmt.executeUpdate();
-								Helper.databaseDisconnect(pstmt, rs);
+								logger.debug(qq);
+								pstmt2 = con.prepareStatement(qq);								
+								pstmt2.setString(1, workflow_id);
+								pstmt2.setString(2, document_id);
+								pstmt2.setString(3, action_by);
+								pstmt2.executeUpdate();
 								//
 								qq = "select LAST_INSERT_ID()";
-								pstmt = con.prepareStatement(qq);
-								rs = pstmt.executeQuery();
+								pstmt3 = con.prepareStatement(qq);
+								rs = pstmt3.executeQuery();
 								if(rs.next()){
 										id = rs.getString(1);
 								}
@@ -308,7 +311,7 @@ public class TimeAction implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
 						UnoConnect.databaseDisconnect(con);
 				}
 				msg += doSelect();
@@ -325,11 +328,11 @@ public class TimeAction implements Serializable{
 				//
 				// check if it is not performed yet (approve or else)
 				String qq = " update time_actions set cancelled_by=?, cancelled_time=now() where id=? ";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = "action id not set ";
 						return msg;
 				}
-				if(cancelled_by.equals("")){
+				if(cancelled_by.isEmpty()){
 						msg = "cancelled by  set ";
 						return msg;
 				}
@@ -337,7 +340,8 @@ public class TimeAction implements Serializable{
 				if(con == null){
 						msg = "Could not connect to DB ";
 						return msg;
-				}				
+				}
+				logger.debug(qq);				
 				try{
 						// to avoid multiple approve
 						pstmt = con.prepareStatement(qq);

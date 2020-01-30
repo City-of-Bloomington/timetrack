@@ -183,13 +183,13 @@ public class NewEmployeeService extends HttpServlet{
 				// get the key
 				ServiceKeyList skl = new ServiceKeyList(keyId);
 				String back = skl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<ServiceKey> ones = skl.getKeys();
 						if(ones != null && ones.size() > 0){
 								key = ones.get(0);
 						}
 				}
-				if(!signatureHeaders.equals("")){
+				if(!signatureHeaders.isEmpty()){
 						try{
 								String[] str_arr = signatureHeaders.split(",");
 								for(String str:str_arr){
@@ -232,7 +232,7 @@ public class NewEmployeeService extends HttpServlet{
 								System.err.println(ex);
 						}
 				}
-				if(!headers_order.equals("")){
+				if(!headers_order.isEmpty()){
 						String[] str_arr = headers_order.split("\\s+");
 						list_order = Arrays.asList(str_arr);
 						System.err.println(" list order "+list_order);
@@ -250,7 +250,7 @@ public class NewEmployeeService extends HttpServlet{
 															headerMap);
 				
 				boolean match = signer.verify();
-				if(!expires.equals("")){
+				if(!expires.isEmpty()){
 						// even if the match is true, if expired
 						// the signing becomes false
 						if(isRequestExpired(expires)){

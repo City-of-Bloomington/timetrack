@@ -56,7 +56,7 @@ public class TimeClock {
 
     public int hashCode() {
 				int seed = 17;
-				if (!id.equals("")) {
+				if (!id.isEmpty()) {
 						try {
 								seed += Integer.parseInt(id);
 						} catch (Exception ex) {
@@ -89,7 +89,7 @@ public class TimeClock {
     }
 
     public String getTime() {
-				if (time.equals("")) {
+				if (time.isEmpty()) {
 						time = Helper.getCurrentTime();
 				}
 				return time;
@@ -100,7 +100,7 @@ public class TimeClock {
     }
 
     public boolean hasTime_in_out() {
-				return !(time_in.equals("") || time_out.equals(""));
+				return !(time_in.isEmpty() || time_out.isEmpty());
     }
 
     //
@@ -201,7 +201,7 @@ public class TimeClock {
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if (back.equals("")) {
+						if (back.isEmpty()) {
 								List<PayPeriod> ones = ppl.getPeriods();
 								if (ones != null && ones.size() > 0) {
 										currentPayPeriod = ones.get(0);
@@ -215,7 +215,7 @@ public class TimeClock {
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.setLastPayPeriod();
 						String back = ppl.find();
-						if (back.equals("")) {
+						if (back.isEmpty()) {
 								List<PayPeriod> ones = ppl.getPeriods();
 								if (ones != null && ones.size() > 0) {
 										previousPayPeriod = ones.get(0);
@@ -230,7 +230,7 @@ public class TimeClock {
 				return document;
     }
 		public String getDocument_id(){
-				if(document_id.equals("")){
+				if(document_id.isEmpty()){
 						findDocument();
 				}
 				return document_id;
@@ -243,7 +243,7 @@ public class TimeClock {
 						dl.setPay_period_id(currentPayPeriod.getId());
 						dl.setJob_id(job_id);
 						String back = dl.find();
-						if (back.equals("")) {
+						if (back.isEmpty()) {
 								List<Document> ones = dl.getDocuments();
 								if (ones != null && ones.size() > 0) {
 										document = ones.get(0);
@@ -257,7 +257,7 @@ public class TimeClock {
 				if (document == null) {
 						Document one = new Document(null, employee.getId(), currentPayPeriod.getId(), job_id, null,	employee.getId());
 						String back = one.doSave();
-						if (back.equals("")) {
+						if (back.isEmpty()) {
 								document = one;
 								new_docuemnt = true;
 								document_id = document.getId();
@@ -295,7 +295,7 @@ public class TimeClock {
     }
 
     public Employee getEmployee() {
-				if (employee == null && !id_code.equals("")) {
+				if (employee == null && !id_code.isEmpty()) {
 						//
 						// if two employee swipe one after another quickely
 						// we pick the first 4 digits and ignore the second
@@ -305,7 +305,7 @@ public class TimeClock {
 						Employee one = new Employee();
 						one.setId_code(id_code);
 						String back = one.doSelect();
-						if (back.equals("")) {
+						if (back.isEmpty()) {
 								employee = one;
 								employee_id = employee.getId();
 						}
@@ -353,7 +353,7 @@ public class TimeClock {
 						tbl.setEmployee_id(employee.getId());
 						tbl.setDuration(time_clock_duration);
 						String back = tbl.findDocumentForClockInOnly(time_hr, time_min);
-						if (back.equals("")) {
+						if (back.isEmpty()) {
 								// if we have clock-in, we can get the document
 								document = tbl.getDocument();
 								clocked_in_hour = tbl.getClockedInHour();
@@ -376,7 +376,7 @@ public class TimeClock {
 										getPreviousPayPeriod();
 										tbl.setPay_period_id(previousPayPeriod.getId());
 										back = tbl.findDocumentForClockInOnly(time_hr, time_min);
-										if (back.equals("")) {
+										if (back.isEmpty()) {
 												// if we have clock-in, we can get the document
 												document = tbl.getDocument();
 												clocked_in_hour = tbl.getClockedInHour();
@@ -400,7 +400,7 @@ public class TimeClock {
 								getCurrentPayPeriod();
 								jl.setPay_period_id(currentPayPeriod.getId());
 								String back = jl.find();
-								if (back.equals("")) {
+								if (back.isEmpty()) {
 										List<JobTask> ones = jl.getJobTasks();
 										if (ones != null && ones.size() > 0) {
 												jobs = ones;
@@ -409,10 +409,10 @@ public class TimeClock {
 						}
 						// find job
 						if (job == null){
-								if(!job_id.equals("")) {
+								if(!job_id.isEmpty()) {
 										JobTask one = new JobTask(job_id);
 										String back = one.doSelect();
-										if (back.equals("")) {
+										if (back.isEmpty()) {
 												job = one;
 										}
 								}
@@ -438,7 +438,7 @@ public class TimeClock {
 				String msg = "", hour_code_id = "1"; // 1:Reg, 14:TEMP
 				String date = Helper.getToday();
 				String yesterday = Helper.getYesterday();
-				if (id_code.equals("")) {
+				if (id_code.isEmpty()) {
 						msg = "Employee ID code is required ";
 						return msg;
 				}
@@ -454,8 +454,8 @@ public class TimeClock {
 				//
 				// find document, if non create
 				// we need the employee job
-				if (job_id.equals("")) {
-						if (jobs.size() > 1 && job_id.equals("")) {
+				if (job_id.isEmpty()) {
+						if (jobs.size() > 1 && job_id.isEmpty()) {
 								msg = "you need to select a job ";
 								return msg;
 						}
@@ -509,7 +509,7 @@ public class TimeClock {
 								tbl.setDate_to(date); // today
 								tbl.setDuration(time_clock_duration);
 								msg = tbl.findTimeBlocksForClockIn(time_hr, time_min);
-								if (msg.equals("")) {
+								if (msg.isEmpty()) {
 										List<TimeBlock> tbs = tbl.getTimeBlocks();
 										if (tbs != null && tbs.size() > 0) {
 												timeBlock = tbs.get(0);

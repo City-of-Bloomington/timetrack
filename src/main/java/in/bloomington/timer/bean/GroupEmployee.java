@@ -86,10 +86,10 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				return new_group_id;
 		}		
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
 		}		
 		public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
 		}
 		public void setId(String val){
 				if(val != null && !val.equals("-1"))
@@ -116,7 +116,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						expire_date = val;
 		}
 		public boolean hasExpireDate(){
-				return !expire_date.equals("");
+				return !expire_date.isEmpty();
 		}
 
 		public void setInactive(boolean val){
@@ -124,23 +124,23 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						inactive = "y";
 		}
 		public boolean isCurrent(){
-				return expire_date.equals("");
+				return expire_date.isEmpty();
 		}
 		public Employee getEmployee(){
-				if(employee == null && !employee_id.equals("")){
+				if(employee == null && !employee_id.isEmpty()){
 						Employee dd = new Employee(employee_id);
 						String back = dd.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								employee = dd;
 						}
 				}
 				return employee;				
 		}
 		public Group getGroup(){
-				if(group == null && !group_id.equals("")){
+				if(group == null && !group_id.isEmpty()){
 						Group dd = new Group(group_id);
 						String back = dd.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								group = dd;
 						}
 				}
@@ -151,10 +151,10 @@ public class GroupEmployee extends CommonInc implements Serializable{
 		// using this group, then we can change the group
 		// easily without the need to go through two step change
 		public boolean hasTimeData(){
-				if(!employee_id.equals("") && !id.equals("")){					 
+				if(!employee_id.isEmpty() && !id.isEmpty()){					 
 						DocumentList dl = new DocumentList(employee_id);
 						String back = dl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Document> ones = dl.getDocuments();
 								return (ones != null && ones.size() > 0);
 						}
@@ -170,14 +170,14 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				ResultSet rs = null;
 				String qc = " select count(*) from group_employees where expire_date is null and group_id=? and employee_id=?";
 				String qq = " insert into group_employees values(0,?,?,?,?,null) "; 
-				if(employee_id.equals("")){
+				if(employee_id.isEmpty()){
 						msg = "employee not set ";
 						return msg;
 				}
-				if(group_id.equals("") && !new_group_id.equals("")){
+				if(group_id.isEmpty() && !new_group_id.isEmpty()){
 						group_id = new_group_id;
 				}
-				if(group_id.equals("")){
+				if(group_id.isEmpty()){
 						msg = "group not set ";
 						return msg;
 				}
@@ -206,11 +206,11 @@ public class GroupEmployee extends CommonInc implements Serializable{
 								pstmt2 = con.prepareStatement(qq);
 								pstmt2.setString(1, group_id);
 								pstmt2.setString(2, employee_id);								
-								if(effective_date.equals(""))
+								if(effective_date.isEmpty())
 										effective_date = Helper.getToday();
 								java.util.Date date_tmp = df.parse(effective_date);
 								pstmt2.setDate(3, new java.sql.Date(date_tmp.getTime()));
-								if(expire_date.equals(""))
+								if(expire_date.isEmpty())
 										pstmt2.setNull(4, Types.DATE);
 								else{
 										date_tmp = df.parse(expire_date);
@@ -241,7 +241,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				getPayPeriod(); // current only
 				gel.setPay_period_id(payPeriod.getId()); 
 				String back = gel.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<GroupEmployee> ones = gel.getGroupEmployees();
 						return ones != null && ones.size() == 1;
 				}
@@ -270,20 +270,20 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				}			
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(new_group_id.equals("")){
+						if(new_group_id.isEmpty()){
 								new_group_id = group_id;
 						}
 						pstmt.setString(1, new_group_id);														
 						pstmt.setString(2, employee_id);
 						java.util.Date date_tmp = df.parse(effective_date);
 						pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
-						if(expire_date.equals(""))
+						if(expire_date.isEmpty())
 								pstmt.setNull(4, Types.DATE);
 						else{
 								date_tmp = df.parse(expire_date);
 								pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
 						}
-						if(inactive.equals(""))
+						if(inactive.isEmpty())
 								pstmt.setNull(5, Types.CHAR);
 						else{
 								pstmt.setString(5,"y");
@@ -309,7 +309,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriod = ones.get(0);
@@ -370,7 +370,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						msg = doExpireRelatedGroupJobs();
 				}
 				return msg;
@@ -409,7 +409,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 						" date_format(effective_date,'%m/%d/%Y'),"+
 						" date_format(expire_date,'%m/%d/%Y'),inactive "+
 						" from group_employees where id=?";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						msg = " no id set ";
 						return msg;
 				}
@@ -421,7 +421,7 @@ public class GroupEmployee extends CommonInc implements Serializable{
 				}							
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								pstmt.setString(1, id);
 						}
 						rs = pstmt.executeQuery();

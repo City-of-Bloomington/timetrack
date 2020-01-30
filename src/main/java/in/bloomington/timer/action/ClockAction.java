@@ -26,9 +26,9 @@ public class ClockAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
-				if(!action.equals("")){ // action name not important
+				if(!action.isEmpty()){ // action name not important
 						back = ""; // clock.process();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 								addActionError(back);
 						}
@@ -57,7 +57,7 @@ public class ClockAction extends TopAction{
 				return clocksTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 

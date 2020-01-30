@@ -37,12 +37,12 @@ public class TimeBlockLogAction extends TopAction{
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare("timeBlockLog.action");
-				if(action.equals("")){
-						if(document_id.equals("")){
+				if(action.isEmpty()){
+						if(document_id.isEmpty()){
 								return "search";
 						}
 				}
-				if(!other_employee_id.equals("")){
+				if(!other_employee_id.isEmpty()){
 						getDocument_id();
 				}
 				return ret;
@@ -51,11 +51,11 @@ public class TimeBlockLogAction extends TopAction{
 				return timeBlockLogsTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setSource(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						source = val;
 		}
 		//
@@ -65,15 +65,15 @@ public class TimeBlockLogAction extends TopAction{
 		//
 		public String getDocument_id(){
 				//
-				if(document_id.equals("") && !other_employee_id.equals("")){
+				if(document_id.isEmpty() && !other_employee_id.isEmpty()){
 						DocumentList dl = new DocumentList();
 						dl.setEmployee_id(other_employee_id);
-						if(pay_period_id.equals("")){
+						if(pay_period_id.isEmpty()){
 								getPayPeriod();
 						}
 						dl.setPay_period_id(pay_period_id);
 						String back = dl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Document> ones = dl.getDocuments();
 								if(ones != null && ones.size() > 0){
 										document = ones.get(0);
@@ -84,15 +84,15 @@ public class TimeBlockLogAction extends TopAction{
 				return document_id;
 		}
 		public void setDocument_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						document_id = val;
 		}
 		public void setPay_period_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						pay_period_id = val;
 		}
 		public void setOther_employee_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						other_employee_id = val;
 		}
 		public void setEmployee_name(String val){
@@ -102,7 +102,7 @@ public class TimeBlockLogAction extends TopAction{
 				return other_employee_id;
 		}
 		public String getPay_period_id(){
-				if(pay_period_id.equals("") && !document_id.equals("")){
+				if(pay_period_id.isEmpty() && !document_id.isEmpty()){
 						getDocument();
 						if(document != null)
 								pay_period_id = document.getPay_period_id();
@@ -113,10 +113,10 @@ public class TimeBlockLogAction extends TopAction{
 				return source;
 		}
 		public Document getDocument(){
-				if(document == null && !document_id.equals("")){
+				if(document == null && !document_id.isEmpty()){
 						Document one = new Document(document_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								document = one;
 						}
 				}
@@ -129,7 +129,7 @@ public class TimeBlockLogAction extends TopAction{
 						tl.avoidFuturePeriods();
 						tl.setEmployee_id(employee_id);
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
@@ -143,12 +143,12 @@ public class TimeBlockLogAction extends TopAction{
 				// if pay period is not set, we look for current one
 				//
 				if(payPeriod == null){
-						if(pay_period_id.equals("")){
-								if(document_id.equals("")){
+						if(pay_period_id.isEmpty()){
+								if(document_id.isEmpty()){
 										PayPeriodList ppl = new PayPeriodList();
 										ppl.currentOnly();
 										String back = ppl.find();
-										if(back.equals("")){
+										if(back.isEmpty()){
 												List<PayPeriod> ones = ppl.getPeriods();
 												if(ones != null && ones.size() > 0){
 														payPeriod = ones.get(0);
@@ -167,7 +167,7 @@ public class TimeBlockLogAction extends TopAction{
 						else{
 								PayPeriod one = new PayPeriod(pay_period_id);
 								String back = one.doSelect();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										payPeriod = one;
 								}
 						}
@@ -180,11 +180,11 @@ public class TimeBlockLogAction extends TopAction{
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.currentOnly();
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										currentPayPeriod = ones.get(0);
-										if(pay_period_id.equals("")){
+										if(pay_period_id.isEmpty()){
 												pay_period_id = currentPayPeriod.getId();
 												payPeriod = currentPayPeriod;
 										}
@@ -196,12 +196,12 @@ public class TimeBlockLogAction extends TopAction{
 		public PayPeriod getPreviousPayPeriod(){
 				//
 				if(previousPayPeriod == null){
-						if(pay_period_id.equals(""))
+						if(pay_period_id.isEmpty())
 								getPayPeriod();
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.setPreviousTo(pay_period_id); // relative to currently used
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										previousPayPeriod = ones.get(0);
@@ -213,12 +213,12 @@ public class TimeBlockLogAction extends TopAction{
 		public PayPeriod getNextPayPeriod(){
 				//
 				if(nextPayPeriod == null){
-						if(pay_period_id.equals(""))
+						if(pay_period_id.isEmpty())
 								getPayPeriod();
 						PayPeriodList ppl = new PayPeriodList();
 						ppl.setNextTo(pay_period_id); // relative to this currently used 
 						String back = ppl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = ppl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										nextPayPeriod = ones.get(0);
@@ -233,11 +233,11 @@ public class TimeBlockLogAction extends TopAction{
 				return pay_period_id.equals(currentPayPeriod.getId());
 		}
 		public List<TimeBlockLog> getTimeBlockLogs(){
-				if(timeBlockLogs == null && !document_id.equals("")){
+				if(timeBlockLogs == null && !document_id.isEmpty()){
 						TimeBlockLogList tbll = new TimeBlockLogList();
 						tbll.setDocument_id(document_id);
 						String back = tbll.find();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{

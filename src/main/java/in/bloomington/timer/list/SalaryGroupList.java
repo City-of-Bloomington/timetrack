@@ -56,23 +56,23 @@ public class SalaryGroupList{
 				}
 				String qw = "";
 				try{
-						if(!name.equals("")){
-								if(!qw.equals("")) qw += " and ";
+						if(!name.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " t.name like ? ";
 						}
 						if(active_only){
-								if(!qw.equals("")) qw += " and ";
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " t.inactive is null ";
 						}
-						if(!qw.equals("")){
+						if(!qw.isEmpty()){
 								qq += " where "+qw;
 						}
-						if(!sortBy.equals("")){
+						if(!sortBy.isEmpty()){
 								qq += " order by "+sortBy;
 						}
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								pstmt.setString(1,name);
 						}						
 						rs = pstmt.executeQuery();

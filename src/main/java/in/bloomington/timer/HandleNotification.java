@@ -141,7 +141,7 @@ public class HandleNotification{
 				String msg = "";
 				if(emps == null){
 						msg = findToBeNotifiedEmployees();
-						if(!msg.equals("")){
+						if(!msg.isEmpty()){
 								return msg;
 						}						
 				}
@@ -158,29 +158,29 @@ public class HandleNotification{
 						for(Employee one:emps){
 								to_str = one.getFull_name()+"<"+one.getEmail()+">";
 								msg = compuseAndSend(to_str);
-								if(msg.equals("")){
-										if(!success_list.equals("")) success_list +=", "; 
+								if(msg.isEmpty()){
+										if(!success_list.isEmpty()) success_list +=", "; 
 										success_list += to_str;
 								}
 								else{
-										if(!failure_list.equals("")){
+										if(!failure_list.isEmpty()){
 												failure_list +=", ";
 												failure_error += ", ";
 										}
 										failure_list += to_str;
 										if(failure_error.indexOf(msg) == -1){
-												if(!failure_error.equals("")){
+												if(!failure_error.isEmpty()){
 														failure_error += ", ";
 												}										
 												failure_error += msg;
 										}
 								}
 						}
-						if(!success_list.equals("")){
+						if(!success_list.isEmpty()){
 								NotificationLog nlog = new NotificationLog(success_list, body_text, "Success",null);
 								nlog.doSave();										
 						}
-						if(!failure_list.equals("")){
+						if(!failure_list.isEmpty()){
 								NotificationLog nlog = new NotificationLog(failure_list, body_text, "Failure", failure_error);
 								nlog.doSave();		
 						}						

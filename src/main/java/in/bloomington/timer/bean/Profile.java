@@ -197,7 +197,7 @@ public class Profile extends CommonInc{
 		public boolean equals(Object obj){
 				if(obj instanceof Profile){
 						Profile one =(Profile)obj;
-						if(!employee_number.equals("")){
+						if(!employee_number.isEmpty()){
 								return employee_number.equals(one.getEmployee_number());
 						}
 						return nw_employee_id.equals(one.getId());
@@ -207,10 +207,10 @@ public class Profile extends CommonInc{
 		public int hashCode(){
 				int seed = 29;
 				String var = "";
-				if(!employee_number.equals("")){
+				if(!employee_number.isEmpty()){
 						var = employee_number;
 				}
-				else if(!nw_employee_id.equals("")){
+				else if(!nw_employee_id.isEmpty()){
 						var = nw_employee_id;
 				}
 				try{

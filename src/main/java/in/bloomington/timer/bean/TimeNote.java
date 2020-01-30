@@ -43,7 +43,7 @@ public class TimeNote{
 		}
 		public int hashCode(){
 				int seed = 17;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -70,10 +70,10 @@ public class TimeNote{
 				return notes;
 		}
 		public Employee getReporter(){
-				if(reporter == null && !reported_by.equals("")){
+				if(reporter == null && !reported_by.isEmpty()){
 						Employee one = new Employee(reported_by);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								reporter = one;
 						}
 				}
@@ -146,7 +146,7 @@ public class TimeNote{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into time_notes values(0,?,?,now(),?)";
-				if(notes.equals("")){
+				if(notes.isEmpty()){
 						msg = "notes is required";
 						return msg;
 				}
@@ -158,9 +158,8 @@ public class TimeNote{
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								pstmt.executeUpdate();
-								
 								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt2 = con.prepareStatement(qq);

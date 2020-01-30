@@ -100,7 +100,7 @@ public class CommonInc{
 				return message;
 		}
 		public boolean hasMessage(){
-				return !message.equals("");
+				return !message.isEmpty();
 		}
 		public boolean hasErrors(){
 				return (errors != null && errors.size() > 0);

@@ -63,21 +63,21 @@ public class TimeActionList{
 						" date_format(a.action_time,'%m/%d/%y %H:%i'),"+
 						" a.cancelled_by, date_format(a.cancelled_time,'%m/%d/%Y %H:%i'),"+
 						" w.node_id,w.next_node_id from time_actions a join workflows w on w.id=a.workflow_id ";
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						qw += " w.id = ? ";
 				}
-				if(!document_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!document_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " a.document_id = ? ";
 				}
 				if(active_only){
-						if(!qw.equals("")) qw += " and ";
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " a.cancelled_time is null ";
 				}
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
-				if(!sortBy.equals("")){
+				if(!sortBy.isEmpty()){
 						qq += " order by "+sortBy;
 				}
 				con = UnoConnect.getConnection();
@@ -90,10 +90,10 @@ public class TimeActionList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								pstmt.setString(jj++, id);
 						}
-						if(!document_id.equals("")){
+						if(!document_id.isEmpty()){
 								pstmt.setString(jj++, document_id);
 						}						
 						rs = pstmt.executeQuery();

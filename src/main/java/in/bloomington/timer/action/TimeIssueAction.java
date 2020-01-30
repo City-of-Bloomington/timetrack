@@ -31,35 +31,29 @@ public class TimeIssueAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(action.equals("Save")){
-						// timeIssue.setReported_by(user.getEmployee_id());
 						back = timeIssue.doSave();
-						if(!back.equals("")){
-								addActionError(back);
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
-								addActionMessage("Saved Successfully");
 								addMessage("Saved Successfully");
 						}
 				}
 				if(action.startsWith("Close")){
 						timeIssue.setClosed_by(user.getId());
 						back = timeIssue.doClose();
-						if(!back.equals("")){
-								addActionError(back);
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
-								addActionMessage("Closed Successfully");
 								addMessage("Closed Successfully");								
 						}
 				}				
 				else{		
 						getTimeIssue();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = timeIssue.doSelect();
-								if(!back.equals("")){
-										addActionError(back);
+								if(!back.isEmpty()){
 										addError(back);
 								}
 						}
@@ -86,19 +80,19 @@ public class TimeIssueAction extends TopAction{
 		}
 
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setDocument_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						document_id = val;
 		}
 		public void setReported_by(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						reported_by = val;
 		}		
 		public void setTime_block_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						time_block_id = val;
 		}		
 		public List<TimeIssue> getTimeIssues(){
@@ -107,7 +101,7 @@ public class TimeIssueAction extends TopAction{
 						tl.setTime_block_id(time_block_id);
 						tl.setDocument_id(document_id);
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<TimeIssue> ones = tl.getTimeIssues();
 								if(ones != null && ones.size() > 0){
 										timeIssues = ones;

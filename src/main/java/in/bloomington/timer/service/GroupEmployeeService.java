@@ -56,7 +56,7 @@ public class GroupEmployeeService extends HttpServlet{
 						vals = req.getParameterValues(name);
 						value = vals[vals.length-1].trim();
 						if (name.equals("group_id")) {
-								if(value != null && !value.equals("")){
+								if(value != null && !value.isEmpty()){
 										try{
 												Integer.parseInt(value);
 												group_id = value;										
@@ -70,13 +70,13 @@ public class GroupEmployeeService extends HttpServlet{
 				}
 				EmployeeList employeeList =  null;
 				List<Employee> employees = null;
-				if(!group_id.equals("")){
+				if(!group_id.isEmpty()){
 						//
 						employeeList = new EmployeeList();
 						employeeList.setActiveOnly();
 						employeeList.setGroup_id(group_id);
 						String back = employeeList.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								employees = employeeList.getEmployees();
 						}
 				}
@@ -100,7 +100,7 @@ public class GroupEmployeeService extends HttpServlet{
 		String writeJson(List<Employee> employees){
 				String json="";
 				for(Employee one:employees){
-						if(!json.equals("")) json += ",";
+						if(!json.isEmpty()) json += ",";
 						json += "{\"id\":\""+one.getId()+"\",\"fullname\":\""+one.getFull_name()+"\"}";
 				}
 				json = "["+json+"]";

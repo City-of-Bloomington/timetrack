@@ -83,40 +83,40 @@ public class CodeReasonCondition implements Serializable{
 				return hour_code_id;
     }
     public String getGroup_id(){
-				if(group_id.equals(""))
+				if(group_id.isEmpty())
 						return "-1";
 				return group_id;
     }		
     public String getDepartment_id(){
-				if(department_id.equals(""))
+				if(department_id.isEmpty())
 						return "-1";
 				return department_id;
     }
     public String getSalary_group_id(){
-				if(salary_group_id.equals(""))
+				if(salary_group_id.isEmpty())
 						return "-1";
 				return salary_group_id;
     }
     public String getReason_id(){
-				if(reason_id.equals(""))
+				if(reason_id.isEmpty())
 						return "-1";
 				return reason_id;
     }		
 		public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
     }		
 		public String getId(){
 				return id;
     }
 		public Type getDepartment(){
-				if(!department_id.equals("") && department == null){
+				if(!department_id.isEmpty() && department == null){
 						Type one = new Type(department_id);
 						one.setTable_name("departments");
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department = one;
 						}
 						return department;
@@ -175,7 +175,7 @@ public class CodeReasonCondition implements Serializable{
 		}
 		public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -185,41 +185,41 @@ public class CodeReasonCondition implements Serializable{
 				return seed;
 		}
 		public Type getSalaryGroup(){
-				if(!salary_group_id.equals("") && salaryGroup == null){
+				if(!salary_group_id.isEmpty() && salaryGroup == null){
 						Type one = new Type(salary_group_id);
 						one.setTable_name("salary_groups");
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								salaryGroup = one;
 						}
 				}
 				return salaryGroup;
 		}
 		public HourCode getHourCode(){
-				if(!hour_code_id.equals("") && hourCode == null){
+				if(!hour_code_id.isEmpty() && hourCode == null){
 						HourCode one = new HourCode(hour_code_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								hourCode = one;
 						}
 				}
 				return hourCode;
 		}
 		public EarnCodeReason getEarnCodeReason(){
-				if(!reason_id.equals("") && earnCodeReason == null){
+				if(!reason_id.isEmpty() && earnCodeReason == null){
 						EarnCodeReason one = new EarnCodeReason(reason_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								earnCodeReason = one;
 						}
 				}
 				return earnCodeReason;
 		}		
 		public Group getGroup(){
-				if(!group_id.equals("") && group == null){
+				if(!group_id.isEmpty() && group == null){
 						Group one = new Group(group_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								group = one;
 						}
 				}
@@ -276,15 +276,15 @@ public class CodeReasonCondition implements Serializable{
 		public String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into code_reason_conditions values(0,?,?,?,?,?,null) ";
-				if(hour_code_id.equals("")){
+				if(hour_code_id.isEmpty()){
 						msg = " need to pick an hour code ";
 						return msg;
 				}
-				if(reason_id.equals("")){
+				if(reason_id.isEmpty()){
 						msg = " reason code not selected ";
 						return msg;
 				}
@@ -298,25 +298,24 @@ public class CodeReasonCondition implements Serializable{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, reason_id);						
 						pstmt.setString(2, hour_code_id);
-						if(salary_group_id.equals(""))
+						if(salary_group_id.isEmpty())
 								pstmt.setNull(3,Types.INTEGER);
 						else
 								pstmt.setString(3, salary_group_id);
-						if(department_id.equals(""))
+						if(department_id.isEmpty())
 								pstmt.setNull(4,Types.INTEGER);
 						else
 								pstmt.setString(4, department_id);
-						if(group_id.equals(""))
+						if(group_id.isEmpty())
 								pstmt.setNull(5,Types.INTEGER);
 						else
 								pstmt.setString(5, group_id);						
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						date = Helper.getToday();
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -326,7 +325,7 @@ public class CodeReasonCondition implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -340,13 +339,13 @@ public class CodeReasonCondition implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						return " id not set ";
 				}
-				if(hour_code_id.equals("")){
+				if(hour_code_id.isEmpty()){
 						return " hour code is required";
 				}
-				if(reason_id.equals("")){
+				if(reason_id.isEmpty()){
 						return " reason code is required";
 				}
 				String qq = "update code_reason_conditions set reason_id=?,hour_code_id=?,salary_group_id=?,department_id=?,group_id=?,inactive=? where id=? ";
@@ -362,20 +361,20 @@ public class CodeReasonCondition implements Serializable{
 						int jj=1;
 						pstmt.setString(jj++, reason_id);						
 						pstmt.setString(jj++, hour_code_id);
-						if(salary_group_id.equals(""))
+						if(salary_group_id.isEmpty())
 								pstmt.setNull(jj++, Types.INTEGER);
 						else
 								pstmt.setString(jj++, salary_group_id);
-						if(department_id.equals(""))
+						if(department_id.isEmpty())
 								pstmt.setNull(jj++, Types.INTEGER);
 						else
 								pstmt.setString(jj++, department_id);
-						if(group_id.equals(""))
+						if(group_id.isEmpty())
 								pstmt.setNull(jj++, Types.INTEGER);
 						else
 								pstmt.setString(jj++, group_id);								
 						
-						if(inactive.equals("")){
+						if(inactive.isEmpty()){
 								pstmt.setNull(jj++, Types.CHAR);
 						}
 						else{
@@ -392,7 +391,7 @@ public class CodeReasonCondition implements Serializable{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
 				}
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						doSelect();
 				}
 
@@ -404,7 +403,7 @@ public class CodeReasonCondition implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(id.equals("")){
+				if(id.isEmpty()){
 						return " id not set ";
 				}
 				String qq = "delete from  code_reason_conditions where id=? ";

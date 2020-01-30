@@ -62,23 +62,23 @@ public class HourCodeConditionList{
 				if(active_only){
 						qw += " g.inactive is null ";
 				}
-				if(!department_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!department_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " (g.department_id = ? or g.department_id is null)";
 				}
-				if(!salary_group_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!salary_group_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " (g.salary_group_id = ? or g.salary_group_id is null)";
 				}
-				if(!group_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!group_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " (g.group_id = ? or g.group_id is null)";
 				}
-				if(!hour_code_id.equals("")){
-						if(!qw.equals("")) qw += " and ";
+				if(!hour_code_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
 						qw += " g.hour_code_id = ?";
 				}				
-				if(!qw.equals("")){
+				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
 				qq += " order by e.name ";
@@ -92,16 +92,16 @@ public class HourCodeConditionList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						if(!department_id.equals("")){
+						if(!department_id.isEmpty()){
 								pstmt.setString(jj++, department_id);
 						}
-						if(!salary_group_id.equals("")){
+						if(!salary_group_id.isEmpty()){
 								pstmt.setString(jj++, salary_group_id);								
 						}
-						if(!group_id.equals("")){
+						if(!group_id.isEmpty()){
 								pstmt.setString(jj++, group_id);								
 						}
-						if(!hour_code_id.equals("")){
+						if(!hour_code_id.isEmpty()){
 								pstmt.setString(jj++, hour_code_id);								
 						}						
 						rs = pstmt.executeQuery();

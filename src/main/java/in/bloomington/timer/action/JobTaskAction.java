@@ -46,7 +46,7 @@ public class JobTaskAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = jobTask.doSaveAll();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 								prepareData();
 						}
@@ -59,7 +59,7 @@ public class JobTaskAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = jobTask.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -72,7 +72,7 @@ public class JobTaskAction extends TopAction{
 				else if(action.startsWith("Edit")){
 						getJobTask();
 						back = jobTask.doSelect();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -85,9 +85,9 @@ public class JobTaskAction extends TopAction{
 				}
 				else{		
 						getJobTask();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = jobTask.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}
 								prepareData();
@@ -105,7 +105,7 @@ public class JobTaskAction extends TopAction{
 										jobTask.setComp_time_factor(oldJob.getComp_time_factor());
 										jobTask.setHoliday_comp_factor(oldJob.getHoliday_comp_factor());
 										jobTask.setClock_time_required(oldJob.getClock_time_required());
-										if(effective_date.equals("")){
+										if(effective_date.isEmpty()){
 												effective_date = jobTask.getEffective_date();
 										}
 								}
@@ -115,14 +115,14 @@ public class JobTaskAction extends TopAction{
 		}
 		void prepareData(){
 				getEmp(); // employee other than user
-				boolean includeFutureDate = id.equals("");
+				boolean includeFutureDate = id.isEmpty();
 				if(emp != null && emp.hasDepartment(includeFutureDate)){
 						dept = emp.getDepartment();
 						dept_id = dept.getId();
 						employee_number = emp.getEmployee_number();
 						first_name = emp.getFirst_name();
 						last_name = emp.getLast_name();
-						if(effective_date.equals("") && emp.hasGroups()){ 
+						if(effective_date.isEmpty() && emp.hasGroups()){ 
 								GroupEmployee gemp = emp.getGroupEmployee();
 								if(gemp != null){
 										effective_date = gemp.getEffective_date();
@@ -138,7 +138,7 @@ public class JobTaskAction extends TopAction{
 												currentPositions.add(pp);
 								}
 						}
-						if(id.equals("")){ //  && !employee_number.equals("")){
+						if(id.isEmpty()){ //  && !employee_number.isEmpty()){
 								fillJobInfo();
 						}
 						getPositions();
@@ -159,7 +159,7 @@ public class JobTaskAction extends TopAction{
 						jobTask = new JobTask();
 						jobTask.setId(id);
 				}
-				if(!add_employee_id.equals("")){
+				if(!add_employee_id.isEmpty()){
 						jobTask.setEmployee_id(add_employee_id);
 				}
 				return jobTask;
@@ -171,10 +171,10 @@ public class JobTaskAction extends TopAction{
 				}
 		}
 		public Employee getEmp(){
-				if(!add_employee_id.equals("")){
+				if(!add_employee_id.isEmpty()){
 						Employee one = new Employee(add_employee_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								emp = one;
 						}
 				}
@@ -184,20 +184,20 @@ public class JobTaskAction extends TopAction{
 				return jobTasksTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public void setAdd_employee_id(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						add_employee_id = val;
 		}
 		public void setEmployee_number(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						employee_number = val;
 		}
 		// needed for new employee
 		public void setEffective_date(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						effective_date = val;
 		}		
 		public String getEmployee_number(){
@@ -207,7 +207,7 @@ public class JobTaskAction extends TopAction{
 				return effective_date;
 		}		
 		public boolean hasEmployeeNumber(){
-				return !employee_number.equals("");
+				return !employee_number.isEmpty();
 		}
 		public boolean isEmployeeFound(){
 				return employee_found;
@@ -221,7 +221,7 @@ public class JobTaskAction extends TopAction{
 		public List<Type> getSalaryGroups(){
 				TypeList tl = new TypeList("salary_groups");
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Type> ones = tl.getTypes();
 						if(ones != null && ones.size() > 0){
 								salaryGroups = ones;
@@ -232,7 +232,7 @@ public class JobTaskAction extends TopAction{
 		void findPositions(){
 				PositionList tl = new PositionList();
 				String back = tl.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<Position> ones = tl.getPositions();
 						if(ones != null && ones.size() > 0){
 								positions = ones;
@@ -302,7 +302,7 @@ public class JobTaskAction extends TopAction{
 						tl.setTable_name("departments");
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Type> ones = tl.getTypes();
 								if(ones != null && ones.size() > 0){
 										departments = ones;
@@ -317,7 +317,7 @@ public class JobTaskAction extends TopAction{
 						tl.setTwoPeriodsAheadOnly();
 						tl.setLimit("5");
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
@@ -327,12 +327,12 @@ public class JobTaskAction extends TopAction{
 				return payPeriods;
 		}
 		public List<Group> getGroups(){
-				if(groups == null && !dept_id.equals("")){
+				if(groups == null && !dept_id.isEmpty()){
 						GroupList gl = new GroupList();
 						gl.setDepartment_id(dept_id);
 						gl.setActiveOnly();
 						String back = gl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Group> ones = gl.getGroups();
 								if(ones != null && ones.size() > 0){
 										groups = ones;
@@ -346,7 +346,7 @@ public class JobTaskAction extends TopAction{
 				return groups != null && groups.size() > 0;
 		}
 		public boolean isDeptSpecified(){
-				return !dept_id.equals("");
+				return !dept_id.isEmpty();
 		}
 		public String getDept_id(){
 				return dept_id;
@@ -355,14 +355,14 @@ public class JobTaskAction extends TopAction{
 				String msg = "";
 				boolean isTemp = false;
 				Profile pp = null;
-				boolean emp_num_needed = employee_number.equals("")? true:false;
+				boolean emp_num_needed = employee_number.isEmpty()? true:false;
 				
 				HandleProfile hp = new HandleProfile();
 				msg = hp.processOne(effective_date,
 														employee_number,
 														first_name,
 														last_name);
-				if(msg.equals("")){
+				if(msg.isEmpty()){
 						if(hp.hasProfiles()){
 								pp = hp.getOneProfile();
 								employee_found = true;

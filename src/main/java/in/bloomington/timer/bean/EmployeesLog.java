@@ -87,14 +87,14 @@ public class EmployeesLog{
     }
     public String toString(){
 				String ret = date+" "+status;
-				if(!empsIdSet.equals(""))
+				if(!empsIdSet.isEmpty())
 						ret += ", "+empsIdSet;
-				if(!errors.equals(""))
+				if(!errors.isEmpty())
 						ret += ", "+errors;
 				return ret;
     }
 		public boolean hasErrors(){
-				return !errors.equals("");
+				return !errors.isEmpty();
 
 		}
 		//
@@ -136,7 +136,7 @@ public class EmployeesLog{
 		}
 		public String doSave(){
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into employees_logs values(0,?,now(),?,?)";
@@ -147,21 +147,20 @@ public class EmployeesLog{
 				}
 				try{
 						pstmt = con.prepareStatement(qq);
-						if(empsIdSet.equals(""))
+						if(empsIdSet.isEmpty())
 								pstmt.setNull(1, Types.VARCHAR);
 						else
 								pstmt.setString(1, empsIdSet);
 						pstmt.setString(2, status);
-						if(errors.equals(""))
+						if(errors.isEmpty())
 								pstmt.setNull(3, Types.VARCHAR);
 						else
 								pstmt.setString(3, errors);
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -172,7 +171,7 @@ public class EmployeesLog{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;

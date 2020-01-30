@@ -28,7 +28,7 @@ public class AccrualScheduler {
 		Date startDate, endDate = null;
 		public AccrualScheduler(String date){
 				try{
-						if(!date.equals("")){
+						if(!date.isEmpty()){
 								// startDate = new Date(date);
 								String strArr[] = date.split("/");
 								month = Integer.parseInt(strArr[0]);

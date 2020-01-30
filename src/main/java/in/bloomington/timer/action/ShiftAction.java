@@ -29,7 +29,7 @@ public class ShiftAction extends TopAction{
 				String back = doPrepare();
 				if(action.equals("Save")){
 						back = shift.doSave();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addError(back);
 						}
 						else{
@@ -38,7 +38,7 @@ public class ShiftAction extends TopAction{
 				}				
 				else if(action.startsWith("Save")){
 						back = shift.doUpdate();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								addActionError(back);
 								addError(back);								
 						}
@@ -48,9 +48,9 @@ public class ShiftAction extends TopAction{
 				}
 				else{		
 						getShift();
-						if(!id.equals("")){
+						if(!id.isEmpty()){
 								back = shift.doSelect();
-								if(!back.equals("")){
+								if(!back.isEmpty()){
 										addError(back);
 								}								
 						}
@@ -75,7 +75,7 @@ public class ShiftAction extends TopAction{
 				return shiftsTitle;
 		}
 		public void setAction2(String val){
-				if(val != null && !val.equals(""))		
+				if(val != null && !val.isEmpty())		
 						action = val;
 		}
 		public List<Shift> getShifts(){
@@ -83,7 +83,7 @@ public class ShiftAction extends TopAction{
 						ShiftList tl = new ShiftList();
 						tl.setActiveOnly();
 						String back = tl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Shift> ones = tl.getShifts();
 								if(ones != null && ones.size() > 0){
 										shifts = ones;
@@ -96,11 +96,11 @@ public class ShiftAction extends TopAction{
 		public List<GroupShift> getGroupShifts(){
 				if(groupShifts == null){
 						getShift();
-						if(!shift.getId().equals("")){
+						if(!shift.getId().isEmpty()){
 								GroupShiftList gsl = new GroupShiftList();
 								gsl.setShift_id(shift.getId());
 								String back = gsl.find();
-								if(back.equals("")){
+								if(back.isEmpty()){
 										List<GroupShift> ones = gsl.getGroupShifts();
 										if(ones != null && ones.size() > 0){
 												groupShifts = ones;

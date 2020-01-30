@@ -127,36 +127,36 @@ public class DepartmentList{
 						return back;
 				}
 				String qw = "";
-				if(!join.equals("")){
+				if(!join.isEmpty()){
 						qq += ", "+join;
 						qw += condition;
 				}
 				try{
-						if(!name.equals("")){
-								if(!qw.equals("")) qw += " and ";
+						if(!name.isEmpty()){
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " (t.name like ? or t.ldap_name like ?)";
 						}
 						if(active_only){
-								if(!qw.equals("")) qw += " and ";
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " t.inactive is null ";
 						}
 						if(hasRefIds){
-								if(!qw.equals("")) qw += " and ";
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " t.ref_id is not null ";
 						}
 						if(ignoreSpecialDepts){
-								if(!qw.equals("")) qw += " and ";
+								if(!qw.isEmpty()) qw += " and ";
 								qw += " not t.id in (18,41) ";
 						}
-						if(!qw.equals("")){
+						if(!qw.isEmpty()){
 								qq += " where "+qw;
 						}
-						if(!sortBy.equals("")){
+						if(!sortBy.isEmpty()){
 								qq += " order by "+sortBy;
 						}
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
-						if(!name.equals("")){
+						if(!name.isEmpty()){
 								pstmt.setString(1,"%"+name+"%");
 								pstmt.setString(2,"%"+name+"%");								
 						}						
@@ -205,7 +205,7 @@ public class DepartmentList{
 						deptRefs = "";
 						while(rs.next()){
 								String str = rs.getString(1);
-								if(!deptRefs.equals("")) deptRefs += ",";
+								if(!deptRefs.isEmpty()) deptRefs += ",";
 								deptRefs += str;
 						}
 				}

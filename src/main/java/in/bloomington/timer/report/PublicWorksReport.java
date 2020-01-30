@@ -157,11 +157,11 @@ public class PublicWorksReport{
 						end_date = CommonInc.quarter_ends[quarter]+year;
 				}
 				start_date = start_date.trim();
-				if(start_date.equals("")){
+				if(start_date.isEmpty()){
 						msg = "Year and quarter or start date not set ";
 						return msg;
 				}
-				if(end_date.equals("")){
+				if(end_date.isEmpty()){
 						end_date = Helper.getToday();
 				}
 				return msg;
@@ -180,7 +180,7 @@ public class PublicWorksReport{
 				// planning department
 				//
 				msg = setStartAndEndDates();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}				
 				//
@@ -263,7 +263,7 @@ public class PublicWorksReport{
 				// planning department
 				//
 				msg = setStartAndEndDates();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						return msg;
 				}
 				//

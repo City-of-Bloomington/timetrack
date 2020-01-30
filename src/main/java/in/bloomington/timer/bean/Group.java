@@ -80,7 +80,7 @@ public class Group implements Serializable{
 				setExcessHoursEarnType(val5);
 				setAllowPendingAccrual(val6);
 				setInactive(val7);
-				if(val8 != null && !val8.equals("")){
+				if(val8 != null && !val8.isEmpty()){
 						department = new Type(department_id, val8);
 				}
     }		
@@ -98,19 +98,19 @@ public class Group implements Serializable{
 				return description;
     }		
     public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
     public boolean getAllowPendingAccrual(){
-				return !allow_pending_accrual.equals("");
+				return !allow_pending_accrual.isEmpty();
     }		
     public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
     public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
     }
     public boolean isPendingAccrualAllowed(){
-				return !allow_pending_accrual.equals("");
+				return !allow_pending_accrual.isEmpty();
     }		
     public String getDepartment_id(){
 				return department_id;
@@ -161,7 +161,7 @@ public class Group implements Serializable{
     }
     public int hashCode(){
 				int seed = 37;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id)*31;
 						}catch(Exception ex){
@@ -175,11 +175,11 @@ public class Group implements Serializable{
     }
 		
     public List<Employee> getEmployees(){
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						EmployeeList ul = new EmployeeList();
 						ul.setGroup_id(id);
 						String back = ul.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<Employee> ones = ul.getEmployees();
 								if(ones.size() > 0){
 										employees = ones;
@@ -197,7 +197,7 @@ public class Group implements Serializable{
 				del.setGroup_id(id);
 				// we want all
 				String back = del.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<GroupEmployee> des = del.getGroupEmployees();
 						if(des != null && des.size() > 0){
 								groupEmployees = des;
@@ -206,11 +206,11 @@ public class Group implements Serializable{
 				return groupEmployees;
     }		
     public Type getDepartment(){
-				if(department == null && !department_id.equals("")){
+				if(department == null && !department_id.isEmpty()){
 						Type one = new Type(department_id);
 						one.setTable_name("departments");
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								department = one;
 						}
 				}
@@ -239,7 +239,7 @@ public class Group implements Serializable{
 				del.setCurrentOnly();
 				del.setActiveOnly();
 				String back = del.find();
-				if(back.equals("")){
+				if(back.isEmpty()){
 						List<GroupShift> ones = del.getGroupShifts();
 						if(ones != null && ones.size() > 0){
 								groupShifts = ones;
@@ -251,10 +251,10 @@ public class Group implements Serializable{
 		}
 
     public List<GroupLocation> getGroupLocations() {
-				if (!id.equals("") && groupLocations == null) {
+				if (!id.isEmpty() && groupLocations == null) {
 						GroupLocationList ul = new GroupLocationList(id);
 						String back = ul.find();
-						if (back.equals("")) {
+						if (back.isEmpty()) {
 								List<GroupLocation> ones = ul.getGroupLocations();
 								if (ones.size() > 0) {
 										groupLocations = ones;
@@ -325,15 +325,15 @@ public class Group implements Serializable{
     public String doSave(){
 				//
 				Connection con = null;
-				PreparedStatement pstmt = null;
+				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = "insert into groups values(0,?,?,?,?,?,null) ";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = " name not set ";
 						return msg;
 				}
-				if(department_id.equals("")){
+				if(department_id.isEmpty()){
 						msg = " department not set ";
 						return msg;
 				}				
@@ -346,27 +346,26 @@ public class Group implements Serializable{
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, name);
-						if(description.equals(""))
+						if(description.isEmpty())
 								pstmt.setNull(2, Types.VARCHAR);
 						else
 								pstmt.setString(2, description);
 						pstmt.setString(3, department_id);
-						if(excess_hours_earn_type.equals(""))
+						if(excess_hours_earn_type.isEmpty())
 								pstmt.setNull(4, Types.INTEGER);
 						else
 								pstmt.setString(4, excess_hours_earn_type);
-						if(allow_pending_accrual.equals("")){
+						if(allow_pending_accrual.isEmpty()){
 								pstmt.setNull(5, Types.CHAR);
 						}
 						else{
 								pstmt.setString(5,"y");
 						}
 						pstmt.executeUpdate();
-						Helper.databaseDisconnect(pstmt, rs);
 						//
 						qq = "select LAST_INSERT_ID()";
-						pstmt = con.prepareStatement(qq);
-						rs = pstmt.executeQuery();
+						pstmt2 = con.prepareStatement(qq);
+						rs = pstmt2.executeQuery();
 						if(rs.next()){
 								id = rs.getString(1);
 						}
@@ -376,7 +375,7 @@ public class Group implements Serializable{
 						logger.error(msg+":"+qq);
 				}
 				finally{
-						Helper.databaseDisconnect(pstmt, rs);
+						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
 				return msg;
@@ -388,7 +387,7 @@ public class Group implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						return " name not set ";
 				}
 				String qq = "update groups set name=?,description=?,department_id=?,"+
@@ -404,22 +403,22 @@ public class Group implements Serializable{
 				try{
 						pstmt = con.prepareStatement(qq);
 						pstmt.setString(1, name);
-						if(description.equals(""))
+						if(description.isEmpty())
 								pstmt.setNull(2, Types.VARCHAR);
 						else
 								pstmt.setString(2, description);								
 						pstmt.setString(3, department_id);
-						if(excess_hours_earn_type.equals(""))
+						if(excess_hours_earn_type.isEmpty())
 								pstmt.setNull(4, Types.INTEGER);
 						else
 								pstmt.setString(4, excess_hours_earn_type);
-						if(allow_pending_accrual.equals("")){
+						if(allow_pending_accrual.isEmpty()){
 								pstmt.setNull(5, Types.CHAR);
 						}
 						else{
 								pstmt.setString(5,"y");
 						}
-						if(inactive.equals("")){
+						if(inactive.isEmpty()){
 								pstmt.setNull(6, Types.CHAR);
 						}
 						else{

@@ -46,7 +46,7 @@ public class AccrualJob implements Job{
 				dl.setActiveOnly();
 				dl.hasRefIds();
 				String msg = dl.find();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						logger.error(msg);
 				}
 				else{
@@ -67,7 +67,7 @@ public class AccrualJob implements Job{
 				PayPeriodList ppl = new PayPeriodList();
 				ppl.setLastPayPeriod();
 				msg = ppl.find();
-				if(!msg.equals("")){
+				if(!msg.isEmpty()){
 						logger.error(msg);
 						return;
 				}
@@ -79,7 +79,7 @@ public class AccrualJob implements Job{
 								date = Helper.getDateAfter(end_date, 5); // 5 days after 
 						}
 				}
-				if(!date.equals("") && depts != null){
+				if(!date.isEmpty() && depts != null){
 						for(Department dept:depts){
 								HandleNwAccrual handle = new HandleNwAccrual(dept.getRef_id(), date, end_date);
 								msg = handle.process();

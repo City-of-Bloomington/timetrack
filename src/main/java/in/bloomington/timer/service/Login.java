@@ -107,7 +107,7 @@ public class Login extends HttpServlet{
 							 }
 					 }
 				}
-				if(username == null || username.equals("")){
+				if(username == null || username.isEmpty()){
 						username = req.getRemoteUser();
 				}
 				if(username != null){
@@ -129,7 +129,7 @@ public class Login extends HttpServlet{
 										if(user != null){
 												//
 												session.setAttribute("user",user);
-												if(source.equals(""))
+												if(source.isEmpty())
 														source = "timeDetails.action";
 												out.println("<head><title></title><META HTTP-EQUIV="+
 																		"\"refresh\" CONTENT=\"0; URL=" + source+"\"></head>");
@@ -142,7 +142,7 @@ public class Login extends HttpServlet{
 								}
 						}
 				}
-				if(message.equals(""))
+				if(message.isEmpty())
 						message += "<p> You can not access this system, check with IT or try again later</p>";
 				out.println("<head><title>TimeTrack</title><body>");
 				out.println("<center>");
@@ -167,7 +167,7 @@ public class Login extends HttpServlet{
 				try{
 						Employee one = new Employee(null, username);
 						String back = one.doSelect();
-						if(!back.equals("")){
+						if(!back.isEmpty()){
 								message += back+": "+username;
 								logger.error(message);
 						}
