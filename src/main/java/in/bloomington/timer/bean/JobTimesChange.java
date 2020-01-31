@@ -109,7 +109,7 @@ public class JobTimesChange implements Serializable{
 						else{
 								msg = " No document found, no need to change times ";
 								return msg;
-						}
+						} 
 				}
 				else{
 						return msg;

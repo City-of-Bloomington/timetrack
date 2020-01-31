@@ -160,19 +160,19 @@ public class HourCode{
 				return description;
     }		
     public boolean getInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
     }
 		public boolean isInactive(){
-				return !inactive.equals("");
+				return !inactive.isEmpty();
 		}
 		public boolean isActive(){
-				return inactive.equals("");
+				return inactive.isEmpty();
 		}
 		public boolean isHolidayRelated(){
-				return !holiday_related.equals("");
+				return !holiday_related.isEmpty();
 		}
 		public String getRecord_method(){
-				if(record_method.equals("")){
+				if(record_method.isEmpty()){
 						return "Time";
 				}
 				return record_method;
@@ -181,10 +181,10 @@ public class HourCode{
 				return accrual_id;
     }
 		public boolean getReg_default(){
-				return !reg_default.equals("");
+				return !reg_default.isEmpty();
     }
 		public boolean isRegDefault(){
-				return !reg_default.equals("");
+				return !reg_default.isEmpty();
     }		
 		public boolean isRecordMethodHours(){
 				return record_method.equals("Hours");
@@ -193,7 +193,7 @@ public class HourCode{
 				return record_method.equals("Monetary");
 		}		
 		public boolean isAccrualRelated(){
-				return !accrual_id.equals("");
+				return !accrual_id.isEmpty();
 		}
 		public double getDefaultMonetaryAmount(){
 				return default_monetary_amount;
@@ -257,18 +257,18 @@ public class HourCode{
     }		
 		public String getCodeInfo(){
 				String ret = name;
-				if(!description.equals("")){
-						if(!ret.equals(""))
+				if(!description.isEmpty()){
+						if(!ret.isEmpty())
 								ret += " : ";
 						ret += description;
 				}
 				return ret;
 		}
 		public Accrual getAccrual(){
-				if(accrual == null && !accrual_id.equals("")){
+				if(accrual == null && !accrual_id.isEmpty()){
 						Accrual one = new Accrual(accrual_id);
 						String back = one.doSelect();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								accrual = one;
 						}
 				}
@@ -309,12 +309,12 @@ public class HourCode{
 		}
 		public AccrualWarning getAccrualWarning(){
 				if(accrualWarning == null &&
-					 !id.equals("") &&
-					 !accrual_id.equals("")){
+					 !id.isEmpty() &&
+					 !accrual_id.isEmpty()){
 						AccrualWarningList awl = new AccrualWarningList();
 						awl.setAccrual_id(accrual_id);
 						String back = awl.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<AccrualWarning> ones = awl.getAccrualWarnings();
 								if(ones != null && ones.size() > 0){
 										accrualWarning = ones.get(0);
@@ -336,7 +336,7 @@ public class HourCode{
 		}
 		public int hashCode(){
 				int seed = 29;
-				if(!id.equals("")){
+				if(!id.isEmpty()){
 						try{
 								seed += Integer.parseInt(id);
 						}catch(Exception ex){
@@ -356,12 +356,12 @@ public class HourCode{
 		// for export purpose
 		//
 		public CodeRef getCodeRef(){
-				if(codeRef == null && !id.equals("")){
+				if(codeRef == null && !id.isEmpty()){
 						CodeRefList cdr = new CodeRefList();
 						cdr.setCode_id(id);
 						cdr.setIgnoreHash();
 						String back = cdr.find();
-						if(back.equals("")){
+						if(back.isEmpty()){
 								List<CodeRef> ones = cdr.getCodeRefs();
 								if(ones != null && ones.size() > 0){
 										codeRef = ones.get(0);
@@ -426,11 +426,11 @@ public class HourCode{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " insert into hour_codes values(0,?,?,?,?, ?,?,?,?, ?,?)";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Hour code name is required";
 						return msg;
 				}
-				if(record_method.equals("")){
+				if(record_method.isEmpty()){
 						msg = "Record method is required";
 						return msg;
 				}
@@ -443,9 +443,8 @@ public class HourCode{
 				try{
 						pstmt = con.prepareStatement(qq);
 						msg = setParams(pstmt);
-						if(msg.equals("")){
+						if(msg.isEmpty()){
 								pstmt.executeUpdate();
-								Helper.databaseDisconnect(pstmt, rs);
 								//
 								qq = "select LAST_INSERT_ID()";
 								pstmt2 = con.prepareStatement(qq);
@@ -470,32 +469,32 @@ public class HourCode{
 				int jj=1;
 				try{
 						pstmt.setString(jj++, name);
-						if(description.equals("")){
+						if(description.isEmpty()){
 								pstmt.setNull(jj++, Types.VARCHAR);
 						}
 						else{
 								pstmt.setString(jj++, description);
 						}
 						pstmt.setString(jj++, record_method);
-						if(accrual_id.equals(""))
+						if(accrual_id.isEmpty())
 								pstmt.setNull(jj++, Types.INTEGER);
 						else
 								pstmt.setString(jj++, accrual_id);						
-						if(reg_default.equals(""))
+						if(reg_default.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");						
-						if(type.equals(""))
+						if(type.isEmpty())
 								pstmt.setNull(jj++, Types.VARCHAR);
 						else
 								pstmt.setString(jj++, type);
 						pstmt.setDouble(jj++, default_monetary_amount);
 						pstmt.setDouble(jj++, earn_factor);
-						if(holiday_related.equals(""))
+						if(holiday_related.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");						
-						if(inactive.equals(""))
+						if(inactive.isEmpty())
 								pstmt.setNull(jj++, Types.CHAR);
 						else
 								pstmt.setString(jj++, "y");
@@ -514,11 +513,11 @@ public class HourCode{
 				ResultSet rs = null;
 				String msg="", str="";
 				String qq = " update hour_codes set name=?,description=?,record_method=?,accrual_id=?,reg_default=?,type=?,default_monetary_amount=?,earn_factor=?,holiday_related=?,inactive=? where id=?";
-				if(name.equals("")){
+				if(name.isEmpty()){
 						msg = "Hour code name is required";
 						return msg;
 				}
-				if(record_method.equals("")){
+				if(record_method.isEmpty()){
 						msg = "Record method is required";
 						return msg;
 				}
