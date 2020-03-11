@@ -135,6 +135,7 @@ public class HandleProfile{
 								double comp_time_multiple = pp.getCompTimeMultiple();
 								double holiday_time_multiple = pp.getHolidayTimeMultiple();
 								String job_name = pp.getJob_name();
+								// System.err.println(" emp # "+empNum+", week hrs: "+weekly_hrs+" comp "+comp_time_after+" comp factor "+comp_time_multiple+" job "+job_name);
 								BenefitGroup bGroup = pp.getBenefitGroup();
 								// we are skipping temp employee
 								if(!bGroup.isTemporary()){

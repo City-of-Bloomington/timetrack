@@ -35,15 +35,15 @@ public class ProfileScheduleAction extends TopAction{
 				if(action.equals("Schedule")){
 						back = doClean();
 						if(!back.isEmpty()){
-								addActionError(back);
+								addError(back);
 						}
 						try{
 								back = schedular.run();
 								if(!back.isEmpty()){
-										addActionError(back);
+										addError(back);
 								}
 								else{
-										addActionMessage("Scheduled Successfully");
+										addMessage("Scheduled Successfully");
 								}
 						}catch(Exception ex){
 								addActionError(""+ex);
@@ -51,16 +51,17 @@ public class ProfileScheduleAction extends TopAction{
 				}
 				else if(action.startsWith("Update")){ // import now given the date
 						if(dept_ref_id.isEmpty() || date.isEmpty()){
-								addActionError("dept ref and/or date not set");
+								addError("dept ref and/or date not set");
 						}
 						else{
 								HandleProfile handle = new HandleProfile(dept_ref_id, date);
 								back = handle.process();
 								if(!back.isEmpty()){
-										addActionError(back);
+										System.err.println(" error "+back);
+										addError(back);
 								}
 								else{
-										addActionMessage("Update Successfully");
+										addMessage("Update Successfully");
 								}
 						}
 				}
