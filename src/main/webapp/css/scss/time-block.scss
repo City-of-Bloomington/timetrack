@@ -60,6 +60,7 @@
       }
 
       select {
+        overflow: hidden;
         width: $tb-form-form-group-select-width;
         text-overflow: $tb-form-form-group-select-text-overflow;
       }
