@@ -317,7 +317,15 @@
 			<result name="error">/WEB-INF/jsp/reports/reportFmla.jsp</result>
 			<result name="success">/WEB-INF/jsp/reports/reportFmla.jsp</result>
 			<result name="csv">/WEB-INF/jsp/reports/fmlaReportCsv.jsp</result>
-		</action>		
+		</action>
+		<action name="reportEl" 
+			class="in.bloomington.timer.action.ReportElAction" 
+			method="execute">
+			<result name="input">/WEB-INF/jsp/reports/reportEl.jsp</result>		
+			<result name="error">/WEB-INF/jsp/reports/reportEl.jsp</result>
+			<result name="success">/WEB-INF/jsp/reports/reportEl.jsp</result>
+			<result name="csv">/WEB-INF/jsp/reports/elReportCsv.jsp</result>
+		</action>			
 		<action name="reportReason" 
 						class="in.bloomington.timer.action.ReportReasonAction" 
 						method="execute">

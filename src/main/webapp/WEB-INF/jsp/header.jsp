@@ -30,56 +30,57 @@
 
   <div class="tabs container">
     <s:if test="#session != null && #session.user != null">
-      <a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
+	    <a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
 
       <s:if test="user.canMaintain()">
-        <a href="<s:property value='#application.url'/>dataEntry.action">Time Maintenance</a>
+              <a href="<s:property value='#application.url'/>dataEntry.action">Time Maintenance</a>
       </s:if>
 
       <s:if test="user.canReview()">
-        <a href="<s:property value='#application.url'/>review.action">Timesheet Review</a>
+              <a href="<s:property value='#application.url'/>review.action">Timesheet Review</a>
       </s:if>
 
       <s:if test="user.canApprove()">
-        <a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>
+              <a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>
       </s:if>
 
       <s:if test="user.canPayrollProcess()">
-        <a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>
+              <a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>
       </s:if>
       <s:if test="user.isHrAdmin()">
-        <a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA Report</a>
-        <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>				
+              <a href="<s:property value='#application.url'/>reportFmla.action">FMLA Report</a>
+              <a href="<s:property value='#application.url'/>reportEl.action">EL Report</a>	      
+              <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>				
       </s:if>
       <s:if test="user.isITSAdmin()">
-				<a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>
+	      <a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>
 				
       </s:if>
       <s:if test="user.isPublicWorksAdmin()">
         <a href="<s:property value='#application.url'/>reportPublicWorks.action">Asset Management Report</a>
       </s:if>			
       <s:if test="user.isPoliceAdmin()">
-				<a href="<s:property value='#application.url'/>reportReason.action">Police Reason Report</a>
-        <a href="<s:property value='#application.url'/>switch.action?department_id=20">Change Target Employee</a>				
+	      <a href="<s:property value='#application.url'/>reportReason.action">Police Reason Report</a>
+              <a href="<s:property value='#application.url'/>switch.action?department_id=20">Change Target Employee</a>				
       </s:if>			
       <s:if test="user.canRunMpoReport()">
-        <a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a>
+              <a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a>
       </s:if>
       <s:if test="user.canRunHandReport()">
-        <a href="<s:property value='#application.url'/>reportHand.action">HAND MPO Report</a>
+              <a href="<s:property value='#application.url'/>reportHand.action">HAND MPO Report</a>
       </s:if>			
       <s:if test="user.canRunFireReport()">
-        <a href="<s:property value='#application.url'/>shiftTime.action?department_id=16">Employee Shift Times</a>
+              <a href="<s:property value='#application.url'/>shiftTime.action?department_id=16">Employee Shift Times</a>
       </s:if>						
-			<s:if test="user.canRunParkReport()">
-				<a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
-				<a href="<s:property value='#application.url'/>jobIntervention.action">Jobs Need Intervention</a>				
-				<a href="<s:property value='#application.url'/>jobsReport.action?department_id=5">Current Employee Jobs</a>
-				<a href="<s:property value='#application.url'/>reportTimes.action?department_id=5">Employee Time Details</a>
-				<a href="<s:property value='#application.url'/>empWizard.action">Add Employee Wizard</a>				
-			</s:if>
+      <s:if test="user.canRunParkReport()">
+	      <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
+	      <a href="<s:property value='#application.url'/>jobIntervention.action">Jobs Need Intervention</a>				
+	      <a href="<s:property value='#application.url'/>jobsReport.action?department_id=5">Current Employee Jobs</a>
+	      <a href="<s:property value='#application.url'/>reportTimes.action?department_id=5">Employee Time Details</a>
+	      <a href="<s:property value='#application.url'/>empWizard.action">Add Employee Wizard</a>				
+      </s:if>
       <s:elseif test="user.canRunTargetEmployee()">
-        <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
+              <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
       </s:elseif>
     </s:if>
   </div>
