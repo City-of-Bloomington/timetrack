@@ -8,7 +8,7 @@
 
 <s:if test="#hasEntries" >
 	<h4><s:property value="#reportTitle" /></h4>	
-	<table border="1" width="40%">
+	<table border="1" width="70%">
 		<caption>Hours Classified by Earn Codes</caption>
 		<tr>
 			<td align="center"><b>Earn Code</b></td>
@@ -28,7 +28,7 @@
 	</table>
 
 	<table width="80%" border="1">
-		<caption>Hours Classified by Employees & Hour Codes</caption>
+		<caption>Hours Classified by Employees & Earn Codes</caption>
 		<tr>
 			<td>Employee</td>
 			<td>Employee Number</td>
@@ -70,7 +70,7 @@
 </s:if>
 <s:if test="#hasDaily">
 	<table border="1" width="90%">
-		<caption>Hours Classified by Employeee, Date, Earn Codes</caption>
+		<caption>Hours Classified by Employeee, Date & Earn Codes</caption>
 		<tr>
 			<td align="center"><b>Employee</b></td>
 			<td align="center"><b>Employee Number</b></td>			

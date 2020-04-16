@@ -30,16 +30,16 @@
 
           <s:else>
             <!-- this is for each day -->
-						<s:if test="isHoliday()">
-							<div class="day holiday"
-                data-block-id="<s:property value='id' />"
-                data-doc-id="<s:property value='document_id' />"
-                data-date="<s:property value='date' />"
-                data-order-index="<s:property value='#blockKey' />">
-								<span><s:property value="holidayName" /></span>
-						</s:if>
-						<s:else>
-							<div class="day"
+		  <s:if test="isHoliday()">
+			  <div class="day holiday"
+				  data-block-id="<s:property value='id' />"
+				  data-doc-id="<s:property value='document_id' />"
+				  data-date="<s:property value='date' />"
+				  data-order-index="<s:property value='#blockKey' />">
+				  <span><s:property value="holidayName" /></span>
+		  </s:if>
+		  <s:else>
+			  <div class="day"
                 data-block-id="<s:property value='id' />"
                 data-doc-id="<s:property value='document_id' />"
                 data-date="<s:property value='date' />"

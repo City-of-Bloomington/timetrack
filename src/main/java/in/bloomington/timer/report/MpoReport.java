@@ -258,7 +258,7 @@ public class MpoReport{
 	    " concat_ws(' ',e.first_name,e.last_name) AS name,"+
 	    " e.employee_number as empnum,"+
 	    " t.date AS date,"+
-	    " c.description AS code, "+												
+	    " concat_ws(': ',c.name, c.description) AS code, "+
 	    " t.hours AS hours "+
 	    " from time_blocks t "+
 	    " join hour_codes c on t.hour_code_id=c.id "+						
@@ -363,7 +363,7 @@ public class MpoReport{
 	    "from ( select "+
 	    " concat_ws(' ',e.first_name,e.last_name) AS name,"+
 	    " e.employee_number AS empnum,"+
-	    " c.description AS code, "+												
+	    " concat_ws(': ',c.name,c.description) AS code, "+												
 	    " t.hours AS hours "+
 	    " from time_blocks t "+
 	    " join hour_codes c on t.hour_code_id=c.id "+						

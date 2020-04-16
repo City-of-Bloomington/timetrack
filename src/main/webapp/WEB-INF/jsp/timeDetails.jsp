@@ -31,7 +31,7 @@ function loginTimer() {
 			<%@ include file="calendarFullView.jsp" %>
 		</s:if>
 		<s:else>
-			<%@ include file="calendarTopDetails.jsp" %>						
+			<%@ include file="calendarTopDetails.jsp" %>
 			<%@ include file="calendarFullNew.jsp" %>
 		</s:else>
 
