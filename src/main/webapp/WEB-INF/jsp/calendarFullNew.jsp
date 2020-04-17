@@ -29,17 +29,25 @@
 							  data-date="<s:property value='date' />"
 							  data-order-index="<s:property value='#blockKey' />">
 					  </s:if>
+					  <s:elseif test="isHoliday()">
+						  <div class="day holiday"
+							  tabindex="1"
+							  data-block-id="<s:property value='id' />"
+							  data-doc-id="<s:property value='document_id' />"
+							  data-date="<s:property value='date' />"
+							  data-order-index="<s:property value='#blockKey' />">
+							  <span><s:property value="holidayName" /></span>
+					  </s:elseif>					  
 					  <s:else>
 						  <div class="day weekend"
-                   tabindex="1"
-                   data-block-id="<s:property value='id' />"
-                   data-doc-id="<s:property value='document_id' />"
-                   data-date="<s:property value='date' />"
-                   data-order-index="<s:property value='#blockKey' />">
-						</s:else>
-          </s:if>
-
-          <s:else>
+							  tabindex="1"
+							  data-block-id="<s:property value='id' />"
+							  data-doc-id="<s:property value='document_id' />"
+							  data-date="<s:property value='date' />"
+							  data-order-index="<s:property value='#blockKey' />">
+					  </s:else>
+				  </s:if>
+				  <s:else>
             <!-- this is for each day -->
 		  <s:if test="isToday()">
 			  <div class="day today"
