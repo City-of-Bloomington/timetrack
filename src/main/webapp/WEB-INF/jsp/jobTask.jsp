@@ -20,6 +20,9 @@
 		<p>Employee Info is needed to create a job, start from employee page</p>
 	</s:if>
 	<s:else>
+		<s:if test="jobTask.hasExpireDate()">
+			<s:hidden id="prev_expire_date" name="jobTask.prev_expire_date" value="%{jobTask.expire_date}" />
+		</s:if>
 		<s:hidden id="jobTask.employee_id" name="jobTask.employee_id" value="%{jobTask.employee_id}" />
 		<div class="width-one-half">
 			<div class="form-group">

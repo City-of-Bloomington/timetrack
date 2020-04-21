@@ -20,12 +20,22 @@
       <s:iterator value="#blockList" status="row" >
         <s:if test="#row.first">
           <s:if test="#blockKey==5 || #blockKey==6 || #blockKey==12 || #blockKey==13">
-            <!-- this is for the weekend -->
-            <div class="day weekend"
-                 data-block-id="<s:property value='id' />"
-                 data-doc-id="<s:property value='document_id' />"
-                 data-date="<s:property value='date' />"
-                 data-order-index="<s:property value='#blockKey' />">
+		  <!-- this is for the weekend -->
+		  <s:if test="isHoliday()">
+			  <div class="day holiday"
+				  data-block-id="<s:property value='id' />"
+				  data-doc-id="<s:property value='document_id' />"
+				  data-date="<s:property value='date' />"
+				  data-order-index="<s:property value='#blockKey' />">
+				  <span><s:property value="holidayName" /></span>
+		  </s:if>
+		  <s:else>
+			  <div class="day weekend"
+				  data-block-id="<s:property value='id' />"
+				  data-doc-id="<s:property value='document_id' />"
+				  data-date="<s:property value='date' />"
+				  data-order-index="<s:property value='#blockKey' />">
+		  </s:else>
           </s:if>
 
           <s:else>
