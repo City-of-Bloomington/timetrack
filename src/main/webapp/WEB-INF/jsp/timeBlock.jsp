@@ -97,7 +97,7 @@
 			</div>
 			<div id="div_amount" style="display:none;" class="form-group">
 				<label>Amount $</label>
-				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
+				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="6" id="amount_change" placeholder="(ddd.dd)" />
 			</div>			
 		</s:if>
 		<s:elseif test="timeBlock.isHourType()">
@@ -119,7 +119,7 @@
 			</div>
 			<div id="div_amount" style="display:none;" class="form-group">
 				<label>Amount $</label>
-				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
+				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="6" id="amount_change" placeholder="(ddd.dd)" />
 			</div>						
 		</s:elseif>		
 		<s:else>
@@ -141,7 +141,7 @@
 			</div>
 			<div id="div_amount" class="form-group">
 				<label>Amount $</label>
-				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="5" id="amount_change" placeholder="(dd.dd)" />
+				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="6" id="amount_change" placeholder="(ddd.dd)" />
 			</div>					
 		</s:else>
 	</s:form>
