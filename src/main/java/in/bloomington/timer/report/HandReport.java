@@ -16,14 +16,14 @@ import in.bloomington.timer.list.*;
 
 public class HandReport extends MpoReport{
 
-		static Logger logger = LogManager.getLogger(HandReport.class);
+    static Logger logger = LogManager.getLogger(HandReport.class);
     public HandReport(){
-				super();
-				dept="HAND";
-				department_id="3";  
-				dept_ref_id="27"; // HAND 27
-				code="%_REG";
-				code2="TEMP_%";
+	super();
+	dept="HAND";
+	department_id="3";  
+	dept_ref_id="27"; // HAND 27
+	code="%_REG";
+	code2="TEMP_%";
     }	
 		
 }

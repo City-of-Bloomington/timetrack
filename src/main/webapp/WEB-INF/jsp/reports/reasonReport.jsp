@@ -38,7 +38,7 @@
 					<s:iterator var="entry" value="#entries">				
 						<tr>
 							<td><s:property value="#entry.fullname" /></td>
-							<td><s:property value="#entry.empNum" />)</td>
+							<td><s:property value="#entry.empNum" /></td>
 							<td><s:property value="#entry.code" /></td>
 							<td align="right"><s:property value="#entry.hoursStr" /></td>
 						</tr>

@@ -10,7 +10,7 @@ response.setContentType("application/csv");
 <s:property value="reportTitle" />,,,,,
 "Hours Classified by Employeee, Date, Earn Code - Reason",,,
 Employee,Employee Number,Date,Earn Code - Reason,Hours
-<s:iterator var="row" value="#dailyEntries"><s:property value="#row.fullname" />,<s:property value="#row.empNum" />,<s:property value="#row.date" />,<s:property value="#row.code" />,<s:property value="#row.hoursStr" />
+<s:iterator var="row" value="#dailyEntries"><s:property value="#row.fullname" />,<s:property value="#row.empNum" />,<s:property value="#row.date" />,"<s:property value="#row.code" />",<s:property value="#row.hoursStr" />
 </s:iterator>
 	
 

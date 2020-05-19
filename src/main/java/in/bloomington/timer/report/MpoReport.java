@@ -267,7 +267,7 @@ public class MpoReport{
 	    " join department_employees de on de.employee_id=d.employee_id "+
 	    " join employees e on d.employee_id=e.id "+
 	    " where t.inactive is null and "+
-	    " p.start_date >= ? and p.end_date <= ? ";
+	    " t.date >= ? and t.date <= ? ";
 	if(!code2.isEmpty()){
 	    qq += " and (c.name like ? or c.name like ?) ";
 	}
@@ -372,7 +372,7 @@ public class MpoReport{
 	    " join department_employees de on de.employee_id=d.employee_id "+
 	    " join employees e on d.employee_id=e.id "+
 	    " where t.inactive is null and "+
-	    " p.start_date >= ? and p.end_date <= ? ";
+	    " t.date >= ? and t.date <= ? ";
 	if(!code2.isEmpty()){
 	    qq += " and (c.name like ? or c.name like ?) ";
 	}

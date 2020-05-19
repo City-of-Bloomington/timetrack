@@ -16,14 +16,14 @@ import in.bloomington.timer.list.*;
 
 public class PlanReport extends MpoReport{
 
-		static final long serialVersionUID = 3830L;	
-		static Logger logger = LogManager.getLogger(PlanReport.class);
+    static final long serialVersionUID = 3830L;	
+    static Logger logger = LogManager.getLogger(PlanReport.class);
     public PlanReport(){
-				super();
-				dept="Planning & Transportation";
-				department_id="7";  
-				dept_ref_id="25,31"; // planning & engineering
-				code="%\\_MP\\_%";
+	super();
+	dept="Planning & Transportation";
+	department_id="7";  
+	dept_ref_id="25,31"; // planning & engineering
+	code="%\\_MP\\_%";
     }	
 		
 }
