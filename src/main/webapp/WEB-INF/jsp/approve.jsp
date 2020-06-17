@@ -40,10 +40,6 @@
         <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='nextPayPeriod.id' />" class="button hide-text has-icon chevron-right"><span>Forwards</span></a>
       </div>
       <s:if test="hasNoDocNorSubmitEmps()">
-				<!--  
-        <a href="<s:property value='#application.url' />inform.action?employee_ids=<s:iterator value='noDocNorSubmitEmps' status='row'><s:property value='id' /><s:if test='!#row.last'>_</s:if></s:iterator>&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a>
-				
-				-->
         <a href="<s:property value='#application.url' />inform.action?employee_ids=<s:property value='employee_ids' />&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a>				
       </s:if>
 			<s:if test="hasNotApprovedEmps()">
