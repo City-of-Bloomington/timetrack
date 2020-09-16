@@ -23,7 +23,7 @@ public class DocumentList{
     static Logger logger = LogManager.getLogger(DocumentList.class);
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     String employee_id = "", department_id="", pay_period_id="",
-				date="", job_id="";
+				date="", job_id="", id="";
     Set<String> group_id_set = new HashSet<>();
     String group_ids="";// for multiple groups
     int page_size = 0;
@@ -50,7 +50,12 @@ public class DocumentList{
     public void setJob_id (String val){
 				if(val != null && !val.equals("-1"))
 						job_id = val;
-    }		
+    }
+		// needed for clean up
+    public void setId (String val){
+				if(val != null && !val.equals("-1"))
+						id = val;
+    }				
     public void setGroup_id (String val){
 				if(val != null && !val.equals("-1")){
 						if(!group_id_set.contains(val)){
@@ -80,8 +85,7 @@ public class DocumentList{
 				return total_records;
     }
     //
-    // getters
-    //
+		//
     public String find(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
@@ -207,5 +211,70 @@ public class DocumentList{
 				}
 				return msg;
     }
+		/**
+		 * needed for cleanup class
+		 */
+    public String findForCleanUp(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d where "+
+						"d.id >= ? and d.employee_id=? and d.pay_period_id >= ? ";
+				qq += " order by d.id ";
+				if(id.isEmpty()){
+						msg = "document not set";
+				}
+				if(employee_id.isEmpty()){
+						if(!msg.isEmpty()) msg += ", ";
+
+						msg += "employee not set";
+				}
+				if(pay_period_id.isEmpty()){
+						if(!msg.isEmpty()) msg += ", ";
+						msg += "pay period not set";
+				}
+				if(!msg.isEmpty()){
+						logger.error(msg);
+						return msg;
+				}
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						int jj=1;
+						pstmt.setString(jj++, id);
+						pstmt.setString(jj++, employee_id);
+						pstmt.setString(jj++, pay_period_id);
+						rs = pstmt.executeQuery();
+						while(rs.next()){
+								if(documents == null)
+										documents = new ArrayList<>();
+								Document one = new Document(
+																						rs.getString(1),
+																						rs.getString(2),
+																						rs.getString(3),
+																						rs.getString(4),
+																						rs.getString(5),
+																						rs.getString(6));
+								if(!documents.contains(one))
+										documents.add(one);
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return msg;
+    }		
 
 }

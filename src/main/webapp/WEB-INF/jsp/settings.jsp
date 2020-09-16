@@ -20,7 +20,7 @@
 				<li><a href="<s:property value='#application.url'/>department.action">Departments</a></li>				
 				<li><a href="<s:property value='#application.url'/>employee.action">Employees</a></li>
 				<li><a href="<s:property value='#application.url'/>empWizard.action">Add Employee Wizard</a></li>
-				<li><a href="<s:property value='#application.url'/>empTimeChange.action">Employee Job Times Change</a></li>				
+
 				<li><a href="<s:property value='#application.url'/>empAccrual.action">Employee Accruals</a></li>
 				<li><a href="<s:property value='#application.url'/>groupLocation.action">Group Locations</a></li>				
 				<li><a href="<s:property value='#application.url'/>hourcode.action">Earn Codes</a></li>
@@ -40,7 +40,11 @@
 				<li><a href="<s:property value='#application.url'/>shift.action">Shifts</a></li>				
 				<li><a href="<s:property value='#application.url'/>node.action">Workflow Actions</a></li>
 			</ul>
-			
+			<h2>Interventions</h2>
+			<ul>
+				<li><a href="<s:property value='#application.url'/>empTimeChange.action">Employee Times Switching after Job Switching</a></li>								
+				<li><a href="<s:property value='#application.url'/>cleanUp.action">Cleanup time records after employee termination</a></li>
+			</ul>
 			<h2>Shift Times (Fire)</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>shiftTime.action">Employee Shift Times</a></li>

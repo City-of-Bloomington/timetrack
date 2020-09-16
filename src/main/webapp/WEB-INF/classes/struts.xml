@@ -634,7 +634,14 @@
 			<result name="error">/WEB-INF/jsp/timeBlockLogs.jsp</result>
 			<result name="success">/WEB-INF/jsp/timeBlockLogs.jsp</result>
 			<result name="search">/WEB-INF/jsp/searchTimeLogs.jsp</result>			
-		</action>		
+		</action>
+		<action name="cleanUp" 
+						class="in.bloomington.timer.action.CleanUpAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/cleanUp.jsp</result>		
+			<result name="error">/WEB-INF/jsp/cleanUp.jsp</result>
+			<result name="success">/WEB-INF/jsp/cleanUp.jsp</result>
+		</action>				
 		<action name="hourcode" 
 						class="in.bloomington.timer.action.HourCodeAction" 
 						method="execute">
