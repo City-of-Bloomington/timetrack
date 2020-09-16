@@ -9,7 +9,7 @@
     <%@ include file="messages.jsp" %>
   </s:elseif>
 	<s:form action="cleanUp" id="form_id" method="post">
-		<h1>Time Document Cleanup</h1>
+		<h1>Time Documents Cleanup</h1>
 		This is intended for employees who are terminated on a certain date and we need to delete any time entry residuals passed the expire date of the termination date. <br />
 		To do cleanup of time document, time entries,.. etc, enter the employee name and then <br />
 		pick the pay period following employee termination/expire date from the list. <br />
