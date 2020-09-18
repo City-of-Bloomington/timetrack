@@ -18,29 +18,26 @@ public class CleanUp{
 
 		static final long serialVersionUID = 3700L;	
 		static Logger logger = LogManager.getLogger(CleanUp.class);
-		String document_id = "", pay_period_id="", employee_id = "";
-		Document document = null;
+		String pay_period_id="", employee_id = "";
 		List<Document> documents = null;
 		//
 		public CleanUp(){
 
 		}
-		public CleanUp(String val){
-				//
-				setDocument_id(val);
-    }		
 		public boolean equals(Object obj){
 				if(obj instanceof CleanUp){
-					 CleanUp one =(CleanUp)obj;
-						return document_id.equals(one.getDocument_id());
+						CleanUp one = (CleanUp)obj;
+					 return (one.getPay_period_id().equals(pay_period_id)
+									 && one.getEmployee_id().equals(employee_id));
 				}
 				return false;				
 		}
 		public int hashCode(){
 				int seed = 23;
-				if(!document_id.isEmpty()){
+				if(!pay_period_id.isEmpty() && !employee_id.isEmpty()){
 						try{
-								seed += Integer.parseInt(document_id);
+								seed += Integer.parseInt(employee_id);
+								seed += Integer.parseInt(pay_period_id);
 						}catch(Exception ex){
 						}
 				}
@@ -49,45 +46,28 @@ public class CleanUp{
     //
     // getters
     //
-    public String getDocument_id(){
-				return document_id;
-    }
-    //
+		public List<Document> getDocuments(){
+				return documents;
+		}
+		//
     // setters
     //
-    public void setDocument_id(String val){
-				if(val != null)
-						document_id = val;
-    }
-		Document getDocument(){
-				if(!document_id.isEmpty()){
-						Document one = new Document(document_id);
-						String back = one.doSelect();
-						if(back.isEmpty()){
-								document = one;
-						}
+    public void setDocuments(List<Document> vals){
+				if(vals != null){
+						documents = vals;
+						Document document = documents.get(0);
+						pay_period_id = document.getPay_period_id();
+						employee_id = document.getEmployee_id();
 				}
-				return document;
+    }
+		public String getEmployee_id(){
+				return employee_id;
 		}
-		boolean hasDocument(){
-				getDocument();
-				return document != null;
+		public String getPay_period_id(){
+				return pay_period_id;
 		}
 		boolean hasDocuments(){
-				findDocuments();
-				return documents != null && documents.size() > 0;
-		}
-		void findDocuments(){
-				if(documents == null){
-						DocumentList dl = new DocumentList();
-						dl.setId(document.getId());
-						dl.setEmployee_id(document.getEmployee_id());
-						dl.setPay_period_id(document.getPay_period_id());
-						String back = dl.findForCleanUp();
-						if(back.isEmpty()){
-								documents = dl.getDocuments();
-						}
-				}
+				return documents != null;
 		}
 		/**
 			 // test cases
@@ -109,11 +89,7 @@ public class CleanUp{
 				PreparedStatement pstmt = null, pstmt2=null,pstmt3=null,pstmt4=null,
 						pstmt5=null, pstmt6=null,pstmt7=null;
 				ResultSet rs = null;
-				if(!hasDocument()){
-						back = " No document found";
-				}
 				if(!hasDocuments()){
-						if(!back.isEmpty()) back += ", ";
 						back = " No documents found";
 				}
 				if(!back.isEmpty()){

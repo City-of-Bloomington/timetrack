@@ -27,9 +27,8 @@ public class CleanUpAction extends TopAction{
 		String timeBlockLogsTitle = "Time Document Cleanup";
 		String pay_period_id = "", other_employee_id = "",
 				employee_name="";
-		String document_id = "";
 		String cleanUpTitle = "";
-		Document document = null;
+		List<Document> documents = null;
 		String date = "", source="";
 		CleanUp cleanUp = null;
 		List<PayPeriod> payPeriods = null;
@@ -38,10 +37,9 @@ public class CleanUpAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare("cleanUpAction");
 				if(!action.isEmpty()){
-						if(hasDocument()){
+						if(hasDocuments()){
 								getCleanUp();
 								back = cleanUp.doClean();
-								System.err.println("aftr do back "+back);
 								if(back.isEmpty()){
 										addMessage("Cleanup Success");
 								}
@@ -71,9 +69,9 @@ public class CleanUpAction extends TopAction{
 		// check if we have document_id, if not we assume
 		// it is a new pay period and we will create one
 		//
-		void findDocument(){
+		void findDocuments(){
 				//
-				if(document_id.isEmpty() && !other_employee_id.isEmpty()
+				if(documents == null && !other_employee_id.isEmpty()
 					 && !pay_period_id.isEmpty()){
 						DocumentList dl = new DocumentList();
 						dl.setEmployee_id(other_employee_id);
@@ -81,20 +79,18 @@ public class CleanUpAction extends TopAction{
 								getPayPeriod();
 						}
 						dl.setPay_period_id(pay_period_id);
-						String back = dl.find();
+						String back = dl.findForCleanUp();
 						if(back.isEmpty()){
 								List<Document> ones = dl.getDocuments();
 								if(ones != null && ones.size() > 0){
-										document = ones.get(0);
-										document_id = document.getId();
+										documents = ones;
 								}
 						}
 				}
 		}
-		boolean hasDocument(){
-				if(document_id.isEmpty())
-						findDocument();
-				return !document_id.isEmpty();
+		boolean hasDocuments(){
+				findDocuments();
+				return documents != null && documents.size() > 0;
 		}
 		public void setPay_period_id(String val){
 				if(val != null && !val.isEmpty())		
@@ -113,8 +109,8 @@ public class CleanUpAction extends TopAction{
 		}
 		public CleanUp getCleanUp(){
 				cleanUp = new CleanUp();
-				if(hasDocument()){
-						cleanUp.setDocument_id(document_id);
+				if(hasDocuments()){
+						cleanUp.setDocuments(documents);
 				}
 				return cleanUp;
 		}
@@ -122,25 +118,12 @@ public class CleanUpAction extends TopAction{
 				return other_employee_id;
 		}
 		public String getPay_period_id(){
-				if(pay_period_id.isEmpty() && !document_id.isEmpty()){
-						getDocument();
-						if(document != null)
-								pay_period_id = document.getPay_period_id();
-				}
+				if(pay_period_id.isEmpty())
+						getPayPeriod();
 				return pay_period_id;
 		}
 		public String getSource(){
 				return source;
-		}
-		public Document getDocument(){
-				if(document == null && !document_id.isEmpty()){
-						Document one = new Document(document_id);
-						String back = one.doSelect();
-						if(back.isEmpty()){
-								document = one;
-						}
-				}
-				return document;
 		}
 		public List<PayPeriod> getPayPeriods(){
 				if(payPeriods == null){
@@ -164,23 +147,14 @@ public class CleanUpAction extends TopAction{
 				//
 				if(payPeriod == null){
 						if(pay_period_id.isEmpty()){
-								if(document_id.isEmpty()){
-										PayPeriodList ppl = new PayPeriodList();
-										ppl.currentOnly();
-										String back = ppl.find();
-										if(back.isEmpty()){
-												List<PayPeriod> ones = ppl.getPeriods();
-												if(ones != null && ones.size() > 0){
-														payPeriod = ones.get(0);
-														pay_period_id = payPeriod.getId();
-												}
-										}
-								}
-								else{
-										getDocument();
-										if(document != null){
-												payPeriod = document.getPayPeriod();
-												pay_period_id = document.getPay_period_id();
+								PayPeriodList ppl = new PayPeriodList();
+								ppl.currentOnly();
+								String back = ppl.find();
+								if(back.isEmpty()){
+										List<PayPeriod> ones = ppl.getPeriods();
+										if(ones != null && ones.size() > 0){
+												payPeriod = ones.get(0);
+												pay_period_id = payPeriod.getId();
 										}
 								}
 						}

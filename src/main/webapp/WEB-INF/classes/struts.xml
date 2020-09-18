@@ -641,6 +641,13 @@
 			<result name="input">/WEB-INF/jsp/cleanUp.jsp</result>		
 			<result name="error">/WEB-INF/jsp/cleanUp.jsp</result>
 			<result name="success">/WEB-INF/jsp/cleanUp.jsp</result>
+		</action>
+		<action name="lookup" 
+						class="in.bloomington.timer.action.LookUpAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/lookuptimes.jsp</result>		
+			<result name="error">/WEB-INF/jsp/lookuptimes.jsp</result>
+			<result name="success">/WEB-INF/jsp/lookuptimes.jsp</result>
 		</action>				
 		<action name="hourcode" 
 						class="in.bloomington.timer.action.HourCodeAction" 
