@@ -213,19 +213,21 @@ public class DocumentList{
     }
 		/**
 		 * needed for cleanup class
+		 * pay_period_id is not really needed
 		 */
     public String findForCleanUp(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, jobs j "+
-						"where d.job_id=j.id and j.expire_date is not null and "+
-						"d.employee_id=? and d.pay_period_id >= ? ";
+				String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,"+
+						"date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by "+
+						"from time_documents d, jobs j,pay_periods p "+
+						"where d.job_id=j.id and j.expire_date is not null "+
+						"and p.id = d.pay_period_id "+
+						"and j.expire_date <= p.start_date "+
+						"and d.employee_id=? and d.pay_period_id >= ? ";
 				qq += " order by d.id ";
-				// if(id.isEmpty()){
-				//	msg = "document not set";
-				// }
 				if(employee_id.isEmpty()){
 						if(!msg.isEmpty()) msg += ", ";
 
@@ -249,7 +251,6 @@ public class DocumentList{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						// pstmt.setString(jj++, id);
 						pstmt.setString(jj++, employee_id);
 						pstmt.setString(jj++, pay_period_id);
 						rs = pstmt.executeQuery();
