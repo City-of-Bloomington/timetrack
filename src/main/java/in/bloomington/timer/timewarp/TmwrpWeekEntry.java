@@ -495,9 +495,11 @@ public class TmwrpWeekEntry{
 								else if(salaryGroup.isFireSworn5x8()){
 										// fire excess is handled by NW
 										//
+										excess_hrs = 0;
 								}
 								else if(salaryGroup.isPoliceSworn()){
 										// fire excess is handled by NW
+										excess_hrs = 0;
 								}						
 								else{
 										if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){
