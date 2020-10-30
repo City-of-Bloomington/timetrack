@@ -18,11 +18,11 @@
 	  <div class="width-one-half">
 			<div class="form-group">
 				<label>Employee Name:</label>
-				<s:textfield name="employee_name" value="%{employee_name}" size="30" id="employee_name2" />(start with first name)<br />
+				<s:textfield name="employee_name" value="%{other_employee_name}" size="30" id="employee_name2" />(start with first name)<br />
 			</div>
 			<div class="form-group">
 				<label>Pay Period:</label>			
-				<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick next pay period to termination date" />
+				<s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="Pick pay period" />
 			</div>
 			<div class="button-group">
 				<s:submit name="action" type="button" value="Find" class="button"/>
@@ -97,7 +97,11 @@
 				<s:set var="unscheduledTitle" value="'Unscheduled Times'" />
 				<s:set var="unscheduleds" value="unscheduleds" />
 				<%@ include file="unscheduledTimes.jsp" %>				
-			</s:if>								
+			</s:if>
+			<s:if test="hasTimeActions()">
+				<s:set var="timeActions" value="timeActions" />				
+				<%@ include file="timeActionsView.jsp" %>
+			</s:if>
 		</s:if>
 	</s:iterator>
 </s:if>

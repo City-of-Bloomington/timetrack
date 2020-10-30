@@ -25,7 +25,7 @@ public class LookUpAction extends TopAction{
 		String lookUpTitle = "Lookup Employee Times";
 		String pay_period_id="", 
 				document_id=""; //for one only
-		String other_employee_id = "", employee_name="";
+		String other_employee_id = "", other_employee_name="";
 		PayPeriod currentPayPeriod=null,
 				nextPayPeriod=null, payPeriod = null;
 		List<Document> documents = null;
@@ -48,11 +48,14 @@ public class LookUpAction extends TopAction{
 						other_employee_id = val;
 		}
 		public void setEmployee_name(String val){
-				// ignore
+			  other_employee_name = val;
 		}
 		public String getOther_employee_id(){
 				return other_employee_id;
 		}
+		public String getOther_employee_name(){
+				return other_employee_name;
+		}		
 		void findDocuments(){
 				//
 				if(documents == null &&
@@ -96,7 +99,7 @@ public class LookUpAction extends TopAction{
 		public List<PayPeriod> getPayPeriods(){
 				if(payPeriods == null){
 						PayPeriodList tl = new PayPeriodList();
-						tl.setApproveSuitable();
+						tl.setTwoPeriodsAheadOnly();
 						String back = tl.find();
 						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
