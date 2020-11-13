@@ -11,6 +11,7 @@
 
     form {
       .form-group {
+        position: relative;
         display: $tb-form-form-group-display;
         align-items: $tb-form-form-group-align-items;
         flex-wrap: $tb-form-form-group-flex-wrap;
@@ -63,6 +64,20 @@
         overflow: hidden;
         width: $tb-form-form-group-select-width;
         text-overflow: $tb-form-form-group-select-text-overflow;
+      }
+    }
+
+
+    button {
+      &.time-now {
+        position: absolute;
+        right: 17px;
+        top: 17px;
+
+        &:hover,
+        &:focus {
+          background: gainsboro;
+        }
       }
     }
 
