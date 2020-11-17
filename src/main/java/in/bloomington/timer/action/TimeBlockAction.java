@@ -46,6 +46,10 @@ public class TimeBlockAction extends TopAction{
 						addError(back);
 				}
 				if(action.equals("Save")){
+						if(timeBlock.hasErrors()){
+								addError(timeBlock.getErrors());
+								return "json";
+						}
 						if(timeBlock.areAllTimesSet()){
 								timeBlock.setAction_by_id(user.getId());
 								back = timeBlock.doSave();
