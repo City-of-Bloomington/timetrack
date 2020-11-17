@@ -2,3 +2,4 @@ ansible/roles
 *.retry
 target
 *.css*
+*.DS_Store
