@@ -1217,7 +1217,6 @@ public class Document implements Serializable{
 				setWarningFlag();
 				if(need_warning){
 						try{
-								// findWeekTotals();
 								checkForWarningsAfter();
 								checkForWarningsBefore();
 						}catch(Exception ex){
@@ -1251,6 +1250,7 @@ public class Document implements Serializable{
 						}
 				}
 				checkForUnauthorizedHoliday();
+				checkForHolidayOmission();
     }
     /**
      * check if the employee is eligible for holiday
@@ -1315,7 +1315,34 @@ public class Document implements Serializable{
 						checkWeekWarnings(hourCodeWeek2, week2Total);
 						checkForExcessUse(week2Total, 2);						
 				}
-    }		
+    }
+		// check for holiday omission
+		private void checkForHolidayOmission(){
+				if(week1Total+week2Total > 0){
+						for(int jj=0;jj<14;jj++){
+								if(dailyBlocks.containsKey(jj)){
+										String dt = "";
+										boolean holiday_code_used = false, isHoliday = false;
+										List<TimeBlock> blocks = dailyBlocks.get(jj);
+										for(TimeBlock one:blocks){
+												if(one.isHoliday()){
+														isHoliday = true;
+														dt = one.getDate();
+														HourCode hcode = one.getHourCode();
+														if(hcode.isHolidayRelated()){
+																holiday_code_used = true;
+														}
+												}
+										}
+										if(isHoliday && !holiday_code_used){
+												String str = "You may need to use the Holiday pay code (H1.0) on "+dt;
+												if(!warnings.contains(str))
+														warnings.add(str);
+										}
+								}
+						}
+				}
+		}
     /**
      * in this function we check the weekly hour code entry times
      * to make sure they comply with the rules set in 'Accrual warnings'
