@@ -355,14 +355,19 @@ public class TimeBlock extends Block{
     }
     private String splitTimes(String val, boolean isOut){
 				String msg = "";
+				// if just start hours 8, 11 am, 12 p
+				String pattern = "[0123]?[\\d][\\W]?[\\s]?[ap]?[m]?";								
 				// accepted entries 0930, 12:30, 11;30am, 10,30p, 11.30pm
-				String pattern = "[0123]?[\\d][\\W]?[\\d]{2}[\\s]?[ap]?[m]?";
+				String pattern2 = "[0123]?[\\d][\\W]?[\\d]{2}[\\s]?[ap]?[m]?";
 				// for am/pm 				
-				String pattern2 = ".*[ap][m]?$";	// ends with am/pm				
+				String pattern3 = ".*[ap][m]?$";	// ends with am/pm				
 				// for \\W or :;,
-				String pattern3 = ".*[:;.,].*";
-				String delimeter = "[:;.,]";
+				String pattern4 = ".*[\\W].*";  // [;;.,]
+				String delimeter = "[\\W]"; // [:;.,]
 				boolean match = Pattern.matches(pattern, val);
+				if(!match){
+						match = Pattern.matches(pattern2, val);
+				}
 				if(!match){
 						msg = "Error: invalid time format "+val;
 						logger.error(msg);
@@ -374,7 +379,7 @@ public class TimeBlock extends Block{
 				boolean is_pm = false, is_am=false;
 				String dd[] = {"",""};
 				String val2 = val;
-				if(Pattern.matches(pattern2, val)){
+				if(Pattern.matches(pattern3, val)){
 						if(val.indexOf("a") > -1){
 								val2 = val.substring(0,val.indexOf("a"));
 								is_am = true;
@@ -385,7 +390,7 @@ public class TimeBlock extends Block{
 						}
 				}
 				val2 = val2.trim();
-				if(Pattern.matches(pattern3, val2)){
+				if(Pattern.matches(pattern4, val2)){
 						dd = val2.split(delimeter);
 				}
 				else if(val2.length() >= 3){
@@ -416,7 +421,9 @@ public class TimeBlock extends Block{
 												dd[0] = dd[0].substring(1);
 										}
 										hrs = Integer.parseInt(dd[0].trim());
-										mins = Integer.parseInt(dd[1].trim());
+										if(dd.length == 2){
+												mins = Integer.parseInt(dd[1].trim());
+										}
 										if(hrs < 0){
 												msg = "hours can not be negative: "+hrs;
 												errors += msg;

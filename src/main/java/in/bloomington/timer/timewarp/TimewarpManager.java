@@ -78,7 +78,7 @@ public class TimewarpManager{
 								new TimewarpProcess(document,
 																		 holys);
 					  back = process.find();
-						if(back.isEmpty()){
+						if(back.isEmpty() || back.startsWith("No time")){
 								back = processData(process);
 						}
 				}
