@@ -420,8 +420,8 @@ public class TmwrpWeekEntry{
 				net_reg_hrs = 0;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
-								if(regular_hrs > 40){
-										net_reg_hrs = 40;
+								if(regular_hrs > CommonInc.cityStandardWeeklyHrs){
+										net_reg_hrs = CommonInc.cityStandardWeeklyHrs;
 								}
 								else{
 										net_reg_hrs = regular_hrs;
@@ -437,6 +437,7 @@ public class TmwrpWeekEntry{
 						}
 				}
 				net_reg_hrs = regular_hrs - earned_time - prof_hrs - holy_earn_hrs;
+				
     }
     //
     public double getNonRegularHrs(){
@@ -459,7 +460,6 @@ public class TmwrpWeekEntry{
     public void findExessHours(){
 	
 				excess_hrs = 0;
-				// regular_hrs = regular_mints/60.;
 				total_hrs = total_mints/60.;
 				double netHours = total_hrs - earned_time - holy_earn_hrs;
 				//
@@ -502,10 +502,8 @@ public class TmwrpWeekEntry{
 										excess_hrs = 0;
 								}						
 								else{
-										if(st_weekly_hrs < 40 && netHours >= st_weekly_hrs){
-												excess_hrs = netHours - st_weekly_hrs;
-										}
-										else if(netHours > comp_weekly_hrs){
+										//
+										if(netHours > comp_weekly_hrs){
 												excess_hrs = netHours - comp_weekly_hrs;
 										}
 								}
@@ -560,7 +558,12 @@ public class TmwrpWeekEntry{
 				// but they may total more than 40 if they work 48 hrs for example
 				//
 				// double excess_hrs2 = excess_hrs;
-				double excess_hrs2 = earned_time;				
+				double excess_hrs2 = earned_time;
+				/**
+				 * part time employee, they should get regular hours even when
+				 * they work more than weekly hours that is less than 40
+				 * commented out on 1/4/2021 according to HR 
+				 *
 				if(st_weekly_hrs < 40){ // for those who have starndard hours < 40
 						double dif = 40 - st_weekly_hrs;								
 						if(excess_hrs2 > dif && dif > 0){
@@ -572,6 +575,7 @@ public class TmwrpWeekEntry{
 								excess_hrs2 = 0;
 						}
 				}
+				*/
 				//
 				// second level for those in if above 40
 				// for hours after 40

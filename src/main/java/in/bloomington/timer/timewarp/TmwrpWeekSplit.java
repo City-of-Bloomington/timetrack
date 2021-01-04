@@ -323,8 +323,8 @@ public class TmwrpWeekSplit{
 				regular_hrs = regular_mints/60.;
 				if(salaryGroup != null){
 						if(salaryGroup.isTemporary()){
-								if(regular_hrs > 40){
-										net_reg_hrs = 40;
+								if(regular_hrs > CommonInc.cityStandardWeeklyHrs){
+										net_reg_hrs = CommonInc.cityStandardWeeklyHrs; // 40
 								}
 								else{
 										net_reg_hrs = regular_hrs;
@@ -354,13 +354,12 @@ public class TmwrpWeekSplit{
 						}						
 				}
 				net_reg_hrs = regular_hrs - earned_time;
-				if(net_reg_hrs > st_weekly_hrs){
-						net_reg_hrs = st_weekly_hrs;
+				if(net_reg_hrs > Math.max(st_weekly_hrs, CommonInc.cityStandardWeeklyHrs)){
+						net_reg_hrs = Math.max(st_weekly_hrs, CommonInc.cityStandardWeeklyHrs);
 				}
 				else if(net_reg_hrs < CommonInc.critical_small){
 						net_reg_hrs = 0;
 				}
-				
 		}
 		/**
 		 * we try to find earned time for union employee if they choose
