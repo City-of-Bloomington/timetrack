@@ -3,13 +3,9 @@
 	<s:form action="departmentEmployee" id="form_id" method="post">
 		<s:hidden name="action2" id="action2" value="" />
 		<s:hidden name="departmentEmployee.employee_id" value="%{departmentEmployee.employee_id}" />
-		<s:if test="departmentEmployee.id != ''">
-			<s:hidden name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" />
-		</s:if>
 		<s:if test="departmentEmployee.id == ''">
 			<h1>Add Employee to a Department</h1>
 		</s:if>
-
 		<s:else>
 			<h1>Edit Employee Department: <s:property value="%{departmentEmployee.employee}" /></h1>
 			<s:hidden name="departmentEmployee.id" value="%{departmentEmployee.id}" />
@@ -23,25 +19,14 @@
 				<a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='departmentEmployee.employee_id' />" /><s:property value="%{departmentEmployee.employee}" /></a>
 			</div>
 
-			<s:if test="departmentEmployee.id == ''">
-				<div class="form-group">
-					<label>Department</label>
-					<s:select name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" />
-				</div>
-			</s:if>
-
-			<s:else>
-				<div class="form-group">
-					<label>Department</label>
-					<a href="<s:property value='#application.url' />department.action?id=<s:property value='departmentEmployee.department_id' />" /><s:property value="%{departmentEmployee.department}" /></a>
-				</div>
-			</s:else>
-
+			<div class="form-group">
+				<label>Department</label>
+				<s:select name="departmentEmployee.department_id" value="%{departmentEmployee.department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" />
+			</div>
 			<div class="form-group">
 				<label>Secondary Department</label>
 				<s:select name="departmentEmployee.department2_id" value="%{departmentEmployee.department2_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" /><br />(needed for department directors only)
 			</div>
-
 			<div class="form-group">
 				<label>Effective Date</label>
 				<div class="date-range-picker">
@@ -63,7 +48,7 @@
 							<s:textfield name="departmentEmployee.expire_date" value="%{departmentEmployee.expire_date}" size="10" maxlength="10" cssClass="date" />
 						</s:if>
 						<s:else>
-						<s:select name="departmentEmployee.expire_date" value="" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick Expire Date" /> (End pay period date)	
+							<s:select name="departmentEmployee.expire_date" value="" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick Expire Date" /> (End pay period date)	
 						</s:else>
 					</div>
 				</div>
