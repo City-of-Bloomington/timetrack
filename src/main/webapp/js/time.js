@@ -453,8 +453,8 @@ $(".delete-time-confirm").on("keyup click", function(e) {
  * any value set on form elements. */
 var dialogConfirmBtn = $(".ui-dialog-buttonpane .ui-dialog-buttonset button:nth-of-type(1)");
 var dialogCancelBtn = $(".ui-dialog-buttonpane .ui-dialog-buttonset button:nth-of-type(2)");
-dialogConfirmBtn.attr("tabindex", "1");
-dialogCancelBtn.attr("tabindex", "2");
+dialogConfirmBtn.attr("tabindex", "0");
+dialogCancelBtn.attr("tabindex", "0");
 
 // Confirm/Submit - Time Block Dialog Enter click to submit
 function submitDialogOnEnter(){

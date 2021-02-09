@@ -80,7 +80,7 @@ public class TmwrpRun{
 				setWeek1NetRegHrs(val5);
 				setWeek2NetRegHrs(val6);
 				setCycle1NetRegHrs(val7);
-				setCycle2NetRegHrs(val8);				
+				setCycle2NetRegHrs(val8);
     }		
     public TmwrpRun(String val,
 										String val2,

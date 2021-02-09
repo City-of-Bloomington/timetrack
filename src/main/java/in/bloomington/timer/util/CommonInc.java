@@ -41,7 +41,10 @@ public class CommonInc{
 		// PROF HRS earn code ID (from database)
 		public final static String profHoursEarnCodeID = "109";
 		// related code strring
-		public final static String profHoursEarnCodeStr = "PROF HRS";		
+		public final static String profHoursEarnCodeStr = "PROF HRS";
+
+		// standard city weekly hours
+		public final static double cityStandardWeeklyHrs=40.;
 		//
 		// default regualar (Reg) earn code and related ID used by many 
 		// for full time employees (match the database earn codes)
