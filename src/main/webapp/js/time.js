@@ -453,8 +453,8 @@ $(".delete-time-confirm").on("keyup click", function(e) {
  * any value set on form elements. */
 var dialogConfirmBtn = $(".ui-dialog-buttonpane .ui-dialog-buttonset button:nth-of-type(1)");
 var dialogCancelBtn = $(".ui-dialog-buttonpane .ui-dialog-buttonset button:nth-of-type(2)");
-dialogConfirmBtn.attr("tabindex", "19");
-dialogCancelBtn.attr("tabindex", "20");
+dialogConfirmBtn.attr("tabindex", "1");
+dialogCancelBtn.attr("tabindex", "2");
 
 // Confirm/Submit - Time Block Dialog Enter click to submit
 function submitDialogOnEnter(){
@@ -521,10 +521,11 @@ $(".data").on("keyup click", function(e) {
           var hourCodeId    = $('[name="timeBlock.hour_code_id"]');
           var hourCodeHour  = $('[name="timeBlock.hours"]');
           var timeIn        = $('[name="timeBlock.time_in"]');
+          var timeOut       = $('[name="timeBlock.time_out"]');
 
-          if(hourCodeIdVal === '1_Time') {
+          if (hourCodeIdVal === '1_Time' || hourCodeIdVal === '70_Time') {
             // If opening a REG time, focus the time in
-            timeIn.focus();
+            timeOut.focus();
           } else {
             // focus the hours input for not REG hours
             hourCodeHour.focus();
@@ -532,8 +533,8 @@ $(".data").on("keyup click", function(e) {
 
           // If selection changes, refocus input
           hourCodeId.change(function(){
-            if($('option:selected', this).val() === '1_Time') {
-              timeIn.focus();
+            if ($('option:selected', this).val() === '1_Time' || $('option:selected', this).val() === '70_Time') {
+              timeOut.focus();
             } else {
               hourCodeHour.focus();
             }
@@ -657,7 +658,7 @@ $(".day").on("keyup click", function(e) {
           var hourCodeHour  = $('[name="timeBlock.hours"]');
           var timeIn        = $('[name="timeBlock.time_in"]');
 
-          if(hourCodeIdVal === '1_Time') {
+          if (hourCodeIdVal === '1_Time' || hourCodeIdVal === '70_Time') {
             // If opening a REG time, focus the time in
             timeIn.focus();
           } else {
@@ -667,7 +668,7 @@ $(".day").on("keyup click", function(e) {
 
           // If selection changes, refocus input
           hourCodeId.change(function(){
-            if($('option:selected', this).val() === '1_Time') {
+            if ($('option:selected', this).val() === '1_Time' || $('option:selected', this).val() === '70_Time') {
               timeIn.focus();
             } else {
               hourCodeHour.focus();
@@ -908,4 +909,9 @@ $('.quick-approve').click(function() {
     alert(err.error);
   })
   .always(function() {});
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log('loaded')
+  document.getElementById('time_out').focus();
 });

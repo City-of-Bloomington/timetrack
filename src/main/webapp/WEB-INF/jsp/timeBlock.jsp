@@ -92,15 +92,19 @@
 		<s:if test="timeBlock.hourCode.record_method == 'Time'">
 			<div id="div_time_in" class="form-group">
 				<label>Time In</label>
-				<button type="button" class="time-now" onclick="getTimeAndInsert('time_in')">Now</button>
+				
 				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in"
 					placeholder="(hhmm or hh:mm AM/PM)" />
+
+				<button type="button" class="time-now" onclick="getTimeAndInsert('time_in')">Now</button>
 			</div>
 			<div id="div_time_out" class="form-group">
 				<label>Time Out</label>
-				<button type="button" class="time-now" onclick="getTimeAndInsert('time_out')">Now</button>
+				
 				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out"
 					placeholder="(hhmm or hh:mm AM/PM)" />
+
+					<button type="button" class="time-now" onclick="getTimeAndInsert('time_out')">Now</button>
 			</div>
 			<div id="div_overnight" class="form-group">
 				<label>Overnight Shift Options</label>
