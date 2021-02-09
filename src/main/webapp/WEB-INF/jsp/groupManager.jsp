@@ -49,7 +49,14 @@
 	</dl>
 	<dl class="fn1-output-field">
 		<dt>Expire Date </dt>
-		<dd><s:textfield name="groupManager.expire_date" value="%{groupManager.expire_date}" size="10" maxlength="10" cssClass="date" /> </dd>
+		<dd>
+			<s:if test="groupManager.hasExpireDate()">
+				<s:textfield name="groupManager.expire_date" value="%{groupManager.expire_date}" size="10" maxlength="10" cssClass="date" />
+			</s:if>
+			<s:else>
+				<s:select name="groupManager.expire_date" value="" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick Expire Date" /> (End pay period date)	
+			</s:else>
+		</dd>
 	</dl>
 	<dl class="fn1-output-field">
 		<dt>Inactive? </dt>

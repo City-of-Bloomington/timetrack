@@ -185,7 +185,10 @@ public class GroupManager implements Serializable{
     public void setExpire_date(String val){
 				if(val != null)
 						expire_date = val;
-    }		
+    }
+		public boolean hasExpireDate(){
+				return expire_date != null && !expire_date.isEmpty();
+		}
 		public String toString(){
 				return id;
 		}

@@ -25,6 +25,7 @@ public class GroupManagerAction extends TopAction{
 		String department_id="";
 		List<Employee> employees = null;
 		List<GroupManager> groupManagers = null;
+		List<PayPeriod> payPeriods = null;
 		Group group = null;
 		GroupManager groupManager = null;
 		String groupManagersTitle = "Managers of this group";
@@ -182,6 +183,21 @@ public class GroupManagerAction extends TopAction{
 				}
 				return groupManagers;
 		}
+		public List<PayPeriod> getPayPeriods(){
+				if(payPeriods == null){
+						PayPeriodList tl = new PayPeriodList();
+						tl.setTwoPeriodsAheadOnly();
+						tl.setLimit("5");
+						String back = tl.find();
+						if(back.isEmpty()){
+								List<PayPeriod> ones = tl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										payPeriods = ones;
+								}
+						}
+				}
+				return payPeriods;
+		}				
 }
 
 
