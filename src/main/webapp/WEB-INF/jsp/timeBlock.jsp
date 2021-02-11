@@ -96,7 +96,7 @@
 				<s:textfield name="timeBlock.time_in" value="%{timeBlock.time_in}" maxlength="8" id="time_in"
 					placeholder="(hhmm or hh:mm AM/PM)" />
 
-				<button type="button" class="time-now" onclick="getTimeAndInsert('time_in')">Now</button>
+				<button tabindex="10" type="button" class="time-now" onclick="getTimeAndInsert('time_in')">Now</button>
 			</div>
 			<div id="div_time_out" class="form-group">
 				<label>Time Out</label>
@@ -104,11 +104,11 @@
 				<s:textfield name="timeBlock.time_out" value="%{timeBlock.time_out}" maxlength="8" id="time_out"
 					placeholder="(hhmm or hh:mm AM/PM)" />
 
-					<button type="button" class="time-now" onclick="getTimeAndInsert('time_out')">Now</button>
+					<button tabindex="10" type="button" class="time-now" onclick="getTimeAndInsert('time_out')">Now</button>
 			</div>
 			<div id="div_overnight" class="form-group">
 				<label>Overnight Shift Options</label>
-				<s:select name="timeBlock.overnightOption" value="%{timeBlock.overnightOption}" id="time_overnight"
+				<s:select tabindex="10" name="timeBlock.overnightOption" value="%{timeBlock.overnightOption}" id="time_overnight"
 					list="#{'-1':'None','arrived before 12am':'Regular Overnight Shift (arrived before 12am)','arrived after 12am':'Irregular Overnight Shift (arrived after 12am)'}" />
 			</div>
 			<div id="div_hours" style="display:none;" class="form-group">
