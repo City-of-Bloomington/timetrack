@@ -91,7 +91,7 @@ public class GroupManagerAction extends TopAction{
 		}
 
 		public void setGroup_id(String val){
-				if(val != null && !val.isEmpty())		
+				if(val != null && !val.isEmpty() && !val.equals("-1"))		
 						group_id = val;
 		}
 		public String getGroup_id(){
@@ -152,7 +152,7 @@ public class GroupManagerAction extends TopAction{
 						}
 						empl.includeAllDirectors();
 						//
-						// managers can not be from the same group
+						// managers can not manage their group
 						//
 						empl.setExclude_group_id(group_id);
 						String back = empl.find();

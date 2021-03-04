@@ -24,12 +24,16 @@ public class ReportJobAction extends TopAction{
 		static final int startYear = 2017; // 
 		//
 		String outputType = "html";
-		String employmentType = ""; // All, Full Time, Temp
+		// String employmentType = ""; // All, Full Time, Temp
+		String department_id = ""; // for restriction purpose
 		List<JobTask> jobs = null;
 		List<Department> departments = null;
-		Department department = null;
-		String department_id = ""; // parks=5		
+		List<Group> groups = null;
+		Department dept = null;
+		Group group = null;
+		String dept_id="", group_id="", salaryGroup_id=""; 
 		String jobsTitle = "Current Employee Jobs ";
+		List<SalaryGroup> salaryGroups = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -47,6 +51,15 @@ public class ReportJobAction extends TopAction{
 								return "csv";
 						}						
 				}
+				// for non-admin users limited roles
+				getUser();
+				if(user != null && !user.isAdmin()){
+						if(user.hasDepartment()){
+								dept = user.getDepartment();
+								dept_id = dept.getId();
+								department_id = dept_id;
+						}
+				}				
 				return ret;
 		}
 		public void setOutputType(String val){
@@ -74,14 +87,21 @@ public class ReportJobAction extends TopAction{
 		}		
 		// needed only for csv output
 		public String getFileName(){
-				getDepartment();
 				String filename = "";
-				if(department != null){
-						filename = department.getName().replace(' ','_');
+				getGroup();
+				if(group == null){
+						getDept();
+				}
+				if(group != null){
+						filename += group.getName().replace(' ','_');
+				}				
+				else if(dept != null){
+						filename += dept.getName().replace(' ','_');
 				}
 				filename +="_jobs_"+Helper.getToday().replace(' ','_')+".csv";
 				return filename;
 		}
+		/**
 		public String getEmploymentType(){
 				if(employmentType.isEmpty())
 						return "-1";
@@ -92,30 +112,60 @@ public class ReportJobAction extends TopAction{
 						employmentType = val; // salary_group_id = 3 for Temp
 				}
 		}
+		*/
+		public void setDept_id(String val){
+				if(val != null && !val.equals("-1")){
+						dept_id = val;
+				}
+		}
 		public void setDepartment_id(String val){
 				if(val != null && !val.equals("-1")){
 						department_id = val;
 				}
+		}		
+		public void setGroup_id(String val){
+				if(val != null && !val.equals("-1")){
+						group_id = val;
+				}
 		}
+		public void setSalaryGroup_id(String val){
+				if(val != null && !val.equals("-1")){
+						salaryGroup_id = val;
+				}
+		}		
 		public boolean hasDepartment(){
 				return !department_id.isEmpty();
+		}
+		public boolean hasDept(){
+				return !dept_id.isEmpty();
+		}		
+		public String getDept_id(){
+				if(dept_id.isEmpty()){
+						return "-1";
+				}
+				return dept_id;
 		}
 		public String getDepartment_id(){
 				if(department_id.isEmpty()){
 						return "-1";
 				}
 				return department_id;
-		}				
-		public Department getDepartment(){
-				if(department == null && !department_id.isEmpty()){
-						Department one = new Department(department_id);
-						String back = one.doSelect();
-						if(back.isEmpty()){
-								department = one;
-						}
+		}		
+		public String getGroup_id(){
+				if(group_id.isEmpty()){
+						return "-1";
 				}
-				return department;
+				return group_id;
 		}
+		public boolean hasGroup(){
+				return !group_id.isEmpty();
+		}
+		public String getSalaryGroup_id(){
+				if(salaryGroup_id.isEmpty()){
+						return "-1";
+				}
+				return salaryGroup_id;
+		}		
 		public List<Department> getDepartments(){
 				if(departments == null){
 						DepartmentList gsl = new DepartmentList();
@@ -129,26 +179,39 @@ public class ReportJobAction extends TopAction{
 						}
 				}
 				return departments;
-		}				
+		}
+		public Department getDept(){
+				if(dept == null && !dept_id.isEmpty()){
+						dept = new Department(dept_id);
+						dept.doSelect();
+				}
+				return dept;
+		}
+		public Group getGroup(){
+				if(group == null && !group_id.isEmpty()){
+						group = new Group(dept_id);
+						group.doSelect();
+				}
+				return group;
+		}		
 		public String findJobs(){
 				String back = "";
-				if(department_id.isEmpty()){
+				if(dept_id.isEmpty()){
 						back ="You need to pick a department";
 						return back;
 				}
 				JobTaskList jtl = new JobTaskList();
-				jtl.setDepartment_id(department_id); // parks department only
+				if(group_id.isEmpty()){
+						jtl.setDepartment_id(dept_id);
+				}
+				else{
+						jtl.setGroup_id(group_id);
+				}
 				jtl.setActiveOnly();
 				jtl.setNotExpired();
 				jtl.setOrderByEmployee();
-				if(employmentType.startsWith("Temp")){
-						jtl.setSalary_group_id("3");
-						jobsTitle = jobsTitle+" (Temp)";
-						
-				}
-				else if(employmentType.startsWith("Non Temp")){
-						jtl.setNonTemp();
-						jobsTitle = jobsTitle+" (Full Time)";						
+				if(!salaryGroup_id.isEmpty()){
+						jtl.setSalary_group_id(salaryGroup_id);
 				}
 				back = jtl.find();
 				if(back.isEmpty()){
@@ -158,6 +221,34 @@ public class ReportJobAction extends TopAction{
 				}
 				return back;
 		}
+		public List<SalaryGroup> getSalaryGroups(){
+				//
+				SalaryGroupList gml = new SalaryGroupList();
+				String back = gml.find();
+				if(back.isEmpty()){
+						List<SalaryGroup> ones = gml.getSalaryGroups();
+						if(ones != null && ones.size() > 0){
+								salaryGroups = ones;
+						}
+				}
+				return salaryGroups;
+		}
+		public List<Group> getGroups(){
+				if(groups == null && !dept_id.isEmpty()){
+						GroupList gl = new GroupList();
+						gl.setDepartment_id(dept_id);
+						gl.setActiveOnly();
+						String back = gl.find();
+						if(back.isEmpty()){
+								List<Group> ones = gl.getGroups();
+								if(ones != null && ones.size() > 0){
+										groups = ones;
+								}
+						}
+				}
+				return groups;
+		}		
+		
 }
 
 

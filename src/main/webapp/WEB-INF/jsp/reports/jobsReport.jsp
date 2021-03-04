@@ -24,37 +24,56 @@
 				<li>Effective date should 'ALWAYS' be the first day of a pay period</li>
 		</ul>
 		<s:form action="jobsReport" id="form_id" method="post" >
-			<s:if test="hasDepartment()">
-				<s:hidden name="department_id" value="%{department_id}" />
-			</s:if>
-			<s:if test="hasMessages()">
+  	<input type="hidden" name="department_id" id="department_id"
+			value="<s:property value='department_id' />"  />
+		<s:if test="hasMessages()">
 				<s:set var="messages" value="messages" />			
-				<%@ include file="../messages.jsp" %>
+			<%@ include file="../messages.jsp" %>
+		</s:if>
+		<s:elseif test="hasErrors()">
+			<s:set var="errors" value="errors" />			
+			<%@ include file="../errors.jsp" %>
+		</s:elseif>
+		<div class="form-group">
+			<label>Department</label>
+			<s:select name="dept_id"
+								value="%{dept_id}"
+								list="departments"
+								listKey="id" listValue="name" headerKey="-1"
+								headerValue="Pick Department"
+								id="department_id_change" />
+		</div>
+		<div class="form-group">
+			<label>Group</label>
+			<s:if test="hasDept()">
+				<s:select
+					name="group_id"
+					id="group_id_set"
+					value="%{group_id}" list="groups"
+					listKey="id"
+					listValue="name"
+					headerKey="-1"
+					headerValue="All" />
 			</s:if>
-			<s:elseif test="hasErrors()">
-				<s:set var="errors" value="errors" />			
-				<%@ include file="../errors.jsp" %>
-			</s:elseif>
-			<div class="form-group">
-				<label>Department</label>
-				<s:if test="hasDepartment()">
-					<s:property value="department" />
-				</s:if>
-				<s:else>
-					<s:select name="department_id" value="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" />					
-				</s:else>
-			</div>
-			<div class="form-group">
-				<label>Employment Type</label>
-				<s:select name="employmentType" value="%{employmentType}" list="#{'-1':'All','Temp':'Temp Employee Only','Non Temp':'All Others'}" />
-			</div>
-			<div class="form-group">			
-				<label>Output Type:</label>				
-				<s:radio name="outputType" value="%{outputType}" list="#{'html':'Web page format','csv':'CSV format'}" />
-			</div>
-			<div class="button-group">
-				<s:submit name="action" type="button" value="Submit"/>
-			</div>
+			<s:else>
+				<select name="group_id" id="group_id_set"
+					value="<s:property value='group_id' />"
+					disabled="disabled">
+					<option value="-1">All</option>
+				</select>(To pick a group you need to pick a department first)
+			</s:else>
+		</div>		
+		<div class="form-group">
+			<label>Salary Group</label>
+			<s:select name="salaryGroup_id" value="%{salaryGroup_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
+		</div>
+		<div class="form-group">			
+			<label>Output Type:</label>				
+			<s:radio name="outputType" value="%{outputType}" list="#{'html':'Web page format','csv':'CSV format'}" />
+		</div>
+		<div class="button-group">
+			<s:submit name="action" type="button" value="Submit"/>
+		</div>
 		</s:form>
 	</div>		
 	<s:if test="action != ''">

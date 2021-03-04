@@ -167,7 +167,7 @@ public class GroupManager implements Serializable{
 						wf_node_id2 = val;
     }		
     public void setGroup_id(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						group_id = val;
     }
     public void setEmployee_id(String val){
@@ -179,11 +179,11 @@ public class GroupManager implements Serializable{
 						employee_id2 = val;
     }
     public void setStart_date(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						start_date = val;
     }
     public void setExpire_date(String val){
-				if(val != null)
+				if(val != null && !val.equals("-1"))
 						expire_date = val;
     }
 		public boolean hasExpireDate(){
