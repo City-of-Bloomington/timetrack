@@ -28,6 +28,9 @@ public class TimesReport{
 		String dept_ref_id="";
 		String code="";
 		String code2="";
+		String salary_group_id = "";
+		String pay_period_id = "";
+		String group_id = "";
 		String employmentType = ""; // All, Full Time, Temp		
 		Map<String, Set<String>> empJobs = null;
 		Map<String, Set<String>> empCodes = null;
@@ -71,6 +74,18 @@ public class TimesReport{
 		public String getDepartment_id(){
 				if(department_id.isEmpty())  return "-1";
 				return department_id;
+		}
+		public String getSalary_group_id(){
+				if(salary_group_id.isEmpty())  return "-1";
+				return salary_group_id;
+		}
+		public String getGroup_id(){
+				if(group_id.isEmpty())  return "-1";
+				return group_id;
+		}
+		public String getPay_period_id(){
+				if(pay_period_id.isEmpty())  return "-1";
+				return pay_period_id;
 		}		
 		public void setEmploymentType(String val){
 				if(val != null && !val.equals("-1")){
@@ -95,14 +110,34 @@ public class TimesReport{
     //
     // setters
     //
+		/**
     public void setYear (int val){
 				if(val > 0)
 						year = val;
     }
+		*/
+    public void setYear (String val){
+				if(val != null &&  !val.isEmpty() && !val.equals("-1")){
+						try{
+								year = Integer.parseInt(val);
+						}catch(Exception ex){
+
+						}
+				}
+    }		
     public void setQuarter (int val){
 				if(val > 0)
 						quarter = val;
-    }		
+    }
+    public void setQuarter (String val){
+				if(val != null &&  !val.isEmpty() && !val.equals("-1")){
+						try{
+								quarter = Integer.parseInt(val);
+						}catch(Exception ex){
+
+						}
+				}
+    }				
     public void setDate_from (String val){
 				if(val != null){
 						date_from = val;
@@ -117,7 +152,22 @@ public class TimesReport{
 				if(val != null && !val.equals("-1")){
 						department_id = val;
 				}
-    }		
+    }
+    public void setGroup_id(String val){
+				if(val != null && !val.equals("-1")){
+						group_id = val;
+				}
+    }
+    public void setSalary_group_id(String val){
+				if(val != null && !val.equals("-1")){
+						salary_group_id = val;
+				}
+    }
+		public void setPay_period_id(String val){
+				if(val != null && !val.equals("-1")){
+						pay_period_id = val;
+				}
+    }
 		
     public void setType(String val){
 				if(val != null){
@@ -202,15 +252,27 @@ public class TimesReport{
 				// We use start_date and end_date so that we do not override date_from
 				// and date_to if they are not set
 				//
-				start_date = date_from;
-				end_date = date_to;
-				if(year > 0 && quarter > 0){
+				if(!pay_period_id.isEmpty()){
+						PayPeriod payPeriod = new PayPeriod(pay_period_id);
+						String back = payPeriod.doSelect();
+						if(!back.isEmpty()){
+								msg = "Error getting pay period";
+								return msg;
+						}
+						start_date = payPeriod.getStart_date();
+						end_date = payPeriod.getEnd_date();
+				}
+				else if(year > 0 && quarter > 0){
 						start_date = CommonInc.quarter_starts[quarter]+year;
 						end_date = CommonInc.quarter_ends[quarter]+year;
 				}
+				else {
+						start_date = date_from;
+						end_date = date_to;
+				}
 				start_date = start_date.trim();
 				if(start_date.isEmpty()){
-						msg = "Year and quarter or start date not set ";
+						msg = "You need to set one of these pay period, year and quarter or start date ";
 						return msg;
 				}
 				if(end_date.isEmpty()){
@@ -239,11 +301,11 @@ public class TimesReport{
 				// planning department
 				//
 				String qq = "select concat_ws(' - ',date_format(p.start_date, '%m/%d'), date_format(p.end_date,'%m/%d')) date_range,                                                     concat_ws(', ',e.last_name,e.first_name) full_name,                             ps.name job_name,                                                               c.name hour_code,			                                                         sum(t.hours) hours,                                                             sum(t.amount) amount                                                            from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join employees e on e.id=d.employee_id                                          join department_employees de on de.employee_id=e.id                             where                                                                           t.inactive is null                                                              and ((t.clock_in is not null and t.clock_out is not null) or (t.clock_in is null and t.clock_out is null))                                                       and (de.department_id=? or de.department2_id=?)                                 and p.start_date >= ?                                                           and p.end_date <= ?   ";
-				if(employmentType.startsWith("Temp")){
-						qq += " and j.salary_group_id=3 ";
+				if(!salary_group_id.isEmpty()){
+						qq += " and j.salary_group_id = ? ";
 				}
-				else if(employmentType.indexOf("Other") > -1){ 
-						qq += " and j.salary_group_id <> 3 ";
+				if(!group_id.isEmpty()){
+						qq += " and j.group_id = ? ";
 				}
 				qq += "group by date_range,full_name,job_name,hour_code                                order by date_range,full_name,job_name,hour_code ";
 				con = UnoConnect.getConnection();				
@@ -278,6 +340,12 @@ public class TimesReport{
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 						date_tmp = dateFormat.parse(end_date);
 						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						if(!salary_group_id.isEmpty()){
+								pstmt.setString(jj++, salary_group_id);		
+						}
+						if(!group_id.isEmpty()){
+								pstmt.setString(jj++, group_id);		
+						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){
 								date_range = rs.getString(1);

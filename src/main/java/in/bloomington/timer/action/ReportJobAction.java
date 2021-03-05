@@ -101,18 +101,6 @@ public class ReportJobAction extends TopAction{
 				filename +="_jobs_"+Helper.getToday().replace(' ','_')+".csv";
 				return filename;
 		}
-		/**
-		public String getEmploymentType(){
-				if(employmentType.isEmpty())
-						return "-1";
-				return employmentType;
-		}
-		public void setEmploymentType(String val){
-				if(val != null && !val.equals("-1")){
-						employmentType = val; // salary_group_id = 3 for Temp
-				}
-		}
-		*/
 		public void setDept_id(String val){
 				if(val != null && !val.equals("-1")){
 						dept_id = val;
