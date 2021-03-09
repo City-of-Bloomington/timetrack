@@ -123,6 +123,13 @@
       <result name="error">/WEB-INF/jsp/accrual.jsp</result>
       <result name="success">/WEB-INF/jsp/accrual.jsp</result>
     </action>
+    <action name="terminate" 
+	    class="in.bloomington.timer.action.TerminateAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/terminate.jsp</result>		
+      <result name="error">/WEB-INF/jsp/terminate.jsp</result>
+      <result name="success">/WEB-INF/jsp/terminate.jsp</result>
+    </action>		
     <action name="contribute" 
 	    class="in.bloomington.timer.action.AccrualContributeAction" 
 	    method="execute">

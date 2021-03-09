@@ -141,6 +141,7 @@
 						<s:else>
 							<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />" class="button"> Add Another Job</a>
 						</s:else>
+						<a href="<s:property value='#application.url' />terminate.action?emp_id=<s:property value='emp.id' />" class="button"> Terminate </a>						
 					</s:if>
 					<s:else>
 						<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add Employee to a Group</a>						
@@ -154,37 +155,37 @@
 			<s:set var="departmentEmployees" value="%{emp.departmentEmployees}" />
 			<s:set var="departmentEmployeesTitle" value="'Employee Department'" />
 			<%@ include file="departmentEmployees.jsp" %>
-			<s:if test="emp.hasGroupEmployees()">
-				<s:set var="groupEmployees" value="%{emp.groupEmployees}" />
-				<s:set var="groupEmployeesTitle" value="'Employee Group'" />
-				<%@ include file="groupEmployees.jsp" %>
-			</s:if>
-			<s:if test="emp.hasAllJobs()">
-				<s:set var="jobTasks" value="%{emp.allJobs}" />
-				<s:set var="jobTasksTitle" value="'Employee Jobs'" />
-				<%@ include file="jobTasks.jsp" %>
-			</s:if>
-			<s:if test="emp.canPayrollProcess()">
-				<s:set var="groupManagers" value="%{emp.processors}" />
-				<s:set var="groupManagersTitle" value="'Payroll Approver of Groups '" />
-				<%@ include file="groupManagers.jsp" %>
-			</s:if>			
-			<s:if test="emp.canApprove()">
-				<s:set var="groupManagers" value="%{emp.approvers}" />
-				<s:set var="groupManagersTitle" value="'Approver of Groups '" />
-				<%@ include file="groupManagers.jsp" %>
-			</s:if>
-			<s:if test="emp.canReview()">
-				<s:set var="groupManagers" value="%{emp.reviewers}" />
-				<s:set var="groupManagersTitle" value="'Review of Groups'" />
-				<%@ include file="groupManagers.jsp" %>
-			</s:if>
-			<s:if test="emp.canMaintain()">
-				<s:set var="groupManagers" value="%{emp.enterors}" />
-				<s:set var="groupManagersTitle" value="'Maintain of Groups'" />
-				<%@ include file="groupManagers.jsp" %>
-			</s:if>			
+		</s:if>`
+		<s:if test="emp.hasGroupEmployees()">
+			<s:set var="groupEmployees" value="%{emp.groupEmployees}" />
+			<s:set var="groupEmployeesTitle" value="'Employee Group'" />
+			<%@ include file="groupEmployees.jsp" %>
 		</s:if>
+		<s:if test="emp.hasAllJobs()">
+			<s:set var="jobTasks" value="%{emp.allJobs}" />
+			<s:set var="jobTasksTitle" value="'Employee Jobs'" />
+			<%@ include file="jobTasks.jsp" %>
+		</s:if>
+		<s:if test="emp.canPayrollProcess()">
+			<s:set var="groupManagers" value="%{emp.processors}" />
+			<s:set var="groupManagersTitle" value="'Payroll Approver of Groups '" />
+			<%@ include file="groupManagers.jsp" %>
+		</s:if>			
+		<s:if test="emp.canApprove()">
+			<s:set var="groupManagers" value="%{emp.approvers}" />
+			<s:set var="groupManagersTitle" value="'Approver of Groups '" />
+			<%@ include file="groupManagers.jsp" %>
+		</s:if>
+		<s:if test="emp.canReview()">
+			<s:set var="groupManagers" value="%{emp.reviewers}" />
+			<s:set var="groupManagersTitle" value="'Review of Groups'" />
+			<%@ include file="groupManagers.jsp" %>
+		</s:if>
+		<s:if test="emp.canMaintain()">
+			<s:set var="groupManagers" value="%{emp.enterors}" />
+			<s:set var="groupManagersTitle" value="'Maintain of Groups'" />
+			<%@ include file="groupManagers.jsp" %>
+		</s:if>			
 	</s:if>
 </div>
 <%@ include file="footer.jsp" %>

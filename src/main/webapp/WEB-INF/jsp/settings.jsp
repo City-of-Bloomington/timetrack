@@ -18,9 +18,9 @@
 				<li><a href="<s:property value='#application.url'/>location.action">Locations</a></li>				
 				<li><a href="<s:property value='#application.url'/>benefitGroup.action">Benefit Groups</a></li>
 				<li><a href="<s:property value='#application.url'/>department.action">Departments</a></li>				
-				<li><a href="<s:property value='#application.url'/>employee.action">Employees</a></li>
+				<li><a href="<s:property value='#application.url'/>employee.action">New Employee</a></li>
 				<li><a href="<s:property value='#application.url'/>empWizard.action">Add Employee Wizard</a></li>
-
+				<li><a href="<s:property value='#application.url'/>terminate.action">Employee Termination</a></li>				
 				<li><a href="<s:property value='#application.url'/>empAccrual.action">Employee Accruals</a></li>
 				<li><a href="<s:property value='#application.url'/>groupLocation.action">Group Locations</a></li>				
 				<li><a href="<s:property value='#application.url'/>hourcode.action">Earn Codes</a></li>

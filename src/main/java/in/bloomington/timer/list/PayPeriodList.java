@@ -27,6 +27,7 @@ public class PayPeriodList{
 				twoPeriodsAheadOnly=false,
 				onePeriodAheadOnly=false,
 				lastPayPeriod=false, previousOnly=false, nextOnly=false;
+		int aheadPeriods = 0; // each period is 14 (pay period cycle)
     boolean avoidFuturePeriods = false;
     boolean approveSuitable = false;
     List<PayPeriod> periods = null;
@@ -70,10 +71,18 @@ public class PayPeriodList{
     }		
     public void setTwoPeriodsAheadOnly(){
 				twoPeriodsAheadOnly = true;
+				aheadPeriods = 2;
     }
     public void setOnePeriodAheadOnly(){
 				onePeriodAheadOnly = true;
-    }		
+				aheadPeriods = 1;
+    }
+		public void setAheadPeriods(int cnt){
+				aheadPeriods = cnt;
+		}
+		public int getAheadPeriods(){
+				return aheadPeriods;
+		}
     public void setLastPayPeriod(){
 				lastPayPeriod = true;
     }
@@ -128,14 +137,17 @@ public class PayPeriodList{
 				else if(previousOnly){
 						qw = " p.start_date <= date_sub(curdate(), interval 14 day) and p.end_date >= date_sub(curdate(), interval 14 day) ";
 				}
-				else if(twoPeriodsAheadOnly){
-						qw = " p.start_date <= date_add(curdate(), interval 28 day) ";
+				// else if(twoPeriodsAheadOnly){
+				else if(aheadPeriods > 0){
+						int days = aheadPeriods*14;
+						qw = " p.start_date <= date_add(curdate(), interval "+days+" day) ";
 						if(!employee_id.isEmpty()){
 								qq2 += ", time_documents d  "+
 										" where d.pay_period_id=p2.id and d.employee_id=? "+
 										" and p2.start_date > date_sub(curdate(), interval 90 day) ";
 						}
 				}
+				/**
 				else if(onePeriodAheadOnly){
 						qw = " p.start_date <= date_add(curdate(), interval 14 day) ";
 						if(!employee_id.isEmpty()){
@@ -143,7 +155,8 @@ public class PayPeriodList{
 										" where d.pay_period_id=p2.id and d.employee_id=? "+
 										" and p2.start_date > date_sub(curdate(), interval 90 day) ";
 						}
-				}				
+				}
+				*/
 				else if(avoidFuturePeriods){
 						qw = " p.start_date <= curdate() ";
 				}

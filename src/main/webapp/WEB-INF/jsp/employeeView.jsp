@@ -65,6 +65,7 @@
 		<s:else>
 			<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&effective_date=<s:property value='effective_date' />" class="button"> Add Another Job</a>
 		</s:else>
+		<a href="<s:property value='#application.url' />terminate.action?emp_id=<s:property value='emp.id' />" class="button"> Terminate </a>			
 	</div>
 	<s:if test="emp.hasDepartments()">
 		<s:set var="departmentEmployees" value="%{emp.departmentEmployees}" />
