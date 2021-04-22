@@ -233,6 +233,12 @@ public class TmwrpWeekSplit{
 								hours +=  daily.get(code_id);
 						}											
 				}
+				else if(hrCode.isUnpaid()){
+						unpaid_hrs += hours;
+						if(daily.containsKey(code_id)){
+								hours +=  daily.get(code_id);
+						}											
+				}				
 				else if(hrCode.isOvertime()){
 						unpaid_hrs += hours;
 						if(daily.containsKey(code_id)){
