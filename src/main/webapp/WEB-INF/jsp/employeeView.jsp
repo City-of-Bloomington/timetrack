@@ -71,13 +71,13 @@
 		<s:set var="departmentEmployees" value="%{emp.departmentEmployees}" />
 		<s:set var="departmentEmployeesTitle" value="'Employee Department'" />
 		<%@ include file="departmentEmployees.jsp" %>
-		<s:if test="emp.hasGroupEmployees()">
-			<s:set var="groupEmployees" value="%{emp.groupEmployees}" />
+		<s:if test="emp.hasAllGroupEmployees()">
+			<s:set var="groupEmployees" value="%{emp.allGroupEmployees}" />
 			<s:set var="groupEmployeesTitle" value="'Employee Group'" />
 			<%@ include file="groupEmployees.jsp" %>
 		</s:if>
-		<s:if test="emp.hasAllJobs()">
-			<s:set var="jobTasks" value="%{emp.allJobs}" />
+		<s:if test="emp.hasAllJobs2()">
+			<s:set var="jobTasks" value="%{emp.allJobs2}" />
 			<s:set var="jobTasksTitle" value="'Employee Jobs'" />
 			<%@ include file="jobTasks.jsp" %>
 		</s:if>

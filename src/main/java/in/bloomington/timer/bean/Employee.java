@@ -42,7 +42,8 @@ public class Employee implements Serializable, Comparable<Employee>{
     // User user = null;
     PayPeriod payPeriod  = null;
     List<JobTask> jobs = null;
-    List<JobTask> allJobs = null;		
+    List<JobTask> allJobs = null;
+		List<JobTask> allJobs2 = null;		
     List<Group> groups = null;
 		List<GroupManager> groupManagers = null; // for any type
     List<GroupManager> approvers = null;
@@ -51,6 +52,7 @@ public class Employee implements Serializable, Comparable<Employee>{
     List<GroupManager> enterors = null;
     List<DepartmentEmployee> departmentEmployees = null;
     List<GroupEmployee> groupEmployees = null;
+		List<GroupEmployee> allGroupEmployees = null; // include expired ones too
     List<GroupShift> groupShifts = null;
     Shift shift = null;
     DepartmentEmployee departmentEmployee = null;
@@ -541,6 +543,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 				getGroups();
 				return groups != null && groups.size() > 0;
     }
+		
     public Shift getShift(){
 				if(shift == null) findShift();
 				return shift;
@@ -787,6 +790,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 				getGroupEmployees(); // include future
 				return groupEmployees != null && groupEmployees.size() > 0;
     }
+    public boolean hasAllGroupEmployees(){
+				getAllGroupEmployees(); // include all
+				return allGroupEmployees != null && allGroupEmployees.size() > 0;
+    }		
     public List<GroupEmployee> getGroupEmployees(){
 				if(groupEmployees == null && !id.isEmpty()){
 						GroupEmployeeList del = new GroupEmployeeList(id);
@@ -811,6 +818,19 @@ public class Employee implements Serializable, Comparable<Employee>{
 				}
 				return groupEmployees;
     }
+    public List<GroupEmployee> getAllGroupEmployees(){
+				if(allGroupEmployees == null && !id.isEmpty()){
+						GroupEmployeeList del = new GroupEmployeeList(id);
+						String back = del.find();
+						if(back.isEmpty()){
+								List<GroupEmployee> ones = del.getGroupEmployees();
+								if(ones != null && ones.size() > 0){
+										allGroupEmployees = ones;
+								}
+						}
+				}
+				return allGroupEmployees;
+    }		
     public boolean hasActiveGroup(){
 				getGroupEmployees();
 				return groupEmployee != null;
@@ -858,6 +878,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 				}
 				return jobs;
     }
+		
     public boolean hasAllJobs(){
 				getAllJobs();
 				return allJobs != null && allJobs.size() > 0;
@@ -876,7 +897,26 @@ public class Employee implements Serializable, Comparable<Employee>{
 						}
 				}
 				return allJobs;
-    }		
+    }
+    public boolean hasAllJobs2(){
+				getAllJobs2();
+				return allJobs2 != null && allJobs2.size() > 0;
+    }
+		// include all including expired
+    public List<JobTask> getAllJobs2(){
+				if(!id.isEmpty() && allJobs2 == null){
+						JobTaskList jtl = new JobTaskList();
+						jtl.setEmployee_id(id);
+						String back = jtl.find();
+						if(back.isEmpty()){
+								List<JobTask> ones = jtl.getJobs();
+								if(ones != null && ones.size() > 0){
+										allJobs2 = ones;
+								}
+						}
+				}
+				return allJobs2;
+    }				
 		
     public boolean hasJobs(){
 				getJobs();

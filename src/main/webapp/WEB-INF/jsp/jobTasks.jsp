@@ -14,9 +14,9 @@
 			<th>Comp Time Weekly Hrs</th>
 			<th>Comp Time Muliple Factor</th>
 			<th>Holiday Comp Multiple factor</th>
+			<th>Expire Date</th>						
 			<th>Included in Auto Submit Batch</th>
 			<th>Work Irregular Work Days</th>
-			<th>Expire Date</th>			
 			<th>Added Date</th>			
 			<th>Active?</th>
 		</tr>
@@ -36,9 +36,9 @@
 				<td><s:property value="comp_time_weekly_hours" /></td>
 				<td><s:property value="comp_time_factor" /></td>
 				<td><s:property value="holiday_comp_factor" /></td>
+				<td><s:property value="expire_date" /></td>				
 				<td><s:if test="includeInAutoBatch">Yes</s:if><s:else>&nbsp;</s:else></td>
 				<td><s:if test="irregularWorkDays">Yes</s:if><s:else>&nbsp;</s:else></td>				
-				<td><s:property value="expire_date" /></td>
 				<td><s:property value="added_date" /></td>								
 				<td><s:if test="inactive">No</s:if><s:else>&nbsp;</s:else></td>
 			</tr>
