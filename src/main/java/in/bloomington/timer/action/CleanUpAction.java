@@ -130,7 +130,7 @@ public class CleanUpAction extends TopAction{
 						getPayPeriod(); // so that we can initialize the list
 						PayPeriodList tl = new PayPeriodList();
 						tl.setTwoPeriodsAheadOnly();
-						tl.setLimit(""+4);
+						tl.setLimit("10");
 						String back = tl.find();
 						if(back.isEmpty()){
 								List<PayPeriod> ones = tl.getPeriods();
