@@ -367,6 +367,59 @@ public class PayPeriod implements Serializable{
 				}
 				return msg;
 		}
+		public boolean findByEndDate(String date){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", str="";
+				boolean pass = true;
+				String qq = "select p.id,"+
+						"date_format(p.start_date,'%m/%d/%Y'), "+
+						"date_format(p.end_date,'%m/%d/%Y'), "+
+						"year(p.start_date),month(p.start_date),day(p.start_date),"+
+						"year(p.end_date),month(p.end_date),day(p.end_date), "+
+						"datediff(p.end_date,p.start_date) "+
+						"from pay_periods p where p.end_date = ? ";
+				con = UnoConnect.getConnection();
+				if(con == null){
+						msg = " could not connect to Database ";
+						logger.error(msg);
+						return false;
+				}
+				logger.debug(qq);
+				try{
+						pstmt = con.prepareStatement(qq);
+						pstmt.setDate(1, new java.sql.Date(dateFormat.parse(date).getTime()));
+						rs = pstmt.executeQuery();
+						if(rs.next()){
+								setId(rs.getString(1));
+								setStartDate(rs.getString(2));
+								setEndDate(rs.getString(3));
+								setStartYear(rs.getInt(4));
+								setStartMonth(rs.getInt(5));
+								setStartDay(rs.getInt(6));
+								setEndYear(rs.getInt(7));
+								setEndMonth(rs.getInt(8));
+								setEndDay(rs.getInt(9));
+								setDays(rs.getInt(10));
+								setIntDates();
+						}
+						else{
+								pass = false;
+								logger.error("No pay period found");
+						}
+				}
+				catch(Exception ex){
+						msg += " "+ex;
+						logger.error(msg+":"+qq);
+						pass = false;
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return pass;
+		}		
 		public String doSelect(){
 				Connection con = null;
 				PreparedStatement pstmt = null;
