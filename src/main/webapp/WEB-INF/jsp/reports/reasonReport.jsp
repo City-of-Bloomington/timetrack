@@ -63,12 +63,13 @@
 </s:if>
 <s:if test="#hasDaily">
 	<table border="1" width="90%">
-		<caption>Hours Classified by Employeee, Date, Earn Code - Reason</caption>
+		<caption>Hours Classified by Employeee, Date, Earn Code and Reason</caption>
 		<tr>
 			<td align="center"><b>Employee</b></td>
 			<td align="center"><b>Employee Number</b></td>			
 			<td align="center"><b>Date</b></td>		
-			<td align="center"><b>Earn Code - Reason</b></td>
+			<td align="center"><b>Earn Code</b></td>
+			<td align="center"><b>Code Reason</b></td>			
 			<td align="center"><b>Hours</b></td>
 		</tr>
 		<s:iterator var="row" value="#dailyEntries">
@@ -77,6 +78,7 @@
 				<td><s:property value="#row.empNum" /></td>
 				<td><s:property value="#row.date" /></td>
 				<td><s:property value="#row.code" /></td>
+				<td><s:property value="#row.reason" /></td>				
 				<td align="right"><s:property value="#row.hoursStr" /></td>
 			</tr>
 		</s:iterator>

@@ -29,27 +29,46 @@ public class ReportReasonAction extends TopAction{
 		List<Integer> years = null;
 		List<WarpEntry> dailyEntries = null;
 		String reportTitle = "Code Reasons Report ";
+		String type = "Reason";
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(!action.isEmpty()){
-						back = report.findHoursByNameAndCode();
-						back += report.findHoursByDateAndCode();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								if(true){
-										List<WarpEntry> ones = report.getEntries();
-										if(ones != null && ones.size() > 0){
-												entries = ones;
-												addMessage("Found "+ones.size()+" entries");
+						if(type.equals("Reason")){
+								back = report.findHoursByNameAndCode();
+								back += report.findHoursByDateAndCode();
+								if(!back.isEmpty()){
+										addError(back);
+								}
+								else{
+										if(true){
+												List<WarpEntry> ones = report.getEntries();
+												if(ones != null && ones.size() > 0){
+														entries = ones;
+														addMessage("Found "+ones.size()+" entries");
+												}
+												else{
+														addMessage("No records found");
+												}
 										}
-										else{
-												addMessage("No records found");
+										if(true){
+												List<WarpEntry> ones = report.getDailyEntries();
+												if(ones != null && ones.size() > 0){
+														dailyEntries = ones;
+														addMessage("Found "+ones.size()+" daily entries");
+												}
+												else{
+														addMessage("No records found");
+												}
 										}
 								}
-								if(true){
+						}
+						else{ // all codes
+								back = report.findHoursCodeDetails();
+								if(!back.isEmpty()){
+										addError(back);
+								}
+								else{
 										List<WarpEntry> ones = report.getDailyEntries();
 										if(ones != null && ones.size() > 0){
 												dailyEntries = ones;
@@ -64,7 +83,7 @@ public class ReportReasonAction extends TopAction{
 				else{
 						getReport();
 				}
-				if(report.getType().equals("csv")){
+				if(report.getOutputType().equals("csv")){
 						return "csv";
 				}
 				return ret;
@@ -92,7 +111,13 @@ public class ReportReasonAction extends TopAction{
 				if(val != null && !val.isEmpty())		
 						action = val;
 		}
-
+		public void setType(String val){
+				if(val != null && !val.isEmpty())		
+					 type = val;
+		}
+		public String getType(){
+				return type;
+		}
 		public List<Integer> getYears(){
 				if(years == null){
 						int currentYear = Helper.getCurrentYear();

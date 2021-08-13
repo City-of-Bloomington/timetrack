@@ -14,7 +14,8 @@ import org.apache.logging.log4j.Logger;
 
 public class WarpEntry{
 
-		String code="", fullname="", hoursStr="", emp_num="", date="";
+		String code="", reason="", // needed for police
+				fullname="", hoursStr="", emp_num="", date="";
 		//
 		// added to handle dept report
 		//
@@ -67,7 +68,26 @@ public class WarpEntry{
 				setDate(val4);
 				setHours(val5);
 				setHourlyRate(val6);
-    }		
+    }
+    public WarpEntry(boolean deb,
+										 String val,
+										 String val2,
+										 String val3,
+										 String val4,
+										 String val5,
+										 
+										 double val6,
+										 double val7
+										 ){
+				debug = deb;
+				setFullname(val);
+				setEmpNum(val2);				
+				setCode(val3);
+				setReason(val4);
+				setDate(val5);
+				setHours(val6);
+				setHourlyRate(val7);
+    }				
 		public String getHoursStr(){
 				return hoursStr;
     }
@@ -91,6 +111,9 @@ public class WarpEntry{
 		public String getCode(){
 				return code;
     }
+		public String getReason(){
+				return reason;
+    }		
 		public String getDate(){
 				return date;
     }		
@@ -107,6 +130,10 @@ public class WarpEntry{
 				if(val != null)		
 						code = val;
     }
+    public void setReason(String val){
+				if(val != null)		
+						reason = val;
+    }		
     public void setDate(String val){
 				if(val != null)		
 						date = val;

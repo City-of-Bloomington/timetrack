@@ -45,8 +45,12 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label>Report Type:</label>
+				<s:radio name="type" value="%{type}" list="#{'Reason':'Earn Code/Reason','All':'All Earn Codes'}" />
+			</div>			
+			<div class="form-group">
 				<label>Output Type:</label>
-				<s:radio name="report.type" value="%{report.type}" list="#{'html':'Web page HTML','csv':'CSV format'}" />
+				<s:radio name="report.outputType" value="%{report.outputType}" list="#{'html':'Web page HTML','csv':'CSV format'}" />
 			</div>
 			<div class="button-group">
 				<s:submit name="action" type="button" value="Submit" class="fn1-btn"/>

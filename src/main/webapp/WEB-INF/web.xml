@@ -51,6 +51,10 @@
     <servlet>
       <servlet-name>CodeReasonService</servlet-name>
       <servlet-class>in.bloomington.timer.service.CodeReasonService</servlet-class>
+    </servlet>
+    <servlet>
+      <servlet-name>ReportCodeReasonService</servlet-name>
+      <servlet-class>in.bloomington.timer.service.ReportCodeReasonService</servlet-class>
     </servlet>		
     <servlet>
       <servlet-name>GroupManagerService</servlet-name>
@@ -95,6 +99,10 @@
 	<servlet-mapping>
     <servlet-name>CodeReasonService</servlet-name>
     <url-pattern>/CodeReasonService</url-pattern>
+  </servlet-mapping>
+	<servlet-mapping>
+    <servlet-name>ReportCodeReasonService</servlet-name>
+    <url-pattern>/ReportCodeReasonService</url-pattern>
   </servlet-mapping>	
 	<servlet-mapping>
     <servlet-name>GroupManagerService</servlet-name>
