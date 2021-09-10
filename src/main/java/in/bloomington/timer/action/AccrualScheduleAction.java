@@ -30,151 +30,151 @@ public class AccrualScheduleAction extends TopAction{
     List<PayPeriod> payPeriods = null;
     String date = "", write_date="", prev_date="", next_date="", dept_ref_id="";
     public String execute(){
-	String ret = SUCCESS;
-	String back = doPrepare();
-	prepareSchedular();				
-	if(action.equals("Schedule")){
-	    back = doClean();
-	    if(!back.isEmpty()){
-		addError(back);
-	    }
-	    try{
-		back = schedular.run();
-		if(!back.isEmpty()){
-		    addError(back);
-		}
-		else{
-		    addMessage("Scheduled Successfully");
-		}
-	    }catch(Exception ex){
-		addError(""+ex);
-	    }
-	}
-	else if(action.startsWith("Import")){ // import now given the date
-	    if(dept_ref_id.isEmpty() || date.isEmpty()){
-		addError("dept ref and/or date not set");
-	    }
-	    else{
-		HandleNwAccrual handle = new HandleNwAccrual(dept_ref_id, date, write_date);
-		back = handle.process();
-		if(!back.isEmpty()){
-		    addError(back);
-		}
-		else{
-		    addMessage("Imported Successfully");
-		}
-	    }
-	}
-	return ret;
+				String ret = SUCCESS;
+				String back = doPrepare();
+				prepareSchedular();				
+				if(action.equals("Schedule")){
+						back = doClean();
+						if(!back.isEmpty()){
+								addError(back);
+						}
+						try{
+								back = schedular.run();
+								if(!back.isEmpty()){
+										addError(back);
+								}
+								else{
+										addMessage("Scheduled Successfully");
+								}
+						}catch(Exception ex){
+								addError(""+ex);
+						}
+				}
+				else if(action.startsWith("Import")){ // import now given the date
+						if(dept_ref_id.isEmpty() || date.isEmpty()){
+								addError("dept ref and/or date not set");
+						}
+						else{
+								HandleNwAccrual handle = new HandleNwAccrual(dept_ref_id, date, write_date);
+								back = handle.process();
+								if(!back.isEmpty()){
+										addError(back);
+								}
+								else{
+										addMessage("Imported Successfully");
+								}
+						}
+				}
+				return ret;
     }
     private void prepareSchedular(){
-	String msg = "";
-	PayPeriodList pl = new PayPeriodList();
-	if(date.isEmpty()){
-	    pl.setLastPayPeriod();
-	    msg = pl.find();
-	    if(msg.isEmpty()){
-		List<PayPeriod> ones = pl.getPeriods();
-		if(ones != null && ones.size() > 0){
-		    PayPeriod one = ones.get(0);
-		    String end_date = one.getEnd_date();
-		    date = Helper.getDateAfter(end_date, 5);
-		}
-	    }
-	}
-	if(!date.isEmpty()){
-	    schedular = new AccrualScheduler(date);
-	}
-	quartzMisc = new QuartzMisc(debug); // default type:accrual
-	msg = quartzMisc.findScheduledDates();
-	if(msg.isEmpty()){
-	    prev_date = quartzMisc.getPrevScheduleDate();
-	    if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
-		prev_date = "No Previous date found";
-	    next_date = quartzMisc.getNextScheduleDate();
-	}				
+				String msg = "";
+				PayPeriodList pl = new PayPeriodList();
+				if(date.isEmpty()){
+						pl.setLastPayPeriod();
+						msg = pl.find();
+						if(msg.isEmpty()){
+								List<PayPeriod> ones = pl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										PayPeriod one = ones.get(0);
+										String end_date = one.getEnd_date();
+										date = Helper.getDateAfter(end_date, 5);
+								}
+						}
+				}
+				if(!date.isEmpty()){
+						schedular = new AccrualScheduler(date);
+				}
+				quartzMisc = new QuartzMisc(debug); // default type:accrual
+				msg = quartzMisc.findScheduledDates();
+				if(msg.isEmpty()){
+						prev_date = quartzMisc.getPrevScheduleDate();
+						if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
+								prev_date = "No Previous date found";
+						next_date = quartzMisc.getNextScheduleDate();
+				}				
     }
     private String doClean(){
-	String msg = "";
-	if(quartzMisc != null){
-	    msg = quartzMisc.doClean();
-	}
-	return msg;
+				String msg = "";
+				if(quartzMisc != null){
+						msg = quartzMisc.doClean();
+				}
+				return msg;
     }
     public String getAccrualSchedularsTitle(){
 				
-	return accrualSchedulesTitle;
+				return accrualSchedulesTitle;
     }
 
 
     public void setAction2(String val){
-	if(val != null && !val.isEmpty())		
-	    action = val;
+				if(val != null && !val.isEmpty())		
+						action = val;
     }
     public void setDate(String val){
-	if(val != null && !val.isEmpty())		
-	    date = val;
+				if(val != null && !val.isEmpty())		
+						date = val;
     }
     public void setWriteDate(String val){
-	if(val != null && !val.equals("-1"))		
-	    write_date = val;
+				if(val != null && !val.equals("-1"))		
+						write_date = val;
     }		
     public void setDept_ref_id(String val){
-	if(val != null && !val.equals("-1"))		
-	    dept_ref_id = val;
+				if(val != null && !val.equals("-1"))		
+						dept_ref_id = val;
     }		
     // read only 
     public String getDate(){
-	return date;
+				return date;
     }
     public String getWriteDate(){
-	return write_date;
+				return write_date;
     }		
     public String getPrev_date(){
-	return prev_date;
+				return prev_date;
     }
     public String getNext_date(){
-	return next_date;
+				return next_date;
     }
     public boolean hasPrevDates(){
-	return !prev_date.isEmpty();
+				return !prev_date.isEmpty();
     }
     public List<Department> getDepts(){
-	if(depts == null){
-	    DepartmentList dl = new DepartmentList();
-	    dl.setActiveOnly();
-	    dl.hasRefIds();
-	    String msg = dl.find();
-	    if(!msg.isEmpty()){
-		logger.error(msg);
-	    }
-	    else{
-		List<Department> ones = dl.getDepartments();
-		if(ones != null && ones.size() > 0){
-		    depts = ones;
-		}
-	    }
-	}
-	return depts;
+				if(depts == null){
+						DepartmentList dl = new DepartmentList();
+						dl.setActiveOnly();
+						dl.hasRefIds();
+						String msg = dl.find();
+						if(!msg.isEmpty()){
+								logger.error(msg);
+						}
+						else{
+								List<Department> ones = dl.getDepartments();
+								if(ones != null && ones.size() > 0){
+										depts = ones;
+								}
+						}
+				}
+				return depts;
     }
     public boolean hasDepts(){
-	getDepts();
-	return depts != null && depts.size() > 0;
+				getDepts();
+				return depts != null && depts.size() > 0;
     }
     public List<PayPeriod> getPayPeriods(){
-	if(payPeriods == null){
-	    PayPeriodList tl = new PayPeriodList();
-	    tl.setOnePeriodAheadOnly();
-	    tl.setLimit("4");
-	    String back = tl.find();
-	    if(back.isEmpty()){
-		List<PayPeriod> ones = tl.getPeriods();
-		if(ones != null && ones.size() > 0){
-		    payPeriods = ones;
-		}
-	    }
-	}
-	return payPeriods;
+				if(payPeriods == null){
+						PayPeriodList tl = new PayPeriodList();
+						tl.setOnePeriodAheadOnly();
+						tl.setLimit("4");
+						String back = tl.find();
+						if(back.isEmpty()){
+								List<PayPeriod> ones = tl.getPeriods();
+								if(ones != null && ones.size() > 0){
+										payPeriods = ones;
+								}
+						}
+				}
+				return payPeriods;
     }			
 }
 

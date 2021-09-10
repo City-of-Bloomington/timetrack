@@ -35,7 +35,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     static EnvBean envBean = null;
     static String mail_host = null;
     static String uri="",url="", proxy_url="";
-		
+		static String xls_output_location="";
     String action="", id="", employee_id="";
     List<String> errors = new ArrayList<>(),
 				messages = new ArrayList<>();
@@ -81,6 +81,9 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 								val = ctx.getInitParameter("mail_host");
 								if(val != null)
 										mail_host = val;
+								val = ctx.getInitParameter("xls_output_location");
+								if(val != null)
+										xls_output_location = val;								
 						}
 						if(envBean == null){
 								envBean = new EnvBean();

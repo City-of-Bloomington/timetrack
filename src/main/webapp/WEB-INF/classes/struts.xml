@@ -9,7 +9,7 @@
 	<!-- to remove .action 
 	<constant name="struts.action.extension" value = ""/>
 	-->
-  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*,/JobTitleService*,/GroupManagerService*,/ManagerService*,/PositionService*,/CodeReasonService*,/NewEmployeeService*,/ReportCodeReasonService*" />
+  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*,/JobTitleService*,/GroupManagerService*,/ManagerService*,/PositionService*,/CodeReasonService*,/NewEmployeeService*,/ReportCodeReasonService*,/ReportReasonService*" />
 
   <package name="default" extends="struts-default">
 
@@ -144,6 +144,13 @@
       <result name="error">/WEB-INF/jsp/accrualSchedular.jsp</result>
       <result name="success">/WEB-INF/jsp/accrualSchedular.jsp</result>
     </action>
+    <action name="codeReasonSchedule" 
+	    class="in.bloomington.timer.action.CodeReasonScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/codeReasonSchedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/codeReasonSchedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/codeReasonSchedular.jsp</result>
+    </action>		
     <action name="profileSchedule" 
 	    class="in.bloomington.timer.action.ProfileScheduleAction" 
 	    method="execute">

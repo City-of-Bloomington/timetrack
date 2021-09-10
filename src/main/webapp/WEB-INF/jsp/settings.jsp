@@ -109,6 +109,7 @@
 				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees' Update from AD (ldap)</a></li>				
 				<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
 				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch Clock Batch Auto Submission </a></li>
+				<li><a href="<s:property value='#application.url'/>codeReasonSchedule.action">Police Code Reason xls File Output</a></li>				
 			</ul>
 		</div>
 	</s:if>

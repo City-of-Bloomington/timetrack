@@ -101,12 +101,12 @@ public class QuartzMisc{
 				// we need to delete the old records from the database
 				// otherwise we get exception and avoid duplication in scheduling
 				//
-				String where_trig = " where trigger_group like '"+type+"'";
+				String where_strig = " where trigger_group like '"+type+"'";
 				String where_job = " where job_group like '"+type+"'";
-				String[] qq = {"delete from qrtz_cron_triggers "+where_trig,
-											 "delete from qrtz_simple_triggers "+where_trig,
-											 "delete from qrtz_fired_triggers "+where_trig,
-											 "delete from qrtz_triggers "+where_trig,
+				String[] qq = {"delete from qrtz_cron_triggers "+where_strig,
+											 "delete from qrtz_simple_triggers "+where_strig,
+											 "delete from qrtz_fired_triggers "+where_strig,
+											 "delete from qrtz_triggers "+where_strig,
 											 "delete from qrtz_job_details "+where_job};
 				con = UnoConnect.getConnection();
 				if(con == null){
