@@ -53,8 +53,8 @@ public class ReportReasonService extends HttpServlet{
 				String name, value;
 				String refUserId = "", back ="";
 				String outputType = "";
-				// String end_date = Helper.getToday();
-				String end_date = "02/01/2021";
+				String end_date = Helper.getToday();
+				// String end_date = "02/01/2021";
 				int cur_year = Helper.getCurrentYear();
 				String start_date = "01/01/"+cur_year;
 				String host_forward = req.getHeader("X-Forwarded-Host");
@@ -89,6 +89,9 @@ public class ReportReasonService extends HttpServlet{
 										refUserId = value;
 								}
 						}
+						else if(name.equals("schema")){
+								outputType = "schema";
+						}						
 						else if(name.equals("Employees.xsd")){
 								outputType = "schema";
 						}
@@ -101,6 +104,11 @@ public class ReportReasonService extends HttpServlet{
 						res.setHeader("Content-Disposition","inline; filename="+filename);
 						res.setContentType("application/xml");
 				}
+				else if(format.equals("xml")){
+						filename = "police_earn_code_reason.xml";
+						res.setHeader("Content-Disposition","inline; filename="+filename);
+						res.setContentType("application/xml");		
+				}				
 				else if(format.equals("csv")){
 						filename = "police_earn_code_reason.csv";
 						res.setHeader("Content-Disposition","inline; filename="+filename);
@@ -116,11 +124,6 @@ public class ReportReasonService extends HttpServlet{
 						res.setHeader("Content-Disposition","inline; filename="+filename);
 						res.setContentType("application/json");		
 				}
-				else if(format.equals("xml")){
-						filename = "police_earn_code_reason.xml";
-						res.setHeader("Content-Disposition","inline; filename="+filename);
-						res.setContentType("application/xml");		
-				}
 
 				List<WarpEntry> daily = null;
 				if(!outputType.isEmpty()){
@@ -129,67 +132,69 @@ public class ReportReasonService extends HttpServlet{
 						out.flush();
 						out.close();										
 				}
-				else if(!refUserId.isEmpty()){
-						ReasonReport report = new ReasonReport();
-						if(report.checkRef(refUserId)){
-								report.setDate_from(start_date);
-								report.setDate_to(end_date);
-								back = report.findHoursCodeDetails();
-								if(back.isEmpty()){
-										daily = report.getDailyEntries();
+				else {
+						if(!refUserId.isEmpty()){
+								ReasonReport report = new ReasonReport();
+								if(report.checkRef(refUserId)){						
+										report.setDate_from(start_date);
+										report.setDate_to(end_date);
+										back = report.findHoursCodeDetails();
+										if(back.isEmpty()){
+												daily = report.getDailyEntries();
+												if(format.equals("csv")){
+														PrintWriter out = res.getWriter();
+														if(daily != null && daily.size() > 0){
+																writeCsv(daily, out);
+																out.flush();
+																out.close();										
+														}
+														else{
+																out.println();
+														}
+												}
+												else if(format.equals("xls")){
+														ServletOutputStream out = res.getOutputStream();						
+														if(daily != null && daily.size() > 0){
+																writeXls(daily, out);
+																out.flush();
+																out.close();										
+														}
+														else{
+																out.println();
+														}
+												}
+												else if(format.equals("json")){
+														PrintWriter out = res.getWriter();
+														if(daily != null && daily.size() > 0){
+																writeJson(daily, out);
+																out.flush();
+																out.close();										
+														}
+														else{
+																out.println();
+														}
+												}
+												else if(format.equals("xml")){
+														PrintWriter out = res.getWriter();
+														if(daily != null && daily.size() > 0){
+																writeXml(daily, out);
+																out.flush();
+																out.close();										
+														}
+														else{
+																out.println();
+														}
+												}
+										}
+										else{
+												logger.error(back);
+										}
 								}
 								else{
-										logger.error(back);
+										logger.error("Invalid refUserId ");
 								}
 						}
-						else{
-								logger.error("Invalid refUserId ");								
-						}
 				}
-				if(format.equals("csv")){
-						PrintWriter out = res.getWriter();
-						if(daily != null && daily.size() > 0){
-								writeCsv(daily, out);
-								out.flush();
-								out.close();										
-						}
-						else{
-								out.println();
-						}
-				}
-				else if(format.equals("xls")){
-						ServletOutputStream out = res.getOutputStream();						
-						if(daily != null && daily.size() > 0){
-								writeXls(daily, out);
-								out.flush();
-								out.close();										
-						}
-						else{
-								out.println();
-						}
-				}
-				else if(format.equals("json")){
-						PrintWriter out = res.getWriter();
-						if(daily != null && daily.size() > 0){
-								writeJson(daily, out);
-								out.flush();
-								out.close();										
-						}
-						else{
-								out.println();
-						}
-				}
-				else if(format.equals("xml")){
-						PrintWriter out = res.getWriter();
-						if(daily != null && daily.size() > 0){
-								writeXml(daily, out);
-								out.flush();
-								out.close();										
-						}
-						else{
-								out.println();
-						}
-				}				
     }								
 		/**
 		 * Creates a JSON array for list
@@ -273,15 +278,22 @@ public class ReportReasonService extends HttpServlet{
 				out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 				out.println();
 				out.println("<Employees ");
+				out.println("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+				out.println("xsi:noNamespaceSchemaLocation=\"Employees.xsd\">");
+				/**
+					 // did not work
 				out.println("xmlns=\"https://www.w3schools.com\"");
 				out.println("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
 				out.println("xsi:schemaLocation=\""+url+"ReportReasonService Employees.xsd\">"); // space required
+				*/
 				int jj=1;
 				for(WarpEntry one:ones){
 						out.println("  <Employee>");
+						/**
 						if(!one.getReason().isEmpty()){
 								System.err.println(jj+" "+one.getFullname()+" "+one.getReason());
 						}
+						*/
 						out.println("    <Name>"+one.getFullname()+"</Name>");
 						out.println("    <EmployeeNumber>"+one.getEmpNum()+"</EmployeeNumber>");
 						out.println("    <Date>"+one.getDate()+"</Date>");
@@ -294,14 +306,8 @@ public class ReportReasonService extends HttpServlet{
 				out.println("</Employees>");				
 		}
 		void writeSchema(PrintWriter out){
-				System.err.println(" xsd called ");
 				out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-				out.println();
-				out.println("<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");										
-				out.println("targetNamespace=\""+url+"ReportReasonService\"");
-				out.println("elementFormDefault=\"qualified\"");
-				out.println("xmlns=\""+url+"ReportReasonService Employees.xsd\">");
-
+				out.println("<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">");
 				out.println("<xs:element name=\"Employees\">");
 				out.println("<xs:complexType>");
 				out.println("<xs:sequence>");
