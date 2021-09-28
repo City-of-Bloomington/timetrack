@@ -300,6 +300,7 @@ public class ReportReasonService extends HttpServlet{
 						out.println("    <Code>"+one.getCode()+"</Code>");
 						out.println("    <Reason>"+one.getReason().replaceAll("&"," and ").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("`","&apos;")+"</Reason>");
 						out.println("    <Hours>"+one.getHours()+"</Hours>");
+						out.println("    <Amount>"+one.getHourlyRate()+"</Amount>");// amount						
 						out.println("  </Employee>");
 						jj++;
 				}
@@ -316,10 +317,11 @@ public class ReportReasonService extends HttpServlet{
 				out.println("<xs:sequence>");
  				out.println("<xs:element name=\"Name\" type=\"xs:string\"/>");
 				out.println("<xs:element name=\"EmployeeNumber\" type=\"xs:integer\"/>");
-				out.println("<xs:element name=\"Date\" type=\"xs:string\"/>");
+				out.println("<xs:element name=\"Date\" type=\"xs:date\"/>");
 				out.println("<xs:element name=\"Code\" type=\"xs:string\"/>");
 				out.println("<xs:element name=\"Reason\" type=\"xs:string\"/>");
 				out.println("<xs:element name=\"Hours\" type=\"xs:decimal\"/>");
+				out.println("<xs:element name=\"Amount\" type=\"xs:decimal\"/>");				
 				out.println("</xs:sequence>");
 				out.println("</xs:complexType>");
 				out.println("</xs:element>");
