@@ -289,11 +289,9 @@ public class ReportReasonService extends HttpServlet{
 				int jj=1;
 				for(WarpEntry one:ones){
 						out.println("  <Employee>");
-						/**
 						if(!one.getReason().isEmpty()){
 								System.err.println(jj+" "+one.getFullname()+" "+one.getReason());
 						}
-						*/
 						out.println("    <Name>"+one.getFullname()+"</Name>");
 						out.println("    <EmployeeNumber>"+one.getEmpNum()+"</EmployeeNumber>");
 						out.println("    <Date>"+one.getDate()+"</Date>");

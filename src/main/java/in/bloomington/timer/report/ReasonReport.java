@@ -208,6 +208,11 @@ public class ReasonReport{
 		 *
 		 select tt.name,tt.empnum,tt.code,tt.reason,tt.date,sum(hours),sum(amount)          from (select concat_ws(' ',e.first_name,e.last_name) AS name,                   e.employee_number as empnum,date_format(t.date,'%m/%d/%Y') AS date,             c.name AS code,r.description AS reason,t.hours AS hours,t.amount AS amount      from time_blocks t                                                              join hour_codes c on c.id = t.hour_code_id                                      left join earn_code_reasons r on r.id=t.earn_code_reason_id                     join time_documents d on d.id=t.document_id                                     join jobs j on j.id = d.job_id                                                  join groups g on g.id = j.group_id                                              join group_employees ge on ge.group_id = g.id                                   join employees e on e.id = ge.employee_id                                       where t.inactive is null and (t.hours > 0 or t.amount > 0)                      and g.department_id = 20 and d.employee_id=e.id                                 and j.effective_date <= t.date and (j.expire_date is null or t.date <= j.expire_date)                                                                           and t.date >= '2020-01-01' and t.date <= '2021-07-31') tt                       group by tt.name,tt.empnum,tt.code,tt.reason,tt.date;
 
+		 // union
+		 //
+		 		 select concat_ws(' ',e.first_name,e.last_name) AS name,                         e.employee_number as empnum,                                                   date_format(r.run_time,'%m/%d/%Y') AS date,                                     c.name AS code,                                                                 null AS reason,                                                                 t.hours AS hours,t.amount AS amount                                             from tmwrp_blocks t                                                             join hour_codes c on c.id = t.hour_code_id                                      join tmwrp_runs r on t.run_id=r.id                                              join time_documents d on d.id=r.document_id                                     join jobs j on j.id = d.job_id                                                  join groups g on g.id = j.group_id                                              join group_employees ge on ge.group_id = g.id                                   join employees e on e.id = ge.employee_id                                       where t.hours > 0                                                               and d.employee_id=e.id                                                          and g.department_id = 20                                                        and j.effective_date <= r.run_time                                              and (j.expire_date is null or r.run_time <= j.expire_date)                      and c.id in (34,45,71,46,50,79,43,44,78,109)                                    and r.run_time >= '2021-01-01' and r.run_time <= '2021-02-31';
+
+		 
 
 		 
 		 */
@@ -224,13 +229,14 @@ public class ReasonReport{
 				//
 				// using subquery
 				//
+				//
 				String qq = "select tt.name,tt.empnum,"+
 						" tt.code,tt.reason,tt.date,"+
 						" sum(hours),sum(amount) "+
-						" from (select "+
+						" from ((select "+
 						" concat_ws(' ',e.first_name,e.last_name) AS name,"+
 						" e.employee_number as empnum,"+
-						" date_format(t.date,'%m/%d/%Y') AS date,"+
+						" date_format(t.date,'%Y-%m-%d') AS date,"+
 						" c.name AS code, "+
 						" r.description AS reason, "+
 						" t.hours AS hours,t.amount AS amount "+
@@ -246,9 +252,13 @@ public class ReasonReport{
 						" and d.employee_id=e.id  "+
             " and g.department_id = 20 "+ // Police
 						" and j.effective_date <= t.date and (j.expire_date is null or t.date <= j.expire_date) "+  
-						" and t.date >= ? and t.date <= ? ";
+						" and t.date >= ? and t.date <= ? ) "+
+						"union "+
+           "(select concat_ws(' ',e.first_name,e.last_name) AS name,                         e.employee_number as empnum,                                                   date_format(r.run_time,'%Y-%m-%d') AS date,                                     c.name AS code,                                                                 null AS reason,                                                                 t.hours AS hours,t.amount AS amount                                             from tmwrp_blocks t                                                             join hour_codes c on c.id = t.hour_code_id                                      join tmwrp_runs r on t.run_id=r.id                                              join time_documents d on d.id=r.document_id                                     join jobs j on j.id = d.job_id                                                  join groups g on g.id = j.group_id                                              join group_employees ge on ge.group_id = g.id                                   join employees e on e.id = ge.employee_id                                       where t.hours > 0                                                               and d.employee_id=e.id                                                          and g.department_id = 20                                                        and j.effective_date <= r.run_time                                              and (j.expire_date is null or r.run_time <= j.expire_date)                      and c.id in (34,45,71,46,50,79,43,44,78,109)                                    and r.run_time >= ? and r.run_time <= ?)";
 				qq += " ) tt ";
-				qq += " group by tt.name,tt.empnum,tt.code,tt.reason,tt.date ";
+				qq += " group by tt.name,tt.empnum,tt.code,tt.reason,tt.date ";				
+
+				
 				con = Helper.getConnection();
 				if(con == null){
 						msg = " Could not connect to DB ";
@@ -259,11 +269,12 @@ public class ReasonReport{
 				try{
 						pstmt = con.prepareStatement(qq);
 						int jj=1;
-						pstmt = con.prepareStatement(qq);
-						java.util.Date date_tmp = dateFormat.parse(start_date);
-						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-						date_tmp = dateFormat.parse(end_date);
-						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+						java.util.Date dt_start = dateFormat.parse(start_date);
+						java.util.Date dt_end = dateFormat.parse(end_date);						
+						pstmt.setDate(jj++, new java.sql.Date(dt_start.getTime()));
+						pstmt.setDate(jj++, new java.sql.Date(dt_end.getTime()));
+						pstmt.setDate(jj++, new java.sql.Date(dt_start.getTime()));
+						pstmt.setDate(jj++, new java.sql.Date(dt_end.getTime()));
 						rs = pstmt.executeQuery();
 						jj=0;
 						while(rs.next()){
