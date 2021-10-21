@@ -52,6 +52,30 @@ public class GroupManagerAction extends TopAction{
 								addMessage("Saved Successfully");			
 						}
 				}
+				else if(action.startsWith("Delete")){
+						if(!id.isEmpty()){
+								getGroupManager();								
+								back = groupManager.doSelect();
+								if(back.isEmpty()){
+										group_id = groupManager.getGroup_id();
+										back = groupManager.doDelete();
+										if(!back.isEmpty()){
+												addActionError(back);
+												addError(back);
+										}
+										else{
+												try{
+														HttpServletResponse res = ServletActionContext.getResponse();
+														String str = "group.action?id="+group_id;
+														res.sendRedirect(str);
+														return super.execute();
+												}catch(Exception ex){
+														System.err.println(ex);
+												}												
+										}
+								}
+						}
+				}				
 				else{		
 						getGroupManager();
 						if(!id.isEmpty()){

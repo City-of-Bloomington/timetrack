@@ -377,10 +377,10 @@ public class GroupManager implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				if(id.isEmpty()){
-						return " id not set ";
+				if(id.isEmpty() || wf_node_id.isEmpty()){
+						return " id not set or action role not set";
 				}
-				String qq = "update group_managers set start_date=?,expire_date=?,primary_flag=?,inactive=? where id=? ";
+				String qq = "update group_managers set start_date=?,expire_date=?,primary_flag=?,inactive=?,wf_node_id=? where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -412,8 +412,9 @@ public class GroupManager implements Serializable{
 						}
 						else{
 								pstmt.setString(4,"y");
-						}						
-						pstmt.setString(5, id);
+						}
+						pstmt.setString(5, wf_node_id);
+						pstmt.setString(6, id);
 						pstmt.executeUpdate();
 				}
 				catch(Exception ex){
@@ -436,7 +437,7 @@ public class GroupManager implements Serializable{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "delete group_managers where id=? ";
+				String qq = "delete from group_managers where id=? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
