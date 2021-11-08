@@ -50,7 +50,9 @@
       <s:if test="user.isHrAdmin()">
               <a href="<s:property value='#application.url'/>reportFmla.action">FMLA Report</a>
               <a href="<s:property value='#application.url'/>reportEl.action">EL Report</a>	      
-              <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>				
+              <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
+              <a href="<s:property value='#application.url'/>lookup.action">Lookup Employee Time Entries</a>
+							
       </s:if>
       <s:if test="user.isITSAdmin()">
 	      <a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>
