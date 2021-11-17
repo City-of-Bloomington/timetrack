@@ -247,7 +247,7 @@ $('#hour_code_select').change(function() {
 				//
 				// we call earn_code_reason function here
 				//
-				var codes = ['113','114','115','116','118'];
+				var codes = ['112','113','114','115','116','118'];
 				var code_id = val.substring(0,val.indexOf('_')); // id only
 				if(codes.includes(code_id)){
 						handleShowCodeReason(code_id);

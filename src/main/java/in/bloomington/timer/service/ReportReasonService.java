@@ -91,7 +91,10 @@ public class ReportReasonService extends HttpServlet{
 						}
 						else if(name.equals("schema")){
 								outputType = "schema";
-						}						
+						}
+						else if(name.equals("format")){
+								format = value;
+						}											
 						else if(name.equals("Employees.xsd")){
 								outputType = "schema";
 						}
@@ -203,10 +206,9 @@ public class ReportReasonService extends HttpServlet{
 		 * Output in MS xls format
 		 */
 		void writeXls(List<WarpEntry> ones, ServletOutputStream out){
-				String file_output = outputFileLocation+"code_reason.xls";
-				int cell_count = 6;
+				int cell_count = 7;
 				int k=0;
-				String headers[] = {"Full Name","Employee Numbe","Date","Earn Code","Reason","Hours"};
+				String headers[] = {"Full Name","Employee Numbe","Date","Earn Code","Reason","Hours","Amount"};
 				try{
 						HSSFWorkbook hwb = new HSSFWorkbook();
 						HSSFSheet sheet = hwb.createSheet("new sheet");
@@ -245,8 +247,12 @@ public class ReportReasonService extends HttpServlet{
 								cell.setCellType(CellType.NUMERIC);
 								cell.setCellValue(one.getHours());
 								p++;
+								cell = row.createCell((short) p);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellValue(one.getHourlyRate());
+								p++;								
+								System.err.println(k+" "+one.getCode()+" "+one.getHours());
 						}
-						// FileOutputStream fileOut = new FileOutputStream(file_output);
 						hwb.write(out);
 						out.close();
 				}catch(Exception ex){
@@ -266,11 +272,11 @@ public class ReportReasonService extends HttpServlet{
 				out.println("]");
 		}
 	 void writeCsv(List<WarpEntry> ones, PrintWriter out){
-			 out.println("\"Full Name\",\"Employee Number\",\"Date\",\"Earn Code\",\"Reason\",\"Hours\"");
+			 out.println("\"Full Name\",\"Employee Number\",\"Date\",\"Earn Code\",\"Reason\",\"Hours\",\"Amount\"");
 				int size = ones.size();
 				int jj=1;
 				for(WarpEntry one:ones){
-						String line = "\""+one.getFullname()+"\","+one.getEmpNum()+",\""+one.getDate()+"\",\""+one.getCode()+"\",\""+one.getReason()+"\","+one.getHours();
+						String line = "\""+one.getFullname()+"\","+one.getEmpNum()+",\""+one.getDate()+"\",\""+one.getCode()+"\",\""+one.getReason()+"\","+one.getHours()+","+one.getHourlyRate();
 						out.println(line);
 				}
 		}
@@ -300,7 +306,8 @@ public class ReportReasonService extends HttpServlet{
 						out.println("    <Hours>"+one.getHours()+"</Hours>");
 						out.println("    <Amount>"+one.getHourlyRate()+"</Amount>");// amount						
 						out.println("  </Employee>");
-						jj++;
+						System.err.println(jj+" "+one.getCode()+" "+one.getHours());
+						jj++;						
 				}
 				out.println("</Employees>");				
 		}

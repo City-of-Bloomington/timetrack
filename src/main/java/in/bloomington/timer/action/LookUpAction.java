@@ -106,14 +106,14 @@ public class LookUpAction extends TopAction{
 								if(ones != null && ones.size() > 0){
 										payPeriods = ones;
 										payPeriod = payPeriods.get(0);
-										pay_period_id = payPeriod.getId();										
+										// pay_period_id = payPeriod.getId();										
 								}
 						}
 				}
 				return payPeriods;
 		}
 		public PayPeriod getPayPeriod(){
-				if(payPeriod == null && !pay_period_id.isEmpty()){
+				if(!pay_period_id.isEmpty()){
 						PayPeriod one = new PayPeriod(pay_period_id);
 						String back = one.doSelect();
 						if(back.isEmpty()){
