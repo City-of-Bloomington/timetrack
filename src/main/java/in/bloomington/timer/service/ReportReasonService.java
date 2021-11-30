@@ -251,7 +251,7 @@ public class ReportReasonService extends HttpServlet{
 								cell.setCellType(CellType.NUMERIC);
 								cell.setCellValue(one.getHourlyRate());
 								p++;								
-								System.err.println(k+" "+one.getCode()+" "+one.getHours());
+								// System.err.println(k+" "+one.getCode()+" "+one.getHours());
 						}
 						hwb.write(out);
 						out.close();
@@ -306,7 +306,7 @@ public class ReportReasonService extends HttpServlet{
 						out.println("    <Hours>"+one.getHours()+"</Hours>");
 						out.println("    <Amount>"+one.getHourlyRate()+"</Amount>");// amount						
 						out.println("  </Employee>");
-						System.err.println(jj+" "+one.getCode()+" "+one.getHours());
+						// System.err.println(jj+" "+one.getCode()+" "+one.getHours());
 						jj++;						
 				}
 				out.println("</Employees>");				

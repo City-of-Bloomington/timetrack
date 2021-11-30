@@ -199,6 +199,7 @@ public class PayPeriod implements Serializable{
 		// pay period
 		public int getDaysToYearEnd(){
 				return 31 - startDay + 1;
+				// return 5;
 		}
 		/*
 		 * for the end of the year, the pay period is divided
@@ -208,7 +209,7 @@ public class PayPeriod implements Serializable{
 		public String getFirstPayEndDate(){
 				String ret = "";
 				if(hasTwoDifferentYears()){
-						// ret = "12/17/2020"; // test
+						// ret = "11/19/2021"; // test
 						ret = "12/31/"+startYear;
 				}
 				else{
