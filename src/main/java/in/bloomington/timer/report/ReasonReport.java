@@ -206,7 +206,7 @@ public class ReasonReport{
 		/**
 		 * include non reason codes as well
 		 *
-		 select tt.name,tt.empnum,tt.code,tt.reason,tt.date,sum(hours),sum(amount)          from (select concat_ws(' ',e.first_name,e.last_name) AS name,                   e.employee_number as empnum,date_format(t.date,'%m/%d/%Y') AS date,             c.name AS code,r.description AS reason,t.hours AS hours,t.amount AS amount      from time_blocks t                                                              join hour_codes c on c.id = t.hour_code_id                                      left join earn_code_reasons r on r.id=t.earn_code_reason_id                     join time_documents d on d.id=t.document_id                                     join jobs j on j.id = d.job_id                                                  join groups g on g.id = j.group_id                                              join group_employees ge on ge.group_id = g.id                                   join employees e on e.id = ge.employee_id                                       where t.inactive is null and (t.hours > 0 or t.amount > 0)                      and g.department_id = 20 and d.employee_id=e.id                                 and j.effective_date <= t.date and (j.expire_date is null or t.date <= j.expire_date)                                                                           and t.date >= '2020-01-01' and t.date <= '2021-07-31') tt                       group by tt.name,tt.empnum,tt.code,tt.reason,tt.date;
+		 select tt.name,tt.empnum,tt.code,tt.reason,tt.date,sum(hours),sum(amount)          from (select distinct t.id,concat_ws(' ',e.first_name,e.last_name) AS name,     e.employee_number as empnum,date_format(t.date,'%m/%d/%Y') AS date,             c.name AS code,r.description AS reason,t.hours AS hours,t.amount AS amount      from time_blocks t                                                              join hour_codes c on c.id = t.hour_code_id                                      left join earn_code_reasons r on r.id=t.earn_code_reason_id                     join time_documents d on d.id=t.document_id                                     join jobs j on j.id = d.job_id                                                  join groups g on g.id = j.group_id                                              join group_employees ge on ge.group_id = g.id                                   join employees e on e.id = ge.employee_id                                       where t.inactive is null and (t.hours > 0 or t.amount > 0)                      and g.department_id = 20 and d.employee_id=e.id                                 and j.effective_date <= t.date and (j.expire_date is null or t.date <= j.expire_date)                                                                           and t.date >= '2021-08-12' and t.date <= '2021-08-15') tt                       group by tt.name,tt.empnum,tt.code,tt.reason,tt.date;
 
 		 // union
 		 //
@@ -233,13 +233,13 @@ public class ReasonReport{
 				String qq = "select tt.name,tt.empnum,"+
 						" tt.code,tt.reason,tt.date,"+
 						" sum(tt.hours),sum(tt.amount) "+
-						" from ((select "+
+						" from ((select distinct t.id, "+
 						" concat_ws(' ',e.first_name,e.last_name) AS name,"+
 						" e.employee_number as empnum,"+
 						" date_format(t.date,'%Y-%m-%d') AS date,"+
 						" c.name AS code, "+
 						" r.description AS reason, "+
-						" sum(t.hours) AS hours,sum(t.amount) AS amount "+
+						" t.hours AS hours,t.amount AS amount "+
 						" from time_blocks t "+
 						" join hour_codes c on c.id = t.hour_code_id "+
 						" left join earn_code_reasons r on r.id=t.earn_code_reason_id "+
@@ -247,15 +247,15 @@ public class ReasonReport{
 						" join jobs j on j.id = d.job_id "+
 						" join groups g on g.id = j.group_id "+
 						" join group_employees ge on ge.group_id = g.id "+
-						" join employees e on e.id = ge.employee_id "+
-						" where t.inactive is null and (t.hours > 0 or t.amount) "+
-						" and d.employee_id=e.id  "+
+						" join employees e on e.id = ge.employee_id and e.id=d.employee_id "+
+						" where t.inactive is null and (t.hours > 0 or t.amount > 0) "+
+						// " and d.employee_id=e.id  "+
             " and g.department_id = 20 "+ // Police
 						" and j.effective_date <= t.date and (j.expire_date is null or t.date <= j.expire_date) "+  
-						" and t.date >= ? and t.date <= ? "+
-						" group by concat_ws(' ',e.first_name,e.last_name),e.employee_number,c.name,r.description,date_format(t.date,'%Y-%m-%d')) "+
+						" and t.date >= ? and t.date <= ? )"+
+						//" group by concat_ws(' ',e.first_name,e.last_name),e.employee_number,c.name,r.description,date_format(t.date,'%Y-%m-%d')) "+
 						"union "+
-           "(select concat_ws(' ',e.first_name,e.last_name) AS name,                         e.employee_number as empnum,                                                   date_format(r.run_time,'%Y-%m-%d') AS date,                                     c.name AS code,                                                                 null AS reason,                                                                 t.hours AS hours,t.amount AS amount                                             from tmwrp_blocks t                                                             join hour_codes c on c.id = t.hour_code_id                                      join tmwrp_runs r on t.run_id=r.id                                              join time_documents d on d.id=r.document_id                                     join jobs j on j.id = d.job_id                                                  join groups g on g.id = j.group_id                                              join group_employees ge on ge.group_id = g.id                                   join employees e on e.id = ge.employee_id                                       where t.hours > 0                                                               and d.employee_id=e.id                                                          and g.department_id = 20                                                        and j.effective_date <= r.run_time                                              and (j.expire_date is null or r.run_time <= j.expire_date)                      and c.id in (34,43,44,45,46,50,71,78,79,109)                                    and r.run_time >= ? and r.run_time <= ?)";
+           "(select distinct t.id,concat_ws(' ',e.first_name,e.last_name) AS name,           e.employee_number as empnum,                                                   date_format(r.run_time,'%Y-%m-%d') AS date,                                     c.name AS code,                                                                 null AS reason,                                                                 t.hours AS hours,t.amount AS amount                                             from tmwrp_blocks t                                                             join hour_codes c on c.id = t.hour_code_id                                      join tmwrp_runs r on t.run_id=r.id                                              join time_documents d on d.id=r.document_id                                     join jobs j on j.id = d.job_id                                                  join groups g on g.id = j.group_id                                              join group_employees ge on ge.group_id = g.id                                   join employees e on e.id = ge.employee_id                                       where t.hours > 0                                                               and d.employee_id=e.id                                                          and g.department_id = 20                                                        and j.effective_date <= r.run_time                                              and (j.expire_date is null or r.run_time <= j.expire_date)                      and c.id in (34,43,44,45,46,50,71,78,79,109)                                    and r.run_time >= ? and r.run_time <= ?)";
 				qq += " ) tt ";
 				qq += " group by tt.name,tt.empnum,tt.code,tt.reason,tt.date ";				
 
