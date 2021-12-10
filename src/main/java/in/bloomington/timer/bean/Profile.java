@@ -77,6 +77,7 @@ public class Profile extends CommonInc{
 				setJob_name(val9);
 				//
 				setParams();
+				// System.err.println(val5+" "+val8);
     }	
     //
     // getters

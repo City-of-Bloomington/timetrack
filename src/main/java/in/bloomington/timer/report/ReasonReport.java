@@ -30,9 +30,10 @@ public class ReasonReport{
     String start_date ="", end_date=""; // temp holders
     List<WarpEntry> entries = null;
 
-    String dept="", department_id="", outputType="html"; 
+    String dept="", department_id="", dept_ref_id="36", outputType="html"; 
     String code="";
     String code2="";
+		Hashtable<String, Profile> profiles = null;
     Map<String, List<WarpEntry>> mapEntries = null;
     Hashtable<String, Double> hoursSums = null;
     Hashtable<String, Double> amountsSums = null;
@@ -142,7 +143,39 @@ public class ReasonReport{
 						outputType = val;
 				}
     }
-			 
+    public List<BenefitGroup> getBenefitGroups(){
+				List<BenefitGroup> benefitGroups = null;
+				BenefitGroupList tl = new BenefitGroupList();
+				String back = tl.find();
+				if(back.isEmpty()){
+						List<BenefitGroup> ones = tl.getBenefitGroups();
+						if(ones != null && ones.size() > 0){
+								benefitGroups = ones;
+						}
+				}
+				return benefitGroups;
+    }						
+    String setProfiles(){
+				String msg="";
+				if(profiles == null){
+						List<BenefitGroup> benefitGroups = getBenefitGroups();
+						ProfileList pl = new ProfileList(end_date,
+																						 dept_ref_id,
+																						 benefitGroups);
+
+						msg = pl.find();
+						List<Profile> ones = pl.getProfiles();
+						if(msg.isEmpty() && ones.size() > 0){
+								profiles = new Hashtable<String, Profile>(ones.size());
+								for(Profile one:ones){
+										String str = one.getEmployee_number();
+										if(str != null && !str.isEmpty())
+												profiles.put(str, one);
+								}
+						}
+				}
+				return msg;
+    }			 
     String setStartAndEndDates(){
 				String msg = "";
 				//
@@ -225,7 +258,8 @@ public class ReasonReport{
 				msg = setStartAndEndDates();
 				if(!msg.isEmpty()){
 						return msg;
-				}				
+				}
+				setProfiles(); // to get the rates
 				//
 				// using subquery
 				//
@@ -278,10 +312,28 @@ public class ReasonReport{
 						pstmt.setDate(jj++, new java.sql.Date(dt_end.getTime()));
 						rs = pstmt.executeQuery();
 						jj=0;
+						double hourly_rate = 0, old_hourly_rate=0;
+						String old_emp_num="";
 						while(rs.next()){
 								jj++;
 								if(dailyEntries == null)
 										dailyEntries = new ArrayList<>();
+								String str = rs.getString(2); // emp_num
+								if(!str.equals(old_emp_num)){
+										old_emp_num = str;
+										if(profiles.containsKey(str)){
+												Profile pp = profiles.get(str);
+												hourly_rate = pp.getHourlyRate();
+
+										}
+										else{
+												hourly_rate = 0;
+										}
+										old_hourly_rate = hourly_rate;										
+								}
+								else{
+										hourly_rate = old_hourly_rate;
+								}
 								WarpEntry one =
 										new WarpEntry(debug,
 																	rs.getString(1), // name
@@ -290,8 +342,9 @@ public class ReasonReport{
 																  rs.getString(4), // reason
 																	rs.getString(5), // date
 																	rs.getDouble(6), // hours
-																	rs.getDouble(7)); // amount instead of rate
-																	// hourly_rate);
+																	hourly_rate,
+																	rs.getDouble(7)); // amountPay
+
 								dailyEntries.add(one);
 						}
 				}

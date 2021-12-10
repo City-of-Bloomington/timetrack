@@ -19,10 +19,10 @@ public class WarpEntry{
 		//
 		// added to handle dept report
 		//
-		double hours = 0, hourlyRate = 0;
+		double hours = 0, hourlyRate = 0, amountPay= 0; // clothing allowance
 		String hourlyRateStr = "0.00";
 		final static double AnnualHours = 2080; // number of work hours per year
-		DecimalFormat df = new DecimalFormat("#0.00");	
+		DecimalFormat df = new DecimalFormat("#0.00");
 		boolean debug = false;
 		static Logger logger = LogManager.getLogger(WarpEntry.class);
 	
@@ -87,7 +87,28 @@ public class WarpEntry{
 				setDate(val5);
 				setHours(val6);
 				setHourlyRate(val7);
-    }				
+    }
+    public WarpEntry(boolean deb,
+										 String val,
+										 String val2,
+										 String val3,
+										 String val4,
+										 String val5,
+										 
+										 double val6,
+										 double val7,
+										 double val8
+										 ){
+				debug = deb;
+				setFullname(val);
+				setEmpNum(val2);				
+				setCode(val3);
+				setReason(val4);
+				setDate(val5);
+				setHours(val6);
+				setHourlyRate(val7);
+				setAmountPay(val8);
+    }						
 		public String getHoursStr(){
 				return hoursStr;
     }
@@ -100,6 +121,9 @@ public class WarpEntry{
 		public String getHourlyRateStr(){
 				return hourlyRateStr;
 		}
+		public double getAmountPay(){
+				return amountPay;
+		}
 		public double getAmount(){
 				return hours*hourlyRate;
 		}
@@ -107,7 +131,14 @@ public class WarpEntry{
 				double ret =  hours*hourlyRate;
 				String str = df.format(ret);
 				return str;
-		}		
+		}
+		public String getAmountPayStr(){
+				String str = "0";
+				if(amountPay > 0){
+						str = df.format(amountPay);
+				}
+				return str;
+		}				
 		public String getCode(){
 				return code;
     }
@@ -152,6 +183,9 @@ public class WarpEntry{
 						hoursStr = ""+df.format(hours);
 				}
     }
+		public void setAmountPay(double val){
+				amountPay = val;
+		}
     public void setHourlyRate(double val){
 				if(val > 0){
 						if(val > AnnualHours){

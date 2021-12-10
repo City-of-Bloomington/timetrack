@@ -208,7 +208,7 @@ public class ReportReasonService extends HttpServlet{
 		void writeXls(List<WarpEntry> ones, ServletOutputStream out){
 				int cell_count = 7;
 				int k=0;
-				String headers[] = {"Full Name","Employee Numbe","Date","Earn Code","Reason","Hours","Amount"};
+				String headers[] = {"Full Name","Employee Numbe","Date","Earn Code","Reason","Hours","Rate","Amount"};
 				try{
 						HSSFWorkbook hwb = new HSSFWorkbook();
 						HSSFSheet sheet = hwb.createSheet("new sheet");
@@ -250,7 +250,11 @@ public class ReportReasonService extends HttpServlet{
 								cell = row.createCell((short) p);
 								cell.setCellType(CellType.NUMERIC);
 								cell.setCellValue(one.getHourlyRate());
-								p++;								
+								p++;
+								cell = row.createCell((short) p);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellValue(one.getAmountPay());
+								p++;										
 								// System.err.println(k+" "+one.getCode()+" "+one.getHours());
 						}
 						hwb.write(out);
@@ -264,7 +268,7 @@ public class ReportReasonService extends HttpServlet{
 				int size = ones.size();
 				int jj=1;
 				for(WarpEntry one:ones){
-						String json = "{\"Full Name\":\""+one.getFullname()+"\",\"Employee Number\":"+one.getEmpNum()+",\"Date\":\""+one.getDate()+"\",\"Earn Code\":\""+one.getCode()+"\",\"Reason\":\""+one.getReason()+"\",\"Hours\":"+one.getHours()+"}";
+						String json = "{\"Full Name\":\""+one.getFullname()+"\",\"Employee Number\":"+one.getEmpNum()+",\"Date\":\""+one.getDate()+"\",\"Earn Code\":\""+one.getCode()+"\",\"Reason\":\""+one.getReason()+"\",\"Hours\":"+one.getHours()+",\"Rate\":"+one.getHourlyRateStr()+",\"Amount\":"+one.getAmountPay()+"}";
 						if(jj < size) json += ",";
 						jj++;
 						out.println(json);
@@ -272,11 +276,11 @@ public class ReportReasonService extends HttpServlet{
 				out.println("]");
 		}
 	 void writeCsv(List<WarpEntry> ones, PrintWriter out){
-			 out.println("\"Full Name\",\"Employee Number\",\"Date\",\"Earn Code\",\"Reason\",\"Hours\",\"Amount\"");
+			 out.println("\"Full Name\",\"Employee Number\",\"Date\",\"Earn Code\",\"Reason\",\"Hours\",\"Rate\",\"Amount\"");
 				int size = ones.size();
 				int jj=1;
 				for(WarpEntry one:ones){
-						String line = "\""+one.getFullname()+"\","+one.getEmpNum()+",\""+one.getDate()+"\",\""+one.getCode()+"\",\""+one.getReason()+"\","+one.getHours()+","+one.getHourlyRate();
+						String line = "\""+one.getFullname()+"\","+one.getEmpNum()+",\""+one.getDate()+"\",\""+one.getCode()+"\",\""+one.getReason()+"\","+one.getHours()+","+one.getHourlyRateStr()+","+one.getAmountPay();
 						out.println(line);
 				}
 		}
@@ -295,16 +299,19 @@ public class ReportReasonService extends HttpServlet{
 				int jj=1;
 				for(WarpEntry one:ones){
 						out.println("  <Employee>");
+						/**
 						if(!one.getReason().isEmpty()){
 								System.err.println(jj+" "+one.getFullname()+" "+one.getReason());
 						}
+						*/
 						out.println("    <Name>"+one.getFullname()+"</Name>");
 						out.println("    <EmployeeNumber>"+one.getEmpNum()+"</EmployeeNumber>");
 						out.println("    <Date>"+one.getDate()+"</Date>");
 						out.println("    <Code>"+one.getCode()+"</Code>");
 						out.println("    <Reason>"+one.getReason().replaceAll("&"," and ").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("`","&apos;")+"</Reason>");
 						out.println("    <Hours>"+one.getHours()+"</Hours>");
-						out.println("    <Amount>"+one.getHourlyRate()+"</Amount>");// amount						
+						out.println("    <Rate>"+one.getHourlyRateStr()+"</Rate>");
+						out.println("    <Amount>"+one.getAmountPay()+"</Amount>");
 						out.println("  </Employee>");
 						// System.err.println(jj+" "+one.getCode()+" "+one.getHours());
 						jj++;						
@@ -326,6 +333,7 @@ public class ReportReasonService extends HttpServlet{
 				out.println("<xs:element name=\"Code\" type=\"xs:string\"/>");
 				out.println("<xs:element name=\"Reason\" type=\"xs:string\"/>");
 				out.println("<xs:element name=\"Hours\" type=\"xs:decimal\"/>");
+				out.println("<xs:element name=\"Rate\" type=\"xs:decimal\"/>");				
 				out.println("<xs:element name=\"Amount\" type=\"xs:decimal\"/>");				
 				out.println("</xs:sequence>");
 				out.println("</xs:complexType>");

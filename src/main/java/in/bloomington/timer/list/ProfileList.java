@@ -32,6 +32,7 @@ public class ProfileList{
     List<Profile> profiles = null;
 		List<String> jobTitles = null;
 		Set<String> employeeSet = new HashSet<>();
+		Hashtable<String, Double> employeeRates = null;
     //
     // basic constructor
     //
@@ -385,6 +386,9 @@ public class ProfileList{
 				if(date == null){
 						date = Helper.getToday();
 				}
+				if(!selected_dept_ref.isEmpty()){
+						msg = findEmployeeRates();
+				}
 				if(selected_dept_ref.isEmpty() || deptRefs == null){
 						if(deptRefs == null){
 								DepartmentList dl = new DepartmentList();
@@ -588,10 +592,15 @@ public class ProfileList{
 										}										
 								}
 								else{
+										double erate = fstr9;
+										if(employeeRates != null &&
+											 employeeRates.containsKey(str5)){
+												erate = employeeRates.get(str5);
+										}
 										pp = new Profile(debug,
 																		 str, str2, str3,
 																		 str4, str5, bg, str6,
-																		 fstr9,
+																		 erate,
 																		 str11); //job_name
 										// multiple factor
 										if(factorId == 36){
@@ -859,10 +868,15 @@ public class ProfileList{
 										}										
 								}
 								else{
+										double erate = fstr9;
+										if(employeeRates != null &&
+											 employeeRates.containsKey(str5)){
+												erate = employeeRates.get(str5);
+										}
 										pp = new Profile(debug,
 																		 emp_id, str2, str3,
 																		 str4, str5, bg, str6,
-																		 fstr9,
+																		 erate, // rate
 																		 str11); //job_name
 										// multiple factor
 										if(factorId == 36){
@@ -898,9 +912,116 @@ public class ProfileList{
 						Helper.databaseDisconnect(pstmt, rs);
 				}
 				return back;
-    }		
-		
+    }
+		/**
+exec HR.HRReport_EmployeePayRateReport			 
+1-@EffectiveDate='2021-12-09 00:00:00',
+2-@ProjectedIncrease=N'0',
+3-@EmployeeID=NULL,
+4-@strOrgStructureID=N'36', // dept_ref
+5-@strxGroupHeaderID=NULL,
+6-@strPayTypeID=N'3,1,2',
+7-@RoundDecimals=2,
+8-@ProposedRate=0,
+9-@IncludeLongevity=1,
+10-@IncludeSP=1,
+11-@IncludeCertification=1,
+12-@UserID=3
 
+// output
+1 OrgStructureID
+2 DepartmentCode
+3 DepartmentDescription
+4 EmployeeID
+5 EmployeeNumber
+6 EmployeeName
+7 PrimaryFlag
+8 GradeType
+9 CurrentRate
+10 GradeCode
+11 StepCode
+12 GradeStepDesc
+13 AnnualSalary
+14 ProjectedRate
+15 ProjectedAnnualSalary
+16 LongevityHourly
+17 CertificationHourly
+18 SpecialAssignmentHourly
+19 BaseAnnual
+20 LongevityAnnual
+21 CertificationAnnual
+22 SpecialAssignmentAnnual
+23 AnnualHours
+24 NumberofPayment
+25 CycleHours
+
+
+		 */
+		public String findEmployeeRates(){
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String msg="", back="", date = null;
+				if(date == null){
+						date = Helper.getToday();
+				}
+				if(selected_dept_ref.isEmpty()){
+						msg = "Department Ref not set ";
+						return msg;
+				}
+				CallableStatement cs;
+				// input effective date=current date, default is today
+				// input dept ref
+				String qq = "{CALL HR.HRReport_EmployeePayRateReport(null,'0',null,?,null,'3,1,2',2,0,1,1,1,3)}";
+				System.err.println(qq);
+				con = SingleConnect.getNwConnection();
+				if(con == null){
+						msg = " Could not connect to DB ";
+						logger.error(msg);
+						return msg;
+				}
+				try{
+						cs = con.prepareCall(qq);
+						cs.setString(1,selected_dept_ref);
+						cs.executeQuery();
+						rs = cs.getResultSet();
+						// The column count starts from 1
+						/**
+						ResultSetMetaData rsmd = rs.getMetaData();
+						int columnCount = rsmd.getColumnCount();							 
+						for (int i = 1; i <= columnCount; i++ ) {
+								String name = rsmd.getColumnName(i);
+								System.err.println(i+" "+name);
+						}
+						*/
+						while(rs.next()){
+								if(employeeRates == null)
+										employeeRates = new Hashtable<>();
+								
+								String str = rs.getString(5); // employee number
+								String str2 = rs.getString(6); // name
+								double str3 = rs.getDouble(9);// current rate
+								if(!employeeRates.containsKey(str)){
+										employeeRates.put(str, str3);
+								}
+								// System.err.println(str+", "+str2+", "+str3);
+						}
+				}
+				catch(Exception ex){
+						back += ex;
+						logger.error(ex+": "+qq);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+				}
+				return back;
+    }
+		/**
+
+https://tomcat2.bloomington.in.gov/timetrack/ReportReasonService?refUserId=Zab22013dcPOL2021ZK
+
+
+		 */
 }
 
 
