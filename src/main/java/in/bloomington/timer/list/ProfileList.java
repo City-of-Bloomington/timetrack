@@ -1001,10 +1001,17 @@ exec HR.HRReport_EmployeePayRateReport
 								String str = rs.getString(5); // employee number
 								String str2 = rs.getString(6); // name
 								double str3 = rs.getDouble(9);// current rate
+								/*
+								String str4 = rs.getString(13);
+								String str5 = rs.getString(15);
+								String str6 = rs.getString(19);
+								String str7 = rs.getString(21);
+								String str8 = rs.getString(22);
+								*/
 								if(!employeeRates.containsKey(str)){
 										employeeRates.put(str, str3);
 								}
-								// System.err.println(str+", "+str2+", "+str3);
+								// System.err.println(str+", "+str2+", "+str3+","+str4+","+str5+","+str6+","+str7+","+str8);
 						}
 				}
 				catch(Exception ex){
@@ -1016,12 +1023,7 @@ exec HR.HRReport_EmployeePayRateReport
 				}
 				return back;
     }
-		/**
 
-https://tomcat2.bloomington.in.gov/timetrack/ReportReasonService?refUserId=Zab22013dcPOL2021ZK
-
-
-		 */
 }
 
 
