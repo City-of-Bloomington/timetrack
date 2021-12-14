@@ -5,8 +5,9 @@ import javax.mail.*;
 import javax.mail.Address;
 import javax.mail.internet.*;
 import javax.activation.*;
-import org.apache.log4j.Logger;
-
+// import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 /**
  * MailHandle creates a very simple text/plain message and sends it.
  * handle emails with file attachments
@@ -14,7 +15,7 @@ import org.apache.log4j.Logger;
 public class MailHandle{
 
     final static long serialVersionUID = 580L;
-    static Logger logger = Logger.getLogger(MailHandle.class);			
+    static Logger logger = LogManager.getLogger(MailHandle.class);			
     static boolean debug = false;
     static String host = "localhost"; 
     String msgText = "This is a message body.\nHere's the second line.";

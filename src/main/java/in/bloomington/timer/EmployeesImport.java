@@ -43,12 +43,14 @@ import in.bloomington.timer.list.DepartmentList;
 import in.bloomington.timer.list.SalaryGroupList;
 import in.bloomington.timer.util.Helper;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EmployeesImport{
 
 		boolean debug = true;
-		static Logger logger = Logger.getLogger(EmployeesImport.class);
+		static Logger logger = LogManager.getLogger(EmployeesImport.class);
 		static final long serialVersionUID = 220L;
 		static EnvBean bean = null;		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");

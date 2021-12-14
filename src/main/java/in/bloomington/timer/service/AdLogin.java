@@ -13,7 +13,9 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.naming.*;
 import javax.naming.directory.*;
-import org.apache.log4j.Logger;
+// import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.bean.Employee;
 /**
  * not for production, needed for testing only
@@ -25,7 +27,7 @@ public class AdLogin extends HttpServlet{
     String url="localhost/timetrack/";
 		static final long serialVersionUID = 13L;
     boolean debug = false;  
-		static Logger logger = Logger.getLogger(AdLogin.class);
+		static Logger logger = LogManager.getLogger(AdLogin.class);
 
     public void doGet(HttpServletRequest req, 
 											HttpServletResponse res) 
