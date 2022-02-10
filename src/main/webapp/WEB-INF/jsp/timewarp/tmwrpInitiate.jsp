@@ -15,7 +15,8 @@
 	<p>3 - (Optional) You may run this process for whole department or only certain group in the department</p>	
 	
 	<s:form action="tmwrpInitiate" id="form_id" method="post" >
-    <s:hidden name="department_id" value="" id="department_id" />		
+    <s:hidden name="department_id" value="" id="department_id" />
+		<s:hidden name="type" value="activeOnly" id="type" />		
 		<s:if test="hasMessages()">
 			<s:set var="messages" value="%{messages}" />
 			<%@ include file="../messages.jsp" %>

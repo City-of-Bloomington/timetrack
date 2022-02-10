@@ -61,7 +61,7 @@ $("#employee_name2").autocomplete({
     }
     })
 $("#employee_name").autocomplete({
-    source: APPLICATION_URL + "DbEmployeeService?format=json&department_id="+$("#department_id").val(),
+    source: APPLICATION_URL + "DbEmployeeService?format=json&type="+$("#type").val()+"&department_id="+$("#department_id").val(),
     minLength: 2,
     dataType:"json",
     delay: 100,

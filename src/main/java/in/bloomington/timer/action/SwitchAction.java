@@ -23,7 +23,7 @@ public class SwitchAction extends TopAction{
 		//
 		String new_employee_id = "",
 				document_id="",
-				source="",
+				source="",type="",
 				department_id="";
 		String employeesTitle = "Current Employees";
 		public String execute(){
@@ -76,6 +76,9 @@ public class SwitchAction extends TopAction{
 				if(val != null && !val.isEmpty())		
 						action = val;
 		}
+		public void setType(String val){
+				// needed for js
+		}		
 		public void setNew_employee_id(String val){
 				if(val != null && !val.isEmpty())		
 						new_employee_id = val;

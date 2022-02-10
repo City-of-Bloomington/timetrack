@@ -5,7 +5,7 @@
   	<input type="hidden" name="action2" id="action2" value="" />
   	<input type="hidden" name="department_id" id="department_id"
 							value="<s:property value='department_id' />"  />
-
+  	<input type="hidden" name="type" id="type" value="activeOnly" />
   	<h1>Change Target Employee</h1>
   	<p><strong>Note:</strong> start typing the first name or last name of the employee in the employee field then pick from a list.</p>
 

@@ -27,7 +27,8 @@ public class TmwrpInitiateAction extends TopAction{
 		TmwrpInitiate tmwrp = null;
     String tmwrpWrapsTitle = "Timewarp Initiate";
     String pay_period_id = "", source="", employee_name="",
-				new_employee_id="", department_id="", group_id="";
+				new_employee_id="", department_id="", group_id="",
+				type="";
 		PayPeriod payPeriod = null, currentPayPeriod=null;
 		List<Type> departments = null;
 		List<String> emps = null;
@@ -150,6 +151,10 @@ public class TmwrpInitiateAction extends TopAction{
 				if(val != null)
 						tmwrp = val;
 		}
+		public void setType(String val){
+				// needed for js
+		}
+		
     public List<PayPeriod> getPayPeriods(){
 				if(payPeriods == null){
 						getPayPeriod(); // so that we can initialize the list

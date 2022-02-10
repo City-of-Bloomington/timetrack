@@ -49,7 +49,6 @@ public class DbEmployeeService extends HttpServlet{
 				PrintWriter out = res.getWriter();
 				String name, value;
 				String term ="", type="", department_id="";
-				boolean success = true;
 				HttpSession session = null;
 				Enumeration<String> values = req.getParameterNames();
 				String [] vals = null;
@@ -61,10 +60,12 @@ public class DbEmployeeService extends HttpServlet{
 								term = value;
 						}
 						else if (name.equals("type")) {
-								type = value;
+								if(value != null)
+										type = value;
 						}
 						else if (name.equals("department_id")) {
-								department_id = value;
+								if(value != null)
+										department_id = value;
 						}						
 						else if (name.equals("action")){
 								action = value;
@@ -79,6 +80,9 @@ public class DbEmployeeService extends HttpServlet{
 						//
 						empList = new EmployeeList();
 						empList.setDepartment_id(department_id);
+						if(!type.isEmpty() && type.equals("activeOnly")){
+								empList.setActiveOnly();
+						}
 						empList.setName(term);
 						String back = empList.find();
 						if(back.isEmpty()){

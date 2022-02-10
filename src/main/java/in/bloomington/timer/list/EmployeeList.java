@@ -358,7 +358,6 @@ public class EmployeeList extends CommonInc{
 						qq += " where "+qw;
 				qq += " order by e.last_name,e.first_name ";
 				String back = "";
-						
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){

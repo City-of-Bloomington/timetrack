@@ -9,7 +9,9 @@
     <%@ include file="messages.jsp" %>
   </s:elseif>
 	<s:form action="lookup" id="form_id" method="post">
+		<input type="hidden" name="type" id="type" value="all" />
 		<s:hidden name="other_employee_id" value="%{other_employee_id}" id="employee_id" />
+		
 		<h1>Lookup times for Certain Employee</h1>
 		
 		To do lookup time entries for certain employee, enter the employee name and then pick from the list, then<br />

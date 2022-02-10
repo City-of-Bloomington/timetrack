@@ -175,6 +175,7 @@ public class GroupManagerAction extends TopAction{
 								empl.setDepartment_id(department_id);
 						}
 						empl.includeAllDirectors();
+						empl.setActiveOnly();
 						//
 						// managers can not manage their group
 						//

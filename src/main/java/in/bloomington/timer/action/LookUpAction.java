@@ -25,6 +25,7 @@ public class LookUpAction extends TopAction{
 		String lookUpTitle = "Lookup Employee Times";
 		String pay_period_id="", 
 				document_id=""; //for one only
+		String type=""; // needed for js
 		String other_employee_id = "", other_employee_name="";
 		PayPeriod currentPayPeriod=null,
 				nextPayPeriod=null, payPeriod = null;
@@ -55,7 +56,8 @@ public class LookUpAction extends TopAction{
 		}
 		public String getOther_employee_name(){
 				return other_employee_name;
-		}		
+		}
+		
 		void findDocuments(){
 				//
 				if(documents == null &&
@@ -85,6 +87,10 @@ public class LookUpAction extends TopAction{
 				if(val != null && !val.isEmpty())		
 						action = val;
 		}
+		public void setType(String val){ // needed for js but not used here
+				if(val != null && !val.isEmpty())		
+						type = val; // all employees
+		}		
 		public void setPay_period_id(String val){
 				if(val != null && !val.equals("-1"))		
 						pay_period_id = val;
