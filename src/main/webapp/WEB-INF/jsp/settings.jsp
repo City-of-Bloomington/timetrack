@@ -85,7 +85,7 @@
 			<h2>Timewarp</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>tmwrpWrap.action">Timewarp </a></li>								
-				<li><a href="<s:property value='#application.url'/>tmwrpInitiate.action">Timewarp Initiatation Process</a></li>				
+				<li><a href="<s:property value='#application.url'/>tmwrpInitiate.action">Timewarp Initiation Process</a></li>				
 			</ul>
 
 			<h2>Reports</h2>
@@ -102,11 +102,11 @@
 				<li><a href="<s:property value='#application.url'/>reportPublicWorks.action">Asset Management (Public Works)</a></li>
 				<li><a href="<s:property value='#application.url'/>reportUnscheduled.action">Unscheduled Times</a></li>				
 			</ul>			
-			<h2>Schedulars</h2>
+			<h2>Schedulers</h2>
 			<ul>
-				<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Employees' accrual</a></li>
+				<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Employees' accruals</a></li>
 				<li><a href="<s:property value='#application.url'/>profileSchedule.action">Employees Profile Update</a></li>
-				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees' Update from AD (ldap)</a></li>				
+				<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees' Update from AD (LDAP)</a></li>				
 				<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
 				<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch Clock Batch Auto Submission </a></li>
 				<li><a href="<s:property value='#application.url'/>codeReasonSchedule.action">Police Code Reason xls File Output</a></li>				

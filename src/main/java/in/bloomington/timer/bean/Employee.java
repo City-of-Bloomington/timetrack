@@ -759,6 +759,20 @@ public class Employee implements Serializable, Comparable<Employee>{
 				}
 				return departmentEmployees;
     }
+		public boolean hasMultipleDepts(){
+				getDepartmentEmployees();
+				return departmentEmployees != null && departmentEmployees.size() > 1;
+		}
+		public List<String> getAlEmpDeptIds(){
+				List<String> empDeptIds = null;
+				if(hasMultipleDepts()){
+						empDeptIds = new ArrayList<>();
+						for(DepartmentEmployee one:departmentEmployees){
+								empDeptIds.add(one.getDepartment_id());
+						}
+				}
+				return empDeptIds;
+		}
     public boolean hasActiveDepartment(){
 				if(hasDepartment()){
 						return departmentEmployee != null;

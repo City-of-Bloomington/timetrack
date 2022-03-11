@@ -21,6 +21,7 @@ public class TmwrpRunList{
     String status = "",
 				document_id="", employee_id="",
 				pay_period_id="";
+		String department_id = "";
 		boolean lastRunOnly = false;
     List<TmwrpRun> tmwrpRuns = null;
     public TmwrpRunList(){
@@ -37,6 +38,10 @@ public class TmwrpRunList{
 				if(val != null && !val.equals("-1"))
 						document_id = val;
     }
+    public void setDepartment_id (String val){
+				if(val != null && !val.equals("-1"))
+						department_id = val;
+    }		
     public void setEmployee_id (String val){
 				if(val != null && !val.equals("-1"))
 						employee_id = val;
@@ -72,24 +77,24 @@ public class TmwrpRunList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,"+
-						"g.document_id,"+
-						"g.reg_code_id,"+
-						"date_format(g.run_time,'%m/%d/%Y %H:%i'),"+
+				String qq = "select t.id,"+
+						"t.document_id,"+
+						"t.reg_code_id,"+
+						"date_format(t.run_time,'%m/%d/%Y %H:%i'),"+
 						
-						"g.week1_grs_reg_hrs, "+
-						"g.week2_grs_reg_hrs, "+
-						"g.week1_net_reg_hrs, "+
-						"g.week2_net_reg_hrs, "+
-						"g.cycle1_net_reg_hrs, "+
-						"g.cycle2_net_reg_hrs "+						
-						" from tmwrp_runs g  "+
-						" join time_documents d on d.id=g.document_id";
-
+						"t.week1_grs_reg_hrs, "+
+						"t.week2_grs_reg_hrs, "+
+						"t.week1_net_reg_hrs, "+
+						"t.week2_net_reg_hrs, "+
+						"t.cycle1_net_reg_hrs, "+
+						"t.cycle2_net_reg_hrs "+						
+						" from tmwrp_runs t  "+
+						" join time_documents d on d.id=t.document_id";
+				
 				String qw = "";
 				if(!document_id.isEmpty()){
 						if(!qw.isEmpty()) qw += " and ";						
-						qw += "g.document_id = ? ";
+						qw += "t.document_id = ? ";
 				}
 				if(!pay_period_id.isEmpty()){
 						if(!qw.isEmpty()) qw += " and ";						
@@ -98,11 +103,17 @@ public class TmwrpRunList{
 				if(!employee_id.isEmpty()){
 						if(!qw.isEmpty()) qw += " and ";						
 						qw += "d.employee_id = ? ";
-				}				
+				}
+				if(!department_id.isEmpty()){
+						qq += " join jobs j on j.id=d.job_id ";
+						qq += " join groups g on j.group_id=g.id ";
+						if(!qw.isEmpty()) qw += " and ";												
+						qw += " g.department_id=? ";
+				}
 				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
-				qq += " order by g.run_time desc ";
+				qq += " order by t.run_time desc ";
 				if(lastRunOnly){
 						qq += " limit 1 "; 
 				}
@@ -124,6 +135,9 @@ public class TmwrpRunList{
 						}
 						if(!employee_id.isEmpty()){
 								pstmt.setString(jj++, employee_id);
+						}
+						if(!department_id.isEmpty()){
+								pstmt.setString(jj++, department_id);
 						}						
 						rs = pstmt.executeQuery();
 						while(rs.next()){

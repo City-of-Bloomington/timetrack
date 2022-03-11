@@ -92,8 +92,21 @@ public class TimewarpProcess{
 								if(employee.hasMultipleJobs()){
 										setMultipleJobs(true);
 								}
-								Department dp = employee.getDepartment();
-								setDepartment(dp);
+								//
+								JobTask job = document.getJob();
+								if(job != null){
+										Group group = job.getGroup();
+										if(group != null){
+												String dept_id  = group.getDepartment_id();
+												Department dp = new Department(dept_id);
+												String back = dp.doSelect();
+												if(back.isEmpty()){
+														setDepartment(dp);
+												}
+										}
+								}
+								// Department dp = employee.getDepartment();
+								// setDepartment(dp);
 						}
 				}
     }		

@@ -28,7 +28,7 @@ public class Group implements Serializable{
 		//
 		// the following changed from excess_hours_calculation_method
 		String excess_hours_earn_type = "Earn Time";
-    Type department = null;
+    Department department = null;
     HourCode defaultEarnCode = null;
     List<GroupEmployee> groupEmployees = null;
     List<Employee> employees = null;
@@ -80,9 +80,10 @@ public class Group implements Serializable{
 				setExcessHoursEarnType(val5);
 				setAllowPendingAccrual(val6);
 				setInactive(val7);
-				if(val8 != null && !val8.isEmpty()){
-						department = new Type(department_id, val8);
-				}
+				// if(val8 != null && !val8.isEmpty()){
+				// department = new Type(department_id, val8);
+				// department = new Department(department_id);
+				// department.doSelect();
     }		
 		
     //
@@ -143,8 +144,14 @@ public class Group implements Serializable{
 						allow_pending_accrual = "y";
     }		
     public void setDepartment_id (String val){
-				if(val != null && !val.equals("-1"))
+				if(val != null && !val.equals("-1")){
 						department_id = val;
+						Department one = new Department(department_id);
+						String back = one.doSelect();
+						if(back.isEmpty()){
+								department = one;
+						}
+				}
     }
 
 		public void setExcessHoursEarnType(String val){
@@ -204,7 +211,8 @@ public class Group implements Serializable{
 						}
 				}
 				return groupEmployees;
-    }		
+    }
+		/**
     public Type getDepartment(){
 				if(department == null && !department_id.isEmpty()){
 						Type one = new Type(department_id);
@@ -216,6 +224,19 @@ public class Group implements Serializable{
 				}
 				return department;
     }
+		*/
+    public Department getDepartment(){
+				if(department == null && !department_id.isEmpty()){
+						Department one = new Department(department_id);
+						// one.setTable_name("departments");
+						String back = one.doSelect();
+						if(back.isEmpty()){
+								department = one;
+						}
+				}
+				return department;
+    }
+
 		public boolean hasGroupShifts(){
 				if(groupShifts == null){
 						findShifts();
@@ -289,7 +310,8 @@ public class Group implements Serializable{
 				String qq = "select g.id,g.name,g.description,g.department_id,"+
 						"g.excess_hours_earn_type,"+ // renamed
 						"g.allow_pending_accrual,"+
-						"g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";
+						"g.inactive from groups g where g.id =? ";
+				// "g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";				
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				try{
@@ -304,10 +326,9 @@ public class Group implements Serializable{
 										setExcessHoursEarnType(rs.getString(5));
 										setAllowPendingAccrual(rs.getString(6) != null);
 										setInactive(rs.getString(7) != null);
-										str = rs.getString(8);
-										if(str != null){
-												department = new Type(department_id, str);
-										}
+										// str = rs.getString(8);
+										// if(str != null){
+										// department = new Type(department_id, str);
 								}
 						}
 				}

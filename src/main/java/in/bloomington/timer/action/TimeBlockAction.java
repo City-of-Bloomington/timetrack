@@ -24,7 +24,7 @@ public class TimeBlockAction extends TopAction{
 		//
 		TimeBlock timeBlock = null;
 		String timeBlocksTitle = "Time Block Entry";
-		String document_id = "", group_id="";
+		String document_id = "", group_id="", department_id="";
 		String date = "";
 		int order_index = 0;
 		Employee employee = null;
@@ -35,7 +35,7 @@ public class TimeBlockAction extends TopAction{
 		List<HourCode> hourCodes = null;
 		List<EarnCodeReason> earnReasons = null;
 		List<HourCode> monetaryHourCodes = null;
-		Department department = null;
+		// Department department = null;
 		//
 		public String execute(){
 				String ret = SUCCESS;
@@ -191,12 +191,19 @@ public class TimeBlockAction extends TopAction{
 										document = one;
 										employee = document.getEmployee();
 										payPeriod = document.getPayPeriod();
+										/**
 										if(employee != null){
 												department = employee.getDepartment();
 										}
+										*/
 										JobTask job = document.getJob();
-										if(job != null)
+										if(job != null){
+												Group group = job.getGroup();
 												group_id = job.getGroup_id();
+												if(group != null){
+														department_id = group.getDepartment_id();
+												}
+										}
 								}
 						}
 				}
@@ -226,8 +233,8 @@ public class TimeBlockAction extends TopAction{
 								HourCodeList ecl = new HourCodeList();
 								String salary_group_id = document.getJob().getSalary_group_id();
 								ecl.setSalary_group_id(salary_group_id);
-								if(department != null){
-										ecl.setDepartment_id(department.getId());
+								if(!department_id.isEmpty()){
+										ecl.setDepartment_id(department_id);
 								}
 								ecl.setGroup_id(group_id);
 								ecl.setActiveOnly();
@@ -248,12 +255,14 @@ public class TimeBlockAction extends TopAction{
 				if(earnReasons == null){
 						getDocument();
 						if(document != null){
-								if(department != null && department.getName().equals("Police")){
+								// if(department != null && department.getName().equals("Police")){
+								// Police department_id=20
+								if(!department_id.isEmpty() && department_id.equals("20")){
 										CodeReasonConditionList crcl = new CodeReasonConditionList();
 										String salary_group_id = document.getJob().getSalary_group_id();
 										crcl.setSalary_group_id(salary_group_id);
-										if(department != null){
-												crcl.setDepartment_id(department.getId());
+										if(!department_id.isEmpty()){
+												crcl.setDepartment_id(department_id);
 										}
 										crcl.setActiveOnly();
 										String back = crcl.lookFor();

@@ -40,7 +40,8 @@ public class JobTaskAction extends TopAction{
 		List<String> jobTitles = null; // for new job from NW
 		List<JobTask> jobs = null;
 		List<Position> shortListPositions = null;
-		List<Position> currentPositions = null;		
+		List<Position> currentPositions = null;
+		List<String> empDeptIds = null;
 		public String execute(){
 				String ret = SUCCESS;
 				String back = doPrepare();
@@ -138,7 +139,10 @@ public class JobTaskAction extends TopAction{
 												currentPositions.add(pp);
 								}
 						}
-						if(id.isEmpty()){ //  && !employee_number.isEmpty()){
+						if(emp.hasMultipleDepts()){
+								empDeptIds = emp.getAlEmpDeptIds();
+						}
+						if(id.isEmpty()){ 
 								fillJobInfo();
 						}
 						getPositions();
@@ -341,8 +345,29 @@ public class JobTaskAction extends TopAction{
 				}
 				return groups;
 		}
+		public List<Group> getAllGroups(){
+				if(groups == null && empDeptIds != null){
+						GroupList gl = new GroupList();
+						for(String idd:empDeptIds){
+								gl.setDepartment_id(idd);
+						}
+						gl.setActiveOnly();
+						String back = gl.find();
+						if(back.isEmpty()){
+								List<Group> ones = gl.getGroups();
+								if(ones != null && ones.size() > 0){
+										groups = ones;
+								}
+						}
+				}
+				else{
+						groups = getGroups();
+				}
+				return groups;
+		}		
 		public boolean hasGroups(){
-				getGroups();
+				// getGroups();
+				getAllGroups();
 				return groups != null && groups.size() > 0;
 		}
 		public boolean isDeptSpecified(){

@@ -267,33 +267,32 @@ public class EmployeeList extends CommonInc{
 								if(!qw.isEmpty()) qw += " and ";
 								qw += " e.username like ? ";
 						}
-						if(!no_document_for_payperiod_id.isEmpty() || 
-							 (!pay_period_id.isEmpty() && (!department_id.isEmpty() ||
-																							!group_id.isEmpty()))){
-								qq += ", pay_periods pd ";
-								if(!qw.isEmpty()) qw += " and ";								
-								qw += " pd.id=? ";
-						}
 						if(!department_id.isEmpty()){
-								qq += ", department_employees de ";
-								if(!qw.isEmpty()) qw += " and ";
-								qw += " de.employee_id=e.id and ";
+								qq += " join department_employees de on de.employee_id=e.id ";
+								qq += " left join jobs j on j.employee_id=e.id ";
+								qq += " left join groups g on g.id=j.group_id ";
 								//
 								// city directors = 18, human resource = 4
 								//
 								if(includeAllDirectors){
-										qw += " (de.department_id in(?,4,18) or de.department2_id in (?,18))";// all city directors dept=18								
+										if(!qw.isEmpty()) qw += " and ";
+										qw += " (de.department_id in(?,4,18) or de.department2_id in (?,18) or g.department_id=?)";// all city directors dept=18
 								}
 								else{
-										qw += " (de.department_id = ? or de.department2_id=?)";
+										if(!qw.isEmpty()) qw += " and ";										
+										qw += " (de.department_id = ? or de.department2_id=? or g.department_id=?)";
 								}
 								if(!pay_period_id.isEmpty()){
-										qw += " and de.effective_date <= pd.start_date ";
-										qw += " and (de.expire_date is null or de.expire_date >= pd.end_date )";
+										if(!qw.isEmpty()) qw += " and ";											
+										qw += " ((de.effective_date <= pd.start_date ";
+										qw += " and de.expire_date is null or de.expire_date >= pd.end_date ) ";
+										qw += " or (j.effective_date <= pd.start_date and ";										
+										qw += " j.expire_date is null or j.expire_date >= pd.end_date))";
 								}
 						}
 						if(!dept_ref_id.isEmpty()){
-								qq += " join department_employees de on de.employee_id=e.id ";
+								if(department_id.isEmpty())
+										qq += " join department_employees de on de.employee_id=e.id ";
 								qq += " join departments dd on de.department_id=dd.id or de.department2_id=dd.id ";
 								if(!qw.isEmpty()) qw += " and ";
 								qw += " dd.ref_id in ("+dept_ref_id+") ";
@@ -311,9 +310,9 @@ public class EmployeeList extends CommonInc{
 								qw += " e.ad_sid is not null";
 						}						
 						if(!group_ids.isEmpty()){
-								qq += ", group_employees ge ";
+								qq += " join group_employees ge on ge.employee_id=e.id ";
 								if(!qw.isEmpty()) qw += " and ";
-								qw += " ge.employee_id=e.id and ge.group_id in ("+group_ids+") ";
+								qw += " ge.group_id in ("+group_ids+") ";
 								if(!pay_period_id.isEmpty() ||
 									 !no_document_for_payperiod_id.isEmpty()){
 										qw += " and ge.effective_date <= pd.start_date ";
@@ -329,9 +328,9 @@ public class EmployeeList extends CommonInc{
 								qw += " e.id not in (select td.employee_id from time_documents td where td.pay_period_id = pd.id)";						
 						}
 						if(!groupManager_id.isEmpty()){
-								qq += ", group_managers gm ";
+								qq += " join group_managers gm on gm.employee_id=e.id ";
 								if(!qw.isEmpty()) qw += " and ";
-								qw += " gm.employee_id=e.id and gm.group_id = ? ";
+								qw += " gm.group_id = ? ";
 						}
 						if(used_time_track){
 								if(!qw.isEmpty()) qw += " and ";								
@@ -353,12 +352,20 @@ public class EmployeeList extends CommonInc{
 								if(!qw.isEmpty()) qw += " and ";
 								qw += " e.inactive is not null";
 						}
+						if(!no_document_for_payperiod_id.isEmpty() || 
+							 (!pay_period_id.isEmpty() && (!department_id.isEmpty() ||
+																							!group_id.isEmpty()))){
+								qq += ", pay_periods pd ";
+								if(!qw.isEmpty()) qw += " and ";								
+								qw += " pd.id=? ";
+						}
 				}
 				if(!qw.isEmpty())
 						qq += " where "+qw;
 				qq += " order by e.last_name,e.first_name ";
 				String back = "";
 				logger.debug(qq);
+				// System.err.println(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB ";
@@ -394,17 +401,10 @@ public class EmployeeList extends CommonInc{
 								if(!username.isEmpty()){ // for auto_complete 
 										pstmt.setString(jj++,username+"%");
 								}
-								if(!no_document_for_payperiod_id.isEmpty()){
-										pstmt.setString(jj++, no_document_for_payperiod_id);
-								}
-								else if(!pay_period_id.isEmpty() &&
-												(!department_id.isEmpty() ||
-												 !group_id.isEmpty())){
-										pstmt.setString(jj++, pay_period_id);
-								}
 								if(!department_id.isEmpty()){
 										pstmt.setString(jj++, department_id);
 										pstmt.setString(jj++, department_id);
+										pstmt.setString(jj++, department_id);										
 								}
 								if(!exclude_group_id.isEmpty()){
 										pstmt.setString(jj++, exclude_group_id);
@@ -415,6 +415,15 @@ public class EmployeeList extends CommonInc{
 								if(!groupManager_id.isEmpty()){
 										pstmt.setString(jj++, groupManager_id);
 								}
+								if(!no_document_for_payperiod_id.isEmpty()){
+										pstmt.setString(jj++, no_document_for_payperiod_id);
+								}
+								else if(!pay_period_id.isEmpty() &&
+												(!department_id.isEmpty() ||
+												 !group_id.isEmpty())){
+										pstmt.setString(jj++, pay_period_id);
+								}
+								
 						}
 						rs = pstmt.executeQuery();
 						while(rs.next()){
@@ -450,6 +459,8 @@ public class EmployeeList extends CommonInc{
 		/*
 
 select e.id,e.username,e.first_name,e.last_name,e.id_code,e.inactive from employees e , pay_periods pd , department_employees de , group_employees ge  where  pd.id=564  and  de.employee_id=e.id and  (de.department_id = 36 or de.department2_id=36) and de.effective_date <= pd.start_date  and (de.expire_date is null or de.expire_date >= pd.end_date ) and  e.employee_number is not null and  ge.employee_id=e.id and ge.group_id in (110)  and ge.effective_date <= pd.start_date  and (ge.expire_date is null or ge.expire_date >= pd.end_date ) order by e.last_name,e.first_name
+
+select distinct e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.ad_sid,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive                     from employees e                                                                join department_employees de on de.employee_id=e.id                             left join jobs j on j.employee_id=e.id                                          left join groups g on g.id=j.group_id,                                          pay_periods pd                                                                  where  pd.id=631 and (de.department_id = 3 or de.department2_id=3 or g.department_id=3) and  ((de.effective_date <= pd.start_date  and de.expire_date is null or de.expire_date >= pd.end_date )  or (j.effective_date <= pd.start_date and  j.expire_date is null or j.expire_date >= pd.end_date)) and  e.employee_number is not null order by e.last_name,e.first_name
 
 		 */
 

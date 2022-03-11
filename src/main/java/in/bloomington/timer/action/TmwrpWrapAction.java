@@ -40,7 +40,7 @@ public class TmwrpWrapAction extends TopAction{
 
     List<String> allCsvLines = null;
 		List<Employee> empsWithNoEmpNum = null;
-		Set<String> employeeSet = null;
+		// Set<String> employeeSet = null;
 		Map<Employee, List<TmwrpRun>> employeeRuns = new TreeMap<>();
     public String execute(){
 				String ret = SUCCESS;
@@ -52,10 +52,12 @@ public class TmwrpWrapAction extends TopAction{
 								isUtil = true;
 						else if(department.isHand())
 								isHand = true;
+						/**
 						back = prepareEmployeeSet();
 						if(!back.isEmpty()){
 								addError(back);
 						}
+						*/
 						getEmployees();
 						back = doProcess();
 						if(!csvOutput){
@@ -167,9 +169,11 @@ public class TmwrpWrapAction extends TopAction{
 						back = " could not determine pay period";
 						return back;
 				}
+				/**
 				if(employeeSet == null){
 						prepareEmployeeSet();
 				}
+				*/
 				if(employees == null){
 						// isHand is set here
 						back = findEmployees();
@@ -182,11 +186,15 @@ public class TmwrpWrapAction extends TopAction{
 						return back;
 				}
 				for(Employee emp:employees){
-						String emp_num = emp.getEmployee_number();
+						// String emp_num = emp.getEmployee_number();
 						emp.setPay_period_id(pay_period_id);
 						System.err.println(" emp "+emp.getFull_name());
+						// we need to include department
 						TmwrpRunList trl = new TmwrpRunList(emp.getId(),
 																								pay_period_id);
+						if(!department_id.isEmpty()){
+								trl.setDepartment_id(department.getId());
+						}
 						back = trl.find();
 						if(!back.isEmpty()){
 								addError(back);
@@ -254,6 +262,7 @@ public class TmwrpWrapAction extends TopAction{
 				}
 				return department;
     }
+		/**
     public String prepareEmployeeSet(){
 				getDepartment();
 				getPayPeriod();
@@ -271,6 +280,7 @@ public class TmwrpWrapAction extends TopAction{
 				}
 				return back;
     }
+		*/
     public List<Employee> getEmpsWithNoEmpNum(){
 				if(empsWithNoEmpNum == null){
 						getDepartment();
@@ -317,6 +327,8 @@ public class TmwrpWrapAction extends TopAction{
 								if(back.isEmpty()){
 										List<Employee> ones = el.getEmployees();
 										if(ones != null && ones.size() > 0){
+												/**
+												 * we ignore this for now 
 												employees = new ArrayList<>();
 												if(employeeSet == null || employeeSet.isEmpty()){
 														back = " Employee numbers not set ";
@@ -328,6 +340,8 @@ public class TmwrpWrapAction extends TopAction{
 																employees.add(one);
 														}
 												}
+												*/
+												employees = ones; // all
 										}
 								}
 						}

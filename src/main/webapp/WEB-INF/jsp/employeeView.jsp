@@ -51,8 +51,12 @@
 	<div class="button-group">
 		<a href="<s:property value='#application.url' />employee.action?action=Edit&emp_id=<s:property value='emp.id' />" class="button">Edit</a> 
 		<s:if test="!emp.hasDepartments()">
-			<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add Employee to Department</a>
+			<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add to Department</a>
 		</s:if>
+		<s:else>
+			<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add to Another Department</a>			
+			<a href="<s:property value='#application.url' />deptEmpChange.action?id=<s:property value='emp.departmentEmployee.id' />" class="button">Change Department</a>
+		</s:else>
 		<s:if test="!emp.hasGroupEmployees()">
 			<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add to Group</a>
 		</s:if>
