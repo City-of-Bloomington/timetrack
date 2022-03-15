@@ -60,6 +60,15 @@ public class GroupEmployeeAction extends TopAction{
 						else{
 								addMessage("Changed Successfully");			
 						}
+				}
+				else if(action.startsWith("Delete")){ 
+						back = groupEmployee.doDelete();
+						if(!back.isEmpty()){
+								addError(back);
+						}
+						else{
+								addMessage("Deleted Successfully");			
+						}
 				}				
 				else{		
 						getGroupEmployee();
@@ -139,11 +148,22 @@ public class GroupEmployeeAction extends TopAction{
 								getDepartment_id();
 						}
 						getEmp();
-						if(employee.hasTwoDepartments()){
-								department2_id = employee.getDepartment2_id();
+						if(emp.hasTwoDepartments()){
+								department2_id = emp.getDepartment2_id();
 						}
 						GroupList tl = new GroupList();
-						if(!department_id.isEmpty()){
+						if(emp.hasDepartments()){
+								List<DepartmentEmployee> depEmps = emp.getDepartmentEmployees();
+								if(depEmps != null && depEmps.size() > 0){
+										for(DepartmentEmployee one:depEmps){
+												tl.setDepartment_id(one.getDepartment_id());
+										}
+										if(!department2_id.isEmpty()){
+												tl.setDepartment_id(department2_id);
+										}										
+								}
+						}
+						else if(!department_id.isEmpty()){
 								tl.setDepartment_id(department_id);
 								if(!department2_id.isEmpty()){
 										tl.setDepartment_id(department2_id);

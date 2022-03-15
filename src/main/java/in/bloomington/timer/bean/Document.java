@@ -532,8 +532,6 @@ public class Document implements Serializable{
 										usedWeeklyAccruals = tl.getUsedWeeklyAccruals();
 										week1_flsa = tl.getWeek1_flsa();
 										week2_flsa = tl.getWeek2_flsa();
-										// week1Total = tl.getWeek1Total();
-										// week2Total = tl.getWeek2Total();
 										week1AmountTotal = tl.getWeek1AmountTotal();
 										week2AmountTotal = tl.getWeek2AmountTotal();
 										if(tl.hasUnscheduleds(id)){

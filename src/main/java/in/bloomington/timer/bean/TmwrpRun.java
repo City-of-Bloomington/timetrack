@@ -243,12 +243,12 @@ public class TmwrpRun{
 						String back = one.doSelect();
 						if(back.isEmpty()){
 								document = one;
-								Employee employee = document.getEmployee();
-								if(employee != null){
-										Department dp = employee.getDepartment();
-										if(dp != null)
-												department = dp;
-								}								
+								// Employee employee = document.getEmployee();
+								Department dp = document.getJob().getGroup().getDepartment();
+								// if(employee != null){
+								//Department dp = employee.getDepartment();
+								if(dp != null)
+										department = dp;
 						}
 				}
 				return document;
@@ -271,11 +271,13 @@ public class TmwrpRun{
 						document = val;
 						document_id = document.getId();
 						Employee employee = document.getEmployee();
-						if(employee != null){
-								Department dp = employee.getDepartment();
+						try{
+								Department dp = document.getJob().getGroup().getDepartment();
 								if(dp != null)
 										department = dp;
-						}		
+						}catch(Exception ex){
+								logger.error(ex);
+						}
 				}
 		}
 		//

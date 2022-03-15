@@ -70,8 +70,12 @@
 			</s:if>
 			<s:else>
 				<div class="button-group">
-					<a href="<s:property value='#application.url' />groupEmpChange.action?id=<s:property value='groupEmployee.id' />" class="button"> Change Employee Group</a>
+
 					<s:submit name="action" type="button" value="Save Changes" class="button"/>
+					<s:if test="groupEmployee.canBeDeleted()">
+						<s:submit name="action" type="button" value="Delete" class="button"/>
+					</s:if>
+					<a href="<s:property value='#application.url' />groupEmpChange.action?id=<s:property value='groupEmployee.id' />" class="button"> Change Employee Group</a>					
 				</div>
 			</s:else>
 		</div>

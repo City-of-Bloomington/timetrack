@@ -225,7 +225,20 @@ public class EmployeeAction extends TopAction{
 		public List<Group> getGroups(){
 				if(groups == null && !dept_id.isEmpty()){
 						GroupList gl = new GroupList();
-						gl.setDepartment_id(dept_id);
+						if(emp.hasDepartments()){
+								List<DepartmentEmployee> depEmps = emp.getDepartmentEmployees();
+								if(depEmps != null && depEmps.size() > 0){
+										for(DepartmentEmployee one:depEmps){
+												gl.setDepartment_id(one.getDepartment_id());
+										}
+								}
+								else{
+										gl.setDepartment_id(dept_id);
+								}
+						}
+						else{
+								gl.setDepartment_id(dept_id);
+						}
 						gl.setActiveOnly();
 						String back = gl.find();
 						if(back.isEmpty()){

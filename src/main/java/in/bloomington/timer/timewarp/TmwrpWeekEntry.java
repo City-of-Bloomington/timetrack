@@ -149,6 +149,10 @@ public class TmwrpWeekEntry{
 												daily_hrs = dd;
 										}
 								}
+								Department dept = group.getDepartment();
+								if(dept != null){
+										setDepartment(dept);
+								}
 								// comp time, overtime or donation
 								excess_hours_earn_type = group.getExcessHoursEarnType();
 						}
