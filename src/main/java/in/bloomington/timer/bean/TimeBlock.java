@@ -604,13 +604,15 @@ public class TimeBlock extends Block{
 				if(earnReasons == null && !id.isEmpty()){
 						getDocument();
 						if(document != null){
-								Employee emp = document.getEmployee();
-								if(emp != null){
-										department = emp.getDepartment();
+								jobTask = document.getJob();
+								// Employee emp = document.getEmployee();
+								if(jobTask != null){
+										department = jobTask.getGroup().getDepartment();
 								}
 								if(department != null && department.getName().equals("Police")){
 										CodeReasonConditionList crcl = new CodeReasonConditionList();
-										salary_group_id = document.getJob().getSalary_group_id();
+										//salary_group_id = document.getJob().getSalary_group_id();
+										salary_group_id = jobTask.getSalary_group_id();
 										crcl.setSalary_group_id(salary_group_id);										
 										group_id = document.getJob().getGroup_id();
 										crcl.setGroup_id(group_id);	

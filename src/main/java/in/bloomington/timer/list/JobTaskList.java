@@ -264,11 +264,19 @@ public class JobTaskList{
 						
 						"sg.name,sg.description,sg.default_regular_id,"+
 						"sg.excess_culculation,sg.inactive, "+
-						"p.name "+ // position name
+						"p.name, "+ // position name
+						// group
+						"g.id,g.name,g.description,g.department_id,"+
+						"g.excess_hours_earn_type,"+ 
+						"g.allow_pending_accrual,"+
+						"g.inactive,"+
+						"d.name,d.description,d.ref_id,d.ldap_name,"+
+						"d.allow_pending_accrual,d.inactive "+		
 						" from jobs j ";
 				qq += " join salary_groups sg on sg.id=j.salary_group_id "+
+						" join positions p on j.position_id=p.id "+						
 						" join groups g on j.group_id=g.id "+
-						" join positions p on j.position_id=p.id ";
+						" join departments d on d.id=g.department_id ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -344,12 +352,16 @@ public class JobTaskList{
 						qw += " j.position_id = ? ";
 				}
 				if(!department_id.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";						
+						qw += " d.id = ? ";
+						/**
 						qq += " inner join department_employees de on de.employee_id=j.employee_id and g.department_id=de.department_id";
 						if(!qw.isEmpty()) qw += " and ";
 						qw += " de.department_id = ? ";
 						if(current_only){
 								qw += " and (de.expire_date >= now() or de.expire_date is null) ";
 						}
+						*/
 				}
 				if(!date_from.isEmpty()){
 						if(!qw.isEmpty()) qw += " and ";
@@ -438,7 +450,23 @@ public class JobTaskList{
 																rs.getString(21),
 																rs.getString(22),
 																rs.getString(23) != null, 
-																rs.getString(24) // position name
+																rs.getString(24), // position name
+																//
+																// group
+																rs.getString(25),
+																rs.getString(26),
+																rs.getString(27),
+																rs.getString(28),
+																rs.getString(29),
+																rs.getString(30) != null,
+																rs.getString(31) != null,
+																	
+																rs.getString(32),
+																rs.getString(33),
+																rs.getString(34),
+																rs.getString(35),
+																rs.getString(36) != null,
+																rs.getString(37) != null
 																);
 							 
 								if(!jobTasks.contains(one))

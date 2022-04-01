@@ -411,9 +411,10 @@ public class TimeBlockList{
 				}
 				else{
 						if(!department_id.isEmpty()){
-								qq += ", department_employees de ";
+								qq += " join jobs j on j.id=v.job_id ";
+								qq += " join groups g on g.id=j.group_id ";
 								if(!qw.isEmpty()) qw += " and ";								
-								qw += "  de.employee_id=v.employee_id and de.department_id=? ";
+								qw += "  g.department_id=? ";
 						}
 						if(!pay_period_id.isEmpty()){
 								if(!qw.isEmpty()) qw += " and ";						

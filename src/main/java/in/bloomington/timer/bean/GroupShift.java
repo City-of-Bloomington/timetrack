@@ -61,8 +61,14 @@ public class GroupShift implements Serializable{
 											String val05,
 											boolean val06,
 											boolean val07,
+											// dept
 											String val08,
-
+											String val09,
+											String val010,
+											String val011,
+											boolean val012,
+											boolean val013,
+											// shift
 											String val11,
 											String val12,
 											int val13,
@@ -71,8 +77,46 @@ public class GroupShift implements Serializable{
 											int val16,
 											int val17,
 											int val18,
-											boolean val19
-											
+											boolean val19){
+				setVals(val, val2, val3, val4, val5, val6,
+								val01, val02, val03,val04,val05,val06,val07,
+								val08, val09, val010, val011,val012,val013,
+								val11, val12, val13, val14, val15, val16, val17, val18,
+								val19
+								);
+		}
+		private void setVals(String val,
+												 String val2,
+												 String val3,
+												 String val4,
+												 String val5,
+												 boolean val6,
+												 
+												 String val01, // group
+												 String val02,
+												 String val03,
+												 String val04,
+												 String val05,
+												 boolean val06,
+												 boolean val07, // 13
+											// dept
+												 String val08,
+												 String val09,
+												 String val010,
+												 String val011,
+												 boolean val012,
+												 boolean val013, // 19
+											// shift
+												 String val11,
+												 String val12,
+												 int val13,
+												 int val14,
+												 int val15,
+												 int val16,
+												 int val17,
+												 int val18,
+												 boolean val19 // 28
+												 
 								 ){
 				setId(val);
 				setGroup_id(val2);
@@ -80,7 +124,8 @@ public class GroupShift implements Serializable{
 				setStartDate(val4);
 				setExpireDate(val5);
 				setInactive(val6);
-				group = new Group(val01, val02, val03, val04, val05,val06, val07, val08);
+				group = new Group(val01, val02, val03, val04, val05,val06, val07, val08,
+													val09,val010,val011,val012,val013);
 				shift = new Shift(val11, val12, val13, val14, val15, val16,
 													val17, val18, val19);
 
@@ -188,9 +233,22 @@ public class GroupShift implements Serializable{
 				Connection con = null;
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
-				String qq = "select id,group_id,shift_id,date_format(start_date,'%m/%d/%Y'),date_format(expire_date,'%m/%d/%Y'),"+
-						" inactive "+
-						" from group_shifts where id=?";
+				String qq = "select gs.id,gs.group_id,gs.shift_id,date_format(gs.start_date,'%m/%d/%Y'),date_format(gs.expire_date,'%m/%d/%Y'),"+
+						" gs.inactive, "+ //6
+						// group
+						" g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive, "+ // 13
+						// dept
+						"d.name,d.description,d.ref_id,d.ldap_name,"+
+						"d.allow_pending_accrual,d.inactive, "+ // 19
+						// shift 
+						" s.name,s.start_hour,s.start_minute,s.duration,"+
+						" s.start_minute_window,s.end_minute_window,s.minute_rounding,"+
+						" s.inactive "+ 	// 28					
+						" from group_shifts gs "+
+						" join shifts s on s.id = gs.shift_id "+
+						" join groups g on gs.group_id=g.id "+
+						" join departments d on g.department_id=d.id ";
+				qq += "where gs.id = ?";
 				con = UnoConnect.getConnection();
 				if(con == null){
 						back = "Could not connect to DB";
@@ -202,11 +260,39 @@ public class GroupShift implements Serializable{
 						pstmt.setString(1,id);
 						rs = pstmt.executeQuery();
 						if(rs.next()){
-								setGroup_id(rs.getString(2));
-								setShift_id(rs.getString(3));
-								setStartDate(rs.getString(4));
-								setExpireDate(rs.getString(5));
-								setInactive(rs.getString(6) != null);
+								setVals(id,
+												rs.getString(2),
+												rs.getString(3),
+												rs.getString(4),
+												rs.getString(5),
+												rs.getString(6) != null,
+												// group
+												rs.getString(2), // group_id
+												rs.getString(7),
+												rs.getString(8),
+												rs.getString(9),
+												rs.getString(10),
+												rs.getString(11) != null,
+												rs.getString(12) != null,
+												// dept
+												rs.getString(13),
+												rs.getString(14),
+												rs.getString(15),
+												rs.getString(16),
+												rs.getString(17) != null,
+												rs.getString(18) !=null,
+												// shift
+												rs.getString(3), // shift id
+												rs.getString(19),
+												rs.getInt(20),
+												rs.getInt(21),
+												rs.getInt(22),
+												rs.getInt(23),
+												rs.getInt(24),
+												rs.getInt(25),
+												rs.getString(26) != null
+												
+												);
 						}
 						else{
 								back ="Record "+id+" Not found";

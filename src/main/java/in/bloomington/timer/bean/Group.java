@@ -64,14 +64,23 @@ public class Group implements Serializable{
 				setAllowPendingAccrual(val6);
 				setInactive(val7);				
     }
-    public Group(String val,
-								 String val2,
-								 String val3,
-								 String val4,
-								 String val5,
-								 boolean val6,
-								 boolean val7,
-								 String val8
+
+    public Group(String val, // id
+								 String val2, // name
+								 String val3, // descrp
+								 String val4, // dept_id
+								 String val5, // excess_hours_earn_type
+								 boolean val6, // allow pending accrual
+								 boolean val7, // inactive
+								 // dept
+								 // String val4, // dept_id use val4
+								 String val8, // dept_name
+								 String val9, // dept_desc
+								 String val10, // ref_id
+								 String val11, // ldap_name
+								 boolean val12,  // allow pending accrual
+								 boolean val13 // inactive
+
 								 ){
 				setId(val);
 				setName(val2);
@@ -80,11 +89,10 @@ public class Group implements Serializable{
 				setExcessHoursEarnType(val5);
 				setAllowPendingAccrual(val6);
 				setInactive(val7);
-				// if(val8 != null && !val8.isEmpty()){
-				// department = new Type(department_id, val8);
-				// department = new Department(department_id);
-				// department.doSelect();
+				// dept obj
+				department = new Department(val4, val8, val9, val10, val11, val12,val13);
     }		
+		
 		
     //
     // getters
@@ -212,23 +220,9 @@ public class Group implements Serializable{
 				}
 				return groupEmployees;
     }
-		/**
-    public Type getDepartment(){
-				if(department == null && !department_id.isEmpty()){
-						Type one = new Type(department_id);
-						one.setTable_name("departments");
-						String back = one.doSelect();
-						if(back.isEmpty()){
-								department = one;
-						}
-				}
-				return department;
-    }
-		*/
     public Department getDepartment(){
 				if(department == null && !department_id.isEmpty()){
 						Department one = new Department(department_id);
-						// one.setTable_name("departments");
 						String back = one.doSelect();
 						if(back.isEmpty()){
 								department = one;
@@ -310,8 +304,10 @@ public class Group implements Serializable{
 				String qq = "select g.id,g.name,g.description,g.department_id,"+
 						"g.excess_hours_earn_type,"+ // renamed
 						"g.allow_pending_accrual,"+
-						"g.inactive from groups g where g.id =? ";
-				// "g.inactive,d.name from groups g left join departments d on d.id=g.department_id where g.id =? ";				
+						"g.inactive,"+
+						"d.name,d.description,d.ref_id,d.ldap_name,"+
+						"d.allow_pending_accrual,d.inactive "+
+						"from groups g left join departments d on d.id=g.department_id where g.id =? ";				
 				logger.debug(qq);
 				con = UnoConnect.getConnection();				
 				try{
@@ -326,9 +322,14 @@ public class Group implements Serializable{
 										setExcessHoursEarnType(rs.getString(5));
 										setAllowPendingAccrual(rs.getString(6) != null);
 										setInactive(rs.getString(7) != null);
-										// str = rs.getString(8);
-										// if(str != null){
-										// department = new Type(department_id, str);
+										department = new Department(department_id,
+																								rs.getString(8),
+																								rs.getString(9),
+																								rs.getString(10),
+																								rs.getString(11),
+																								rs.getString(12) != null,
+																								rs.getString(13) != null
+																								);
 								}
 						}
 				}
@@ -399,6 +400,9 @@ public class Group implements Serializable{
 						Helper.databaseDisconnect(rs, pstmt, pstmt2);
 						UnoConnect.databaseDisconnect(con);
 				}
+				if(msg.isEmpty()){
+						doSelect();
+				}
 				return msg;
     }
 
@@ -455,6 +459,9 @@ public class Group implements Serializable{
 				finally{
 						Helper.databaseDisconnect(pstmt, rs);
 						UnoConnect.databaseDisconnect(con);
+				}
+				if(msg.isEmpty()){
+						doSelect();
 				}
 				return msg;
     }

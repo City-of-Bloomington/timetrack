@@ -142,7 +142,12 @@ public class GroupList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select g.id,g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive,d.name from groups g join departments d on d.id=g.department_id ";
+				String qq = "select g.id,g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive,"+
+						"d.name, "+
+						"d.description,d.ref_id,d.ldap_name,d.allow_pending_accrual,"+
+						"d.inactive "+
+						"from groups g join departments d on d.id=g.department_id ";							
+				
 				String qw = "";
 				if(!department_ids.isEmpty()){
 						if(!qw.isEmpty()) qw += " and ";						
@@ -239,7 +244,14 @@ public class GroupList{
 																			rs.getString(5),
 																			rs.getString(6) != null,
 																			rs.getString(7) != null,
-																			rs.getString(8));
+																			// dept
+																			rs.getString(8),
+																			rs.getString(9),
+																			rs.getString(10),
+																			rs.getString(11),
+																			rs.getString(12) != null,
+																			rs.getString(13) != null
+																			);
 								if(!groups.contains(one))
 										groups.add(one);
 						}

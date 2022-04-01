@@ -97,14 +97,19 @@ public class GroupShiftList{
 						" date_format(gs.expire_date,'%m/%d/%Y'),"+						
 						" gs.inactive, "+
 						// group
-						" g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive,d.name, "+
+						" g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.inactive, "+
+						// dept
+						"d.name,d.description,d.ref_id,d.ldap_name,"+
+						"d.allow_pending_accrual,d.inactive, "+
 						// shift 
 						" s.name,s.start_hour,s.start_minute,s.duration,"+
 						" s.start_minute_window,s.end_minute_window,s.minute_rounding,"+
 						" s.inactive "+ 						
-						" from group_shifts gs, groups g,departments d, shifts s ";
-				String qw = "d.id=g.department_id and gs.group_id=g.id ";
-				qw += " and gs.shift_id=s.id ";
+						" from group_shifts gs "+
+						" join shifts s on s.id = gs.shift_id "+
+						" join groups g on gs.group_id=g.id "+
+						" join departments d on g.department_id=d.id ";
+				String qw = "";
 				if(!group_id.isEmpty()){
 						if(!qw.isEmpty()) qw += " and ";						
 						qw += "gs.group_id = ? ";
@@ -164,7 +169,7 @@ public class GroupShiftList{
 																								rs.getString(4),
 																								rs.getString(5),
 																								rs.getString(6) != null,
-
+																								// group
 																								rs.getString(2), // group_id
 																								rs.getString(7),
 																								rs.getString(8),
@@ -172,17 +177,23 @@ public class GroupShiftList{
 																								rs.getString(10),
 																								rs.getString(11) != null,
 																								rs.getString(12) != null,
+																								// dept
 																								rs.getString(13),
-
-																								rs.getString(3), // shift id
 																								rs.getString(14),
-																								rs.getInt(15),
-																								rs.getInt(16),
-																								rs.getInt(17),
-																								rs.getInt(18),
-																								rs.getInt(19),
+																								rs.getString(15),
+																								rs.getString(16),
+																								rs.getString(17) != null,
+																								rs.getString(18) !=null,
+																								// shift
+																								rs.getString(3), // shift id
+																								rs.getString(19),
 																								rs.getInt(20),
-																								rs.getString(21) != null
+																								rs.getInt(21),
+																								rs.getInt(22),
+																								rs.getInt(23),
+																								rs.getInt(24),
+																								rs.getInt(25),
+																								rs.getString(26) != null
 																								);
 								if(!groupShifts.contains(one))
 										groupShifts.add(one);
