@@ -102,16 +102,7 @@ public class HandleNwAccrual{
 				/*
 				 * 6 sick, 8 pto, 9 holiday comp, 15 comp
 				 *
-				 execute HR.HRReport_AccrualBalance 	@strOrgStructureIDs = '16,17',
-				 @strHourCategory = '6,8,9,15', 
-				 @strEmployeeStatus = 258, 
-				 @EmployeeID = NULL,  
-				 @AsOfDate = '05/05/2014',
-				 @strxGroupHeaderID = NULL, 
-				 @ReportType = 1, 
-				 @CompanyID = 1,   
-				 @IncludeZeroBalance = NULL, 
-				 @IncludeU
+
 				*/
 				//
 				//
@@ -196,19 +187,8 @@ public class HandleNwAccrual{
 				/*
 				 * 6 sick, 8 pto, 9 holiday comp, 15 comp, 18 leave, 7 vacation 
 				 *
-				 execute HR.HRReport_AccrualBalance 	@strOrgStructureIDs = '16,17',
-				 @strHourCategory = '6,8,9,15,18,7', 
-				 @strEmployeeStatus = 258, 
-				 @EmployeeID = NULL,  
-				 @AsOfDate = '05/05/2014',
-				 @strxGroupHeaderID = NULL, 
-				 @ReportType = 1, 
-				 @CompanyID = 1,   
-				 @IncludeZeroBalance = NULL, 
-				 @IncludeU
 				*/
-				//
-				//
+
 				String qq = "{call HR.HRReport_AccrualBalance(?,?,?,null,?,null,1,1,null,0)} ";
 				logger.debug(qq);
 				if(dept_ref_id.isEmpty() || date.isEmpty()){

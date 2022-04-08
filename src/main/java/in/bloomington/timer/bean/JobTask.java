@@ -572,6 +572,9 @@ public class JobTask implements Serializable{
     public boolean hasShift(){
 				if(shift == null)
 						getGroup();
+				if(group != null && shift == null && group.hasShift()){
+						shift = group.getShift();
+				}
 				return shift != null;
     }
     public Shift getShift(){
@@ -612,9 +615,6 @@ public class JobTask implements Serializable{
 										group = allGroups.get(0);
 										group_id= group.getId();
 								}
-						}
-						if(group != null && group.hasShift()){
-								shift = group.getShift();
 						}
 				}
 				return group;

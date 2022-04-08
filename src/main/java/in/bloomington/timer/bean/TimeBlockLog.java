@@ -251,7 +251,8 @@ public class TimeBlockLog extends Block{
 				}
 				finally{
 						Helper.databaseDisconnect(rs, pstmt, pstmt2);
-						UnoConnect.databaseDisconnect(con);
+						// UnoConnect.databaseDisconnect(con);
+						Helper.databaseDisconnect(con);						
 				}
 				return msg;
 		}
