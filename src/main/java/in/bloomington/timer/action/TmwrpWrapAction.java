@@ -320,6 +320,7 @@ public class TmwrpWrapAction extends TopAction{
 								el.setDepartment_id(department.getId());
 								el.setPay_period_id(pay_period_id);
 								el.setHasEmployeeNumber();
+								el.setActiveOnly();
 								if(!group_id.isEmpty()){
 										el.setGroup_id(group_id);
 								}
@@ -327,20 +328,6 @@ public class TmwrpWrapAction extends TopAction{
 								if(back.isEmpty()){
 										List<Employee> ones = el.getEmployees();
 										if(ones != null && ones.size() > 0){
-												/**
-												 * we ignore this for now 
-												employees = new ArrayList<>();
-												if(employeeSet == null || employeeSet.isEmpty()){
-														back = " Employee numbers not set ";
-														return back;
-												}
-												for(Employee one:ones){
-														String empNum = one.getEmployee_number();
-														if(employeeSet.contains(empNum)){
-																employees.add(one);
-														}
-												}
-												*/
 												employees = ones; // all
 										}
 								}

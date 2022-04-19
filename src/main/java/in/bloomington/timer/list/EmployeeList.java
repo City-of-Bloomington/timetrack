@@ -268,26 +268,29 @@ public class EmployeeList extends CommonInc{
 								qw += " e.username like ? ";
 						}
 						if(!department_id.isEmpty()){
-								qq += " join department_employees de on de.employee_id=e.id ";
-								qq += " left join jobs j on j.employee_id=e.id ";
-								qq += " left join groups g on g.id=j.group_id ";
+								// qq += " join department_employees de on de.employee_id=e.id ";
+								qq += " join jobs j on j.employee_id=e.id ";
+								qq += " join groups g on g.id=j.group_id ";
 								//
 								// city directors = 18, human resource = 4
 								//
 								if(includeAllDirectors){
 										if(!qw.isEmpty()) qw += " and ";
-										qw += " (de.department_id in(?,4,18) or de.department2_id in (?,18) or g.department_id=?)";// all city directors dept=18
+										// qw += " (de.department_id in(?,4,18) or de.department2_id in (?,18) or g.department_id=?)";// all city directors dept=18
+										qw += " g.department_id in(?,4,18)";// all city directors dept=18
 								}
 								else{
-										if(!qw.isEmpty()) qw += " and ";										
-										qw += " (de.department_id = ? or de.department2_id=? or g.department_id=?)";
+										if(!qw.isEmpty()) qw += " and ";
+																		
+										// 		qw += " (de.department_id = ? or de.department2_id=? or g.department_id=?)";		
+										qw += " (g.department_id=?)";
 								}
 								if(!pay_period_id.isEmpty()){
 										if(!qw.isEmpty()) qw += " and ";											
-										qw += " ((de.effective_date <= pd.start_date ";
-										qw += " and de.expire_date is null or de.expire_date >= pd.end_date ) ";
-										qw += " or (j.effective_date <= pd.start_date and ";										
-										qw += " j.expire_date is null or j.expire_date >= pd.end_date))";
+										// qw += " ((de.effective_date <= pd.start_date ";
+										// qw += " and de.expire_date is null or de.expire_date >= pd.end_date ) ";
+										qw += " j.effective_date <= pd.start_date and ";										
+										qw += " (j.expire_date is null or j.expire_date >= pd.end_date)";
 								}
 						}
 						if(!dept_ref_id.isEmpty()){
@@ -403,8 +406,8 @@ public class EmployeeList extends CommonInc{
 								}
 								if(!department_id.isEmpty()){
 										pstmt.setString(jj++, department_id);
-										pstmt.setString(jj++, department_id);
-										pstmt.setString(jj++, department_id);										
+										// pstmt.setString(jj++, department_id);
+										// pstmt.setString(jj++, department_id);										
 								}
 								if(!exclude_group_id.isEmpty()){
 										pstmt.setString(jj++, exclude_group_id);
