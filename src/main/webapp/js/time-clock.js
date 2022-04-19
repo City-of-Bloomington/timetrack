@@ -21,7 +21,7 @@ function timeUpdate() {
     isBeforeNoon ? bigTimeAmPm.classList.add("am") : bigTimeAmPm.classList.add("pm");
   }
 }
-setInterval(function() { timeUpdate(); }, 10);
+setInterval(function() { timeUpdate(); }, 1000);
 timeUpdate();
 
 let clearInput = () => {
