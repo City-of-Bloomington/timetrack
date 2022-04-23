@@ -10,8 +10,7 @@
 			<s:hidden name="location.id" value="%{location.id}" />
 		</s:else>
 
-		<p>These ip addresses locations are needed for employees using punch clock.</p>
-
+		<p>The ip addresses locations are needed for employees using badge reader and Lat/Long are needed for Geo Location login.</p>
 	  <%@ include file="strutMessages.jsp" %>
 
 		<div class="width-one-half">
@@ -24,12 +23,28 @@
 
 			<div class="form-group">
 				<label>IP network address</label>
-				<s:textfield name="location.ip_address" value="%{location.ip_address}" size="15" maxlength="15" requiredLabel="true" required="true" />(xxx.xxx.xxx.xxx)
+				<s:textfield name="location.ip_address" value="%{location.ip_address}" size="15" maxlength="15" />(xxx.xxx.xxx.xxx)
 			</div>
 			<div class="form-group">
 				<label>Location Name</label>
 				<s:textfield name="location.name" value="%{location.name}" rows="30" maxlength="128" required="true" />
 			</div>
+			<div class="form-group">
+				<label>Street Address</label>
+				<s:textfield name="location.street_address" value="%{location.street_address}" rows="30" maxlength="128" />
+			</div>
+			<div class="form-group">
+				<label>Latitude</label>
+				<s:textfield name="location.latitude" value="%{location.latitude}" rows="10" maxlength="10" />
+			</div>
+			<div class="form-group">
+				<label>Longitude</label>
+				<s:textfield name="location.longitude" value="%{location.longitude}" rows="10" maxlength="10" />
+			</div>
+			<div class="form-group">
+				<label>Acceptable Radius</label>
+				<s:textfield name="location.radius" value="%{location.radius}" rows="10" maxlength="10" />
+			</div>			
 			<s:if test="location.id == ''">
 				<s:submit name="action" accrual="button" value="Save" class="button"/>
 			</s:if>

@@ -18,49 +18,78 @@ public class LocationList{
     static Logger logger = LogManager.getLogger(LocationList.class);
     static final long serialVersionUID = 3800L;
     String name = ""; // for service
+		boolean hasLatLng = false, hasIpAddress=false;
     List<Location> locations = null;
 	
     public LocationList(){
     }
+		public void hasLatLng(){
+				hasLatLng = true;
+		}
+		public void hasIpAddress(){
+				hasIpAddress = true;
+		}
     public List<Location> getLocations(){
-	return locations;
+				return locations;
     }
+		
 		
     public String find(){
 		
-	String back = "";
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	Connection con = UnoConnect.getConnection();
-	String qq = "select t.id,t.ip_address,t.name from locations t ";
-	if(con == null){
-	    back = "Could not connect to DB";
-	    return back;
-	}
-	String qw = "";
-	try{
-	    logger.debug(qq);
-	    pstmt = con.prepareStatement(qq);
-	    rs = pstmt.executeQuery();
-	    if(locations == null)
-		locations = new ArrayList<>();
-	    while(rs.next()){
-		Location one =
-		    new Location(rs.getString(1),
-				 rs.getString(2),
-				 rs.getString(3));
-		locations.add(one);
-	    }
-	}
-	catch(Exception ex){
-	    back += ex+" : "+qq;
-	    logger.error(back);
-	}
-	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return back;
+				String back = "";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				Connection con = UnoConnect.getConnection();
+				String qq = "select t.id,t.ip_address,t.name,t.street_address,t.latitude,t.longitude,t.radius "+
+						"from locations t";
+				// String qq = "select t.id,t.ip_address,t.name from locations t ";
+				String qw ="";
+				if(hasLatLng){
+						qw = " t.latitude <> 0 and t.longitude <> 0 ";
+				}
+				if(hasIpAddress){
+						if(!qw.isEmpty()) qw += " and ";
+						qw += " t.ip_address is not null ";
+				}
+				if(!qw.isEmpty()){
+						qq += " where "+qw;
+				}
+				if(con == null){
+						back = "Could not connect to DB";
+						return back;
+				}
+				try{
+						logger.debug(qq);
+						pstmt = con.prepareStatement(qq);
+						rs = pstmt.executeQuery();
+						if(locations == null)
+								locations = new ArrayList<>();
+						while(rs.next()){
+								Location one =
+										/**
+										new Location(rs.getString(1),
+																 rs.getString(2),
+																 rs.getString(3));
+										*/
+								new Location(rs.getString(1),
+														 rs.getString(2),
+														 rs.getString(3),
+														 rs.getString(4),
+														 rs.getDouble(5),
+														 rs.getDouble(6),
+														 rs.getDouble(7));
+								locations.add(one);
+						}
+				}
+				catch(Exception ex){
+						back += ex+" : "+qq;
+						logger.error(back);
+				}
+				finally{
+						Helper.databaseDisconnect(pstmt, rs);
+						UnoConnect.databaseDisconnect(con);
+				}
+				return back;
     }
 }
 

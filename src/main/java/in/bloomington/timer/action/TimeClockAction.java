@@ -167,6 +167,7 @@ public class TimeClockAction extends TopAction{
 				if(ipSet == null || needUpdate){
 						needUpdate = false;
 						LocationList ial = new LocationList();
+						ial.hasIpAddress();
 						String back = ial.find();
 						if(back.isEmpty()){
 								List<Location> ones = ial.getLocations();
