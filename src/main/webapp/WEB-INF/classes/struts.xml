@@ -434,6 +434,15 @@
 			<result name="error">/WEB-INF/jsp/timeClock.jsp</result>
 			<result name="success">/WEB-INF/jsp/timeClock.jsp</result>
 			<result name="pickJob">/WEB-INF/jsp/clockPickJob.jsp</result>			
+		</action>
+		<action name="mobileClock" 
+						class="in.bloomington.timer.action.MobileClockAction" 
+						method="execute">
+			<result name="input">/WEB-INF/jsp/mobileClock.jsp</result>		
+			<result name="error">/WEB-INF/jsp/mobileClock.jsp</result>
+			<result name="success">/WEB-INF/jsp/mobileClock.jsp</result>
+			<result name="mobilePickJob">/WEB-INF/jsp/mobilePickJob.jsp</result>
+			<result name="final">/WEB-INF/jsp/mobileClockFinal.jsp</result>			
 		</action>		
 		<action name="empAccrual" 
 						class="in.bloomington.timer.action.EmployeeAccrualAction" 

@@ -342,6 +342,13 @@ public class TimeClock {
 				}
 				return false;
     }
+		public void setEmployee(Employee val){
+				if(val != null){
+						employee = val;
+						setId_code(employee.getId_code());
+						employee_id = employee.getId();
+				}
+		}
 		//
     // check if has ClockIn
 		//

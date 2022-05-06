@@ -18,13 +18,13 @@ public class LocationList{
     static Logger logger = LogManager.getLogger(LocationList.class);
     static final long serialVersionUID = 3800L;
     String name = ""; // for service
-		boolean hasLatLng = false, hasIpAddress=false;
+		boolean hasLatLong = false, hasIpAddress=false;
     List<Location> locations = null;
 	
     public LocationList(){
     }
-		public void hasLatLng(){
-				hasLatLng = true;
+		public void hasLatLong(){
+				hasLatLong = true;
 		}
 		public void hasIpAddress(){
 				hasIpAddress = true;
@@ -44,7 +44,7 @@ public class LocationList{
 						"from locations t";
 				// String qq = "select t.id,t.ip_address,t.name from locations t ";
 				String qw ="";
-				if(hasLatLng){
+				if(hasLatLong){
 						qw = " t.latitude <> 0 and t.longitude <> 0 ";
 				}
 				if(hasIpAddress){

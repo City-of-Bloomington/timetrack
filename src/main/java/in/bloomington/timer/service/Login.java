@@ -37,7 +37,7 @@ public class Login extends HttpServlet{
 				throws ServletException, IOException {
 				String message="", id="";
 				boolean found = false;
-				String name="", value="", username="", source="";
+				String name="", value="", username="", source="",location_id="";
 				AttributePrincipal principal = null;				
 				if (req.getUserPrincipal() != null) {
 						principal = (AttributePrincipal) req.getUserPrincipal();
@@ -58,12 +58,18 @@ public class Login extends HttpServlet{
 				while (values.hasMoreElements()) {
 						name = values.nextElement().trim();
 						value = (req.getParameter(name)).trim();
-						if (name.equals("id")) {
-								id = value;
+						if(!value.isEmpty()){
+								if (name.equals("id")) {
+										id = value;
+								}
+								else if (name.equals("source")) {
+										
+										source = value;
+								}
+								else if (name.equals("location_id")) {
+										location_id = value;
+								}
 						}
-						if (name.equals("source")) {
-								source = value;
-						}						
 				}
 				res.setContentType("text/html");
 				PrintWriter out = res.getWriter();
@@ -127,11 +133,15 @@ public class Login extends HttpServlet{
 								Employee user = getUser(username);
 								if(session != null){
 										if(user != null){
+												System.err.println("login location ID "+location_id);
 												//
 												session.setAttribute("user",user);
-												if(source.isEmpty())
+												if(!location_id.isEmpty()){
+														source = "mobileClock.action?action=Next&location_id="+location_id;
+												}
+												else if(source.isEmpty())
 														source = "timeDetails.action";
-												out.println("<head><title></title><META HTTP-EQUIV="+
+													out.println("<head><title></title><META HTTP-EQUIV="+
 																		"\"refresh\" CONTENT=\"0; URL=" + source+"\"></head>");
 												out.println("<body>");
 												out.println("</body>");
