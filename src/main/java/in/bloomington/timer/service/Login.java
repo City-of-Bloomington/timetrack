@@ -137,7 +137,7 @@ public class Login extends HttpServlet{
 												//
 												session.setAttribute("user",user);
 												if(!location_id.isEmpty()){
-														source = "mobileClock.action?action=Next&location_id="+location_id;
+														source = "mobile.action?action=Next&location_id="+location_id;
 												}
 												else if(source.isEmpty())
 														source = "timeDetails.action";

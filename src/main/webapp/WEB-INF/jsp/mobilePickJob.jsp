@@ -5,12 +5,14 @@
 
 	<s:if test="hasMessages()">
 		<s:set var="messages" value="messages" />
-		<%@ include file="messages.jsp" %>
+		<%@ include file="messages2.jsp" %>
 	</s:if>
 
 	<div>
-		<s:form action="mobileClock" id="form_id" class="clock-pick-job-form" method="post" >
-			<s:hidden name="mobileClock.id_code" value="%{timeClock.id_code}" />
+		<s:form action="mobile" id="form_id" class="clock-pick-job-form" method="post" >
+			<s:hidden name="mobileClock.employee_id" value="%{mobileClock.employee_id}" />
+			<s:hidden name="mobileClock.location_id" value="%{mobileClock.location_id}" />
+			<s:hidden name="mobileClock.id_code" value="%{mobileClock.id_code}" />						
 			<s:hidden name="mobileClock.time" value="%{mobileClock.time}" id="time_clock_id2" />
 
 			<div class="job-cards">
@@ -34,4 +36,4 @@
 	</div>
 </div>
 <%@ include file="footer.jsp" %>
-<script type="text/javascript" src="<s:property value='#application.url' />js/time-clock.js"></script>
+<script type="text/javascript" src="<s:property value='#application.url' />js/mobile-clock.js"></script>

@@ -45,9 +45,7 @@ public class MobileClockAction extends TopAction{
 		//
 		public String execute(){
 				String ret = SUCCESS;
-				String back = doPrepare("mobileClock.action");
-				System.err.println(" user lat long "+user_lat+" "+user_long);
-				System.err.println(" action "+action);
+				String back = doPrepare("mobile.action");
 				if(!action.isEmpty()){
 						if(action.equals("checkLocation")){
 								if(isWithinLocation()){
@@ -71,27 +69,24 @@ public class MobileClockAction extends TopAction{
 						else if(action.equals("Next")){
 								getEmployee();
 								if(employee != null){
-										System.err.println(" employee "+employee);
 										getMobileClock();
 										mobileClock.setEmployee(employee);
 										mobileClock.setTime(Helper.getCurrentTime());
-										if(mobileClock.hasMultipleJobs()){
-												// if(action.equals("Submit"))
-												System.err.println(" pick job ");
-												return "pickMobileJob";
+										mobileClock.setLocation_id(location_id);
+										boolean hasClockIn = mobileClock.hasClockIn();
+										if(!hasClockIn){										
+												if(mobileClock.hasMultipleJobs()){
+														return "mobilePickJob";
+												}
+												if(mobileClock.hasNoJob()){
+														addError("No active job found");
+														ret = "error";
+														return ret;
+												}
 										}
-										if(mobileClock.hasNoJob()){
-												addError("No active job found");
-												System.err.println(" no job found ");
-												ret = "error";
-												return ret;
-										}										
 										try{
-												boolean hasClockIn = mobileClock.hasClockIn();
 												back = mobileClock.process();
 												if(!back.isEmpty()){
-														System.err.println(" mobile action "+back);
-												
 														addError(back);
 														ret = "error";
 														return ret;
@@ -103,25 +98,46 @@ public class MobileClockAction extends TopAction{
 																back = tmwrpManager.doProcess();
 														}
 														addMessage("Received Successfully");
-														System.err.println(" mobile success ");
+														ret = "final";														
 												}
-												ret = "final";
 										}
 										catch(Exception ex){
 												logger.error(ex);
 												addError("Error "+ex);
-												System.err.println(" mobile exception "+ex);
 												ret = "error";
 										}
 								}
-								else{
-										back = "Unrecognized location, check with ITS";
-										addError(back);
-										System.err.println(" mobile  "+back);										
-										ret = "error";
-								}
-								// getMobileClock();
 						}
+						else if(action.startsWith("Clock")){ // Clock In
+								//
+								// here we are coming from multiple job selection
+								//
+								// mobileClock.setEmployee(employee);
+								boolean hasClockIn = mobileClock.hasClockIn();
+								back = mobileClock.process();
+								if(!back.isEmpty()){
+										addError(back);
+										ret="error";
+								}
+								else{
+										if(hasClockIn){
+												TimewarpManager tmwrpManager =
+														new TimewarpManager(mobileClock.getDocument_id());
+												back = tmwrpManager.doProcess();
+										}
+										location_id = mobileClock.getLocation_id();
+										addMessage("Received Successfully");
+										ret = "final";
+								}
+						}
+						else{
+								back = "Unrecognized location, check with ITS";
+								addError(back);
+								ret = "error";
+						}
+				}
+				else{		
+						getMobileClock();
 				}
 				return ret;				
 		}

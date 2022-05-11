@@ -2,9 +2,12 @@
 <div class="time-clock job-select">
 	<h1>Time Clock <small id="meta"></small></h1>
 	<h2>Please Pick a Job <small>Hi, <s:property value="%{timeClock.employee}" /></small></h2>
-
+	<s:if test="hasErrors()">
+		<s:set var="errors" value="%{errors}" />		
+		<%@ include file="errors.jsp" %>
+	</s:if>
 	<s:if test="hasMessages()">
-		<s:set var="messages" value="messages" />
+		<s:set var="messages" value="%{messages}" />
 		<%@ include file="messages.jsp" %>
 	</s:if>
 

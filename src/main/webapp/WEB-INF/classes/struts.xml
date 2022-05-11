@@ -435,7 +435,7 @@
 			<result name="success">/WEB-INF/jsp/timeClock.jsp</result>
 			<result name="pickJob">/WEB-INF/jsp/clockPickJob.jsp</result>			
 		</action>
-		<action name="mobileClock" 
+		<action name="mobile" 
 						class="in.bloomington.timer.action.MobileClockAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/mobileClock.jsp</result>		

@@ -5,6 +5,7 @@ package in.bloomington.timer.bean;
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Hashtable;
@@ -26,6 +27,8 @@ public class TimeBlock extends Block{
     static Logger logger = LogManager.getLogger(TimeBlock.class);
     static final long serialVersionUID = 4000L;		
     private String inactive=""; // for deleted stuff;
+		// String formatPattern = "##.####";
+		// DecimalFormat dsf = new DecimalFormat(formatPattern);
     String hour_code = "", code_desc="", nw_code=""; // for showing on jsp
     String action_by_id="", action_type=""; // for logs
     // order_index is day order in the payperiod day list
@@ -1041,7 +1044,7 @@ public class TimeBlock extends Block{
 								errors += msg;
 						}
 						else if(minutes < 3){
-								msg = "Time entry is less than 3 minutes: "+hours;
+								msg = "Time duration is less than 3 minutes: ( "+minutes+" )";
 								hours = 0.0;
 								minutes = 0;
 								errors += msg;

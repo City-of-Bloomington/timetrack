@@ -68,6 +68,7 @@
 			<h2>Time Clock</h2>
 			<ul>
 				<li><a href="<s:property value='#application.url'/>timeClock.action">Time Clock</a></li>
+				<li><a href="<s:property value='#application.url'/>mobile.action">Mobile Clock</a></li>				
 			</ul>
 			<h2>Search</h2>
 			<ul>

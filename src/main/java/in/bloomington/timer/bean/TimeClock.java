@@ -19,7 +19,7 @@ public class TimeClock {
     static Logger logger = LogManager.getLogger(TimeClock.class);
     String id = "", id_code = "", time = "", document_id = "",
 				time_in = "", time_out = "", job_id = "",
-				employee_id = "";
+				employee_id = "", location_id="";
     final static String time_clock_duration = "13"; // hrs
     Employee employee = null;
     PayPeriod currentPayPeriod = null, previousPayPeriod = null;
@@ -73,6 +73,9 @@ public class TimeClock {
     }
 
     public String getId_code() {
+				if(id_code.isEmpty()){
+						getEmployee();
+				}
 				return id_code;
     }
 
@@ -140,6 +143,18 @@ public class TimeClock {
 						}
 				}
 				return shift != null;
+		}
+		public String getEmployee_id(){
+				if(employee_id.isEmpty())
+						getEmployee();
+				return employee_id;
+		}
+		public String getLocation_id(){
+				return location_id;
+		}
+		public void setLocation_id(String val){
+				if(val != null)
+						location_id = val;
 		}
     public void setTime(String val) {
 				if (val != null) {
@@ -239,7 +254,9 @@ public class TimeClock {
     void findDocument() {
 				if (document == null) {
 						DocumentList dl = new DocumentList();
-						dl.setEmployee_id(employee.getId());
+						if(employee_id.isEmpty())
+								getEmployee();
+						dl.setEmployee_id(employee_id);
 						dl.setPay_period_id(currentPayPeriod.getId());
 						dl.setJob_id(job_id);
 						String back = dl.find();
@@ -295,19 +312,25 @@ public class TimeClock {
     }
 
     public Employee getEmployee() {
-				if (employee == null && !id_code.isEmpty()) {
+				if (employee == null && !id_code.isEmpty() && employee_id.isEmpty()) {
 						//
 						// if two employee swipe one after another quickely
 						// we pick the first 4 digits and ignore the second
-						if(id_code.length() == 8){ 
-								id_code = id_code.substring(0,4);
-						}
 						Employee one = new Employee();
-						one.setId_code(id_code);
+						if(!employee_id.isEmpty()){
+								one.setId(employee_id);
+						}
+						else if(!id_code.isEmpty()){
+								if(id_code.length() == 8){ 
+										id_code = id_code.substring(0,4);
+								}
+								one.setId_code(id_code);
+						}
 						String back = one.doSelect();
 						if (back.isEmpty()) {
 								employee = one;
 								employee_id = employee.getId();
+								id_code = employee.getId_code();
 						}
 						else{
 								System.err.println(back+" ID code "+id_code+" ip:"+ip);
@@ -349,6 +372,11 @@ public class TimeClock {
 						employee_id = employee.getId();
 				}
 		}
+		public void setEmployee_id(String val){
+				if(val != null){
+						employee_id = val;
+				}
+		}		
 		//
     // check if has ClockIn
 		//
@@ -445,7 +473,7 @@ public class TimeClock {
 				String msg = "", hour_code_id = "1"; // 1:Reg, 14:TEMP
 				String date = Helper.getToday();
 				String yesterday = Helper.getYesterday();
-				if (id_code.isEmpty()) {
+				if (id_code.isEmpty() && location_id.isEmpty()) {
 						msg = "Employee ID code is required ";
 						return msg;
 				}
