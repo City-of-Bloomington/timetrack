@@ -15,6 +15,7 @@
 				<th>Action Type</th>
 				<th>Action By</th>
 				<th>Action Date-Time</th>
+				<th>Location</th>
 			</tr>
 			<s:iterator var="one" value="timeBlockLogs">
 			<tr>
@@ -29,6 +30,7 @@
 				<td><s:property value="action_type" /></td>
 				<td><s:property value="action_by" /></td>
 				<td><s:property value="action_time" /></td>
+				<td><s:if test="hasLocation()"><s:property value="location" /></s:if>&nbsp;</td>
 			</tr>
 			</s:iterator>
 		</table>

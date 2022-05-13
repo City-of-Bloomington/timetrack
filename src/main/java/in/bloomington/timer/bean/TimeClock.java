@@ -156,6 +156,22 @@ public class TimeClock {
 				if(val != null)
 						location_id = val;
 		}
+		//
+		// if we have ip address, we need the location id to save to the
+		// logs
+		private void findLocation(){
+				if(!ip.isEmpty()){
+						LocationList ll = new LocationList();
+						ll.setIp(ip);
+						String back = ll.find();
+						if(back.isEmpty()){
+								List<Location> ones = ll.getLocations();
+								if(ones != null && ones.size() > 0){
+										location_id = ones.get(0).getId();
+								}
+						}
+				}
+		}
     public void setTime(String val) {
 				if (val != null) {
 						getEmployee();
@@ -486,6 +502,9 @@ public class TimeClock {
 						System.err.println(msg);
 						return msg;
 				}
+				if(location_id.isEmpty() && !ip.isEmpty()){
+						findLocation();
+				}
 				//
 				// find document, if non create
 				// we need the employee job
@@ -531,6 +550,7 @@ public class TimeClock {
 																					"y", null, false, null);
 								timeBlock.setAction_type("ClockIn");
 								timeBlock.setAction_by_id(employee_id);
+								timeBlock.setLocation_id(location_id);
 								msg = timeBlock.doSave();
 						} else {
 								//
@@ -557,6 +577,7 @@ public class TimeClock {
 												timeBlock.setClock_out("y");
 												timeBlock.setAction_type("ClockOut");
 												timeBlock.setAction_by_id(employee_id);
+												timeBlock.setLocation_id(location_id);
 												msg = timeBlock.doUpdate();
 										} else { // it is a clock-in
 												timeBlock = new TimeBlock(null,
@@ -571,6 +592,7 @@ public class TimeClock {
 																									"y", null, false, null);
 												timeBlock.setAction_type("ClockIn");
 												timeBlock.setAction_by_id(employee_id);
+												timeBlock.setLocation_id(location_id);
 												msg = timeBlock.doSave();
 										}
 								}

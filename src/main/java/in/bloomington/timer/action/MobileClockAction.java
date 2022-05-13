@@ -33,6 +33,9 @@ public class MobileClockAction extends TopAction{
 		static final double default_radius  = 0.0003492; // 100 ft
 		static final double default_radius2 = 0.0005498; // 156 ft
 		static final double default_radius3 = 0.0006994; // 200 ft
+		static final double default_ft_radius  = 100; // ft
+		static final double default_ft_radius2 = 150; // ft
+		static final double default_ft_radius3 = 200; // ft		
 		static final long period_length = 15L; // minutes
 		static Instant startTime = null;		
 		double user_lat = 0, user_long=0;
@@ -216,7 +219,7 @@ public class MobileClockAction extends TopAction{
 						return false;
 				}
 				for(Location one:locations){
-						double dist = findDistance(user_lat, user_long,
+						double dist = findExactDistance(user_lat, user_long,
 																			 one.getLatitude(),
 																			 one.getLongitude());
 						System.err.println(" one "+dist);
@@ -225,7 +228,7 @@ public class MobileClockAction extends TopAction{
 						 * the following line with the next
 						*/
 						// if(dist < one.getRadius()){
-						if(dist < default_radius3){
+						if(dist < default_ft_radius3){
 								location_id = one.getId();
 								System.err.println(" found location ID "+location_id);
 								return true;

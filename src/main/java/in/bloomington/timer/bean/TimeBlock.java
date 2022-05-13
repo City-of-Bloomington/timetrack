@@ -51,6 +51,7 @@ public class TimeBlock extends Block{
     List<EarnCodeReason> earnReasons = null;
     String overnightOption = ""; // arrived before 12am, arrived after 12am
     String errors = "";
+		String location_id="";
     public TimeBlock( // for save
 										 String val,
 										 String val2,
@@ -249,6 +250,10 @@ public class TimeBlock extends Block{
 				if(val != null)
 						action_by_id = val;
     }
+    public void setLocation_id(String val){
+				if(val != null)
+						location_id = val;
+    }		
     public void setHour_code(String val){
 				if(val != null)
 						hour_code = val;
@@ -1213,7 +1218,8 @@ public class TimeBlock extends Block{
 																								id,
 																								action_type,
 																								action_by_id,
-																								null);
+																								null,
+																								location_id);
 						msg += tbl.doSave();								
 				}
 				catch(Exception ex){
@@ -1374,7 +1380,8 @@ public class TimeBlock extends Block{
 																												id,
 																												action_type,
 																												action_by_id,
-																												null);
+																												null,
+																												location_id);
 										msg += tbl.doSave();
 								}
 						}
@@ -1444,7 +1451,8 @@ public class TimeBlock extends Block{
 																								hours, minutes, amount,
 																								clock_in,clock_out,
 																								id, action_type,
-																								action_by_id,null);
+																								action_by_id,null,
+																								location_id);
 						msg = tbl.doSave();
 				}				
 				return msg;				
@@ -1570,7 +1578,8 @@ public class TimeBlock extends Block{
 																								amount,
 																								clock_in,clock_out,
 																								id, action_type,
-																								action_by_id,null);
+																								action_by_id,null,
+																								location_id);
 						msg = tbl.doSave();
 						msg = doSelect();
 				}				
@@ -1620,7 +1629,9 @@ public class TimeBlock extends Block{
 																								amount,
 																								clock_in,clock_out,
 																								id, action_type,
-																								action_by_id,null);
+																								action_by_id,
+																								null,
+																								location_id);
 						msg = tbl.doSave();
 																								
 				}

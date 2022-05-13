@@ -116,14 +116,20 @@ public class Location{
 				return true;
 		}
     public String toString(){
+				if(!name.isEmpty()){
+						return name;
+				}
 				return getInfo();
     }
 		public String getInfo(){
-				String ret = ip_address;
+				String ret = "";
 				if(!name.isEmpty()) {
-						if(!ret.isEmpty()) ret +=" ";
-						ret += "("+name+")";
+						ret += name;
 				}
+				if(!ip_address.isEmpty()){
+						if(!ret.isEmpty()) ret +=" ";						
+						ret += "("+ip_address+")";
+				};
 				if(!street_address.isEmpty()){
 						if(!ret.isEmpty()) ret +=" ";
 						ret += street_address;
@@ -302,12 +308,16 @@ public class Location{
 		}				
 
 		/**
+			 // new changes to database
 			 alter table locations add (street_address varchar(128),latitude double default 0, longitude double default 0, radius double default 0);
 			  alter table locations modify ip_address varchar(15) default null;
+				alter table time_block_logs add location_id varchar(10) default null;
+				//
 				insert into locations values(0,null,'Alison Jukebox','351 S Washington St 47401', 39.16308255,-86.53213975,0);
 				insert into locations values(0,null,'Banneker','930 W 7th St 47404',39.16892229,-86.54504903,0),                                                                (0,null,'Switchyard Park','1601 S Rogers St',39.14678876,-86.53672338,0),                                                                                       (0,null,'Bryan Park Pool','1020 S Woodlawn Ave 47401',39.15484498, -86.52331411,0),                                                                             (0,null,'Mills Park Pool','1100 W 14th ST 47404',39.17605119, -86.5447654,0),                                                                                   (0,null,'Cascades Golf Course','3550 N Kinser Pike 47404',39.2012919, -86.5390416,0),                                                                           (0,null,'Frank Southern Arena','2100 S Henderson 47401',39.14291292, -86.52736103,0),                                                                           (0,null,'Twin Lakes Sports Park','2350 W Bloomfield Rd',39.15383286, -86.56754897,0),                                                                           (0,null,'Twin Lakes Rec Center','1700 W Bloomfield Rd 47403',39.15621113,  -86.56335985,0),                                                                     (0,null,'Olcott Park','2300 E Canada Drive 47401',39.12563036,  -86.51051401,0),                                                                                (0,null,'Winslow Sports Complex','2120 S Highland Ave',39.14170598,  -86.5167582,0),
 				(0,null,'Walid Home',null,39.1380836, -86.5527257,0);
 				
+
 				
 				
 

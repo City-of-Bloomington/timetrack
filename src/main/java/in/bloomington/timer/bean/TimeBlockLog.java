@@ -21,6 +21,8 @@ public class TimeBlockLog extends Block{
 		static Logger logger = LogManager.getLogger(TimeBlockLog.class);
 		static final long serialVersionUID = 4100L;		
 		String time_block_id="", action_type="", action_by_id="", action_time="";;
+		String location_id="";
+		Location location = null;
 		Employee action_by = null;
     public TimeBlockLog(
 							 String val,
@@ -44,7 +46,8 @@ public class TimeBlockLog extends Block{
 							 String val16,
 							 
 							 String val17,
-							 String val18
+							 String val18,
+							 String val19
 							 ){
 				super(val, val2, val3,
 							val4,
@@ -53,6 +56,7 @@ public class TimeBlockLog extends Block{
 				setAction_type(val16);
 				setAction_by_id(val17);
 				setAction_time(val18);
+				setLocation_id(val19);
 		}
     public TimeBlockLog(String val){
 				super(val);
@@ -108,10 +112,17 @@ public class TimeBlockLog extends Block{
 				if(val != null)
 						action_by_id = val;
 		}
+		public void setLocation_id(String val){
+				if(val != null)
+						location_id = val;
+		}		
 		public void setAction_time(String val){
 				if(val != null)
 						action_time = val;
-		}		
+		}
+		public boolean hasLocation(){
+				return !location_id.isEmpty();
+		}
 		public Employee getAction_by(){
 				if(action_by == null && !action_by_id.isEmpty()){
 						Employee one = new Employee(action_by_id);
@@ -121,6 +132,16 @@ public class TimeBlockLog extends Block{
 						}
 				}
 				return action_by;
+		}
+		public Location getLocation(){
+				if(location == null && !location_id.isEmpty()){
+						Location one = new Location(location_id);
+						String back = one.doSelect();
+						if(back.isEmpty()){
+								location = one;
+						}
+				}
+				return location;
 		}
 		@Override
 		public boolean equals(Object o) {
@@ -137,7 +158,7 @@ public class TimeBlockLog extends Block{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,minutes,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs where id =? ";
+				String qq = "select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,minutes,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i'),location_id from time_block_logs where id =? ";
 				logger.debug(qq);
 				con = UnoConnect.getConnection();
 				if(con == null){
@@ -168,6 +189,7 @@ public class TimeBlockLog extends Block{
 								setAction_type(rs.getString(16));
 								setAction_by_id(rs.getString(17));
 								setAction_time(rs.getString(18));
+								setLocation_id(rs.getString(19));
 						}
 				}
 				catch(Exception ex){
@@ -189,7 +211,7 @@ public class TimeBlockLog extends Block{
 				PreparedStatement pstmt = null, pstmt2=null;
 				ResultSet rs = null;
 				String msg="", str="";
-				String qq = "insert into time_block_logs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,now()) ";
+				String qq = "insert into time_block_logs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,now(),?) ";
 				if(document_id.isEmpty()){
 						msg = " document not set ";
 						return msg;
@@ -236,6 +258,10 @@ public class TimeBlockLog extends Block{
 						pstmt.setString(jj++, action_type);
 						
 						pstmt.setString(jj++, action_by_id);
+						if(location_id.isEmpty())
+								pstmt.setNull(jj++, Types.VARCHAR);
+						else
+								pstmt.setString(jj++, location_id);						
 						pstmt.executeUpdate();
 						//
 						qq = "select LAST_INSERT_ID()";

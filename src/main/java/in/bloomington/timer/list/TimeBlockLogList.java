@@ -54,7 +54,7 @@ public class TimeBlockLogList{
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
 				String msg="", qw="";
-				String qq = "select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,minutes,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs ";
+				String qq = "select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,minutes,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i'),location_id from time_block_logs ";
 
 				if(!document_id.isEmpty()){
 						if(!qw.isEmpty()) qw += " and ";
@@ -104,7 +104,8 @@ public class TimeBlockLogList{
 																		 
 																		 rs.getString(16),
 																		 rs.getString(17),
-																		 rs.getString(18));
+																		 rs.getString(18),
+																		 rs.getString(19));
 								timeBlockLogs.add(one);
 						}
 				}

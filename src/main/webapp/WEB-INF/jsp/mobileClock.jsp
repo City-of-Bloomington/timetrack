@@ -1,5 +1,17 @@
 <%@ include file="headerMin.jsp" %>
+<style>  
+li  
+{  
+	color:white;  
+}
+button
+{
+	background-color:green;
+	color:white;
+}
+</style>  
 
+	
 <div class="time-clock">
 
 	<h1>TimeTrack Mobile Login <small id="meta"></small></h1>
@@ -8,9 +20,7 @@
 		<%@ include file="messages.jsp" %>
 	</s:if>
 	<s:if test="hasErrors()">
-		<s:set var="errors" value="%{errors}" />				
-		<%@ include file="errors.jsp" %>
-		<h2 class="alert-full"> Contact ITS for help.(812) 349-3454</h2>
+		<h2 class="alert-full"> You may contact ITS for help.(812) 349-3454</h2>
 	</s:if>
 	<p>To use TimeTrack Mobile Login, please read carefully </p>
 			<ul>
@@ -21,7 +31,7 @@
 				<li>If you receive a message saying that you are not close enough, move closer to the establishment and click on the 'Next' button again </li>
 				<li>If you location is accepted you will be directed to the 'Login' screen where you use the City of Bloomington username and password</li>
 				<li>A ssccessful login will take you to the welcome screen with 'Clock-in' time or 'Clock-out' time.</li>
-				<li>If you encouter any problem, talk to your manager and report the problem using ITS helpdesk </li>
+				<li>If you encouter any problem, talk to your manager and report the problem using ITS helpdesk at (812) 349-3454 or online at https://help.bloomington.in.gov</li>
 			</ul>
 			<form name="locationForm" id="locationForm" type="post" action="./mobile.action" onsubmit="verifyLocation();return false;">
 				<input type="hidden" name="user_lat" value="" id="user_lat" />
@@ -40,6 +50,13 @@
 <script type="text/javascript" src="<s:property value='#application.url' />js/mobile-clock.js"></script>
 				
 <script type="text/javascript">
+<s:if test="hasErrors()">
+   window.onload = function(){
+		 <s:iterator var="one" value="errors">
+     alert("<s:property />");
+		 </s:iterator>
+	 }
+</s:if>
 function verifyLocation(){
 		
 }
@@ -79,17 +96,17 @@ function geoFindLocation() {
 				timeout: 10
 		};
 		function checkLocation(lat, lng) {
-				alert('your location is at '+lat+","+lng);
-				lat_id.textContent = lat;
-				lng_id.textContent = lng;
-				user_lat.value = lat;
-				user_long.value = lng;
-				action_id.value = "checkLocation";
-					// navigator.geolocation.clearWatch(watchID);
-				if(lat > 0){
+			//alert('your location is at '+lat+","+lng);
+			lat_id.textContent = lat;
+			lng_id.textContent = lng;
+			user_lat.value = lat;
+			user_long.value = lng;
+			action_id.value = "checkLocation";
+			// navigator.geolocation.clearWatch(watchID);
+			if(lat > 0){
 						// location.replace("http://localhost/geoLocation/next.html");
-					form_id.submit();
-				}
+				form_id.submit();
+			}
 				// document.querySelector('#myform').submit();
 		};
 		function updateLocation(lat, lng) {

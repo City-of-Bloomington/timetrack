@@ -17,7 +17,7 @@ public class LocationList{
 
     static Logger logger = LogManager.getLogger(LocationList.class);
     static final long serialVersionUID = 3800L;
-    String name = ""; // for service
+    String name = "",ip=""; // for service
 		boolean hasLatLong = false, hasIpAddress=false;
     List<Location> locations = null;
 	
@@ -28,6 +28,10 @@ public class LocationList{
 		}
 		public void hasIpAddress(){
 				hasIpAddress = true;
+		}
+		public void setIp(String val){
+				if(val != null)
+						ip = val;
 		}
     public List<Location> getLocations(){
 				return locations;
@@ -51,6 +55,10 @@ public class LocationList{
 						if(!qw.isEmpty()) qw += " and ";
 						qw += " t.ip_address is not null ";
 				}
+				if(!ip.isEmpty()){
+						if(!qw.isEmpty()) qw += " and ";
+						qw += " t.ip_address like ? ";
+				}				
 				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
@@ -61,16 +69,14 @@ public class LocationList{
 				try{
 						logger.debug(qq);
 						pstmt = con.prepareStatement(qq);
+						if(!ip.isEmpty()){
+								pstmt.setString(1, ip);
+						}
 						rs = pstmt.executeQuery();
 						if(locations == null)
 								locations = new ArrayList<>();
 						while(rs.next()){
 								Location one =
-										/**
-										new Location(rs.getString(1),
-																 rs.getString(2),
-																 rs.getString(3));
-										*/
 								new Location(rs.getString(1),
 														 rs.getString(2),
 														 rs.getString(3),
