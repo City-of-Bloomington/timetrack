@@ -218,11 +218,12 @@ public class MobileClockAction extends TopAction{
 				if(user_lat == 0 && user_long == 0){
 						return false;
 				}
+				System.err.println(" lat lng "+user_lat+" "+user_long);
 				for(Location one:locations){
 						double dist = findExactDistance(user_lat, user_long,
 																			 one.getLatitude(),
 																			 one.getLongitude());
-						System.err.println(" one "+dist);
+						System.err.println("dist "+dist);
 						/**
 						 * if we want each location has it is own radius replace
 						 * the following line with the next

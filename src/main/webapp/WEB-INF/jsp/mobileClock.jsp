@@ -28,10 +28,10 @@ button
 				<li>Next, click on the 'Next' button when you are close enough to the establishment </li>
 				<li>It may take some time before your location is found, normally less than one minute </li>
 				<li>The geo-location is accepted if it is within reasonable distance from the establishment you will be working at</li>
-				<li>If you receive a message saying that you are not close enough, move closer to the establishment and click on the 'Next' button again </li>
-				<li>If you location is accepted you will be directed to the 'Login' screen where you use the City of Bloomington username and password</li>
-				<li>A ssccessful login will take you to the welcome screen with 'Clock-in' time or 'Clock-out' time.</li>
-				<li>If you encouter any problem, talk to your manager and report the problem using ITS helpdesk at (812) 349-3454 or online at https://help.bloomington.in.gov</li>
+				<li>If you receive a message saying that you are not close enough, move closer to the establishment and try again </li>
+				<li>If your location is accepted you will be directed to the 'Login' screen where you use the City of Bloomington username and password</li>
+				<li>A successful login will take you to the welcome screen with 'Clock-in' time or 'Clock-out' time.</li>
+				<li>If you encounter any problem, talk to your manager and report the problem using ITS helpdesk at (812) 349-3454 or online at https://help.bloomington.in.gov</li>
 			</ul>
 			<form name="locationForm" id="locationForm" type="post" action="./mobile.action" onsubmit="verifyLocation();return false;">
 				<input type="hidden" name="user_lat" value="" id="user_lat" />

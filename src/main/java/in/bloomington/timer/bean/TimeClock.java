@@ -288,7 +288,13 @@ public class TimeClock {
 				// if we could not find, then we create a new one
 				//
 				if (document == null) {
-						Document one = new Document(null, employee.getId(), currentPayPeriod.getId(), job_id, null,	employee.getId());
+						if(employee_id.isEmpty()){
+								getEmployee();
+						}
+						if(currentPayPeriod == null){
+								getCurrentPayPeriod();
+						}
+						Document one = new Document(null, employee_id, currentPayPeriod.getId(), job_id, null,	employee_id);
 						String back = one.doSave();
 						if (back.isEmpty()) {
 								document = one;
@@ -328,7 +334,7 @@ public class TimeClock {
     }
 
     public Employee getEmployee() {
-				if (employee == null && !id_code.isEmpty() && employee_id.isEmpty()) {
+				if (employee == null && (!id_code.isEmpty() || !employee_id.isEmpty())) {
 						//
 						// if two employee swipe one after another quickely
 						// we pick the first 4 digits and ignore the second
@@ -353,6 +359,7 @@ public class TimeClock {
 						}
 				}
 				if (employee != null) {
+						employee_id = employee.getId();
 						if (employee.hasGroups()) {
 								groups = employee.getGroups();
 						}

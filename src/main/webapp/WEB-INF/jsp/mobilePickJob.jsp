@@ -5,7 +5,7 @@
 
 	<s:if test="hasMessages()">
 		<s:set var="messages" value="messages" />
-		<%@ include file="messages2.jsp" %>
+		<%@ include file="messages.jsp" %>
 	</s:if>
 
 	<div>
