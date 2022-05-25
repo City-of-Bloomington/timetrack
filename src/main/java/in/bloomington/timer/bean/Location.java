@@ -311,6 +311,7 @@ public class Location{
 			 // new changes to database
 			 alter table locations add (street_address varchar(128),latitude double default 0, longitude double default 0, radius double default 0);
 			  alter table locations modify ip_address varchar(15) default null;
+				alter table locations drop index ip_address;
 				alter table time_block_logs add location_id varchar(10) default null;
 				//
 				insert into locations values(0,null,'Alison Jukebox','351 S Washington St 47401', 39.16308255,-86.53213975,0);
