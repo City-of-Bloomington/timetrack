@@ -2,10 +2,11 @@
 
 <div class="time-clock">
 
-	<h1>Mobile Time Clock<small id="meta"></small></h1>
+	<h1>TimeTrack Mobile</h1>
+	<h1 id="meta">&nbsp;</h1>
 	<h2>
 		<s:if test="!hasErrors()">
-			<small>Hi, <s:property value="employee" /></small>
+			Hi, <s:property value="employee" />
 		</s:if>
 	</h2>
 	<s:if test="isAccepted()">
@@ -32,7 +33,7 @@
 						<s:if test="mobileClock.timeBlock.isClockOut()">Bye,</s:if>
 						<s:elseif test="mobileClock.timeBlock.isClockIn()">Hi,</s:elseif>
 						<s:property value="employee" />
-					</h1><br/>
+					</h1><br />
 					
 					<h2>Current Log:</h2>
 					<h3>

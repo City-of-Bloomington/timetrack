@@ -1,12 +1,9 @@
 <%@ include file="headerMin.jsp" %>
-<div class="time-clock job-select">
-	<h1>Mobile Time Clock <small id="meta"></small></h1>
-	<h2>Please Pick a Job <small>Hi, <s:property value="%{timeClock.employee}" /></small></h2>
 
-	<s:if test="hasMessages()">
-		<s:set var="messages" value="messages" />
-		<%@ include file="messages.jsp" %>
-	</s:if>
+<div class="time-clock job-select">
+	<h1>TimeTrack Mobile </h1>
+	<h1 id="meta"> &nbsp;</h1>	
+	<h1>Please Pick a Job Hi, <s:property value="%{mobileClock.employee}" /></h1>
 
 	<div>
 		<s:form action="mobile" id="form_id" class="clock-pick-job-form" method="post" >
@@ -24,14 +21,14 @@
 								   id="<s:property value='%{#one.name}' />"
 								   value="<s:property value='%{#one.id}' />" />
 
-						<label for="<s:property value='%{#one.name}' />">
+						<label style="font-size:1.5em" for="<s:property value='%{#one.name}' />">
 							<s:property value="%{#one.name}" />
 						</label>
 					</div>
 				</s:iterator>
 			</div>
 
-			<s:submit name="action" type="submit" value="Clock In" />
+			<s:submit style="font-size:3em" name="action" type="submit" value="Clock In" />
 		</s:form>
 	</div>
 </div>

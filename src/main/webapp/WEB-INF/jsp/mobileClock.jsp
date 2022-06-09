@@ -4,19 +4,37 @@ li
 {  
 	color:white;
 	word-wrap: break-word;
-	font-size: 2.0em;
+	font-size: 3.0em;
 }
 button
 {
-	background-color:green;
-	color:white;
+	background-color:#4CAF50;
+	color: white;
+	border: none;
+	font-size: 3.0em;
+	padding: 15px 32px;
+	text-align: center;
 }
+a:link {
+  color: yellow;
+}
+
+/* visited link */
+a:visited {
+  color: #4CAF50;
+}
+
+/* mouse over link */
+a:hover {
+  color: red;
+}
+
 </style>  
-
-	
+<br /><br />
+<h1 style="font-size:3em">TimeTrack Mobile Login </h1>
+<br />
+<h1 style="font-size:2em" id="meta">&nbsp;</h1>		
 <div class="time-clock">
-
-	<h1>TimeTrack Mobile Login <small id="meta"></small></h1>
 	<s:if test="hasMessages()">
 		<s:set var="messages" value="%{messages}" />		
 		<%@ include file="messages.jsp" %>
@@ -24,7 +42,24 @@ button
 	<s:if test="hasErrors()">
 		<h2 class="alert-full"> You may contact ITS for help.(812) 349-3454</h2>
 	</s:if>
-	<p>To use TimeTrack Mobile Login, please read carefully </p>
+	<ul>
+		<li>TimeTrack Mobile requires you to be at your work location to clock in and out so you must allow location sharing. </li>
+		<li>On iPhone you will need to enable Location Services for the browsers you use for TimeTrack. </li>
+		<ul>
+			<li>Go to Settings > Privacy > Location Services to turn Location Services on.</li>
+			<li>Enable Location Services for the browser then scroll down and tap the browser name (Chrome, Edge, Firefox, Safari, etc.) and set the browser to either 'Ask Next Time Or When I Share' or 'While Using the App'.</li>
+		</ul>
+		<li>On Android (may be different depending on the device and Android version) </li>
+		<ul>
+			<li>Got Settings > apps > Samsung Internet, Chrome, FireFox > Permissions > Location </li>
+			<li>Scroll down and pick 'Allow only when using the app' or 'Ask every time'</li>
+		</ul>
+		<li>Click on 'Next' to continue</li>
+		<li>
+			if you encounter any problems, contact your manager and report the problem to ITS support at (812) 349-3454 or 
+			<a href="https://help.bloomington.in.gov"> online HelpDesk</a></li>
+	</ul>
+	<!-- 
 			<ul>
 				<li>The location must be enabled for this browser in the device you are using. You may be asked to 'Turn on location' you should answer "Yes'</li>
 				<li>Next, click on the 'Next' button when you are close enough to the establishment </li>
@@ -36,6 +71,7 @@ button
 				<li>If you are using an Iphone and you did not get any response, you have to make location services enabled. Go to your settings->Privacy->Safari->Location Services->Safari Websites: choose 'While Using the App' on the list of available options</li>  
 				<li>If you encounter any problem, talk to your manager and report the problem using ITS helpdesk at (812) 349-3454 or online at https://help.bloomington.in.gov</li>
 			</ul>
+			-->
 			<form name="locationForm" id="locationForm" type="post" action="./mobile.action" onsubmit="verifyLocation();return false;">
 				<input type="hidden" name="user_lat" value="" id="user_lat" />
 				<input type="hidden" name="user_long" value="" id="user_long" />
