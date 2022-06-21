@@ -223,7 +223,7 @@ public class MobileClockAction extends TopAction{
 						double dist = findExactDistance(user_lat, user_long,
 																			 one.getLatitude(),
 																			 one.getLongitude());
-						System.err.println("dist "+dist);
+
 						/**
 						 * if we want each location has it is own radius replace
 						 * the following line with the next
@@ -231,10 +231,12 @@ public class MobileClockAction extends TopAction{
 						// if(dist < one.getRadius()){
 						if(dist < default_ft_radius3){
 								location_id = one.getId();
+								System.err.println("dist "+dist);								
 								System.err.println(" found location ID "+location_id);
 								return true;
 						}						
 				}
+				System.err.println(" Mobile - No location found ");
 				return false;
 		}
 		private double findDistance(double lat1, double lon1,
@@ -265,7 +267,7 @@ public class MobileClockAction extends TopAction{
 
 			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 			double dist = EARTH_AVERAGE_RADIUS * c * 3.3; // convert to feet
-			System.err.println(" distance feet "+dist);
+			// System.err.println(" distance feet "+dist);
 			return dist;
 		}		
 

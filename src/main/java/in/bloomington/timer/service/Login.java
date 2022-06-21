@@ -133,7 +133,7 @@ public class Login extends HttpServlet{
 								Employee user = getUser(username);
 								if(session != null){
 										if(user != null){
-												System.err.println("login location ID "+location_id);
+												//System.err.println("login location ID "+location_id);
 												//
 												session.setAttribute("user",user);
 												if(!location_id.isEmpty()){

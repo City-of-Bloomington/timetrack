@@ -23,6 +23,9 @@
       <interceptor-ref name="defaultStack"></interceptor-ref>
       <result>/Login</result>
     </action>
+    <action name="login">
+      <result>/Login</result>
+    </action>		
     <action name="index"> 
       <result >/index.html</result>
     </action>				

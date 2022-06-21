@@ -51,12 +51,12 @@ a:hover {
 		</ul>
 		<li>On Android (may be different depending on the device and Android version) </li>
 		<ul>
-			<li>Got Settings > apps > Samsung Internet, Chrome, FireFox > Permissions > Location </li>
+			<li>Go to Settings > apps > web browser (Samsung Internet, Chrome, FireFox, etc) > Permissions > Location </li>
 			<li>Scroll down and pick 'Allow only when using the app' or 'Ask every time'</li>
 		</ul>
 		<li>Click on 'Next' to continue</li>
 		<li>
-			if you encounter any problems, contact your manager and report the problem to ITS support at (812) 349-3454 or 
+			If you encounter any problems, contact your manager and report the problem to ITS support at (812) 349-3454 or 
 			<a href="https://help.bloomington.in.gov"> online HelpDesk</a></li>
 	</ul>
 	<!-- 
