@@ -48,6 +48,7 @@ public class TimeBlock extends Block{
     String hour_code_id_old = ""; // for accrual purpose
     double hours_old = 0;
     String timeInfo = "";
+		Shift shift = null;
     List<EarnCodeReason> earnReasons = null;
     String overnightOption = ""; // arrived before 12am, arrived after 12am
     String errors = "";
@@ -225,6 +226,17 @@ public class TimeBlock extends Block{
 		public boolean hasErrors(){
 				return !errors.isEmpty();
 		}
+    public boolean hasShift(){
+				if(shift == null){
+						getDocument();
+						jobTask = document.getJob();
+						if(jobTask != null){
+								if(jobTask.hasShift())
+										shift = jobTask.getShift();
+						}
+				}
+				return shift != null;
+    }  				
 		public String getErrors(){
 				return errors;
 		}
@@ -343,7 +355,28 @@ public class TimeBlock extends Block{
 								time_in_changed = true;						
 								time_in_set = true;
 						}
-				}
+						if(hasShift()){
+								int[] timeArr = new int[2];
+								timeArr[0] = begin_hour;
+								timeArr[1] = begin_minute;
+								if(shift.hasClockInWindow()){
+										if(shift.isMinuteWithin(timeArr)){ // clock in
+												begin_minute = shift.getStartMinute();
+												begin_hour = shift.getStartHour();
+										}
+								}
+								else if(shift.hasRoundedMinute()){
+										int mm = shift.getRoundedMinute(begin_minute);
+										if(mm == 60){
+												begin_hour += 1;
+												begin_minute = 0;
+										}
+										else{
+												begin_minute = mm;
+										}
+								}
+						}
+				}								
 				else{
 						time_in_set = false;
 				}
@@ -355,6 +388,27 @@ public class TimeBlock extends Block{
 						if(msg.isEmpty()){
 								time_out_set = true;
 								time_out_changed = true;
+						}
+						if(hasShift()){
+								int[] timeArr = new int[2];
+								timeArr[0] = end_hour;
+								timeArr[1] = end_minute;
+								if(shift.hasClockOutWindow()){
+										if(shift.isClockOutMinuteWithin(timeArr)){ // clock-out
+												end_hour = shift.getEndHour();
+												end_minute = shift.getEndMinute();
+										}
+								}
+								else if(shift.hasRoundedMinute()){
+										int mm = shift.getRoundedMinute(end_minute);
+										if(mm == 60){
+												end_hour += 1;
+												end_minute = 0;
+										}
+										else{
+												end_minute = mm;
+										}
+								}
 						}
 				}
 				else{

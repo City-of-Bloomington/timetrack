@@ -20,8 +20,12 @@ public class GroupManager implements Serializable{
 		static Logger logger = LogManager.getLogger(GroupManager.class);
 		static final long serialVersionUID = 1700L;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
-    private String id="", group_id="", employee_id="", wf_node_id="",
-				employee_id2 = "", wf_node_id2="", // for second assignment
+    private String id="",
+				group_id="",
+		// for first assignment				
+				employee_id = "", wf_node_id="",wf_node_id_2="",
+		// for second assignment
+				employee_id2 = "", wf_node_id2="",wf_node_id2_2="",
 				inactive="", primary="",
 				start_date="", expire_date="";
 		List<Employee> employees = null;
@@ -72,6 +76,11 @@ public class GroupManager implements Serializable{
 						return "-1";
 				return wf_node_id;
     }
+    public String getWf_node_id_2(){
+				if(wf_node_id_2.isEmpty())
+						return "-1";
+				return wf_node_id_2;
+    }		
     public String getEmployee_id2(){
 				if(employee_id2.isEmpty())
 						return "-1";
@@ -81,7 +90,12 @@ public class GroupManager implements Serializable{
 				if(wf_node_id2.isEmpty())
 						return "-1";						
 				return wf_node_id2;
-    }		
+    }
+    public String getWf_node_id2_2(){
+				if(wf_node_id2_2.isEmpty())
+						return "-1";						
+				return wf_node_id2_2;
+    }				
     public String getStart_date(){
 				if(id.isEmpty())
 						return CommonInc.default_effective_date;
@@ -162,9 +176,17 @@ public class GroupManager implements Serializable{
 				if(val != null && !val.equals("-1"))
 						wf_node_id = val;
     }
+    public void setWf_node_id_2(String val){
+				if(val != null && !val.equals("-1"))
+						wf_node_id_2 = val;
+    }		
     public void setWf_node_id2(String val){
 				if(val != null && !val.equals("-1"))
 						wf_node_id2 = val;
+    }
+    public void setWf_node_id2_2(String val){
+				if(val != null && !val.equals("-1"))
+						wf_node_id2_2 = val;
     }		
     public void setGroup_id(String val){
 				if(val != null && !val.equals("-1"))
@@ -316,35 +338,86 @@ public class GroupManager implements Serializable{
 						if(rs.next()){
 								cnt = rs.getInt(1);
 						}
+						if(start_date.isEmpty()){
+								start_date = Helper.getToday();
+						}
+						java.util.Date date_tmp = df.parse(start_date);						
 						//
+						qq = qq2;
+						pstmt2 = con.prepareStatement(qq);						
 						if(cnt == 0){ // if not set 
-								qq = qq2;
-								pstmt2 = con.prepareStatement(qq);
 								pstmt2.setString(1, group_id);
 								pstmt2.setString(2, employee_id);
 								pstmt2.setString(3, wf_node_id);								
-								if(start_date.isEmpty()){
-										start_date = Helper.getToday();
-								}
-								java.util.Date date_tmp = df.parse(start_date);
 								pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
 								if(primary.isEmpty())
 										pstmt2.setNull(5, Types.CHAR);
 								else
 										pstmt2.setString(5, "y");
 								pstmt2.executeUpdate();
-								//
-								// secnod record
-								if(!employee_id2.isEmpty() && !wf_node_id2.isEmpty()){
+						}
+						if(!wf_node_id_2.isEmpty()){
+								pstmt.setString(1, group_id);
+								pstmt.setString(2, employee_id);
+								pstmt.setString(3, wf_node_id_2);
+								rs = pstmt.executeQuery();
+								if(rs.next()){
+										cnt = rs.getInt(1);
+								}
+								if(cnt == 0){ // if not set
 										pstmt2.setString(1, group_id);
-										pstmt2.setString(2, employee_id2);
-										pstmt2.setString(3, wf_node_id2);
+										pstmt2.setString(2, employee_id);
+										pstmt2.setString(3, wf_node_id_2);
 										pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
 										if(primary.isEmpty())
 												pstmt2.setNull(5, Types.CHAR);
 										else
 												pstmt2.setString(5, "y");										
-										pstmt2.executeUpdate();
+										pstmt2.executeUpdate();										
+								}
+								//  for second emp
+								if(!employee_id2.isEmpty()){
+										if(!wf_node_id2.isEmpty()){
+												pstmt.setString(1, group_id);
+												pstmt.setString(2, employee_id2);
+												pstmt.setString(3, wf_node_id2);
+												rs = pstmt.executeQuery();
+												if(rs.next()){
+														cnt = rs.getInt(1);
+												}
+												if(cnt == 0){ //
+														pstmt2.setString(1, group_id);
+														pstmt2.setString(2, employee_id2);
+														pstmt2.setString(3, wf_node_id2);
+														pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
+														if(primary.isEmpty())
+																pstmt2.setNull(5, Types.CHAR);
+														else
+																pstmt2.setString(5, "y");										
+														pstmt2.executeUpdate();
+												}
+										}
+										// second for first emp
+										if(!wf_node_id2_2.isEmpty()){
+												pstmt.setString(1, group_id);
+												pstmt.setString(2, employee_id2);
+												pstmt.setString(3, wf_node_id2_2);
+												rs = pstmt.executeQuery();
+												if(rs.next()){
+														cnt = rs.getInt(1);
+												}
+												if(cnt == 0){ //												
+														pstmt2.setString(1, group_id);
+														pstmt2.setString(2, employee_id2);
+														pstmt2.setString(3, wf_node_id2_2);
+														pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
+														if(primary.isEmpty())
+																pstmt2.setNull(5, Types.CHAR);
+														else
+																pstmt2.setString(5, "y");										
+														pstmt2.executeUpdate();
+												}
+										}
 								}
 								//
 								qq = "select LAST_INSERT_ID()";

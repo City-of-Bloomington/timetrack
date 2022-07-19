@@ -10,7 +10,7 @@
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="groupManager.group_id" value="%{groupManager.group_id}" />
 	<h4>New Group Manager(s) </h4>
-	Note: You can assign one or two managers at a time <br />
+	Note: You can assign one or two action to one or two managers at a time <br />
   <s:if test="hasActionErrors()">
 		<div class="errors">
       <s:actionerror/>
@@ -28,7 +28,7 @@
 	<dl class="fn1-output-field">
 		<dt>1 - Employee: </dt>
 		<s:if test="hasEmployees()">
-			<dd><s:select name="groupManager.employee_id" value="%{groupManager.employee_id}" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="Pick Employee" /> Workflow Action: <s:if test="hasNodes()"><s:select name="groupManager.wf_node_id" value="%{groupManager.wf_node_id}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /></s:if>
+			<dd><s:select name="groupManager.employee_id" value="%{groupManager.employee_id}" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="Pick Employee" /> Workflow Action:<s:if test="hasNodes()"><s:select name="groupManager.wf_node_id" value="%{groupManager.wf_node_id}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /> Workflow Action: <s:select name="groupManager.wf_node_id_2" value="%{groupManager.wf_node_id_2}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /></s:if>
 			</dd>
 		</s:if>
 		<s:else>
@@ -38,7 +38,7 @@
 	<dl class="fn1-output-field">
 		<dt>2 - Employee: </dt>
 		<s:if test="hasEmployees()">
-			<dd><s:select name="groupManager.employee_id2" value="%{groupManager.employee_id2}" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="Pick Employee" /> Workflow Action: <s:if test="hasNodes()"><s:select name="groupManager.wf_node_id2" value="%{groupManager.wf_node_id2}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /></s:if>
+			<dd><s:select name="groupManager.employee_id2" value="%{groupManager.employee_id2}" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="Pick Employee" /> Workflow action:<s:if test="hasNodes()"><s:select name="groupManager.wf_node_id2" value="%{groupManager.wf_node_id2}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /> Workflow Action:<s:select name="groupManager.wf_node_id2_2" value="%{groupManager.wf_node_id2_2}" list="nodes" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Action" /></s:if>
 			</dd>
 		</s:if>
 		<s:else>

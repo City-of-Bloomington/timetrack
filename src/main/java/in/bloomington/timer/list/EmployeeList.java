@@ -40,6 +40,7 @@ public class EmployeeList extends CommonInc{
 		boolean exclude_recent_records = false, recent_records_only=false;
     boolean includeAllDirectors = false, include_future = false;
     boolean used_time_track = false; // since last two weeks
+		boolean not_terminated = false;
     List<Employee> employees = null;
     List<Group> groups = null;
     //
@@ -157,6 +158,9 @@ public class EmployeeList extends CommonInc{
     public void setActiveOnly(){
 				active_only = true;
     }
+    public void setNotTerminated(){
+				not_terminated = true;
+    } 		
     public void setActiveStatus(String val){
 				if(val != null && !val.equals("-1")){
 						if(val.equals("Active"))
@@ -362,6 +366,13 @@ public class EmployeeList extends CommonInc{
 								if(!qw.isEmpty()) qw += " and ";								
 								qw += " pd.id=? ";
 						}
+						if(not_terminated){
+								if(qq.indexOf("jobs") == -1){
+										qq += " join jobs j on j.employee_id=e.id ";
+								}
+								if(!qw.isEmpty()) qw += " and ";
+								qw += " j.expire_date is null ";
+						}						
 				}
 				if(!qw.isEmpty())
 						qq += " where "+qw;

@@ -176,6 +176,7 @@ public class GroupManagerAction extends TopAction{
 						}
 						empl.includeAllDirectors();
 						empl.setActiveOnly();
+						empl.setNotTerminated();
 						//
 						// managers can not manage their group
 						//
