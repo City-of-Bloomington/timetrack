@@ -364,6 +364,16 @@ public class TimeBlock extends Block{
 												begin_minute = shift.getStartMinute();
 												begin_hour = shift.getStartHour();
 										}
+										else if(shift.hasRoundedMinute()){
+												int mm = shift.getRoundedMinute(begin_minute);
+												if(mm == 60){
+														begin_hour += 1;
+														begin_minute = 0;
+												}
+												else{
+														begin_minute = mm;
+												}
+										}
 								}
 								else if(shift.hasRoundedMinute()){
 										int mm = shift.getRoundedMinute(begin_minute);
@@ -397,6 +407,16 @@ public class TimeBlock extends Block{
 										if(shift.isClockOutMinuteWithin(timeArr)){ // clock-out
 												end_hour = shift.getEndHour();
 												end_minute = shift.getEndMinute();
+										}
+										else if(shift.hasRoundedMinute()){
+												int mm = shift.getRoundedMinute(end_minute);
+												if(mm == 60){
+														end_hour += 1;
+														end_minute = 0;
+												}
+												else{
+														end_minute = mm;
+												}
 										}
 								}
 								else if(shift.hasRoundedMinute()){
