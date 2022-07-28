@@ -80,20 +80,22 @@
 		<s:form action="timeClock" id="form_id" class="time-clock-form" method="post" >
 			<s:hidden name="action2" id="action2" value="" />
 			<s:if test="action == ''">
-				<s:hidden name="timeClock.time" value="%{timeClock.time}" id="time_clock_id2" />
-				<s:textfield name="timeClock.id_code" size="10" maxlength="10" requiredLabel="true" required="true" id="emp_id_code" autofocus="autofocus" placeholder="Employee ID" />
-				<s:submit name="action" type="button" value="Submit" cssClass="button_link" />
+			    <s:hidden name="timeClock.time" value="%{timeClock.time}" id="time_clock_id2" />
+			    <s:hidden name="timeClock.location_id" value="%{timeClock.location_id}" id="location_id" />			    
+			    <s:textfield name="timeClock.id_code" size="10" maxlength="10" requiredLabel="true" required="true" id="emp_id_code" autofocus="autofocus" placeholder="Employee ID" />
+			    <s:submit name="action" type="button" value="Submit" cssClass="button_link" />
 			</s:if>
 
 			<s:else>
-				<script type="text/javascript">
-		    	setTimeout(function(){
-		    		window.top.location = "<s:property value='#application.url' />timeClock.action"
-		    	}, 10000);
-		    </script>
-		    <s:hidden name="timeClock.time" value="%{timeClock.time}" id="time_clock_id2" />
-				<s:textfield name="timeClock.id_code" size="10" maxlength="10" requiredLabel="true" required="true" id="emp_id_code" autofocus="autofocus" placeholder="Employee ID" />
-				<s:submit name="action" type="button" value="Submit" cssClass="button_link" />
+			    <script type="text/javascript">
+		    	     setTimeout(function(){
+		    		 window.top.location = "<s:property value='#application.url' />timeClock.action"
+		    	     }, 10000);
+			    </script>
+			    <s:hidden name="timeClock.time" value="%{timeClock.time}" id="time_clock_id2" />
+			    <s:hidden name="timeClock.location_id" value="%{timeClock.location_id}" id="location_id" />			    
+			    <s:textfield name="timeClock.id_code" size="10" maxlength="10" requiredLabel="true" required="true" id="emp_id_code" autofocus="autofocus" placeholder="Employee ID" />
+			    <s:submit name="action" type="button" value="Submit" cssClass="button_link" />
 		  </s:else>
 		</s:form>
 	</s:if>

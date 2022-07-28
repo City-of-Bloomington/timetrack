@@ -46,7 +46,6 @@ public class LocationList{
 				Connection con = UnoConnect.getConnection();
 				String qq = "select t.id,t.ip_address,t.name,t.street_address,t.latitude,t.longitude,t.radius "+
 						"from locations t";
-				// String qq = "select t.id,t.ip_address,t.name from locations t ";
 				String qw ="";
 				if(hasLatLong){
 						qw = " t.latitude <> 0 and t.longitude <> 0 ";
@@ -62,6 +61,7 @@ public class LocationList{
 				if(!qw.isEmpty()){
 						qq += " where "+qw;
 				}
+				qq += " order by t.name ";
 				if(con == null){
 						back = "Could not connect to DB";
 						return back;

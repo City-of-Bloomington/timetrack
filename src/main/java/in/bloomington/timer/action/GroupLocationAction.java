@@ -96,6 +96,9 @@ public class GroupLocationAction extends TopAction{
 		public void setGroup_id(String val){
 				if(val != null && !val.equals("-1"))		
 						group_id = val;
+		}
+		public void setDepartment_id(String val){
+				// not needed
 		}		
 		public List<GroupLocation> getGroupLocations(){
 				if(groupLocations == null){
