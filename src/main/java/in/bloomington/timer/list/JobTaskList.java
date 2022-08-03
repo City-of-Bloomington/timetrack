@@ -242,9 +242,9 @@ public class JobTaskList{
     //
     public String find(){
 	Connection con = null;
-	PreparedStatement pstmt = null;
+	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
-	String msg="", qw="", qo="";
+	String msg="", qw="", qo="", qq2="", qw2="";
 	String qq = "select j.id,"+
 	    "j.position_id,"+
 	    "j.salary_group_id,"+
@@ -281,11 +281,14 @@ public class JobTaskList{
 	    " join positions p on j.position_id=p.id "+						
 	    " join groups g on j.group_id=g.id ";
 	if(!location_id.isEmpty()){
+	    qq2 = qq;
 	    qq += " left join group_locations gl on gl.group_id=j.group_id ";
-	    if(!qw.isEmpty()) qw += " and ";						
 	    qw += " gl.location_id = ? ";
 	}
 	qq += " join departments d on d.id=g.department_id ";
+	if(!location_id.isEmpty()){
+	    qq2 += " join departments d on d.id=g.department_id ";
+	}
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -294,86 +297,133 @@ public class JobTaskList{
 	    return msg;
 	}
 	if(active_only){
+	    if(!qw.isEmpty()) qw += " and ";    
 	    qw += " j.inactive is null ";
+	    if(!qw2.isEmpty())	qw2 += " and ";    
+	    qw2 += " j.inactive is null ";
 	}
 	else if(inactive_only){
+	    if(!qw.isEmpty())	qw += " and ";    
 	    qw += " j.inactive is not null ";
+	    if(!qw2.isEmpty())	qw2 += " and ";    	    
+	    qw2 += " j.inactive is not null ";
 	}
 	if(include_in_auto_batch){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.include_in_auto_batch is not null ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.include_in_auto_batch is not null ";	    
+	    
 	}
 	if(irregular_work_days){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.irregular_work_days is not null ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.irregular_work_days is not null ";	    
 	}
 	if(not_expired){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw += " j.expire_date is null "; 						
+	    qw += " j.expire_date is null "; 						    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.expire_date is null "; 		    
 	}
 	if(current_only){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.effective_date <= curdate() and (j.expire_date >= curdate() or j.exire_date is null) ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.effective_date <= curdate() and (j.expire_date >= curdate() or j.exire_date is null) ";	    
 	}
 	if(avoid_recent_jobs){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.added_date < date_add(curdate(),INTERVAL 10 DAY) ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.added_date < date_add(curdate(),INTERVAL 10 DAY) ";
 	}				
 	if(clock_time_required){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.clock_time_required is not null ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.clock_time_required is not null ";
 	}
 	else if(clock_time_not_required){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.clock_time_required is null ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.clock_time_required is null ";
 	}
 	if(include_future){
-	    if(!qw.isEmpty()) qw += " and ";						
+	    if(!qw.isEmpty()) qw += " and ";				     
 	    qw += " (j.expire_date > curdate() or j.expire_date is null) ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " (j.expire_date > curdate() or j.expire_date is null) ";	    
 	}
 	if(!salary_group_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.salary_group_id = ? ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.salary_group_id = ? ";	    
 	}
 	else if(non_temp_emp){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.salary_group_id <> 3 "; // Temp salary is 3
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.salary_group_id <> 3 "; // Temp salary is 3
 	}
 	if(!employee_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.employee_id = ? ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.employee_id = ? ";
 	}
 	if(!group_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.group_id = ? ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.group_id = ? ";	    
 	}						
 	if(!effective_date.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.effective_date <= ? and (j.expire_date > ? or j.expire_date is null)";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.effective_date <= ? and (j.expire_date > ? or j.expire_date is null)";	    
 	}
 	if(!pay_period_id.isEmpty()){
 	    qq += ", pay_periods pp ";
+	    if(!qq2.isEmpty())
+		qq2 += ", pay_periods pp ";		
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.effective_date <= pp.start_date and (j.expire_date >= pp.end_date or j.expire_date is null) and pp.id = ?";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.effective_date <= pp.start_date and (j.expire_date >= pp.end_date or j.expire_date is null) and pp.id = ?";	    
+	    
 	}
 	if(!position_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " j.position_id = ? ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " j.position_id = ? ";	    
 	}
 	if(!department_id.isEmpty()){
-	    if(!qw.isEmpty()) qw += " and ";						
+	    if(!qw.isEmpty()) qw += " and ";				    	
 	    qw += " d.id = ? ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += " d.id = ? ";	    
 	}
 	if(!date_from.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += which_date+" >= ? ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += which_date+" >= ? ";	    
 	}
 	if(!date_to.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += which_date+" <= ? ";
+	    if(!qw2.isEmpty())	qw2 += " and ";
+	    qw2 += which_date+" <= ? ";	    
 	}
 	if(order_by_employee){
 	    qq += " left join employees e on e.id=j.employee_id ";
+	    if(!qq2.isEmpty())
+		qq2 += " left join employees e on e.id=j.employee_id ";		
 	    qo = " order by e.last_name,e.first_name";
 	}
 	else if(order_by_id){
@@ -384,6 +434,11 @@ public class JobTaskList{
 	}
 	if(!qw.isEmpty()){
 	    qq += " where "+qw;
+	}
+	if(!qq2.isEmpty()){
+	    if(!qw2.isEmpty())	    
+		qq2 += " where "+qw2;
+	    qq2 += qo;
 	}
 	qq += qo;
 	logger.debug(qq);
@@ -477,6 +532,94 @@ public class JobTaskList{
 		if(!jobTasks.contains(one))
 		    jobTasks.add(one);
 	    }
+	    if(jobTasks == null || jobTasks.size() == 0){
+		if(!qq2.isEmpty()){
+		    pstmt2 = con.prepareStatement(qq2);
+		    jj=1;
+		    if(!salary_group_id.isEmpty()){
+			pstmt2.setString(jj++, salary_group_id);								
+		    }
+		    if(!employee_id.isEmpty()){
+			pstmt2.setString(jj++, employee_id);
+		    }
+		    if(!group_id.isEmpty()){
+			pstmt2.setString(jj++, group_id);
+		    }						
+		    if(!effective_date.isEmpty()){
+			java.util.Date date_tmp = df.parse(effective_date);
+			pstmt2.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		    }
+		    if(!pay_period_id.isEmpty()){
+			pstmt2.setString(jj++, pay_period_id);
+		    }
+		    if(!position_id.isEmpty()){
+			pstmt2.setString(jj++, position_id);
+		    }
+		    if(!department_id.isEmpty()){
+			pstmt2.setString(jj++, department_id);
+		    }
+		    
+		    if(!date_from.isEmpty()){
+			java.util.Date date_tmp = df.parse(date_from);
+			pstmt2.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		    }
+		    if(!date_to.isEmpty()){
+			java.util.Date date_tmp = df.parse(date_to);
+			pstmt2.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		    }						
+		    rs = pstmt2.executeQuery();	
+		    while(rs.next()){
+			if(jobTasks == null)
+			    jobTasks = new ArrayList<>();
+			JobTask one =
+			    new JobTask(
+					rs.getString(1),
+					rs.getString(2),
+					rs.getString(3),
+					rs.getString(4),
+					rs.getString(5),
+					rs.getString(6),
+					rs.getString(7),
+					rs.getString(8) != null,
+					rs.getInt(9),
+					rs.getInt(10),
+					rs.getDouble(11),
+					rs.getDouble(12),
+					rs.getString(13) != null,
+					rs.getDouble(14),
+					rs.getString(15),
+					rs.getString(16) != null,
+					rs.getString(17) != null,
+					rs.getString(18) != null,
+					rs.getString(19),
+					rs.getString(20),
+					
+					rs.getString(21),
+					rs.getString(22),
+					rs.getString(23) != null, 
+					rs.getString(24), // position name
+					//
+					// group
+					rs.getString(25),
+					rs.getString(26),
+					rs.getString(27),
+					rs.getString(28),
+					rs.getString(29),
+					rs.getString(30) != null,
+					rs.getString(31) != null,
+					
+					rs.getString(32),
+					rs.getString(33),
+					rs.getString(34),
+					rs.getString(35),
+					rs.getString(36) != null,
+					rs.getString(37) != null
+					);
+			if(!jobTasks.contains(one))
+			    jobTasks.add(one);
+		    }		    
+		}
+	    }
 	}
 	catch(Exception ex){
 	    msg += " "+ex;
@@ -484,6 +627,7 @@ public class JobTaskList{
 	}
 	finally{
 	    Helper.databaseDisconnect(pstmt, rs);
+	    Helper.databaseDisconnect(pstmt2, rs);
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;
