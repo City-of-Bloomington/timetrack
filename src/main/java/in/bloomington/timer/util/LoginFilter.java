@@ -21,41 +21,42 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class LoginFilter implements Filter {
-		static Logger logger = LogManager.getLogger(LoginFilter.class);
-		private ServletContext ctx = null;
-		public void init(FilterConfig config) throws ServletException {
-				ctx = config.getServletContext();
-		}
-		
-		public void doFilter(ServletRequest request,
-												 ServletResponse response,
-												 FilterChain chain) throws IOException,
-																									 ServletException {
+    static Logger logger = LogManager.getLogger(LoginFilter.class);
+    private ServletContext ctx = null;
+    public void init(FilterConfig config) throws ServletException {
+	ctx = config.getServletContext();
+    }
+    
+    public void doFilter(ServletRequest request,
+			 ServletResponse response,
+			 FilterChain chain) throws IOException,
+						   ServletException {
+	
+	HttpServletRequest req = (HttpServletRequest) request;
+	HttpServletResponse res = (HttpServletResponse) response;
+	res.addHeader("X-Frame-Options", "DENY");    	
+	String uri = req.getRequestURI();
+	HttpSession session = req.getSession(false);
+	if(session == null || session.getAttribute("user") == null){
+	    // these are our exludes
+	    if(uri.matches(".*(timeClock|PickJob|mobileClock).*") ||
+	       uri.matches(".*(Service|Login|css|jpg|png|gif|js)$")){
 
-				HttpServletRequest req = (HttpServletRequest) request;
-				HttpServletResponse res = (HttpServletResponse) response;
-		
-				String uri = req.getRequestURI();
-				HttpSession session = req.getSession(false);
-				if(session == null || session.getAttribute("user") == null){
-						// these are our exludes
-						if(uri.matches(".*(timeClock|PickJob|mobileClock).*") ||
-							 uri.matches(".*(Service|Login|css|jpg|png|gif|js)$")){
-								chain.doFilter(request, response);
-						}
-						else{
-								// everything else we need login
-								res.sendRedirect("Login");
-						}
-				}
-				else{
-						// process the rest of the chain
-						chain.doFilter(request, response);
-				}
-		}
+		chain.doFilter(request, response);
+	    }
+	    else{
+		// everything else we need login
+		res.sendRedirect("Login");
+	    }
+	}
+	else{
+	    // process the rest of the chain
+	    chain.doFilter(request, response);
+	}
+    }
 
-		public void destroy() {
-				//
-		}
+    public void destroy() {
+	//
+    }
 
 }

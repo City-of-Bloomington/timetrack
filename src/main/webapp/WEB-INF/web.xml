@@ -217,8 +217,12 @@
   </listener>
 	-->
 	<session-config>
-		<!-- added to get rid of adding jsessionid by CAS -->
-    <tracking-mode>COOKIE</tracking-mode>
-    <session-timeout>240</session-timeout>    		
+	  <!-- added to get rid of adding jsessionid by CAS -->
+	  <cookie-config>
+	    <http-only>true</http-only>        
+	    <secure>true</secure>        
+	  </cookie-config>
+	  <tracking-mode>COOKIE</tracking-mode>
+	  <session-timeout>240</session-timeout>    		
 	</session-config>
-</web-app>
+      </web-app>
