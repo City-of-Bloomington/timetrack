@@ -43,6 +43,7 @@ public class Login extends HttpServlet{
 	    principal = (AttributePrincipal) req.getUserPrincipal();
 	    username = principal.getName();
 	}
+	System.err.println(" username "+username);
 	/*
 	  Enumeration<String> headerNames = req.getHeaderNames();
 	  while (headerNames.hasMoreElements()) {
@@ -116,6 +117,7 @@ public class Login extends HttpServlet{
 	if(username == null || username.isEmpty()){
 	    username = req.getRemoteUser();
 	}
+	System.err.println(" username "+username);	
 	if(username != null){
 	    if(invalid_list.contains(username)){
 		message = "<h3>TimeTrack: Error</h3>";
