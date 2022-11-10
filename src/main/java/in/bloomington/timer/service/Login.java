@@ -43,7 +43,6 @@ public class Login extends HttpServlet{
 	    principal = (AttributePrincipal) req.getUserPrincipal();
 	    username = principal.getName();
 	}
-	System.err.println(" username "+username);
 	/*
 	  Enumeration<String> headerNames = req.getHeaderNames();
 	  while (headerNames.hasMoreElements()) {

@@ -16,78 +16,78 @@
 			<s:hidden name="timeBlock.clock_out" value="%{timeBlock.clock_out}" />
 			<s:hidden name="timeBlock.hour_code_id_old" value="%{timeBlock.hour_code_id}" />
 			<input type="hidden" id="<s:property value='timeBlock.hour_code_id' />_Hours_old" name="timeBlock.hours_old"
-				value="<s:property value='timeBlock.hours' />" />
+				     value="<s:property value='timeBlock.hours' />" />
 			<input type="hidden" name="action" value="Save Changes">
 		</s:else>
 		<s:if test="hasEmpAccruals()">
-			<s:iterator var="one" value="empAccruals">
-				<input type="hidden" id="<s:property value='related_hour_code_id' />_Hours"
-					value="<s:property value='hours' />" />
-				<input type="hidden" name="timeBlock.accrual_balance"
-					value="<s:property value='related_hour_code_id' />_<s:property value='hours' />" />
-			</s:iterator>
+		    <s:iterator var="one" value="empAccruals">
+			<input type="hidden" id="<s:property value='related_hour_code_id' />_Hours"
+			       value="<s:property value='hours' />" />
+			<input type="hidden" name="timeBlock.accrual_balance"
+			       value="<s:property value='related_hour_code_id' />_<s:property value='hours' />" />
+		    </s:iterator>
 		</s:if>
 		<s:if test="hasMonetaryHourCodes()">
-			<s:iterator var="one" value="monetaryHourCodes">
-				<input type="hidden" id="<s:property value='id' />_Monetary"
-					value="<s:property value='defaultMonetaryAmount' />" />
+		    <s:iterator var="one" value="monetaryHourCodes">
+			<input type="hidden" id="<s:property value='id' />_Monetary"
+			       value="<s:property value='defaultMonetaryAmount' />" />
 			</s:iterator>
 		</s:if>
 		<h1>
-			<s:if test="timeBlock.id == ''">
-				Add Time Block
-			</s:if>
-			<s:else>
-				Edit Time Block
-			</s:else>
-			<small>Date:
-				<s:property value="timeBlock.date" /></small>
+		    <s:if test="timeBlock.id == ''">
+			Add Time Block
+		    </s:if>
+		    <s:else>
+			Edit Time Block
+		    </s:else>
+		    <small>Date:
+			<s:property value="timeBlock.date" /></small>
 		</h1>
 		<div class="alert">
 			<p></p>
 		</div>
 		<s:if test="timeBlock.id == ''">
-			<div class="form-group" style="border-bottom: none;">
-				<label>Date Range</label>
-				<div class="date-range-picker">
-					<div>
-						<label for="timeBlock.start_date">From</label>
-						<s:textfield name="timeBlock.start_date" type="date" value="%{timeBlock.start_date}"
-							pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="start" />
-					</div>
-					<div>
-						<label for="timeBlock.end_date">To</label>
-						<s:textfield name="timeBlock.end_date" type="date" value="%{timeBlock.end_date}"
-							pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="end" />
-					</div>
-				</div>
+		    <div class="form-group" style="border-bottom: none;">
+			<label>Date Range</label>
+			<div class="date-range-picker">
+			    <div>
+				<label for="timeBlock.start_date">From</label>
+				<s:textfield name="timeBlock.start_date" type="date" value="%{timeBlock.start_date}"
+					     pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="start" />
+			    </div>
+			    <div>
+				<label for="timeBlock.end_date">To</label>
+				<s:textfield name="timeBlock.end_date" type="date" value="%{timeBlock.end_date}"
+					     pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="end" />
+			    </div>
 			</div>
-			<div class="form-group">
-				<label>&nbsp;</label>
-				<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}" /> Include Weekends
+		    </div>
+		    <div class="form-group">
+			<label>&nbsp;</label>
+			<s:checkbox name="timeBlock.include_weekends" value="%{timeBlock.include_weekends}" /> Include Weekends
 			</div>
 		</s:if>
 		<div class="form-group">
-			<label>Earn Code</label>
-			<s:if test="hasHourCodes()">
-				<s:select name="timeBlock.hour_code_id" value="%{timeBlock.id_compound}" list="hourCodes" listKey="id_compound"
+		    <label>Earn Code</label>
+		    <s:if test="hasHourCodes()">
+			<s:select name="timeBlock.hour_code_id" value="%{timeBlock.id_compound}" list="hourCodes" listKey="id_compound"
 					listValue="codeInfo" id="hour_code_select" />
-			</s:if>
+		    </s:if>
 		</div>
 		<s:if test="timeBlock.hasEarnReasons()">
-			<div class="form-group" id="reason_div_id">
-				<label>Earn Reason</label>
-				<s:select name="timeBlock.earn_code_reason_id" value="%{timeBlock.earn_code_reason_id}"
+		    <div class="form-group" id="reason_div_id">
+			<label>Earn Reason</label>
+			<s:select name="timeBlock.earn_code_reason_id" value="%{timeBlock.earn_code_reason_id}"
 					list="timeBlock.earnReasons" listKey="id" listValue="description" id="select_reason_id" />
-			</div>
+		    </div>
 		</s:if>
 		<s:else>
-			<div class="form-group" id="reason_div_id" style="display:none;">
-				<label>Earn Reason</label>
-				<select name="timeBlock.earn_code_reason_id" value="" id="select_reason_id" disabled="disabled">
-					<option value="-1">Select a Reason</option>
-				</select>
-			</div>
+		    <div class="form-group" id="reason_div_id" style="display:none;">
+			<label>Earn Reason</label>
+			<select name="timeBlock.earn_code_reason_id" value="" id="select_reason_id" disabled="disabled">
+			    <option value="-1">Select a Reason</option>
+			</select>
+		    </div>
 		</s:else>
 		<s:if test="timeBlock.hourCode.record_method == 'Time'">
 			<div id="div_time_in" class="form-group">

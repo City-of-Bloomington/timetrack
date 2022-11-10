@@ -38,7 +38,7 @@ $("#emp_name").autocomplete({
             $("#username_id").val(ui.item.id);
             $("#employee_number_id").val(ui.item.employee_number);
             $("#id_code_id").val(ui.item.id_code);
-						$("#ad_sid_id").val(ui.item.ad_sid);						
+	    $("#ad_sid_id").val(ui.item.ad_sid);						
             $("#email_id").val(ui.item.email);
             $("#department_id").val(ui.item.department_id);
             $("#group_id").val(ui.item.group_id);
@@ -124,10 +124,10 @@ $('#department_id_change').change(function() {
         dataType:'json'
     })
     .done(function( data, status ) {
-				var options = $("#group_id_set");
-				options.prop('disabled',false);
-				options.empty();
-				options.append(new Option("Pick a group","-1"));
+	var options = $("#group_id_set");
+	options.prop('disabled',false);
+	options.empty();
+	options.append(new Option("Pick a group","-1"));
         for(key in data){ // it is an array
             // var obj = data[key];
             options.append(new Option(data[key].name, data[key].id));
@@ -149,15 +149,15 @@ function handleShowCodeReason(val){
         dataType:'json'
     })
     .done(function( data, status ) {
-				var options = $("#select_reason_id");
-				options.prop('disabled',false);
-				options.empty();
-				options.append(new Option("Pick a Reason","-1"));
+	var options = $("#select_reason_id");
+	options.prop('disabled',false);
+	options.empty();
+	options.append(new Option("Pick a Reason","-1"));
         for(key in data){ // it is an array
             // var obj = data[key];
             options.append(new Option(data[key].name, data[key].id));
         }
-				$("#reason_div_id").show();				
+	$("#reason_div_id").show();				
     })
     .error(function(x,status,err){
         // alert(status+" "+err);
@@ -169,26 +169,26 @@ function handleShowCodeReason(val){
 $('#job_salary_group_change').change(function() {
     var $option = $(this).find('option:selected');
     var sel_name = $option.text();
-		if(sel_name == 'Temp'){
-				$("#weekly_hrs_id").val("20");
-				$("#comp_factor_id").val("1.5");
-				$("#holiday_factor_id").val("1.5");
-				$("#clock_required_id").attr('checked', true);				
-		}
+    if(sel_name == 'Temp'){
+	$("#weekly_hrs_id").val("20");
+	$("#comp_factor_id").val("1.5");
+	$("#holiday_factor_id").val("1.5");
+	$("#clock_required_id").attr('checked', true);				
+    }
 })
 $('#start_date_id').change(function() {
     var val = $(this).val();
-		var all_dates = $("#all_dates_id").val();
-		if(all_dates.trim() != ''){
-				if(all_dates.indexOf(val) == -1){
-						all_dates += ", "+val;
-						$("#all_dates_id").val(all_dates);
-				}
-		}
-		else{
-				$("#all_dates_id").val(val);
-		}
-		$(this).val('');
+    var all_dates = $("#all_dates_id").val();
+    if(all_dates.trim() != ''){
+	if(all_dates.indexOf(val) == -1){
+	    all_dates += ", "+val;
+	    $("#all_dates_id").val(all_dates);
+	}
+    }
+    else{
+	$("#all_dates_id").val(val);
+    }
+    $(this).val('');
 })
 
 /**
@@ -201,18 +201,18 @@ $('#hour_code_select').change(function() {
     var val = $option.val();
     if(val.indexOf('Hours') > -1){
         $('#div_hours').show();
-				$('#div_amount').hide();
+	$('#div_amount').hide();
         $('#hour_change').attr('tabindex',5);
         $('#time_in').attr('tabindex',-1);
         $('#time_out').attr('tabindex',-1);
         $('#time_overnight').attr('tabindex',-1);
-				$('#amount_change').val('');				
+	$('#amount_change').val('');				
         $('#div_time_in').hide();
         $('#div_time_out').hide();
-				$('#div_startnextday').hide();				
+	$('#div_startnextday').hide();				
         $('#div_overnight').hide();
-				$("#reason_div_id").hide();	
-				$("#select_reason_id").val('');
+	$("#reason_div_id").hide();	
+	$("#select_reason_id").val('');
     }
     else if(val.indexOf('Monetary') > -1){
         $('#div_amount').show();
@@ -224,19 +224,19 @@ $('#hour_code_select').change(function() {
         $('#div_time_in').hide();
         $('#div_time_out').hide();
         $('#div_overnight').hide();
-				$("#reason_div_id").hide();	
-				$("#select_reason_id").val('');
-				var $obj = $('#'+val);
-				if($obj){
-						var amount = $obj.val();
-						$('#amount_change').val(amount);						
-				}
+	$("#reason_div_id").hide();	
+	$("#select_reason_id").val('');
+	var $obj = $('#'+val);
+	if($obj){
+	    var amount = $obj.val();
+	    $('#amount_change').val(amount);						
+	}
     }		
     else{
         $('#div_hour_change').val(0);
         $('#div_hours').hide();
         $('#div_amount').hide();
-				$('#amount_change').val('');						
+	$('#amount_change').val('');						
         $('#div_time_in').show();
         $('#div_time_out').show();
         $('#div_overnight').show();
@@ -244,18 +244,18 @@ $('#hour_code_select').change(function() {
         $('#time_in').attr('tabindex',2);
         $('#time_out').attr('tabindex',3);
         $('#time_overnight').attr('tabindex',4);
-				//
-				// we call earn_code_reason function here
-				//
-				var codes = ['112','113','114','115','116','118'];
-				var code_id = val.substring(0,val.indexOf('_')); // id only
-				if(codes.includes(code_id)){
-						handleShowCodeReason(code_id);
-				}
-				else{
-						$("#reason_div_id").hide();	
-						$("#select_reason_id").val('');
-				}
+	//
+	// we call earn_code_reason function here
+	//
+	var codes = ['112','113','114','115','116','118'];
+	var code_id = val.substring(0,val.indexOf('_')); // id only
+	if(codes.includes(code_id)){
+	    handleShowCodeReason(code_id);
+	}
+	else{
+	    $("#reason_div_id").hide();	
+	    $("#select_reason_id").val('');
+	}
     }
 });
 /**
@@ -269,21 +269,21 @@ $('#div_hour_change').change(function() {
     var $obj = $('#'+code);
     if($obj.length > 0){
         var aval = $obj.val();
-				var aval2 = 0; // old value if exist
-				var $obj2 = $('#'+code+'_old');
-				if($obj2){
-						if($obj2.length > 0){ // if old value exist for the same code
-								aval2 = $obj2.val();
-								aval = (+aval+aval2);
-						}
-				}
+	var aval2 = 0; // old value if exist
+	var $obj2 = $('#'+code+'_old');
+	if($obj2){
+	    if($obj2.length > 0){ // if old value exist for the same code
+		aval2 = $obj2.val();
+		aval = (+aval+aval2);
+	    }
+	}
         if(+val > +aval){ // +x will convert to a number
             alert("Entered value "+val+" greated than available balance "+aval);
             $(this).val(0);
         }
     }
     if(code == "2_Hours"){ //2 is PTO id, PTO can not be less than 1
-                           //and must be multiple of0.25
+        //and must be multiple of0.25
         if(+val < 1.0){
             alert("Entered value "+val+" can not be less than 1 hour ");
             $(this).val(0);
@@ -303,24 +303,24 @@ $('#shift_time_earn_code').change(function() {
 				$('#div_amount').hide();
         $('#div_time_in').hide();
         $('#div_time_out').hide();
-				$('#amount_val').val('');
-				$('#time_in_val').val('');
-				$('#time_out_val').val('');				
+	$('#amount_val').val('');
+	$('#time_in_val').val('');
+	$('#time_out_val').val('');				
     }
     else if(val.indexOf('Monetary') > -1){
         $('#div_amount').show();
         $('#div_hours').hide();				
         $('#div_time_in').hide();
         $('#div_time_out').hide();
-				$('#hours_val').val('');
-				$('#time_in_val').val('');
-				$('#time_out_val').val('');					
+	$('#hours_val').val('');
+	$('#time_in_val').val('');
+	$('#time_out_val').val('');					
     }		
     else{
         $('#div_hours').hide();
         $('#div_amount').hide();
-				$('#hours_val').val('');
-				$('#amount_val').val('');				
+	$('#hours_val').val('');
+	$('#amount_val').val('');				
         $('#div_time_in').show();
         $('#div_time_out').show();
     }
