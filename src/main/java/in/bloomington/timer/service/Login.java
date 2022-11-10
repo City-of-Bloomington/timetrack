@@ -116,7 +116,6 @@ public class Login extends HttpServlet{
 	if(username == null || username.isEmpty()){
 	    username = req.getRemoteUser();
 	}
-	System.err.println(" username "+username);	
 	if(username != null){
 	    if(invalid_list.contains(username)){
 		message = "<h3>TimeTrack: Error</h3>";
