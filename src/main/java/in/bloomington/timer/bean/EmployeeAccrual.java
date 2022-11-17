@@ -327,7 +327,6 @@ public class EmployeeAccrual extends CommonInc{
 		date = Helper.getToday();
 	    }
 	    java.util.Date date_tmp = df.parse(date);
-	    System.err.println(" writing date "+date);
 	    pstmt = con.prepareStatement(qq);
 	    int jj=1;
 	    for(double hrs:arr){
@@ -336,7 +335,7 @@ public class EmployeeAccrual extends CommonInc{
 		pstmt.setString(2, employee_id);
 		pstmt.setDouble(3, hrs);
 		pstmt.setDate(4, new java.sql.Date(date_tmp.getTime()));
-		pstmt.executeUpdate();								
+		pstmt.executeUpdate();
 		jj++;
 	    }
 	}

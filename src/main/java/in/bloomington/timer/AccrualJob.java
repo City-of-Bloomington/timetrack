@@ -82,7 +82,10 @@ public class AccrualJob implements Job{
 	if(!date.isEmpty() && depts != null){
 	    for(Department dept:depts){
 		HandleNwAccrual handle = new HandleNwAccrual(dept.getRef_id(), date, end_date);
-		msg = handle.process();
+		if(Helper.isFireDept(dept.getRef_id()))
+		    msg = handle.processFire();
+		else
+		    msg = handle.process();
 	    }
 	}
     }

@@ -19,122 +19,122 @@ import org.apache.logging.log4j.Logger;
 
 public class AccrualContributeAction extends TopAction{
 
-		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(AccrualContributeAction.class);
-		//
-		String contributesTitle = "Current Accrual Contribute Types";
-		AccrualContribute contribute = null;
-		List<AccrualContribute> contributes = null;
-		List<Accrual> accruals = null;
-		List<HourCode> hourCodes = null;
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(action.equals("Save")){
-						back = contribute.doSave();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Saved Successfully");
-						}
-				}				
-				else if(action.startsWith("Save")){
-						back = contribute.doUpdate();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Saved Successfully");
-						}
-				}
-				else{		
-						getContribute();
-						if(!id.isEmpty()){
-								back = contribute.doSelect();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-						}
-				}
-				return ret;
+    static final long serialVersionUID = 3800L;	
+    static Logger logger = LogManager.getLogger(AccrualContributeAction.class);
+    //
+    String contributesTitle = "Current Accrual Contribute Types";
+    AccrualContribute contribute = null;
+    List<AccrualContribute> contributes = null;
+    List<Accrual> accruals = null;
+    List<HourCode> hourCodes = null;
+    public String execute(){
+	String ret = SUCCESS;
+	String back = doPrepare();
+	if(action.equals("Save")){
+	    back = contribute.doSave();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Saved Successfully");
+	    }
+	}				
+	else if(action.startsWith("Save")){
+	    back = contribute.doUpdate();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Saved Successfully");
+	    }
+	}
+	else{		
+	    getContribute();
+	    if(!id.isEmpty()){
+		back = contribute.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
 		}
-		public AccrualContribute getContribute(){
-				if(contribute == null){
-						contribute = new AccrualContribute();
-						contribute.setId(id);
-				}
-				return contribute;
+	    }
+	}
+	return ret;
+    }
+    public AccrualContribute getContribute(){
+	if(contribute == null){
+	    contribute = new AccrualContribute();
+	    contribute.setId(id);
+	}
+	return contribute;
 						
-		}
-		public void setContribute(AccrualContribute val){
-				if(val != null){
-						contribute = val;
-				}
-		}
+    }
+    public void setContribute(AccrualContribute val){
+	if(val != null){
+	    contribute = val;
+	}
+    }
 		
-		public String getContributesTitle(){
+    public String getContributesTitle(){
 				
-				return contributesTitle;
-		}
+	return contributesTitle;
+    }
 
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public List<AccrualContribute> getContributes(){
+	if(contributes == null){
+	    AccrualContributeList tl = new AccrualContributeList();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<AccrualContribute> ones = tl.getContributes();
+		if(ones != null && ones.size() > 0){
+		    contributes = ones;
 		}
-		public List<AccrualContribute> getContributes(){
-				if(contributes == null){
-						AccrualContributeList tl = new AccrualContributeList();
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<AccrualContribute> ones = tl.getContributes();
-								if(ones != null && ones.size() > 0){
-										contributes = ones;
-								}
-						}
-				}
-				return contributes;
+	    }
+	}
+	return contributes;
+    }
+    public List<Accrual> getAccruals(){
+	if(accruals == null){
+	    AccrualList tl = new AccrualList();
+	    tl.setActiveOnly();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<Accrual> ones = tl.getAccruals();
+		if(ones != null && ones.size() > 0){
+		    accruals = ones;
 		}
-		public List<Accrual> getAccruals(){
-				if(accruals == null){
-						AccrualList tl = new AccrualList();
-						tl.setActiveOnly();
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<Accrual> ones = tl.getAccruals();
-								if(ones != null && ones.size() > 0){
-										accruals = ones;
-								}
-						}
-				}
-				return accruals;
-		}		
-		public List<HourCode> getHourCodes(){
-				if(hourCodes == null){
-						HourCodeList tl = new HourCodeList();
-						tl.setActiveOnly();
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<HourCode> ones = tl.getHourCodes();
-								if(ones != null && ones.size() > 0){
-										hourCodes = ones;
-								}
-						}
-				}
-				return hourCodes;
+	    }
+	}
+	return accruals;
+    }		
+    public List<HourCode> getHourCodes(){
+	if(hourCodes == null){
+	    HourCodeList tl = new HourCodeList();
+	    tl.setActiveOnly();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<HourCode> ones = tl.getHourCodes();
+		if(ones != null && ones.size() > 0){
+		    hourCodes = ones;
 		}
-		public boolean hasAccruals(){
-				getAccruals();
-				return accruals  != null && accruals.size() > 0;
-		}
-		public boolean hasHourCodes(){
-				getHourCodes();
-				return hourCodes != null && hourCodes.size() > 0;
-		}
-		public boolean hasContributes(){
-				getContributes();
-				return contributes  != null && contributes.size() > 0;
-		}		
+	    }
+	}
+	return hourCodes;
+    }
+    public boolean hasAccruals(){
+	getAccruals();
+	return accruals  != null && accruals.size() > 0;
+    }
+    public boolean hasHourCodes(){
+	getHourCodes();
+	return hourCodes != null && hourCodes.size() > 0;
+    }
+    public boolean hasContributes(){
+	getContributes();
+	return contributes  != null && contributes.size() > 0;
+    }		
 }
 
 

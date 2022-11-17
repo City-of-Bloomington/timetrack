@@ -18,83 +18,83 @@ import org.apache.logging.log4j.Logger;
 
 public class AccrualAction extends TopAction{
 
-		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(AccrualAction.class);
-		//
-		String accrualsTitle = "Current Accrual Types";
-		Accrual accrual = null;
-		List<Accrual> accruals = null;
+    static final long serialVersionUID = 3800L;	
+    static Logger logger = LogManager.getLogger(AccrualAction.class);
+    //
+    String accrualsTitle = "Current Accrual Types";
+    Accrual accrual = null;
+    List<Accrual> accruals = null;
 
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(action.equals("Save")){
-						back = accrual.doSave();
-						if(!back.isEmpty()){
-								addError(back);
-								addActionError(back);
-						}
-						else{
-								addMessage("Saved Successfully");
-						}
-				}				
-				else if(action.startsWith("Save")){
-						back = accrual.doUpdate();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Saved Successfully");
-						}
-				}
-				else{		
-						getAccrual();
-						if(!id.isEmpty()){
-								back = accrual.doSelect();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-						}
-				}
-				return ret;
+    public String execute(){
+	String ret = SUCCESS;
+	String back = doPrepare();
+	if(action.equals("Save")){
+	    back = accrual.doSave();
+	    if(!back.isEmpty()){
+		addError(back);
+		addActionError(back);
+	    }
+	    else{
+		addMessage("Saved Successfully");
+	    }
+	}				
+	else if(action.startsWith("Save")){
+	    back = accrual.doUpdate();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Saved Successfully");
+	    }
+	}
+	else{		
+	    getAccrual();
+	    if(!id.isEmpty()){
+		back = accrual.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
 		}
-		public Accrual getAccrual(){
-				if(accrual == null){
-						accrual = new Accrual();
-						accrual.setId(id);
-				}
-				return accrual;
+	    }
+	}
+	return ret;
+    }
+    public Accrual getAccrual(){
+	if(accrual == null){
+	    accrual = new Accrual();
+	    accrual.setId(id);
+	}
+	return accrual;
 						
-		}
-		public void setAccrual(Accrual val){
-				if(val != null){
-						accrual = val;
-				}
-		}
+    }
+    public void setAccrual(Accrual val){
+	if(val != null){
+	    accrual = val;
+	}
+    }
 		
-		public String getAccrualsTitle(){
+    public String getAccrualsTitle(){
 				
-				return accrualsTitle;
-		}
+	return accrualsTitle;
+    }
 
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public List<Accrual> getAccruals(){
+	if(accruals == null){
+	    AccrualList tl = new AccrualList();
+	    tl.setActiveOnly();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<Accrual> ones = tl.getAccruals();
+		if(ones != null && ones.size() > 0){
+		    accruals = ones;
 		}
-		public List<Accrual> getAccruals(){
-				if(accruals == null){
-						AccrualList tl = new AccrualList();
-						tl.setActiveOnly();
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<Accrual> ones = tl.getAccruals();
-								if(ones != null && ones.size() > 0){
-										accruals = ones;
-								}
-						}
-				}
-				return accruals;
-		}
+	    }
+	}
+	return accruals;
+    }
 
 }
 
