@@ -261,7 +261,7 @@ public class EmployeeList extends CommonInc{
 	else{
 	    if(!name.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " (concat(e.first_name,' ',e.last_name) like ? or concat(e.last_name,' ',e.first_name) like ? )";
+		qw += " (concat(e.first_name,' ',e.last_name) like ? or concat(e.last_name,' ',e.first_name) like ? or e.username like ?)";
 	    }
 	    else if(!exclude_name.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";								
@@ -403,7 +403,8 @@ public class EmployeeList extends CommonInc{
 	    else{
 		if(!name.isEmpty()){
 		    pstmt.setString(jj++,name+"%");
-		    pstmt.setString(jj++,name+"%");										
+		    pstmt.setString(jj++,name+"%");
+		    pstmt.setString(jj++,name+"%");
 		}
 		else if(!exclude_name.isEmpty()){
 		    pstmt.setString(jj++,exclude_name);

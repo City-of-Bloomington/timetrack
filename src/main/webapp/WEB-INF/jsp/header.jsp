@@ -56,15 +56,13 @@
       </s:if>
       <s:if test="user.isITSAdmin()">
 	      <a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>
-				
       </s:if>
       <s:if test="user.isPublicWorksAdmin()">
         <a href="<s:property value='#application.url'/>reportPublicWorks.action">Asset Management Report</a>
       </s:if>			
       <s:if test="user.isPoliceAdmin()">
-	      <a href="<s:property value='#application.url'/>reportReason.action">Police Reason Report</a>
-              <a href="<s:property value='#application.url'/>switch.action?department_id=20">Change Target Employee</a>				
-      </s:if>			
+	  <a href="<s:property value='#application.url'/>reportReason.action">Police Reason Report</a>
+      </s:if>
       <s:if test="user.canRunMpoReport()">
               <a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO Report</a>
       </s:if>
@@ -72,18 +70,21 @@
               <a href="<s:property value='#application.url'/>reportHand.action">HAND MPO Report</a>
       </s:if>			
       <s:if test="user.canRunFireReport()">
-              <a href="<s:property value='#application.url'/>shiftTime.action?department_id=16">Employee Shift Times</a>
+          <a href="<s:property value='#application.url'/>shiftTime.action?department_id=16">Employee Shift Times</a>
       </s:if>						
       <s:if test="user.canRunParkReport()">
-	      <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
-	      <a href="<s:property value='#application.url'/>jobIntervention.action">Jobs Need Intervention</a>				
-	      <a href="<s:property value='#application.url'/>jobsReport.action?department_id=5">Current Employee Jobs</a>
-	      <a href="<s:property value='#application.url'/>reportTimes.action?department_id=5">Employee Time Details</a>
-	      <a href="<s:property value='#application.url'/>empWizard.action">Add Employee Wizard</a>				
+	  <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
+	  <a href="<s:property value='#application.url'/>jobIntervention.action">Jobs Need Intervention</a>				
+	  <a href="<s:property value='#application.url'/>jobsReport.action?department_id=5">Current Employee Jobs</a>
+	  <a href="<s:property value='#application.url'/>reportTimes.action?department_id=5">Employee Time Details</a>
+	  <a href="<s:property value='#application.url'/>empWizard.action">Add Employee Wizard</a>				
       </s:if>
-      <s:elseif test="user.canRunTargetEmployee()">
-              <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
-      </s:elseif>
+      <s:if test="user.canRunTargetEmployee()">
+          <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
+      </s:if>
+      <s:if test="user.canRunTimewarp()">
+	  <a href="<s:property value='#application.url'/>tmwrpWrap.action">Timewarp </a>	
+      </s:if>      
     </s:if>
   </div>
 

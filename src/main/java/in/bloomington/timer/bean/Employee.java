@@ -214,7 +214,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 	String ret = "";
 	if(!roleSet.isEmpty()){
 	    for(String str:roleSet){
-		if(ret.indexOf(str) > -1) continue;
+		// if(ret.indexOf(str) > -1) continue;
 		if(!ret.isEmpty()) ret += ", ";
 		ret += str.trim();
 	    }
@@ -469,7 +469,7 @@ public class Employee implements Serializable, Comparable<Employee>{
     }		
     public boolean isITSAdmin(){
 	return hasRole("ITSAdmin");
-    }		
+    }
 		
     public boolean isHrAdmin(){
 	return hasRole("HrAdmin");
