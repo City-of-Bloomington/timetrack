@@ -14,8 +14,8 @@
   <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
   <link rel="SHORTCUT ICON" href="https://apps.bloomington.in.gov/favicon.ico" />
 
-  <link rel="stylesheet" href="<s:property value='#application.url' />js/jquery-ui.min-1.12.1.css" type="text/css" media="all" />
-  <link rel="stylesheet" href="<s:property value='#application.url' />js/jquery-ui.theme-1.12.1.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="<s:property value='#application.url' />js/jquery-ui.min-1.13.2.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="<s:property value='#application.url' />js/jquery-ui.theme.min-1.13.2.css" type="text/css" media="all" />
 
   <link rel="stylesheet" href="<s:property value='#application.url' />css/main.css" type="text/css">
 
