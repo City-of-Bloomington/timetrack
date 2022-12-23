@@ -247,7 +247,7 @@ public class HandleNwAccrual{
 		    hrsArr[3] = holya;
 		    hrsArr[7] = pfla;
 		    // empHashArr.put(str2, hrsArr);
-		    // System.err.println("handleNwAccrual: id,emp_num,accruals "+ emp_id+" "+str2+" "+str3+" "+ptoa+" "+scka+" "+holya+" "+cua+" "+lba+" "+vla+" "+klv+" "+pfla);
+		    // System.err.println("handleNwAccrual: id,emp_num,accruals "+ emp_id+" "+str2+" "+str3+" "+ptoa+" "+scka+" "+holya+" "+cua+" "+pfla);
 		}
 		else{
 		    System.err.println(" emp num not found "+str2);
@@ -295,12 +295,40 @@ public class HandleNwAccrual{
 		    if(!msg.isEmpty()){
 			System.err.println(" error "+msg);
 		    }
+		    empHashArr.remove(str2);
 		    //
 		}
 		else{
 		    System.err.println(" emp num not found "+str2);
 		}
-	    }	    
+	    }
+	    // check for empHash to see if there are record not used above
+	    //
+	    if(empHashArr.size() > 0){
+		for(Map.Entry<String, Double[]> set: empHashArr.entrySet()){
+		    String key = set.getKey(); // employee number
+		    Double[] hrsArr = set.getValue();
+		    double arr[] = {0,0,0,0,0, 0,0,0};
+		    arr[0] = hrsArr[0];
+		    arr[1] = hrsArr[1];
+		    arr[2] = hrsArr[2];
+		    arr[3] = hrsArr[3];
+		    arr[4] = hrsArr[4];
+		    arr[5] = hrsArr[5];
+		    arr[6] = hrsArr[6];
+		    arr[7] = hrsArr[7];			    
+		    // System.err.println(" key "+key+":"+arr);
+		    if(empHash.containsKey(key)){
+			String emp_id = empHash.get(key);
+			EmployeeAccrual empa = new EmployeeAccrual(emp_id, write_date);
+			msg = empa.doSaveBatch(arr);
+			if(!msg.isEmpty()){
+			    System.err.println(" error "+msg);
+			}			
+		    }
+		}
+	    }
+	    
 	}
 	catch (Exception ex) {
 	    logger.error(ex);
