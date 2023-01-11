@@ -55,8 +55,11 @@
 							
       </s:if>
       <s:if test="user.isITSAdmin()">
-	      <a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>
+	  <a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>
       </s:if>
+      <s:if test="user.isEngineeringAdmin()">
+	  <a href="<s:property value='#application.url'/>reportFiber.action">Fiber Report</a>
+      </s:if>      
       <s:if test="user.isPublicWorksAdmin()">
         <a href="<s:property value='#application.url'/>reportPublicWorks.action">Asset Management Report</a>
       </s:if>			

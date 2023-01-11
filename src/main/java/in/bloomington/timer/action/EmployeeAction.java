@@ -23,6 +23,7 @@ public class EmployeeAction extends TopAction{
     //
     static final String[] roles = {"Employee",
 	"Admin",
+	"EngineeringAdmin",
 	"FireReport",	
 	"FMLAReport",
 	"HANDReport",

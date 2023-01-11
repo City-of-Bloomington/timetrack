@@ -34,16 +34,17 @@ public class ReportPlanAction extends TopAction{
 				String ret = SUCCESS;
 				String back = doPrepare();
 				if(!action.isEmpty()){
-						back = report.findHoursByNameCode();						
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								if(true){
-										List<WarpEntry> ones = report.getEntries();
-										if(ones != null && ones.size() > 0){
-												entries = ones;
-												addMessage("Found "+ones.size()+" entries");
+				    back = report.findHoursByNameCode();
+				    back += report.findHoursByDateAndCode();	
+				    if(!back.isEmpty()){
+					addError(back);
+				    }
+				    else{
+					if(true){
+					    List<WarpEntry> ones = report.getEntries();
+					    if(ones != null && ones.size() > 0){
+						entries = ones;
+						addMessage("Found "+ones.size()+" entries");
 										}
 										else{
 												addMessage("No records found");

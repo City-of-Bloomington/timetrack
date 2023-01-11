@@ -466,7 +466,10 @@ public class Employee implements Serializable, Comparable<Employee>{
     }
     public boolean isPoliceAdmin(){
 	return hasRole("PoliceAdmin");
-    }		
+    }
+    public boolean isEngineeringAdmin(){
+	return hasRole("EngineeringAdmin");
+    }    
     public boolean isITSAdmin(){
 	return hasRole("ITSAdmin");
     }
