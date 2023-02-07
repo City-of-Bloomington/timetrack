@@ -289,13 +289,22 @@
 			<result name="success">/WEB-INF/jsp/timewarp/tmwrpInitiate.jsp</result>
 		</action>		
 		<action name="reportHand" 
-						class="in.bloomington.timer.action.ReportHandAction" 
-						method="execute">
+			class="in.bloomington.timer.action.ReportHandAction" 
+			method="execute">
 			<result name="input">/WEB-INF/jsp/reports/reportHand.jsp</result>		
 			<result name="error">/WEB-INF/jsp/reports/reportHand.jsp</result>
 			<result name="success">/WEB-INF/jsp/reports/reportHand.jsp</result>
 			<result name="csv">/WEB-INF/jsp/reports/reportHandCsv.jsp</result>
 		</action>
+		<action name="groupsReport" 
+			class="in.bloomington.timer.action.ReportGroupsAction" 
+			method="execute">
+			<result name="input">/WEB-INF/jsp/reports/groupsReport.jsp</result>		
+			<result name="error">/WEB-INF/jsp/reports/groupsReport.jsp</result>
+			<result name="success">/WEB-INF/jsp/reports/groupsReport.jsp</result>
+			<result name="csv">/WEB-INF/jsp/reports/reportGroupManagersCsv.jsp</result>
+		</action>
+		
 		<action name="reportTimes" 
 						class="in.bloomington.timer.action.ReportTimesAction" 
 						method="execute">

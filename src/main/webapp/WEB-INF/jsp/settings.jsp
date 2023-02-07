@@ -97,11 +97,13 @@
 		<li><a href="<s:property value='#application.url'/>reportEl.action">HR Emergency Leave (EL) </a></li>
 		<li><a href="<s:property value='#application.url'/>reportFiber.action">Engineering Fiber </a></li>		
 		<li><a href="<s:property value='#application.url'/>jobsReport.action">Employee Jobs</a></li>
+		<li><a href="<s:property value='#application.url'/>groupsReport.action">Groups and Related Managers</a></li>		
 		<li><a href="<s:property value='#application.url'/>jobIntervention.action">Parks Jobs Need Intervention</a></li>
 		<li><a href="<s:property value='#application.url'/>reportTimes.action">Employees Time Details</a></li>
 		<li><a href="<s:property value='#application.url'/>reportReason.action">Police Code Reasons</a></li>
 		<li><a href="<s:property value='#application.url'/>reportPublicWorks.action">Asset Management (Public Works)</a></li>
-		<li><a href="<s:property value='#application.url'/>reportUnscheduled.action">Unscheduled Times</a></li>				
+		<li><a href="<s:property value='#application.url'/>reportUnscheduled.action">Unscheduled Times</a></li>
+		
 	    </ul>			
 	    <h2>Schedulers</h2>
 	    <ul>

@@ -374,48 +374,48 @@ public class GroupManager implements Serializable{
 			pstmt2.setString(5, "y");										
 		    pstmt2.executeUpdate();										
 		}
-		//  for second emp
-		if(!employee_id2.isEmpty()){
-		    if(!wf_node_id2.isEmpty()){
-			pstmt.setString(1, group_id);
-			pstmt.setString(2, employee_id2);
-			pstmt.setString(3, wf_node_id2);
-			rs = pstmt.executeQuery();
-			if(rs.next()){
-			    cnt = rs.getInt(1);
-			}
-			if(cnt == 0){ //
-			    pstmt2.setString(1, group_id);
-			    pstmt2.setString(2, employee_id2);
-			    pstmt2.setString(3, wf_node_id2);
-			    pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
-			    if(primary.isEmpty())
-				pstmt2.setNull(5, Types.CHAR);
-			    else
-				pstmt2.setString(5, "y");										
-			    pstmt2.executeUpdate();
-			}
+	    }
+	    //  for second emp
+	    if(!employee_id2.isEmpty()){
+		if(!wf_node_id2.isEmpty()){
+		    pstmt.setString(1, group_id);
+		    pstmt.setString(2, employee_id2);
+		    pstmt.setString(3, wf_node_id2);
+		    rs = pstmt.executeQuery();
+		    if(rs.next()){
+			cnt = rs.getInt(1);
 		    }
-		    // second for first emp
-		    if(!wf_node_id2_2.isEmpty()){
-			pstmt.setString(1, group_id);
-			pstmt.setString(2, employee_id2);
-			pstmt.setString(3, wf_node_id2_2);
-			rs = pstmt.executeQuery();
-			if(rs.next()){
-			    cnt = rs.getInt(1);
-			}
-			if(cnt == 0){ //												
-			    pstmt2.setString(1, group_id);
-			    pstmt2.setString(2, employee_id2);
-			    pstmt2.setString(3, wf_node_id2_2);
-			    pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
-			    if(primary.isEmpty())
-				pstmt2.setNull(5, Types.CHAR);
-			    else
-				pstmt2.setString(5, "y");										
-			    pstmt2.executeUpdate();
-			}
+		    if(cnt == 0){ //
+			pstmt2.setString(1, group_id);
+			pstmt2.setString(2, employee_id2);
+			pstmt2.setString(3, wf_node_id2);
+			pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
+			if(primary.isEmpty())
+			    pstmt2.setNull(5, Types.CHAR);
+			else
+			    pstmt2.setString(5, "y");										
+			pstmt2.executeUpdate();
+		    }
+		}
+		// second for first emp
+		if(!wf_node_id2_2.isEmpty()){
+		    pstmt.setString(1, group_id);
+		    pstmt.setString(2, employee_id2);
+		    pstmt.setString(3, wf_node_id2_2);
+		    rs = pstmt.executeQuery();
+		    if(rs.next()){
+			cnt = rs.getInt(1);
+		    }
+		    if(cnt == 0){ //
+			pstmt2.setString(1, group_id);
+			pstmt2.setString(2, employee_id2);
+			pstmt2.setString(3, wf_node_id2_2);
+			pstmt2.setDate(4, new java.sql.Date(date_tmp.getTime()));
+			if(primary.isEmpty())
+			    pstmt2.setNull(5, Types.CHAR);
+			else
+			    pstmt2.setString(5, "y");										
+			pstmt2.executeUpdate();
 		    }
 		}
 		//
