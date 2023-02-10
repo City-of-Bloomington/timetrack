@@ -46,12 +46,12 @@
 		</s:else>
 	</dl>	
 	<dl class="fn1-output-field">
-		<dt>Start Date </dt>
-		<dd><s:textfield name="groupManager.start_date" value="%{groupManager.start_date}" size="10" maxlength="10" required="true" cssClass="date" />* </dd>
+	    <dt>Start Date </dt>
+	    <dd><s:select name="groupManager.start_date" value="" list="payPeriods" listKey="startDate" listValue="startDate"/>* </dd>
 	</dl>
 	<dl class="fn1-output-field">
-		<dt>Expire Date </dt>
-		<dd><s:textfield name="groupManager.expire_date" value="%{groupManager.expire_date}" size="10" maxlength="10" cssClass="date" /> </dd>
+	    <dt>Expire Date </dt>
+	    <dd><s:select name="groupManager.expire_date" value="" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick Expire Date" /> </dd>
 	</dl>
 	<s:if test="hasEmployees()">		
 		<s:submit name="action" type="button" value="Save" class="fn1-btn"/>
