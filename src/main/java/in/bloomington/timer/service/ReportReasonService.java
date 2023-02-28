@@ -54,11 +54,12 @@ public class ReportReasonService extends HttpServlet{
 	String refUserId = "", back ="";
 	String outputType = "";
 	String end_date = Helper.getToday();
-	// String end_date = "02/01/2021";
+
 	int cur_year = Helper.getCurrentYear();
 	String start_date = "01/01/"+cur_year;
 	String host_forward = req.getHeader("X-Forwarded-Host");
 	String host = req.getHeader("host");
+	String year = ""+cur_year;
 	if(host_forward != null){
 	    if(host_forward.indexOf("timetrack") == -1)
 		url = host_forward+"/timetrack/";
@@ -99,6 +100,9 @@ public class ReportReasonService extends HttpServlet{
 		// since rates are current only other years may not be accurate
 		if(value != null && !value.isEmpty()){
 		    start_date = "01/01/"+value;
+		    if(!value.equals(""+cur_year)){ // for previous years
+			end_date = "12/31/"+value;
+		    }
 		}
 	    }
 	    else if(name.equals("Employees.xsd")){
@@ -350,3 +354,4 @@ public class ReportReasonService extends HttpServlet{
 	out.println("</xs:schema>");
     }
 }
+
