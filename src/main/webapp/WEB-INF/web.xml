@@ -4,18 +4,18 @@
 		 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
 		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
-    <display-name>TimeTracker</display-name>
-    <description>
-			Employee time keeping app
-    </description>
-	 <context-param>
-     <param-name>quartz:config-file</param-name>
-     <param-value>quartz.properties</param-value>
-	 </context-param>
-	 <context-param>
-     <param-name>quartz:shutdown-on-unload</param-name>
-     <param-value>true</param-value>
-   </context-param>
+  <display-name>TimeTracker</display-name>
+  <description>
+    Employee time keeping app
+  </description>
+  <context-param>
+    <param-name>quartz:config-file</param-name>
+    <param-value>quartz.properties</param-value>
+  </context-param>
+  <context-param>
+    <param-name>quartz:shutdown-on-unload</param-name>
+    <param-value>true</param-value>
+  </context-param>
    <context-param>
      <param-name>quartz:wait-on-shutdown</param-name>
      <param-value>true</param-value>
@@ -56,7 +56,7 @@
       <servlet-name>ReportCodeReasonService</servlet-name>
       <servlet-class>in.bloomington.timer.service.ReportCodeReasonService</servlet-class>
     </servlet>
-		<servlet>
+    <servlet>
       <servlet-name>ReportReasonService</servlet-name>
       <servlet-class>in.bloomington.timer.service.ReportReasonService</servlet-class>
     </servlet>		
@@ -88,55 +88,55 @@
     <servlet-name>Login</servlet-name>
     <url-pattern>/Login</url-pattern>
   </servlet-mapping>
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>EmployeeService</servlet-name>
     <url-pattern>/EmployeeService</url-pattern>
   </servlet-mapping>
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>GroupService</servlet-name>
     <url-pattern>/GroupService</url-pattern>
   </servlet-mapping>
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>NewEmployeeService</servlet-name>
     <url-pattern>/NewEmployeeService</url-pattern>
   </servlet-mapping>	
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>CodeReasonService</servlet-name>
     <url-pattern>/CodeReasonService</url-pattern>
   </servlet-mapping>
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>ReportCodeReasonService</servlet-name>
     <url-pattern>/ReportCodeReasonService</url-pattern>
   </servlet-mapping>
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>ReportReasonService</servlet-name>
     <url-pattern>/ReportReasonService</url-pattern>
   </servlet-mapping>	
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>GroupManagerService</servlet-name>
     <url-pattern>/GroupManagerService</url-pattern>
   </servlet-mapping>
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>ManagerService</servlet-name>
     <url-pattern>/ManagerService</url-pattern>
   </servlet-mapping>
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>PositionService</servlet-name>
     <url-pattern>/PositionService</url-pattern>
   </servlet-mapping>	
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>DepartmentService</servlet-name>
     <url-pattern>/DepartmentService</url-pattern>
   </servlet-mapping>	
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>DbEmployeeService</servlet-name>
     <url-pattern>/DbEmployeeService</url-pattern>
   </servlet-mapping>
-	<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>JobTitleService</servlet-name>
     <url-pattern>/JobTitleService</url-pattern>
   </servlet-mapping>	
-	<filter>
+  <filter>
     <filter-name>CAS Authentication Filter</filter-name>
     <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
   </filter>
@@ -174,26 +174,30 @@
   <filter-mapping>
     <filter-name>Login Filter</filter-name>
     <url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>		
-		<dispatcher>FORWARD</dispatcher>
+    <dispatcher>REQUEST</dispatcher>		
+    <dispatcher>FORWARD</dispatcher>
   </filter-mapping>
-	<filter-mapping> 
+  <filter-mapping> 
     <filter-name>CAS Authentication Filter</filter-name> 
-      <url-pattern>/Login</url-pattern> 
-    </filter-mapping> 
+    <url-pattern>/Login</url-pattern> 
+  </filter-mapping> 
   <filter-mapping> 
     <filter-name>CAS Validation Filter</filter-name> 
-      <url-pattern>/Login</url-pattern> 
+    <url-pattern>/Login</url-pattern> 
   </filter-mapping>
   <filter-mapping> 
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name> 
     <url-pattern>/Login</url-pattern> 
   </filter-mapping>
-	<listener>
+  <listener>
     <listener-class>
       org.quartz.ee.servlet.QuartzInitializerListener
     </listener-class>
   </listener>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/notFound.html</location>
+  </error-page>
 	<!--
   <listener>
     <listener-class>

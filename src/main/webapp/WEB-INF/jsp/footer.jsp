@@ -5,6 +5,6 @@
   <script type="text/javascript" src="<s:property value='#application.url' />js/moment-timezone.js"></script>
   <script type="text/javascript" src="<s:property value='#application.url' />js/moment-timezone-with-data-1970-2030.js"></script>
   <script type="text/javascript" src="<s:property value='#application.url' />js/time.js"></script>
-  <script type="text/javascript" src="https://bloomington.in.gov/static/fn1-releases/refactor/js/dropdown.js"></script>
+  <script type="text/javascript" src="<s:property value='#application.url' />js/dropdown.js"></script>
 </body>
 </html>

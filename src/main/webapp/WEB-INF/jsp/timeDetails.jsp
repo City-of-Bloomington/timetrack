@@ -42,18 +42,18 @@ function loginTimer() {
 				<s:if test="document.hasLastWorkflow()" >
 				  <s:if test="document.lastWorkflow.canSubmit()">
 						<s:if test="isUserCurrentEmployee() || user.canApprove() || user.canProcess()">
-							<s:form action="timeAction" id="form_id" class="timesheet-submit" method="post" >
-								<input type="hidden" name="source" value="timeDetails" />
-								<s:hidden name="document_id" value="%{document.id}" />
-								<s:hidden name="workflow_id" value="%{document.lastWorkflow.next_workflow_id}" />
-								<s:submit
-				      		name="action"
-				      		type="submit"
-				      		class="button"
-				      		value="Submit for Approval"
-				      	 data-week-one-total="%{document.week1Total}"
-				      		data-week-two-total="%{document.week2Total}" />
-							</s:form>
+						    <form action="<s:property value='#application.url' />timeAction" id="form_id" class="timesheet-submit" method="post" >
+							<input type="hidden" name="source" value="timeDetails" />
+							<s:hidden name="document_id" value="%{document.id}" />
+							<s:hidden name="workflow_id" value="%{document.lastWorkflow.next_workflow_id}" />
+							<s:submit
+				      			    name="action"
+				      			    type="submit"
+				      			    class="button"
+				      			    value="Submit for Approval"
+				      			    data-week-one-total="%{document.week1Total}"
+				      			    data-week-two-total="%{document.week2Total}" />
+						    </form>
 						</s:if>
 						<s:else>
 							<div>

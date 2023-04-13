@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 public class LoginFilter implements Filter {
     static Logger logger = LogManager.getLogger(LoginFilter.class);
+    public static String POLICY = "frame-src 'none'; sandbox allow-forms allow-scripts allow-popups allow-same-origin allow-top-navigation allow-popups-to-escape-sandbox; img-src 'self' data:; object-src 'none';frame-ancestors 'none'";    
     private ServletContext ctx = null;
     public void init(FilterConfig config) throws ServletException {
 	ctx = config.getServletContext();
@@ -34,7 +35,8 @@ public class LoginFilter implements Filter {
 	
 	HttpServletRequest req = (HttpServletRequest) request;
 	HttpServletResponse res = (HttpServletResponse) response;
-	res.addHeader("X-Frame-Options", "DENY");    	
+	res.addHeader("Content-Security-Policy", LoginFilter.POLICY);	
+	res.addHeader("X-Frame-Options", "DENY");
 	String uri = req.getRequestURI();
 	HttpSession session = req.getSession(false);
 	if(session == null || session.getAttribute("user") == null){
