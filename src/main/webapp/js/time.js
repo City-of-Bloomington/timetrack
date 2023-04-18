@@ -913,5 +913,7 @@ $('.quick-approve').click(function() {
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log('loaded')
-  document.getElementById('time_out').focus();
+    if(document.getElementById('time_out')){
+	document.getElementById('time_out').focus();
+    }
 });

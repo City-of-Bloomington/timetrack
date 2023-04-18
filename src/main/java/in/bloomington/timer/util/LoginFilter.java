@@ -22,7 +22,9 @@ import org.apache.logging.log4j.Logger;
 
 public class LoginFilter implements Filter {
     static Logger logger = LogManager.getLogger(LoginFilter.class);
-    public static String POLICY = "frame-src 'none'; sandbox allow-forms allow-scripts allow-popups allow-same-origin allow-top-navigation allow-popups-to-escape-sandbox; img-src 'self' data:; object-src 'none';frame-ancestors 'none'";    
+    // public static String POLICY = "frame-src 'self'; sandbox allow-forms allow-scripts allow-popups allow-same-origin allow-top-navigation allow-popups-to-escape-sandbox; img-src 'self' data:; object-src 'none';frame-ancestors 'self'";
+
+    public static String POLICY = "frame-src 'none'; img-src 'self' data:; object-src 'none';frame-ancestors 'self';";    
     private ServletContext ctx = null;
     public void init(FilterConfig config) throws ServletException {
 	ctx = config.getServletContext();
