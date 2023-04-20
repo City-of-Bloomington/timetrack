@@ -212,11 +212,12 @@ public class GroupManagerAction extends TopAction{
     public List<PayPeriod> getPayPeriods(){
 	if(payPeriods == null){
 	    PayPeriodList tl = new PayPeriodList();
-	    tl.setTwoPeriodsAheadOnly();
+	    tl.setOnePeriodAheadOnly();
 	    tl.setLimit("5");
 	    String back = tl.find();
 	    if(back.isEmpty()){
 		List<PayPeriod> ones = tl.getPeriods();
+		Collections.reverse(ones);
 		if(ones != null && ones.size() > 0){
 		    payPeriods = ones;
 		}
