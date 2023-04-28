@@ -49,62 +49,51 @@
 		<s:if test="emp.inactive"> No </s:if><s:else>Yes</s:else> <br /><br />
 	</div>		
 	<div class="button-group">
-		<a href="<s:property value='#application.url' />employee.action?action=Edit&emp_id=<s:property value='emp.id' />" class="button">Edit</a> 
-		<s:if test="!emp.hasDepartments()">
-			<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add to Department</a>
-		</s:if>
-		<s:else>
-			<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add to Another Department</a>			
-			<a href="<s:property value='#application.url' />deptEmpChange.action?id=<s:property value='emp.departmentEmployee.id' />" class="button">Change Department</a>
-		</s:else>
-		<s:if test="!emp.hasGroupEmployees()">
-			<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add to Group</a>
-		</s:if>
-		<s:else>
-			<a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add to Another Group</a>
-		</s:else>
-		<s:if test="emp.hasNoJob()">
-			<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&employee_number=<s:property value='emp.employee_number' />&effective_date=<s:property value='effective_date' />" class="button"> Add A Job</a>
-		</s:if>
-		<s:else>
-			<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&effective_date=<s:property value='effective_date' />" class="button"> Add Another Job</a>
-		</s:else>
-		<a href="<s:property value='#application.url' />terminate.action?emp_id=<s:property value='emp.id' />" class="button"> Terminate </a>			
+	    <a href="<s:property value='#application.url' />employee.action?action=Edit&emp_id=<s:property value='emp.id' />" class="button">Edit</a> 
+	    <s:if test="!emp.hasDepartments()">
+		<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add to Department</a>
+	    </s:if>
+	    <s:else>
+		<a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add to Another Department</a>			
+		<a href="<s:property value='#application.url' />deptEmpChange.action?id=<s:property value='emp.departmentEmployee.id' />" class="button">Change Department</a>
+	    </s:else>
+	    <s:if test="emp.hasNoJob()">
+		<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&employee_number=<s:property value='emp.employee_number' />&effective_date=<s:property value='effective_date' />" class="button"> Add A Job</a>
+	    </s:if>
+	    <s:else>
+		<a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&effective_date=<s:property value='effective_date' />" class="button"> Add Another Job</a>
+		<a href="<s:property value='#application.url' />terminate.action?emp_id=<s:property value='emp.id' />" class="button"> Terminate </a>					    
+	    </s:else>
 	</div>
 	<s:if test="emp.hasDepartments()">
-		<s:set var="departmentEmployees" value="%{emp.departmentEmployees}" />
-		<s:set var="departmentEmployeesTitle" value="'Employee Department'" />
-		<%@ include file="departmentEmployees.jsp" %>
-		<s:if test="emp.hasAllGroupEmployees()">
-			<s:set var="groupEmployees" value="%{emp.allGroupEmployees}" />
-			<s:set var="groupEmployeesTitle" value="'Employee Group'" />
-			<%@ include file="groupEmployees.jsp" %>
-		</s:if>
-		<s:if test="emp.hasAllJobs2()">
-			<s:set var="jobTasks" value="%{emp.allJobs2}" />
-			<s:set var="jobTasksTitle" value="'Employee Jobs'" />
-			<%@ include file="jobTasks.jsp" %>
-		</s:if>
-		<s:if test="emp.canPayrollProcess()">
-			<s:set var="groupManagers" value="%{emp.processors}" />
-			<s:set var="groupManagersTitle" value="'Payroll Approver of Groups '" />
-			<%@ include file="groupManagers.jsp" %>
-		</s:if>			
-		<s:if test="emp.canApprove()">
-			<s:set var="groupManagers" value="%{emp.approvers}" />
-			<s:set var="groupManagersTitle" value="'Approver of Groups '" />
-			<%@ include file="groupManagers.jsp" %>
-		</s:if>
-		<s:if test="emp.canReview()">
-			<s:set var="groupManagers" value="%{emp.reviewers}" />
-			<s:set var="groupManagersTitle" value="'Review of Groups'" />
-			<%@ include file="groupManagers.jsp" %>
-		</s:if>
-		<s:if test="emp.canMaintain()">
-			<s:set var="groupManagers" value="%{emp.enterors}" />
-			<s:set var="groupManagersTitle" value="'Maintain of Groups'" />
-			<%@ include file="groupManagers.jsp" %>
-		</s:if>					
+	    <s:set var="departmentEmployees" value="%{emp.departmentEmployees}" />
+	    <s:set var="departmentEmployeesTitle" value="'Employee Department'" />
+	    <%@ include file="departmentEmployees.jsp" %>
+	    <s:if test="emp.hasAllJobs2()">
+		<s:set var="jobTasks" value="%{emp.allJobs2}" />
+		<s:set var="jobTasksTitle" value="'Employee Jobs'" />
+		<%@ include file="jobTasks.jsp" %>
+	    </s:if>
+	    <s:if test="emp.canPayrollProcess()">
+		<s:set var="groupManagers" value="%{emp.processors}" />
+		<s:set var="groupManagersTitle" value="'Payroll Approver of Groups '" />
+		<%@ include file="groupManagers.jsp" %>
+	    </s:if>			
+	    <s:if test="emp.canApprove()">
+		<s:set var="groupManagers" value="%{emp.approvers}" />
+		<s:set var="groupManagersTitle" value="'Approver of Groups '" />
+		<%@ include file="groupManagers.jsp" %>
+	    </s:if>
+	    <s:if test="emp.canReview()">
+		<s:set var="groupManagers" value="%{emp.reviewers}" />
+		<s:set var="groupManagersTitle" value="'Review of Groups'" />
+		<%@ include file="groupManagers.jsp" %>
+	    </s:if>
+	    <s:if test="emp.canMaintain()">
+		<s:set var="groupManagers" value="%{emp.enterors}" />
+		<s:set var="groupManagersTitle" value="'Maintainers of Groups'" />
+		<%@ include file="groupManagers.jsp" %>
+	    </s:if>					
 	</s:if>
 	
 </div>

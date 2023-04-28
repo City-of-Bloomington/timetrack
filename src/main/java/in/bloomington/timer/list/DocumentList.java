@@ -112,13 +112,6 @@ public class DocumentList{
 	    qw += "pp.start_date <= ? and pp.end_date >= ?";
 	}
 	if(!department_id.isEmpty()){
-	    /**
-	       qq += ", groups g, group_employees ge ";
-	       qc += ", groups g, group_employees ge ";
-	       if(!qw.isEmpty()) qw += " and ";
-	       qw += "ge.effective_date <= pp.start_date and (ge.expire_date is null or ge.expire_date >= pp.end_date) "; 
-	       qw += " and g.department_id=? and g.id=ge.group_id and ge.employee_id=d.employee_id ";
-	    */
 	    qq += ", groups g  ";
 	    qc += ", groups g  ";
 	    if(!qw.isEmpty()) qw += " and ";

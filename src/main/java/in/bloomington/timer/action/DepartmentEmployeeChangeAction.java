@@ -16,97 +16,100 @@ import org.apache.logging.log4j.Logger;
 
 public class DepartmentEmployeeChangeAction extends TopAction{
 
-		static final long serialVersionUID = 2100L;	
-		static Logger logger = LogManager.getLogger(DepartmentEmployeeChangeAction.class);
-		String emp_id="", department_id="";
-		Employee emp = null;
-		List<Type> departments = null;
-		DepartmentEmployee departmentEmployee = null;
-		List<Employee> otherEmployees = null;
-		List<PayPeriod> payPeriods = null;
-		String departmentEmployeesTitle = "Employees in this department";
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(action.startsWith("Change")){ 
-						back = departmentEmployee.doChange();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("changed Successfully");
-						}
-				}
-				else{		
-						getDepartmentEmployee();
-						if(!id.isEmpty()){
-								back = departmentEmployee.doSelect();
-								if(!back.isEmpty()){
-										addError(back);
-								}								
-						}
-				}
-				return ret;
-		}
-		public DepartmentEmployee getDepartmentEmployee(){ 
-				if(departmentEmployee == null){
-						departmentEmployee = new DepartmentEmployee(id);
-						departmentEmployee.setEmployee_id(emp_id);
-				}		
-				return departmentEmployee;
-		}
+    static final long serialVersionUID = 2100L;	
+    static Logger logger = LogManager.getLogger(DepartmentEmployeeChangeAction.class);
+    String emp_id="", department_id="";
+    Employee emp = null;
+    List<Type> departments = null;
+    DepartmentEmployee departmentEmployee = null;
+    List<Employee> otherEmployees = null;
+    List<PayPeriod> payPeriods = null;
+    String departmentEmployeesTitle = "Employees in this department";
+    public String execute(){
+	String ret = SUCCESS;
+	String back = canProceed("departmentEmployeeChange.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(action.startsWith("Change")){ 
+	    back = departmentEmployee.doChange();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("changed Successfully");
+	    }
+	}
+	else{		
+	    getDepartmentEmployee();
+	    if(!id.isEmpty()){
+		back = departmentEmployee.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
+		}								
+	    }
+	}
+	return ret;
+    }
+    public DepartmentEmployee getDepartmentEmployee(){ 
+	if(departmentEmployee == null){
+	    departmentEmployee = new DepartmentEmployee(id);
+	    departmentEmployee.setEmployee_id(emp_id);
+	}		
+	return departmentEmployee;
+    }
 
-		public void setDepartmentEmployee(DepartmentEmployee val){
-				if(val != null){
-						departmentEmployee = val;
-				}
-		}
+    public void setDepartmentEmployee(DepartmentEmployee val){
+	if(val != null){
+	    departmentEmployee = val;
+	}
+    }
 
-		public String getDepartmentEmployeesTitle(){
-				return departmentEmployeesTitle;
+    public String getDepartmentEmployeesTitle(){
+	return departmentEmployeesTitle;
+    }
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public void setDepartment_id(String val){
+	if(val != null && !val.equals("-1"))		
+	    department_id = val;
+    }
+    public void setEmp_id(String val){
+	if(val != null && !val.equals("-1"))		
+	    emp_id = val;
+    }				
+    public List<Type> getDepartments(){
+	if(departments == null){
+	    TypeList tl = new TypeList();
+	    tl.setTable_name("departments");
+	    tl.setActiveOnly();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<Type> ones = tl.getTypes();
+		if(ones != null && ones.size() > 0){
+		    departments = ones;
 		}
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+	    }
+	}
+	return departments;
+    }
+    public List<PayPeriod> getPayPeriods(){
+	if(payPeriods == null){
+	    PayPeriodList tl = new PayPeriodList();
+	    tl.setTwoPeriodsAheadOnly();
+	    tl.setLimit("5");
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<PayPeriod> ones = tl.getPeriods();
+		if(ones != null && ones.size() > 0){
+		    payPeriods = ones;
 		}
-		public void setDepartment_id(String val){
-				if(val != null && !val.equals("-1"))		
-						department_id = val;
-		}
-		public void setEmp_id(String val){
-				if(val != null && !val.equals("-1"))		
-						emp_id = val;
-		}				
-		public List<Type> getDepartments(){
-				if(departments == null){
-						TypeList tl = new TypeList();
-						tl.setTable_name("departments");
-						tl.setActiveOnly();
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<Type> ones = tl.getTypes();
-								if(ones != null && ones.size() > 0){
-										departments = ones;
-								}
-						}
-				}
-				return departments;
-		}
-		public List<PayPeriod> getPayPeriods(){
-				if(payPeriods == null){
-						PayPeriodList tl = new PayPeriodList();
-						tl.setTwoPeriodsAheadOnly();
-						tl.setLimit("5");
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<PayPeriod> ones = tl.getPeriods();
-								if(ones != null && ones.size() > 0){
-										payPeriods = ones;
-								}
-						}
-				}
-				return payPeriods;
-		}
+	    }
+	}
+	return payPeriods;
+    }
 }
 
 

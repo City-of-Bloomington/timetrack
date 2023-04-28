@@ -31,6 +31,9 @@ public class ReportHandAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(!action.isEmpty()){
 	    back = report.findHoursByNameCode();					    back += report.findHoursByDateAndCode();		
 	    if(!back.isEmpty()){

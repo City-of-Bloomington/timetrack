@@ -47,9 +47,19 @@
 		<s:radio name="group.excessHoursEarnType" value="%{group.excessHoursEarnType}" list="excessHoursEarnTypes" />
 	    </div>
 	    <div class="form-group">
+		<label>Clock Time Required?</label>
+		<s:checkbox name="group.clock_time_required" value="%{group.clock_time_required}" fieldValue="true" id="clock_required_id" />Yes (Employees who are required to use punch clock)
+	    </div>
+	    
+	    <div class="form-group">
 		<label>Allow Pending Accrual?</label>
 		<s:checkbox name="group.allowPendingAccrual" value="%{group.allowPendingAccrual}" fieldValue="true" />Yes
 	    </div>
+	    <div class="form-group">
+		<label>Include in Auto Submit Batch?</label>
+		<s:checkbox name="group.includeInAutoBatch" value="%{group.includeInAutoBatch}" fieldValue="true" id="include_in_auto_batch" />Yes (The system will auto submit timesheet for approval for the whole group)
+	    </div>			
+	    
 	    <div class="form-group">
 		<label>Inactive?</label>
 		<s:checkbox name="group.inactive" value="%{group.inactive}" fieldValue="true" />Yes
@@ -68,11 +78,17 @@
     </s:form>
 
     <s:if test="group.id != ''">
-	<s:if test="group.hasGroupEmployees()">
-	    <s:set var="groupEmployees" value="%{group.groupEmployees}" />
-	    <s:set var="groupEmployeesTitle" value="'Group Members'" />
-	    <%@ include file="groupEmployees.jsp" %>
+	<s:if test="group.hasEmployees()">
+	    <s:set var="employees" value="%{group.employees}" />
+	    <s:set var="employeesTitle" value="'Group Members'" />
+	    <%@ include file="employees.jsp" %>
 	</s:if>
+	<s:if test="group.hasJobs()">
+	    <s:set var="jobTasks" value="%{group.jobs}" />
+	    <s:set var="jobTasksTitle" value="'Group Jobs'" />
+	    <s:set var="skipGroupName" value="'true'" />	    
+	    <%@ include file="jobTasks.jsp" %>
+	</s:if>	
 	<s:if test="group.hasGroupShifts()">
 	    <s:set var="groupShifts" value="%{group.groupShifts}" />
 	    <s:set var="groupShiftsTitle" value="'Group Shifts'" />
@@ -86,6 +102,7 @@
 	<s:if test="hasGroupManagers()">
 	    <s:set var="groupManagers" value="%{groupManagers}" />
 	    <s:set var="groupManagersTitle" value="'Group Managers'" />
+	    <s:set var="skipGroupName" value="'true'" />		    
 	    <%@ include file="groupManagers.jsp" %>
 	</s:if>
     </s:if>

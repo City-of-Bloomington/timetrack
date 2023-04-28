@@ -40,9 +40,6 @@
 		<label>Primary Job? </label>
 		<s:if test="jobTask.primary_flag">Yes</s:if><s:else>No</s:else>
 		<br /><br />			
-		<label>Clock Time Required? </label>
-		<s:if test="jobTask.clock_time_required">Yes</s:if><s:else>No</s:else>
-		<br /><br />			
 		<label>Weekly Reg Hours: </label>
 			<s:property value="jobTask.weekly_regular_hours" />
 		<br /><br />			
@@ -55,15 +52,9 @@
 		<label>Holiday Comp Multiple Factor: </label>
 		<s:property value="jobTask.holiday_comp_factor" />
 		<br /><br />
-		<label>Include in Auto Submit Batch? </label>
-		<s:if test="jobTask.includeInAutoBatch">Yes</s:if><s:else>No</s:else>
-		<br /><br />
 		<label>Works Irregular Work Days? </label>
 		<s:if test="jobTask.irregularWorkDays">Yes</s:if><s:else>No</s:else>
 		<br /><br />		
-		<label>Active? </label>
-		<s:if test="jobTask.inactive">No</s:if><s:else>Yes</s:else>
-		<br /><br />
 		<label>Added Date: </label>
 		<s:property value="jobTask.added_date" />
 		<br /><br />			

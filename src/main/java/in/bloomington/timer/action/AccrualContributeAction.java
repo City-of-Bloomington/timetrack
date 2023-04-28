@@ -29,7 +29,10 @@ public class AccrualContributeAction extends TopAction{
     List<HourCode> hourCodes = null;
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = canProceed("accrualContribute.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(action.equals("Save")){
 	    back = contribute.doSave();
 	    if(!back.isEmpty()){

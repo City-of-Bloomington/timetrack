@@ -19,97 +19,100 @@ import org.apache.logging.log4j.Logger;
 
 public class TimeIssueAction extends TopAction{
 
-		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(TimeIssueAction.class);
-		//
-		String document_id = "", time_block_id="", reported_by="";
-		String timeIssuesTitle = "Time Issues";
-		TimeIssue timeIssue = null;		
-		List<TimeIssue> timeIssues = null;
+    static final long serialVersionUID = 3800L;	
+    static Logger logger = LogManager.getLogger(TimeIssueAction.class);
+    //
+    String document_id = "", time_block_id="", reported_by="";
+    String timeIssuesTitle = "Time Issues";
+    TimeIssue timeIssue = null;		
+    List<TimeIssue> timeIssues = null;
 
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(action.equals("Save")){
-						back = timeIssue.doSave();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Saved Successfully");
-						}
-				}
-				if(action.startsWith("Close")){
-						timeIssue.setClosed_by(user.getId());
-						back = timeIssue.doClose();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Closed Successfully");								
-						}
-				}				
-				else{		
-						getTimeIssue();
-						if(!id.isEmpty()){
-								back = timeIssue.doSelect();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-						}
-				}
-				return ret;
+    public String execute(){
+	String ret = SUCCESS;
+	String back = doPrepare();
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(action.equals("Save")){
+	    back = timeIssue.doSave();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Saved Successfully");
+	    }
+	}
+	if(action.startsWith("Close")){
+	    timeIssue.setClosed_by(user.getId());
+	    back = timeIssue.doClose();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Closed Successfully");								
+	    }
+	}				
+	else{		
+	    getTimeIssue();
+	    if(!id.isEmpty()){
+		back = timeIssue.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
 		}
-		public TimeIssue getTimeIssue(){
-				if(timeIssue == null){
-						timeIssue = new TimeIssue();
-						timeIssue.setId(id);
-						timeIssue.setTime_block_id(time_block_id);
-						timeIssue.setReported_by(reported_by);
-				}
-				return timeIssue;
+	    }
+	}
+	return ret;
+    }
+    public TimeIssue getTimeIssue(){
+	if(timeIssue == null){
+	    timeIssue = new TimeIssue();
+	    timeIssue.setId(id);
+	    timeIssue.setTime_block_id(time_block_id);
+	    timeIssue.setReported_by(reported_by);
+	}
+	return timeIssue;
 						
-		}
-		public void setTimeIssue(TimeIssue val){
-				if(val != null){
-						timeIssue = val;
-				}
-		}
-		public String getTimeIssuesTitle(){
-				return timeIssuesTitle;
-		}
+    }
+    public void setTimeIssue(TimeIssue val){
+	if(val != null){
+	    timeIssue = val;
+	}
+    }
+    public String getTimeIssuesTitle(){
+	return timeIssuesTitle;
+    }
 
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public void setDocument_id(String val){
+	if(val != null && !val.isEmpty())		
+	    document_id = val;
+    }
+    public void setReported_by(String val){
+	if(val != null && !val.isEmpty())		
+	    reported_by = val;
+    }		
+    public void setTime_block_id(String val){
+	if(val != null && !val.isEmpty())		
+	    time_block_id = val;
+    }		
+    public List<TimeIssue> getTimeIssues(){
+	if(timeIssues == null){
+	    TimeIssueList tl = new TimeIssueList();
+	    tl.setTime_block_id(time_block_id);
+	    tl.setDocument_id(document_id);
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<TimeIssue> ones = tl.getTimeIssues();
+		if(ones != null && ones.size() > 0){
+		    timeIssues = ones;
 		}
-		public void setDocument_id(String val){
-				if(val != null && !val.isEmpty())		
-						document_id = val;
-		}
-		public void setReported_by(String val){
-				if(val != null && !val.isEmpty())		
-						reported_by = val;
-		}		
-		public void setTime_block_id(String val){
-				if(val != null && !val.isEmpty())		
-						time_block_id = val;
-		}		
-		public List<TimeIssue> getTimeIssues(){
-				if(timeIssues == null){
-						TimeIssueList tl = new TimeIssueList();
-						tl.setTime_block_id(time_block_id);
-						tl.setDocument_id(document_id);
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<TimeIssue> ones = tl.getTimeIssues();
-								if(ones != null && ones.size() > 0){
-										timeIssues = ones;
-								}
-						}
-				}
-				return timeIssues;
-		}
+	    }
+	}
+	return timeIssues;
+    }
 
 }
 

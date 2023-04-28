@@ -26,98 +26,101 @@ public class TimeActionAction extends TopAction{
     String source = ""; // where we are coming from
     //
     public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare("timeAction");
-				if(action.startsWith("Submit")){
-						getTimeAction();
-						getUser();
-						if(user != null){
-								timeAction.setAction_by(user.getId());
-								back = timeAction.doSave();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-								else{ // normally we return to TimeDetails
-										addMessage("Saved Successfully");
-								}
-						}
-				}
-				else if(action.startsWith("Cancel")){
-						getTimeAction();
-						getUser();
-						if(user != null){
-								timeAction.setCancelled_by(user.getId());
-								back = timeAction.doCancel();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-								else{ // normally we return to TimeDetails
-										addMessage("Cancelled Successfully");
-										ret = "timeDetails";
-								}
-						}
-				}				
-				else{		
-						getTimeAction();
-						if(!id.isEmpty()){
-								back = timeAction.doSelect();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-								else{
-										document_id = timeAction.getDocument_id();
-										workflow_id = timeAction.getWorkflow_id();
-								}
-						}
-				}
-				if(!source.isEmpty()){
-						return source;
-				}
-				return ret;
+	String ret = SUCCESS;
+	String back = doPrepare("timeAction");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(action.startsWith("Submit")){
+	    getTimeAction();
+	    getUser();
+	    if(user != null){
+		timeAction.setAction_by(user.getId());
+		back = timeAction.doSave();
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+		else{ // normally we return to TimeDetails
+		    addMessage("Saved Successfully");
+		}
+	    }
+	}
+	else if(action.startsWith("Cancel")){
+	    getTimeAction();
+	    getUser();
+	    if(user != null){
+		timeAction.setCancelled_by(user.getId());
+		back = timeAction.doCancel();
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+		else{ // normally we return to TimeDetails
+		    addMessage("Cancelled Successfully");
+		    ret = "timeDetails";
+		}
+	    }
+	}				
+	else{		
+	    getTimeAction();
+	    if(!id.isEmpty()){
+		back = timeAction.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+		else{
+		    document_id = timeAction.getDocument_id();
+		    workflow_id = timeAction.getWorkflow_id();
+		}
+	    }
+	}
+	if(!source.isEmpty()){
+	    return source;
+	}
+	return ret;
     }
     public TimeAction getTimeAction(){ 
-				if(timeAction == null){
-						timeAction = new TimeAction();
-						timeAction.setId(id);
-						timeAction.setDocument_id(document_id);
-						timeAction.setWorkflow_id(workflow_id);
-				}
-				return timeAction;
+	if(timeAction == null){
+	    timeAction = new TimeAction();
+	    timeAction.setId(id);
+	    timeAction.setDocument_id(document_id);
+	    timeAction.setWorkflow_id(workflow_id);
+	}
+	return timeAction;
     }
     public void setTimeAction(TimeAction val){
-				if(val != null){
-						timeAction = val;
-				}
+	if(val != null){
+	    timeAction = val;
+	}
     }
     public String getTimeActionsTitle(){
-				return timeActionsTitle;
+	return timeActionsTitle;
     }
     public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+	if(val != null && !val.isEmpty())		
+	    action = val;
     }
     public void setSource(String val){
-				if(val != null && !val.isEmpty())		
-						source = val;
+	if(val != null && !val.isEmpty())		
+	    source = val;
     }		
     //
     // this is passed through the link
     public String getDocument_id(){
-				if(document_id.isEmpty() && timeAction != null){
-						document_id = timeAction.getDocument_id();
-				}
-				return document_id;
+	if(document_id.isEmpty() && timeAction != null){
+	    document_id = timeAction.getDocument_id();
+	}
+	return document_id;
     }
     public void setDocument_id(String val){
-				if(val != null && !val.isEmpty())		
-						document_id = val;
+	if(val != null && !val.isEmpty())		
+	    document_id = val;
     }
     public void setWorkflow_id(String val){
-				if(val != null && !val.isEmpty())		
-						workflow_id = val;
+	if(val != null && !val.isEmpty())		
+	    workflow_id = val;
     }		
     public String getWorkflow_id(){
-				return workflow_id;
+	return workflow_id;
     }
 }
 

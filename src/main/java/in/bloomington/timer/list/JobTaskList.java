@@ -22,14 +22,14 @@ public class JobTaskList{
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     List<JobTask> jobTasks = null;
     boolean active_only = false, current_only = false, inactive_only=false,
-	clock_time_required = false, clock_time_not_required=false,
+    clock_time_required = false, clock_time_not_required=false,
 	not_expired = false, non_temp_emp = false;
     //
     // jobs are recent if entered within 14 days
     boolean avoid_recent_jobs = false;
     //
     boolean include_future = false, order_by_employee = false,
-	order_by_id = false;
+	order_by_id = false, order_by_expire=false;
     boolean irregular_work_days = false, include_in_auto_batch=false;
     String salary_group_id="", employee_id="", pay_period_id="";
     String id="", effective_date = "", which_date="j.effective_date",
@@ -123,7 +123,7 @@ public class JobTaskList{
 	    else if(val.equals("Inactive"))
 		inactive_only = true;
 	}
-    }		
+    }
     public void setClock_status(String val){
 	if(val != null && !val.equals("-1")){
 	    if(val.equals("y")) 
@@ -131,7 +131,7 @@ public class JobTaskList{
 	    else if(val.equals("n"))
 		clock_time_not_required = true;
 	}
-    }		
+    }
     public void setCurrentOnly(){
 	active_only = true;
     }
@@ -217,7 +217,10 @@ public class JobTaskList{
     }
     public void setOrderById(){
 	order_by_id = true;
-    }		
+    }
+    public void setOrderByExpireDate(){
+	order_by_expire = true;
+    }
     public List<Group> getGroups(){
 	if(groups == null){
 	    if(!department_id.isEmpty()){
@@ -259,10 +262,8 @@ public class JobTaskList{
 						
 	    "j.comp_time_factor,"+
 	    "j.holiday_comp_factor,"+
-	    "j.clock_time_required,"+
 	    "j.hourly_rate,"+
 	    "date_format(j.added_date,'%m/%d/%Y'),"+
-	    "j.include_in_auto_batch,"+
 	    "j.irregular_work_days,"+
 	    "j.inactive,  "+
 						
@@ -273,6 +274,8 @@ public class JobTaskList{
 	    "g.id,g.name,g.description,g.department_id,"+
 	    "g.excess_hours_earn_type,"+ 
 	    "g.allow_pending_accrual,"+
+	    "g.clock_time_required,"+
+	    "g.include_in_auto_batch,"+	    
 	    "g.inactive,"+
 	    "d.name,d.description,d.ref_id,d.ldap_name,"+
 	    "d.allow_pending_accrual,d.inactive "+		
@@ -310,9 +313,9 @@ public class JobTaskList{
 	}
 	if(include_in_auto_batch){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw += " j.include_in_auto_batch is not null ";
+	    qw += " g.include_in_auto_batch is not null ";
 	    if(!qw2.isEmpty())	qw2 += " and ";
-	    qw2 += " j.include_in_auto_batch is not null ";	    
+	    qw2 += " g.include_in_auto_batch is not null ";	    
 	    
 	}
 	if(irregular_work_days){
@@ -340,15 +343,15 @@ public class JobTaskList{
 	}				
 	if(clock_time_required){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw += " j.clock_time_required is not null ";
+	    qw += " g.clock_time_required is not null ";
 	    if(!qw2.isEmpty())	qw2 += " and ";
-	    qw2 += " j.clock_time_required is not null ";
+	    qw2 += " g.clock_time_required is not null ";
 	}
 	else if(clock_time_not_required){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw += " j.clock_time_required is null ";
+	    qw += " g.clock_time_required is null ";
 	    if(!qw2.isEmpty())	qw2 += " and ";
-	    qw2 += " j.clock_time_required is null ";
+	    qw2 += " g.clock_time_required is null ";
 	}
 	if(include_future){
 	    if(!qw.isEmpty()) qw += " and ";				     
@@ -429,6 +432,9 @@ public class JobTaskList{
 	else if(order_by_id){
 	    qo = " order by j.id DESC ";
 	}
+	else if(order_by_expire){
+	    qo = " order by j.expire_date, p.name ";
+	}
 	else{
 	    qo = " order by p.name ";
 	}
@@ -442,6 +448,7 @@ public class JobTaskList{
 	}
 	qq += qo;
 	logger.debug(qq);
+	// System.err.println(" jobs "+qq);
 	try{
 						
 	    pstmt = con.prepareStatement(qq);
@@ -484,7 +491,7 @@ public class JobTaskList{
 	    while(rs.next()){
 		if(jobTasks == null)
 		    jobTasks = new ArrayList<>();
-		JobTask one =
+JobTask one =
 		    new JobTask(
 				rs.getString(1),
 				rs.getString(2),
@@ -498,29 +505,30 @@ public class JobTaskList{
 				rs.getInt(10),
 				rs.getDouble(11),
 				rs.getDouble(12),
-				rs.getString(13) != null,
-				rs.getDouble(14),
-				rs.getString(15),
+				// rs.getString(13) != null,
+				rs.getDouble(13),
+				rs.getString(14),
+				// rs.getString(16) != null,
+				rs.getString(15) != null,
 				rs.getString(16) != null,
-				rs.getString(17) != null,
-				rs.getString(18) != null,
+				rs.getString(17),
+				rs.getString(18),
 				rs.getString(19),
 				rs.getString(20),
-																
-				rs.getString(21),
-				rs.getString(22),
-				rs.getString(23) != null, 
-				rs.getString(24), // position name
+				rs.getString(21) != null, 
+				rs.getString(22), // position name
 				//
 				// group
+				rs.getString(23),
+				rs.getString(24),
 				rs.getString(25),
 				rs.getString(26),
 				rs.getString(27),
-				rs.getString(28),
-				rs.getString(29),
+				rs.getString(28) != null,
+				rs.getString(29) != null,
 				rs.getString(30) != null,
 				rs.getString(31) != null,
-																	
+				//
 				rs.getString(32),
 				rs.getString(33),
 				rs.getString(34),
@@ -528,7 +536,6 @@ public class JobTaskList{
 				rs.getString(36) != null,
 				rs.getString(37) != null
 				);
-							 
 		if(!jobTasks.contains(one))
 		    jobTasks.add(one);
 	    }
@@ -585,27 +592,28 @@ public class JobTaskList{
 					rs.getInt(10),
 					rs.getDouble(11),
 					rs.getDouble(12),
-					rs.getString(13) != null,
-					rs.getDouble(14),
-					rs.getString(15),
+					// rs.getString(13) != null,
+					rs.getDouble(13),
+					rs.getString(14),
+					//rs.getString(16) != null,
+					rs.getString(15) != null,
 					rs.getString(16) != null,
-					rs.getString(17) != null,
-					rs.getString(18) != null,
+					rs.getString(17),
+					rs.getString(18),
+					
 					rs.getString(19),
 					rs.getString(20),
-					
-					rs.getString(21),
-					rs.getString(22),
-					rs.getString(23) != null, 
-					rs.getString(24), // position name
+					rs.getString(21) != null, 
+					rs.getString(22), // position name
 					//
 					// group
+					rs.getString(23),
+					rs.getString(24),
 					rs.getString(25),
 					rs.getString(26),
 					rs.getString(27),
-					rs.getString(28),
-					rs.getString(29),
-					rs.getString(30) != null,
+					rs.getString(28) != null,
+					rs.getString(29) != null,							rs.getString(30) != null,
 					rs.getString(31) != null,
 					
 					rs.getString(32),
@@ -651,10 +659,10 @@ public class JobTaskList{
 						
 	    " j.comp_time_factor,"+
 	    " j.holiday_comp_factor,"+
-	    " j.clock_time_required,"+
+	    // " j.clock_time_required,"+
 	    " j.hourly_rate,"+
 	    " date_format(j.added_date,'%m/%d/%Y'),"+
-	    " j.include_in_auto_batch,"+
+	    // " j.include_in_auto_batch,"+
 	    " j.irregular_work_days,"+
 	    " j.inactive,  "+
 	    " sg.name,sg.description,sg.default_regular_id,"+
@@ -697,19 +705,19 @@ public class JobTaskList{
 				rs.getInt(10),
 				rs.getDouble(11),
 				rs.getDouble(12),
-				rs.getString(13) != null,
-				rs.getDouble(14),
-				rs.getString(15),																
+				// rs.getString(13) != null,
+				rs.getDouble(13),
+				rs.getString(14),
+				// rs.getString(16) != null,
+				rs.getString(15) != null,
 				rs.getString(16) != null,
-				rs.getString(17) != null,
-				rs.getString(18) != null,
+				rs.getString(17),
+				rs.getString(18),
 				rs.getString(19),
 				rs.getString(20),
-				rs.getString(21),
+				rs.getString(21) != null,
 				rs.getString(22),
-				rs.getString(23) != null,
-				rs.getString(24),
-				rs.getString(25)
+				rs.getString(23)
 				);
 		if(!jobTasks.contains(one))
 		    jobTasks.add(one);
@@ -748,10 +756,10 @@ public class JobTaskList{
 						
 	    " j.comp_time_factor,"+
 	    " j.holiday_comp_factor,"+
-	    " j.clock_time_required,"+
+	    // " j.clock_time_required,"+
 	    " j.hourly_rate,"+
 	    " date_format(j.added_date,'%m/%d/%Y'),"+
-	    " j.include_in_auto_batch,"+
+	    // " j.include_in_auto_batch,"+
 	    " j.irregular_work_days,"+
 	    " j.inactive,  "+
 	    " sg.name,sg.description,sg.default_regular_id,"+
@@ -806,19 +814,19 @@ public class JobTaskList{
 				rs.getInt(10),
 				rs.getDouble(11),
 				rs.getDouble(12),
-				rs.getString(13) != null,
-				rs.getDouble(14),
-				rs.getString(15),																
+				// rs.getString(13) != null,
+				rs.getDouble(13),
+				rs.getString(14),																
+				// rs.getString(16) != null,
+				rs.getString(15) != null,
 				rs.getString(16) != null,
-				rs.getString(17) != null,
-				rs.getString(18) != null,
+				rs.getString(17),
+				rs.getString(18),
 				rs.getString(19),
 				rs.getString(20),
-				rs.getString(21),
+				rs.getString(21) != null,
 				rs.getString(22),
-				rs.getString(23) != null,
-				rs.getString(24),
-				rs.getString(25)
+				rs.getString(23)
 				);
 		if(!jobTasks.contains(one))
 		    jobTasks.add(one);

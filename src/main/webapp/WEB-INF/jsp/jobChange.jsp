@@ -61,10 +61,6 @@
 				<s:checkbox name="jobTask.primary_flag" value="%{jobTask.primary_flag}" fieldValue="true" />Yes
 			</div>
 			<div class="form-group">
-				<label>Clock Time Required?</label>
-				<s:checkbox name="jobTask.clock_time_required" value="%{jobTask.clock_time_required}" fieldValue="true" />Yes (Employees who are required to use punch clock)
-			</div>
-			<div class="form-group">
 				<label>Weekly Reg Hours </label>
 				<s:textfield name="jobTask.weekly_regular_hours" value="%{jobTask.weekly_regular_hours}" size="2" maxlength="2" required="true" />(normally 40)
 			</div>
@@ -84,10 +80,6 @@
 				<label>Irregular Work Days?</label>
 				<s:checkbox name="jobTask.irregularWorkDays" value="%{jobTask.irregularWorkDays}" fieldValue="true" id="irregular_work_days" />Yes (Employee may required to work on Saturday and/or Sunday)
 			</div>
-			<div class="form-group">
-				<label>Include in Auto Submit Batch?</label>
-				<s:checkbox name="jobTask.includeInAutoBatch" value="%{jobTask.includeInAutoBatch}" fieldValue="true" id="include_in_auto_batch" />Yes (The system will auto submit timesheet for approval. Limited to certain employees only)
-			</div>						
 			<div class="button-group">	
 				<s:submit name="action" type="button" value="Change Job"/>		
 			</div>

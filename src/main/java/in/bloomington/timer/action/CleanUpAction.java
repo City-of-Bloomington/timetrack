@@ -36,7 +36,10 @@ public class CleanUpAction extends TopAction{
 		
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare("cleanUpAction");
+	String back = canProceed("cleanUp.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(!action.isEmpty()){
 	    if(hasDocuments()){
 		getCleanUp();

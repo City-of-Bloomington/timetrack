@@ -96,19 +96,7 @@
 			  <label>Department</label>
 			  <s:select name="emp.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />
 		      </div>
-		      <div class="form-group">
-			  <label>Group</label>
-			  <select name="emp.group_id" value="" id="group_id_set"  disabled="disabled"/>
-			  <option value="-1">Pick a group</option>
-				   </select>(To pick a group you need to pick a department first)
-		      </div>
 		  </s:if>
-		  <s:else>
-		      <div class="form-group">
-			  <label>Group</label>
-			  <s:select name="emp.group_id" value="" list="groups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick a Group" />
-		      </div>
-		  </s:else>
 	      </s:if>				
 	      <s:if test="canAssignRoles()">			
 		  <div class="form-group">
@@ -137,18 +125,12 @@
 			  <a href="<s:property value='#application.url' />departmentEmployee.action?emp_id=<s:property value='emp.id' />" class="button">Add to Another Department</a>						
 			  <a href="<s:property value='#application.url' />deptEmpChange.action?id=<s:property value='emp.departmentEmployee.id' />" class="button">Change Department</a>
 		      </s:else>
-		      <s:if test="emp.hasGroupEmployees()">
-			  <a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add Employee to Another Group</a>						
-			  <s:if test="emp.hasNoJob()">
-			      <a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&effective_date=<s:property value='emp.effective_date' />" class="button"> Add A Job</a>
-			  </s:if>
-			  <s:else>
-			      <a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />" class="button"> Add Another Job</a>
-			  </s:else>
-			  <a href="<s:property value='#application.url' />terminate.action?emp_id=<s:property value='emp.id' />" class="button"> Terminate </a>						
-		      </s:if>
+		      <s:if test="emp.hasNoJob()">
+			  <a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />&effective_date=<s:property value='emp.effective_date' />" class="button"> Add A Job</a>
+		      </s:if>			  
 		      <s:else>
-			  <a href="<s:property value='#application.url' />groupEmployee.action?emp_id=<s:property value='emp.id' />&department_id=<s:property value='emp.department_id' />" class="button"> Add Employee to a Group</a>						
+			  <a href="<s:property value='#application.url' />jobTask.action?add_employee_id=<s:property value='emp.id' />" class="button"> Add Another Job</a>
+			  <a href="<s:property value='#application.url' />terminate.action?emp_id=<s:property value='emp.id' />" class="button"> Terminate </a>	
 		      </s:else>
 		  </div>
 	      </s:else>

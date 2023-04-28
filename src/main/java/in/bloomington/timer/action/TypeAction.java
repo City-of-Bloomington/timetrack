@@ -38,6 +38,9 @@ public class TypeAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(action.equals("Save")){
 	    type.setTable_name(table_name);
 	    back = type.doSave();

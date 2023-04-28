@@ -27,7 +27,10 @@ public class AccrualAction extends TopAction{
 
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = canProceed("accrual.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(action.equals("Save")){
 	    back = accrual.doSave();
 	    if(!back.isEmpty()){

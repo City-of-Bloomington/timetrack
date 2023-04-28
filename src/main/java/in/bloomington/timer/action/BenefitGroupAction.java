@@ -18,95 +18,98 @@ import org.apache.logging.log4j.Logger;
 
 public class BenefitGroupAction extends TopAction{
 
-		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(BenefitGroupAction.class);
-		//
-		String benefitGroupsTitle = "Benefit Groups";
-		BenefitGroup benefitGroup = null;
-		List<BenefitGroup> benefitGroups = null;
+    static final long serialVersionUID = 3800L;	
+    static Logger logger = LogManager.getLogger(BenefitGroupAction.class);
+    //
+    String benefitGroupsTitle = "Benefit Groups";
+    BenefitGroup benefitGroup = null;
+    List<BenefitGroup> benefitGroups = null;
 
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(action.equals("Save")){
-						back = benefitGroup.doSave();
-						if(!back.isEmpty()){
-								addActionError(back);
-						}
-						else{
-								addActionMessage("Saved Successfully");
-						}
-				}				
-				else if(action.startsWith("Save")){
-						back = benefitGroup.doUpdate();
-						if(!back.isEmpty()){
-								addActionError(back);
-								addError(back);
-						}
-						else{
-								addActionMessage("Saved Successfully");
-								addMessage("Saved Successfully");
-						}
-				}
-				else if(action.startsWith("Delete")){
-						back = benefitGroup.doDelete();
-						if(!back.isEmpty()){
-								addActionError(back);
-						}
-						else{
-								addActionMessage("Deleted Successfully");
-								addMessage("Deleted Successfully");
-								id="";
-								benefitGroup = new BenefitGroup(debug);
-						}
-				}				
-				else{		
-						getBenefitGroup();
-						if(!id.isEmpty()){
-								back = benefitGroup.doSelect();
-								if(!back.isEmpty()){
-										addActionError(back);
-										addError(back);
-								}
-						}
-				}
-				return ret;
+    public String execute(){
+	String ret = SUCCESS;
+	String back = canProceed("benefitGroup.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(action.equals("Save")){
+	    back = benefitGroup.doSave();
+	    if(!back.isEmpty()){
+		addActionError(back);
+	    }
+	    else{
+		addActionMessage("Saved Successfully");
+	    }
+	}				
+	else if(action.startsWith("Save")){
+	    back = benefitGroup.doUpdate();
+	    if(!back.isEmpty()){
+		addActionError(back);
+		addError(back);
+	    }
+	    else{
+		addActionMessage("Saved Successfully");
+		addMessage("Saved Successfully");
+	    }
+	}
+	else if(action.startsWith("Delete")){
+	    back = benefitGroup.doDelete();
+	    if(!back.isEmpty()){
+		addActionError(back);
+	    }
+	    else{
+		addActionMessage("Deleted Successfully");
+		addMessage("Deleted Successfully");
+		id="";
+		benefitGroup = new BenefitGroup(debug);
+	    }
+	}				
+	else{		
+	    getBenefitGroup();
+	    if(!id.isEmpty()){
+		back = benefitGroup.doSelect();
+		if(!back.isEmpty()){
+		    addActionError(back);
+		    addError(back);
 		}
-		public BenefitGroup getBenefitGroup(){
-				if(benefitGroup == null){
-						benefitGroup = new BenefitGroup();
-						benefitGroup.setId(id);
-				}
-				return benefitGroup;
+	    }
+	}
+	return ret;
+    }
+    public BenefitGroup getBenefitGroup(){
+	if(benefitGroup == null){
+	    benefitGroup = new BenefitGroup();
+	    benefitGroup.setId(id);
+	}
+	return benefitGroup;
 						
-		}
-		public void setBenefitGroup(BenefitGroup val){
-				if(val != null){
-						benefitGroup = val;
-				}
-		}
+    }
+    public void setBenefitGroup(BenefitGroup val){
+	if(val != null){
+	    benefitGroup = val;
+	}
+    }
 		
-		public String getBenefitGroupsTitle(){
+    public String getBenefitGroupsTitle(){
 				
-				return benefitGroupsTitle;
+	return benefitGroupsTitle;
+    }
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public List<BenefitGroup> getBenefitGroups(){
+	if(benefitGroups == null){
+	    BenefitGroupList tl = new BenefitGroupList();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<BenefitGroup> ones = tl.getBenefitGroups();
+		if(ones != null && ones.size() > 0){
+		    benefitGroups = ones;
 		}
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
-		}
-		public List<BenefitGroup> getBenefitGroups(){
-				if(benefitGroups == null){
-						BenefitGroupList tl = new BenefitGroupList();
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<BenefitGroup> ones = tl.getBenefitGroups();
-								if(ones != null && ones.size() > 0){
-										benefitGroups = ones;
-								}
-						}
-				}
-				return benefitGroups;
-		}
+	    }
+	}
+	return benefitGroups;
+    }
 
 }
 

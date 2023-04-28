@@ -154,7 +154,7 @@ public class GroupManagerList{
 	if(!qw.isEmpty()){
 	    qq += " where "+qw;
 	}
-	qq += " order by gm.primary_flag desc,g.name ";
+	qq += " order by gm.expire_date,gm.primary_flag desc, g.name ";
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
 	if(con == null){

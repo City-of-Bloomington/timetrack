@@ -29,88 +29,91 @@ public class CodeReasonScheduleAction extends TopAction{
     CodeReasonScheduler schedular = null;
     String date = "", write_date="", prev_date="", next_date="", dept_ref_id="";
     public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				prepareSchedular();				
-				if(action.equals("Schedule")){
-						back = doClean();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						try{
-								back = schedular.run();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-								else{
-										addMessage("Scheduled Successfully");
-								}
-						}catch(Exception ex){
-								addError(""+ex);
-						}
-				}
-				else if(action.startsWith("Run")){ // import now given the date
-						CodeReasonJob job = new CodeReasonJob();
-						job.setOutputLocation(xls_output_location);
-						job.doWork();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Ran Successfully");
-						}
-				}
-				return ret;
+	String ret = SUCCESS;
+	String back = canProceed("codeReasonSchedule.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	prepareSchedular();				
+	if(action.equals("Schedule")){
+	    back = doClean();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    try{
+		back = schedular.run();
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+		else{
+		    addMessage("Scheduled Successfully");
+		}
+	    }catch(Exception ex){
+		addError(""+ex);
+	    }
+	}
+	else if(action.startsWith("Run")){ // import now given the date
+	    CodeReasonJob job = new CodeReasonJob();
+	    job.setOutputLocation(xls_output_location);
+	    job.doWork();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Ran Successfully");
+	    }
+	}
+	return ret;
     }
     private void prepareSchedular(){
-				String msg = "";
-				String date = Helper.getToday();
-				if(!date.isEmpty()){
-						schedular = new CodeReasonScheduler(date, xls_output_location);
-				}
-				quartzMisc = new QuartzMisc("code_reason"); // type
-				msg = quartzMisc.findScheduledDates();
-				if(msg.isEmpty()){
-						prev_date = quartzMisc.getPrevScheduleDate();
-						if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
-								prev_date = "No Previous date found";
-						next_date = quartzMisc.getNextScheduleDate();
-				}				
+	String msg = "";
+	String date = Helper.getToday();
+	if(!date.isEmpty()){
+	    schedular = new CodeReasonScheduler(date, xls_output_location);
+	}
+	quartzMisc = new QuartzMisc("code_reason"); // type
+	msg = quartzMisc.findScheduledDates();
+	if(msg.isEmpty()){
+	    prev_date = quartzMisc.getPrevScheduleDate();
+	    if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
+		prev_date = "No Previous date found";
+	    next_date = quartzMisc.getNextScheduleDate();
+	}				
     }
     private String doClean(){
-				String msg = "";
-				if(quartzMisc != null){
-						msg = quartzMisc.doClean();
-				}
-				return msg;
+	String msg = "";
+	if(quartzMisc != null){
+	    msg = quartzMisc.doClean();
+	}
+	return msg;
     }
     public String getCodeReasonSchedularTitle(){
 				
-				return codeReasonSchedulerTitle;
+	return codeReasonSchedulerTitle;
     }
 
 
     public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+	if(val != null && !val.isEmpty())		
+	    action = val;
     }
     public void setDate(String val){
-				if(val != null && !val.isEmpty())		
-						date = val;
+	if(val != null && !val.isEmpty())		
+	    date = val;
     }
     // read only 
     public String getDate(){
-				return date;
+	return date;
     }
     public String getPrev_date(){
-				return prev_date;
+	return prev_date;
     }
-		public String getNext_date(){
-				return next_date;
+    public String getNext_date(){
+	return next_date;
     }
 
     public boolean hasPrevDates(){
-				return !prev_date.isEmpty();
+	return !prev_date.isEmpty();
     }
 
 }

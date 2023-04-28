@@ -18,83 +18,86 @@ import org.apache.logging.log4j.Logger;
 
 public class PositionAction extends TopAction{
 
-		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(PositionAction.class);
-		//
-		String positionsTitle = "Positions";
-		List<Group> groups = null;
-		Position position = null;
-		List<Position> positions = null;
+    static final long serialVersionUID = 3800L;	
+    static Logger logger = LogManager.getLogger(PositionAction.class);
+    //
+    String positionsTitle = "Positions";
+    List<Group> groups = null;
+    Position position = null;
+    List<Position> positions = null;
 		
-		@Override
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(action.equals("Save")){
-						back = position.doSave();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Saved Successfully");
-						}
-				}				
-				else if(action.startsWith("Save")){
-						back = position.doUpdate();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Updated Successfully");
-						}
-				}
-				else{		
-						getPosition();
-						if(!id.isEmpty()){
-								back = position.doSelect();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-						}
-				}
-				return ret;
+    @Override
+    public String execute(){
+	String ret = SUCCESS;
+	String back = canProceed("position.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(action.equals("Save")){
+	    back = position.doSave();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Saved Successfully");
+	    }
+	}				
+	else if(action.startsWith("Save")){
+	    back = position.doUpdate();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Updated Successfully");
+	    }
+	}
+	else{		
+	    getPosition();
+	    if(!id.isEmpty()){
+		back = position.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
 		}
-		public Position getPosition(){
-				if(position == null){
-						position = new Position();
-						position.setId(id);
-				}
-				return position;
+	    }
+	}
+	return ret;
+    }
+    public Position getPosition(){
+	if(position == null){
+	    position = new Position();
+	    position.setId(id);
+	}
+	return position;
 						
-		}
-		public void setPosition(Position val){
-				if(val != null){
-						position = val;
-				}
-		}
+    }
+    public void setPosition(Position val){
+	if(val != null){
+	    position = val;
+	}
+    }
 		
-		public String getPositionsTitle(){
-				return positionsTitle;
-		}
+    public String getPositionsTitle(){
+	return positionsTitle;
+    }
 
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public List<Position> getPositions(){
+	if(positions == null){
+	    PositionList tl = new PositionList();
+	    tl.setActiveOnly();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<Position> ones = tl.getPositions();
+		if(ones != null && ones.size() > 0){
+		    positions = ones;
 		}
-		public List<Position> getPositions(){
-				if(positions == null){
-						PositionList tl = new PositionList();
-						tl.setActiveOnly();
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<Position> ones = tl.getPositions();
-								if(ones != null && ones.size() > 0){
-										positions = ones;
-								}
-						}
-				}
-				return positions;
-		}
+	    }
+	}
+	return positions;
+    }
 
 }
 

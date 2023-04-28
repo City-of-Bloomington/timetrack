@@ -33,8 +33,16 @@
 	    <s:property value="%{group.excessHoursEarnType}" />
 	</div>
 	<div class="form-group">
+	    <label>Punch Clock required</label>
+	    <s:if test="group.clock_time_required">Yes</s:if><s:else>No</s:else>
+	</div>	
+	<div class="form-group">
 	    <label>Allow Pending Accrual?</label>
 	    <s:if test="group.allowPendingAccrual">Yes</s:if><s:else>No</s:else>
+	</div>
+	<div class="form-group">
+	    <label>Include in Auto Submit Batch</label>	
+	    <s:if test="includeInAutoBatch">Yes</s:if><s:else>No</s:else>
 	</div>
 	<div class="form-group">
 	    <label>Active Status?</label>
@@ -45,11 +53,17 @@
 	    <a href="<s:property value='#application.url' />groupManagerAdd.action?group_id=<s:property value='group.id' />" class="button">Assign managers to group </a>
 	</div>
     </div>
-    <s:if test="group.hasGroupEmployees()">
-	<s:set var="groupEmployees" value="%{group.groupEmployees}" />
-	<s:set var="groupEmployeesTitle" value="'Group Members'" />
-	<%@ include file="groupEmployees.jsp" %>
+    <s:if test="group.hasEmployees()">
+	<s:set var="employees" value="%{group.employees}" />
+	<s:set var="employeesTitle" value="'Group Members'" />
+	<%@ include file="employees.jsp" %>
     </s:if>
+    <s:if test="group.hasJobs()">
+	<s:set var="jobTasks" value="%{group.jobs}" />
+	<s:set var="jobTasksTitle" value="'Group Jobs'" />
+	<s:set var="skipGroupName" value="'true'" />
+	<%@ include file="jobTasks.jsp" %>
+    </s:if>	    
     <s:if test="group.hasGroupShifts()">
 	<s:set var="groupShifts" value="%{group.groupShifts}" />
 	<s:set var="groupShiftsTitle" value="'Group Shifts'" />

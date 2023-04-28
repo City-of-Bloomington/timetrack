@@ -33,7 +33,10 @@ public class ReportElAction extends TopAction{
     String reportTitle = "Emergency Leave (EL) Report ";
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = doPrepare("reportEl.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(!action.isEmpty()){
 	    back = report.findHoursByNameCode();
 	    back += report.findHoursByDateAndCode();

@@ -18,81 +18,84 @@ import org.apache.logging.log4j.Logger;
 
 public class ReasonCategoryAction extends TopAction{
 
-		static final long serialVersionUID = 750L;	
-		static Logger logger = LogManager.getLogger(ReasonCategoryAction.class);
-		//
-		ReasonCategory reasonCategory = null;
-		List<ReasonCategory> categories = null;
-		String categoriesTitle = "Reason Categories";
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(action.equals("Save")){
-						back = reasonCategory.doSave();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Added Successfully");
-						}
-				}				
-				else if(action.startsWith("Save")){
-						back = reasonCategory.doUpdate();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Saved Successfully");
-						}
-				}
-				else{		
-						getReasonCategory();
-						if(!id.isEmpty()){
-								back = reasonCategory.doSelect();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-						}
-				}
-				return ret;
+    static final long serialVersionUID = 750L;	
+    static Logger logger = LogManager.getLogger(ReasonCategoryAction.class);
+    //
+    ReasonCategory reasonCategory = null;
+    List<ReasonCategory> categories = null;
+    String categoriesTitle = "Reason Categories";
+    public String execute(){
+	String ret = SUCCESS;
+	String back = canProceed("reasonCategory.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(action.equals("Save")){
+	    back = reasonCategory.doSave();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Added Successfully");
+	    }
+	}				
+	else if(action.startsWith("Save")){
+	    back = reasonCategory.doUpdate();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Saved Successfully");
+	    }
+	}
+	else{		
+	    getReasonCategory();
+	    if(!id.isEmpty()){
+		back = reasonCategory.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
 		}
-		public ReasonCategory getReasonCategory(){
-				if(reasonCategory == null){
-						reasonCategory = new ReasonCategory(id);
-				}
-				return reasonCategory;
+	    }
+	}
+	return ret;
+    }
+    public ReasonCategory getReasonCategory(){
+	if(reasonCategory == null){
+	    reasonCategory = new ReasonCategory(id);
+	}
+	return reasonCategory;
 						
-		}
-		public void setReasonCategory(ReasonCategory val){
-				if(val != null){
-						reasonCategory = val;
-				}
-		}
-		public String getCategoriessTitle(){
-				return categoriesTitle;
-		}
+    }
+    public void setReasonCategory(ReasonCategory val){
+	if(val != null){
+	    reasonCategory = val;
+	}
+    }
+    public String getCategoriessTitle(){
+	return categoriesTitle;
+    }
 
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public boolean hasCategories(){
+	getCategories();
+	return categories != null;
+    }
+    public List<ReasonCategory> getCategories(){
+	if(categories == null){
+	    ReasonCategoryList tl = new ReasonCategoryList();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<ReasonCategory> ones = tl.getReasonCategories();
+		if(ones != null && ones.size() > 0){
+		    categories = ones;
 		}
-		public boolean hasCategories(){
-				getCategories();
-				return categories != null;
-		}
-		public List<ReasonCategory> getCategories(){
-				if(categories == null){
-						ReasonCategoryList tl = new ReasonCategoryList();
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<ReasonCategory> ones = tl.getReasonCategories();
-								if(ones != null && ones.size() > 0){
-										categories = ones;
-								}
-						}
-				}
-				return categories;
-		}
+	    }
+	}
+	return categories;
+    }
 		
 
 }

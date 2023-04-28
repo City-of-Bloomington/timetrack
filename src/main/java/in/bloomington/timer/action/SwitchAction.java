@@ -18,90 +18,92 @@ import org.apache.logging.log4j.Logger;
 
 public class SwitchAction extends TopAction{
 
-		static final long serialVersionUID = 1150L;	
-		static Logger logger = LogManager.getLogger(SwitchAction.class);
-		//
-		String new_employee_id = "",
-				document_id="",
-				source="",type="",
-				department_id="";
-		String employeesTitle = "Current Employees";
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare("switch.action");
-				if(!action.isEmpty()){ // normally 'Change'
-						if(!new_employee_id.isEmpty()){
-								setEmployee_id(new_employee_id);
-								getEmployee();
-								if(employee == null){
-										back = "could not get employee info ";
-										addError(back);
-								}
-								else{
-										try{
-												HttpServletResponse res = ServletActionContext.getResponse();
-												// we do not need the url here
-												String str = "timeDetails.action?";
-												if(!document_id.isEmpty()){
-														str += "document_id="+document_id;
-												}
-												if(!source.isEmpty()){
-														str += "&source="+source;
-												}
-												res.sendRedirect(str);
-												return super.execute();
-										}catch(Exception ex){
-												System.err.println(ex);
-										}
-								}
-						}
-				}
-				else {
-						getUser();
-						if(user != null && !(user.isAdmin() || user.isHrAdmin())){
-								String val = user.getDepartment_id();
-								if(val != null)
-										department_id = val;
-						}
-				}
-				return ret;
+    static final long serialVersionUID = 1150L;	
+    static Logger logger = LogManager.getLogger(SwitchAction.class);
+    //
+    String new_employee_id = "",
+	document_id="",
+	source="",type="",
+	department_id="";
+    String employeesTitle = "Current Employees";
+    public String execute(){
+	String ret = SUCCESS;
+	String back = doPrepare("switch.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(!action.isEmpty()){ // normally 'Change'
+	    if(!new_employee_id.isEmpty()){
+		setEmployee_id(new_employee_id);
+		getEmployee();
+		if(employee == null){
+		    back = "could not get employee info ";
+		    addError(back);
 		}
-		public String getEmployeesTitle(){
-				return employeesTitle;
+		else{
+		    try{
+			HttpServletResponse res = ServletActionContext.getResponse();
+			    // we do not need the url here
+			String str = "timeDetails.action?";
+			if(!document_id.isEmpty()){
+			    str += "document_id="+document_id;
+			}
+			if(!source.isEmpty()){
+			    str += "&source="+source;
+			}
+			res.sendRedirect(str);
+			return super.execute();
+		    }catch(Exception ex){
+			System.err.println(ex);
+		    }
 		}
-		public String getDepartment_id(){
-				return department_id;
-		}
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
-		}
-		public void setType(String val){
-				// needed for js
-		}		
-		public void setNew_employee_id(String val){
-				if(val != null && !val.isEmpty())		
-						new_employee_id = val;
-		}
+	    }
+	}
+	else {
+	    if(canEdit()){
+		String val = user.getDepartment_id();
+		    if(val != null)
+			department_id = val;
+	    }
+	}
+	return ret;
+    }
+    public String getEmployeesTitle(){
+	return employeesTitle;
+    }
+    public String getDepartment_id(){
+	return department_id;
+    }
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public void setType(String val){
+	// needed for js
+    }		
+    public void setNew_employee_id(String val){
+	if(val != null && !val.isEmpty())		
+	    new_employee_id = val;
+    }
 		
-		public void setEmployee_name(String val){
-				// for auto complete
-		}
-		public void setDocument_id(String val){
-				if(val != null && !val.isEmpty())		
-						document_id = val;
-		}
-		public void setDepartment_id(String val){
-				if(val != null && !val.isEmpty())		
-						department_id = val;
-		}		
-		public void setSource(String val){
-				if(val != null && !val.isEmpty())		
-					 source = val;
-		}		
-		public String getEmployee_name(){
-				return "";
-		}
+    public void setEmployee_name(String val){
+	// for auto complete
+    }
+    public void setDocument_id(String val){
+	if(val != null && !val.isEmpty())		
+	    document_id = val;
+    }
+    public void setDepartment_id(String val){
+	if(val != null && !val.isEmpty())		
+	    department_id = val;
+    }		
+    public void setSource(String val){
+	if(val != null && !val.isEmpty())		
+	    source = val;
+    }		
+    public String getEmployee_name(){
+	return "";
+    }
 
 }
 

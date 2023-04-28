@@ -19,49 +19,52 @@ import org.apache.logging.log4j.Logger;
 
 public class ReportUnscheduledAction extends TopAction{
 
-		static final long serialVersionUID = 1850L;	
-		static Logger logger = LogManager.getLogger(ReportUnscheduledAction.class);
-		UnscheduledReport report = null;
-		String reportTitle = "Unscheduled Times Report ";
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(!action.isEmpty()){
-						back = report.find();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								if(!report.hasUnscheduleds()){
-										addMessage("No records found");
-								}
-						}
-				}
-				else{
-						getReport();
-				}
-				return ret;
+    static final long serialVersionUID = 1850L;	
+    static Logger logger = LogManager.getLogger(ReportUnscheduledAction.class);
+    UnscheduledReport report = null;
+    String reportTitle = "Unscheduled Times Report ";
+    public String execute(){
+	String ret = SUCCESS;
+	String back = doPrepare();
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(!action.isEmpty()){
+	    back = report.find();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		if(!report.hasUnscheduleds()){
+		    addMessage("No records found");
 		}
-		public UnscheduledReport getReport(){ 
-				if(report == null){
-						report = new UnscheduledReport();
-				}		
-				return report;
-		}
+	    }
+	}
+	else{
+	    getReport();
+	}
+	return ret;
+    }
+    public UnscheduledReport getReport(){ 
+	if(report == null){
+	    report = new UnscheduledReport();
+	}		
+	return report;
+    }
 
-		public void setReport(UnscheduledReport val){
-				if(val != null){
-						report = val;
-				}
-		}
+    public void setReport(UnscheduledReport val){
+	if(val != null){
+	    report = val;
+	}
+    }
 
-		public String getReportTitle(){
-				return reportTitle;
-		}
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
-		}
+    public String getReportTitle(){
+	return reportTitle;
+    }
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
 
 				
 }

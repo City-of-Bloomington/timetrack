@@ -54,7 +54,7 @@
               <a href="<s:property value='#application.url'/>lookup.action">Lookup Employee Time Entries</a>
 							
       </s:if>
-      <s:if test="user.isITSAdmin()">
+      <s:if test="user.isITSAdmin() || user.canEdit()">
 	  <a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>
       </s:if>
       <s:if test="user.isEngineeringAdmin()">

@@ -18,15 +18,18 @@ import org.apache.logging.log4j.Logger;
 
 public class SettingAction extends TopAction{
 
-		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(SettingAction.class);
-		//
-		@Override
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare("settings.action");
-				return ret;
-		}
+    static final long serialVersionUID = 3800L;	
+    static Logger logger = LogManager.getLogger(SettingAction.class);
+    //
+    @Override
+    public String execute(){
+	String ret = SUCCESS;	
+	String back = canProceed("settngs.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	return ret;
+    }
 
 }
 

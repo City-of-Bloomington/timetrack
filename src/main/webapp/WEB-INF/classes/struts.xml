@@ -471,7 +471,8 @@
 		  <result name="input">/WEB-INF/jsp/empAccrual.jsp</result>					
 		  <result name="error">/WEB-INF/jsp/empAccrual.jsp</result>		
 		  <result name="success">/WEB-INF/jsp/empAccrual.jsp</result>
-		</action>				
+		</action>
+		<!--
 		<action name="groupEmployee" 
 			class="in.bloomington.timer.action.GroupEmployeeAction" 
 			method="execute">
@@ -479,6 +480,7 @@
 		  <result name="error">/WEB-INF/jsp/groupEmployee.jsp</result>
 		  <result name="success">/WEB-INF/jsp/groupEmployee.jsp</result>
 		</action>
+		-->
 		<action name="groupLocation" 
 			class="in.bloomington.timer.action.GroupLocationAction" 
 						method="execute">
@@ -522,14 +524,16 @@
 			<result name="input">/WEB-INF/jsp/jobTimeChange.jsp</result>		
 			<result name="error">/WEB-INF/jsp/jobTimeChage.jsp</result>
 			<result name="success">/WEB-INF/jsp/jobTimeChange.jsp</result>
-		</action>				
+		</action>
+		<!--
 		<action name="groupEmpChange" 
 						class="in.bloomington.timer.action.GroupEmployeeAction" 
 						method="execute">
 			<result name="input">/WEB-INF/jsp/groupEmpChange.jsp</result>		
 			<result name="error">/WEB-INF/jsp/groupEmpChage.jsp</result>
 			<result name="success">/WEB-INF/jsp/groupEmpChange.jsp</result>
-		</action>		
+		</action>
+		-->
 		<action name="groupManager" 
 						class="in.bloomington.timer.action.GroupManagerAction" 
 						method="execute">

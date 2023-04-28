@@ -31,7 +31,10 @@ public class ShiftTimeAction extends TopAction{
     Department department = null;
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = doPrepare("shiftTime.action");
+	if(!back.isEmpty()){
+	    return back;
+	}	
 	if(action.equals("Save")){
 	    getUser();
 	    shift.setAdded_by_id(user.getId());

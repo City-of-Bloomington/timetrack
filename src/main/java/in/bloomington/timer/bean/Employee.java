@@ -51,13 +51,13 @@ public class Employee implements Serializable, Comparable<Employee>{
     List<GroupManager> reviewers = null;
     List<GroupManager> enterors = null;
     List<DepartmentEmployee> departmentEmployees = null;
-    List<GroupEmployee> groupEmployees = null;
-    List<GroupEmployee> allGroupEmployees = null; // include expired ones too
+    // List<GroupEmployee> groupEmployees = null;
+    // List<GroupEmployee> allGroupEmployees = null; // include expired ones too
     List<GroupShift> groupShifts = null;
     Shift shift = null;
     DepartmentEmployee departmentEmployee = null;
     Department department = null;
-    GroupEmployee groupEmployee = null;
+    // GroupEmployee groupEmployee = null;
     boolean receive_email = true;
     //
     // for a given selected job and pay_period_id we need to find
@@ -326,10 +326,13 @@ public class Employee implements Serializable, Comparable<Employee>{
 		departmentEmployee = new DepartmentEmployee();
 	    }
 	    departmentEmployee.setEffective_date(val);
+	    /**
+	       // to delete
 	    if(groupEmployee == null){
 		groupEmployee = new GroupEmployee();
 	    }
 	    groupEmployee.setEffective_date(val);
+	    */
 	}
     }
     public String getEffective_date(){// needed for wizard
@@ -340,18 +343,22 @@ public class Employee implements Serializable, Comparable<Employee>{
 	if(val != null)
 	    departmentEmployee = val;
     }
+    /**
     public void setGroupEmployee(GroupEmployee val){
 	if(val != null)
 	    groupEmployee = val;
-    }		
+    }
+    */
     // needed for new employee
     public void setGroup_id(String val){
 	if(val != null && !val.equals("-1")){
 	    group_id = val;
+	    /**
 	    if(groupEmployee == null){
 		groupEmployee = new GroupEmployee();
 	    }
 	    groupEmployee.setGroup_id(val);
+	    */
 	}
     }
     public void addGroup_id(String val){
@@ -386,10 +393,16 @@ public class Employee implements Serializable, Comparable<Employee>{
     }
     public String getGroup_id(){
 	if(group_id.isEmpty()){
+	    if(hasOneJobOnly()){
+		JobTask job = getJob();
+		group_id = job.getGroup_id();
+	    }
+	    /**
 	    getGroupEmployee();
 	    if(groupEmployee != null){
 		group_id = groupEmployee.getGroup_id();
 	    }
+	    */
 	}
 	return group_id;
     }
@@ -463,6 +476,9 @@ public class Employee implements Serializable, Comparable<Employee>{
     }
     public boolean isAdmin(){
 	return hasRole("Admin");
+    }
+    public boolean canEdit(){
+	return hasRole("Edit") && !isAdmin(); // for non-admin role
     }
     public boolean isPoliceAdmin(){
 	return hasRole("PoliceAdmin");
@@ -803,67 +819,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 	getDepartment_id();
 	return !department_id.isEmpty() && !department2_id.isEmpty();
     }
-    public boolean hasGroupEmployees(){
-	getGroupEmployees(); // include future
-	return groupEmployees != null && groupEmployees.size() > 0;
-    }
-    public boolean hasAllGroupEmployees(){
-	getAllGroupEmployees(); // include all
-	return allGroupEmployees != null && allGroupEmployees.size() > 0;
-    }		
-    public List<GroupEmployee> getGroupEmployees(){
-	if(groupEmployees == null && !id.isEmpty()){
-	    GroupEmployeeList del = new GroupEmployeeList(id);
-	    del.setIncludeFuture();
-	    String back = del.find();
-	    if(back.isEmpty()){
-		List<GroupEmployee> ones = del.getGroupEmployees();
-		if(ones != null && ones.size() > 0){
-		    groupEmployees = ones;
-		    for(GroupEmployee one:ones){
-			if(one.isActive() && one.isCurrent()){
-			    groupEmployee = one;
-			    break;
-			}
-		    }
-		    if(groupEmployee == null){
-			// first one the defualt
-			groupEmployee = groupEmployees.get(0);
-		    }
-		}
-	    }
-	}
-	return groupEmployees;
-    }
-    public List<GroupEmployee> getAllGroupEmployees(){
-	if(allGroupEmployees == null && !id.isEmpty()){
-	    GroupEmployeeList del = new GroupEmployeeList(id);
-	    String back = del.find();
-	    if(back.isEmpty()){
-		List<GroupEmployee> ones = del.getGroupEmployees();
-		if(ones != null && ones.size() > 0){
-		    allGroupEmployees = ones;
-		}
-	    }
-	}
-	return allGroupEmployees;
-    }		
-    public boolean hasActiveGroup(){
-	getGroupEmployees();
-	return groupEmployee != null;
-    }
-    public boolean hasMultipleGroups(){
-	getGroupEmployees();
-	return groupEmployees != null && groupEmployees.size() > 1;
-    }
-    public boolean hasOneGroupOnly(){
-	getGroupEmployees();
-	return groupEmployees != null && groupEmployees.size() == 1;
-    }		
-    public GroupEmployee getGroupEmployee(){
-	getGroupEmployees();
-	return groupEmployee;
-    }
+
     public String validate(){
 	String msg = "";
 	if(username.isEmpty()){
@@ -1186,30 +1142,6 @@ public class Employee implements Serializable, Comparable<Employee>{
 		    departmentEmployee.setEffective_date(effective_date);
 		    msg = departmentEmployee.doSave();
 		}
-		if(!group_id.isEmpty()){
-		    if(groupEmployee != null){
-			groupEmployee.setEmployee_id(id);
-			groupEmployee.setEffective_date(effective_date);
-			msg = groupEmployee.doSave();
-		    }
-		}
-		else if(!group_ids.isEmpty()){
-		    String[] g_arr = null;
-		    try{
-			g_arr = group_ids.split(",");
-		    }catch(Exception ex){
-			System.err.println(ex);
-		    }
-		    if(g_arr != null && g_arr.length > 0){
-			for(String str2:g_arr){
-			    groupEmployee = new GroupEmployee();
-			    groupEmployee.setGroup_id(str2);
-			    groupEmployee.setEmployee_id(id);
-			    groupEmployee.setEffective_date(effective_date);
-			    msg = groupEmployee.doSave();
-			}
-		    }
-		}
 	    }
 	}
 	catch(Exception ex){
@@ -1316,12 +1248,6 @@ public class Employee implements Serializable, Comparable<Employee>{
 	if(departmentEmployee != null){
 	    departmentEmployee.setEmployee_id(id);
 	    msg = departmentEmployee.doSave();
-	}
-	if(!group_id.isEmpty()){
-	    if(groupEmployee != null){
-		groupEmployee.setEmployee_id(id);
-		msg = groupEmployee.doSave();
-	    }
 	}
 	return msg;
     }

@@ -44,7 +44,13 @@ public class JobTaskAction extends TopAction{
     List<String> empDeptIds = null;
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	// String back = doPrepare();
+	//
+	String back = canProceed("job.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	//
 	if(action.equals("Save")){
 	    back = jobTask.doSaveAll();
 	    if(!back.isEmpty()){
@@ -109,7 +115,6 @@ public class JobTaskAction extends TopAction{
 		    jobTask.setComp_time_weekly_hours(oldJob.getComp_time_weekly_hours());
 		    jobTask.setComp_time_factor(oldJob.getComp_time_factor());
 		    jobTask.setHoliday_comp_factor(oldJob.getHoliday_comp_factor());
-		    jobTask.setClock_time_required(oldJob.getClock_time_required());
 		    if(effective_date.isEmpty()){
 			effective_date = jobTask.getEffective_date();
 		    }
@@ -127,12 +132,6 @@ public class JobTaskAction extends TopAction{
 	    employee_number = emp.getEmployee_number();
 	    first_name = emp.getFirst_name();
 	    last_name = emp.getLast_name();
-	    if(effective_date.isEmpty() && emp.hasGroups()){ 
-		GroupEmployee gemp = emp.getGroupEmployee();
-		if(gemp != null){
-		    effective_date = gemp.getEffective_date();
-		}
-	    }
 	    if(emp.hasAllJobs()){
 		jobs = emp.getAllJobs();
 		oldJob = jobs.get(0); // to get some info from
@@ -152,8 +151,7 @@ public class JobTaskAction extends TopAction{
 	    getPositions();
 	}
 	else{
-	    getUser();
-	    if(user != null && !user.isAdmin()){
+	    if(canEdit()){ // for certain dept only
 		dept = user.getDepartment();
 		if(dept != null){
 		    dept_id = dept.getId();
@@ -370,7 +368,6 @@ public class JobTaskAction extends TopAction{
 	return groups;
     }		
     public boolean hasGroups(){
-	// getGroups();
 	getAllGroups();
 	return groups != null && groups.size() > 0;
     }
@@ -407,7 +404,7 @@ public class JobTaskAction extends TopAction{
 		jobTask.setSalary_group_name(pp.getSalary_group_name());
 		//
 		if(pp.getSalary_group_name().equals("Temp")){
-		    jobTask.setClock_time_required(true);
+		    // jobTask.setClock_time_required(true);
 		    isTemp = true;
 		}
 		if(isTemp){

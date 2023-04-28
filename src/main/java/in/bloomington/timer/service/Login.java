@@ -23,6 +23,7 @@ public class Login extends HttpServlet{
     String cookieName = ""; // "cas_session";
     String cookieValue = "";
     String url="";
+    static int count = 0;
     //
     // reserved usernames that issue a warning
     static final List<String> invalid_list = Arrays.asList(CommonInc.invalid_usernames);
@@ -151,6 +152,14 @@ public class Login extends HttpServlet{
 		    }
 		}
 	    }
+	}
+	else{
+	    count++;
+	    if(count < 3){
+		String str = url+"Login";
+		res.sendRedirect(str);
+	    }
+	    message += " <p>You can not access this system, check with IT or try again later</p>";
 	}
 	if(message.isEmpty())
 	    message += "<p> You can not access this system, check with IT or try again later</p>";

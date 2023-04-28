@@ -32,7 +32,10 @@ public class GroupManagerAction extends TopAction{
 
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = canProceed("groupManager.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(action.equals("Save")){
 	    back = groupManager.doSave();
 	    if(!back.isEmpty()){

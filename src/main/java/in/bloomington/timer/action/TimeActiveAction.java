@@ -20,54 +20,57 @@ import org.apache.logging.log4j.Logger;
 
 public class TimeActiveAction extends TopAction{
 
-		static final long serialVersionUID = 1800L;	
-		static Logger logger = LogManager.getLogger(TimeActiveAction.class);
-		//
-		TimeActiveAudit audit = null;
-		List<List<String>> entries = null;
+    static final long serialVersionUID = 1800L;	
+    static Logger logger = LogManager.getLogger(TimeActiveAction.class);
+    //
+    TimeActiveAudit audit = null;
+    List<List<String>> entries = null;
 
-		String start_date="", end_date="";
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(!action.isEmpty()){
-						back = audit.find();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								if(audit.hasEntries()){
-										entries = audit.getEntries();
-								}
-								else{
-										addMessage("No records found ");
-								}
-						}
-				}
-				else{
-						getAudit();
-				}
-				return ret;
+    String start_date="", end_date="";
+    public String execute(){
+	String ret = SUCCESS;
+	String back = doPrepare();
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(!action.isEmpty()){
+	    back = audit.find();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		if(audit.hasEntries()){
+		    entries = audit.getEntries();
 		}
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+		else{
+		    addMessage("No records found ");
 		}
-		public TimeActiveAudit getAudit(){
-				if(audit == null)
-						audit = new TimeActiveAudit();
-				return audit;
-		}
-		public void setAudit(TimeActiveAudit val){
-				if(val != null)
-						audit = val;
-		}
-		public boolean hasEntries(){
-				return entries != null && entries.size() > 0;
-		}
-		public List<List<String>> getEntries(){
-				return entries;
-		}		
+	    }
+	}
+	else{
+	    getAudit();
+	}
+	return ret;
+    }
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public TimeActiveAudit getAudit(){
+	if(audit == null)
+	    audit = new TimeActiveAudit();
+	return audit;
+    }
+    public void setAudit(TimeActiveAudit val){
+	if(val != null)
+	    audit = val;
+    }
+    public boolean hasEntries(){
+	return entries != null && entries.size() > 0;
+    }
+    public List<List<String>> getEntries(){
+	return entries;
+    }		
 				
 }
 

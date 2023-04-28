@@ -28,7 +28,10 @@ public class ActiveEmployeesAction extends TopAction{
     String department_id = "";
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = canProceed("activeEmployees.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(!action.isEmpty()){
 	    back = findEmployees();
 	    if(!back.isEmpty()){

@@ -18,91 +18,94 @@ import org.apache.logging.log4j.Logger;
 
 public class LocationAction extends TopAction{
 
-		static final long serialVersionUID = 3800L;	
-		static Logger logger = LogManager.getLogger(LocationAction.class);
-		//
-		String locationsTitle = "Current IP addresses locations";
-		Location location = null;
-		List<Location> locations = null;
+    static final long serialVersionUID = 3800L;	
+    static Logger logger = LogManager.getLogger(LocationAction.class);
+    //
+    String locationsTitle = "Current IP addresses locations";
+    Location location = null;
+    List<Location> locations = null;
 
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(action.equals("Save")){
-						back = location.doSave();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Saved Successfully");
-						}
-				}				
-				else if(action.startsWith("Save")){
-						back = location.doUpdate();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								addMessage("Saved Successfully");
-						}
-				}
-				else if(action.startsWith("Delete")){
-						back = location.doDelete();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								id="";
-								location = new Location();
-								addMessage("Deleted Successfully");
-						}
-				}				
-				else{		
-						getLocation();
-						if(!id.isEmpty()){
-								back = location.doSelect();
-								if(!back.isEmpty()){
-										addError(back);
-								}
-						}
-				}
-				return ret;
+    public String execute(){
+	String ret = SUCCESS;
+	String back = canProceed("location.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(action.equals("Save")){
+	    back = location.doSave();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Saved Successfully");
+	    }
+	}				
+	else if(action.startsWith("Save")){
+	    back = location.doUpdate();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Saved Successfully");
+	    }
+	}
+	else if(action.startsWith("Delete")){
+	    back = location.doDelete();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		id="";
+		location = new Location();
+		addMessage("Deleted Successfully");
+	    }
+	}				
+	else{		
+	    getLocation();
+	    if(!id.isEmpty()){
+		back = location.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
 		}
-		public Location getLocation(){
-				if(location == null){
-						location = new Location(id);
-				}
-				return location;
+	    }
+	}
+	return ret;
+    }
+    public Location getLocation(){
+	if(location == null){
+	    location = new Location(id);
+	}
+	return location;
 						
-		}
-		public void setLocation(Location val){
-				if(val != null){
-						location = val;
-				}
-		}
+    }
+    public void setLocation(Location val){
+	if(val != null){
+	    location = val;
+	}
+    }
 		
-		public String getLocationsTitle(){
+    public String getLocationsTitle(){
 				
-				return locationsTitle;
-		}
+	return locationsTitle;
+    }
 
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public List<Location> getLocations(){
+	if(locations == null){
+	    LocationList tl = new LocationList();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<Location> ones = tl.getLocations();
+		if(ones != null && ones.size() > 0){
+		    locations = ones;
 		}
-		public List<Location> getLocations(){
-				if(locations == null){
-						LocationList tl = new LocationList();
-						String back = tl.find();
-						if(back.isEmpty()){
-								List<Location> ones = tl.getLocations();
-								if(ones != null && ones.size() > 0){
-										locations = ones;
-								}
-						}
-				}
-				return locations;
-		}
+	    }
+	}
+	return locations;
+    }
 
 }
 

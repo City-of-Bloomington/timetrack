@@ -31,6 +31,9 @@ public class ReportGroupsAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(!action.isEmpty()){
 	    report.setDepartment_id(dept_id);
 	    back = report.find();

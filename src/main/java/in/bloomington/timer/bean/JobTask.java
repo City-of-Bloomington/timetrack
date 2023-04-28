@@ -28,7 +28,6 @@ public class JobTask implements Serializable{
 	added_date="",
 	salary_group_id="",
 	inactive="",
-	include_in_auto_batch="",
 	irregular_work_days="",
 	effective_date="", expire_date="", primary_flag="";
     private String prev_expire_date = ""; 
@@ -38,7 +37,10 @@ public class JobTask implements Serializable{
     String new_group_id = "", pay_period_id="";
     String department_id = "";
     //
+    // moved to group
+    String include_in_auto_batch="";
     String clock_time_required="";
+    
     int weekly_regular_hours=40, comp_time_weekly_hours=40;
     double comp_time_factor=1.0, holiday_comp_factor=1.0;
     double hourly_rate=0;
@@ -49,7 +51,12 @@ public class JobTask implements Serializable{
     Group group = null;
     Shift shift = null;
     List<Group> allGroups = null; // all employee groups
-    public JobTask(String val,
+    public JobTask(){
+    }		    
+    public JobTask(String val){
+	setId(val);
+    }
+public JobTask(String val,
 		   String val2,
 		   String val3,
 		   String val4,
@@ -63,11 +70,11 @@ public class JobTask implements Serializable{
 									 
 		   double val11,
 		   double val12,
-		   boolean val13,
+		   // boolean val13,
 		   double val14,
 		   String val15,
 									 
-		   boolean val16,
+		   // boolean val16,
 		   boolean val17,
 		   boolean val18,
 		   String val19,
@@ -91,10 +98,10 @@ public class JobTask implements Serializable{
 		val10,
 		val11,
 		val12,
-		val13,
+		// val13,
 		val14,
 		val15,
-		val16,
+		//val16,
 		val17,
 		val18,
 		val19,
@@ -118,11 +125,11 @@ public class JobTask implements Serializable{
 									 
 		   double val11,
 		   double val12,
-		   boolean val13,
+		   //boolean val13,
 		   double val14,
 		   String val15,
 									 
-		   boolean val16,
+		   //boolean val16,
 		   boolean val17,
 		   boolean val18,
 									 
@@ -147,11 +154,11 @@ public class JobTask implements Serializable{
 		val10,
 		val11,
 		val12,
-		val13,
+		// val13,
 		val14,
 		val15,
 								
-		val16,
+		// val16,
 		val17,
 		val18,
 		val19,
@@ -178,11 +185,11 @@ public class JobTask implements Serializable{
 									 
 		   double val11,
 		   double val12,
-		   boolean val13,
+		   // boolean val13,
 		   double val14,
 		   String val15,
 									 
-		   boolean val16,
+		   // boolean val16,
 		   boolean val17,
 		   boolean val18,
 									 
@@ -201,15 +208,17 @@ public class JobTask implements Serializable{
 		   String valg4, // dept_id
 		   String valg5, // excess_hours_earn_type
 		   boolean valg6, // allow pending accrual
-		   boolean valg7, // inactive
+		   boolean valg7, // clock_time_req
+		   boolean valg8, // include_in_auto_batch
+		   boolean valg9, // inactive
 		   // dept
 		   // String val4, // dept_id use val4
-		   String valg8, // dept_name
-		   String valg9, // dept_desc
-		   String valg10, // ref_id
-		   String valg11, // ldap_name
-		   boolean valg12,  // allow pending accrual
-		   boolean valg13 // inactive
+		   String valg10, // dept_name
+		   String valg11, // dept_desc
+		   String valg12, // ref_id
+		   String valg13, // ldap_name
+		   boolean valg14,  // allow pending accrual
+		   boolean valg15 // inactive
 									 
 		   ){
 	setVals(val,
@@ -224,11 +233,11 @@ public class JobTask implements Serializable{
 		val10,
 		val11,
 		val12,
-		val13,
+		//val13,
 		val14,
 		val15,
 								
-		val16,
+		// val16,
 		val17,
 		val18,
 		val19,
@@ -251,7 +260,9 @@ public class JobTask implements Serializable{
 			  valg10,
 			  valg11,
 			  valg12,
-			  val13
+			  valg13,
+			  valg14,
+			  valg15
 			  );				
     }
 
@@ -270,11 +281,11 @@ public class JobTask implements Serializable{
 												 
 			 double val11,
 			 double val12,
-			 boolean val13,
+			 // boolean val13,
 			 double val14,
 			 String val15,
 												 
-			 boolean val16,
+			 // boolean val16,
 			 boolean val17,
 			 boolean val18,												 
 			 String val19,
@@ -299,10 +310,10 @@ public class JobTask implements Serializable{
 				
 	setComp_time_factor(val11);
 	setHoliday_comp_factor(val12);
-	setClock_time_required(val13);
+	// setClock_time_required(val13); // move
 	setHourlyRateDbl(val14);
 	setAdded_date(val15);
-	setIncludeInAutoBatch(val16);
+	// setIncludeInAutoBatch(val16); // move
 	setIrregularWorkDays(val17);
 	setInactive(val18);
 	if(!salary_group_id.isEmpty()){
@@ -313,11 +324,6 @@ public class JobTask implements Serializable{
 	}				
 
     }
-    public JobTask(String val){
-	setId(val);
-    }
-    public JobTask(){
-    }		
     //
     // getters
     //
@@ -378,13 +384,21 @@ public class JobTask implements Serializable{
 	return !inactive.isEmpty();
     }
     public boolean getClock_time_required(){
-	return !clock_time_required.isEmpty();
+	getGroup();
+	if(group != null){
+	    return group.getClock_time_required();
+	}
+	return false;
     }
     public boolean isActive(){
 	return inactive.isEmpty();
     }
     public boolean getIncludeInAutoBatch(){
-	return !include_in_auto_batch.isEmpty();
+	getGroup();
+	if(group != null){
+	    return group.getIncludeInAutoBatch();
+	}
+	return false;
     }
     public boolean getIrregularWorkDays(){
 	return !irregular_work_days.isEmpty();
@@ -393,7 +407,10 @@ public class JobTask implements Serializable{
 	return !irregular_work_days.isEmpty();
     }		
     public boolean isPunchClockOnly(){
-	return !clock_time_required.isEmpty();
+	getGroup();
+	if(group != null)
+	    return group.isPunchClockOnly();
+	return false;
     }
     public boolean isLeaveEligible(){
 	getSalaryGroup();
@@ -485,18 +502,22 @@ public class JobTask implements Serializable{
 	if(val)
 	    inactive = "y";
     }
+    /**
     public void setIncludeInAutoBatch(boolean val){
 	if(val)
 	    include_in_auto_batch = "y";
     }
+    */
     public void setIrregularWorkDays(boolean val){
 	if(val)
 	    irregular_work_days = "y";
-    }		
+    }
+    /**
     public void setClock_time_required(boolean val){
 	if(val)
 	    clock_time_required = "y";
-    }		
+    }
+    */
     public void setPrimary_flag(boolean val){
 	if(val)
 	    primary_flag = "y";
@@ -619,6 +640,7 @@ public class JobTask implements Serializable{
 	}
 	return group;
     }
+    /**
     void findAllGroups(){
 	if(allGroups == null){
 	    if(!employee_id.isEmpty()){
@@ -630,6 +652,28 @@ public class JobTask implements Serializable{
 		    List<GroupEmployee> ones = gel.getGroupEmployees();
 		    if(ones != null){
 			for(GroupEmployee one:ones){
+			    Group gg = one.getGroup();
+			    if(allGroups == null)
+				allGroups = new ArrayList<>();
+			    allGroups.add(gg);
+			}
+		    }
+		}
+	    }
+	}
+    }
+    */
+    void findAllGroups(){
+	if(allGroups == null){
+	    if(!employee_id.isEmpty()){
+		JobTaskList jl = new JobTaskList();
+		jl.setEmployee_id(employee_id);
+		jl.setIncludeFuture();
+		String back = jl.find();
+		if(back.isEmpty()){
+		    List<JobTask> ones = jl.getJobs();
+		    if(ones != null){
+			for(JobTask one:ones){
 			    Group gg = one.getGroup();
 			    if(allGroups == null)
 				allGroups = new ArrayList<>();
@@ -840,11 +884,10 @@ public class JobTask implements Serializable{
 	    "j.comp_time_factor,"+
 						
 	    "j.holiday_comp_factor,"+
-	    "j.clock_time_required, "+
+
 	    "j.hourly_rate,"+
 	    "date_format(j.added_date,'%m/%d/%Y'),"+
 
-	    "j.include_in_auto_batch,"+
 	    "j.irregular_work_days,"+
 	    "j.inactive, "+
 	    "sg.name,sg.description,sg.default_regular_id,"+
@@ -854,6 +897,8 @@ public class JobTask implements Serializable{
 	    "g.id,g.name,g.description,g.department_id,"+
 	    "g.excess_hours_earn_type,"+ // renamed
 	    "g.allow_pending_accrual,"+
+	    "g.clock_time_required, "+
+	    "g.include_in_auto_batch,"+
 	    "g.inactive,"+
 	    "d.name,d.description,d.ref_id,d.ldap_name,"+
 	    "d.allow_pending_accrual,d.inactive "+						
@@ -887,29 +932,29 @@ public class JobTask implements Serializable{
 			rs.getInt(10),
 			rs.getDouble(11),
 			rs.getDouble(12),
-			rs.getString(13) != null,
-			rs.getDouble(14),
-			rs.getString(15),
+			// rs.getString(13) != null,
+			rs.getDouble(13),
+			rs.getString(14),
+			// rs.getString(16) != null,
+			rs.getString(15) != null,
 			rs.getString(16) != null,
-			rs.getString(17) != null,
-			rs.getString(18) != null,
-												
+			rs.getString(17),
+			rs.getString(18),
 			rs.getString(19),
 			rs.getString(20),
-			rs.getString(21),
-			rs.getString(22),
-												
-			rs.getString(23) != null,
-			rs.getString(24));
+			rs.getString(21) != null,
+			rs.getString(22));
 		group = new Group(
+				  rs.getString(23),
+				  rs.getString(24),
 				  rs.getString(25),
 				  rs.getString(26),
 				  rs.getString(27),
-				  rs.getString(28),
-				  rs.getString(29),
+				  rs.getString(28) != null,
+				  rs.getString(29) != null,
 				  rs.getString(30) != null,
 				  rs.getString(31) != null,
-																	
+				  
 				  rs.getString(32),
 				  rs.getString(33),
 				  rs.getString(34),
@@ -917,6 +962,7 @@ public class JobTask implements Serializable{
 				  rs.getString(36) != null,
 				  rs.getString(37) != null
 				  );
+
 
 	    }
 	}
@@ -947,11 +993,13 @@ public class JobTask implements Serializable{
 	    group_id = new_group_id;
 	    new_group_id = "";
 	}
+	/**
 	if(back.isEmpty() && !group_id.isEmpty()){
 	    GroupEmployee ge = new GroupEmployee(group_id, employee_id, effective_date);
 	    back = ge.doSave();
 	    back = ""; // if already in the group we ignore this message
 	}
+	*/
 	if(back.isEmpty()){
 	    back = doSave();
 	}
@@ -963,7 +1011,7 @@ public class JobTask implements Serializable{
 	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = "insert into jobs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,now(),?,?,null) ";
+	String qq = "insert into jobs values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,now(),?,null) ";
 	if(employee_id.isEmpty()){
 	    msg = " employee_id not set ";
 	    return msg;
@@ -991,7 +1039,7 @@ public class JobTask implements Serializable{
 	}							
 	try{
 	    pstmt = con.prepareStatement(qq);
-	    pstmt.setString(1, position_id);
+pstmt.setString(1, position_id);
 	    pstmt.setString(2, salary_group_id);
 	    pstmt.setString(3, employee_id);
 	    pstmt.setString(4, group_id);						
@@ -1014,20 +1062,23 @@ public class JobTask implements Serializable{
 	    pstmt.setInt(9, comp_time_weekly_hours);
 	    pstmt.setDouble(10, comp_time_factor);
 	    pstmt.setDouble(11, holiday_comp_factor);
+	    /**
 	    if(clock_time_required.isEmpty())
 		pstmt.setNull(12, Types.CHAR);
 	    else
 		pstmt.setString(12, "y");
-	    pstmt.setDouble(13, hourly_rate);
+	    */
+	    pstmt.setDouble(12, hourly_rate);
+	    /**
 	    if(include_in_auto_batch.isEmpty())
 		pstmt.setNull(14, Types.CHAR);
 	    else
 		pstmt.setString(14, "y");
+	    */
 	    if(irregular_work_days.isEmpty())
-		pstmt.setNull(15, Types.CHAR);
+		pstmt.setNull(13, Types.CHAR);
 	    else
-		pstmt.setString(15, "y");
-						
+		pstmt.setString(13, "y");
 	    pstmt.executeUpdate();
 	    //
 	    qq = "select LAST_INSERT_ID()";
@@ -1106,6 +1157,7 @@ public class JobTask implements Serializable{
 	}
 	if(!new_group_id.isEmpty()){
 	    if(!new_group_id.equals(group_id)){
+		/**
 		if(!isInGroup(new_group_id)){
 		    GroupEmployee gem = new GroupEmployee(new_group_id, employee_id, effective_date);
 		    back = gem.doSave();
@@ -1114,8 +1166,10 @@ public class JobTask implements Serializable{
 		    }
 		}
 		else{
-		    group_id = new_group_id;
+		group_id = new_group_id;		
 		}
+		*/
+		group_id = new_group_id;
 	    }
 	}
 	String qq = "update jobs set position_id=?,"+
@@ -1131,9 +1185,9 @@ public class JobTask implements Serializable{
 	    "comp_time_factor=?,"+
 						
 	    "holiday_comp_factor=?,"+
-	    "clock_time_required=?,"+
+	    //  "clock_time_required=?,"+
 	    "hourly_rate=?, "+
-	    "include_in_auto_batch=?,"+
+	    // "include_in_auto_batch=?,"+
 	    "irregular_work_days=?,"+
 	    "inactive=? "+
 	    "where id=? ";
@@ -1167,24 +1221,29 @@ public class JobTask implements Serializable{
 	    pstmt.setInt(9, comp_time_weekly_hours);
 	    pstmt.setDouble(10, comp_time_factor);
 	    pstmt.setDouble(11,holiday_comp_factor);
+	    /**
 	    if(clock_time_required.isEmpty())
 		pstmt.setNull(12, Types.CHAR);
 	    else
-		pstmt.setString(12, "y");								
-	    pstmt.setDouble(13, hourly_rate);
+	    pstmt.setString(12, "y");
+	    */
+	    pstmt.setDouble(12, hourly_rate);
+	    /**
+	    
 	    if(include_in_auto_batch.isEmpty())
 		pstmt.setNull(14, Types.CHAR);
 	    else
-		pstmt.setString(14, "y");						
+	    pstmt.setString(14, "y");
+	    */
 	    if(irregular_work_days.isEmpty())
-		pstmt.setNull(15, Types.CHAR);
+		pstmt.setNull(13, Types.CHAR);
 	    else
-		pstmt.setString(15, "y");
+		pstmt.setString(13, "y");
 	    if(inactive.isEmpty())
-		pstmt.setNull(16, Types.CHAR);
+		pstmt.setNull(14, Types.CHAR);
 	    else
-		pstmt.setString(16, "y");
-	    pstmt.setString(17, id);
+		pstmt.setString(14, "y");
+	    pstmt.setString(15, id);
 	    pstmt.executeUpdate();
 	}
 	catch(Exception ex){
@@ -1224,6 +1283,7 @@ public class JobTask implements Serializable{
 	    }
 	}
 	if(expire_group){
+	    /**
 	    List<GroupEmployee> groupEmployees = null;
 	    GroupEmployeeList del = new GroupEmployeeList(employee_id);
 	    del.setGroup_id(group_id);
@@ -1241,6 +1301,8 @@ public class JobTask implements Serializable{
 		groupEmployee.setExpire_date(expire_date);
 		back = groupEmployee.doExpireDateOnly();
 	    }
+	    */
+
 	}
 	return back;
     }
@@ -1324,58 +1386,36 @@ public class JobTask implements Serializable{
 	    }
 	    //
 	    if(add_group){
-		// add employee to the new group
-		GroupEmployee ge = new GroupEmployee();
-		ge.setGroup_id(new_group_id);
-		ge.setEmployee_id(employee_id);
-		ge.setEffective_date(start_date);
-		msg = ge.doSave();
+		//
+		// work with department
+		//
+		String old_dept_id = "", new_dept_id="";										
+		Group oldGroup = new Group(old_group_id);
+		msg = oldGroup.doSelect();
 		if(msg.isEmpty()){
-		    // find the old employee group
-		    GroupEmployeeList gel = new GroupEmployeeList();
-		    gel.setGroup_id(old_group_id);
-		    gel.setEmployee_id(employee_id);
-		    gel.setActiveOnly();
-		    msg = gel.find();
-		    if(msg.isEmpty()){
-			List<GroupEmployee> ones = gel.getGroupEmployees();
-			if(ones != null && ones.size() > 0){
-			    ge = ones.get(0);
-			    ge.setExpire_date(old_expire_date);
-			    ge.doUpdate();
-			}
-		    }
-		    //
-		    // work with department
-		    //
-		    String old_dept_id = "", new_dept_id="";										
-		    Group oldGroup = new Group(old_group_id);
-		    msg = oldGroup.doSelect();
-		    if(msg.isEmpty()){
-			old_dept_id = oldGroup.getDepartment_id();
-		    }
-		    Group group = new Group(group_id);
-		    msg = group.doSelect();
-		    if(msg.isEmpty()){
-			new_dept_id = group.getDepartment_id();
-		    }
-		    if(!old_dept_id.isEmpty() && !new_dept_id.isEmpty() &&
-		       !old_dept_id.equals(new_dept_id)){
+		    old_dept_id = oldGroup.getDepartment_id();
+		}
+		Group group = new Group(group_id);
+		msg = group.doSelect();
+		if(msg.isEmpty()){
+		    new_dept_id = group.getDepartment_id();
+		}
+		if(!old_dept_id.isEmpty() && !new_dept_id.isEmpty() &&
+		   !old_dept_id.equals(new_dept_id)){
 			// expire old dept
-			qq = qq4; 
-			pstmt4 = con.prepareStatement(qq);
-			java.util.Date date_tmp = df.parse(old_expire_date);
-			pstmt4.setDate(1, new java.sql.Date(date_tmp.getTime()));												
-			pstmt4.setString(2, employee_id);
-			pstmt4.setString(3, old_dept_id);
-			pstmt4.executeUpdate();
-			DepartmentEmployee deptEmp =
-			    new DepartmentEmployee(employee_id,
-						   new_dept_id,
-						   start_date);
-			// it will check if such record exists before saving
-			msg = deptEmp.doSave();
-		    }
+		    qq = qq4; 
+		    pstmt4 = con.prepareStatement(qq);
+		    java.util.Date date_tmp = df.parse(old_expire_date);
+		    pstmt4.setDate(1, new java.sql.Date(date_tmp.getTime()));
+		    pstmt4.setString(2, employee_id);
+		    pstmt4.setString(3, old_dept_id);
+		    pstmt4.executeUpdate();
+		    DepartmentEmployee deptEmp =
+			new DepartmentEmployee(employee_id,
+					       new_dept_id,
+					       start_date);
+		    // it will check if such record exists before saving
+		    msg = deptEmp.doSave();
 		}
 	    }
 	}

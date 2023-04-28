@@ -238,6 +238,8 @@ public class EmployeeList extends CommonInc{
 	ResultSet rs = null;
 	String qq = "select e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.ad_sid,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive from employees e ";				
 	String qw = "";
+	boolean job_table = false;
+	boolean group_table = false;
 	if(!id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " e.id = ? ";
@@ -275,6 +277,8 @@ public class EmployeeList extends CommonInc{
 		qq += " join department_employees de on de.employee_id=e.id "; 
 		qq += " join jobs j on j.employee_id=e.id ";
 		qq += " join groups g on g.id=j.group_id ";
+		job_table = true;
+		group_table = true;
 		//
 		// city directors = 18, human resource = 4
 		//
@@ -314,18 +318,21 @@ public class EmployeeList extends CommonInc{
 		qw += " e.ad_sid is not null";
 	    }						
 	    if(!group_ids.isEmpty()){
-		qq += " join group_employees ge on ge.employee_id=e.id ";
+		if(!job_table){
+		    qq += " join jobs j on j.employee_id=e.id ";
+		    job_table = true;
+		}
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " ge.group_id in ("+group_ids+") ";
+		qw += " j.group_id in ("+group_ids+") ";
 		if(!pay_period_id.isEmpty() ||
 		   !no_document_for_payperiod_id.isEmpty()){
-		    qw += " and ge.effective_date <= pd.start_date ";
-		    qw += " and (ge.expire_date is null or ge.expire_date >= pd.end_date )";
+		    qw += " and j.effective_date <= pd.start_date ";
+		    qw += " and (j.expire_date is null or j.expire_date >= pd.end_date )";
 		}
 	    }
 	    if(!exclude_group_id.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " e.id not in (select ge.employee_id from group_employees ge where ge.group_id = ?)";
+		qw += " e.id not in (select jj.employee_id from jobs jj where jj.group_id = ?)";
 	    }
 	    if(!no_document_for_payperiod_id.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
@@ -364,8 +371,9 @@ public class EmployeeList extends CommonInc{
 		qw += " pd.id=? ";
 	    }
 	    if(not_terminated){
-		if(qq.indexOf("jobs") == -1){
+		if(!job_table){
 		    qq += " join jobs j on j.employee_id=e.id ";
+		    job_table = true;
 		}
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " j.expire_date is null ";
@@ -415,8 +423,6 @@ public class EmployeeList extends CommonInc{
 		}
 		if(!department_id.isEmpty()){
 		    pstmt.setString(jj++, department_id);
-		    // pstmt.setString(jj++, department_id);
-		    // pstmt.setString(jj++, department_id);										
 		}
 		if(!exclude_group_id.isEmpty()){
 		    pstmt.setString(jj++, exclude_group_id);
@@ -470,7 +476,6 @@ public class EmployeeList extends CommonInc{
     }
     /*
 
-      select e.id,e.username,e.first_name,e.last_name,e.id_code,e.inactive from employees e , pay_periods pd , department_employees de , group_employees ge  where  pd.id=564  and  de.employee_id=e.id and  (de.department_id = 36 or de.department2_id=36) and de.effective_date <= pd.start_date  and (de.expire_date is null or de.expire_date >= pd.end_date ) and  e.employee_number is not null and  ge.employee_id=e.id and ge.group_id in (110)  and ge.effective_date <= pd.start_date  and (ge.expire_date is null or ge.expire_date >= pd.end_date ) order by e.last_name,e.first_name
 
       select distinct e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.ad_sid,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive                     from employees e                                                                join department_employees de on de.employee_id=e.id                             left join jobs j on j.employee_id=e.id                                          left join groups g on g.id=j.group_id,                                          pay_periods pd                                                                  where  pd.id=631 and (de.department_id = 3 or de.department2_id=3 or g.department_id=3) and  ((de.effective_date <= pd.start_date  and de.expire_date is null or de.expire_date >= pd.end_date )  or (j.effective_date <= pd.start_date and  j.expire_date is null or j.expire_date >= pd.end_date)) and  e.employee_number is not null order by e.last_name,e.first_name
 

@@ -18,86 +18,89 @@ import org.apache.logging.log4j.Logger;
 
 public class EmpTimeChangeAction extends TopAction{
 
-		static final long serialVersionUID = 1150L;	
-		static Logger logger = LogManager.getLogger(EmpTimeChangeAction.class);
-		//
-		String source="",
-				department_id="", related_employee_id = "";
-		Employee emp = null;
-		String employeesTitle = "Related Employee";
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare("empTimeChange.action");
-				if(!action.isEmpty()){ // 'Next'
-						if(!related_employee_id.isEmpty()){
-								getEmp();
-								if(emp == null){
-										back = "could not get employee info ";
-										addError(back);
-								}
-								else{
-										try{
-												HttpServletResponse res = ServletActionContext.getResponse();
-												String str = "jobTimeChange.action?related_employee_id="+related_employee_id;
-												if(!source.isEmpty()){
-														str += "&source="+source;
-												}
-												res.sendRedirect(str);
-												return super.execute();
-										}catch(Exception ex){
-												System.err.println(ex);
-										}
-								}
-						}
-				}
-				else {
-						getUser();
-						if(user != null && !(user.isAdmin() || user.isHrAdmin())){
-								String val = user.getDepartment_id();
-								if(val != null)
-										department_id = val;
-						}
-				}
-				return ret;
+    static final long serialVersionUID = 1150L;	
+    static Logger logger = LogManager.getLogger(EmpTimeChangeAction.class);
+    //
+    String source="",
+	department_id="", related_employee_id = "";
+    Employee emp = null;
+    String employeesTitle = "Related Employee";
+    public String execute(){
+	String ret = SUCCESS;
+	String back = canProceed("empTimeChange.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(!action.isEmpty()){ // 'Next'
+	    if(!related_employee_id.isEmpty()){
+		getEmp();
+		if(emp == null){
+		    back = "could not get employee info ";
+		    addError(back);
 		}
-		public String getEmployeesTitle(){
-				return employeesTitle;
+		else{
+		    try{
+			HttpServletResponse res = ServletActionContext.getResponse();
+			String str = "jobTimeChange.action?related_employee_id="+related_employee_id;
+			if(!source.isEmpty()){
+			    str += "&source="+source;
+			}
+			res.sendRedirect(str);
+			return super.execute();
+		    }catch(Exception ex){
+			System.err.println(ex);
+		    }
 		}
-		public String getDepartment_id(){
-				return department_id;
-		}
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
-		}
-		public void setRelated_employee_id(String val){
-				if(val != null && !val.isEmpty())		
-						related_employee_id = val;
-		}
+	    }
+	}
+	else {
+	    getUser();
+	    if(user != null && !(user.isAdmin() || user.isHrAdmin())){
+		String val = user.getDepartment_id();
+		if(val != null)
+		    department_id = val;
+	    }
+	}
+	return ret;
+    }
+    public String getEmployeesTitle(){
+	return employeesTitle;
+    }
+    public String getDepartment_id(){
+	return department_id;
+    }
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public void setRelated_employee_id(String val){
+	if(val != null && !val.isEmpty())		
+	    related_employee_id = val;
+    }
 		
-		public void setEmployee_name(String val){
-				// for auto complete
-		}
-		public void setDepartment_id(String val){
-				if(val != null && !val.isEmpty())		
-						department_id = val;
-		}		
-		public void setSource(String val){
-				if(val != null && !val.isEmpty())		
-					 source = val;
-		}		
-		public String getEmployee_name(){
-				return "";
-		}
+    public void setEmployee_name(String val){
+	// for auto complete
+    }
+    public void setDepartment_id(String val){
+	if(val != null && !val.isEmpty())		
+	    department_id = val;
+    }		
+    public void setSource(String val){
+	if(val != null && !val.isEmpty())		
+	    source = val;
+    }		
+    public String getEmployee_name(){
+	return "";
+    }
     public Employee getEmp(){
-				if(emp == null && !related_employee_id.isEmpty()){
-						Employee one = new Employee(related_employee_id);
-						String back = one.doSelect();
-						if(back.isEmpty()){
-								emp = one;
-						}
-				}				
-				return emp;
+	if(emp == null && !related_employee_id.isEmpty()){
+	    Employee one = new Employee(related_employee_id);
+	    String back = one.doSelect();
+	    if(back.isEmpty()){
+		emp = one;
+	    }
+	}				
+	return emp;
     }
 		
 }

@@ -63,8 +63,30 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 	return id;
     }
     public Employee getUser(){
+	if(user == null){
+	    if(sessionMap == null || sessionMap.get("user") == null){
+		//
+		// timeClock we do not need login
+		//
+	    }
+	    else{
+		user = (Employee)sessionMap.get("user");
+	    }
+	}
 	return user;
     }
+    public boolean canEdit(){
+	getUser();
+	return user != null && user.canEdit();
+    }
+    public boolean isAdmin(){
+	getUser();
+	return user != null && user.isAdmin();
+    }
+    public boolean isITSAdmin(){
+	getUser();
+	return user != null && user.isITSAdmin();
+    }    
     String doPrepare(String source){
 	String back = "", val="";
 	try{
@@ -105,19 +127,21 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		//
 		// timeClock we do not need login
 		//
+		back = "No Sesion ";
+		return back;
 	    }
 	    else{
 		user = (Employee)sessionMap.get("user");
-	    }
-	    if(sessionMap != null && sessionMap.containsKey("employee_id")){
-		Object obj = sessionMap.get("employee_id");
-		if(obj != null){
-		    employee_id = (String) obj;
+		if(sessionMap != null && sessionMap.containsKey("employee_id")){
+		    Object obj = sessionMap.get("employee_id");
+		    if(obj != null){
+			employee_id = (String) obj;
+		    }
 		}
+		if(url.isEmpty())
+		    setUrls();
+		clearAll();
 	    }
-	    if(url.isEmpty())
-		setUrls();
-	    clearAll();
 	}catch(Exception ex){
 	    logger.error(ex);
 	}
@@ -280,9 +304,16 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		}
 	    }
 	}
-    }		
+    }
+    public  String canProceed(String val){
+	String back = doPrepare(val);
+	if(back.isEmpty() && 
+	   (canEdit() || isAdmin() || isITSAdmin())){
+	    return "";
+	}
+	return "Not allowed";
+    }
     private void setUrls(){
-	System.err.println(" url "+url);
 	if(!url.isEmpty()) return;
 	HttpServletRequest request = ServletActionContext.getRequest();				
 	String host_forward = request.getHeader("X-Forwarded-Host");

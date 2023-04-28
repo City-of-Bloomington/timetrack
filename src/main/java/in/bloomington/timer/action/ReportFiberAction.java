@@ -30,7 +30,10 @@ public class ReportFiberAction extends TopAction{
     String reportTitle = "Engineering Fiber Report ";
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = doPrepare("reportFiber.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(!action.isEmpty()){
 	    back = report.findHoursByNameCode();
 	    back += report.findHoursByDateAndCode();

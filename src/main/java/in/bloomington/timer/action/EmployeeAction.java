@@ -21,21 +21,23 @@ public class EmployeeAction extends TopAction{
     static final long serialVersionUID = 1150L;	
     static Logger logger = LogManager.getLogger(EmployeeAction.class);
     //
-    static final String[] roles = {"Employee",
-	"Admin",
-	"EngineeringAdmin",
-	"FireReport",	
-	"FMLAReport",
-	"HANDReport",
-	"HrAdmin",	
-	"MPOReport",
-	"ITSAdmin",
-	"ParkReport",
-	"PoliceAdmin",	
-	"PublicWorksAdmin",	
-	"TargetEmployee",	
-	"Timewarp"
-	};
+    static final String[] roles =
+    {"Employee",
+     "Admin",
+     "Edit",
+     "EngineeringAdmin",
+     "FireReport",	
+     "FMLAReport",
+     "HANDReport",
+     "HrAdmin",	
+     "MPOReport",
+     "ITSAdmin",
+     "ParkReport",
+     "PoliceAdmin",	
+     "PublicWorksAdmin",	
+     "TargetEmployee",	
+     "Timewarp"
+    };
     String emp_id="";
     // dept_id needed for adding employee by non-admin users
     String dept_id="", effective_date=""; // from wizard
@@ -43,7 +45,7 @@ public class EmployeeAction extends TopAction{
     Employee emp = null;
     Department dept = null;
     DepartmentEmployee departmentEmployee = null; // for new employee
-    GroupEmployee groupEmployee = null; // for new employee
+    // GroupEmployee groupEmployee = null; // for new employee
     List<Employee> employees = null;
     String employeesTitle = "Current Employees";
     List<Type> departments = null;
@@ -51,7 +53,10 @@ public class EmployeeAction extends TopAction{
     List<Group> groups = null;
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = canProceed("employee.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(action.equals("Save")){
 	    back = emp.validate();
 	    if(!back.isEmpty()){
@@ -95,8 +100,7 @@ public class EmployeeAction extends TopAction{
 		}
 	    }
 	    else{
-		getUser();
-		if(user != null && !user.isAdmin()){
+		if(canEdit()){
 		    if(user.hasDepartment()){
 			dept = user.getDepartment();
 			dept_id= dept.getId();
@@ -132,13 +136,6 @@ public class EmployeeAction extends TopAction{
 	return departmentEmployee;
 						
     }
-    public GroupEmployee getGroupEmployee(){
-	if(groupEmployee == null){
-	    groupEmployee = new GroupEmployee();
-	}
-	return groupEmployee;
-						
-    }		
     public void setEmp(Employee val){
 	if(val != null){
 	    emp = val;
@@ -184,11 +181,6 @@ public class EmployeeAction extends TopAction{
 	    departmentEmployee = val;
 	}
     }
-    public void setGroupEmployee(GroupEmployee val){
-	if(val != null){
-	    groupEmployee = val;
-	}
-    }		
     public String getEmployeesTitle(){
 	return employeesTitle;
     }
@@ -285,6 +277,7 @@ public class EmployeeAction extends TopAction{
 	getUser();
 	return user.isAdmin();
     }
+
 }
 
 

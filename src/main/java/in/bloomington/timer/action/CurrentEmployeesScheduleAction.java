@@ -20,114 +20,118 @@ import org.apache.logging.log4j.Logger;
 
 public class CurrentEmployeesScheduleAction extends TopAction{
 
-		static final long serialVersionUID = 3850L;	
-		static Logger logger =
-				LogManager.getLogger(CurrentEmployeesScheduleAction.class);
-		//
-		String currentEmployeesSchedulesTitle = "Current Employees Schedules";
-		QuartzMisc quartzMisc = null;
-		CurrentEmployeesScheduler schedular = null;
-		String prev_date="", next_date="", date="";
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				prepareSchedular();				
-				if(action.equals("Schedule")){
-						back = doClean();
-						if(!back.isEmpty()){
-								addActionError(back);
-						}
-						try{
-								back = schedular.run();
-								if(!back.isEmpty()){
-										addActionError(back);
-								}
-								else{
-										if(quartzMisc != null){
-												prev_date = quartzMisc.getPrevScheduleDate();
-												if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
-														prev_date = "No Previous date found";
-												next_date = quartzMisc.getNextScheduleDate();
-										}
-										addActionMessage("Scheduled Successfully");
-								}
-						}catch(Exception ex){
-								addActionError(""+ex);
-						}
-				}
-				else if(action.startsWith("Submit")){
-						System.err.println(" envBean "+envBean);
-						HandleCurrentEmployees handle = new HandleCurrentEmployees(envBean);
-						back = handle.process();
-						if(!back.isEmpty()){
-								addActionError(back);
-						}
-						else{
-								addActionMessage("Submitted Successfully");
-						}
-				}
-				return ret;
+    static final long serialVersionUID = 3850L;	
+    static Logger logger =
+	LogManager.getLogger(CurrentEmployeesScheduleAction.class);
+    //
+    String currentEmployeesSchedulesTitle = "Current Employees Schedules";
+    QuartzMisc quartzMisc = null;
+    CurrentEmployeesScheduler schedular = null;
+    String prev_date="", next_date="", date="";
+    public String execute(){
+	String ret = SUCCESS;
+	
+	String back = canProceed("currentEmployeesSchedule.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	prepareSchedular();				
+	if(action.equals("Schedule")){
+	    back = doClean();
+	    if(!back.isEmpty()){
+		addActionError(back);
+	    }
+	    try{
+		back = schedular.run();
+		if(!back.isEmpty()){
+		    addActionError(back);
 		}
-		private void prepareSchedular(){
-				String msg = "";
-				if(date.isEmpty()){
-						// if no date is set we find the current pay period
-						PayPeriodList ppl = new PayPeriodList();
-						ppl.setLastPayPeriod();
-						msg = ppl.find();
-						if(msg.isEmpty()){
-								List<PayPeriod> ones = ppl.getPeriods();
-								if(ones != null && ones.size() > 0){
-										PayPeriod pp = ones.get(0);
-										String end_date = pp.getEnd_date();
-										date = Helper.getDateAfter(end_date, 5); // 5 days after
-								}
-						}
-				}
-				if(!date.isEmpty()){
-						schedular = new CurrentEmployeesScheduler(envBean, date);
-				}
-				quartzMisc = new QuartzMisc("emps");
-				msg = quartzMisc.findScheduledDates();
-				if(msg.isEmpty()){
-						prev_date = quartzMisc.getPrevScheduleDate();
-						if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
-								prev_date = "No Previous date found";
-						next_date = quartzMisc.getNextScheduleDate();
-				}				
+		else{
+		    if(quartzMisc != null){
+			prev_date = quartzMisc.getPrevScheduleDate();
+			if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
+			    prev_date = "No Previous date found";
+			next_date = quartzMisc.getNextScheduleDate();
+		    }
+		    addActionMessage("Scheduled Successfully");
 		}
-		private String doClean(){
-				String msg = "";
-				if(quartzMisc != null){
-						msg = quartzMisc.doClean();
-				}
-				return msg;
+	    }catch(Exception ex){
+		addActionError(""+ex);
+	    }
+	}
+	else if(action.startsWith("Submit")){
+	    System.err.println(" envBean "+envBean);
+	    HandleCurrentEmployees handle = new HandleCurrentEmployees(envBean);
+	    back = handle.process();
+	    if(!back.isEmpty()){
+		addActionError(back);
+	    }
+	    else{
+		addActionMessage("Submitted Successfully");
+	    }
+	}
+	return ret;
+    }
+    private void prepareSchedular(){
+	String msg = "";
+	if(date.isEmpty()){
+	    // if no date is set we find the current pay period
+	    PayPeriodList ppl = new PayPeriodList();
+	    ppl.setLastPayPeriod();
+	    msg = ppl.find();
+	    if(msg.isEmpty()){
+		List<PayPeriod> ones = ppl.getPeriods();
+		if(ones != null && ones.size() > 0){
+		    PayPeriod pp = ones.get(0);
+		    String end_date = pp.getEnd_date();
+		    date = Helper.getDateAfter(end_date, 5); // 5 days after
 		}
-		public String getCurrentEmployeesSchedularsTitle(){
+	    }
+	}
+	if(!date.isEmpty()){
+	    schedular = new CurrentEmployeesScheduler(envBean, date);
+	}
+	quartzMisc = new QuartzMisc("emps");
+	msg = quartzMisc.findScheduledDates();
+	if(msg.isEmpty()){
+	    prev_date = quartzMisc.getPrevScheduleDate();
+	    if(prev_date.startsWith("1969")) // 0 cuases 1969 schedule date
+		prev_date = "No Previous date found";
+	    next_date = quartzMisc.getNextScheduleDate();
+	}				
+    }
+    private String doClean(){
+	String msg = "";
+	if(quartzMisc != null){
+	    msg = quartzMisc.doClean();
+	}
+	return msg;
+    }
+    public String getCurrentEmployeesSchedularsTitle(){
 				
-				return currentEmployeesSchedulesTitle;
-		}
+	return currentEmployeesSchedulesTitle;
+    }
 
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
-		}
-		public void setDate(String val){
-				if(val != null && !val.isEmpty())		
-						date = val;
-		}
-		public String getDate(){
-				return date;
-		}
-		public String getPrev_date(){
-				return prev_date;
-		}
-		public String getNext_date(){
-				return next_date;
-		}
-		public boolean hasPrevDates(){
-				return !prev_date.isEmpty();
-		}
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
+    public void setDate(String val){
+	if(val != null && !val.isEmpty())		
+	    date = val;
+    }
+    public String getDate(){
+	return date;
+    }
+    public String getPrev_date(){
+	return prev_date;
+    }
+    public String getNext_date(){
+	return next_date;
+    }
+    public boolean hasPrevDates(){
+	return !prev_date.isEmpty();
+    }
 		
 }
 

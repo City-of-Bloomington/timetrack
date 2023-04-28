@@ -29,7 +29,10 @@ public class AccrualWarningAction extends TopAction{
     List<Accrual> accruals = null;
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = canProceed("accrualWarning.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(action.equals("Save")){
 	    back = accrualWarning.doSave();
 	    if(!back.isEmpty()){

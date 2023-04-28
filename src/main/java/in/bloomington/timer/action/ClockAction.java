@@ -17,49 +17,49 @@ import org.apache.logging.log4j.Logger;
 
 public class ClockAction extends TopAction{
 
-		static final long serialVersionUID = 4300L;	
-		static Logger logger = LogManager.getLogger(ClockAction.class);
-		//
-		TimeClock clock = null;
-		String clocksTitle = "Clock-In, Clock-Out times";
-		//
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(!action.isEmpty()){ // action name not important
-						back = ""; // clock.process();
-						if(!back.isEmpty()){
-								addError(back);
-								addActionError(back);
-						}
-						else{
-								addMessage("Added Successfully");
-								addActionMessage("Added Successfully");
-						}
-				}				
-				else{		
-						getClock();
-				}
-				return ret;
-		}
-		public TimeClock getClock(){ 
-				if(clock == null){
-						clock = new TimeClock();
-				}
-				return clock;
-		}
-		public void setTimeClock(TimeClock val){
-				if(val != null){
-						clock = val;
-				}
-		}
-		public String getClocksTitle(){
-				return clocksTitle;
-		}
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
-		}
+    static final long serialVersionUID = 4300L;	
+    static Logger logger = LogManager.getLogger(ClockAction.class);
+    //
+    TimeClock clock = null;
+    String clocksTitle = "Clock-In, Clock-Out times";
+    //
+    public String execute(){
+	String ret = SUCCESS;
+	String back = doPrepare();
+	if(!action.isEmpty()){ // action name not important
+	    back = ""; // clock.process();
+	    if(!back.isEmpty()){
+		addError(back);
+		addActionError(back);
+	    }
+	    else{
+		addMessage("Added Successfully");
+		addActionMessage("Added Successfully");
+	    }
+	}				
+	else{		
+	    getClock();
+	}
+	return ret;
+    }
+    public TimeClock getClock(){ 
+	if(clock == null){
+	    clock = new TimeClock();
+	}
+	return clock;
+    }
+    public void setTimeClock(TimeClock val){
+	if(val != null){
+	    clock = val;
+	}
+    }
+    public String getClocksTitle(){
+	return clocksTitle;
+    }
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
 
 
 }

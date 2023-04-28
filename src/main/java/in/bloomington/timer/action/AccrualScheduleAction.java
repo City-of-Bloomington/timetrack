@@ -31,7 +31,10 @@ public class AccrualScheduleAction extends TopAction{
     String date = "", write_date="", prev_date="", next_date="", dept_ref_id="";
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = canProceed("Schedule.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	prepareSchedular();				
 	if(action.equals("Schedule")){
 	    back = doClean();

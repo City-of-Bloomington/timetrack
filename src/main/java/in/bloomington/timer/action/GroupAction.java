@@ -33,7 +33,10 @@ public class GroupAction extends TopAction{
     String department_id="";
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
+	String back = canProceed("group.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
 	if(action.equals("Save")){
 	    back = group.doSave();
 	    if(!back.isEmpty()){

@@ -20,100 +20,103 @@ import org.apache.logging.log4j.Logger;
 
 public class ReportPublicWorksAction extends TopAction{
 
-		static final long serialVersionUID = 1850L;	
-		static Logger logger = LogManager.getLogger(ReportPublicWorksAction.class);
-		static final int startYear = CommonInc.reportStartYear; 
-		//
-		List<WarpEntry> entries = null;
-		PublicWorksReport report = null;
-		List<Integer> years = null;
-		List<WarpEntry> dailyEntries = null;
-		String reportTitle = "Asset Management Report ";
-		public String execute(){
-				String ret = SUCCESS;
-				String back = doPrepare();
-				if(!action.isEmpty()){
-						back = report.findHoursByNameAndCode();
-						back += report.findHoursByDateAndCode();
-						if(!back.isEmpty()){
-								addError(back);
-						}
-						else{
-								if(true){
-										List<WarpEntry> ones = report.getEntries();
-										if(ones != null && ones.size() > 0){
-												entries = ones;
-												addMessage("Found "+ones.size()+" entries");
-										}
-										else{
-												addMessage("No records found");
-										}
-								}
-								if(true){
-										List<WarpEntry> ones = report.getDailyEntries();
-										if(ones != null && ones.size() > 0){
-												dailyEntries = ones;
-												addMessage("Found "+ones.size()+" daily entries");
-										}
-										else{
-												addMessage("No records found");
-										}
-								}
-						}
-				}
-				else{
-						getReport();
-				}
-				if(report.getType().equals("csv")){
-						return "csv";
-				}
-				return ret;
+    static final long serialVersionUID = 1850L;	
+    static Logger logger = LogManager.getLogger(ReportPublicWorksAction.class);
+    static final int startYear = CommonInc.reportStartYear; 
+    //
+    List<WarpEntry> entries = null;
+    PublicWorksReport report = null;
+    List<Integer> years = null;
+    List<WarpEntry> dailyEntries = null;
+    String reportTitle = "Asset Management Report ";
+    public String execute(){
+	String ret = SUCCESS;
+	String back = doPrepare();
+	if(!back.isEmpty()){
+	    return back;
+	}
+	if(!action.isEmpty()){
+	    back = report.findHoursByNameAndCode();
+	    back += report.findHoursByDateAndCode();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		if(true){
+		    List<WarpEntry> ones = report.getEntries();
+		    if(ones != null && ones.size() > 0){
+			entries = ones;
+			addMessage("Found "+ones.size()+" entries");
+		    }
+		    else{
+			addMessage("No records found");
+		    }
 		}
-		public PublicWorksReport getReport(){ 
-				if(report == null){
-						report = new PublicWorksReport();
-				}		
-				return report;
+		if(true){
+		    List<WarpEntry> ones = report.getDailyEntries();
+		    if(ones != null && ones.size() > 0){
+			dailyEntries = ones;
+			addMessage("Found "+ones.size()+" daily entries");
+		    }
+		    else{
+			addMessage("No records found");
+		    }
 		}
+	    }
+	}
+	else{
+	    getReport();
+	}
+	if(report.getType().equals("csv")){
+	    return "csv";
+	}
+	return ret;
+    }
+    public PublicWorksReport getReport(){ 
+	if(report == null){
+	    report = new PublicWorksReport();
+	}		
+	return report;
+    }
 
-		public void setReport(PublicWorksReport val){
-				if(val != null){
-						report = val;
-				}
-		}
+    public void setReport(PublicWorksReport val){
+	if(val != null){
+	    report = val;
+	}
+    }
 
-		public String getReportTitle(){
-				if(report != null){
-						reportTitle = "Asset Managemrnt Report "+report.getStart_date()+" - "+report.getEnd_date();
-				}
-				return reportTitle;
-		}
-		public void setAction2(String val){
-				if(val != null && !val.isEmpty())		
-						action = val;
-		}
+    public String getReportTitle(){
+	if(report != null){
+	    reportTitle = "Asset Managemrnt Report "+report.getStart_date()+" - "+report.getEnd_date();
+	}
+	return reportTitle;
+    }
+    public void setAction2(String val){
+	if(val != null && !val.isEmpty())		
+	    action = val;
+    }
 
-		public List<Integer> getYears(){
-				if(years == null){
-						int currentYear = Helper.getCurrentYear();
-						years = new ArrayList<>();
-						for(int yy=currentYear;yy >= startYear;yy--){
-								years.add(yy);
-						}
-				}
-				return years;
-		}				
+    public List<Integer> getYears(){
+	if(years == null){
+	    int currentYear = Helper.getCurrentYear();
+	    years = new ArrayList<>();
+	    for(int yy=currentYear;yy >= startYear;yy--){
+		years.add(yy);
+	    }
+	}
+	return years;
+    }				
 		
-		// needed only for csv output
-		public String getFileName(){
-				String filename = "asset_management_report_";
-				filename +=report.getEnd_date().replace("/","_")+".csv";
-				return filename;
-		}
-		public String getDateRange(){
-				String str = report.getStart_date()+" - "+report.getEnd_date();
-				return str;
-		}
+    // needed only for csv output
+    public String getFileName(){
+	String filename = "asset_management_report_";
+	filename +=report.getEnd_date().replace("/","_")+".csv";
+	return filename;
+    }
+    public String getDateRange(){
+	String str = report.getStart_date()+" - "+report.getEnd_date();
+	return str;
+    }
 
 				
 }
