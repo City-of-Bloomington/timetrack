@@ -45,10 +45,7 @@ public class PayrollProcessAction extends TopAction{
 
     public String execute(){
 	String ret = SUCCESS;
-	String back = doPrepare();
-	if(!back.isEmpty()){
-	    return back;
-	}
+	String back = doPrepare("payrollProcess.action");
 	resetEmployee();
 	if(action.startsWith("PayrollOne")){
 	    if(document_id != null && user != null){

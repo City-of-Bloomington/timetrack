@@ -606,14 +606,18 @@ department = new Department(department_id,
 
     /**
      *
+     // 1 - stop timetrack on timetrack server
+     // 2 - backup database
+     // 3 - copy war file to war.old
+     // 4 - update database
      // add to groups first
      alter table groups add clock_time_required char(1) after allow_pending_accrual;
      alter table groups add include_in_auto_batch char(1) after clock_time_required;     
-	    
-     // find all jobs that have these flags on
-     update groups g set g.clock_time_required='y' where g.id in (select distinct j.group_id from jobs j where j.clock_time_required is not null);
      //
-     update groups g set g.include_in_auto_batch='y' where g.id in (select distinct j.group_id from jobs j where j.include_in_auto_batch is not null);
+     // find all jobs that have these flags on
+     update groups g set g.clock_time_required='y' where g.id in (select distinct j.group_id from jobs j where j.clock_time_required is not null and j.expire_date is not null);
+     //
+     update groups g set g.include_in_auto_batch='y' where g.id in (select distinct j.group_id from jobs j where j.include_in_auto_batch is not null and j.expire_date is not null);
      //
      //
      alter table jobs drop column clock_time_required;
@@ -621,6 +625,8 @@ department = new Department(department_id,
      //
      //
      drop table group_employees;
+     //
+     check groups for clock_time_required flag for parks groups
      //
      */
 

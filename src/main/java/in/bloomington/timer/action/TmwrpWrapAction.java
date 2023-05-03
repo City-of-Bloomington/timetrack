@@ -45,9 +45,6 @@ public class TmwrpWrapAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("tmwrpWrap.action");
-	if(!back.isEmpty()){
-	    return back;
-	}
 	if(!action.isEmpty() && !department_id.isEmpty()){
 	    if(department == null)
 		getDepartment();

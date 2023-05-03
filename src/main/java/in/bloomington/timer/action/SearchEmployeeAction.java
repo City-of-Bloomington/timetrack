@@ -28,9 +28,6 @@ public class SearchEmployeeAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = canProceed("searchEmployees.action");
-	if(!back.isEmpty()){
-	    return back;
-	}	
 	if(!action.isEmpty()){
 	    back = emplst.find();
 	    if(!back.isEmpty()){

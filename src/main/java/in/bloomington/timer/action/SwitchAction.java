@@ -29,9 +29,6 @@ public class SwitchAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("switch.action");
-	if(!back.isEmpty()){
-	    return back;
-	}
 	if(!action.isEmpty()){ // normally 'Change'
 	    if(!new_employee_id.isEmpty()){
 		setEmployee_id(new_employee_id);

@@ -45,9 +45,6 @@ public class ReviewAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
-	if(!back.isEmpty()){
-	    return back;
-	}
 	return ret;
     }
 

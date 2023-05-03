@@ -47,9 +47,6 @@ public class ApproveAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("approve.action");
-	if(!back.isEmpty()){
-	    return back;
-	}
 	resetEmployee();
 	if(action.equals("Approve") && user != null){
 	    if(document_ids != null){

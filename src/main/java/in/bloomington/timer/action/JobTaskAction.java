@@ -321,7 +321,7 @@ public class JobTaskAction extends TopAction{
 	if(payPeriods == null){
 	    PayPeriodList tl = new PayPeriodList();
 	    tl.setTwoPeriodsAheadOnly();
-	    tl.setLimit("5");
+	    tl.setLimit("8");
 	    String back = tl.find();
 	    if(back.isEmpty()){
 		List<PayPeriod> ones = tl.getPeriods();

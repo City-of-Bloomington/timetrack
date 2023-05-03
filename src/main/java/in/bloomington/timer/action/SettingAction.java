@@ -25,9 +25,6 @@ public class SettingAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;	
 	String back = canProceed("settngs.action");
-	if(!back.isEmpty()){
-	    return back;
-	}
 	return ret;
     }
 
