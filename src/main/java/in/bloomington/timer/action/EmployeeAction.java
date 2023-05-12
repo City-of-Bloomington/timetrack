@@ -32,10 +32,11 @@ public class EmployeeAction extends TopAction{
      "HrAdmin",	
      "MPOReport",
      "ITSAdmin",
-     "ParkReport",
+     "ParkAdmin",
      "PoliceAdmin",	
      "PublicWorksAdmin",	
-     "TargetEmployee",	
+     "TargetEmployee",
+     "SearchEmployee",
      "Timewarp"
     };
     String emp_id="";

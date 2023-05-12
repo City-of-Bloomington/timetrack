@@ -478,7 +478,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 	return hasRole("Admin");
     }
     public boolean canEdit(){
-	return hasRole("Edit") && !isAdmin(); // for non-admin role
+	return hasRole("Edit") || isAdmin(); // for non-admin role
     }
     public boolean isPoliceAdmin(){
 	return hasRole("PoliceAdmin");
@@ -509,8 +509,14 @@ public class Employee implements Serializable, Comparable<Employee>{
 	return hasRole("HANDReport");
     }		
     public boolean canRunParkReport(){
-	return hasRole("ParkReport");
+	return hasRole("ParkAdmin");
     }
+    public boolean isParkAdmin(){
+	return hasRole("ParkAdmin");
+    }
+    public boolean canRunSearchEmployee(){
+	return hasRole("SearchEmployee");
+    }    
     public boolean canRunFireReport(){
 	return hasRole("FireReport");
     }		
