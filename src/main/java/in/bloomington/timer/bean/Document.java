@@ -1416,7 +1416,7 @@ public class Document implements Serializable{
 		group = job.getGroup();
 	    }
 	    if(salaryGroup != null){
-		if(salaryGroup.isFireSworn()){
+		if(salaryGroup.isFireSworn() || salaryGroup.isTemporary()){
 		    need_warning = false;
 		}
 		else if(salaryGroup.isFireSworn5x8() &&
