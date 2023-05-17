@@ -16,12 +16,12 @@ public class EmpTerminate{
 
     static final long serialVersionUID = 3700L;	
     static Logger logger = LogManager.getLogger(EmpTerminate.class);
-    String id="", expire_date="";
+    String id="", expire_date="", job_id="";
     List<DepartmentEmployee> departmentEmployees = null;
     List<GroupManager> groupManagers = null;
     // List<GroupEmployee> groupEmployees = null;
     List<JobTask> jobs = null;
-		
+    JobTask job = null;
     Employee emp = null;
     //
     public EmpTerminate(){
@@ -58,18 +58,28 @@ public class EmpTerminate{
     // getters
     //
     public String getId(){
-	return id;
+	return id; // emp_id
     }
     public String getExpire_date(){
 	return expire_date;
     }
+    public String getJob_id(){ // we are terminating one job only
+	return job_id;
+    }    
     public Employee getEmp(){
-	if(emp == null && !id.isEmpty()){
-	    Employee one = new Employee(id);
-	    String back = one.doSelect();
-	    if(back.isEmpty()){
-		emp = one;
+	if(emp == null){
+	    if(id.isEmpty() && !job_id.isEmpty()){
+		JobTask job = new JobTask(job_id);
+		String back = job.doSelect();
+		id = job.getEmployee_id();
 	    }
+	    if(!id.isEmpty()){
+		Employee one = new Employee(id);
+		String back = one.doSelect();
+		if(back.isEmpty()){
+		    emp = one;
+		}
+	    }	    
 	}
 	return emp;				
     }
@@ -80,8 +90,12 @@ public class EmpTerminate{
 	if(val != null)
 	    id = val;
     }
+    public void setJob_id(String val){
+	if(val != null && !val.isEmpty())
+	    job_id = val;
+    }    
     public void setExpire_date(String val){
-	if(val != null)
+	if(val != null && !val.isEmpty())
 	    expire_date = val;
     }
     public String toString(){
@@ -99,14 +113,22 @@ public class EmpTerminate{
     public List<GroupManager> getGroupManagers(){
 	return groupManagers;
     }
-    /**
-    public boolean hasGroupEmployees(){
-	return groupEmployees != null && groupEmployees.size() > 0;
+    public boolean hasJob(){
+	return !job_id.isEmpty();
     }
-    public List<GroupEmployee> getGroupEmployees(){
-	return groupEmployees;
+    //
+    // when dealing with one job termination
+    //
+    public JobTask getJob(){
+	if(!job_id.isEmpty() && job == null){
+	    JobTask jone = new JobTask(job_id);
+	    String back = jone.doSelect();
+	    if(back.isEmpty()){
+		job = jone;
+	    }
+	}
+	return job;
     }
-    */
     public boolean hasJobs(){
 	return jobs != null && jobs.size() > 0;
     }
@@ -114,7 +136,30 @@ public class EmpTerminate{
 	return jobs;
     }
     //
+    // when we want to terminate one job
+    //
+    public String terminateJob(){
+	String back = "";
+	JobTask job = new JobTask(job_id);
+	job.setExpire_date(expire_date);
+	back = job.doTerminate();
+	back = job.doSelect();
+	id = job.getEmployee_id();
+	return back;
+	    
+    }
     public String doTerminate(){
+	String back="";
+	if(!job_id.isEmpty()){
+	    back = terminateJob();
+	}
+	else{
+	    back = terminateAll();
+	}
+	return back;
+    }
+    //
+    public String terminateAll(){
 	String back = "";
 	getEmp();
 	if(emp == null){
@@ -135,15 +180,6 @@ public class EmpTerminate{
 		back += one.doUpdate();
 	    }
 	}
-	/**
-	if(emp.hasGroupEmployees()){
-	    groupEmployees = emp.getGroupEmployees();
-	    for(GroupEmployee one:groupEmployees){
-		one.setExpire_date(expire_date);
-		back += one.doUpdate();
-	    }
-	}
-	*/
 	if(emp.hasJobs()){
 	    jobs = emp.getJobs();
 	    for(JobTask one:jobs){

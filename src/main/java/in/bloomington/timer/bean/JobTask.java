@@ -391,7 +391,7 @@ public JobTask(String val,
 	return false;
     }
     public boolean isActive(){
-	return inactive.isEmpty();
+	return expire_date.isEmpty() && inactive.isEmpty();
     }
     public boolean getIncludeInAutoBatch(){
 	getGroup();
@@ -640,29 +640,6 @@ public JobTask(String val,
 	}
 	return group;
     }
-    /**
-    void findAllGroups(){
-	if(allGroups == null){
-	    if(!employee_id.isEmpty()){
-		GroupEmployeeList gel = new GroupEmployeeList();
-		gel.setEmployee_id(employee_id);
-		gel.setIncludeFuture();
-		String back = gel.find();
-		if(back.isEmpty()){
-		    List<GroupEmployee> ones = gel.getGroupEmployees();
-		    if(ones != null){
-			for(GroupEmployee one:ones){
-			    Group gg = one.getGroup();
-			    if(allGroups == null)
-				allGroups = new ArrayList<>();
-			    allGroups.add(gg);
-			}
-		    }
-		}
-	    }
-	}
-    }
-    */
     void findAllGroups(){
 	if(allGroups == null){
 	    if(!employee_id.isEmpty()){
@@ -864,6 +841,74 @@ public JobTask(String val,
 		System.err.println(back);
 	}
     }
+    /**
+     * for job that is expired, can be reactivate by deleting the
+     * expire date
+     */
+    public String reactivate(){
+	//
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String back="";
+	String qq = " update jobs set expire_date=null,inactive=null where id=?";
+	if(id.isEmpty()){
+	    return " job id not set ";
+	}
+	logger.debug(qq);
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    back = "Could not connect to DB";
+	    return back;
+	}			
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, id);	
+	    pstmt.executeUpdate();
+	}
+	catch(Exception ex){
+	    back = qq+" "+ex;
+	    logger.error(back);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return back;
+
+    }
+    public String doTerminate(){
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String back="";
+	String qq = " update jobs set expire_date=? where id=?";
+	if(id.isEmpty() || expire_date.isEmpty()){
+	    return " expire date or job id not set ";
+	}
+	logger.debug(qq);
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    back = "Could not connect to DB";
+	    return back;
+	}			
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    java.util.Date date_tmp = df.parse(expire_date);
+	    pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
+	    pstmt.setString(2, id);	
+	    pstmt.executeUpdate();
+	}
+	catch(Exception ex){
+	    back = qq+" "+ex;
+	    logger.error(back);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return back;
+    }
     public String doSelect(){
 	//
 	Connection con = null;
@@ -993,13 +1038,6 @@ public JobTask(String val,
 	    group_id = new_group_id;
 	    new_group_id = "";
 	}
-	/**
-	if(back.isEmpty() && !group_id.isEmpty()){
-	    GroupEmployee ge = new GroupEmployee(group_id, employee_id, effective_date);
-	    back = ge.doSave();
-	    back = ""; // if already in the group we ignore this message
-	}
-	*/
 	if(back.isEmpty()){
 	    back = doSave();
 	}
@@ -1062,19 +1100,8 @@ pstmt.setString(1, position_id);
 	    pstmt.setInt(9, comp_time_weekly_hours);
 	    pstmt.setDouble(10, comp_time_factor);
 	    pstmt.setDouble(11, holiday_comp_factor);
-	    /**
-	    if(clock_time_required.isEmpty())
-		pstmt.setNull(12, Types.CHAR);
-	    else
-		pstmt.setString(12, "y");
-	    */
+
 	    pstmt.setDouble(12, hourly_rate);
-	    /**
-	    if(include_in_auto_batch.isEmpty())
-		pstmt.setNull(14, Types.CHAR);
-	    else
-		pstmt.setString(14, "y");
-	    */
 	    if(irregular_work_days.isEmpty())
 		pstmt.setNull(13, Types.CHAR);
 	    else
@@ -1157,18 +1184,6 @@ pstmt.setString(1, position_id);
 	}
 	if(!new_group_id.isEmpty()){
 	    if(!new_group_id.equals(group_id)){
-		/**
-		if(!isInGroup(new_group_id)){
-		    GroupEmployee gem = new GroupEmployee(new_group_id, employee_id, effective_date);
-		    back = gem.doSave();
-		    if(back.isEmpty()){
-			group_id = new_group_id;
-		    }
-		}
-		else{
-		group_id = new_group_id;		
-		}
-		*/
 		group_id = new_group_id;
 	    }
 	}

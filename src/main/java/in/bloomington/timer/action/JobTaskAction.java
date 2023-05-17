@@ -90,7 +90,33 @@ public class JobTaskAction extends TopAction{
 		}
 		ret="edit";
 	    }
-	}				
+	}
+	else if(action.startsWith("React")){ // reactivate
+	    getJobTask();
+	    back = jobTask.doSelect();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		back  = jobTask.reactivate();
+		if(back.isEmpty()){
+		    String emp_id = jobTask.getEmployee_id();
+		    String str = "employee.action?emp_id="+emp_id;
+		    try{
+			HttpServletResponse res = ServletActionContext.getResponse();
+			res.sendRedirect(str);
+			return super.execute();
+		    }catch(Exception ex){
+			System.err.println(ex);
+			
+		    }			    
+		}
+		else{
+		    addError(back);		    
+		}
+	    }	    
+
+	}
 	else if(action.startsWith("Find")){
 	    prepareData();
 	}

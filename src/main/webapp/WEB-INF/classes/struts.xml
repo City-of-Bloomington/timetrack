@@ -132,6 +132,13 @@
       <result name="input">/WEB-INF/jsp/terminate.jsp</result>		
       <result name="error">/WEB-INF/jsp/terminate.jsp</result>
       <result name="success">/WEB-INF/jsp/terminate.jsp</result>
+    </action>
+    <action name="jobTerminate" 
+	    class="in.bloomington.timer.action.JobTerminateAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/jobTerminate.jsp</result>		
+      <result name="error">/WEB-INF/jsp/jobTerminate.jsp</result>
+      <result name="success">/WEB-INF/jsp/jobTerminate.jsp</result>
     </action>		
     <action name="contribute" 
 	    class="in.bloomington.timer.action.AccrualContributeAction" 

@@ -226,15 +226,17 @@ public class DocumentList{
 	    "where d.job_id=j.id and j.expire_date is not null "+
 	    "and p.id = d.pay_period_id "+
 	    "and j.expire_date <= p.start_date "+
-	    "and d.employee_id=? and d.pay_period_id >= ? ";
+	    "and d.pay_period_id >= ? ";
+	qq += " order by d.id ";	
 	if(!job_id.isEmpty()){
 	    qq += " and d.job_id=? ";
 	}
-	qq += " order by d.id ";
-	if(employee_id.isEmpty()){
-	    if(!msg.isEmpty()) msg += ", ";
-
-	    msg += "employee not set";
+	else if(!employee_id.isEmpty()){
+	    qq += " and d.employee_id=? ";
+	 
+	}
+	else{
+	    msg = "employee or job not set";
 	}
 	if(pay_period_id.isEmpty()){
 	    if(!msg.isEmpty()) msg += ", ";
@@ -255,10 +257,12 @@ public class DocumentList{
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    int jj=1;
-	    pstmt.setString(jj++, employee_id);
 	    pstmt.setString(jj++, pay_period_id);
 	    if(!job_id.isEmpty()){
 		pstmt.setString(jj++, job_id);
+	    }
+	    else{
+		pstmt.setString(jj++, employee_id);
 	    }
 	    rs = pstmt.executeQuery();
 	    while(rs.next()){

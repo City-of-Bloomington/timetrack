@@ -41,32 +41,32 @@ public class TerminateAction extends TopAction{
 	if(!action.isEmpty()){ // normally 'Submit'
 	    if(!emp_id.isEmpty()){
 		getEmp();
-		if(emp == null){
+	    }
+	    if(emp == null){
+		back = "could not get employee info ";
+		addError(back);
+	    }
+	    if(back.isEmpty()){
+		getTerm();
+		back = term.doTerminate();
+		if(!back.isEmpty()){
 		    back = "could not get employee info ";
 		    addError(back);
 		}
 		else{
-		    getTerm();
-		    back = term.doTerminate();
-		    if(!back.isEmpty()){
-			back = "could not get employee info ";
-			addError(back);
-		    }
-		    else{
-			addMessage("Terminated successfully");
-			if(hasDocuments()){
-			    getCleanUp();
-			    back = cleanUp.doClean();
-			    if(back.isEmpty()){
-				addMessage("Cleanup Success");
-			    }
-			    else{
-				addError(back);
-			    }
+		    addMessage("Terminated successfully");
+		    if(hasDocuments()){
+			getCleanUp();
+			back = cleanUp.doClean();
+			if(back.isEmpty()){
+			    addMessage("Cleanup Success");
 			}
 			else{
-			    addMessage("No document found for cleanup");
+			    addError(back);
 			}
+		    }
+		    else{
+			addMessage("No document found for cleanup");
 		    }
 		}
 	    }

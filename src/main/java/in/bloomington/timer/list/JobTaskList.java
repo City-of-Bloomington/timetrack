@@ -436,7 +436,7 @@ public class JobTaskList{
 	    qo = " order by j.expire_date, p.name ";
 	}
 	else{
-	    qo = " order by p.name ";
+	    qo = " order by j.expire_date, p.name ";
 	}
 	if(!qw.isEmpty()){
 	    qq += " where "+qw;
