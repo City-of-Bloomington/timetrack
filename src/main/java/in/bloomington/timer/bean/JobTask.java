@@ -32,6 +32,9 @@ public class JobTask implements Serializable{
 	effective_date="", expire_date="", primary_flag="";
     private String prev_expire_date = ""; 
     private String jobTitle="", salary_group_name="";
+    // 
+    // if a new position is needed
+    private String alt_position_name=""; 
     //
     // for job change
     String new_group_id = "", pay_period_id="";
@@ -70,20 +73,18 @@ public JobTask(String val,
 									 
 		   double val11,
 		   double val12,
-		   // boolean val13,
-		   double val14,
-		   String val15,
+		   double val13,
+		   String val14,
 									 
-		   // boolean val16,
-		   boolean val17,
-		   boolean val18,
+		   boolean val15,
+		   boolean val16,
+		   String val17,
+		   String val18,
+									 
 		   String val19,
 		   String val20,
-									 
-		   String val21,
-		   String val22,
-		   boolean val23,									 
-		   String val24
+		   boolean val21,									 
+		   String val22
 		   ){
 				
 	setVals(val,
@@ -98,18 +99,18 @@ public JobTask(String val,
 		val10,
 		val11,
 		val12,
-		// val13,
+		// 
+		val13,
 		val14,
+		//
 		val15,
-		//val16,
+		val16,
 		val17,
 		val18,
 		val19,
 		val20,
 		val21,
-		val22,
-		val23,
-		val24);
+		val22);
     }
     public JobTask(String val,
 		   String val2,
@@ -125,22 +126,22 @@ public JobTask(String val,
 									 
 		   double val11,
 		   double val12,
-		   //boolean val13,
-		   double val14,
-		   String val15,
+		   //
+		   double val13,
+		   String val14,
 									 
-		   //boolean val16,
-		   boolean val17,
-		   boolean val18,
+		   //
+		   boolean val15,
+		   boolean val16,
 									 
+		   String val17,
+		   String val18,
 		   String val19,
 		   String val20,
-		   String val21,
-		   String val22,
 
-		   boolean val23,
-		   String val24,									 
-		   String val25
+		   boolean val21,
+		   String val22,									 
+		   String val23
 		   ){
 	setVals(val,
 		val2,
@@ -154,21 +155,19 @@ public JobTask(String val,
 		val10,
 		val11,
 		val12,
-		// val13,
+		val13,
 		val14,
-		val15,
 								
-		// val16,
+		val15,
+		val16,
 		val17,
 		val18,
+								
 		val19,
 		val20,
-								
 		val21,
-		val22,
-		val23,
-		val24);
-	setEmployee_number(val25);
+		val22);
+	setEmployee_number(val23);
 
     }
     public JobTask(String val,
@@ -281,16 +280,16 @@ public JobTask(String val,
 												 
 			 double val11,
 			 double val12,
-			 // boolean val13,
+			 // 
 			 double val14,
 			 String val15,
-												 
-			 // boolean val16,
+			 // 
 			 boolean val17,
-			 boolean val18,												 
+			 boolean val18,
+			 
 			 String val19,
 			 String val20,
-												 
+			 
 			 String val21,
 			 String val22,
 			 boolean val23,
@@ -310,10 +309,8 @@ public JobTask(String val,
 				
 	setComp_time_factor(val11);
 	setHoliday_comp_factor(val12);
-	// setClock_time_required(val13); // move
 	setHourlyRateDbl(val14);
 	setAdded_date(val15);
-	// setIncludeInAutoBatch(val16); // move
 	setIrregularWorkDays(val17);
 	setInactive(val18);
 	if(!salary_group_id.isEmpty()){
@@ -446,7 +443,11 @@ public JobTask(String val,
     public void setPosition_id_alt (String val){
 	if(val != null && !val.equals("-1"))
 	    position_id_alt = val;
-    }		
+    }
+    public void setAlt_position_name (String val){
+	if(val != null && !val.isEmpty())
+	    alt_position_name = val;
+    }    
     public void setEmployee_id(String val){
 	if(val != null && !val.equals("-1"))
 	    employee_id = val;
@@ -502,22 +503,10 @@ public JobTask(String val,
 	if(val)
 	    inactive = "y";
     }
-    /**
-    public void setIncludeInAutoBatch(boolean val){
-	if(val)
-	    include_in_auto_batch = "y";
-    }
-    */
     public void setIrregularWorkDays(boolean val){
 	if(val)
 	    irregular_work_days = "y";
     }
-    /**
-    public void setClock_time_required(boolean val){
-	if(val)
-	    clock_time_required = "y";
-    }
-    */
     public void setPrimary_flag(boolean val){
 	if(val)
 	    primary_flag = "y";
@@ -977,10 +966,8 @@ public JobTask(String val,
 			rs.getInt(10),
 			rs.getDouble(11),
 			rs.getDouble(12),
-			// rs.getString(13) != null,
 			rs.getDouble(13),
 			rs.getString(14),
-			// rs.getString(16) != null,
 			rs.getString(15) != null,
 			rs.getString(16) != null,
 			rs.getString(17),
@@ -1043,6 +1030,50 @@ public JobTask(String val,
 	}
 	return back;
     }
+    private String findOrAddNewPosition(){
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String msg="";
+	String qq = " select id from positions where name like ? ";
+	boolean found = false;
+	logger.debug(qq);
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = "Could not connect to DB";
+	    return msg;
+	}							
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, alt_position_name.trim());
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		String str = rs.getString(1);
+		if(str != null){
+		    position_id = str;
+		    found = true;
+		}
+	    }
+	    if(!found){
+		Position po = new Position(alt_position_name, alt_position_name, alt_position_name);
+		msg = po.doSave();
+		if(msg.isEmpty()){
+		    position = po;
+		    position_id = po.getId();
+		}
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(rs, pstmt);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;	    
+	
+    }
     public String doSave(){
 	//
 	Connection con = null;
@@ -1054,9 +1085,15 @@ public JobTask(String val,
 	    msg = " employee_id not set ";
 	    return msg;
 	}
-	if(position_id.isEmpty() && !position_id_alt.isEmpty()){
-	    position_id = position_id_alt;
+	if(position_id.isEmpty()){
+	    if(!position_id_alt.isEmpty()){
+		position_id = position_id_alt;
+	    }
+	    else if(!alt_position_name.isEmpty()){
+		msg = findOrAddNewPosition();
+	    }
 	}
+	
 	if(position_id.isEmpty() && position_id_alt.isEmpty()){
 	    msg = " position not set ";
 	    return msg;
@@ -1170,22 +1207,30 @@ pstmt.setString(1, position_id);
 	    msg = " employee_id not set ";
 	    return msg;
 	}
-	if(position_id.isEmpty()){
-	    msg = " position not set ";
-	    return msg;
-	}
 	if(salary_group_id.isEmpty()){
 	    msg = " salary group not set ";
-	    return msg;
-	}
-	if(group_id.isEmpty()){
-	    msg = " group not set ";
 	    return msg;
 	}
 	if(!new_group_id.isEmpty()){
 	    if(!new_group_id.equals(group_id)){
 		group_id = new_group_id;
 	    }
+	}
+	if(group_id.isEmpty()){
+	    msg = " group not set ";
+	    return msg;
+	}	
+	if(position_id.isEmpty()){
+	    if(!position_id_alt.isEmpty()){
+		position_id = position_id_alt;
+	    }
+	    else if(!alt_position_name.isEmpty()){
+		msg = findOrAddNewPosition();
+	    }
+	}	
+	if(position_id.isEmpty()){
+	    msg = " position not set ";
+	    return msg;
 	}
 	String qq = "update jobs set position_id=?,"+
 	    "salary_group_id=?,"+

@@ -25,9 +25,13 @@
 		<a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='%{jobTask.employee_id}' />"> <s:property value="%{jobTask.employee}" /></a>
 	    </div>
 	    <div class="form-group">
-		<label>Position</label>
-		<s:select name="jobTask.position_id" value="%{jobTask.position_id}" list="positions" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Position" required="true" />
+		<label>Position Name</label>
+		<s:select name="jobTask.position_id" value="%{jobTask.position_id}" list="positions" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Position" />
 	    </div>
+	    <div class="form-group">
+		<label>New Position Name (if not available in list above)</label>
+		<s:textfield name="jobTask.alt_position_name" value="%{jobTask.alt_position_name}" size="40" maxlength="80" id="alt_position_name" />
+	    </div>	    
 	    <div class="form-group">
 		<label>Salary Group</label>
 		<s:select name="jobTask.salary_group_id" value="%{jobTask.salary_group_id}" list="salaryGroups" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Salary Group" required="true" id="job_salary_group_change" />
