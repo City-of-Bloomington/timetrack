@@ -34,9 +34,6 @@ public class ReportFmlaAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
-	if(!back.isEmpty()){
-	    return back;
-	}
 	if(!action.isEmpty()){
 	    back = report.findHoursByNameCode();
 	    back += report.findHoursByDateAndCode();
@@ -67,7 +64,7 @@ public class ReportFmlaAction extends TopAction{
 	    }
 	}
 	else{
-						getReport();
+	    getReport();
 	}
 	if(report.getType().equals("csv")){
 	    return "csv";

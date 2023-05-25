@@ -36,9 +36,6 @@ public class LookUpAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = canProceed("lookUp.action");
-	if(!back.isEmpty()){
-	    return back;
-	}
 	resetEmployee();
 	if(!action.isEmpty()){
 	    if(!hasDocuments()){
