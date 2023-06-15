@@ -23,7 +23,7 @@ public class DocumentList{
     static Logger logger = LogManager.getLogger(DocumentList.class);
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     String employee_id = "", department_id="", pay_period_id="",
-	date="", job_id="", group_id="", id="";
+	date="", job_id="",  id="";
     Set<String> group_id_set = new HashSet<>();
     String group_ids="";// for multiple groups
     int page_size = 0;
@@ -58,7 +58,7 @@ public class DocumentList{
     }				
     public void setGroup_id (String val){
 	if(val != null && !val.equals("-1")){
-	    group_id = val;
+	    // group_id = val;
 	    if(!group_id_set.contains(val)){
 		if(!group_ids.isEmpty())
 		    group_ids += ",";
@@ -290,6 +290,7 @@ public class DocumentList{
 	}
 	return msg;
     }
+    /**
     public String findForGroupCleanUp(){
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -356,5 +357,5 @@ public class DocumentList{
 	}
 	return msg;
     }	    
-
+    */
 }
