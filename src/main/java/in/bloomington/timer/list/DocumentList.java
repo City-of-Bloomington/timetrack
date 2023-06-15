@@ -23,7 +23,7 @@ public class DocumentList{
     static Logger logger = LogManager.getLogger(DocumentList.class);
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     String employee_id = "", department_id="", pay_period_id="",
-	date="", job_id="", id="";
+	date="", job_id="", group_id="", id="";
     Set<String> group_id_set = new HashSet<>();
     String group_ids="";// for multiple groups
     int page_size = 0;
@@ -58,6 +58,7 @@ public class DocumentList{
     }				
     public void setGroup_id (String val){
 	if(val != null && !val.equals("-1")){
+	    group_id = val;
 	    if(!group_id_set.contains(val)){
 		if(!group_ids.isEmpty())
 		    group_ids += ",";
@@ -288,6 +289,72 @@ public class DocumentList{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;
-    }		
+    }
+    public String findForGroupCleanUp(){
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String msg="", str="";
+	String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,"+
+	    "date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by "+
+	    "from time_documents d, jobs j,pay_periods p "+
+	    "where d.job_id=j.id and j.expire_date is not null "+
+	    "and p.id = d.pay_period_id "+
+	    "and j.expire_date <= p.start_date "+
+	    "and d.pay_period_id >= ? ";
+	qq += " order by d.id ";	
+	if(!group_id.isEmpty()){
+	    qq += " and j.group_id=? ";
+	 
+	}
+	else{
+	    msg = "group not set";
+	}
+	if(pay_period_id.isEmpty()){
+	    if(!msg.isEmpty()) msg += ", ";
+	    msg += "pay period not set";
+	}
+	if(!msg.isEmpty()){
+	    logger.error(msg);
+	    return msg;
+	}
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    logger.error(msg);
+	    return msg;
+	}
+	logger.debug(qq);
+	// System.err.println(qq);
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    int jj=1;
+	    pstmt.setString(jj++, pay_period_id);
+	    pstmt.setString(jj++, group_id);
+	    rs = pstmt.executeQuery();
+	    while(rs.next()){
+		if(documents == null)
+		    documents = new ArrayList<>();
+		Document one = new Document(
+					    rs.getString(1),
+					    rs.getString(2),
+					    rs.getString(3),
+					    rs.getString(4),
+					    rs.getString(5),
+					    rs.getString(6));
+		if(!documents.contains(one))
+		    documents.add(one);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+    }	    
 
 }

@@ -19,7 +19,6 @@ public class EmpTerminate{
     String id="", expire_date="", job_id="";
     List<DepartmentEmployee> departmentEmployees = null;
     List<GroupManager> groupManagers = null;
-    // List<GroupEmployee> groupEmployees = null;
     List<JobTask> jobs = null;
     JobTask job = null;
     Employee emp = null;

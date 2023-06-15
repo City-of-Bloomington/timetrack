@@ -139,6 +139,13 @@
       <result name="input">/WEB-INF/jsp/jobTerminate.jsp</result>		
       <result name="error">/WEB-INF/jsp/jobTerminate.jsp</result>
       <result name="success">/WEB-INF/jsp/jobTerminate.jsp</result>
+    </action>
+    <action name="groupJobTerminate" 
+	    class="in.bloomington.timer.action.TerminateGroupAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/groupJobTerminate.jsp</result>		
+      <result name="error">/WEB-INF/jsp/groupJobTerminate.jsp</result>
+      <result name="success">/WEB-INF/jsp/groupJobTerminate.jsp</result>
     </action>		
     <action name="contribute" 
 	    class="in.bloomington.timer.action.AccrualContributeAction" 

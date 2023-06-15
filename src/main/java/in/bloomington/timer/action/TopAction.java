@@ -39,7 +39,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     String action="", id="", employee_id="";
     List<String> errors = new ArrayList<>(),
 	messages = new ArrayList<>();
-    Employee user = null;
+    static Employee user = null;
     Employee employee = null;
     ServletContext ctx;
     Map<String, Object> sessionMap;
@@ -202,6 +202,9 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 	return employee != null;
     }
     public boolean isUserCurrentEmployee(){
+	if(user == null){
+	    getUser();
+	}
 	if(user != null){
 	    getEmployee();
 	    return employee_id.equals(user.getId());

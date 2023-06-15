@@ -37,6 +37,7 @@ public class Group implements Serializable{
     // List<GroupEmployee> groupEmployees = null;
     List<Employee> employees = null;
     List<JobTask> jobs = null;
+    List<JobTask> activeJobs = null;
     List<GroupLocation> groupLocations = null;
     List<GroupShift> groupShifts = null;
     Shift shift = null;
@@ -246,6 +247,25 @@ public class Group implements Serializable{
 	getJobs();
 	return jobs != null && jobs.size() > 0;
     }
+    public boolean hasActiveJobs(){
+	getActiveJobs();
+	return activeJobs != null && activeJobs.size() > 0;
+    }
+    public List<JobTask> getActiveJobs(){
+	if(!id.isEmpty() && activeJobs == null){
+	    JobTaskList jl = new JobTaskList();
+	    jl.setGroup_id(id);
+	    jl.setNotExpired();
+	    String back = jl.find();
+	    if(back.isEmpty()){
+		List<JobTask> ones = jl.getJobs();
+		if(ones != null && ones.size() > 0){
+		    activeJobs = ones;
+		}
+	    }
+	}
+	return activeJobs;
+    }    
     public List<JobTask> getJobs(){
 	if(!id.isEmpty() && jobs == null){
 	    JobTaskList jl = new JobTaskList();

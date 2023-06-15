@@ -51,6 +51,7 @@
 	<div class="button-group">
 	    <a href="<s:property value='#application.url' />group.action?id=<s:property value='group.id' />&action=Edit" class="button">Edit </a>
 	    <a href="<s:property value='#application.url' />groupManagerAdd.action?group_id=<s:property value='group.id' />" class="button">Assign managers to group </a>
+	    <a href="<s:property value='#application.url' />groupJobTerminate.action?group_id=<s:property value='group.id' />" class="button">Terminate group jobs</a>	    
 	</div>
     </div>
     <s:if test="group.hasEmployees()">
