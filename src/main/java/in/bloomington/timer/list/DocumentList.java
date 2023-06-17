@@ -23,7 +23,7 @@ public class DocumentList{
     static Logger logger = LogManager.getLogger(DocumentList.class);
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");		
     String employee_id = "", department_id="", pay_period_id="",
-	date="", job_id="", group_id="", id="";
+	date="", job_id="",  id="";
     Set<String> group_id_set = new HashSet<>();
     String group_ids="";// for multiple groups
     int page_size = 0;
@@ -58,7 +58,7 @@ public class DocumentList{
     }				
     public void setGroup_id (String val){
 	if(val != null && !val.equals("-1")){
-	    group_id = val;
+	    // group_id = val;
 	    if(!group_id_set.contains(val)){
 		if(!group_ids.isEmpty())
 		    group_ids += ",";
@@ -236,8 +236,11 @@ public class DocumentList{
 	    qq += " and d.employee_id=? ";
 	 
 	}
+	else if(!group_ids.isEmpty()){
+	    qq += " and j.group_id in ("+group_ids+")";
+	}
 	else{
-	    msg = "employee or job not set";
+	    msg = "employee, job, or group not set";
 	}
 	if(pay_period_id.isEmpty()){
 	    if(!msg.isEmpty()) msg += ", ";
@@ -262,7 +265,7 @@ public class DocumentList{
 	    if(!job_id.isEmpty()){
 		pstmt.setString(jj++, job_id);
 	    }
-	    else{
+	    else if(!employee_id.isEmpty()){
 		pstmt.setString(jj++, employee_id);
 	    }
 	    rs = pstmt.executeQuery();
@@ -290,6 +293,7 @@ public class DocumentList{
 	}
 	return msg;
     }
+    /**
     public String findForGroupCleanUp(){
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -303,8 +307,8 @@ public class DocumentList{
 	    "and j.expire_date <= p.start_date "+
 	    "and d.pay_period_id >= ? ";
 	qq += " order by d.id ";	
-	if(!group_id.isEmpty()){
-	    qq += " and j.group_id=? ";
+	if(!group_ids.isEmpty()){
+	    qq += " and j.group_id in ("+group_ids+")";
 	 
 	}
 	else{
@@ -355,6 +359,6 @@ public class DocumentList{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;
-    }	    
-
+    }
+    */
 }

@@ -28,6 +28,7 @@ public class TimeBlockLogAction extends TopAction{
     String pay_period_id = "", other_employee_id = "",
 	employee_name="";
     String document_id = "";
+    String start_date="", end_date="";
     Document document = null;
     String date = "", source="";
     JobTask jobTask = null;
@@ -38,13 +39,11 @@ public class TimeBlockLogAction extends TopAction{
 	String ret = SUCCESS;
 	String back = doPrepare("timeBlockLog.action");
 	if(action.isEmpty()){
-	    if(document_id.isEmpty()){
+	    if(document_id.isEmpty() && other_employee_id.isEmpty()){
 		return "search";
 	    }
 	}
-	if(!other_employee_id.isEmpty()){
-	    getDocument_id();
-	}
+	findTimeBlockLogs();
 	return ret;
     }
     public String getTimeBlockLogsTitle(){
@@ -65,30 +64,22 @@ public class TimeBlockLogAction extends TopAction{
     //
     public String getDocument_id(){
 	//
-	if(document_id.isEmpty() && !other_employee_id.isEmpty()){
-	    DocumentList dl = new DocumentList();
-	    dl.setEmployee_id(other_employee_id);
-	    if(pay_period_id.isEmpty()){
-		getPayPeriod();
-	    }
-	    dl.setPay_period_id(pay_period_id);
-	    String back = dl.find();
-	    if(back.isEmpty()){
-		List<Document> ones = dl.getDocuments();
-		if(ones != null && ones.size() > 0){
-		    document = ones.get(0);
-		    document_id = document.getId();
-		}
-	    }
-	}
 	return document_id;
     }
     public void setDocument_id(String val){
 	if(val != null && !val.isEmpty())		
 	    document_id = val;
     }
-    public void setPay_period_id(String val){
+    public void setStart_date(String val){
 	if(val != null && !val.isEmpty())		
+	    start_date = val;
+    }
+    public void setEnd_date(String val){
+	if(val != null && !val.isEmpty())		
+	    end_date = val;
+    }    
+    public void setPay_period_id(String val){
+	if(val != null && !val.equals("-1"))		
 	    pay_period_id = val;
     }
     public void setOther_employee_id(String val){
@@ -102,10 +93,8 @@ public class TimeBlockLogAction extends TopAction{
 	return other_employee_id;
     }
     public String getPay_period_id(){
-	if(pay_period_id.isEmpty() && !document_id.isEmpty()){
-	    getDocument();
-	    if(document != null)
-		pay_period_id = document.getPay_period_id();
+	if(pay_period_id.isEmpty()){
+	    return "-1";
 	}
 	return pay_period_id;
     }
@@ -232,11 +221,28 @@ public class TimeBlockLogAction extends TopAction{
 	getPay_period_id();
 	return pay_period_id.equals(currentPayPeriod.getId());
     }
-    public List<TimeBlockLog> getTimeBlockLogs(){
-	if(timeBlockLogs == null && !document_id.isEmpty()){
+    String findTimeBlockLogs(){
+	String back = "";
+	if(timeBlockLogs == null){
 	    TimeBlockLogList tbll = new TimeBlockLogList();
-	    tbll.setDocument_id(document_id);
-	    String back = tbll.find();
+	    if(!document_id.isEmpty()){
+		tbll.setDocument_id(document_id);
+	    }
+	    else{
+		if(!pay_period_id.isEmpty()){
+		    tbll.setPay_period_id(pay_period_id);
+		}
+		if(!other_employee_id.isEmpty()){
+		    tbll.setEmployee_id(other_employee_id);
+		}
+		if(!start_date.isEmpty()){
+		    tbll.setStart_date(start_date);
+		}
+		if(!end_date.isEmpty()){
+		    tbll.setEnd_date(end_date);
+		}
+	    }
+	    back = tbll.find();
 	    if(!back.isEmpty()){
 		addError(back);
 	    }
@@ -247,6 +253,11 @@ public class TimeBlockLogAction extends TopAction{
 		}
 	    }
 	}
+	return back;
+    }
+    public List<TimeBlockLog> getTimeBlockLogs(){
+	if(timeBlockLogs == null)
+	    findTimeBlockLogs();
 	return timeBlockLogs;
     }
     public boolean hasTimeBlockLogs(){

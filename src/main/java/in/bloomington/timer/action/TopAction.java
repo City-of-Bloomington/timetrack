@@ -39,7 +39,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     String action="", id="", employee_id="";
     List<String> errors = new ArrayList<>(),
 	messages = new ArrayList<>();
-    static Employee user = null;
+    Employee user = null;
     Employee employee = null;
     ServletContext ctx;
     Map<String, Object> sessionMap;
