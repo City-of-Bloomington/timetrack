@@ -52,10 +52,7 @@ public class InformAction extends TopAction{
     private Map<Employee, List<Group>> managerMap = null;
     public String execute(){
 	String ret = SUCCESS;
-	String back = canProceed("Inform.action");
-	if(!back.isEmpty()){
-	    return back;
-	}
+	String back = "";//canProceed("Inform.action");
 	if(action.equals("logs")){
 	    ret = "logs";
 	}
