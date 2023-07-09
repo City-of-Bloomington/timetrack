@@ -289,10 +289,10 @@ public class Department implements java.io.Serializable{
 	    changeGroupAllowPending = true;						
 	    if(!allow_pending_accrual.isEmpty()){
 		// turn it on for all groups in this department
-		qq2 = "update groups g set g.allow_pending_accrual='y' where g.department_id=? and g.inactive is null "; 
+		qq2 = "update `groups` g set g.allow_pending_accrual='y' where g.department_id=? and g.inactive is null "; 
 	    }
 	    else{
-		qq2 = "update groups g set g.allow_pending_accrual=null where g.department_id=? and g.inactive is null "; 
+		qq2 = "update `groups` g set g.allow_pending_accrual=null where g.department_id=? and g.inactive is null "; 
 	    }
 	}
 	con = UnoConnect.getConnection();

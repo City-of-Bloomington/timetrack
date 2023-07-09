@@ -174,7 +174,7 @@ public class GroupLocation{
 	    " g.inactive "+
 	    " from group_locations t "+
 	    " left join locations l on l.id = t.location_id "+
-	    " left join groups g on g.id = t.group_id "+
+	    " left join `groups` g on g.id = t.group_id "+
 	    " where t.id=? ";
 				
 	Connection con = UnoConnect.getConnection();

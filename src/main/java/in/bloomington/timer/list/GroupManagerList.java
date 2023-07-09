@@ -96,7 +96,7 @@ public class GroupManagerList{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = "select gm.id,gm.group_id,gm.employee_id,gm.wf_node_id,date_format(gm.start_date,'%m/%d/%Y'),date_format(gm.expire_date,'%m/%d/%Y'),gm.primary_flag,gm.inactive,wn.name from group_managers gm join groups g on g.id=gm.group_id join workflow_nodes wn on wn.id=gm.wf_node_id ";
+	String qq = "select gm.id,gm.group_id,gm.employee_id,gm.wf_node_id,date_format(gm.start_date,'%m/%d/%Y'),date_format(gm.expire_date,'%m/%d/%Y'),gm.primary_flag,gm.inactive,wn.name from group_managers gm join `groups` g on g.id=gm.group_id join workflow_nodes wn on wn.id=gm.wf_node_id ";
 	String qw = "";
 	if(!group_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";

@@ -26,7 +26,7 @@ public class RollBack{
 				"delete from department_employees where id > ?",
 				"delete from group_managers where id > ?",
 				"delete from jobs where id > ?",
-				"delete from groups where id > ?",
+				"delete from `groups` where id > ?",
 				
 				"delete from positions where id > ?",
 				"delete from time_actions where document_id in (select id from time_documents where employee_id > ?)",
@@ -36,7 +36,7 @@ public class RollBack{
 		};
 
 			/*
-			create table roll_backs(                                                        id int auto_increment primary key,                                              date_time datetime,                                                             group_employees int,                                                            department_employees int,                                                       group_managers int,                                                             jobs int ,                                                                      groups int,                                                                     positions int,                                                                  employees int,                                                                  is_success char(1)                                                              )engine=InnoDB;
+			create table roll_backs(                                                        id int auto_increment primary key,                                              date_time datetime,                                                             group_employees int,                                                            department_employees int,                                                       group_managers int,                                                             jobs int ,                                                                      `groups` int,                                                                     positions int,                                                                  employees int,                                                                  is_success char(1)                                                              )engine=InnoDB;
 
 			//
 			// to start we added this to preserve the previous data

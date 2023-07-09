@@ -82,7 +82,7 @@ public class PositionList{
 								qw += " j.position_id=p.id and j.group_id=? ";
 						}
 						else if(!department_id.isEmpty()){
-								qq += ", jobs j, groups g ";
+								qq += ", jobs j, `groups` g ";
 								if(!qw.isEmpty()) qw += " and ";								
 								qw += " j.position_id=p.id and j.group_id=g.id and g.department_id=? ";
 						}

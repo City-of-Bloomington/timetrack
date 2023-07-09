@@ -106,7 +106,7 @@ public class TmwrpRunList{
 				}
 				if(!department_id.isEmpty()){
 						qq += " join jobs j on j.id=d.job_id ";
-						qq += " join groups g on j.group_id=g.id ";
+						qq += " join `groups` g on j.group_id=g.id ";
 						if(!qw.isEmpty()) qw += " and ";												
 						qw += " g.department_id=? ";
 				}

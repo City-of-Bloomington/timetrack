@@ -412,7 +412,7 @@ public class TimeBlockList{
 	else{
 	    if(!department_id.isEmpty()){
 		qq += " join jobs j on j.id=v.job_id ";
-		qq += " join groups g on g.id=j.group_id ";
+		qq += " join `groups` g on g.id=j.group_id ";
 		if(!qw.isEmpty()) qw += " and ";								
 		qw += "  g.department_id=? ";
 	    }

@@ -395,7 +395,7 @@ public class Group implements Serializable{
 	    "d.name,d.description,d.ref_id,d.ldap_name,"+
 	    "d.allow_pending_accrual,d.inactive, "+
 	    "l.id,l.ip_address,l.name,l.street_address,l.latitude,l.longitude,l.radius "+
-	    "from groups g left join departments d on d.id=g.department_id "+
+	    "from `groups` g left join departments d on d.id=g.department_id "+
 	    "left join group_locations gl on gl.group_id=g.id "+
 	    "left join locations l on l.id = gl.location_id "+
 	    "where g.id =? ";
@@ -453,7 +453,7 @@ department = new Department(department_id,
 	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = "insert into groups values(0,?,?,?,?,?,?,?,null) ";
+	String qq = "insert into `groups` values(0,?,?,?,?,?,?,?,null) ";
 	if(name.isEmpty()){
 	    msg = " name not set ";
 	    return msg;
@@ -531,7 +531,7 @@ department = new Department(department_id,
 	if(name.isEmpty()){
 	    return " name not set ";
 	}
-	String qq = "update groups set name=?,description=?,department_id=?,"+
+	String qq = "update `groups` set name=?,description=?,department_id=?,"+
 	    "excess_hours_earn_type=?,"+ // renamed
 	    "allow_pending_accrual=?,"+
 	    "clock_time_required=?,"+
@@ -601,7 +601,7 @@ department = new Department(department_id,
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = "delete groups where id=? ";
+	String qq = "delete `groups` where id=? ";
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
 	if(con == null){

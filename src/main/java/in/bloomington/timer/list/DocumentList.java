@@ -113,8 +113,8 @@ public class DocumentList{
 	    qw += "pp.start_date <= ? and pp.end_date >= ?";
 	}
 	if(!department_id.isEmpty()){
-	    qq += ", groups g  ";
-	    qc += ", groups g  ";
+	    qq += ", `groups` g  ";
+	    qc += ", `groups` g  ";
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " g.department_id=? and g.id=j.group_id ";
 						

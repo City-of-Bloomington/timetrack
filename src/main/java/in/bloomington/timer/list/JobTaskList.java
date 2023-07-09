@@ -282,7 +282,7 @@ public class JobTaskList{
 	    " from jobs j ";
 	qq += " join salary_groups sg on sg.id=j.salary_group_id "+
 	    " join positions p on j.position_id=p.id "+						
-	    " join groups g on j.group_id=g.id ";
+	    " join `groups` g on j.group_id=g.id ";
 	if(!location_id.isEmpty()){
 	    qq2 = qq;
 	    qq += " left join group_locations gl on gl.group_id=j.group_id ";
@@ -848,7 +848,7 @@ JobTask one =
        ;;
        ;; find employees jobs and group names
        ;;
-       select e.employee_number,                                                       concat_ws(' ',e.last_name,e.first_name) full_name,                              p.name job_name,                                                                g.name group_name                                                               from jobs j                                                                     join positions p on j.position_id=p.id                                          join employees e on j.employee_id=e.id                                          join groups g on g.id = j.group_id                                              where j.inactive is null and e.inactive is null                                 and e.employee_number is not null                                               and j.effective_date < now()                                                    and (j.expire_date > now() or j.expire_date is null)                            order by p.name,e.employee_number                                               into outfile '/var/lib/mysql-files/employee_jobs.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
+       select e.employee_number,                                                       concat_ws(' ',e.last_name,e.first_name) full_name,                              p.name job_name,                                                                g.name group_name                                                               from jobs j                                                                     join positions p on j.position_id=p.id                                          join employees e on j.employee_id=e.id                                          join 'groups' g on g.id = j.group_id                                            where j.inactive is null and e.inactive is null                                 and e.employee_number is not null                                               and j.effective_date < now()                                                    and (j.expire_date > now() or j.expire_date is null)                            order by p.name,e.employee_number                                               into outfile '/var/lib/mysql-files/employee_jobs.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
 
     */
 		

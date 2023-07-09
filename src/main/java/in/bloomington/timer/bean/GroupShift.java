@@ -255,7 +255,7 @@ public GroupShift(String val,
 	    " s.inactive "+ 	// 28					
 	    " from group_shifts gs "+
 	    " join shifts s on s.id = gs.shift_id "+
-	    " join groups g on gs.group_id=g.id "+
+	    " join `groups` g on gs.group_id=g.id "+
 	    " join departments d on g.department_id=d.id ";
 	qq += "where gs.id = ?";
 	con = UnoConnect.getConnection();

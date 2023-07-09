@@ -173,7 +173,7 @@ public class GroupList{
 	    "d.name, "+
 	    "d.description,d.ref_id,d.ldap_name,d.allow_pending_accrual,"+
 	    "d.inactive "+
-	    "from groups g join departments d on d.id=g.department_id ";							
+	    "from `groups` g join departments d on d.id=g.department_id ";							
 				
 	String qw = "";
 	if(!department_ids.isEmpty()){

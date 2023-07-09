@@ -57,7 +57,7 @@ public class GroupLocationList{
 	    " g.inactive "+
 	    " from group_locations t "+
 	    " left join locations l on l.id = t.location_id "+
-	    " left join groups g on g.id = t.group_id";
+	    " left join `groups` g on g.id = t.group_id";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    back = "Could not connect to DB";

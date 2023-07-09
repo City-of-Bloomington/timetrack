@@ -50,7 +50,7 @@ public class ShiftTimeList{
 						" s.end_time,s.hours,s.amount,s.dates,s.added_by_id,"+
 						" date_format(s.added_time,'%m/%d/%Y %H:%i'), "+
 						" s.processed "+
-						" from shift_times s,groups g ";
+						" from shift_times s,`groups` g ";
 				String qw = "s.group_id=g.id ";
 				if(!department_id.isEmpty()){
 						if(!qw.isEmpty()) qw += " and ";						

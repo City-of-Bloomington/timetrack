@@ -110,7 +110,7 @@ public class GroupShiftList{
 	    " s.inactive "+ 						
 	    " from group_shifts gs "+
 	    " join shifts s on s.id = gs.shift_id "+
-	    " join groups g on gs.group_id=g.id "+
+	    " join `groups` g on gs.group_id=g.id "+
 	    " join departments d on g.department_id=d.id ";
 	String qw = "";
 	if(!group_id.isEmpty()){

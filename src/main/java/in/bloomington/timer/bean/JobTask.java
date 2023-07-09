@@ -940,7 +940,7 @@ public JobTask(String val,
 	    " join salary_groups sg on sg.id=j.salary_group_id "+
 	    " join positions p on j.position_id=p.id "+
 	    //
-	    " join groups g on g.id=j.group_id "+
+	    " join `groups` g on g.id=j.group_id "+
 	    " join departments d on g.department_id=d.id "+
 	    " where j.id =? ";
 	logger.debug(qq);

@@ -325,8 +325,10 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 	System.err.println(" host forward "+host_forward);
 	System.err.println(" host "+host);	
 	if(host_forward != null){
-	    if(host_forward.indexOf("/timetrack") == -1)
-		url = host_forward+"/timetrack/";
+	    if(host_forward.indexOf("/timetrack") == -1){
+		// url = host_forward+"/timetrack/";
+		
+	    }
 	    else
 		url = host_forward;
 	}
@@ -335,7 +337,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		url = host;
 	    }
 	    else{
-		url = host+"/timetrack/";
+		// url = host+"/timetrack/";
 	    }
 	}
 	if(true){
