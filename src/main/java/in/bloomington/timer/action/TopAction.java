@@ -30,7 +30,8 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 
     static final long serialVersionUID = 3600L;
     static Logger logger = LogManager.getLogger(TopAction.class);		
-    boolean debug = false, activeMail = false;
+    boolean debug = false;
+    static boolean activeMail = false;
     static String server_path="";
     static EnvBean envBean = null;
     static String mail_host = null;
@@ -105,7 +106,11 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		    mail_host = val;
 		val = ctx.getInitParameter("xls_output_location");
 		if(val != null)
-		    xls_output_location = val;								
+		    xls_output_location = val;
+		val = ctx.getInitParameter("activeMail");
+		if(val != null && val.equals("true")){
+		    activeMail = true;
+		}
 	    }
 	    if(envBean == null){
 		envBean = new EnvBean();
@@ -119,10 +124,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		if(val != null)
 		    envBean.setPassword(val);
 	    }
-	    val = ctx.getInitParameter("activeMail");
-	    if(val != null && val.equals("true")){
-		activeMail = true;
-	    }
+
 	    if(sessionMap == null || sessionMap.get("user") == null){
 		//
 		// timeClock we do not need login

@@ -53,6 +53,7 @@ public class InformAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = "";//canProceed("Inform.action");
+	doPrepare();
 	if(action.equals("logs")){
 	    ret = "logs";
 	}
@@ -64,7 +65,7 @@ public class InformAction extends TopAction{
 	    String failure_list="";
 	    String failure_error="";						
 	    if(employee_ids != null){
-		if(activeMail){								
+		if(activeMail){
 		    String to = "", email_from="";
 		    getUser();
 		    if(user != null){
@@ -84,7 +85,7 @@ public class InformAction extends TopAction{
 					       text_message,
 					       debug
 					       );
-
+			    
 			    back = mail.send();
 			    if(back.isEmpty()){
 				if(!success_list.isEmpty()) success_list +=", "; 
@@ -141,6 +142,8 @@ public class InformAction extends TopAction{
 		}
 		else{
 		    back = "email activity flag is turned off, if you need to send email this flag need to be turned on in your configuration file";
+		    addError(back);
+		    System.err.println(" after inactive mail ");
 		}
 	    }
 	}
