@@ -14,11 +14,10 @@
 	<s:head />
 	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
 	<link rel="SHORTCUT ICON" href="<s:property value='#application.url' />images/favicon.ico" />
-
-  <link rel="stylesheet" href="<s:property value='#application.url' />css/jquery-ui.min-1.13.2.css" type="text/css" media="all" />
-  <link rel="stylesheet" href="<s:property value='#application.url' />css/jquery-ui.theme.min-1.13.2.css" type="text/css" media="all" />
-
-  <link rel="stylesheet" href="<s:property value='#application.url' />css/main.css" type="text/css">
+	<link rel="stylesheet" href="<s:property value='#application.url' />css/jquery-ui.min-1.13.2.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="<s:property value='#application.url' />css/jquery-ui.theme.min-1.13.2.css" type="text/css" media="all" />
+	
+	<link rel="stylesheet" href="<s:property value='#application.url' />css/main.css" type="text/css">
 
   <title>Time Track</title>
   <script type="text/javascript">
