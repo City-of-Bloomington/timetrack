@@ -312,7 +312,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     }
     public  String canProceed(String val){
 	String back = doPrepare(val);
-	if(back.isEmpty() && 
+	if(back.isEmpty() && user != null && 
 	   (canEdit() || isAdmin() || isITSAdmin())){
 	    return "";
 	}

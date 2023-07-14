@@ -27,7 +27,13 @@ public class SearchEmployeeAction extends TopAction{
     String department_id = "";
     public String execute(){
 	String ret = SUCCESS;
-	String back = canProceed("searchEmployees.action");
+	String back = "";
+	/** this will cause 404, instead it will go to login
+	back = canProceed("searchEmployees.action");
+	if(!back.isEmpty()){
+	    return back;
+	}
+	*/
 	if(!action.isEmpty()){
 	    back = emplst.find();
 	    if(back.isEmpty()){
@@ -57,7 +63,7 @@ public class SearchEmployeeAction extends TopAction{
 	    }
 	}
 	else{
-	    if(!(isAdmin() || user.isITSAdmin() || user.isHrAdmin())){
+	    if(user != null && !(isAdmin() || user.isITSAdmin() || user.isHrAdmin())){
 		String val = user.getDepartment_id();
 		if(val != null)
 		    department_id = val;

@@ -57,7 +57,7 @@ public class SwitchAction extends TopAction{
 	    }
 	}
 	else {
-	    if(!(isAdmin() || user.isITSAdmin() || user.isHrAdmin())){
+	    if(user != null && !(isAdmin() || user.isITSAdmin() || user.isHrAdmin())){
 		String val = user.getDepartment_id();
 		    if(val != null)
 			department_id = val;

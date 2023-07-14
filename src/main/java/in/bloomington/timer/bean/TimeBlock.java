@@ -435,8 +435,10 @@ public class TimeBlock extends Block{
 	    time_out_set = false;
 	}
     }
-    private String splitTimes(String val, boolean isOut){
+    private String splitTimes(String str_val, boolean isOut){
 	String msg = "";
+	// get rid of invalid characters 
+	String val = str_val.replaceAll("[,.;\\s\"']*",""); 
 	// if just start hours 8, 11 am, 12 p
 	String pattern = "[0123]?[\\d][\\W]?[\\s]?[ap]?[m]?";								
 	// accepted entries 0930, 12:30, 11;30am, 10,30p, 11.30pm
