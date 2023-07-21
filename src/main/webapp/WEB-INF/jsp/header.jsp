@@ -40,7 +40,8 @@
       </s:if>
 
       <s:if test="user.canApprove()">
-              <a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>
+          <a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>
+	  <a href="<s:property value='#application.url'/>mygroups.action">My Groups</a>
       </s:if>
 
       <s:if test="user.canPayrollProcess()">

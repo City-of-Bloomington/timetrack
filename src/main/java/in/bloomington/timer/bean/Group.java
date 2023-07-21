@@ -281,25 +281,6 @@ public class Group implements Serializable{
 	}
 	return jobs;
     }
-    /**
-    public boolean hasGroupEmployees(){
-	getGroupEmployees();
-	return groupEmployees != null;
-    }
-    public List<GroupEmployee> getGroupEmployees(){
-	GroupEmployeeList del = new GroupEmployeeList();
-	del.setGroup_id(id);
-	// we want all
-	String back = del.find();
-	if(back.isEmpty()){
-	    List<GroupEmployee> des = del.getGroupEmployees();
-	    if(des != null && des.size() > 0){
-		groupEmployees = des;
-	    }
-	}
-	return groupEmployees;
-    }
-    */
     public Department getDepartment(){
 	if(department == null && !department_id.isEmpty()){
 	    Department one = new Department(department_id);

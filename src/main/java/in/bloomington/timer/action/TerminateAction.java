@@ -27,7 +27,7 @@ public class TerminateAction extends TopAction{
 	expire_date="", source="";
     List<Document> documents = null;
     Employee emp = null;
-    EmpTerminate term = null;
+    EmpTerm term = null;
     CleanUp cleanUp = null;
     List<PayPeriod> payPeriods = null;
 		
@@ -84,13 +84,13 @@ public class TerminateAction extends TopAction{
 	}
 	return ret;
     }
-    public EmpTerminate getTerm(){
+    public EmpTerm getTerm(){
 	if(term == null){
-	    term = new EmpTerminate(emp_id, expire_date);
+	    term = new EmpTerm(emp_id, expire_date);
 	}
 	return term;
     }
-    public void setTerm(EmpTerminate val){
+    public void setTerm(EmpTerm val){
 	if(val != null){
 	    term = val;
 	    term.setId(emp_id);

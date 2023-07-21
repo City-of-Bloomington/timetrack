@@ -27,7 +27,7 @@ public class JobTerminateAction extends TopAction{
 	expire_date="", source="";
     List<Document> documents = null;
     Employee emp = null;
-    EmpTerminate term = null;
+    EmpTerm term = null;
     CleanUp cleanUp = null;
     JobTask job = null;
     List<PayPeriod> payPeriods = null;
@@ -75,9 +75,9 @@ public class JobTerminateAction extends TopAction{
 	}
 	return ret;
     }
-    public EmpTerminate getTerm(){
+    public EmpTerm getTerm(){
 	if(term == null){
-	    term = new EmpTerminate();
+	    term = new EmpTerm();
 	    if(!job_id.isEmpty()){
 		term.setJob_id(job_id);
 		term.setExpire_date(expire_date);
@@ -85,7 +85,7 @@ public class JobTerminateAction extends TopAction{
 	}
 	return term;
     }
-    public void setTerm(EmpTerminate val){
+    public void setTerm(EmpTerm val){
 	if(val != null){
 	    term = val;
 	    term.setJob_id(job_id);

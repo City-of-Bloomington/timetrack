@@ -397,12 +397,6 @@ public class Employee implements Serializable, Comparable<Employee>{
 		JobTask job = getJob();
 		group_id = job.getGroup_id();
 	    }
-	    /**
-	    getGroupEmployee();
-	    if(groupEmployee != null){
-		group_id = groupEmployee.getGroup_id();
-	    }
-	    */
 	}
 	return group_id;
     }
