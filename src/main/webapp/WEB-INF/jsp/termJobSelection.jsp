@@ -3,6 +3,9 @@
     
     <s:form action="terminateJobs" id="form_id" method="post">
 	<h1>Job Termination Selection</h1>
+	<input type="hidden" name="job_id" id="job_id"
+	       value="<s:property value='job_id' />"  />
+	<s:hidden name="job_id" value="%{job_id}" />
 	<s:if test="hasMessages()">
 	    <s:set var="messages" value="%{messages}" />
 	    <%@ include file="messages.jsp" %>
@@ -36,7 +39,7 @@
 		<tbody>
 		    <s:iterator var="one" value="%{jobs}">
 			<tr>
-			    <td><s:checkbox name="selected_job_id" value="%{one.id}" /><s:property value="one.id" /></td>
+			    <td><input type="checkbox" name="selected_job_id" value="<s:property value='id' />" /></td>
 			    <td><s:property value="position" /></td>
 			    <td><s:property value="salaryGroup" /></td>
 			    <td><s:property value="employee" /></td>

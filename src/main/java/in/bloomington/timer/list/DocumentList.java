@@ -228,7 +228,11 @@ public class DocumentList{
 	    "and p.id = d.pay_period_id "+
 	    "and j.expire_date <= p.start_date "+
 	    "and d.pay_period_id >= ? ";
-	qq += " order by d.id ";	
+	qq += " order by d.id ";
+	if(pay_period_id.isEmpty()){
+	    msg += "pay period not set";
+	    return msg;
+	}
 	if(!job_id.isEmpty()){
 	    qq += " and d.job_id=? ";
 	}
@@ -241,10 +245,6 @@ public class DocumentList{
 	}
 	else{
 	    msg = "employee, job, or group not set";
-	}
-	if(pay_period_id.isEmpty()){
-	    if(!msg.isEmpty()) msg += ", ";
-	    msg += "pay period not set";
 	}
 	if(!msg.isEmpty()){
 	    logger.error(msg);

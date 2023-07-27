@@ -1,10 +1,14 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
     
-    <s:form action="empJobTerminate" id="form_id" method="post">
-	<s:hidden name="term.job_ids" value="%{term.job_ids}" />
+    <s:form action="terminateJobs" id="form_id" method="post">
+	<s:if test="term.id != ''">
+	    <s:hidden name="term.id" value="%{term.id}" />	    
+	</s:if>
 	<s:hidden name="term.department_id" value="%{term.department_id}" />	
 	<s:hidden name="term.employee_id" value="%{term.employee_id}" />
+	<s:hidden name="term.full_name" value="%{term.full_name}" />
+	<s:hidden name="term.job_ids" value="%{term.job_ids}" />	
 	<s:hidden name="term.supervisor_id" value="%{term.supervisor_id}" />	
 	<s:hidden name="term.hours_per_week" value="%{term.hours_per_week}" />
 	<s:hidden name="term.employment_type" value="%{term.employment_type}" />	
@@ -29,19 +33,14 @@
 	    <li>Please fill out the form completely. Failure to do so may cause unnecessary delays in the termination process!</li>
 	</ul>
 		
-	<div class="width-one-half">
-	    <div class="form-group">
-		<label>Employment Type</label>
-		<s:property value="term.employment_type" />
-	    </div>
-	    <div class="form-group">
-		<label>Hours Per Week</label>
-		<s:property value="term.hours_per_week" />
-	    </div>
-	</div>
 	<table border="1"><caption> Employment Information</caption>
 	    <tr><td>Employee</td>
-		<td><s:property value="term.emp" /></td>
+		<td><s:property value="term.full_name" /></td>
+	    </tr>
+	    <tr><td>Employee Type</td>
+		<td><s:property value="term.employment_type" /></td>
+		<td>Hours Per Week</td>
+		<td><s:property value="term.hours_per_week" /></td>
 	    </tr>
 	    <tr><td>Date of Birth</td>
 		<td><s:textfield name="term.date_of_birth" value="%{term.date_of_birth}" size="10" maxlength="10" />(example 07/04/1972)</td> 
@@ -54,7 +53,9 @@
 		<td><s:select name="term.last_pay_period_date" value="%{term.last_pay_period_date}" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick End Date" /></td>
 	    </tr>
 	    <tr><td>Department</td>
-		<td colspan="3"><s:property value="term.department" /></td>
+		<td><s:property value="term.department" /></td>
+		<td>Group </td>
+		<td><s:property value="term.group" /></td>		
 	    </tr>
 	    <tr><td>Job Title(s)</td>
 		<td colspan="3"><s:property value="term.jobTitles" /></td>
@@ -92,18 +93,17 @@
 	    </tr>
 	    <tr>
 		<td>Personal Email Address</td>
-		<td><s:textfield name="term.perosnal_email" value="%{term.perosnal_email}" size="30" maxlength="100" /> </td>
+		<td><s:textfield name="term.personal_email" value="%{term.personal_email}" size="30" maxlength="100" /> </td>
 	    </tr>	    
 	</table>
-	<table><caption>ITS Information </caption>
+	<table border="1"><caption>ITS Information </caption>
 	    <tr><td>Employee Email Address</td>
-		<td colspan="3"><s:property value="term.email" /></td>
+		<td colspan="2"><s:property value="term.email" /></td>
 	    </tr>
 	    <tr><td>Email Account Requested Action</td>
 		<td><s:select name="term.email_account_action" value="%{term.email_account_action}" list="#{'archive':'Archive','transfer_to_person':'Transfer to Person'}" /></td>
-
-		</td>
-		<td>If 'Forward To' is selected, enter the email address(es) where email should be forwarded:
+	    </td>
+	    <td>If 'Forward To' is selected, enter the email address(es) where email should be forwarded:
 		    <s:textfield name="term.forward_email" value="%{term.forward_email}" size="50" maxlength="100" />
 		    <s:textfield name="term.forward_email2" value="%{term.forward_email2}" size="50" maxlength="100" />
 		    <s:textfield name="term.forward_email3" value="%{term.forward_email3}" size="50" maxlength="100" />
@@ -151,13 +151,22 @@
 		<td><s:textfield name="term.vac_time" value="%{term.vac_time}" size="5" maxlength="5" /></td>
 	    </tr>
 	    <tr><td>Comp Time</td>
-		<td><s:textfield name="term.comp_time" value="%{term.camp_time}" size="5" maxlength="5" /></td>
+		<td><s:textfield name="term.comp_time" value="%{term.comp_time}" size="5" maxlength="5" /></td>
 		<td>PTO</td>
 		<td><s:textfield name="term.pto" value="%{term.pto}" size="5" maxlength="5" /></td>
 	    </tr>
+	    <tr><td>Comments</td>
+		<td colspan="2"><s:textarea name="term.comments" value="%{term.comments}" row="5" columns="60"/>
+		</td>
+	    </tr>
 	</table>
 	<div class="button-group">
-	    <s:submit name="action" type="button" value="Submit" class="button"/>
+	    <s:if test="term.id != ''">	    
+		<s:submit name="action" type="button" value="Save Changes" class="button"/>
+	    </s:if>
+	    <s:else>
+		<s:submit name="action" type="button" value="Submit" class="button"/>
+	    </s:else>
 	</div>
     </s:form>
 </div>
