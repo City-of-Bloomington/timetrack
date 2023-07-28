@@ -508,8 +508,11 @@ public class Employee implements Serializable, Comparable<Employee>{
     public boolean isParkAdmin(){
 	return hasRole("ParkAdmin");
     }
-    public boolean canRunSearchEmployee(){
+    public boolean canSearchEmployee(){
 	return hasRole("SearchEmployee");
+    }
+    public boolean canAdSearch(){
+	return hasRole("AD_Employee");
     }    
     public boolean canRunFireReport(){
 	return hasRole("FireReport");

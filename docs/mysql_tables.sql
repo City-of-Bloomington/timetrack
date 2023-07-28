@@ -1258,7 +1258,73 @@ CREATE TABLE available_badges (
 ;;
  alter table jobs add irregular_work_days char(1) after added_date;
  alter table jobs add include_in_auto_batch char(1) after added_date;
-
-
+;;
+;;
+;; individuals who will receive termination notifications
+;;
+    create table term_recipients (
+    id int unsigned not null auto_increment,
+    name varchar(80),
+    email varchar(80),
+    primary key(id)
+    )engine=InnoDB;
+;;
+;; employee termination
+;;
+    create table emp_terminations (
+    id int unsigned not null auto_increment,
+    employee_id int unsigned,
+    full_name varchar(80),
+    job_ids varchar(80),
+    job_grade varchar(32),
+    
+    job_step varchar(32),
+    supervisor_id int unsigned,
+    supervisor_phone varchar(32),
+    employment_type varchar(32),
+    date_of_hire date, 
+    
+    last_pay_period_date date,
+    department_id int unsigned,
+    emp_address varchar(80),
+    emp_city varchar(80),
+    emp_state varchar(80),
+    
+    emp_zip varchar(16),
+    emp_phone varchar(24),
+    emp_alt_phone varchar(20),
+    last_day_of_work date,
+    date_of_birth date,
+    
+    personal_email varchar(80),
+    email varchar(80),
+    email_account_action varchar(32),
+    forward_emails varchar(160),
+    forward_days_cnt int,
+    
+    drive_action varchar(32),
+    drive_to_person_email varchar(80),
+    drive_to_shared_emails varchar(160),
+    calendar_action varchar(32),
+    calendar_to_email varchar(80),
+    
+    zoom_action varchar(32),
+    zoom_to_email varchar(80),
+    badge_returned varchar(32),
+    hours_per_week int,
+    pay_period_worked_hrs double,
+    
+    comp_time double,
+    vac_time double,
+    pto  double,
+    comments text,
+    submitted_by_id int unsigned,
+    
+    submitted_date date,
+    primary key(id),
+    foreign key(employee_id) references employees(id),
+    foreign key(supervisor_id) references employees(id),    
+    foreign key(submitted_by_id) references employees(id)
+    )engine=InnoDB;
 
 

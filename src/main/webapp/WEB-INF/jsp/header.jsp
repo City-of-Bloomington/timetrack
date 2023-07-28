@@ -59,8 +59,11 @@
       <s:if test="user.canRunTargetEmployee()">
           <a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a>
       </s:if>
-      <s:if test="user.canRunSearchEmployee()">
+      <s:if test="user.canSearchEmployee()">
           <a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>
+      </s:if>
+      <s:if test="user.canAdSearch()">
+          <a href="<s:property value='#application.url'/>employee.action">Search AD</a>
       </s:if>      
       <s:if test="user.isEngineeringAdmin()">
 	  <a href="<s:property value='#application.url'/>reportFiber.action">Fiber Report</a>

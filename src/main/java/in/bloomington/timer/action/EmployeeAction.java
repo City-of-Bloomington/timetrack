@@ -37,6 +37,7 @@ public class EmployeeAction extends TopAction{
      "PublicWorksAdmin",	
      "TargetEmployee",
      "SearchEmployee",
+     "AD_Employee",
      "Timewarp"
     };
     String emp_id="";

@@ -48,6 +48,10 @@
 	    <ul>
 		<li><a href="<s:property value='#application.url'/>shiftTime.action">Employee Shift Times</a></li>
 	    </ul>
+	    <h2>Configurations</h2>
+	    <ul>
+		<li><a href="<s:property value='#application.url'/>termRecipient.action">Termination Notification Recipients </a></li>
+	    </ul>
 	    
 	    <h2>Employee Data Import</h2>
 	    <ul>

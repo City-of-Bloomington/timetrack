@@ -146,7 +146,14 @@
       <result name="select_jobs">/WEB-INF/jsp/termJobSelection.jsp</result>
       <result name="error">/WEB-INF/jsp/empTerminate.jsp</result>
       <result name="success">/WEB-INF/jsp/empTerminate.jsp</result>
-    </action>    
+    </action>
+    <action name="termRecipient" 
+	    class="in.bloomington.timer.action.TermRecipientAction" 
+	    method="execute">
+      <result name="select_jobs">/WEB-INF/jsp/term_recipient.jsp</result>
+      <result name="error">/WEB-INF/jsp/term_recipient.jsp</result>
+      <result name="success">/WEB-INF/jsp/term_recipient.jsp</result>
+    </action>        
     <action name="jobTerminate" 
 	    class="in.bloomington.timer.action.JobTerminateAction" 
 	    method="execute">

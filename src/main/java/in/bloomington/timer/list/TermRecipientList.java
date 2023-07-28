@@ -13,29 +13,22 @@ import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
-public class AccrualList{
+public class TermRecipientList{
 
-    static Logger logger = LogManager.getLogger(AccrualList.class);
+    static Logger logger = LogManager.getLogger(TermRecipientList.class);
     static final long serialVersionUID = 3800L;
     String name = ""; // for service
-    boolean active_only = false, has_pref_max_level=false;
-    List<Accrual> accruals = null;
+    List<TermRecipient> recipients = null;
 	
-    public AccrualList(){
+    public TermRecipientList(){
     }
-    public List<Accrual> getAccruals(){
-	return accruals;
+    public List<TermRecipient> getRecipients(){
+	return recipients;
     }
 		
     public void setName(String val){
 	if(val != null)
 	    name = val;
-    }
-    public void setActiveOnly(){
-	active_only = true;
-    }
-    public void setHasPrefMaxLevel(){
-	has_pref_max_level = true;
     }
     public String find(){
 		
@@ -43,7 +36,7 @@ public class AccrualList{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
-	String qq = "select t.id,t.name,t.description,t.pref_max_level,t.inactive from accruals t ";
+	String qq = "select t.id,t.name,t.email from term_recipients t ";
 				
 	if(con == null){
 	    back = "Could not connect to DB";
@@ -55,14 +48,6 @@ public class AccrualList{
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " t.name like ? ";
 	    }
-	    if(has_pref_max_level){
-		if(!qw.isEmpty()) qw += " and ";								
-		qw += " t.pref_max_level > 0 ";
-	    }
-	    if(active_only){
-		if(!qw.isEmpty()) qw += " and ";
-		qw += " t.inactive is null ";
-	    }
 	    if(!qw.isEmpty()){
 		qq += " where "+qw;
 	    }
@@ -72,17 +57,15 @@ public class AccrualList{
 		pstmt.setString(1,"%"+name+"%");
 	    }						
 	    rs = pstmt.executeQuery();
-	    if(accruals == null)
-		accruals = new ArrayList<Accrual>();
+	    if(recipients == null)
+		recipients = new ArrayList<TermRecipient>();
 	    while(rs.next()){
-		Accrual one =
-		    new Accrual(rs.getString(1),
-				rs.getString(2),
-				rs.getString(3),
-				rs.getInt(4),
-				rs.getString(5)!=null);
-		if(!accruals.contains(one))
-		    accruals.add(one);
+		TermRecipient one =
+		    new TermRecipient(rs.getString(1),
+				      rs.getString(2),
+				      rs.getString(3));
+		if(!recipients.contains(one))
+		    recipients.add(one);
 	    }
 	}
 	catch(Exception ex){
