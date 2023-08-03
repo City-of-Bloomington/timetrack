@@ -26,6 +26,7 @@ public class TerminateJobAction extends TopAction{
 	full_name="",
 	department_id="",
 	expire_date="", source="";
+    String last_pay_priod_date = "";
     List<Document> documents = null;
     Employee emp = null;
     EmpTerminate term = null;
@@ -56,40 +57,57 @@ public class TerminateJobAction extends TopAction{
 		if(hasMoreThanOneJob){
 		    ret = "select_jobs";
 		}
-		else{
-		    getTerm();
-		    term.setJob_id(job_id);
-		    term.setEmployee_id(emp_id);
-		    term.setSupervisor(user);
-		    term.setSubmitted_by(user);
-		    term.setSubmitted_date(Helper.getToday());
-		    back = term.populateOneJob();
-		    if(!back.isEmpty()){
-			addError(back);
-		    }
+		else { // one job
+		    ret = "set_expire_date";
 		}
 	    }
 	}
 	else if(action.equals("Next")){
-	    if(selected_job_ids  != null){
-		System.err.println(" "+selected_job_ids.length);
-	    // added selected jobs to term class
-		getTerm();
-		for(String str:selected_job_ids){
-		    term.setJob_id(str);
+	    if(hasJobWithBenefits() || hasOneJobOnly()){
+		if(last_pay_priod_date.isEmpty()){
+		    addMessage("Last pay period date is required");
+		    return "set_expire_date";
 		}
-		term.setSupervisor(user);
-		term.setSubmitted_by(user);
-		term.setSubmitted_date(Helper.getToday());
-		back = term.populateMulitJobs();
-		if(!back.isEmpty()){
-		    addError(back);
-		}		
+		else{
+		    getTerm();
+		    term.setJob_id(job_id);
+		    term.setSupervisor(user);
+		    term.setSubmitted_by(user);
+		    term.setSubmitted_date(Helper.getToday());
+		    term.setLast_pay_period_date(last_pay_priod_date);
+		    back = term.populateOneJob();
+		    if(!back.isEmpty()){
+			addError(back);
+		    }
+		    back = term.findDocumentForInfo();
+		    if(!back.isEmpty()){
+			addError(back);
+		    }
+		    term.setAccrualValues();
+		}
 	    }
-	    else{
-		addError("No job selected ");
-		haveMultipleJobsInTheSameGroup();
-		ret = "select_jobs";
+	    else {
+		if(selected_job_ids  != null && !last_pay_priod_date.isEmpty()){
+		    System.err.println(" "+selected_job_ids.length);
+		    // added selected jobs to term class
+		    getTerm();
+		    for(String str:selected_job_ids){
+			term.setJob_id(str);
+		    }
+		    term.setSupervisor(user);
+		    term.setSubmitted_by(user);
+		    term.setSubmitted_date(Helper.getToday());
+		    term.setLast_pay_period_date(last_pay_priod_date);
+		    back = term.populateMulitJobs();
+		    if(!back.isEmpty()){
+			addError(back);
+		    }		
+		}
+		else{
+		    addError("No job selected Or last pay period date not set");
+		    haveMultipleJobsInTheSameGroup();
+		    ret = "select_jobs";
+		}
 	    }
 	}
 	else if(action.equals("Submit")){
@@ -134,6 +152,9 @@ public class TerminateJobAction extends TopAction{
 	    term = val;
 	}
     }
+    boolean hasOneJobOnly(){
+	return !haveMultipleJobsInTheSameGroup();
+    }
     boolean haveMultipleJobsInTheSameGroup(){
 	if(!job_id.isEmpty()){
 	    JobTask job = new JobTask(job_id);
@@ -174,6 +195,17 @@ public class TerminateJobAction extends TopAction{
 	    group = job.getGroup();
 	}
 	return job;
+    }
+    public boolean hasJobWithBenefits(){
+	getJob();
+	if(job != null){
+	   SalaryGroup sg = job.getSalaryGroup();
+	   if(sg != null){
+	       if(sg.isTemporary()) return false;
+	       else return true;
+	   }
+	}
+	return false;
     }
     public boolean hasGroupInfo(){
 	getGroup();
@@ -220,7 +252,10 @@ public class TerminateJobAction extends TopAction{
 	if(val != null && !val.isEmpty())		
 	    emp_id = val;
     }
-
+    public void setLast_pay_period_date(String val){
+	if(val != null && !val.isEmpty() && !val.equals("-1"))		
+	    last_pay_priod_date = val;
+    }
     public void setSource(String val){
 	if(val != null && !val.isEmpty())		
 	    source = val;

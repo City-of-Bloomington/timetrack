@@ -14,14 +14,21 @@
 	    <s:set var="errors" value="%{errors}" />
 	    <%@ include file="errors.jsp" %>
 	</s:if>
-	<p>Select the jobs you want to terminate. <br />
-	    After your selection, click on 'Next' to set the other
-	    termination fields.</p>
+	<ul>
+	    <li>Select the last day of pay period </li>
+	    <li>Select the jobs you want to terminate. </li>
+	    <li>After your selection, click on 'Next' to set the other
+		termination fields.</li>
+	</ul>
 	<div>
 	    <div class="form-group">
 		<label>Group</label>
 		<s:property value="group" />
 	    </div>
+	    <div class="form-group">
+		<label>Last Pay Period Ending Date</label>
+		<s:select name="last_pay_period_date" value="%{last_pay_period_date}" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick End Date" required="required" />
+	    </div>	    
 	</div>
 	<s:if test="hasMultiJobs()">
 	    <table class="width-full">

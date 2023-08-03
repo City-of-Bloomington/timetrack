@@ -6,6 +6,7 @@ package in.bloomington.timer.bean;
  */
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import in.bloomington.timer.*;
@@ -24,6 +25,7 @@ public class EmpTerminate{
     String job_grade="", job_step="", supervisor_id="", supervisor_phone="";
     String employment_type="", // full, part time, temp, union
 	date_of_hire="", last_pay_period_date="",
+	pay_period_id = "",
 	department_id=""; // department 
     String emp_address="", emp_city="", emp_state="",
 	emp_zip="", emp_phone="", emp_alt_phone="",
@@ -50,12 +52,14 @@ public class EmpTerminate{
     List<GroupManager> groupManagers = null;
     List<JobTask> jobs = null;
     List<Document> documents = null;
+    Document valid_document = null;
     JobTask job = null;
     Group group = null;
     Department department = null;
     Employee emp = null, supervisor = null, submitted_by=null;
     String[] forward_emails_arr = null;
     String[] drive_to_shared_email_arr = null;
+    Map<String, List<String>> accruals = null;
     //
     public EmpTerminate(){
 	
@@ -152,6 +156,15 @@ public class EmpTerminate{
 	}
 	return seed;
     }
+    public String getPay_period_id(){
+	if(pay_period_id.isEmpty() && !last_pay_period_date.isEmpty()){
+	    PayPeriod pp = new PayPeriod();
+	    if(pp.findByEndDate(last_pay_period_date)){
+		pay_period_id = pp.getId();
+	    }	    
+	}
+	return pay_period_id;
+    }
     //
     // getters
     //
@@ -212,6 +225,9 @@ public class EmpTerminate{
 	    }	    
 	}
 	return emp;				
+    }
+    public Employee getEmployee(){
+	return getEmp();
     }
     public String getDate_of_hire(){
 	return date_of_hire;
@@ -325,7 +341,9 @@ public class EmpTerminate{
 	    return drive_to_shared_email_arr[3];
 	return null;
     }    
-    
+    public String getDrive_to_shared_emails(){
+	return drive_to_shared_emails;
+    }
     public String getCalendar_action(){
 	return calendar_action;
     }
@@ -375,6 +393,52 @@ public class EmpTerminate{
 	}
 	return submitted_by;
     }
+    public boolean hasDateOfHire(){
+	return !date_of_hire.isEmpty();
+    }
+    public boolean hasDateOfBirth(){
+	return !date_of_birth.isEmpty();
+    }        
+    public boolean hasEmpAddress(){
+	return !emp_address.isEmpty();
+    }
+    public boolean hasPersonalEmail(){
+	return !personal_email.isEmpty();
+    }
+    public boolean hasPhones(){
+	return !emp_phone.isEmpty() || !emp_alt_phone.isEmpty();
+    }
+    public boolean hasJobGrade(){
+	return !job_grade.isEmpty();
+    }
+    public boolean hasJobStep(){
+	return !job_step.isEmpty();
+    }
+    public boolean hasEmail(){
+	return !email.isEmpty();
+    }
+    
+    public String getPhones(){
+	String ret = emp_phone;
+	if(!emp_alt_phone.isEmpty()){
+	    if(!ret.isEmpty()) ret += ", ";
+	    ret += emp_alt_phone;
+	}
+	return ret;
+    }
+    public String getEmpCityStateZip(){
+	String ret = emp_city;
+	if(!emp_state.isEmpty()){
+	    if(!ret.isEmpty()) ret += ", ";
+	    ret += emp_state;
+	}
+	if(!emp_zip.isEmpty()){
+	    if(!ret.isEmpty()) ret += " ";	    
+	    ret += emp_zip;
+	}
+	return ret;
+    }
+
     //
     // setters
     //
@@ -818,7 +882,7 @@ public class EmpTerminate{
     }
     void findDocuments(){
 	//
-	String pay_period_id = "";
+
 	if(!last_pay_period_date.isEmpty()){
 	    PayPeriod pp = new PayPeriod();
 	    if(pp.findByEndDate(last_pay_period_date)){
@@ -854,7 +918,108 @@ public class EmpTerminate{
     boolean hasDocuments(){
 	findDocuments();
 	return documents != null && documents.size() > 0;
-    }    
+    }
+    public String findDocumentForInfo(){
+	String back = "";
+	String pay_pp_id = getPay_period_id();
+	System.err.println(" pp id "+pay_pp_id);
+	if(!pay_pp_id.isEmpty()){
+	    String msg = findValidDocument(pay_pp_id);
+	    if(!msg.isEmpty()){
+		int pay_pp_int = -1;
+		try{
+		    pay_pp_int = Integer.parseInt(pay_period_id);
+		}catch(Exception ex){}
+		if(pay_pp_int > -1){
+		    for(int jj=1;jj<3;jj++){
+			pay_pp_id = ""+(pay_pp_int+jj);
+			System.err.println("loop pp id "+pay_pp_id);
+			msg = findValidDocument(pay_pp_id);
+			if(msg.isEmpty() && valid_document != null){
+			    break;
+			}
+		    }
+		}
+	    }
+	}
+	if(valid_document != null){
+	    valid_document.hasDailyBlocks(); // needed to do computations
+	    if(valid_document.hasAccruals()){
+		String accruals_str = valid_document.getEmployeeAccrualsShort();
+	    }
+	    if(valid_document.hasAllAccruals()){
+		accruals = valid_document.getAllAccruals();
+	    }
+	}
+	return back;
+    }
+    boolean hasAccruals(){
+	System.err.println(" accruals "+accruals);
+	return accruals != null;
+    }
+    public String setAccrualValues(){
+	String back = "";
+	if(hasAccruals()){
+	    for(String key:accruals.keySet()){
+		if(key != null){
+		    List<String> vals = accruals.get(key);
+		    String str = vals.get(2); // the balance
+		    if(str != null){
+			if(key.indexOf("Comp") > -1){
+			    try{
+				comp_time = Double.parseDouble(str);
+			    }catch(Exception ex){}
+			}
+			else if(key.indexOf("PTO") > -1){
+			    try{
+				pto = Double.parseDouble(str);
+			    }catch(Exception ex){}
+			}
+			else if(key.indexOf("VUA") > -1){ // fire
+			    try{
+				vac_time = Double.parseDouble(str);
+			    }catch(Exception ex){}
+			}
+			else if(key.indexOf("KLVA") > -1){ // fire, Kelly leave
+			    try{
+				vac_time += Double.parseDouble(str);
+			    }catch(Exception ex){}
+			    // not used for now
+			}
+			else if(key.indexOf("BLA") > -1){ // police,Benefit leave
+			    try{
+				vac_time = Double.parseDouble(str);
+			    }catch(Exception ex){}
+			    // not used for now
+			}			
+		    }
+		}
+	    }
+	}
+	return back;
+    }
+    String findValidDocument(String pay_pp_id){
+	String back = "";
+	if(pay_pp_id.isEmpty()){
+	    back = "pay period id not set ";
+	    return back;
+	}
+	DocumentList dl = new DocumentList();
+	dl.setPay_period_id(pay_pp_id);
+	dl.setEmployee_id(getEmployee_id());
+	back = dl.find();
+	if(back.isEmpty()){
+	    List<Document> ones = dl.getDocuments();
+	    if(ones != null && ones.size() > 0){
+		valid_document = ones.get(0);
+	    }
+	    else{
+		back = "No doc found ";
+	    }
+	}
+	return back;
+    }
+    
     public String doSave(){
 	
 	String back="";

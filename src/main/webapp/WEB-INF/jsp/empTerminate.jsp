@@ -11,7 +11,8 @@
 	<s:hidden name="term.job_ids" value="%{term.job_ids}" />	
 	<s:hidden name="term.supervisor_id" value="%{term.supervisor_id}" />	
 	<s:hidden name="term.hours_per_week" value="%{term.hours_per_week}" />
-	<s:hidden name="term.employment_type" value="%{term.employment_type}" />	
+	<s:hidden name="term.employment_type" value="%{term.employment_type}" />
+	<s:hidden name="term.last_pay_period_date" value="%{term.last_pay_period_date}" />	
 	<h1>Employee Job(s) Termination </h1>
 	<s:if test="hasMessages()">
 	    <s:set var="messages" value="%{messages}" />
@@ -50,7 +51,7 @@
 	    <tr><td>Last Day of Work</td>
 		<td><s:textfield name="term.last_day_of_work" value="%{term.last_day_of_work}" size="10" maxlength="10" />(example 10/22/2023)</td> 
 		<td>Last Pay Period Ending</td>
-		<td><s:select name="term.last_pay_period_date" value="%{term.last_pay_period_date}" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick End Date" /></td>
+		<td><s:property value="term.last_pay_period_date"/></td>
 	    </tr>
 	    <tr><td>Department</td>
 		<td><s:property value="term.department" /></td>

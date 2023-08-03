@@ -59,7 +59,7 @@ public class JobTask implements Serializable{
     public JobTask(String val){
 	setId(val);
     }
-public JobTask(String val,
+    public JobTask(String val,
 		   String val2,
 		   String val3,
 		   String val4,
@@ -1114,7 +1114,7 @@ public JobTask(String val,
 	}							
 	try{
 	    pstmt = con.prepareStatement(qq);
-pstmt.setString(1, position_id);
+	    pstmt.setString(1, position_id);
 	    pstmt.setString(2, salary_group_id);
 	    pstmt.setString(3, employee_id);
 	    pstmt.setString(4, group_id);						
@@ -1282,18 +1282,18 @@ pstmt.setString(1, position_id);
 	    pstmt.setDouble(10, comp_time_factor);
 	    pstmt.setDouble(11,holiday_comp_factor);
 	    /**
-	    if(clock_time_required.isEmpty())
-		pstmt.setNull(12, Types.CHAR);
-	    else
-	    pstmt.setString(12, "y");
+	       if(clock_time_required.isEmpty())
+	       pstmt.setNull(12, Types.CHAR);
+	       else
+	       pstmt.setString(12, "y");
 	    */
 	    pstmt.setDouble(12, hourly_rate);
 	    /**
 	    
-	    if(include_in_auto_batch.isEmpty())
-		pstmt.setNull(14, Types.CHAR);
-	    else
-	    pstmt.setString(14, "y");
+	       if(include_in_auto_batch.isEmpty())
+	       pstmt.setNull(14, Types.CHAR);
+	       else
+	       pstmt.setString(14, "y");
 	    */
 	    if(irregular_work_days.isEmpty())
 		pstmt.setNull(13, Types.CHAR);
@@ -1344,23 +1344,23 @@ pstmt.setString(1, position_id);
 	}
 	if(expire_group){
 	    /**
-	    List<GroupEmployee> groupEmployees = null;
-	    GroupEmployeeList del = new GroupEmployeeList(employee_id);
-	    del.setGroup_id(group_id);
-	    del.setCurrentOnly();
-	    back = del.find();
-	    if(back.isEmpty()){
-		List<GroupEmployee> ones = del.getGroupEmployees();
-		if(ones != null && ones.size() > 0){
-		    groupEmployees = ones;
-		}
-	    }
-	    // we should get only one group
-	    if(groupEmployees != null && groupEmployees.size() == 1){
-		GroupEmployee groupEmployee = groupEmployees.get(0);
-		groupEmployee.setExpire_date(expire_date);
-		back = groupEmployee.doExpireDateOnly();
-	    }
+	       List<GroupEmployee> groupEmployees = null;
+	       GroupEmployeeList del = new GroupEmployeeList(employee_id);
+	       del.setGroup_id(group_id);
+	       del.setCurrentOnly();
+	       back = del.find();
+	       if(back.isEmpty()){
+	       List<GroupEmployee> ones = del.getGroupEmployees();
+	       if(ones != null && ones.size() > 0){
+	       groupEmployees = ones;
+	       }
+	       }
+	       // we should get only one group
+	       if(groupEmployees != null && groupEmployees.size() == 1){
+	       GroupEmployee groupEmployee = groupEmployees.get(0);
+	       groupEmployee.setExpire_date(expire_date);
+	       back = groupEmployee.doExpireDateOnly();
+	       }
 	    */
 
 	}
@@ -1462,7 +1462,7 @@ pstmt.setString(1, position_id);
 		}
 		if(!old_dept_id.isEmpty() && !new_dept_id.isEmpty() &&
 		   !old_dept_id.equals(new_dept_id)){
-			// expire old dept
+		    // expire old dept
 		    qq = qq4; 
 		    pstmt4 = con.prepareStatement(qq);
 		    java.util.Date date_tmp = df.parse(old_expire_date);
