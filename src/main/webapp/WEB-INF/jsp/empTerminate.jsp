@@ -58,9 +58,14 @@
 		<td>Group </td>
 		<td><s:property value="term.group" /></td>		
 	    </tr>
-	    <tr><td>Job Title(s)</td>
+	    <tr><td>Terminating Job Title(s)</td>
 		<td colspan="3"><s:property value="term.jobTitles" /></td>
 	    </tr>
+	    <s:if test="term.hasOtherActiveJobs()">
+	    <tr><td>Other Active Job(s)</td>
+		<td colspan="3"><s:property value="term.otherJobTitles" /></td>
+	    </tr>
+	    </s:if>
 	    <tr><td>Job Grade</td>
 		<td><s:textfield name="term.job_grade" value="%{term.job_grade}" size="30" maxlength="100" /> </td>
 		<td>Job Step</td>

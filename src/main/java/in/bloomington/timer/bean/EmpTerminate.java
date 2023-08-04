@@ -46,11 +46,12 @@ public class EmpTerminate{
     String badge_returned=""; //NA, Yes, No
     int hours_per_week=0;    
     double pay_period_worked_hrs=0, comp_time=0, vac_time=0, pto=0;
-    String comments="",submitted_by_id ="", submitted_date="";
-
+    String remarks="",submitted_by_id ="", submitted_date="";
+    String other_job_titles = "";
     List<DepartmentEmployee> departmentEmployees = null;
     List<GroupManager> groupManagers = null;
     List<JobTask> jobs = null;
+    List<JobTask> activeJobs = null; // non-terminated jobs
     List<Document> documents = null;
     Document valid_document = null;
     JobTask job = null;
@@ -135,7 +136,7 @@ public class EmpTerminate{
 	setComp_time(str36);
 	setVac_time(str37);
 	setPto(str38);
-	setComments(str39);
+	setRemarks(str39);
 	setSubmitted_by_id(str40);
 	setSubmitted_date(str41);
     }
@@ -374,14 +375,17 @@ public class EmpTerminate{
     public double getPto(){
 	return pto;
     }
-    public String getComments(){
-	return comments;
+    public String getRemarks(){
+	return remarks;
     }
     public String getSubmitted_by_id(){
 	return submitted_by_id;
     }
     public String submitted_date(){
 	return submitted_date;
+    }
+    public boolean hasBenefits(){
+	return pto > 0 || comp_time > 0 || vac_time > 0;
     }
     public Employee getSubmitted_by(){
 	if(submitted_by == null && !submitted_by_id.isEmpty()){
@@ -782,9 +786,9 @@ public class EmpTerminate{
 	if(val != null)
 	    pto = val;
     }
-    public void setComments(String val){
+    public void setRemarks(String val){
 	if(val != null)
-	    comments = val;
+	    remarks = val;
     }
     public void setSubmitted_by_id(String val){
 	if(val != null)
@@ -814,6 +818,40 @@ public class EmpTerminate{
 	    full_name = emp.getFull_name();
 	    email = emp.getEmail();
 	    hours_per_week = job.getWeekly_regular_hours();
+	}
+	return back;
+    }
+    public List<JobTask> getOtherActiveJobs(){
+	return activeJobs;
+    }
+    public boolean hasOtherActiveJobs(){
+	findOthrActiveJobs();
+	return activeJobs != null && activeJobs.size() > 0;
+    }
+    public String getOtherJobTitles(){
+	return other_job_titles;
+    }
+    String findOthrActiveJobs(){
+	String back = "";
+	getJobs();
+	if(activeJobs == null && jobs != null && !employee_id.isEmpty()){
+	    JobTaskList jl = new JobTaskList();
+	    jl.setEmployee_id(employee_id);
+	    jl.setNotExpired();
+	    jl.setCurrentOnly();
+	    back = jl.find();
+	    List<JobTask> ones = jl.getJobs();
+	    if(ones != null && ones.size() > 0){
+		for(JobTask one:ones){
+		    if(!jobs.contains(one)){
+			if(activeJobs == null)
+			    activeJobs = new ArrayList<>();
+			activeJobs.add(one);
+			if(!other_job_titles.isEmpty()) other_job_titles +=", ";
+			other_job_titles += one.getName();
+		    }
+		}
+	    }
 	}
 	return back;
     }
@@ -1194,10 +1232,10 @@ public class EmpTerminate{
 	    
 	    pstmt.setDouble(36, vac_time);
 	    pstmt.setDouble(37, pto);
-	    if(comments.isEmpty())
+	    if(remarks.isEmpty())
 		pstmt.setNull(38, Types.VARCHAR);
 	    else	    
-		pstmt.setString(38, comments);
+		pstmt.setString(38, remarks);
 	    if(submitted_by_id.isEmpty())
 		pstmt.setNull(39, Types.VARCHAR);
 	    else
@@ -1229,7 +1267,7 @@ public class EmpTerminate{
 	    "drive_action=?,drive_to_person_email=?,drive_to_shared_emails=?,calendar_action=?,calendar_to_email=?,"+
 
 	    "zoom_action=?,zoom_to_email=?,badge_returned=?,hours_per_week=?,pay_period_worked_hrs=?,"+
-	    "comp_time=?,vac_time=?,pto=?,comments=?,submitted_by_id=?,"+
+	    "comp_time=?,vac_time=?,pto=?,remarks=?,submitted_by_id=?,"+
 	    "submitted_date=? "+ // date
 	    " where id = ? "; 
 	String back = "";
@@ -1278,7 +1316,7 @@ public class EmpTerminate{
 	    "drive_action,drive_to_person_email,drive_to_shared_emails,calendar_action,calendar_to_email,"+
 
 	    "zoom_action,zoom_to_email,badge_returned,hours_per_week,pay_period_worked_hrs,"+
-	    "comp_time,vac_time,pto,comments,submitted_by_id,"+
+	    "comp_time,vac_time,pto,remarks,submitted_by_id,"+
 	    "date_format(submitted_date,'%m/%d/%Y') "+ // date
 	    " from emp_terminations where id =? "; 
 	String back = "";
@@ -1399,7 +1437,7 @@ public class EmpTerminate{
     comp_time double,
     vac_time double,
     pto  double,
-    comments text,
+    remarks text,
     submitted_by_id int unsigned,
     
     submitted_date date,

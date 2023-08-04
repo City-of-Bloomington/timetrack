@@ -87,6 +87,10 @@ public class TermNotification{
     public String getSendError(){
 	return send_error;
     }
+    public String getStatus(){
+	if(send_error.isEmpty())  return "Success";
+	return "Error";
+    }
     public EmpTerminate getTerm(){
 	if(term == null && !termination_id.isEmpty()){
 	    EmpTerminate one = new EmpTerminate(termination_id);
@@ -228,8 +232,8 @@ public class TermNotification{
 	    if(term.getPto() > 0){
 		text += "PTO: "+term.getPto();
 	    }
-	    if(!term.getComments().isEmpty()){
-		text += "Comments: "+term.getComments()+"\n\n";
+	    if(!term.getRemarks().isEmpty()){
+		text += "Remarks: "+term.getRemarks()+"\n\n";
 	    }
 	    text += "Thank You \n";
 	    text += "Submitted by "+term.getSubmitted_by()+"\n\n";

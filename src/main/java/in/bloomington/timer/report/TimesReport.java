@@ -16,441 +16,441 @@ import in.bloomington.timer.list.*;
 
 public class TimesReport{
 
-		static Logger logger = LogManager.getLogger(TimesReport.class);
-		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");		
-		static DecimalFormat df4 = new DecimalFormat("#0.0000");
-		static DecimalFormat df = new DecimalFormat("#0.00");
-		String date_from="", date_to="";
-		int year = 0, quarter = 0;
-		String start_date ="", end_date=""; // temp holders
-		boolean debug = false, ignoreProfiles = false;
-		String dept="", department_id="", type="html"; 
-		String dept_ref_id="";
-		String code="";
-		String code2="";
-		String salary_group_id = "";
-		String pay_period_id = "";
-		String group_id = "";
-		String employmentType = ""; // All, Full Time, Temp		
-		Map<String, Set<String>> empJobs = null;
-		Map<String, Set<String>> empCodes = null;
-		Map<String, Map<String, Map<String, Map<String, String>>>> times = null;
-		// Date-Range  Emp-Name     job        code        hours
-		List<String> datesList = null;
-		List<String[]> arrAll = null;
-		Department department = null;
-		String errors = "";
+    static Logger logger = LogManager.getLogger(TimesReport.class);
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");		
+    static DecimalFormat df4 = new DecimalFormat("#0.0000");
+    static DecimalFormat df = new DecimalFormat("#0.00");
+    String date_from="", date_to="";
+    int year = 0, quarter = 0;
+    String start_date ="", end_date=""; // temp holders
+    boolean debug = false, ignoreProfiles = false;
+    String dept="", department_id="", type="html"; 
+    String dept_ref_id="";
+    String code="";
+    String code2="";
+    String salary_group_id = "";
+    String pay_period_id = "";
+    String group_id = "";
+    String employmentType = ""; // All, Full Time, Temp		
+    Map<String, Set<String>> empJobs = null;
+    Map<String, Set<String>> empCodes = null;
+    Map<String, Map<String, Map<String, Map<String, String>>>> times = null;
+    // Date-Range  Emp-Name     job        code        hours
+    List<String> datesList = null;
+    List<String[]> arrAll = null;
+    Department department = null;
+    String errors = "";
     public TimesReport(){
 				
     }	
-		public int getYear(){
-				if(year == 0)
-						return -1;
-				return year;
+    public int getYear(){
+	if(year == 0)
+	    return -1;
+	return year;
     }
-		public int getQuarter(){
-				if(quarter == 0)
-						return -1;
-				return quarter;
+    public int getQuarter(){
+	if(quarter == 0)
+	    return -1;
+	return quarter;
     }
-		public String getDate_from(){
-				return date_from;
+    public String getDate_from(){
+	return date_from;
     }
-		public String getDate_to(){
-				return date_to;
+    public String getDate_to(){
+	return date_to;
     }
-		public String getStart_date(){
-				return start_date;
+    public String getStart_date(){
+	return start_date;
     }
-		public String getEnd_date(){
-				return end_date;
+    public String getEnd_date(){
+	return end_date;
     }
-		public String getType(){
-				return type;
-		}
-		public boolean hasDepartment(){
-				return !department_id.isEmpty();
-		}
-		public String getDepartment_id(){
-				if(department_id.isEmpty())  return "-1";
-				return department_id;
-		}
-		public String getSalary_group_id(){
-				if(salary_group_id.isEmpty())  return "-1";
-				return salary_group_id;
-		}
-		public String getGroup_id(){
-				if(group_id.isEmpty())  return "-1";
-				return group_id;
-		}
-		public String getPay_period_id(){
-				if(pay_period_id.isEmpty())  return "-1";
-				return pay_period_id;
-		}		
-		public void setEmploymentType(String val){
-				if(val != null && !val.equals("-1")){
-						employmentType = val; // salary_group_id = 3 for Temp
-				}
-		}
-		public String getEmploymentType(){
-				if(employmentType.isEmpty())
-						return "-1";
-				return employmentType;
-		}
-		public Department getDepartment(){
-				if(department == null && !department_id.isEmpty()){
-						Department one = new Department(department_id);
-						String back = one.doSelect();
-						if(back.isEmpty()){
-								department = one;
-						}
-				}
-				return department;
-		}
+    public String getType(){
+	return type;
+    }
+    public boolean hasDepartment(){
+	return !department_id.isEmpty();
+    }
+    public String getDepartment_id(){
+	if(department_id.isEmpty())  return "-1";
+	return department_id;
+    }
+    public String getSalary_group_id(){
+	if(salary_group_id.isEmpty())  return "-1";
+	return salary_group_id;
+    }
+    public String getGroup_id(){
+	if(group_id.isEmpty())  return "-1";
+	return group_id;
+    }
+    public String getPay_period_id(){
+	if(pay_period_id.isEmpty())  return "-1";
+	return pay_period_id;
+    }		
+    public void setEmploymentType(String val){
+	if(val != null && !val.equals("-1")){
+	    employmentType = val; // salary_group_id = 3 for Temp
+	}
+    }
+    public String getEmploymentType(){
+	if(employmentType.isEmpty())
+	    return "-1";
+	return employmentType;
+    }
+    public Department getDepartment(){
+	if(department == null && !department_id.isEmpty()){
+	    Department one = new Department(department_id);
+	    String back = one.doSelect();
+	    if(back.isEmpty()){
+		department = one;
+	    }
+	}
+	return department;
+    }
     //
     // setters
     //
-		/**
-    public void setYear (int val){
-				if(val > 0)
-						year = val;
-    }
-		*/
+    /**
+       public void setYear (int val){
+       if(val > 0)
+       year = val;
+       }
+    */
     public void setYear (String val){
-				if(val != null &&  !val.isEmpty() && !val.equals("-1")){
-						try{
-								year = Integer.parseInt(val);
-						}catch(Exception ex){
+	if(val != null &&  !val.isEmpty() && !val.equals("-1")){
+	    try{
+		year = Integer.parseInt(val);
+	    }catch(Exception ex){
 
-						}
-				}
+	    }
+	}
     }		
     public void setQuarter (int val){
-				if(val > 0)
-						quarter = val;
+	if(val > 0)
+	    quarter = val;
     }
     public void setQuarter (String val){
-				if(val != null &&  !val.isEmpty() && !val.equals("-1")){
-						try{
-								quarter = Integer.parseInt(val);
-						}catch(Exception ex){
+	if(val != null &&  !val.isEmpty() && !val.equals("-1")){
+	    try{
+		quarter = Integer.parseInt(val);
+	    }catch(Exception ex){
 
-						}
-				}
+	    }
+	}
     }				
     public void setDate_from (String val){
-				if(val != null){
-						date_from = val;
-				}
+	if(val != null){
+	    date_from = val;
+	}
     }
     public void setDate_to (String val){
-				if(val != null){
-						date_to = val;
-				}
+	if(val != null){
+	    date_to = val;
+	}
     }
     public void setDepartment_id(String val){
-				if(val != null && !val.equals("-1")){
-						department_id = val;
-				}
+	if(val != null && !val.equals("-1")){
+	    department_id = val;
+	}
     }
     public void setGroup_id(String val){
-				if(val != null && !val.equals("-1")){
-						group_id = val;
-				}
+	if(val != null && !val.equals("-1")){
+	    group_id = val;
+	}
     }
     public void setSalary_group_id(String val){
-				if(val != null && !val.equals("-1")){
-						salary_group_id = val;
-				}
+	if(val != null && !val.equals("-1")){
+	    salary_group_id = val;
+	}
     }
-		public void setPay_period_id(String val){
-				if(val != null && !val.equals("-1")){
-						pay_period_id = val;
-				}
+    public void setPay_period_id(String val){
+	if(val != null && !val.equals("-1")){
+	    pay_period_id = val;
+	}
     }
 		
     public void setType(String val){
-				if(val != null){
-						type = val;
-				}
+	if(val != null){
+	    type = val;
+	}
     }
-		public Map<String, Set<String>> getEmpJobs(){
-				return empJobs;
-		}
-		public Map<String, Set<String>> getEmpCodes(){
-				return empCodes;
-		}
-		public List<String> getDatesList(){
-				return datesList;
-		}
-		public Map<String, Map<String, Map<String, Map<String, String>>>>  geTimes(){
-				return times;
-		}
-		public List<String[]> getArrAll(){
-				return arrAll;
-		}
-		public boolean hasData(){
-				return arrAll != null && !arrAll.isEmpty();
-		}
-		void createOutput(){
-				arrAll = new ArrayList<>();
-				int size = datesList.size()+3;
-				String[] arr = new String[size];
-				arr[0] = "Employee";
-				arr[1] = "Job";
-				arr[2] = "Hour Code";
-				int jj=3;
-				for(String dd:datesList){
-						arr[jj++] = dd;
-				}
-				arrAll.add(arr);
-				Set<String> emps = empJobs.keySet();
-				for(String emp:emps){
-						Set<String> jobs = empJobs.get(emp);
-						Set<String> codes = empCodes.get(emp);
-						for(String job:jobs){
-								for(String code:codes){
-										arr = new String[size];
-										arr[0] = emp;
-										arr[1] = job;
-										arr[2] = code;
-										jj=3;
-										for(String dater:datesList){
-												if(times.containsKey(dater)){
-														Map<String, Map<String, Map<String, String>>> map = times.get(dater);
-														if(map.containsKey(emp)){
-																Map<String, Map<String, String>> map2 = map.get(emp);
+    public Map<String, Set<String>> getEmpJobs(){
+	return empJobs;
+    }
+    public Map<String, Set<String>> getEmpCodes(){
+	return empCodes;
+    }
+    public List<String> getDatesList(){
+	return datesList;
+    }
+    public Map<String, Map<String, Map<String, Map<String, String>>>>  geTimes(){
+	return times;
+    }
+    public List<String[]> getArrAll(){
+	return arrAll;
+    }
+    public boolean hasData(){
+	return arrAll != null && !arrAll.isEmpty();
+    }
+    void createOutput(){
+	arrAll = new ArrayList<>();
+	int size = datesList.size()+3;
+	String[] arr = new String[size];
+	arr[0] = "Employee";
+	arr[1] = "Job";
+	arr[2] = "Hour Code";
+	int jj=3;
+	for(String dd:datesList){
+	    arr[jj++] = dd;
+	}
+	arrAll.add(arr);
+	Set<String> emps = empJobs.keySet();
+	for(String emp:emps){
+	    Set<String> jobs = empJobs.get(emp);
+	    Set<String> codes = empCodes.get(emp);
+	    for(String job:jobs){
+		for(String code:codes){
+		    arr = new String[size];
+		    arr[0] = emp;
+		    arr[1] = job;
+		    arr[2] = code;
+		    jj=3;
+		    for(String dater:datesList){
+			if(times.containsKey(dater)){
+			    Map<String, Map<String, Map<String, String>>> map = times.get(dater);
+			    if(map.containsKey(emp)){
+				Map<String, Map<String, String>> map2 = map.get(emp);
 
-																if(map2.containsKey(job)){
-																		Map<String, String> map3 = map2.get(job);
+				if(map2.containsKey(job)){
+				    Map<String, String> map3 = map2.get(job);
 
-																		if(map3.containsKey(code)){
-																				arr[jj++] = map3.get(code);
-																		}
-																		else{
-																				arr[jj++] = "0";
-																		}
-																}
-																else{
-																		arr[jj++] = "0";
-																}
-														}
-														else{
-																arr[jj++] = "0";
-														}
-												}
-										}
-										arrAll.add(arr);
-								}
-						}
+				    if(map3.containsKey(code)){
+					arr[jj++] = map3.get(code);
+				    }
+				    else{
+					arr[jj++] = "0";
+				    }
 				}
+				else{
+				    arr[jj++] = "0";
+				}
+			    }
+			    else{
+				arr[jj++] = "0";
+			    }
+			}
+		    }
+		    arrAll.add(arr);
 		}
-		//
-		String setStartAndEndDates(){
-				String msg = "";
-				//
-				// We use start_date and end_date so that we do not override date_from
-				// and date_to if they are not set
-				//
-				if(!pay_period_id.isEmpty()){
-						PayPeriod payPeriod = new PayPeriod(pay_period_id);
-						String back = payPeriod.doSelect();
-						if(!back.isEmpty()){
-								msg = "Error getting pay period";
-								return msg;
-						}
-						start_date = payPeriod.getStart_date();
-						end_date = payPeriod.getEnd_date();
-				}
-				else if(year > 0 && quarter > 0){
-						start_date = CommonInc.quarter_starts[quarter]+year;
-						end_date = CommonInc.quarter_ends[quarter]+year;
-				}
-				else {
-						start_date = date_from;
-						end_date = date_to;
-				}
-				start_date = start_date.trim();
-				if(start_date.isEmpty()){
-						msg = "You need to set one of these pay period, year and quarter or start date ";
-						return msg;
-				}
-				if(end_date.isEmpty()){
-						end_date = Helper.getToday();
-				}
-				return msg;
-		}
+	    }
+	}
+    }
+    //
+    String setStartAndEndDates(){
+	String msg = "";
+	//
+	// We use start_date and end_date so that we do not override date_from
+	// and date_to if they are not set
+	//
+	if(!pay_period_id.isEmpty()){
+	    PayPeriod payPeriod = new PayPeriod(pay_period_id);
+	    String back = payPeriod.doSelect();
+	    if(!back.isEmpty()){
+		msg = "Error getting pay period";
+		return msg;
+	    }
+	    start_date = payPeriod.getStart_date();
+	    end_date = payPeriod.getEnd_date();
+	}
+	else if(year > 0 && quarter > 0){
+	    start_date = CommonInc.quarter_starts[quarter]+year;
+	    end_date = CommonInc.quarter_ends[quarter]+year;
+	}
+	else {
+	    start_date = date_from;
+	    end_date = date_to;
+	}
+	start_date = start_date.trim();
+	if(start_date.isEmpty()){
+	    msg = "You need to set one of these pay period, year and quarter or start date ";
+	    return msg;
+	}
+	if(end_date.isEmpty()){
+	    end_date = Helper.getToday();
+	}
+	return msg;
+    }
 
-		public String find(){
-				String msg = "";
-				Connection con = null;
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				String date_range="",full_name="", job_name="", hour_code="",
-						hours="", amount="";
-				//
-				// We are looking for Reg earn codes and its derivatives for
-				// planning department
-				//
-				msg = setStartAndEndDates();
-				if(!msg.isEmpty()){
-						return msg;
-				}
-				//
-				// We are looking for Reg earn codes and its derivatives for
-				// planning department
-				//
-				String qq = "select concat_ws(' - ',date_format(p.start_date, '%m/%d'), date_format(p.end_date,'%m/%d')) date_range,                                                     concat_ws(', ',e.last_name,e.first_name) full_name,                             ps.name job_name,                                                               c.name hour_code,			                                                         sum(t.hours) hours,                                                             sum(t.amount) amount                                                            from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join employees e on e.id=d.employee_id                                          join department_employees de on de.employee_id=e.id                             where                                                                           t.inactive is null                                                              and ((t.clock_in is not null and t.clock_out is not null) or (t.clock_in is null and t.clock_out is null))                                                       and (de.department_id=? or de.department2_id=?)                                 and p.start_date >= ?                                                           and p.end_date <= ?   ";
-				if(!salary_group_id.isEmpty()){
-						qq += " and j.salary_group_id = ? ";
-				}
-				if(!group_id.isEmpty()){
-						qq += " and j.group_id = ? ";
-				}
-				qq += "group by date_range,full_name,job_name,hour_code                                order by date_range,full_name,job_name,hour_code ";
-				con = UnoConnect.getConnection();				
-				if(con == null){
-						msg = " Could not connect to DB ";
-						logger.error(msg);
-						return msg;
-				}
-				if(department_id.isEmpty()){
-						msg = "Need to select a Department ";
-						return msg;
-				}
-				if(start_date.isEmpty()){
-						msg = "start date not set ";
-						return msg;
-				}
-				if(end_date.isEmpty()){
-						msg = "end date not set ";
-						return msg;
-				}				
-				logger.debug(qq);
-				empJobs = new TreeMap<>();
-				empCodes = new TreeMap<>();
-				datesList = new ArrayList<>();
-				times = new TreeMap<>();
-				try{
-						pstmt = con.prepareStatement(qq);
-						int jj=1;
-						pstmt.setString(jj++, department_id);
-						pstmt.setString(jj++, department_id);						
-						java.util.Date date_tmp = dateFormat.parse(start_date);
-						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-						date_tmp = dateFormat.parse(end_date);
-						pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-						if(!salary_group_id.isEmpty()){
-								pstmt.setString(jj++, salary_group_id);		
-						}
-						if(!group_id.isEmpty()){
-								pstmt.setString(jj++, group_id);		
-						}						
-						rs = pstmt.executeQuery();
-						while(rs.next()){
-								date_range = rs.getString(1);
-								full_name = rs.getString(2);
-								job_name = rs.getString(3);
-								hour_code = rs.getString(4);
-								hours = rs.getString(5);
-								amount = rs.getString(6);
-								double amt = rs.getDouble(6);
-								addToEmp(full_name, job_name, hour_code);
-								if(!datesList.contains(date_range)){
-										datesList.add(date_range);
-								}
-								if(amt > 0.0)
-										addToTimes(date_range, full_name, job_name, hour_code, "$"+amount);									
-								else
-										addToTimes(date_range, full_name, job_name, hour_code, hours);										
+    public String find(){
+	String msg = "";
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String date_range="",full_name="", job_name="", hour_code="",
+	    hours="", amount="";
+	//
+	// We are looking for Reg earn codes and its derivatives for
+	// planning department
+	//
+	msg = setStartAndEndDates();
+	if(!msg.isEmpty()){
+	    return msg;
+	}
+	//
+	// We are looking for Reg earn codes and its derivatives for
+	// planning department
+	//
+	String qq = "select concat_ws(' - ',date_format(p.start_date, '%m/%d'), date_format(p.end_date,'%m/%d')) date_range,                                                     concat_ws(', ',e.last_name,e.first_name) full_name,                             ps.name job_name,                                                               c.name hour_code,			                                                         sum(t.hours) hours,                                                             sum(t.amount) amount                                                            from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id                                        join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join employees e on e.id=d.employee_id                                          join department_employees de on de.employee_id=e.id                             where                                                                           t.inactive is null                                                              and ((t.clock_in is not null and t.clock_out is not null) or (t.clock_in is null and t.clock_out is null))                                                       and (de.department_id=? or de.department2_id=?)                                 and p.start_date >= ?                                                           and p.end_date <= ?   ";
+	if(!salary_group_id.isEmpty()){
+	    qq += " and j.salary_group_id = ? ";
+	}
+	if(!group_id.isEmpty()){
+	    qq += " and j.group_id = ? ";
+	}
+	qq += "group by date_range,full_name,job_name,hour_code                                order by date_range,full_name,job_name,hour_code ";
+	con = UnoConnect.getConnection();				
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    logger.error(msg);
+	    return msg;
+	}
+	if(department_id.isEmpty()){
+	    msg = "Need to select a Department ";
+	    return msg;
+	}
+	if(start_date.isEmpty()){
+	    msg = "start date not set ";
+	    return msg;
+	}
+	if(end_date.isEmpty()){
+	    msg = "end date not set ";
+	    return msg;
+	}				
+	logger.debug(qq);
+	empJobs = new TreeMap<>();
+	empCodes = new TreeMap<>();
+	datesList = new ArrayList<>();
+	times = new TreeMap<>();
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    int jj=1;
+	    pstmt.setString(jj++, department_id);
+	    pstmt.setString(jj++, department_id);						
+	    java.util.Date date_tmp = dateFormat.parse(start_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    date_tmp = dateFormat.parse(end_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    if(!salary_group_id.isEmpty()){
+		pstmt.setString(jj++, salary_group_id);		
+	    }
+	    if(!group_id.isEmpty()){
+		pstmt.setString(jj++, group_id);		
+	    }						
+	    rs = pstmt.executeQuery();
+	    while(rs.next()){
+		date_range = rs.getString(1);
+		full_name = rs.getString(2);
+		job_name = rs.getString(3);
+		hour_code = rs.getString(4);
+		hours = rs.getString(5);
+		amount = rs.getString(6);
+		double amt = rs.getDouble(6);
+		addToEmp(full_name, job_name, hour_code);
+		if(!datesList.contains(date_range)){
+		    datesList.add(date_range);
+		}
+		if(amt > 0.0)
+		    addToTimes(date_range, full_name, job_name, hour_code, "$"+amount);									
+		else
+		    addToTimes(date_range, full_name, job_name, hour_code, hours);										
 		
-						}
-				}
-				catch(Exception ex){
-						msg += " "+ex;
-						logger.error(msg+":"+qq);
-				}
-				finally{
-						Helper.databaseDisconnect(pstmt, rs);
-						UnoConnect.databaseDisconnect(con);
-				}
-				if(msg.isEmpty()){
-						createOutput();
-				}
-				return msg;
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	if(msg.isEmpty()){
+	    createOutput();
+	}
+	return msg;
+    }
+    void showOutput(){
+	/**
+	   System.err.println(" dates "+datesList);				
+	   System.err.println(" emp jobs "+empJobs);
+	   System.err.println(" emps codes "+empCodes);
+	   System.err.println(" emp times "+times);
+	   for(String[] arr:arrAll){
+	   String line = "";
+	   for(int jj=0;jj< arr.length;jj++){
+	   if(!line.isEmpty()) line += ", ";
+	   line += arr[jj];
+	   }
+	   System.err.println(line);
+	   }
+	*/
+    }
+    void addToEmp(String name, String job, String code){
+	if(empJobs.containsKey(name)){
+	    Set<String> set = empJobs.get(name);
+	    set.add(job);
+	}
+	else{
+	    Set<String> set = new HashSet<>();
+	    set.add(job);
+	    empJobs.put(name, set);
+	}
+	if(empCodes.containsKey(name)){
+	    Set<String> set = empCodes.get(name);
+	    set.add(code);
+	}
+	else{
+	    Set<String> set = new HashSet<>();
+	    set.add(code);
+	    empCodes.put(name, set);
+	}				
+    }
+    void addToTimes(String date,
+		    String name,
+		    String job,
+		    String code,
+		    String hours){
+	if(times.containsKey(date)){
+	    Map<String, Map<String, Map<String, String>>> map =times.get(date);
+	    if(map.containsKey(name)){
+		Map<String, Map<String, String>> map2 = map.get(name);
+		if(map2.containsKey(job)){
+		    Map<String, String> map3 = map2.get(job);
+		    map3.put(code, hours);
 		}
-		void showOutput(){
-				/**
-				System.err.println(" dates "+datesList);				
-				System.err.println(" emp jobs "+empJobs);
-				System.err.println(" emps codes "+empCodes);
-				System.err.println(" emp times "+times);
-				for(String[] arr:arrAll){
-						String line = "";
-						for(int jj=0;jj< arr.length;jj++){
-								if(!line.isEmpty()) line += ", ";
-								line += arr[jj];
-						}
-						System.err.println(line);
-				}
-				*/
+		else{
+		    Map<String, String> map3 = new TreeMap<>();
+		    map3.put(code, hours);
+		    map2.put(job, map3);
 		}
-		void addToEmp(String name, String job, String code){
-				if(empJobs.containsKey(name)){
-						Set<String> set = empJobs.get(name);
-						set.add(job);
-				}
-				else{
-						Set<String> set = new HashSet<>();
-						set.add(job);
-						empJobs.put(name, set);
-				}
-				if(empCodes.containsKey(name)){
-						Set<String> set = empCodes.get(name);
-						set.add(code);
-				}
-				else{
-						Set<String> set = new HashSet<>();
-						set.add(code);
-						empCodes.put(name, set);
-				}				
-		}
-		void addToTimes(String date,
-										String name,
-										String job,
-										String code,
-										String hours){
-				if(times.containsKey(date)){
-						Map<String, Map<String, Map<String, String>>> map =times.get(date);
-						if(map.containsKey(name)){
-								Map<String, Map<String, String>> map2 = map.get(name);
-								if(map2.containsKey(job)){
-										Map<String, String> map3 = map2.get(job);
-										map3.put(code, hours);
-								}
-								else{
-										Map<String, String> map3 = new TreeMap<>();
-										map3.put(code, hours);
-										map2.put(job, map3);
-								}
-						}
-						else{
-								Map<String, String> map3 = new TreeMap<>();
-								map3.put(code, hours);
-								Map<String, Map<String, String>> map2 = new TreeMap<>();
-								map2.put(job, map3);
-								map.put(name, map2);
-						}
-				}
-				else{
-						Map<String, String> map3 = new TreeMap<>();
-						map3.put(code, hours);
-						Map<String, Map<String, String>> map2 = new TreeMap<>();
-						map2.put(job, map3);
-						Map<String, Map<String, Map<String, String>>> map = new TreeMap<>();						
-						map.put(name, map2);
-						times.put(date, map);
-				}
-		}
+	    }
+	    else{
+		Map<String, String> map3 = new TreeMap<>();
+		map3.put(code, hours);
+		Map<String, Map<String, String>> map2 = new TreeMap<>();
+		map2.put(job, map3);
+		map.put(name, map2);
+	    }
+	}
+	else{
+	    Map<String, String> map3 = new TreeMap<>();
+	    map3.put(code, hours);
+	    Map<String, Map<String, String>> map2 = new TreeMap<>();
+	    map2.put(job, map3);
+	    Map<String, Map<String, Map<String, String>>> map = new TreeMap<>();						
+	    map.put(name, map2);
+	    times.put(date, map);
+	}
+    }
 				
 }

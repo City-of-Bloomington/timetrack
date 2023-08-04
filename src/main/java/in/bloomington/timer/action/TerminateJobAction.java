@@ -139,6 +139,12 @@ public class TerminateJobAction extends TopAction{
 		}
 	    }
 	}
+	else{
+	    if(!id.isEmpty()){
+		getTerm();
+		ret = "view";
+	    }
+	}
 	return ret;
     }
     public EmpTerminate getTerm(){

@@ -145,6 +145,7 @@
 	    method="execute">
       <result name="select_jobs">/WEB-INF/jsp/termJobSelection.jsp</result>
       <result name="set_expire_date">/WEB-INF/jsp/emp_terminate.jsp</result>
+      <result name="view">/WEB-INF/jsp/emp_term_view.jsp</result>      
       <result name="error">/WEB-INF/jsp/empTerminate.jsp</result>
       <result name="success">/WEB-INF/jsp/empTerminate.jsp</result>
     </action>
