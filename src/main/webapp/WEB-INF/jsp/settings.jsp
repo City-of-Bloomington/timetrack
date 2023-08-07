@@ -52,19 +52,20 @@
 	    <ul>
 		<li><a href="<s:property value='#application.url'/>termRecipient.action">Termination Notification Recipients </a></li>
 	    </ul>
-	    
+	    <!-- 
 	    <h2>Employee Data Import</h2>
 	    <ul>
 		<li><a href="<s:property value='#application.url'/>empImport.action">Employees Data Import (CSV file)</a></li>
 	    </ul>
-	    
+	    -->
 	    <h2>Audit</h2>
 	    <ul>
 		<li><a href="<s:property value='#application.url'/>lookup.action">Lookup employee time entries</a></li>				
-		<li><a href="<s:property value='#application.url'/>notificationSchedule.action?action=logs">Recent Automated Notification logs</a></li>				
+		<li><a href="<s:property value='#application.url'/>notificationSchedule.action?action=logs">Recent Automated Notification logs</a></li>
 		<li><a href="<s:property value='#application.url'/>inform.action?action=logs">Email Logs (By Group Managers)</a></li>
 		<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Entry History</a></li>
-		<li><a href="<s:property value='#application.url'/>auditTime.action">Time Active Users (Email list)</a></li>				
+		<li><a href="<s:property value='#application.url'/>termNotificationLogs.action">Employee Termination notification Logs</a></li>
+		<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Active Users (Email list)</a></li>		
 	    </ul>
 	</div>
 	<div class="width-one-half float-right">
@@ -79,6 +80,7 @@
 		<li><a href="<s:property value='#application.url'/>searchDeptEmployees.action">Department Employees</a></li>				
 		<li><a href="<s:property value='#application.url'/>searchGroups.action">Groups</a></li>
 		<li><a href="<s:property value='#application.url'/>searchJobs.action">Jobs</a></li>
+		<li><a href="<s:property value='#application.url'/>search_terminations.action">Terminations</a></li>		
 		<li><a href="<s:property value='#application.url'/>searchConditions.action">Earn Code Restrictions</a></li>
 		<li><a href="<s:property value='#application.url'/>searchReasonConditions.action">Code Reason Restrictions</a></li>				
 	    </ul>

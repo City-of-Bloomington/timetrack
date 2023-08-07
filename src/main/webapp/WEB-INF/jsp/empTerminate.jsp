@@ -7,6 +7,7 @@
 	</s:if>
 	<s:hidden name="term.department_id" value="%{term.department_id}" />	
 	<s:hidden name="term.employee_id" value="%{term.employee_id}" />
+	<s:hidden name="term.group_id" value="%{term.group_id}" />	
 	<s:hidden name="term.full_name" value="%{term.full_name}" />
 	<s:hidden name="term.job_ids" value="%{term.job_ids}" />	
 	<s:hidden name="term.supervisor_id" value="%{term.supervisor_id}" />	

@@ -318,9 +318,10 @@ public class ReasonReport{
 		if(dailyEntries == null)
 		    dailyEntries = new ArrayList<>();
 		String str = rs.getString(2); // emp_num
-		if(!str.equals(old_emp_num)){
+		
+		if(str != null && !str.equals(old_emp_num)){
 		    old_emp_num = str;
-		    if(profiles.containsKey(str)){
+		    if(profiles != null && profiles.containsKey(str)){
 			Profile pp = profiles.get(str);
 			hourly_rate = pp.getHourlyRate();
 
@@ -343,8 +344,8 @@ public class ReasonReport{
 				  rs.getDouble(6), // hours
 				  hourly_rate,
 				  rs.getDouble(7)); // amountPay
-
-		dailyEntries.add(one);
+		if(!dailyEntries.contains(one))
+		    dailyEntries.add(one);
 	    }
 	}
 	catch(Exception ex){

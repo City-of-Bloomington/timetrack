@@ -149,6 +149,20 @@
       <result name="error">/WEB-INF/jsp/empTerminate.jsp</result>
       <result name="success">/WEB-INF/jsp/empTerminate.jsp</result>
     </action>
+    <action name="termNotificationLogs" 
+	    class="in.bloomington.timer.action.TermNotificationLogAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/term_notifications.jsp</result>
+      <result name="error">/WEB-INF/jsp/term_notifications.jsp</result>
+      <result name="success">/WEB-INF/jsp/term_notifications.jsp</result>
+    </action>
+    <action name="search_terminations" 
+	    class="in.bloomington.timer.action.EmpTerminatesAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/search_terminations.jsp</result>
+      <result name="error">/WEB-INF/jsp/search_terminations.jsp</result>
+      <result name="success">/WEB-INF/jsp/search_terminations.jsp</result>
+    </action>    
     <action name="termRecipient" 
 	    class="in.bloomington.timer.action.TermRecipientAction" 
 	    method="execute">

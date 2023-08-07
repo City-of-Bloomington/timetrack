@@ -19,8 +19,8 @@ public class TermNotificationList{
     static Logger logger = LogManager.getLogger(TermNotificationList.class);
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");	
     static final long serialVersionUID = 3800L;
-    String date_from = "", date_to="";
-    boolean recent_only = false;
+    String date_from = "", date_to="", department_id="";
+    boolean recent_only = false, set_limit=true;
     List<TermNotification> notifications = null;
 	
     public TermNotificationList(){
@@ -33,27 +33,40 @@ public class TermNotificationList{
 	if(val != null)
 	    date_to =  val;
     }
+    public void setDepartment_id(String val){
+	if(val != null)
+	    department_id =  val;
+    }    
     public String getDate_from(){
 	return date_from ;
     }
     public String getDate_to(){
 	return date_to ;
-    }    
+    }
+    public String getDepartment_id(){
+	return department_id ;
+    }        
     public void setRecent_only(){
 	recent_only = true;
     }
+    
     public List<TermNotification> getNotifications(){
 	return notifications;
     }
-
+    void checkLimitFlag(){
+	if(!date_from.isEmpty() || !date_to.isEmpty() || !department_id.isEmpty()){
+	    set_limit = false;
+	}
+    }
     public String find(){
 		
 	String back = "";
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
+	checkLimitFlag();
 	Connection con = UnoConnect.getConnection();
-	String qq = "select id,date_format(send_time,'%m/%d/%Y %H:%i'), "+
-	    "sender_id, termination_id, recipient_emails, email_text, send_error from term_notifications ";
+	String qq = "select t.id,date_format(t.send_time,'%m/%d/%Y %H:%i'), "+
+	    "t.sender_id, t.termination_id, t.recipient_emails, t.email_text, t.send_error from term_notifications t";
 				
 	if(con == null){
 	    back = "Could not connect to DB";
@@ -68,12 +81,17 @@ public class TermNotificationList{
 	    if(!date_to.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " send_date <= ? ";
-	    }	    
+	    }
+	    if(!department_id.isEmpty()){
+		qq += " join emp_terminations et on et.id=t.termination_id ";
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " et.department_id = ? ";		
+	    }
 	    if(!qw.isEmpty()){
 		qq += " where "+qw;
 	    }
 	    qq += " order by id desc ";
-	    if(recent_only)
+	    if(set_limit)
 		qq += " limit 10 ";
 	    logger.debug(qq);
 	    pstmt = con.prepareStatement(qq);
@@ -85,7 +103,10 @@ public class TermNotificationList{
 	    if(!date_to.isEmpty()){
 		java.util.Date date_tmp = df.parse(date_to);
 		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-	    }	    
+	    }
+	    if(!department_id.isEmpty()){
+		pstmt.setString(jj++, department_id);
+	    }
 	    rs = pstmt.executeQuery();
 	    if(notifications == null)
 		notifications = new ArrayList<>();
