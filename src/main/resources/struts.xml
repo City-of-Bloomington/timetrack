@@ -85,6 +85,7 @@
       <result name="input">/WEB-INF/jsp/department.jsp</result>		
       <result name="error">/WEB-INF/jsp/department.jsp</result>
       <result name="success">/WEB-INF/jsp/department.jsp</result>
+      <result name="view">/WEB-INF/jsp/department_view.jsp</result>      
     </action>
     <action name="timeNote" 
 	    class="in.bloomington.timer.action.TimeNoteAction" 

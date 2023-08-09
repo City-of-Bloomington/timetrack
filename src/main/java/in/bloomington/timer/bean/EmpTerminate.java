@@ -567,6 +567,12 @@ public class EmpTerminate{
 		    logger.error("Error jobs ids "+job_ids+" "+ex);
 		}
 	    }
+	    else if(!job_ids.isEmpty()){
+		job_id = job_ids;
+		getJob();
+		jobs = new ArrayList<>();
+		jobs.add(job);
+	    }
 	    else{
 		jobs = new ArrayList<>();
 		getJob();
@@ -669,11 +675,11 @@ public class EmpTerminate{
     }
     public void setEmp_phone(String val){
 	if(val != null)
-	    emp_phone=val;
+	    emp_phone = val;
     }
     public void setEmp_alt_phone(String val){
 	if(val != null)
-	    emp_alt_phone=val;
+	    emp_alt_phone = val;
     }
     public void setPersonal_email(String val){
 	if(val != null)
@@ -813,7 +819,7 @@ public class EmpTerminate{
 	    zoom_to_email = val;
     }    
     public void setBadge_returned(String val){
-	if(val != null)
+	if(val != null && !val.equals("-1"))
 	    badge_returned = val;
     }
     public void setHours_per_week(Integer val){
@@ -933,12 +939,16 @@ public class EmpTerminate{
 	    return back;
 	}
 	getJobs();
+	System.err.println(" after get jobs ");
 	if(jobs != null && jobs.size() > 0){
 	    for(JobTask one:jobs){
-		if(job == null)
-		    job = one; // we need one for next action
-		one.setExpire_date(last_pay_period_date);
-		back += one.doTerminate();
+		if(one != null){
+		    if(job == null)
+			job = one; // we need one for next action
+		    one.setExpire_date(last_pay_period_date);
+		    System.err.println(" terminate job one at a time ");
+		    back += one.doTerminate();
+		}
 	    }
 	    if(jobs.size() == 1){
 		emp = job.getEmployee();
@@ -961,6 +971,7 @@ public class EmpTerminate{
 		    }
 		    */
 		}
+		System.err.println(" before cleanup ");		
 		if(hasDocuments()){
 		    CleanUp cleanUp = new CleanUp();
 		    cleanUp.setDocuments(documents);
@@ -1111,6 +1122,9 @@ public class EmpTerminate{
 	    }
 	}
 	return back;
+    }
+    public boolean needSend(){
+	return recipients_informed.isEmpty();
     }
     
     public String doSave(){
@@ -1371,11 +1385,8 @@ public class EmpTerminate{
 	}
 	try{
 	    pstmt = con.prepareStatement(qq);
-	    back = setParams(pstmt);
-	    if(back.isEmpty()){
-		pstmt.setString(1, id);
-		pstmt.executeUpdate();
-	    }
+	    pstmt.setString(1, id);
+	    pstmt.executeUpdate();
 	}
 	catch(Exception ex){
 	    back += ex;
@@ -1506,38 +1517,38 @@ public class EmpTerminate{
     department_id int unsigned,
     emp_address varchar(80),
     emp_city varchar(80),
-    emp_state varchar(80),
     
+    emp_state varchar(80),
     emp_zip varchar(16),
     emp_phone varchar(24),
     emp_alt_phone varchar(20),
     last_day_of_work date,
-    date_of_birth date,
     
+    date_of_birth date,
     personal_email varchar(80),
     email varchar(80),
     email_account_action varchar(32),
     forward_emails varchar(160),
-    forward_days_cnt int,
     
+    forward_days_cnt int,
     drive_action varchar(32),
     drive_to_person_email varchar(80),
     drive_to_shared_emails varchar(160),
     calendar_action varchar(32),
-    calendar_to_email varchar(80),
     
+    calendar_to_email varchar(80),
     zoom_action varchar(32),
     zoom_to_email varchar(80),
     badge_returned varchar(32),
     hours_per_week int,
-    pay_period_worked_hrs double,
     
+    pay_period_worked_hrs double,
     comp_time double,
     vac_time double,
     pto  double,
     remarks text,
-    submitted_by_id int unsigned,
     
+    submitted_by_id int unsigned,
     submitted_date date,
     recipients_informed char(1),
     primary key(id),

@@ -30,6 +30,7 @@ public class EmpTerminatesAction extends TopAction{
 	String ret = SUCCESS;
 	String back = doPrepare();
 	if(!action.isEmpty()){
+	    getTermLst();
 	    termLst.setDepartment_id(department_id);
 	    termLst.setGroup_id(group_id);
 	    termLst.setDate_from(date_from);
@@ -54,6 +55,12 @@ public class EmpTerminatesAction extends TopAction{
 	else{
 	    getTermLst();
 	    back = termLst.find();
+	    if(back.isEmpty()){
+		List<EmpTerminate> ones = termLst.getTerms();
+		if(ones != null && ones.size() > 0){
+		    terms = ones;
+		}
+	    }
 	}
 	return ret;
     }

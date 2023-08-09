@@ -18,12 +18,14 @@ public class TermNotification{
     static Logger logger = LogManager.getLogger(TermNotification.class);
     String id="";
     String sender_id = "", termination_id = "", send_time="",
-	recipient_emails = "", email_text="", send_error="";
+	recipient_emails = "", email_text="", send_error="",
+	first_recipient ="";
     Employee sender = null;
     Employee employee = null;
     Document valid_document = null;
     Map<String, List<String>> accruals = null;
     EmpTerminate term = null;
+    List<TermRecipient> recipients = null;
     public TermNotification(){
 
     }
@@ -109,6 +111,12 @@ public class TermNotification{
 	if(val != null)
 	    sender_id = val;
     }
+    public void setSender(Employee val){
+	if(val != null){
+	    sender = val;
+	    sender_id = sender.getId();
+	}
+    }    
     public void setSendTime(String val){
 	if(val != null)
 	    send_time = val;
@@ -129,6 +137,23 @@ public class TermNotification{
 	if(val != null)
 	    send_error = val;
     }
+    public void setTerm(EmpTerminate val){
+	if(val !=  null)
+	    term = val;
+    }
+    String findSender(){
+	String back = "";
+	if(sender_id.isEmpty()){
+	    back = "No sender specified ";
+	    return back;
+	}
+	Employee one = new Employee(sender_id);
+	back = one.doSelect();
+	if(back.isEmpty()){
+	    sender = one;
+	}
+	return back;
+    }
     String findRecipients(){
 	String back = "";
 	TermRecipientList trl = new TermRecipientList();
@@ -136,10 +161,16 @@ public class TermNotification{
 	if(back.isEmpty()){
 	    List<TermRecipient> ones = trl.getRecipients();
 	    if(ones != null && ones.size() > 0){
+		recipients = ones;
 		for(TermRecipient one:ones){
-		    if(!recipient_emails.isEmpty())
-			recipient_emails +=",";
-		    recipient_emails += one.getEmail();
+		    if(first_recipient.isEmpty()){
+			first_recipient = one.getName()+"<"+one.getEmail()+">";
+		    }
+		    else{
+			if(!recipient_emails.isEmpty())
+			    recipient_emails +=",";
+			recipient_emails += one.getName()+"<"+one.getEmail()+">";
+		    }
 		}
 	    }
 	}
@@ -150,6 +181,10 @@ public class TermNotification{
 	String back = "", text="";
 	if(term == null){
 	    getTerm();
+	}
+	if(term == null){
+	    back = "No termination record found ";
+	    return back;
 	}
 	if(term != null){
 	    employee = term.getEmployee();
@@ -239,6 +274,42 @@ public class TermNotification{
 	    text += "Submitted by "+term.getSubmitted_by()+"\n\n";
 	    email_text = text;
 	}
+	return back;
+    }
+    public String doSend(String host){
+	String back = "";
+	String subject = "Employee (or job(s)) termination";
+	String to_email=null,from_email=null, cc=null, bcc=null;
+	back = findRecipients();
+	if(!back.isEmpty()){
+	    return back;
+	}
+	back = findSender();
+	if(!back.isEmpty()){
+	    return back;
+	}
+	from_email = sender.getEmail();
+	to_email = first_recipient;
+	if(!recipient_emails.isEmpty()){
+	    cc = recipient_emails;
+	}
+	back = composeEmailText();
+	if(!back.isEmpty()){
+	    logger.error(back);
+	}
+	
+	if(recipient_emails.isEmpty()){
+	    back = "No recipients emails found ";
+	    return back;
+	}
+	System.err.println(" from "+from_email);
+	System.err.println(" to "+to_email);
+	System.err.println(" cc "+cc);
+	System.err.println(" msg "+email_text);
+	MailHandle mh = new MailHandle(host, to_email, from_email, cc, bcc, subject, email_text);
+	// back = mh.send();
+
+	
 	return back;
     }
     public String doSelect(){

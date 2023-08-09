@@ -55,6 +55,15 @@ public class DeptAction extends TopAction{
 		addMessage("Saved Successfully");
 	    }
 	}
+	else if(action.equals("Edit")){
+	    getDepartment();
+	    if(!id.isEmpty()){
+		back = department.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+	    }
+	}
 	else{		
 	    getDepartment();
 	    if(!id.isEmpty()){
@@ -62,6 +71,7 @@ public class DeptAction extends TopAction{
 		if(!back.isEmpty()){
 		    addError(back);
 		}
+		ret = "view";
 	    }
 	}
 	return ret;

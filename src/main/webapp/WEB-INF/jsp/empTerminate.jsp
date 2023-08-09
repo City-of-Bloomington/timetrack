@@ -2,8 +2,10 @@
 <div class="internal-page">
     
     <s:form action="terminateJobs" id="form_id" method="post">
+	
 	<s:if test="term.id != ''">
-	    <s:hidden name="term.id" value="%{term.id}" />	    
+	    <s:hidden name="term.id" value="%{term.id}" />
+	    <s:hidden name="term.submitted_by_id" value="%{term.submitted_by_id}" />	
 	</s:if>
 	<s:hidden name="term.department_id" value="%{term.department_id}" />	
 	<s:hidden name="term.employee_id" value="%{term.employee_id}" />
@@ -13,8 +15,17 @@
 	<s:hidden name="term.supervisor_id" value="%{term.supervisor_id}" />	
 	<s:hidden name="term.hours_per_week" value="%{term.hours_per_week}" />
 	<s:hidden name="term.employment_type" value="%{term.employment_type}" />
-	<s:hidden name="term.last_pay_period_date" value="%{term.last_pay_period_date}" />	
-	<h1>Employee Job(s) Termination </h1>
+	<s:hidden name="term.last_pay_period_date" value="%{term.last_pay_period_date}" />
+	<s:if test="term.id != ''">
+	    <h1>Employee Termination <s:property value="term.id" /> </h1>
+	    <p>If you need to update any data, do so and hit the 'Save Changes'.
+		<br />
+		If all data are correct, do not forget to click on 'Send Notification' so that related parties are informed
+	    </p>
+	</s:if>	    
+	<s:else>
+	    <h1>New Employee Termination </h1>
+	</s:else>
 	<s:if test="hasMessages()">
 	    <s:set var="messages" value="%{messages}" />
 	    <%@ include file="messages.jsp" %>
@@ -27,8 +38,8 @@
 	<ul>
 	    <li>Please use the tab key to navigate through the form </li>
 	    <li>Do not hit Enter until you are completely finished, or the form will be submitted.</li>
-	    <li>If 'Submit' is successful HR and ITS will receive an email
-		to take additional actions </li>
+	    <li>After you enter the employee related data, please click on 'Submit'.</li>
+	    <li>If 'Submint' is successful, click on 'Send Notification' HR and ITS will receive an email to take additional actions </li>
 	</ul>
 	<p><strong>Attention:</strong></p>
 	<ul>
@@ -163,13 +174,14 @@
 		<td><s:textfield name="term.pto" value="%{term.pto}" size="5" maxlength="5" /></td>
 	    </tr>
 	    <tr><td>Comments</td>
-		<td colspan="2"><s:textarea name="term.comments" value="%{term.comments}" row="5" columns="60"/>
+		<td colspan="2"><s:textarea name="term.remarks" value="%{term.remarks}" row="5" columns="60"/>
 		</td>
 	    </tr>
 	</table>
 	<div class="button-group">
-	    <s:if test="term.id != ''">	    
+	    <s:if test="term.id != '' && term.needSend()">	    
 		<s:submit name="action" type="button" value="Save Changes" class="button"/>
+		<s:submit name="action" type="button" value="Send Notification" class="button"/>		
 	    </s:if>
 	    <s:else>
 		<s:submit name="action" type="button" value="Submit" class="button"/>

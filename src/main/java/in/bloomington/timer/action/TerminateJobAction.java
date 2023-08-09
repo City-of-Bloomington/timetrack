@@ -49,6 +49,9 @@ public class TerminateJobAction extends TopAction{
 		if(!back.isEmpty()){
 		    addError(back);
 		}
+		else{
+		    ret = "view";
+		}
 	    }
 	    else{
 		if(!job_id.isEmpty()){
@@ -60,6 +63,13 @@ public class TerminateJobAction extends TopAction{
 		else { // one job
 		    ret = "set_expire_date";
 		}
+	    }
+	}
+	else if(action.equals("Edit")){
+	    term = new EmpTerminate(id);
+	    back = term.doSelect();
+	    if(!back.isEmpty()){
+		addError(back);
 	    }
 	}
 	else if(action.equals("Next")){
@@ -112,7 +122,11 @@ public class TerminateJobAction extends TopAction{
 	}
 	else if(action.equals("Submit")){
 	    if(term != null){
-		back = term.doTerminate();
+		term.setSubmitted_by(user);
+		back = term.doSave();
+		if(back.isEmpty()){
+		    back = term.doTerminate();
+		}
 		if(!back.isEmpty()){
 		    addError(back);
 		}
@@ -139,17 +153,35 @@ public class TerminateJobAction extends TopAction{
 		}
 	    }
 	}
-	else{
-	    if(!id.isEmpty()){
-		getTerm();
-		ret = "view";
+	else if(action.startsWith("Send")){
+	    getTerm();
+	    if(term != null){
+		back = term.doSelect();
+		TermNotification tn = new TermNotification();
+		tn.setTerm(term);
+		tn.setSender(user);
+		tn.doSend(mail_host);
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+		else {
+		    back = term.changeRecipientInformFlag();
+		    if(!back.isEmpty()){
+			addError(back);
+		    }
+		    else
+			addMessage("Successfully Sent");
+		}
 	    }
-	}
+	}	
 	return ret;
     }
     public EmpTerminate getTerm(){
 	if(term == null){
 	    term = new EmpTerminate();
+	    if(!id.isEmpty()){
+		term.setId(id);
+	    }
 	}
 	return term;
     }

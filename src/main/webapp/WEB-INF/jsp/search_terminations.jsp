@@ -5,16 +5,27 @@
 	<s:set var="errors" value="errors" />
 	<%@ include file="errors.jsp" %>		
     </s:if>
+    <s:elseif test="hasMessages()">
+	<s:set var="messages" value="messages" />		
+	<%@ include file="messages.jsp" %>
+    </s:elseif>    
     <div class="width-one-half">
 	<p>You may narrow the list by Department, group and/or date range </p>
 	<s:form action="search_terminations" id="form_id" method="post">
-	    <div class="form-group">
-		<label>Department:</label>
-		<div>
-		    <s:select name="department_id" value="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All"  />
-
+	    <s:if test="group_id == ''">
+		<div class="form-group">
+		    <div>
+			<label>Department</label>
+			<s:select name="department_id" value="%{department_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" id="department_id_change" />
+		    </div>
 		</div>
-	    </div>
+		<div class="form-group">
+		    <label>Group</label>
+		    <select name="group_id" value="%{group_id}" id="group_id_set"  disabled="disabled"/>
+		    <option value="-1">Pick a group</option>
+				   </select>(To pick a group you need to pick a department first)
+		</div>
+	    </s:if>
 	    <div class="form-group">
 		<label>Date Range From:</label>
 		<div class="date-range-picker">
@@ -59,15 +70,15 @@
 	    <tbody>
 		<s:iterator var="one" value="terms">
 		    <tr>
-			<td><s:property value="id" /></td>
+			<td><a href="<s:property value='#application.url' />terminateJobs.action?id=<s:property value='id' />">Edit</a></td>
+			<td><s:property value="employee" /></td>
 			<td><s:property value="submitted_by" /></td>
 			<td><s:property value="last_pay_period_date" /></td>
 			<td><s:property value="department" /></td>
-			<td><s:property value="termination_id" /></td>
 			<td><s:property value="group" /></td>
-			<td><s:property value="jobsTitles" /></td>
-			<td><s:if test="recipients_informed != null">Yes</s:if>
-			    <s:else>No</s:else></td>
+			<td><s:property value="jobTitles" /></td>
+			<td><s:if test="needSend()">No</s:if>
+			    <s:else>Yes</s:else></td>
 		    </tr>
 		</s:iterator>
 	    </tbody>
