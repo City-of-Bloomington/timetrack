@@ -37,7 +37,6 @@ public class TermRecipientList{
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
 	String qq = "select t.id,t.name,t.email from term_recipients t ";
-				
 	if(con == null){
 	    back = "Could not connect to DB";
 	    return back;
@@ -55,7 +54,8 @@ public class TermRecipientList{
 	    pstmt = con.prepareStatement(qq);
 	    if(!name.isEmpty()){
 		pstmt.setString(1,"%"+name+"%");
-	    }						
+	    }
+
 	    rs = pstmt.executeQuery();
 	    if(recipients == null)
 		recipients = new ArrayList<TermRecipient>();

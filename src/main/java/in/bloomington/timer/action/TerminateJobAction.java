@@ -131,19 +131,13 @@ public class TerminateJobAction extends TopAction{
 		    addError(back);
 		}
 		else {
-		    back = term.doSave();
-		    if(!back.isEmpty()){
-			// we return view of the record
-			addError(back);
-		    }
-		    else{
-			addMessage("Successfully terminated");
-		    }
+		    addMessage("Successfully terminated");
 		}
 	    }
 	}
 	else if(action.startsWith("Save")){ //update
 	    if(term != null){
+		term.setSubmitted_by(user);
 		back = term.doUpdate();
 		if(!back.isEmpty()){
 		    addError(back);
@@ -160,7 +154,7 @@ public class TerminateJobAction extends TopAction{
 		TermNotification tn = new TermNotification();
 		tn.setTerm(term);
 		tn.setSender(user);
-		tn.doSend(mail_host);
+		back = tn.doSend(mail_host);
 		if(!back.isEmpty()){
 		    addError(back);
 		}

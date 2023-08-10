@@ -64,7 +64,7 @@
 		    <th>Department</th>
 		    <th>Group</th>
 		    <th>Job(s)</th>
-		    <th>Notification Status</th>
+		    <th>Notification Sent?</th>
 		</tr>
 	    </thead>
 	    <tbody>

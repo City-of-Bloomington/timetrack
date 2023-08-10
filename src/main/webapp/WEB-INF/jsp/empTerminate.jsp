@@ -119,7 +119,7 @@
 		<td colspan="2"><s:property value="term.email" /></td>
 	    </tr>
 	    <tr><td>Email Account Requested Action</td>
-		<td><s:select name="term.email_account_action" value="%{term.email_account_action}" list="#{'archive':'Archive','transfer_to_person':'Transfer to Person'}" /></td>
+		<td><s:select name="term.email_account_action" value="%{term.email_account_action}" list="#{'Archive':'Archive','Personal':'Transfer to Person'}" /></td>
 	    </td>
 	    <td>If 'Forward To' is selected, enter the email address(es) where email should be forwarded:
 		    <s:textfield name="term.forward_email" value="%{term.forward_email}" size="50" maxlength="100" />
@@ -132,7 +132,7 @@
 		<td><s:textfield name="term.forward_days_cnt" value="%{term.forward_days_cnt}" size="2" maxlength="2" /></td>
 	    </tr>
 	    <tr><td>Google Drive/H Drive Requested Action:</td>
-		<td><s:select name="term.drive_action" value="%{term.drive_action}" list="#{'archive':'Archive','transfer_to_person':'Transfer To Person','transfer_to_shared_drive':'Transfer To Shared Drive'}" /></td>
+		<td><s:select name="term.drive_action" value="%{term.drive_action}" list="#{'Archive':'Archive','Person':'Transfer To Person','Shared':'Transfer To Shared Drive'}" /></td>
 		<td>If "Transfer To Person" is selected, enter the email address of the person who should receive the files:<br />
 		    <s:textfield name="term.drive_to_person_email" value="%{term.drive_to_person_email}" size="50" maxlength="100" />
 		</td>
@@ -146,19 +146,19 @@
 		</td>
 	    </tr>
 	    <tr><td>Google Calendar Requested Action:</td>
-		<td><s:select name="term.calendar_action" value="%{term.calendar_action}" list="#{'close':'Close','transfer_to':'Transfer To'}" /></td>
+		<td><s:select name="term.calendar_action" value="%{term.calendar_action}" list="#{'Close':'Close','Transfer':'Transfer To'}" /></td>
 		<td>If "Transfer To" is selected, enter the email address of the person who should get the Google Calendar Events
 		    <s:textfield name="term.calendar_to_email" value="%{term.calendar_to_email}" size="30" maxlength="100" />
 		</td>
 	    </tr>
 	    <tr><td>Zoom Account Requested Action:</td>
-		<td><s:select name="term.zoom_action" value="%{term.zoom_action}" list="#{'close':'Close','transfer_to':'Transfer To'}" /></td>
+		<td><s:select name="term.zoom_action" value="%{term.zoom_action}" list="#{'close':'Close','Transfer':'Transfer To'}" /></td>
 		<td>If 'Transfer To' is selected, enter the email address of the person who should get the Zoom content
 		    <s:textfield name="term.zoom_to_email" value="%{term.zoom_to_email}" size="30" maxlength="100" />
 		</td>
 	    </tr>
 	    <tr><td>Employee ID Badge Returned?</td>
-		<td><s:select name="term.badge_returned" value="%{term.badge_returned}" list="#{'-1':'NA','y':'Yes','n':'No'}" /></td>
+		<td><s:select name="term.badge_returned" value="%{term.badge_returned}" list="#{'-1':'NA','Yes':'Yes','No':'No'}" /></td>
 	    </tr>
 	</table>
 	<table border="1">

@@ -632,8 +632,10 @@ public class EmpTerminate{
 	    group_id = val;
     }
     public void setSubmitted_by(Employee val){
-	if(val != null)
+	if(val != null){
 	    submitted_by =val;
+	    submitted_by_id = val.getId();
+	}
     }    
     public void setSupervisor_phone(String val){
 	if(val != null)
@@ -819,9 +821,12 @@ public class EmpTerminate{
 	    zoom_to_email = val;
     }    
     public void setBadge_returned(String val){
-	if(val != null && !val.equals("-1"))
+	if(val != null && !val.equals("-1")){
 	    badge_returned = val;
+	}
     }
+    
+    
     public void setHours_per_week(Integer val){
 	if(val != null)
 	    hours_per_week = val;

@@ -80,42 +80,54 @@
 	    <td colspan="2"><s:property value="term.email" /></td>
 	</tr>
 	<tr><td>Email Account Requested Action</td>
-	    <td><s:property value="term.email_account_action" />
-	    </td>
-	    <s:if test="term.forward_emails != null">		
+	    <s:if test="term.forward_emails != ''">		
 		<td>
 		    Forward to: <s:property value="term.forward_emails" />
 		</td>
-		    <td>For days <s:property value="term.forward_days_cnt" /></td>
+		<td>
+		    For days <s:property value="term.forward_days_cnt" />
+		</td>
 	    </s:if>
+	    <s:else>
+		<td>Archive</td>
+	    </s:else>
 	</tr>
-	<tr><td>Google Drive/H Drive Requested Action:</td>
-	    <td><s:property value="term.drive_action" /></td>
-	    <s:if test="term.drive_to_person_email != null">
-		Drive to Person 
-		<s:property value="term.drive_to_person_email" />
-	    </s:if>
-	    <s:elseif test="term.drive_to_shared_emails != null">
-		Drive to Shared 
-		<s:property value="term.drive_to_shared_emails" />
-	    </s:elseif>
-	</td>
+	<tr>
+	    <td>Google Drive/H Drive Requested Action:</td>
+	    <td>
+		<s:if test="term.drive_to_person_email != ''">
+		    Drive to Person:  
+		    <s:property value="term.drive_to_person_email" />
+		</s:if>
+		<s:elseif test="term.drive_to_shared_emails != ''">
+		    Drive to Shared: 
+		    <s:property value="term.drive_to_shared_emails" />
+		</s:elseif>
+		<s:else>
+		    Close
+		</s:else>
+	    </td>
 	</tr>
 	<tr><td>Google Calendar Requested Action:</td>
-	    <td><s:property value="term.calendar_action" /></td>
-	    <s:if test="term.calendar_to_email != null">
-		<td> Transfer To:  
-		    <s:property value="term.calendar_to_email" />
-		</td>
+	    <td>
+	    <s:if test="term.calendar_to_email != ''">
+		Transfer To:  
+		<s:property value="term.calendar_to_email" />
 	    </s:if>
+	    <s:else>
+		Close
+	    </s:else>
+	    </td>
 	</tr>
 	<tr><td>Zoom Account Requested Action:</td>
-	    <td><s:property value="term.zoom_action" /></td>
-	    <s:if test="term.zoom_to_email != null">
-		<td>
+	    <td>
+		<s:if test="term.zoom_to_email != '''">
 		    Transfer To: <s:property value="term.zoom_to_email" />
-		</td>
-	    </s:if>
+		</s:if>
+		<s:else>
+		    Close
+		</s:else>
+	    </td>
 	</tr>
 	<tr><td>Employee ID Badge Returned?</td>
 	    <td><s:property value="term.badge_returned" /></td>

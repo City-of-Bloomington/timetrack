@@ -193,10 +193,10 @@ public class TermNotification{
 	    text += "Employment Type: "+term.getEmployment_type()+"\n";
 	    String emp_type = term.getEmployment_type().toLowerCase();
 	    if(!emp_type.equals("temp") && emp_type.indexOf("part") > -1){
-		text += "Regular Full-Time: Yes";
+		text += "Regular Full-Time: Yes \n";
 	    }
 	    if(emp_type.indexOf("part") > -1){
-		text += "Part-Time Hours Per week: "+term.getHours_per_week();
+		text += "Part-Time Hours Per week: "+term.getHours_per_week()+"\n";
 	    }
 	    text += "Employee: "+term.getFull_name()+"\n";
 	    if(employee != null){
@@ -204,14 +204,14 @@ public class TermNotification{
 		text += "Bagde ID: "+employee.getId_code()+"\n";
 	    }
 	    if(term.hasDateOfBirth()){
-		text += "Date of Birth: "+term.getDate_of_birth();
+		text += "Date of Birth: "+term.getDate_of_birth()+"\n";
 	    }
 	    if(term.hasDateOfHire()){
-		text += "Date of Hire: "+term.getDate_of_hire();
+		text += "Date of Hire: "+term.getDate_of_hire()+"\n";
 	    }
-	    text += "Last Day of Work: "+term.getLast_day_of_work();
-	    text += "Last Payroll Period: "+term.getLast_pay_period_date();
-	    text += "Department "+term.getDepartment()+"\n";
+	    text += "Last Day of Work: "+term.getLast_day_of_work()+"\n";
+	    text += "Last Payroll Period: "+term.getLast_pay_period_date()+"\n";
+	    text += "Department: "+term.getDepartment()+"\n";
 	    text += "Terminated job title(s): "+term.getJobTitles()+"\n";
 	    if(term.hasJobGrade()){
 		text += "Job Grade: "+term.getJob_grade()+"\n";
@@ -229,34 +229,47 @@ public class TermNotification{
 		text += "Phones(s): "+term.getPhones()+"\n";
 	    }
 	    if(term.hasPersonalEmail()){
-		text += "Personal Email: "+term.getPersonal_email();
+		text += "Personal Email: "+term.getPersonal_email()+"\n";
 	    }
 	    if(term.hasEmail()){
-		text += "Email Address: "+term.getEmail();
-		text += "Email Account Action: "+term.getEmail_account_action();
-		if(term.getEmail_account_action().indexOf("Foward") > -1){
-		    text += "Forward Email to: "+term.getForward_emails();
-		    text += "Forward for # Days: "+term.getForward_days_cnt();
+		text += "Email Address: "+term.getEmail()+"\n";
+		text += "Email Account Action: "+term.getEmail_account_action()+"\n";
+		if(term.getEmail_account_action().indexOf("Forward") > -1){
+		    text += "Forward Email to: "+term.getForward_emails()+"\n";
+		    text += "Forward for # Days: "+term.getForward_days_cnt()+"\n";
+		}
+		else{
+		    text += "Archive \n";
 		}
 	    }
-	    String dr_act = term.getDrive_action().toLowerCase();
+	    String dr_act = term.getDrive_action();
+	    text += "Google/H Drive Address Action:  ";
 	    if(dr_act.indexOf("Person") > -1){
-		text += "Google/H Drive Address(es): "+term.getDrive_to_person_email()+"\n";
+		text += "Transfer to "+term.getDrive_to_person_email()+"\n";
 	    }
-	    else if(dr_act.indexOf("shared") > -1){
-		text += "Google/H Drive Address: "+term.getDrive_to_shared_emails()+"\n";
+	    else if(dr_act.indexOf("Shared") > -1){
+		text += "Transfer to Shared "+term.getDrive_to_shared_emails()+"\n";
 	    }
-	    text += "Google Calendar Action: "+term.getCalendar_action()+"\n ";
-	    String cal_act = term.getCalendar_action().toLowerCase();
-	    if(cal_act.indexOf("transfer") > -1){
-		text += "Calendar Email Address: "+term.getCalendar_to_email()+"\n";
+	    else{
+		text += "Archive \n";
 	    }
-	    text += "Zoom Account Action: "+term.getZoom_action()+"\n";
-	    String zom_act = term.getZoom_action().toLowerCase();
-	    if(zom_act.indexOf("transfer") > -1){
-		text += "Zoom Account Email Address: "+term.getZoom_to_email()+"\n";
+	    text += "Google Calendar Action: ";
+	    String cal_act = term.getCalendar_action();
+	    if(cal_act.indexOf("Transfer") > -1){
+		text += "Transfer to: "+term.getCalendar_to_email()+"\n";
 	    }
-	    text += "Badge Return Status: "+term.getBadge_returned();
+	    else{
+		text +="Close \n";
+	    }
+	    text += "Zoom Account Action: ";
+	    String zom_act = term.getZoom_action();
+	    if(zom_act.indexOf("Transfer") > -1){
+		text += "Transfer to "+term.getZoom_to_email()+"\n";
+	    }
+	    else{
+		text += "Close \n";
+	    }
+	    text += "Badge Return Status: "+term.getBadge_returned()+"\n";
 	    text += "Number of Hours Worked in the Current Pay Period: "+term.getPay_period_worked_hrs()+"\n";
 	    if(term.getVac_time() > 0){
 		text += "Vacation Time: "+term.getVac_time()+"\n";
@@ -265,7 +278,7 @@ public class TermNotification{
 		text += "Comp Time: "+term.getComp_time()+"\n";
 	    }
 	    if(term.getPto() > 0){
-		text += "PTO: "+term.getPto();
+		text += "PTO: "+term.getPto()+"\n";
 	    }
 	    if(!term.getRemarks().isEmpty()){
 		text += "Remarks: "+term.getRemarks()+"\n\n";
@@ -281,6 +294,7 @@ public class TermNotification{
 	String subject = "Employee (or job(s)) termination";
 	String to_email=null,from_email=null, cc=null, bcc=null;
 	back = findRecipients();
+	System.err.println(" do send "+back);
 	if(!back.isEmpty()){
 	    return back;
 	}
@@ -289,6 +303,10 @@ public class TermNotification{
 	    return back;
 	}
 	from_email = sender.getEmail();
+	if(first_recipient.isEmpty()){
+	    back = "No recipients emails found ";
+	    return back;
+	}	
 	to_email = first_recipient;
 	if(!recipient_emails.isEmpty()){
 	    cc = recipient_emails;
@@ -298,18 +316,13 @@ public class TermNotification{
 	    logger.error(back);
 	}
 	
-	if(recipient_emails.isEmpty()){
-	    back = "No recipients emails found ";
-	    return back;
-	}
+
 	System.err.println(" from "+from_email);
 	System.err.println(" to "+to_email);
 	System.err.println(" cc "+cc);
 	System.err.println(" msg "+email_text);
 	MailHandle mh = new MailHandle(host, to_email, from_email, cc, bcc, subject, email_text);
-	// back = mh.send();
-
-	
+	back = mh.send();
 	return back;
     }
     public String doSelect(){
