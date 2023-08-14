@@ -80,6 +80,7 @@ public class TerminateJobAction extends TopAction{
 		}
 		else{
 		    getTerm();
+		    term.setEmployee_id(emp_id);
 		    term.setJob_id(job_id);
 		    term.setSupervisor(user);
 		    term.setSubmitted_by(user);
@@ -104,6 +105,7 @@ public class TerminateJobAction extends TopAction{
 		    for(String str:selected_job_ids){
 			term.setJob_id(str);
 		    }
+		    term.setEmployee_id(emp_id);
 		    term.setSupervisor(user);
 		    term.setSubmitted_by(user);
 		    term.setSubmitted_date(Helper.getToday());
@@ -153,6 +155,7 @@ public class TerminateJobAction extends TopAction{
 		back = term.doSelect();
 		TermNotification tn = new TermNotification();
 		tn.setTerm(term);
+		tn.setTermination_id(term.getId());
 		tn.setSender(user);
 		back = tn.doSend(mail_host);
 		if(!back.isEmpty()){

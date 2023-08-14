@@ -158,7 +158,7 @@
       <result name="success">/WEB-INF/jsp/term_notifications.jsp</result>
     </action>
     <action name="search_terminations" 
-	    class="in.bloomington.timer.action.EmpTerminatesAction" 
+	    class="in.bloomington.timer.action.SearchEmpTermsAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/search_terminations.jsp</result>
       <result name="error">/WEB-INF/jsp/search_terminations.jsp</result>

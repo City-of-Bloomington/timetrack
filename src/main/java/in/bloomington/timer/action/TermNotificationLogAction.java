@@ -28,30 +28,28 @@ public class TermNotificationLogAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
+	getTermNoteLst();	
 	if(!action.isEmpty()){
 	    termNoteLst.setDepartment_id(department_id);
 	    termNoteLst.setDate_from(date_from);
 	    termNoteLst.setDate_to(date_to);
-	    back = termNoteLst.find();
-	    if(!back.isEmpty()){
-		addError(back);
-	    }
-	    else{
-		List<TermNotification> ones = termNoteLst.getNotifications();
-		if(ones != null && ones.size() > 0){
-		    notifications = ones;
-		    termNotificationsTitle = " Found "+notifications.size()+" groups";
-		    addMessage("Found "+notifications.size()+" notifications ");
-		}
-		else{
-		    addMessage("No match found");
-		    termNotificationsTitle = "No match found";
-		}
-	    }
+	    termNoteLst.setNoLimit();
+	}
+	back = termNoteLst.find();
+	if(!back.isEmpty()){
+	    addError(back);
 	}
 	else{
-	    getTermNoteLst();
-	    back = termNoteLst.find();
+	    List<TermNotification> ones = termNoteLst.getNotifications();
+	    if(ones != null && ones.size() > 0){
+		notifications = ones;
+		termNotificationsTitle = " Found "+notifications.size()+" groups";
+		addMessage("Found "+notifications.size()+" notifications ");
+	    }
+	    else{
+		addMessage("No match found");
+		termNotificationsTitle = "No match found";
+	    }
 	}
 	return ret;
     }

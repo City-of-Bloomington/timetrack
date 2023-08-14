@@ -432,7 +432,10 @@ public class EmpTerminate{
 	return submitted_date;
     }
     public boolean hasBenefits(){
-	return pto > 0 || comp_time > 0 || vac_time > 0;
+	getEmployment_type();
+	if(employment_type.equals("Temp")) return false;
+	// return pto > 0 || comp_time > 0 || vac_time > 0;
+	return true;
     }
     public Employee getSubmitted_by(){
 	if(submitted_by == null && !submitted_by_id.isEmpty()){
@@ -1186,6 +1189,9 @@ public class EmpTerminate{
     }
     String setParams(PreparedStatement pstmt){
 	String back = "";
+	if(employee_id.isEmpty()){
+	    getEmployee();
+	}
 	try{
 	    pstmt.setString(1, employee_id);
 	    pstmt.setString(2, full_name);

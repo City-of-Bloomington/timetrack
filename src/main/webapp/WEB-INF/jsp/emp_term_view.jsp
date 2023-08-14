@@ -18,6 +18,13 @@
 	    <td>Hours Per Week</td>
 	    <td><s:property value="term.hours_per_week" /></td>
 	</tr>
+	<s:if test="term.employee != null">
+	    <tr><td>New World Employee #:</td>
+		<td><s:property value="term.employee.employee_number" /></td>
+		<td>Badge ID: </td>
+		<td><s:property value="term.employee.id_code" /></td>
+	    </tr>
+	</s:if>	
 	<s:if test ="hasDate_of_birth()">
 	    <tr><td>Date of Birth</td>
 		<td><s:property value="term.date_of_birth" /></td>
@@ -75,79 +82,84 @@
 	    <td><s:property value="term.personal_email" /> </td>
 	</tr>	    
     </table>
-    <table border="1"><caption>ITS Information </caption>
-	<tr><td>Employee Email Address</td>
-	    <td colspan="2"><s:property value="term.email" /></td>
-	</tr>
-	<tr><td>Email Account Requested Action</td>
-	    <s:if test="term.forward_emails != ''">		
-		<td>
-		    Forward to: <s:property value="term.forward_emails" />
-		</td>
-		<td>
-		    For days <s:property value="term.forward_days_cnt" />
-		</td>
-	    </s:if>
-	    <s:else>
-		<td>Archive</td>
-	    </s:else>
-	</tr>
-	<tr>
-	    <td>Google Drive/H Drive Requested Action:</td>
-	    <td>
-		<s:if test="term.drive_to_person_email != ''">
-		    Drive to Person:  
-		    <s:property value="term.drive_to_person_email" />
+    <s:if test="term.hasEmail()">
+	<table border="1"><caption>ITS Information </caption>
+	    <tr><td>Employee Email Address</td>
+		<td colspan="2"><s:property value="term.email" /></td>
+	    </tr>
+	    <tr><td>Email Account Requested Action</td>
+		<s:if test="term.forward_emails != ''">		
+		    <td>
+			Forward to: <s:property value="term.forward_emails" />
+		    </td>
+		    <td>
+			For days <s:property value="term.forward_days_cnt" />
+		    </td>
 		</s:if>
-		<s:elseif test="term.drive_to_shared_emails != ''">
-		    Drive to Shared: 
-		    <s:property value="term.drive_to_shared_emails" />
-		</s:elseif>
 		<s:else>
-		    Close
+		    <td>Archive</td>
 		</s:else>
-	    </td>
-	</tr>
-	<tr><td>Google Calendar Requested Action:</td>
-	    <td>
-	    <s:if test="term.calendar_to_email != ''">
-		Transfer To:  
-		<s:property value="term.calendar_to_email" />
-	    </s:if>
-	    <s:else>
+	    </tr>
+	    <tr>
+		<td>Google Drive/H Drive Requested Action:</td>
+		<td>
+		    <s:if test="term.drive_to_person_email != ''">
+			Drive to Person:  
+			<s:property value="term.drive_to_person_email" />
+		    </s:if>
+		    <s:elseif test="term.drive_to_shared_emails != ''">
+			Drive to Shared: 
+			<s:property value="term.drive_to_shared_emails" />
+		    </s:elseif>
+		    <s:else>
+			Close
+		    </s:else>
+		</td>
+	    </tr>
+	    <tr><td>Google Calendar Requested Action:</td>
+		<td>
+		    <s:if test="term.calendar_to_email != ''">
+			Transfer To:  
+			<s:property value="term.calendar_to_email" />
+		    </s:if>
+		    <s:else>
 		Close
-	    </s:else>
-	    </td>
-	</tr>
-	<tr><td>Zoom Account Requested Action:</td>
-	    <td>
-		<s:if test="term.zoom_to_email != '''">
-		    Transfer To: <s:property value="term.zoom_to_email" />
-		</s:if>
-		<s:else>
-		    Close
-		</s:else>
-	    </td>
-	</tr>
+		    </s:else>
+		</td>
+	    </tr>
+	    <tr><td>Zoom Account Requested Action:</td>
+		<td>
+		    <s:if test="term.zoom_to_email != '''">
+			Transfer To: <s:property value="term.zoom_to_email" />
+		    </s:if>
+		    <s:else>
+			Close
+		    </s:else>
+		</td>
+	    </tr>
+	</table>
+    </s:if>
+    <s:if test="term.hasBenefits()">
+	<table border="1">	    
+	    <tr>
+		    <td>Number of Hours Worked in the Current Pay Period?</td>
+		    <td><s:property value="term.pay_period_worked_hrs" /></td>
+		    <td>Vaction Time</td>
+		    <td><s:property value="term.vac_time" /></td>
+		</tr>
+		<tr><td>Comp Time</td>
+		    <td><s:property value="term.comp_time" /></td>
+		    <td>PTO</td>
+		    <td><s:property value="term.pto" /></td>
+		</tr>
+	</table>
+    </s:if>
+    <table border="1" width="70%">	    	
 	<tr><td>Employee ID Badge Returned?</td>
 	    <td><s:property value="term.badge_returned" /></td>
 	</tr>
-    </table>
-    <table border="1">
-	<s:if test="term.hasBenefits()">
-	    <tr><td>Number of Hours Worked in the Current Pay Period?</td>
-		<td><s:property value="term.pay_period_worked_hrs" /></td>
-		<td>Vaction Time</td>
-		<td><s:property value="term.vac_time" /></td>
-	    </tr>
-	    <tr><td>Comp Time</td>
-		<td><s:property value="term.comp_time" /></td>
-		<td>PTO</td>
-		<td><s:property value="term.pto" /></td>
-		</tr>
-	</s:if>
 	<tr><td>Remarks</td>
-	    <td colspan="2"><s:property value="term.remarks"/>
+	    <td><s:property value="term.remarks"/>
 	    </td>
 	</tr>
 	<tr><td>Notification Status</td>

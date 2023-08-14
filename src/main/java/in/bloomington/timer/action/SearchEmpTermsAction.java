@@ -15,10 +15,10 @@ import in.bloomington.timer.bean.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EmpTerminatesAction extends TopAction{
+public class SearchEmpTermsAction extends TopAction{
 
     static final long serialVersionUID = 1800L;	
-    static Logger logger = LogManager.getLogger(EmpTerminatesAction.class);
+    static Logger logger = LogManager.getLogger(SearchEmpTermsAction.class);
     //
     String date_from = "", date_to="", department_id="", group_id="";
     String status="";
@@ -29,37 +29,28 @@ public class EmpTerminatesAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
+	getTermLst();	
 	if(!action.isEmpty()){
-	    getTermLst();
 	    termLst.setDepartment_id(department_id);
 	    termLst.setGroup_id(group_id);
 	    termLst.setDate_from(date_from);
 	    termLst.setDate_to(date_to);
-	    back = termLst.find();
-	    if(!back.isEmpty()){
-		addError(back);
-	    }
-	    else{
-		List<EmpTerminate> ones = termLst.getTerms();
-		if(ones != null && ones.size() > 0){
-		    terms = ones;
-		    empTerminatesTitle = " Found "+terms.size()+" terminations";
-		    addMessage("Found "+terms.size()+" terminations ");
-		}
-		else{
-		    addMessage("No match found");
-		    empTerminatesTitle = "No match found";
-		}
-	    }
+	    termLst.setStatus(status);
+	}
+	back = termLst.find();
+	if(!back.isEmpty()){
+	    addError(back);
 	}
 	else{
-	    getTermLst();
-	    back = termLst.find();
-	    if(back.isEmpty()){
-		List<EmpTerminate> ones = termLst.getTerms();
-		if(ones != null && ones.size() > 0){
-		    terms = ones;
-		}
+	    List<EmpTerminate> ones = termLst.getTerms();
+	    if(ones != null && ones.size() > 0){
+		terms = ones;
+		empTerminatesTitle = " Found "+terms.size()+" terminations";
+		addMessage("Found "+terms.size()+" terminations ");
+	    }
+	    else{
+		addMessage("No match found");
+		empTerminatesTitle = "No match found";
 	    }
 	}
 	return ret;

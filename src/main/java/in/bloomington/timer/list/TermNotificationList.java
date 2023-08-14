@@ -49,7 +49,9 @@ public class TermNotificationList{
     public void setRecent_only(){
 	recent_only = true;
     }
-    
+    public void setNoLimit(){
+	set_limit = false;
+    }
     public List<TermNotification> getNotifications(){
 	return notifications;
     }
@@ -76,11 +78,11 @@ public class TermNotificationList{
 	try{
 	    if(!date_from.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " send_date >= ? ";
+		qw += " send_time >= ? ";
 	    }
 	    if(!date_to.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " send_date <= ? ";
+		qw += " send_time <= ? ";
 	    }
 	    if(!department_id.isEmpty()){
 		qq += " join emp_terminations et on et.id=t.termination_id ";

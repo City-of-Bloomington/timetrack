@@ -17,7 +17,7 @@ public class TermNotification{
     static final long serialVersionUID = 3700L;	
     static Logger logger = LogManager.getLogger(TermNotification.class);
     String id="";
-    String sender_id = "", termination_id = "", send_time="",
+    String sender_id = "", termination_id = "", sent_time="",
 	recipient_emails = "", email_text="", send_error="",
 	first_recipient ="";
     Employee sender = null;
@@ -44,7 +44,7 @@ public class TermNotification{
 	// initialize
 	//
 	setId(val);
-	setSendTime(val2);
+	setSentTime(val2);
 	setSender_id(val3);
 	setTermination_id(val4);
 	setRecipientEmails(val5);
@@ -71,11 +71,21 @@ public class TermNotification{
     public String getId(){
 	return id;
     }
-    public String getSendTime(){
-	return send_time;
+    public String getSentTime(){
+	return sent_time;
     }
     public String getSender_id(){
 	return sender_id;
+    }
+    public Employee getSender(){
+	if(sender == null && !sender_id.isEmpty()){
+	    Employee one = new Employee(sender_id);
+	    String back = one.doSelect();
+	    if(back.isEmpty()){
+		sender = one;
+	    }
+	}
+	return sender;
     }
     public String getTermination_id(){
 	return termination_id;
@@ -117,9 +127,9 @@ public class TermNotification{
 	    sender_id = sender.getId();
 	}
     }    
-    public void setSendTime(String val){
+    public void setSentTime(String val){
 	if(val != null)
-	    send_time = val;
+	    sent_time = val;
     }    
     public void setTermination_id(String val){
 	if(val != null)
@@ -138,8 +148,10 @@ public class TermNotification{
 	    send_error = val;
     }
     public void setTerm(EmpTerminate val){
-	if(val !=  null)
+	if(val !=  null){
 	    term = val;
+	    termination_id = term.getId();
+	}
     }
     String findSender(){
 	String back = "";
@@ -190,6 +202,7 @@ public class TermNotification{
 	    employee = term.getEmployee();
 	    
 	    text = "Employee Job(s) Termination \n\n";
+	    text += "Employee: "+term.getFull_name()+"\n";	    
 	    text += "Employment Type: "+term.getEmployment_type()+"\n";
 	    String emp_type = term.getEmployment_type().toLowerCase();
 	    if(!emp_type.equals("temp") && emp_type.indexOf("part") > -1){
@@ -198,10 +211,9 @@ public class TermNotification{
 	    if(emp_type.indexOf("part") > -1){
 		text += "Part-Time Hours Per week: "+term.getHours_per_week()+"\n";
 	    }
-	    text += "Employee: "+term.getFull_name()+"\n";
 	    if(employee != null){
 		text += "New World Employee #: "+employee.getEmployee_number()+"\n";
-		text += "Bagde ID: "+employee.getId_code()+"\n";
+		text += "Badge ID: "+employee.getId_code()+"\n";
 	    }
 	    if(term.hasDateOfBirth()){
 		text += "Date of Birth: "+term.getDate_of_birth()+"\n";
@@ -241,47 +253,49 @@ public class TermNotification{
 		else{
 		    text += "Archive \n";
 		}
-	    }
-	    String dr_act = term.getDrive_action();
-	    text += "Google/H Drive Address Action:  ";
-	    if(dr_act.indexOf("Person") > -1){
-		text += "Transfer to "+term.getDrive_to_person_email()+"\n";
-	    }
-	    else if(dr_act.indexOf("Shared") > -1){
-		text += "Transfer to Shared "+term.getDrive_to_shared_emails()+"\n";
-	    }
-	    else{
-		text += "Archive \n";
-	    }
-	    text += "Google Calendar Action: ";
-	    String cal_act = term.getCalendar_action();
-	    if(cal_act.indexOf("Transfer") > -1){
-		text += "Transfer to: "+term.getCalendar_to_email()+"\n";
-	    }
-	    else{
-		text +="Close \n";
-	    }
-	    text += "Zoom Account Action: ";
-	    String zom_act = term.getZoom_action();
-	    if(zom_act.indexOf("Transfer") > -1){
-		text += "Transfer to "+term.getZoom_to_email()+"\n";
-	    }
-	    else{
-		text += "Close \n";
+		String dr_act = term.getDrive_action();
+		text += "Google/H Drive Address Action:  ";
+		if(dr_act.indexOf("Person") > -1){
+		    text += "Transfer to "+term.getDrive_to_person_email()+"\n";
+		}
+		else if(dr_act.indexOf("Shared") > -1){
+		    text += "Transfer to Shared "+term.getDrive_to_shared_emails()+"\n";
+		}
+		else{
+		    text += "Archive \n";
+		}
+		text += "Google Calendar Action: ";
+		String cal_act = term.getCalendar_action();
+		if(cal_act.indexOf("Transfer") > -1){
+		    text += "Transfer to: "+term.getCalendar_to_email()+"\n";
+		}
+		else{
+		    text +="Close \n";
+		}
+		text += "Zoom Account Action: ";
+		String zom_act = term.getZoom_action();
+		if(zom_act.indexOf("Transfer") > -1){
+		    text += "Transfer to "+term.getZoom_to_email()+"\n";
+		}
+		else{
+		    text += "Close \n";
+		}
 	    }
 	    text += "Badge Return Status: "+term.getBadge_returned()+"\n";
-	    text += "Number of Hours Worked in the Current Pay Period: "+term.getPay_period_worked_hrs()+"\n";
-	    if(term.getVac_time() > 0){
+	    if(term.hasBenefits()){
+		text += "Number of Hours Worked in the Current Pay Period: "+term.getPay_period_worked_hrs()+"\n";
+		if(term.getVac_time() > 0){
 		text += "Vacation Time: "+term.getVac_time()+"\n";
-	    }
-	    if(term.getComp_time() > 0){
-		text += "Comp Time: "+term.getComp_time()+"\n";
-	    }
-	    if(term.getPto() > 0){
-		text += "PTO: "+term.getPto()+"\n";
+		}
+		if(term.getComp_time() > 0){
+		    text += "Comp Time: "+term.getComp_time()+"\n";
+		}
+		if(term.getPto() > 0){
+		    text += "PTO: "+term.getPto()+"\n";
+		}
 	    }
 	    if(!term.getRemarks().isEmpty()){
-		text += "Remarks: "+term.getRemarks()+"\n\n";
+		    text += "Remarks: "+term.getRemarks()+"\n\n";
 	    }
 	    text += "Thank You \n";
 	    text += "Submitted by "+term.getSubmitted_by()+"\n\n";
@@ -316,13 +330,25 @@ public class TermNotification{
 	    logger.error(back);
 	}
 	
-
+	/**
 	System.err.println(" from "+from_email);
 	System.err.println(" to "+to_email);
 	System.err.println(" cc "+cc);
 	System.err.println(" msg "+email_text);
+	*/
 	MailHandle mh = new MailHandle(host, to_email, from_email, cc, bcc, subject, email_text);
-	back = mh.send();
+	// back = mh.send();
+	back="";
+	if(!back.isEmpty()){
+	    send_error = back;
+	}
+	if(!recipient_emails.isEmpty()){
+	    recipient_emails = first_recipient+","+recipient_emails;
+	}
+	else{
+	    recipient_emails = first_recipient;
+	}
+	back = doSave();
 	return back;
     }
     public String doSelect(){
@@ -343,7 +369,7 @@ public class TermNotification{
 	    pstmt.setString(1,id);
 	    rs = pstmt.executeQuery();
 	    if(rs.next()){
-		setSendTime(rs.getString(2));
+		setSentTime(rs.getString(2));
 		setSender_id(rs.getString(3));
 		setTermination_id(rs.getString(4));
 		setRecipientEmails(rs.getString(5));
@@ -369,7 +395,9 @@ public class TermNotification{
 	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = " insert into term_notification values(0,now(),?,?,?,?,?)";
+	System.err.println(" sender_id "+sender_id);
+	System.err.println(" term id "+termination_id);	
+	String qq = " insert into term_notifications values(0,now(),?,?,?,?,?)";
 	try{
 	    con = UnoConnect.getConnection();
 	    if(con == null){

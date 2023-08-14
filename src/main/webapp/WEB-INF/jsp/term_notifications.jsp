@@ -57,7 +57,7 @@
 			<td><s:property value="sentTime" /></td>
 			<td><s:property value="sender" /></td>
 			<td><s:property value="termination_id" /></td>
-			<td><s:property value="receipiantEmails" /></td>
+			<td><s:property value="recipientEmails" /></td>
 			<td><s:property value="emailText" /></td>
 			<td><s:property value="status" /></td>
 			<td><s:property value="sendError" /></td>
