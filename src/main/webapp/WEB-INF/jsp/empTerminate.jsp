@@ -5,8 +5,8 @@
 	
 	<s:if test="term.id != ''">
 	    <s:hidden name="term.id" value="%{term.id}" />
-	    <s:hidden name="term.submitted_by_id" value="%{term.submitted_by_id}" />	
 	</s:if>
+	<s:hidden name="term.submitted_by_id" value="%{term.submitted_by_id}" />	
 	<s:hidden name="term.department_id" value="%{term.department_id}" />	
 	<s:hidden name="term.employee_id" value="%{term.employee_id}" />
 	<s:hidden name="term.group_id" value="%{term.group_id}" />	

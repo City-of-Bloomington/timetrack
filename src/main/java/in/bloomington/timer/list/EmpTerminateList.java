@@ -20,8 +20,11 @@ public class EmpTerminateList{
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");	
     static final long serialVersionUID = 3800L;
     String date_from = "", date_to="", department_id="", group_id="";
+    String submitted_by_id = "";
+	
     String status = ""; // all, sent, not-sent
     boolean recent_only = false, set_limit=true;
+    boolean notification_reminder = false;
     List<EmpTerminate> terms = null;
 	
     public EmpTerminateList(){
@@ -64,7 +67,13 @@ public class EmpTerminateList{
     public List<EmpTerminate> getTerms(){
 	return terms;
     }
-    
+    public void setNotificationReminder(){
+	notification_reminder = true;
+    }
+    public void setSubmitted_by_id(String val){
+	if(val != null)
+	    submitted_by_id = val;
+    }
     void checkLimitFlag(){
 	if(!date_from.isEmpty() || !date_to.isEmpty() || !department_id.isEmpty()){
 	    set_limit = false;
@@ -119,7 +128,15 @@ public class EmpTerminateList{
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " group_id = ? ";		
 	    }
-	    if(!status.isEmpty()){
+	    if(!submitted_by_id.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " submitted_by_id = ? ";		
+	    }	    
+	    if(notification_reminder){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " recipients_informed is null ";		
+	    }
+	    else if(!status.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";		
 		if(status.equals("sent")){
 		    qw += " recipients_informed is not null ";
@@ -150,7 +167,10 @@ public class EmpTerminateList{
 	    }
 	    if(!group_id.isEmpty()){
 		pstmt.setString(jj++, group_id);
-	    }	    	    
+	    }
+	    if(!submitted_by_id.isEmpty()){
+		pstmt.setString(jj++, submitted_by_id);
+	    }
 	    rs = pstmt.executeQuery();
 	    if(terms == null)
 		terms = new ArrayList<>();

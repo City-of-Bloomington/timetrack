@@ -337,7 +337,7 @@ public class TermNotification{
 	System.err.println(" msg "+email_text);
 	*/
 	MailHandle mh = new MailHandle(host, to_email, from_email, cc, bcc, subject, email_text);
-	// back = mh.send();
+	back = mh.send();
 	back="";
 	if(!back.isEmpty()){
 	    send_error = back;

@@ -428,7 +428,7 @@ public class EmpTerminate{
     public String getSubmitted_by_id(){
 	return submitted_by_id;
     }
-    public String submitted_date(){
+    public String getSubmitted_date(){
 	return submitted_date;
     }
     public boolean hasBenefits(){
@@ -1159,6 +1159,10 @@ public class EmpTerminate{
 	    back = "supervisor not set ";
 	    return back;
 	}
+	if(submitted_by_id.isEmpty()){
+	    back = "submitted by not set ";
+	    return back;
+	}
 	if(last_pay_period_date.isEmpty()){
 	    back = "last_pay_period_date not set";
 	    return back;
@@ -1363,6 +1367,22 @@ public class EmpTerminate{
 	    back = "Could not connect to DB ";
 	    return back;
 	}
+	if(job_ids.isEmpty()){
+	    back = "job(s) not set ";
+	    return back;
+	}
+	if(supervisor_id.isEmpty()){
+	    back = "supervisor not set ";
+	    return back;
+	}
+	if(submitted_by_id.isEmpty()){
+	    back = "submitted by not set ";
+	    return back;
+	}
+	if(last_pay_period_date.isEmpty()){
+	    back = "last_pay_period_date not set";
+	    return back;
+	}	
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    back = setParams(pstmt);

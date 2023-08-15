@@ -33,7 +33,8 @@ public class MyGroupsAction extends TopAction{
     Group group = null;
     Department department = null;
     List<PayPeriod> payPeriods = null;
-    String employee_ids = ""; 
+    String employee_ids = "";
+    List<EmpTerminate> terms = null;
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("mygroups.action");
@@ -73,6 +74,19 @@ public class MyGroupsAction extends TopAction{
     public boolean isGroupManager(){
 	findManagedGroups();
 	return groups != null && groups.size() > 0;
+    }
+    String findNonNotifiedTerms(){
+	EmpTerminateList etl = new EmpTerminateList();
+	etl.setSubmitted_by_id(user.getId());
+	etl.setNotificationReminder();
+	String back = etl.find();
+	if(back.isEmpty()){
+	    List<EmpTerminate> ones = etl.getTerms();
+	    if(ones != null && ones.size() > 0){
+		terms = ones;
+	    }
+	}
+	return back;
     }
     void findManagedGroups(){
 	if(groups != null ) return;
@@ -162,6 +176,15 @@ public class MyGroupsAction extends TopAction{
 	boolean ret = isGroupManager();
 	return ret;
 				
+    }
+    public boolean hasTerms(){
+	if(terms == null ){
+	    findNonNotifiedTerms();
+	}
+	return terms != null && terms.size() > 0;
+    }
+    public List<EmpTerminate> getTerms(){
+	return terms;
     }
     public List<Group> getGroups(){
 	return groups;
