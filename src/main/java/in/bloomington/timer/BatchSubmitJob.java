@@ -23,51 +23,51 @@ import org.apache.logging.log4j.Logger;
 public class BatchSubmitJob implements Job{
 
     boolean debug = true;
-		static final long serialVersionUID = 55L;		
-		static Logger logger = LogManager.getLogger(BatchSubmitJob.class);
-		boolean activeMail = false;
-		PayPeriod lastPayPeriod = null;
-		public BatchSubmitJob(){
+    static final long serialVersionUID = 55L;		
+    static Logger logger = LogManager.getLogger(BatchSubmitJob.class);
+    boolean activeMail = false;
+    PayPeriod lastPayPeriod = null;
+    public BatchSubmitJob(){
 
-		}
-		public void execute(JobExecutionContext context)
+    }
+    public void execute(JobExecutionContext context)
         throws JobExecutionException {
-				try{
-						doInit();
-						doWork();
-						doDestroy();
-				}
-				catch(Exception ex){
-						logger.error(ex);
-						System.err.println(ex);
-				}
-		}
-		public void doInit(){
-				PayPeriodList ppl = new PayPeriodList();
-				ppl.setLastPayPeriod();
-				String msg = ppl.find();
-				if(!msg.isEmpty()){
-						logger.error(msg);
-						return;
-				}
-				else{
-						List<PayPeriod> ones = ppl.getPeriods();
-						if(ones != null && ones.size() > 0){
-								lastPayPeriod = ones.get(0);
-						}
-				}				
-		}
-		public void doDestroy() {
-				lastPayPeriod = null;
-		}	    
+	try{
+	    doInit();
+	    doWork();
+	    doDestroy();
+	}
+	catch(Exception ex){
+	    logger.error(ex);
+	    System.err.println(ex);
+	}
+    }
+    public void doInit(){
+	PayPeriodList ppl = new PayPeriodList();
+	ppl.setLastPayPeriod();
+	String msg = ppl.find();
+	if(!msg.isEmpty()){
+	    logger.error(msg);
+	    return;
+	}
+	else{
+	    List<PayPeriod> ones = ppl.getPeriods();
+	    if(ones != null && ones.size() > 0){
+		lastPayPeriod = ones.get(0);
+	    }
+	}				
+    }
+    public void doDestroy() {
+	lastPayPeriod = null;
+    }	    
     public void doWork(){
-				if(lastPayPeriod != null){
-						HandleBatchSubmit handle = new HandleBatchSubmit(lastPayPeriod);
-						String msg = handle.process();
-						if(!msg.isEmpty())
-								logger.error(msg);
-				}
-		}
+	if(lastPayPeriod != null){
+	    HandleBatchSubmit handle = new HandleBatchSubmit(lastPayPeriod);
+	    String msg = handle.process();
+	    if(!msg.isEmpty())
+		logger.error(msg);
+	}
+    }
 
 }
 

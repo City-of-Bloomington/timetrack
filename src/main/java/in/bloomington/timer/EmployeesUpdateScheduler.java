@@ -28,42 +28,42 @@ import in.bloomington.timer.bean.*;
 
 public class EmployeesUpdateScheduler {
 
-		static boolean debug = false;
-		static Logger logger = LogManager.getLogger(EmployeesUpdateScheduler.class);
-		EnvBean envBean = null;
-		int month = 1, day = 7, year=2017;
-		String date = "";
-		Date startDate, endDate = null;
-		public EmployeesUpdateScheduler(EnvBean val, String val2){
-				if(val  != null)
-						envBean = val;
-				if(val2 != null)
-						date = val2;
-				try{
-						//
-						// for cron date is not needed
-						//
-						if(!date.isEmpty()){
-								String strArr[] = date.split("/");
-								month = Integer.parseInt(strArr[0]);
-								day = Integer.parseInt(strArr[1]);
-								year = Integer.parseInt(strArr[2]);
-								Calendar cal = new GregorianCalendar();
-								cal.set(year, (month-1), day);
-								cal.set(Calendar.HOUR_OF_DAY, 6);//to run at 6am of the specified day
-								cal.set(Calendar.MINUTE, 45);
-								startDate = cal.getTime();
-						}
-				}
-				catch(Exception ex){
-						logger.error(ex);
-				}
-		}
+    static boolean debug = false;
+    static Logger logger = LogManager.getLogger(EmployeesUpdateScheduler.class);
+    EnvBean envBean = null;
+    int month = 1, day = 7, year=2017;
+    String date = "";
+    Date startDate, endDate = null;
+    public EmployeesUpdateScheduler(EnvBean val, String val2){
+	if(val  != null)
+	    envBean = val;
+	if(val2 != null)
+	    date = val2;
+	try{
+	    //
+	    // for cron date is not needed
+	    //
+	    if(!date.isEmpty()){
+		String strArr[] = date.split("/");
+		month = Integer.parseInt(strArr[0]);
+		day = Integer.parseInt(strArr[1]);
+		year = Integer.parseInt(strArr[2]);
+		Calendar cal = new GregorianCalendar();
+		cal.set(year, (month-1), day);
+		cal.set(Calendar.HOUR_OF_DAY, 6);//to run at 6am of the specified day
+		cal.set(Calendar.MINUTE, 45);
+		startDate = cal.getTime();
+	    }
+	}
+	catch(Exception ex){
+	    logger.error(ex);
+	}
+    }
 	
-		public String run() throws Exception {
-				String msg = "";
-				//
-				//   Logger log = LoggerFactory.getLogger(SponScheduler.class);
+    public String run() throws Exception {
+	String msg = "";
+	//
+	//   Logger log = LoggerFactory.getLogger(SponScheduler.class);
 
         logger.info("------- Initializing ----------------------");
 
@@ -74,86 +74,89 @@ public class EmployeesUpdateScheduler {
         logger.info("------- Initialization Complete -----------");
 
         // computer a time that is on the next round minute
-				//  Date runTime = evenMinuteDate(new Date());
+	//  Date runTime = evenMinuteDate(new Date());
 
         logger.info("------- Scheduling Job  -------------------");
 
         // define the job and tie it to our Job class
-				try{
-						String jobName = "emps_update_"+month+"_"+day+"_"+year;
-						String groupName = "empupdates";
-						JobDetail job = JobBuilder.newJob(EmployeesUpdateJob.class)
-								.withIdentity(jobName, groupName)
-								.build();
-						//
-						// probably we can skip this as we can get envBean from context
-						//
-						job.getJobDataMap().put("envBean", envBean);						
-						// 
-						// Trigger will run at 7am on the speciified date
-						// cron date and time entries (year can be ignored)
-						// second minute hour day-of-month month week-day year
-						// you can use ? no specific value, 0/5 for incrment (every 5 seconds)
-						// * for any value (in minutes mean every minute
-						/*
-						Trigger trigger = TriggerBuilder.newTrigger()
-								.withIdentity(jobName, groupName)
-								.startAt(startDate)
-								.withSchedule(simpleSchedule()
-															.withIntervalInHours(24*7) // 24*7 every weeks
-															.repeatForever()
-															.withMisfireHandlingInstructionIgnoreMisfires())
-								.build();
-						*/
-						/*
-							cron format
-							Seconds
-							minutes
-							hours
-							day of month
-							month
-							day of week
-							year (optional)
+	try{
+	    String jobName = "emps_update_"+month+"_"+day+"_"+year;
+	    String groupName = "empupdates";	    
+	    JobDetail job = JobBuilder.newJob(EmployeesUpdateJob.class)
+		.withIdentity(jobName, groupName)
+		.build();
+	    //
+	    // probably we can skip this as we can get envBean from context
+	    //
+	    job.getJobDataMap().put("envBean", envBean);						
+	    // 
+	    // Trigger will run at 7am on the speciified date
+	    // cron date and time entries (year can be ignored)
+	    // second minute hour day-of-month month week-day year
+	    // you can use ? no specific value, 0/5 for incrment (every 5 seconds)
+	    // * for any value (in minutes mean every minute
+	    /*
+	      Trigger trigger = TriggerBuilder.newTrigger()
+	      .withIdentity(jobName, groupName)
+	      .startAt(startDate)
+	      .withSchedule(simpleSchedule()
+	      .withIntervalInHours(24*7) // 24*7 every weeks
+	      .repeatForever()
+	      .withMisfireHandlingInstructionIgnoreMisfires())
+	      .build();
+	    */
+	    /*
+	      cron format
+	      Seconds
+	      minutes
+	      hours
+	      day of month
+	      month
+	      day of week
+	      year (optional)
 
-							(0 0 9,11,13,15,17 ? * 1-5) // year is empty
-						*/
-						// every day from Mon-Friday, start at 9 am till 5 pm
-						String cronStr ="0 0 9,11,13,15,17 ? * 2-6";
-						CronTrigger trigger = TriggerBuilder.newTrigger()
-								.withIdentity(jobName	, groupName)
-								.withSchedule(CronScheduleBuilder.cronSchedule(cronStr)
-															.withMisfireHandlingInstructionIgnoreMisfires())
-								.build();
-						// Tell quartz to schedule the job using our trigger
-						sched.scheduleJob(job, trigger);
-						//  logger.info(job.getKey() + " will run at: " + runTime);  
+	      (0 0 9,11,13,15,17 ? * 1-5) // year is empty
+	    */
+	    // every day from Mon-Friday, start at 7 am till 5 pm
+	    // second minute hours day-of-month month day-of-week
+	    // start at 7:30 am, any day of month, any month, Monday-Friday
+	    
+	    String cronStr = "0 0 9,11,13,15,17 ? * 2-6";
+	    CronTrigger trigger = TriggerBuilder.newTrigger()
+		.withIdentity(jobName	, groupName)
+		.withSchedule(CronScheduleBuilder.cronSchedule(cronStr)
+			      .withMisfireHandlingInstructionIgnoreMisfires())
+		.build();
+	    // Tell quartz to schedule the job using our trigger
+	    sched.scheduleJob(job, trigger);
+	    //  logger.info(job.getKey() + " will run at: " + runTime);  
 
-						// Start up the scheduler (nothing can actually run until the 
-						// scheduler has been started)
-						sched.start();
-						/*
-							logger.info("------- Started Scheduler -----------------");
+	    // Start up the scheduler (nothing can actually run until the 
+	    // scheduler has been started)
+	    sched.start();
+	    /*
+	      logger.info("------- Started Scheduler -----------------");
 
-							// wait long enough so that the scheduler as an opportunity to 
-							// run the job!
-							logger.info("------- Waiting 65 seconds... -------------");
-							try {
-							// wait 65 seconds to show job
-							Thread.sleep(65L * 1000L); 
-							// executing...
-							} catch (Exception e) {
-							}
+	      // wait long enough so that the scheduler as an opportunity to 
+	      // run the job!
+	      logger.info("------- Waiting 65 seconds... -------------");
+	      try {
+	      // wait 65 seconds to show job
+	      Thread.sleep(65L * 1000L); 
+	      // executing...
+	      } catch (Exception e) {
+	      }
 
-							// shut down the scheduler
-							logger.info("------- Shutting Down ---------------------");
-							sched.shutdown(true);
-							logger.info("------- Shutdown Complete -----------------");
-						*/
-				}catch(Exception ex){
-						logger.error(ex);
-						msg += ex;
-				}
-				return msg;
+	      // shut down the scheduler
+	      logger.info("------- Shutting Down ---------------------");
+	      sched.shutdown(true);
+	      logger.info("------- Shutdown Complete -----------------");
+	    */
+	}catch(Exception ex){
+	    logger.error(ex);
+	    msg += ex;
+	}
+	return msg;
     }
 	
 }

@@ -226,7 +226,8 @@
       <result name="input">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
       <result name="success">/WEB-INF/jsp/empsUpdateSchedular.jsp</result>
-    </action>				
+    </action>
+    
     <action name="notificationSchedule" 
 	    class="in.bloomington.timer.action.NotificationScheduleAction" 
 	    method="execute">
@@ -235,6 +236,13 @@
       <result name="success">/WEB-INF/jsp/notificationSchedular.jsp</result>
       <result name="logs">/WEB-INF/jsp/notificationLogs.jsp</result>			
     </action>
+    <action name="termNotificationSchedule" 
+	    class="in.bloomington.timer.action.TermNotificationScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/termNotificationSchedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/termNotificationSchedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/termNotificationSchedular.jsp</result>
+    </action>    
     <action name="batchSchedule" 
 	    class="in.bloomington.timer.action.BatchSubmitScheduleAction" 
 	    method="execute">

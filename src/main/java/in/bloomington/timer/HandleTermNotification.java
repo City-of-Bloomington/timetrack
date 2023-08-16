@@ -30,9 +30,7 @@ public class HandleTermNotification{
     List<EmpTerminate> terms = null;    
     List<Employee> emps = null;
  		
-    public HandleTermNotification(String val, String val2){
-	setMail_host(val);
-	setUrl(val2);
+    public HandleTermNotification(){
 	setActiveMailFlag();
     }
     void setActiveMailFlag(){
@@ -43,14 +41,23 @@ public class HandleTermNotification{
 	    if(val != null && val.equals("true")){
 		activeMail = true;
 	    }
-	    System.err.println(" activeMail "+activeMail);										
+	    val = ctx.getInitParameter("mail_host");
+	    if(val != null && !val.isEmpty()){
+		mail_host = val;
+	    }
+	    val = ctx.getInitParameter("url");
+	    if(val != null && !val.isEmpty()){
+		url = val;
+	    }	    
+	    System.err.println(" activeMail "+activeMail);
+	    System.err.println(" mail_host "+mail_host);	    
 	}
 	else{
 	    System.err.println(" ctx is null, could not retreive activeMail flag ");
 	}
     }
-    void setActiveMail(){
-	activeMail = true;
+    public void setActiveMail(){
+	activeMail = true; // overide for testing
     }
     public void setMail_host(String val){
 	if(val != null){		
@@ -72,7 +79,6 @@ public class HandleTermNotification{
     }    
     //
     String findNonNotifiedTerms(){
-	List<EmpTerminate> terms = null;
 	EmpTerminateList etl = new EmpTerminateList();
 	etl.setNotificationReminder();
 	String back = etl.find();
@@ -86,7 +92,7 @@ public class HandleTermNotification{
     }
     public String process(){
 	String msg = "";
-	if(emps == null){
+	if(terms == null){
 	    msg = findNonNotifiedTerms();
 	    if(!msg.isEmpty()){
 		return msg;
@@ -97,6 +103,9 @@ public class HandleTermNotification{
 	    System.err.println(" Notification: no terminations found ");
 	    return msg;
 	}
+	else{
+	    System.err.println(" Found "+terms.size());
+	}
 	if(activeMail){
 	    String success_list="";
 	    String failure_list="";
@@ -105,7 +114,7 @@ public class HandleTermNotification{
 		Employee submitter = one.getSubmitted_by();
 		Employee emp = one.getEmployee();
 		if(submitter != null && emp != null){
-		    String to_str = submitter.getFull_name()+"<"+one.getEmail()+">";
+		    String to_str = submitter.getFull_name()+"<"+submitter.getEmail()+">";
 		    String msg_txt = composeText(one, emp);
 		    msg = doSend(to_str, msg_txt);
 		    if(msg.isEmpty()){
