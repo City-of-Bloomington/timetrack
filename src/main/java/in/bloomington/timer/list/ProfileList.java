@@ -553,6 +553,9 @@ public class ProfileList{
 		String str2 = rs.getString(25); // benefit group id
 		String str3 = ""; // rs.getString(3); //full time/part time, exempt/non-exempt
 		String str4 = rs.getString(20); // grade info
+		String grade_str = str4;
+		String grade_str2 = rs.getString(6);
+		String step_str = rs.getString(7); 
 		String str5 = rs.getString(22); // employeeNumber
 		String str6 = rs.getString(38); // standard weekly hours (20,35,40)
 		String str0 = rs.getString(39);
@@ -563,10 +566,12 @@ public class ProfileList{
 		String str7 = rs.getString(40); // int val
 		String str8 = rs.getString(41); // decimal val
 		double fstr9 = rs.getDouble(11); // hourly rate
+		String hr_rate = rs.getString(11);
 		String str10 = rs.getString(34); // last name
 		String str11 = rs.getString(14); // job title
 		String str12 = rs.getString(8); // cycle hours
 		String str13 = rs.getString(9); // daily
+		String emp_name = rs.getString(35);
 		BenefitGroup bg = null;
 		if(bgroups != null
 		   && str2 != null
@@ -592,6 +597,10 @@ public class ProfileList{
 		    }										
 		}
 		else{
+		    /**
+		    System.err.print(emp_name+", grade: "+grade_str+","+grade_str2);
+		    System.err.println(" rate: "+hr_rate);
+		    */
 		    double erate = fstr9;
 		    if(employeeRates != null &&
 		       employeeRates.containsKey(str5)){

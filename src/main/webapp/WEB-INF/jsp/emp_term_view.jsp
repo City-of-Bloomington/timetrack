@@ -59,6 +59,9 @@
 	    <td>Job Step</td>
 	    <td><s:property value="term.job_step" /> </td>
 	</tr>
+	<tr><td>Rate of Pay</td>
+	    <td><s:property value="term.payRate" /> </td>
+	</tr>	
 	<tr><td>Supervisor Name</td>
 	    <td><s:property value="term.supervisor" /> </td>
 	    <td>Supervisor Phone</td>

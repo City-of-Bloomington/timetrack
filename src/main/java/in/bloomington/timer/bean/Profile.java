@@ -42,6 +42,7 @@ public class Profile extends CommonInc{
     String job_name="";
     BenefitGroup bGroup = null;
     int payGrade = 0;
+    String grade = "";
     //
     public Profile(boolean deb){
 	super(deb);
@@ -101,6 +102,9 @@ public class Profile extends CommonInc{
     public void setBenefitGroup(BenefitGroup val){ // benefit Group
 	if(val != null)
 	    bGroup = val;
+    }
+    public String getGrade(){
+	return ""+payGrade;
     }
     public void setGrade(String val){
 	if(val != null){

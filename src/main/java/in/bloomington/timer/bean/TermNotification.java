@@ -231,6 +231,9 @@ public class TermNotification{
 	    if(term.hasJobStep()){
 		text += "Job Step: "+term.getJob_step()+"\n";
 	    }
+	    if(!term.getPayRate().isEmpty()){
+		text += "Rate of Pay: "+term.getPayRate()+"\n";
+	    }
 	    text += "Supervisor: "+term.getSupervisor()+"\n";
 	    text += "Supervisor Phone Number: "+term.getSupervisor_phone()+"\n";
 	    if(term.hasEmpAddress()){

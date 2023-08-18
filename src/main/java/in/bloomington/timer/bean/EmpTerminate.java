@@ -46,6 +46,7 @@ public class EmpTerminate{
     String badge_returned=""; //NA, Yes, No
     int hours_per_week=0;    
     double pay_period_worked_hrs=0, comp_time=0, vac_time=0, pto=0;
+    String pay_rate = "";
     String remarks="",submitted_by_id ="", submitted_date="";
     String other_job_titles = "";
     String recipients_informed="";
@@ -62,6 +63,8 @@ public class EmpTerminate{
     String[] forward_emails_arr = null;
     String[] drive_to_shared_email_arr = null;
     Map<String, List<String>> accruals = null;
+    List<BenefitGroup> benefitGroups = null;
+    Profile profile = null;
     //
     public EmpTerminate(){
 	
@@ -87,12 +90,14 @@ public class EmpTerminate{
 		String str28, String str29, String str30,
 		
 		String str31, String str32, String str33,
-		String str34, int str35, double str36,
+		String str34, int str35, String str36,
+
+		double str37,
 		
-		double str37, double str38, double str39,
-		String str40, String str41, String str42,
+		double str38, double str39, double str40,
+		String str41, String str42, String str43,
 		
-		boolean str43){
+		boolean str44){
 	setVals(str, str2, str3, str4, str5,
 		str6, str7, str8, str9, str10,
 		str11, str12, str13, str14, str15,
@@ -101,7 +106,7 @@ public class EmpTerminate{
 		str26, str27, str28, str29, str30,
 		str31, str32, str33, str34, str35,
 		str36, str37, str38, str39, str40,
-		str41, str42,str43);
+		str41, str42,str43, str44);
 		
     }
 			
@@ -122,12 +127,13 @@ public class EmpTerminate{
 		String str28, String str29, String str30,
 		
 		String str31, String str32, String str33,
-		String str34, int str35, double str36,
+		String str34, int str35, String str36,
 		
-		double str37, double str38, double str39,
-		String str40, String str41, String str42,
+		double str37,
+		double str38, double str39, double str40,
+		String str41, String str42, String str43,
 		
-		boolean str43){
+		boolean str44){
 	setId(str);
 	setEmployee_id(str2);
 	setFull_name(str3);
@@ -169,16 +175,17 @@ public class EmpTerminate{
 	setZoom_to_email(str33);
 	setBadge_returned(str34);
 	setHours_per_week(str35);
+	setPayRate(str36);
 	
-	setPay_period_worked_hrs(str36);
-	setComp_time(str37);
-	setVac_time(str38);
-	setPto(str39);
-	setRemarks(str40);
+	setPay_period_worked_hrs(str37);
+	setComp_time(str38);
+	setVac_time(str39);
+	setPto(str40);
+	setRemarks(str41);
 	
-	setSubmitted_by_id(str41);
-	setSubmitted_date(str42);
-	setRecipients_informed(str43);
+	setSubmitted_by_id(str42);
+	setSubmitted_date(str43);
+	setRecipients_informed(str44);
     }
     public boolean equals(Object obj){
 	if(obj instanceof EmpTerminate){
@@ -225,7 +232,27 @@ public class EmpTerminate{
 	return job_ids;
     }
     public String getJob_grade(){ // adding one job a time
+	if(job_grade.isEmpty()){
+	    findProfile();
+	    if(profile != null){
+		job_grade = ""+profile.getGrade();
+	    }
+	}
 	return job_grade;
+    }
+    public String getPayRate(){
+	if(pay_rate.isEmpty()){
+	    findProfile();
+	    if(profile != null){
+		pay_rate = ""+profile.getHourlyRate();
+	    }
+	}
+	return pay_rate;
+    }
+    public void setPayRate(String val){
+	if(val != null && !val.isEmpty()){
+	    pay_rate = val;
+	}
     }
     public String getJob_step(){ // adding one job a time
 	return job_step;
@@ -1134,7 +1161,43 @@ public class EmpTerminate{
     public boolean needSend(){
 	return recipients_informed.isEmpty();
     }
-    
+    // needed for profile
+    void findBenefitGroups(){
+	if(benefitGroups == null){
+	    BenefitGroupList tl = new BenefitGroupList();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<BenefitGroup> ones = tl.getBenefitGroups();
+		if(ones != null && ones.size() > 0){
+		    benefitGroups = ones;
+		}
+	    }
+	}
+    }
+    String findProfile(){
+	String back = "";
+	if(benefitGroups == null){
+	    findBenefitGroups();
+	}
+	if(emp == null) getEmployee();
+	if(emp != null && benefitGroups != null){
+	    ProfileList pl = new ProfileList(Helper.getToday(),
+					     benefitGroups,
+					     emp.getEmployee_number());
+	    back = pl.findOne();
+	    if(back.isEmpty()){
+		List<Profile> ones = pl.getProfiles();
+		if(ones != null && ones.size() > 0){
+		    profile = ones.get(0);
+		}
+	    }
+	}
+	else{
+	    back = "employee obj not found or benefit groups are missing ";
+	}
+	return back;
+	
+    }
     public String doSave(){
 	
 	String back="";
@@ -1145,7 +1208,7 @@ public class EmpTerminate{
 	    "?,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "?,?,null)";
+	    "?,?,?,null)";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    back = "Could not connect to DB";
@@ -1317,22 +1380,28 @@ public class EmpTerminate{
 	    else
 		pstmt.setString(33, badge_returned);
 	    pstmt.setInt(34, hours_per_week);
-	    pstmt.setDouble(35, pay_period_worked_hrs);
-	    pstmt.setDouble(36, comp_time);
-	    
-	    pstmt.setDouble(37, vac_time);
-	    pstmt.setDouble(38, pto);
-	    if(remarks.isEmpty())
-		pstmt.setNull(39, Types.VARCHAR);
-	    else	    
-		pstmt.setString(39, remarks);
-	    if(submitted_by_id.isEmpty())
-		pstmt.setNull(40, Types.VARCHAR);
+	    if(pay_rate.isEmpty()){
+		pstmt.setNull(35, Types.VARCHAR);
+	    }
 	    else
-		pstmt.setString(40, submitted_by_id);
+		pstmt.setString(35, pay_rate);
+
+	    pstmt.setDouble(36, pay_period_worked_hrs);
+	    pstmt.setDouble(37, comp_time);
+	    
+	    pstmt.setDouble(38, vac_time);
+	    pstmt.setDouble(39, pto);
+	    if(remarks.isEmpty())
+		pstmt.setNull(40, Types.VARCHAR);
+	    else	    
+		pstmt.setString(40, remarks);
+	    if(submitted_by_id.isEmpty())
+		pstmt.setNull(41, Types.VARCHAR);
+	    else
+		pstmt.setString(41, submitted_by_id);
 	    if(submitted_date.isEmpty())
 		submitted_date = Helper.getToday();
-	    pstmt.setDate(41, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
+	    pstmt.setDate(42, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
 	}catch(Exception ex){
 	    back += ex;
 	}
@@ -1356,7 +1425,7 @@ public class EmpTerminate{
 	    "personal_email=?,email=?,email_account_action=?,forward_emails=?,forward_days_cnt=?,"+
 	    "drive_action=?,drive_to_person_email=?,drive_to_shared_emails=?,calendar_action=?,calendar_to_email=?,"+
 
-	    "zoom_action=?,zoom_to_email=?,badge_returned=?,hours_per_week=?,pay_period_worked_hrs=?,"+
+	    "zoom_action=?,zoom_to_email=?,badge_returned=?,hours_per_week=?,pay_rate=?, pay_period_worked_hrs=?,"+
 	    "comp_time=?,vac_time=?,pto=?,remarks=?,submitted_by_id=?,"+
 	    "submitted_date=? "+ // date
 	    " where id = ? "; 
@@ -1387,7 +1456,7 @@ public class EmpTerminate{
 	    pstmt = con.prepareStatement(qq);
 	    back = setParams(pstmt);
 	    if(back.isEmpty()){
-		pstmt.setString(42, id);
+		pstmt.setString(43, id);
 		pstmt.executeUpdate();
 	    }
 	}
@@ -1449,7 +1518,7 @@ public class EmpTerminate{
 	    "personal_email,email,email_account_action,forward_emails,forward_days_cnt,"+
 	    "drive_action,drive_to_person_email,drive_to_shared_emails,calendar_action,calendar_to_email,"+
 
-	    "zoom_action,zoom_to_email,badge_returned,hours_per_week,pay_period_worked_hrs,"+
+	    "zoom_action,zoom_to_email,badge_returned,hours_per_week,pay_rate,pay_period_worked_hrs,"+
 	    "comp_time,vac_time,pto,remarks,submitted_by_id,"+
 	    "date_format(submitted_date,'%m/%d/%Y'), "+ // date
 	    "recipients_informed "+
@@ -1508,15 +1577,16 @@ public class EmpTerminate{
 			rs.getString(34),
 			rs.getInt(35),
 			
-			rs.getDouble(36),
+			rs.getString(36),
 			rs.getDouble(37),
 			rs.getDouble(38),
 			rs.getDouble(39),
-			rs.getString(40),
+			rs.getDouble(40),
 			
 			rs.getString(41),
 			rs.getString(42),
-			rs.getString(43) != null);
+			rs.getString(43),
+			rs.getString(44) != null);
 	    }
 	}
 	catch(Exception ex){
@@ -1572,13 +1642,14 @@ public class EmpTerminate{
     zoom_to_email varchar(80),
     badge_returned varchar(32),
     hours_per_week int,
-    
+
+    pay_rate varchar(64),
     pay_period_worked_hrs double,
     comp_time double,
     vac_time double,
     pto  double,
-    remarks text,
     
+    remarks text,
     submitted_by_id int unsigned,
     submitted_date date,
     recipients_informed char(1),
@@ -1588,6 +1659,9 @@ public class EmpTerminate{
     foreign key(supervisor_id) references employees(id),    
     foreign key(submitted_by_id) references employees(id)
     )engine=InnoDB;
+
+    //
+    alter table emp_terminations add pay_rate varchar(64) after hours_per_week;
     
      */
 

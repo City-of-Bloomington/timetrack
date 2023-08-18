@@ -101,7 +101,7 @@ public class EmpTerminateList{
 	    "personal_email,email,email_account_action,forward_emails,forward_days_cnt,"+
 	    "drive_action,drive_to_person_email,drive_to_shared_emails,calendar_action,calendar_to_email,"+
 
-	    "zoom_action,zoom_to_email,badge_returned,hours_per_week,pay_period_worked_hrs,"+
+	    "zoom_action,zoom_to_email,badge_returned,hours_per_week,pay_rate,pay_period_worked_hrs,"+
 	    "comp_time,vac_time,pto,remarks,submitted_by_id,"+
 	    "date_format(submitted_date,'%m/%d/%Y'), "+ // date
 	    "recipients_informed "+
@@ -218,16 +218,17 @@ public class EmpTerminateList{
 				     rs.getString(33),
 				     rs.getString(34),
 				     rs.getInt(35),
-				     
-				     rs.getDouble(36),
+
+				     rs.getString(36),
 				     rs.getDouble(37),
 				     rs.getDouble(38),
 				     rs.getDouble(39),
-				     rs.getString(40),
-				     
+				     rs.getDouble(40),
 				     rs.getString(41),
+				     
 				     rs.getString(42),
-				     rs.getString(43) != null);
+				     rs.getString(43),
+				     rs.getString(44) != null);
 		if(!terms.contains(one))
 		    terms.add(one);
 	    }

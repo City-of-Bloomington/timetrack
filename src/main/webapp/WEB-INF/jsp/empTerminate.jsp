@@ -91,6 +91,9 @@
 		<td>Job Step</td>
 		<td><s:textfield name="term.job_step" value="%{term.job_step}" size="30" maxlength="100" /> </td>
 	    </tr>
+	    <tr><td>Rate of Pay</td>
+		<td><s:textfield name="term.payRate" value="%{term.payRate}" size="30" maxlength="100" /> </td>
+	    </tr>	    
 	    <tr><td>Supervisor Name</td>
 		<td><s:property value="term.supervisor" /> </td>
 		<td>Supervisor Phone</td>
