@@ -104,15 +104,15 @@
 	    <caption>Permanent Mailing Address</caption>
 	    <tr>
 		<td>Address</td>
-		<td><s:textfield name="term.emp_address" value="%{term.emp_address}" size="30" maxlength="100" /> </td>
+		<td><s:textfield name="term.emp_address" value="%{term.emp_address}" size="30" maxlength="100" required="true" /> </td>
 		<td>City</td>
-		<td><s:textfield name="term.emp_city" value="%{term.emp_city}" size="30" maxlength="100" /> </td>		
+		<td><s:textfield name="term.emp_city" value="%{term.emp_city}" size="30" required="true" maxlength="100" /> </td>		
 	    </tr>		
 	    <tr>
 		<td>State</td>
-		<td><s:textfield name="term.emp_state" value="%{term.emp_state}" size="10" maxlength="30" /> </td>
+		<td><s:textfield name="term.emp_state" value="%{term.emp_state}" size="10" maxlength="30" required="true" /> </td>
 		<td>Zip Code</td>
-		<td><s:textfield name="term.emp_zip" value="%{term.emp_zip}" size="10" maxlength="10" /> </td>		
+		<td><s:textfield name="term.emp_zip" value="%{term.emp_zip}" size="10" maxlength="10" required="true" /> </td>		
 	    </tr>
 	    <tr>
 		<td>Phone Number</td>

@@ -11,6 +11,37 @@
 	    <s:set var="errors" value="%{errors}" />			
 	    <%@ include file="errors.jsp" %>
 	</s:elseif>
+	<s:if test="hasTerms()">
+	    <br /><br />
+	    <table class="width-full">
+		<caption> The following Terminations are not final yet, you need to review and complete the process of notification</caption>
+		<thead>
+		    <tr>
+			<th>ID</th>
+			<th>Employee</th>				
+			<th>Job Titles</th>
+			<th>Group</th>
+			<th>Submitted Date</th>
+			<th>Action </th>
+		    </tr>
+		</thead>
+		<tbody>
+		    <s:iterator var="one" value="%{terms}">
+			<tr>	    
+			    <tr>
+				<td><s:property value="id" /></td>
+				<td><s:property value="full_name" /></td>
+				<td><s:property value="jobTitles" /></td>
+				<td><s:property value="group.name" /></a></td>
+				<td><s:property value="submitted_date" /></td>
+				<td><a href="<s:property value='#application.url' />terminateJobs.action?id=<s:property value='id' />"> Review </a>
+				</td>
+			    </tr>
+			</tr>
+		    </s:iterator>
+		</tbody>
+	    </table>
+	</s:if>
 	<z:if test="hasGroups()">
 	    <div class="width-one-half">
 		<s:if test="hasMoreThanOneGroup()">
@@ -62,37 +93,6 @@
 		</s:if>
 	    </div>
 	</z:if>
-	<s:if test="hasTerms()">
-	    <br /><br />
-	    <table class="width-full">
-		<caption> The following Terminations are not final yet, you need to send the notifications</caption>
-		<thead>
-		    <tr>
-			<th>ID</th>
-			<th>Employee</th>				
-			<th>Job Titles</th>
-			<th>Group</th>
-			<th>Submitted Date</th>
-			<th>Action </th>
-		    </tr>
-		</thead>
-		<tbody>
-		    <s:iterator var="one" value="%{terms}">
-			<tr>	    
-			    <tr>
-				<td><s:property value="id" /></td>
-				<td><s:property value="full_name" /></td>
-				<td><s:property value="jobTitles" /></td>
-				<td><s:property value="group.name" /></a></td>
-				<td><s:property value="submitted_date" /></td>
-				<td><a href="<s:property value='#application.url' />terminateJobs.action?id=<s:property value='id' />"> Review </a>
-				</td>
-			    </tr>
-			</tr>
-		    </s:iterator>
-		</tbody>
-	    </table>
-	</s:if>
     </s:form>
 </div>
 <%@ include file="footer.jsp" %>
