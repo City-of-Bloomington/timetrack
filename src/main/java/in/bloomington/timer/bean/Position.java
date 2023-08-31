@@ -275,7 +275,7 @@ public class Position implements java.io.Serializable{
 	String msg="", str="";
 	String qq = " update positions set name=?, alias=?, description=?,inactive=? where id=?";
 	if(name.isEmpty()){
-	    msg = "Earn code name is required";
+	    msg = "Name is required";
 	    return msg;
 	}
 	con = UnoConnect.getConnection();

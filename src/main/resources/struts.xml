@@ -157,6 +157,13 @@
       <result name="error">/WEB-INF/jsp/term_notifications.jsp</result>
       <result name="success">/WEB-INF/jsp/term_notifications.jsp</result>
     </action>
+    <action name="termManager" 
+	    class="in.bloomington.timer.action.TermManagerAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/term_manager.jsp</result>
+      <result name="error">/WEB-INF/jsp/term_manager.jsp</result>
+      <result name="success">/WEB-INF/jsp/term_manager.jsp</result>
+    </action>    
     <action name="search_terminations" 
 	    class="in.bloomington.timer.action.SearchEmpTermsAction" 
 	    method="execute">
@@ -485,7 +492,14 @@
 		  <result name="input">/WEB-INF/jsp/activeEmployees.jsp</result>		
 		  <result name="error">/WEB-INF/jsp/activeEmployees.jsp</result>
 		  <result name="success">/WEB-INF/jsp/activeEmployees.jsp</result>
-		</action>		
+		</action>
+		<action name="activeEmails" 
+			class="in.bloomington.timer.action.ActiveEmailsAction" 
+			method="execute">
+		  <result name="input">/WEB-INF/jsp/activeEmails.jsp</result>		
+		  <result name="error">/WEB-INF/jsp/activeEmails.jsp</result>
+		  <result name="success">/WEB-INF/jsp/activeEmails.jsp</result>
+		</action>				
 		<action name="importEmployees" 
 			class="in.bloomington.timer.action.ImportEmployeeAction" 
 			method="execute">

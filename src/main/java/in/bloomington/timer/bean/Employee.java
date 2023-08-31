@@ -181,9 +181,22 @@ public class Employee implements Serializable, Comparable<Employee>{
 	getGroups();
 	return groups != null && groups.contains(gg);
     }
+    public boolean isTermManager(){
+	TermManagerList tml = new TermManagerList();
+	tml.setEmployee_id(id);
+	String back = tml.find();
+	if(back.isEmpty()){
+	    List<TermManager> ones = tml.getManagers();
+	    if(ones != null && ones.size() > 0){
+		return true;
+	    }
+	}
+	return false;
+    }
     public String getUsername(){
 	return username;
     }
+    
     public String getFull_name(){
 	if(full_name.isEmpty()){
 	    full_name = first_name;

@@ -50,7 +50,9 @@
 	    </ul>
 	    <h2>Configurations</h2>
 	    <ul>
+		<li><a href="<s:property value='#application.url'/>termManager.action">Termination Managers </a></li>
 		<li><a href="<s:property value='#application.url'/>termRecipient.action">Termination Notification Recipients </a></li>
+		
 	    </ul>
 	    <!-- 
 	    <h2>Employee Data Import</h2>
@@ -96,7 +98,7 @@
 
 	    <h2>Reports</h2>
 	    <ul>
-		<li><a href="<s:property value='#application.url'/>activeEmployees.action">Active Employees</a></li>								
+		<li><a href="<s:property value='#application.url'/>activeEmails.action">Active Employee Emails</a></li>
 		<li><a href="<s:property value='#application.url'/>reportHand.action">HAND MPO</a></li>
 		<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO</a></li>
 		<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA</a></li>

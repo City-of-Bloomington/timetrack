@@ -150,14 +150,13 @@ public class HandleTermNotification{
 	return msg;
     }
     String composeText(EmpTerminate term, Employee emp){
-	String body_text ="This is an automated message from the Timetrack timekeeping system.\n\n"+
-	    "On "+term.getSubmitted_date()+" submitted an employee termination request for .\n\n"+
+	String body_text ="This is an automated message from the TimeTrack timekeeping system.\n\n"+
+	    "On"+term.getSubmitted_date()+" you submitted an employee termination request for .\n\n"+
 	    emp.getFull_name()+":\n\n"+
 	    "for the job(s): "+term.getJobTitles()+"\n\n"+
-	    "You need to send the termination notifications for other Department  to complete the termination process. Go to timetrack \n\n"+
-	    url+"\n\n"+
+	    "To send the termination notifications for other departments and complete the termination proces  go to <a href=\""+url+"\">TimeTack </a>\n"+ 
 	    "After you login \n\n"+
-	    "Under 'My Groups' tab, you will see the list of your previous terminations that lack notification\n\n."+
+	    "'My Groups' tab, you will see the list of your previous terminations that lack notification\n\n."+
 	    "If you have any questions or support needs, please contact the ITS Helpdesk at (812) 349-3454 or helpdesk@bloomington.in.gov for assistance.\n\n"+
 	    "Usage guidelines are available here:\n"+
 	    "https://docs.google.com/document/d/1krOtCGtJ_SaPCOBF0cv5bMu-q6Buv1KI68PjS0TrZl0/edit#heading=h.ye6yj01u0is4\n\n"+

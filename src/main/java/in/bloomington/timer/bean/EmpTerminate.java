@@ -460,9 +460,7 @@ public class EmpTerminate{
     }
     public boolean hasBenefits(){
 	getEmployment_type();
-	if(employment_type.equals("Temp")) return false;
-	// return pto > 0 || comp_time > 0 || vac_time > 0;
-	return true;
+	return !employment_type.equals("Temp");
     }
     public Employee getSubmitted_by(){
 	if(submitted_by == null && !submitted_by_id.isEmpty()){

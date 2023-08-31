@@ -345,7 +345,7 @@ public class EmployeeList extends CommonInc{
 	    }
 	    if(used_time_track){
 		if(!qw.isEmpty()) qw += " and ";								
-		qw += " e.id in (select employee_id from time_documents where initiated > (NOW() - INTERVAL 14 DAY)) ";
+		qw += " e.id in (select employee_id from time_documents where initiated > (NOW() - INTERVAL 28 DAY)) ";
 	    }
 	    if(exclude_recent_records){
 		if(!qw.isEmpty()) qw += " and ";								

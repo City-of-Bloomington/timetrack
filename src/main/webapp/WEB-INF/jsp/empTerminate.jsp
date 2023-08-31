@@ -132,7 +132,7 @@
 		</tr>
 		<tr>
 		    <td>Email Account Requested Action</td>
-		    <td><s:select name="term.email_account_action" value="%{term.email_account_action}" list="#{'Archive':'Archive','Personal':'Transfer to Person'}" /></td>
+		    <td><s:select name="term.email_account_action" value="%{term.email_account_action}" list="#{'Archive':'Archive','Personal':'Forward to'}" /></td>
 		    <td>If 'Forward To' is selected, enter the email address(es) where email should be forwarded:
 			<s:textfield name="term.forward_email" value="%{term.forward_email}" size="50" maxlength="100" />
 			<s:textfield name="term.forward_email2" value="%{term.forward_email2}" size="50" maxlength="100" />
@@ -171,7 +171,7 @@
 		</tr>
 	    </table>
 	</s:if>
-	<s:if test="term.hasBenefits()">
+	<s:if test="hasBenefts()">
 	    <table border="1">
 		<caption>Benefit Time Being Paid (Hours):</caption>
 		<tr><td>Number of Hours Worked in the Current Pay Period?</td>
