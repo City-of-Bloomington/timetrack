@@ -29,6 +29,7 @@ public class Employee implements Serializable, Comparable<Employee>{
 	email="", 
 	username="", // unique
 	full_name="", first_name="", last_name="";
+    String phone = ""; //tempoarary needed for termination of an employee
     String added_date = "";
     String effective_date = ""; // for new record
     String[] roles = {""};
@@ -223,6 +224,9 @@ public class Employee implements Serializable, Comparable<Employee>{
     public String[] getRoles(){
 	return roles;
     }
+    public String getPhone(){
+	return phone;
+    }
     public String getRolesText(){
 	String ret = "";
 	if(!roleSet.isEmpty()){
@@ -323,6 +327,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 	}
     }
     // needed for new employee
+    public void setPhone(String val){
+	if(val != null)
+	    phone = val;
+    }
     public void setDepartment_id(String val){
 	if(val != null && !val.equals("-1")){
 	    department_id = val;

@@ -30,7 +30,7 @@
 		<s:select name="last_pay_period_date" value="%{last_pay_period_date}" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick End Date" required="required" />
 	    </div>	    
 	</div>
-	<s:if test="hasMultiJobs()">
+	<s:if test="hasJobs()">
 	    <table class="width-full">
 		<thead>
 		    <tr>
@@ -60,6 +60,9 @@
 	    <div class="button-group">
 		<s:submit name="action" type="button" value="Next" class="button"/>
 	    </div>
+	    <div class="button-group">
+		<s:submit name="action" type="button" value="Final Termination" class="button"/> (all jobs)
+	    </div>	    
 	</s:if>
     </s:form>
 </div>

@@ -649,6 +649,43 @@ public class EmpTerminate{
 	if(val != null)
 	    supervisor_id=val;
     }
+    public String findSupervisor(){
+	String back = "";
+	if(supervisor == null){
+	    getGroup();
+	    if(!group_id.isEmpty()){
+		GroupManagerList gml = new GroupManagerList();
+		gml.setGroup_id(group_id);
+		gml.setActiveOnly();
+		gml.setNotExpired();
+		gml.setApproversOnly();
+		back = gml.find();
+		if(back.isEmpty()){
+		    List<GroupManager> managers = gml.getManagers();
+		    if(managers != null && managers.size() > 0){
+			// we pick the first (primary)
+			supervisor = managers.get(0).getEmployee();
+		    }
+		}
+	    }
+	}
+	return back;
+    }
+    public String findSupervisorPhone(EnvBean bean){
+	//
+	String back = "";
+	if(supervisor != null && bean != null){
+	    EmpList empl = new EmpList(bean, supervisor.getUsername());
+	    back = empl.find();
+	    if(back.isEmpty()){
+		List<Employee> emps = empl.getEmps();
+		if(emps != null && emps.size() > 0){
+		    supervisor_phone = emps.get(0).getPhone();
+		}
+	    }
+	}
+	return back;
+    }
     public void setSupervisor(Employee val){
 	if(val != null){
 	    supervisor =val;

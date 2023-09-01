@@ -24,7 +24,8 @@ public class GroupManagerList{
     boolean active_only = false,approversOnly=false,
 	processorsOnly=false, exclude_reviewers = false,
 	reviewersOnly=false, timeMaintainOnly = false,
-	approversAndProcessorsOnly = false;
+	approversAndProcessorsOnly = false,
+	notExpired = false;
 		
     List<GroupManager> managers = null;
     public GroupManagerList(){
@@ -78,6 +79,9 @@ public class GroupManagerList{
     }
     public void excludeReviewers(){
 	exclude_reviewers = true;
+    }
+    public void setNotExpired(){
+	notExpired = true;
     }
     public void execludeManager_id(String val){
 	if(val != null)
@@ -150,6 +154,10 @@ public class GroupManagerList{
 	if(active_only){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " gm.inactive is null ";
+	}
+	if(notExpired){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += " gm.expire_date is null ";
 	}
 	if(!qw.isEmpty()){
 	    qq += " where "+qw;

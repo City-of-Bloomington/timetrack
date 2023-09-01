@@ -276,6 +276,11 @@ public class EmpList extends CommonInc{
 		    str = email.get().toString();
 		    emp.setEmail(str);
 		}
+		Attribute phone = (Attribute)(atts.get("telephoneNumber"));
+		if (email != null){
+		    str = phone.get().toString();
+		    emp.setPhone(str);
+		}		
 		if(emps == null){
 		    emps = new ArrayList<>();
 		}
