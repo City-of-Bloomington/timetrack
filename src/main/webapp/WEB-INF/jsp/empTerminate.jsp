@@ -2,7 +2,6 @@
 <div class="internal-page">
     
     <s:form action="terminateJobs" id="form_id" method="post">
-	
 	<s:if test="term.id != ''">
 	    <s:hidden name="term.id" value="%{term.id}" />
 	</s:if>
@@ -19,10 +18,6 @@
 	<s:hidden name="term.last_pay_period_date" value="%{term.last_pay_period_date}" />
 	<s:if test="term.id != ''">
 	    <h1>Employee Termination <s:property value="term.id" /> </h1>
-	    <p>If you need to update any data, do so and hit the 'Save Changes'.
-		<br />
-		If all data are correct, do not forget to click on 'Send Notification' so that related parties are informed
-	    </p>
 	</s:if>	    
 	<s:else>
 	    <h1>New Employee Termination </h1>
@@ -34,6 +29,12 @@
 	<s:if test="hasErrors()">
 	    <s:set var="errors" value="%{errors}" />
 	    <%@ include file="errors.jsp" %>
+	</s:if>
+	<s:if test="term.id != ''">	
+	    <p>If you need to update any data, do so and hit the 'Save Changes'.
+		<br />
+		If all data are correct, do not forget to click on 'Send Notification' so that related parties are informed
+	    </p>
 	</s:if>
 	<p><strong>Instructions </strong></p>
 	<ul>
@@ -125,53 +126,51 @@
 		<td><s:textfield name="term.personal_email" value="%{term.personal_email}" size="30" maxlength="100" /> </td>
 	    </tr>	    
 	</table>
-	<s:if test="term.hasEmail()">
-	    <table border="1"><caption>ITS Information </caption>
-		<tr><td>Employee Email Address</td>
-		    <td colspan="2"><s:property value="term.email" /></td>
-		</tr>
-		<tr>
-		    <td>Email Account Requested Action</td>
-		    <td><s:select name="term.email_account_action" value="%{term.email_account_action}" list="#{'Archive':'Archive','Personal':'Forward to'}" /></td>
-		    <td>If 'Forward To' is selected, enter the email address(es) where email should be forwarded:
-			<s:textfield name="term.forward_email" value="%{term.forward_email}" size="50" maxlength="100" />
-			<s:textfield name="term.forward_email2" value="%{term.forward_email2}" size="50" maxlength="100" />
-			<s:textfield name="term.forward_email3" value="%{term.forward_email3}" size="50" maxlength="100" />
-			<s:textfield name="term.forward_email4" value="%{term.forward_email4}" size="50" maxlength="100" />
-		    </td>
-		</tr>
-		<tr><td>Forward Email for # Days:</td>
-		    <td><s:textfield name="term.forward_days_cnt" value="%{term.forward_days_cnt}" size="2" maxlength="2" /></td>
-		</tr>
-		<tr><td>Google Drive/H Drive Requested Action:</td>
-		    <td><s:select name="term.drive_action" value="%{term.drive_action}" list="#{'Archive':'Archive','Person':'Transfer To Person','Shared':'Transfer To Shared Drive'}" /></td>
-		    <td>If "Transfer To Person" is selected, enter the email address of the person who should receive the files:<br />
-			<s:textfield name="term.drive_to_person_email" value="%{term.drive_to_person_email}" size="50" maxlength="100" />
-		    </td>
-		</tr>
-		<tr><td></td><td></td>
-		    <td>If 'Transfer to Shared Drive' is selected, enter the email address(es) of the people who should have access to the Shared Drive: <br />
-			<s:textfield name="term.drive_to_shared_email" value="%{term.drive_to_shared_email}" size="50" maxlength="100" /><br />
-			<s:textfield name="term.drive_to_shared_email2" value="%{term.drive_to_shared_email2}" size="50" maxlength="100" /><br />
-			<s:textfield name="term.drive_to_shared_email3" value="%{term.drive_to_shared_email3}" size="50" maxlength="100" /><br />
-			<s:textfield name="term.drive_to_shared_email4" value="%{term.drive_to_shared_email4}" size="50" maxlength="100" />
-		    </td>
-		</tr>
-		<tr><td>Google Calendar Requested Action:</td>
-		    <td><s:select name="term.calendar_action" value="%{term.calendar_action}" list="#{'Close':'Close','Transfer':'Transfer To'}" /></td>
-		    <td>If "Transfer To" is selected, enter the email address of the person who should get the Google Calendar Events
-			<s:textfield name="term.calendar_to_email" value="%{term.calendar_to_email}" size="30" maxlength="100" />
-		    </td>
-		</tr>
-		<tr><td>Zoom Account Requested Action:</td>
-		    <td><s:select name="term.zoom_action" value="%{term.zoom_action}" list="#{'close':'Close','Transfer':'Transfer To'}" /></td>
-		    <td>If 'Transfer To' is selected, enter the email address of the person who should get the Zoom content
-			<s:textfield name="term.zoom_to_email" value="%{term.zoom_to_email}" size="30" maxlength="100" />
-		    </td>
-		</tr>
-	    </table>
-	</s:if>
-	<s:if test="hasBenefts()">
+	<table border="1"><caption>ITS Information </caption>
+	    <tr><td>Employee Email Address</td>
+		<td colspan="2"><s:property value="term.email" /></td>
+	    </tr>
+	    <tr>
+		<td>Email Account Requested Action</td>
+		<td><s:select name="term.email_account_action" value="%{term.email_account_action}" list="#{'Archive':'Archive','Personal':'Forward to'}" /></td>
+		<td>If 'Forward To' is selected, enter the email address(es) where email should be forwarded:
+		    <s:textfield name="term.forward_email" value="%{term.forward_email}" size="50" maxlength="100" />
+		    <s:textfield name="term.forward_email2" value="%{term.forward_email2}" size="50" maxlength="100" />
+		    <s:textfield name="term.forward_email3" value="%{term.forward_email3}" size="50" maxlength="100" />
+		    <s:textfield name="term.forward_email4" value="%{term.forward_email4}" size="50" maxlength="100" />
+		</td>
+	    </tr>
+	    <tr><td>Forward Email for # Days:</td>
+		<td><s:textfield name="term.forward_days_cnt" value="%{term.forward_days_cnt}" size="2" maxlength="2" /></td>
+	    </tr>
+	    <tr><td>Google Drive/H Drive Requested Action:</td>
+		<td><s:select name="term.drive_action" value="%{term.drive_action}" list="#{'Archive':'Archive','Person':'Transfer To Person','Shared':'Transfer To Shared Drive'}" /></td>
+		<td>If "Transfer To Person" is selected, enter the email address of the person who should receive the files:<br />
+		    <s:textfield name="term.drive_to_person_email" value="%{term.drive_to_person_email}" size="50" maxlength="100" />
+		</td>
+	    </tr>
+	    <tr><td></td><td></td>
+		<td>If 'Transfer to Shared Drive' is selected, enter the email address(es) of the people who should have access to the Shared Drive: <br />
+		    <s:textfield name="term.drive_to_shared_email" value="%{term.drive_to_shared_email}" size="50" maxlength="100" /><br />
+		    <s:textfield name="term.drive_to_shared_email2" value="%{term.drive_to_shared_email2}" size="50" maxlength="100" /><br />
+		    <s:textfield name="term.drive_to_shared_email3" value="%{term.drive_to_shared_email3}" size="50" maxlength="100" /><br />
+		    <s:textfield name="term.drive_to_shared_email4" value="%{term.drive_to_shared_email4}" size="50" maxlength="100" />
+		</td>
+	    </tr>
+	    <tr><td>Google Calendar Requested Action:</td>
+		<td><s:select name="term.calendar_action" value="%{term.calendar_action}" list="#{'Close':'Close','Transfer':'Transfer To'}" /></td>
+		<td>If "Transfer To" is selected, enter the email address of the person who should get the Google Calendar Events
+		    <s:textfield name="term.calendar_to_email" value="%{term.calendar_to_email}" size="30" maxlength="100" />
+		</td>
+	    </tr>
+	    <tr><td>Zoom Account Requested Action:</td>
+		<td><s:select name="term.zoom_action" value="%{term.zoom_action}" list="#{'close':'Close','Transfer':'Transfer To'}" /></td>
+		<td>If 'Transfer To' is selected, enter the email address of the person who should get the Zoom content
+		    <s:textfield name="term.zoom_to_email" value="%{term.zoom_to_email}" size="30" maxlength="100" />
+		</td>
+	    </tr>
+	</table>
+	<s:if test="term.hasBenefits()">
 	    <table border="1">
 		<caption>Benefit Time Being Paid (Hours):</caption>
 		<tr><td>Number of Hours Worked in the Current Pay Period?</td>

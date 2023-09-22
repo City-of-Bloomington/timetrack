@@ -53,7 +53,6 @@ public class EmpTerminate{
     List<DepartmentEmployee> departmentEmployees = null;
     List<GroupManager> groupManagers = null;
     List<JobTask> jobs = null;
-    List<JobTask> activeJobs = null; // non-terminated jobs
     List<Document> documents = null;
     Document valid_document = null;
     JobTask job = null;
@@ -228,7 +227,8 @@ public class EmpTerminate{
     public String getJob_id(){ // adding one job a time
 	return job_id;
     }
-    public String getJob_ids(){ 
+    public String getJob_ids(){
+	findJobIds();
 	return job_ids;
     }
     public String getJob_grade(){ // adding one job a time
@@ -239,6 +239,16 @@ public class EmpTerminate{
 	    }
 	}
 	return job_grade;
+    }
+    void findJobIds(){
+	if(job_ids.isEmpty()){
+	    if(jobs != null){
+		for(JobTask one:jobs){
+		    if(!job_ids.isEmpty()) job_ids += ",";
+		    job_ids += one.getId();
+		}
+	    }
+	}
     }
     public String getPayRate(){
 	if(pay_rate.isEmpty()){
@@ -261,6 +271,9 @@ public class EmpTerminate{
 	return employment_type;
     }
     public String getSupervisor_id(){
+	if(supervisor_id.isEmpty() && supervisor != null){
+	    supervisor_id = supervisor.getId();
+	}
 	return supervisor_id;
     }
     public String getSupervisor_phone(){
@@ -530,8 +543,8 @@ public class EmpTerminate{
 	    if(job_id.isEmpty()){
 		job_id = val; // we need one to get group and dept info
 	    }
-	    if(!job_ids.isEmpty())job_ids += ","; // comma separated
-	    job_ids += val;
+	    // if(!job_ids.isEmpty())job_ids += ","; // comma separated
+	    // job_ids += val;
 	}
     }    
     public String toString(){
@@ -552,6 +565,17 @@ public class EmpTerminate{
     public boolean hasJob(){
 	return !job_id.isEmpty();
     }
+    public void setJobs(List<JobTask> vals){ // needed for final term
+	if(vals != null){
+	    jobs = vals;{
+	    if(job == null)
+		job = jobs.get(0); //  we need one to get info
+
+	    }
+	    job_ids = "";
+	    findJobIds();
+	}
+    }
     //
     // when dealing with one job termination
     //
@@ -562,8 +586,6 @@ public class EmpTerminate{
 	    if(back.isEmpty()){
 		job = one;
 		employee_id = job.getEmployee_id();
-		if(jobTitles.isEmpty())
-		    jobTitles = one.getName();
 	    }
 	}
 	return job;
@@ -581,8 +603,6 @@ public class EmpTerminate{
 			    if(back.isEmpty()){
 				if(jobs == null)
 				    jobs = new ArrayList<>();
-				if(!jobTitles.isEmpty()) jobTitles += ", ";
-				jobTitles += one.getName();
 				employee_id = one.getEmployee_id();
 				jobs.add(one);
 				if(job == null){
@@ -610,8 +630,13 @@ public class EmpTerminate{
 	return jobs;
     }
     public String getJobTitles(){
-	if(jobTitles.isEmpty())
-	    getJobs();
+	getJobs();	
+	if(jobTitles.isEmpty() && jobs != null){
+	    for(JobTask one:jobs){
+		if(!jobTitles.isEmpty()) jobTitles += ", ";
+		jobTitles += one.getName();
+	    }
+	}
 	return jobTitles;
     }
     public boolean hasJobs(){
@@ -665,12 +690,40 @@ public class EmpTerminate{
 		    if(managers != null && managers.size() > 0){
 			// we pick the first (primary)
 			supervisor = managers.get(0).getEmployee();
+			supervisor_id = supervisor.getId();
 		    }
 		}
 	    }
 	}
 	return back;
     }
+    public String findAllJobs(){
+	String back = "";
+	if(jobs == null && !job_id.isEmpty()){
+	    JobTask one = new JobTask(job_id);
+	    back = one.doSelect();
+	    if(back.isEmpty()){
+		job = one;
+	    }
+	    if(employee_id.isEmpty()){
+		employee_id = job.getEmployee_id();
+	    }
+	    JobTaskList jl = new JobTaskList();
+	    jl.setEmployee_id(employee_id);
+	    jl.setNotExpired();
+	    back = jl.find();
+	    if(back.isEmpty()){
+		List<JobTask> ones = jl.getJobs();
+		if(ones != null){
+		    if(ones.size() > 0){
+			jobs = ones;
+		    }
+		}
+	    }
+	}
+	return back;
+    }    
+    
     public String findSupervisorPhone(EnvBean bean){
 	//
 	String back = "";
@@ -934,7 +987,6 @@ public class EmpTerminate{
 	    }
 	}
 	if(job != null && back.isEmpty()){
-	    jobTitles = job.getPosition().getName();
 	    employment_type = job.getSalaryGroup().getName();
 	    group = job.getGroup();
 	    group_id = job.getGroup_id();
@@ -948,43 +1000,9 @@ public class EmpTerminate{
 	}
 	return back;
     }
-    public List<JobTask> getOtherActiveJobs(){
-	return activeJobs;
-    }
-    public boolean hasOtherActiveJobs(){
-	findOthrActiveJobs();
-	return activeJobs != null && activeJobs.size() > 0;
-    }
-    public String getOtherJobTitles(){
-	return other_job_titles;
-    }
     public void setRecipients_informed(boolean val){
 	if(val)
 	    recipients_informed = "y";
-    }    
-    String findOthrActiveJobs(){
-	String back = "";
-	getJobs();
-	if(activeJobs == null && jobs != null && !employee_id.isEmpty()){
-	    JobTaskList jl = new JobTaskList();
-	    jl.setEmployee_id(employee_id);
-	    jl.setNotExpired();
-	    jl.setCurrentOnly();
-	    back = jl.find();
-	    List<JobTask> ones = jl.getJobs();
-	    if(ones != null && ones.size() > 0){
-		for(JobTask one:ones){
-		    if(!jobs.contains(one)){
-			if(activeJobs == null)
-			    activeJobs = new ArrayList<>();
-			activeJobs.add(one);
-			if(!other_job_titles.isEmpty()) other_job_titles +=", ";
-			other_job_titles += one.getName();
-		    }
-		}
-	    }
-	}
-	return back;
     }
     public String populateMulitJobs(){
 	String back = "";
@@ -996,7 +1014,7 @@ public class EmpTerminate{
 	    if(back.isEmpty()){
 		for(int i=1;i<jobs.size();i++){
 		    if(!jobTitles.isEmpty()) jobTitles +=", ";
-		    jobTitles += jobs.get(i).getPosition().getName();
+		    jobTitles += jobs.get(i).getName();
 		}
 	    }
 	}
@@ -1089,6 +1107,7 @@ public class EmpTerminate{
 	    }
 	}
     }
+    
     boolean hasDocuments(){
 	findDocuments();
 	return documents != null && documents.size() > 0;
@@ -1096,7 +1115,6 @@ public class EmpTerminate{
     public String findDocumentForInfo(){
 	String back = "";
 	String pay_pp_id = getPay_period_id();
-	System.err.println(" pp id "+pay_pp_id);
 	if(!pay_pp_id.isEmpty()){
 	    String msg = findValidDocument(pay_pp_id);
 	    if(!msg.isEmpty()){
@@ -1107,7 +1125,6 @@ public class EmpTerminate{
 		if(pay_pp_int > -1){
 		    for(int jj=1;jj<3;jj++){
 			pay_pp_id = ""+(pay_pp_int+jj);
-			System.err.println("loop pp id "+pay_pp_id);
 			msg = findValidDocument(pay_pp_id);
 			if(msg.isEmpty() && valid_document != null){
 			    break;
@@ -1196,6 +1213,9 @@ public class EmpTerminate{
     public boolean needSend(){
 	return recipients_informed.isEmpty();
     }
+    public boolean isCompleted(){
+	return !recipients_informed.isEmpty();
+    }    
     // needed for profile
     void findBenefitGroups(){
 	if(benefitGroups == null){
@@ -1504,7 +1524,7 @@ public class EmpTerminate{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return back;
-    }	    
+    }
     public String changeRecipientInformFlag(){
 	Connection con = null;
 	PreparedStatement pstmt = null;

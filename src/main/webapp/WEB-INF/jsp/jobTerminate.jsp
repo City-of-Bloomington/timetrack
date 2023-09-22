@@ -22,7 +22,7 @@
 	<div class="width-one-half">
 	    <div class="form-group">
 		<label>Employee</label>
-		<a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='emp_id' />"> <s:property value="%{term.emp}" /></a>
+		<a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='term.emp_id' />"> <s:property value="%{term.emp}" /></a>
 	    </div>
 	    <div class="form-group">
 		<label>Job Title</label>

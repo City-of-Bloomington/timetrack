@@ -12,11 +12,16 @@
 	    <%@ include file="errors.jsp" %>
 	</s:if>
 	<p>Please select the pay period end date for employee termination </p>
+	<p>Click Next to go to termination form</p> 
 	<div class="width-one-half">
 	    <div class="form-group">
 		<label>Employee</label>
-		<a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='emp_id' />"> <s:property value="%{emp}" /></a>
+		<a href="<s:property value='#application.url' />employee.action?emp_id=<s:property value='emp.id' />"> <s:property value="%{emp}" /></a>
 	    </div>
+	    <div class="form-group">
+		<label>Employee Job</label>
+		<s:property value="job" />
+	    </div>	    
 	    <div class="form-group">
 		<label>Last Pay Period Ending Date</label>
 		<s:select name="last_pay_period_date" value="%{last_pay_period_date}" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick End Date" required="required" />

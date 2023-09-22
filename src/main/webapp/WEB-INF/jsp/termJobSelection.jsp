@@ -5,7 +5,6 @@
 	<h1>Job Termination Selection</h1>
 	<input type="hidden" name="job_id" id="job_id"
 	       value="<s:property value='job_id' />"  />
-	<s:hidden name="job_id" value="%{job_id}" />
 	<s:if test="hasMessages()">
 	    <s:set var="messages" value="%{messages}" />
 	    <%@ include file="messages.jsp" %>
@@ -17,14 +16,20 @@
 	<ul>
 	    <li>Select the last day of pay period </li>
 	    <li>Select the jobs you want to terminate. </li>
-	    <li>After your selection, click on 'Next' to set the other
-		termination fields.</li>
+	    <li>Click Next to terminate the selected job(s).</li>
+	    <li>If you  want to to do final tremination click on 'Final Termination' to go to the temination form.</li>
 	</ul>
 	<div>
 	    <div class="form-group">
-		<label>Group</label>
-		<s:property value="group" />
+		<label>Employee</label>
+		<s:property value="job.employee" />
 	    </div>
+	    <s:if test="hasOneJobOnly()">
+		<div class="form-group">
+		    <label>Job</label>
+		    <s:property value="job" />
+		</div>
+	    </s:if>
 	    <div class="form-group">
 		<label>Last Pay Period Ending Date</label>
 		<s:select name="last_pay_period_date" value="%{last_pay_period_date}" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick End Date" required="required" />

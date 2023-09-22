@@ -120,27 +120,52 @@ public class TerminateJobAction extends TopAction{
 		}
 		else{
 		    addError("No job selected Or last pay period date not set");
-		    // haveMultipleJobsInTheSameGroup();
 		    ret = "select_jobs";
 		    return ret;
 		}
 	    }
 	}
 	else if(action.startsWith("Final")){
+	    // ToDo
+	    if((!job_id.isEmpty() || selected_job_ids!= null) &&
+	       !last_pay_period_date.isEmpty()){
+		getTerm();
+		term.setEmployee_id(emp_id);
+		term.setJob_id(job_id);
+		term.findAllJobs();
+		term.findSupervisor();
+		term.findSupervisorPhone(envBean);
+		term.setSubmitted_by(user);
+		term.setSubmitted_date(Helper.getToday());
+		term.setLast_pay_period_date(last_pay_period_date);
+		back = term.populateOneJob(); // all jobs
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+		back = term.findDocumentForInfo();
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+		term.setAccrualValues();		
+	    }
+	    else{
+		addError("last pay period date not set");
+		ret = "select_jobs";
+		return ret;
+	    }
+	}
+	else if(action.equals("Submit")){ 
 	    if(term != null){
 		term.setSubmitted_by(user);
 		back = term.doSave();
-		if(back.isEmpty()){
-		    back = term.doTerminate();
-		}
 		if(!back.isEmpty()){
 		    addError(back);
 		}
 		else {
-		    addMessage("Successfully terminated");
+		    addMessage("Successfully updated");
 		}
 	    }
-	}
+	}	
 	else if(action.startsWith("Save")){ //update
 	    if(term != null){
 		term.setSubmitted_by(user);
@@ -157,6 +182,7 @@ public class TerminateJobAction extends TopAction{
 	    getTerm();
 	    if(term != null){
 		back = term.doSelect();
+		back = term.doTerminate();
 		TermNotification tn = new TermNotification();
 		tn.setTerm(term);
 		tn.setTermination_id(term.getId());
@@ -171,7 +197,8 @@ public class TerminateJobAction extends TopAction{
 			addError(back);
 		    }
 		    else
-			addMessage("Successfully Sent");
+			addMessage("Send Successfully");
+		    ret = "view";
 		}
 	    }
 	}	
@@ -192,7 +219,8 @@ public class TerminateJobAction extends TopAction{
 	}
     }
     boolean hasOneJobOnly(){
-	return !haveMultipleJobsInTheSameGroup();
+	findAllJobs();
+	return jobs != null && jobs.size() == 1;
     }
     boolean haveMultipleJobsInTheSameGroup(){
 	if(!job_id.isEmpty()){
@@ -246,15 +274,16 @@ public class TerminateJobAction extends TopAction{
 	}
 	return back;
     }    
-    /**
-    public boolean hasMultiJobs(){
-	return jobs != null && jobs.size() > 1;
-    }
-    */
     public boolean hasJobs(){
-	findAllJobs();
+	if(jobs == null)
+	    findAllJobs();
 	return jobs != null && jobs.size() > 0;
-    }    
+    }
+    public boolean hasMultiJobs(){
+	if(jobs == null)
+	    findAllJobs();
+	return jobs != null && jobs.size() > 1;	
+    }
     public List<JobTask> getJobs(){
 	return jobs;
     }
@@ -262,6 +291,13 @@ public class TerminateJobAction extends TopAction{
 	if(job == null && jobs != null){
 	    job = jobs.get(0); // we need one
 	    group = job.getGroup();
+	}
+	else if(!job_id.isEmpty()){
+	    JobTask one = new JobTask(job_id);
+	    String back = one.doSelect();
+	    if(back.isEmpty()){
+		job = one;
+	    }
 	}
 	return job;
     }
@@ -316,7 +352,24 @@ public class TerminateJobAction extends TopAction{
     public String getGroup_id(){
 	return group_id;
     }
-
+    public Employee getEmp(){
+	if(emp == null){
+	    if(emp_id.isEmpty()){
+		getJob();
+		if(job != null){
+		    emp = job.getEmployee();
+		}
+	    }
+	    else if(!emp_id.isEmpty()){
+		Employee one = new Employee(emp_id);
+		String back = one.doSelect();
+		if(back.isEmpty()){
+		    emp = one;
+		}
+	    }
+	}
+	return emp;
+    }
     public void setEmp_id(String val){
 	if(val != null && !val.isEmpty())		
 	    emp_id = val;
@@ -363,13 +416,7 @@ public class TerminateJobAction extends TopAction{
     }
     void findDocuments(){
 	//
-	PayPeriod pp = new PayPeriod();
-	if(pp.findByEndDate(last_pay_period_date)){
-	    pay_period_id = pp.getId();
-	}
-	else{
-	    System.err.println(" could not find pay_period_id for "+expire_date);
-	}	
+	findPayPeriodId();
 	if(documents == null
 	   && selected_job_ids != null
 	   && !pay_period_id.isEmpty()){
@@ -392,6 +439,20 @@ public class TerminateJobAction extends TopAction{
 	    }
 	}
     }
+    String findPayPeriodId(){
+	String back="";
+	if(pay_period_id.isEmpty()){
+	    PayPeriod pp = new PayPeriod();	
+	    if(pp.findByEndDate(last_pay_period_date)){
+		pay_period_id = pp.getId();
+	    }
+	    else{
+		back = " could not find pay_period_id for "+expire_date;
+	    }
+	}
+	return back;
+    }
+    // when terminating all jobs for an employee
     boolean hasDocuments(){
 	findDocuments();
 	return documents != null && documents.size() > 0;
