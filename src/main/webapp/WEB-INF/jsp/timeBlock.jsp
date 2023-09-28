@@ -144,9 +144,9 @@
 					placeholder="(dd.dd)" />
 			</div>
 			<div id="div_amount" style="display:none;" class="form-group">
-				<label>Amount $</label>
-				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="6" id="amount_change"
-					placeholder="(ddd.dd)" />
+			    <label>Amount $</label>
+			    <s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="6" id="amount_change"
+					       placeholder="(ddd.dd)" />
 			</div>
 		</s:elseif>
 		<s:else>
@@ -171,11 +171,18 @@
 					placeholder="(dd.dd)" />
 			</div>
 			<div id="div_amount" class="form-group">
-				<label>Amount $</label>
-				<s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="6" id="amount_change"
-					placeholder="(ddd.dd)" />
+			    <label>Amount $</label>
+			    <s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="6" id="amount_change"
+					       placeholder="(ddd.dd)" />
 			</div>
 		</s:else>
+		<div id="div_notes" style="display:inline;" class="form-group">
+		    <label>Notes</label>
+		    <s:textarea maxlength="512"
+			name="timeBlock.notes"
+			      value="%{timeBlock.notes}"
+		    />
+		</div>
 	</s:form>
 
 	<script>

@@ -44,6 +44,7 @@ public class Block{
     // when the managers change the clock in time but not clock out
     boolean time_in_changed=false, time_out_changed = false;
     String today = Helper.getToday();
+    String notes = "";
     public Block( // for save
 		 String val,
 		 String val2,
@@ -55,14 +56,15 @@ public class Block{
 		 int val8,
 		 double val9,
 		 int val10,
-		 double val11
+		 double val11,
+		 String val12
 		  ){
 	setVals(val,
 		val2,
 		val3,
 		val4,
 		val5,
-		val6, val7, val8, val9, val10, val11);
+		val6, val7, val8, val9, val10, val11, val12);
     }		
 		
     public Block(
@@ -79,13 +81,14 @@ public class Block{
 		 int val11,
 		 double val12,
 		 String val13,
-		 String val14
+		 String val14,
+		 String val15
 		 ){
 	setVals(val, val2, val3,
 		val4,
 		val5,
 		val6,
-		val7, val8, val9, val10, val11, val12,val13, val14);
+		val7, val8, val9, val10, val11, val12,val13, val14, val15);
     }
     public Block(
 		 String val,
@@ -103,13 +106,14 @@ public class Block{
 		 String val13,
 		 String val14,
 		 boolean val15,
-		 String val16
+		 String val16,
+		 String val17
 		 ){
 	setVals(val, val2, val3,
 		val4,
 		val5,
 		val6, val7, val8, val9,
-		val10, val11, val12, val13, val14, val15, val16);
+		val10, val11, val12, val13, val14, val15, val16, val17);
     }
     void setVals(
 		 String val,
@@ -122,7 +126,8 @@ public class Block{
 		 int val8,
 		 double val9,
 		 int val10,
-		 Double val11
+		 Double val11,
+		 String val12
 		 ){								
 	setDocument_id(val);
 	setHour_code_id(val2);
@@ -135,6 +140,7 @@ public class Block{
 	setHoursDbl(val9);
 	setMinutesInt(val10);
 	setAmountDbl(val11);
+	setNotes(val12);
     }		
     void setVals(
 		 String val,
@@ -150,8 +156,9 @@ public class Block{
 		 int val11,
 		 double val12,
 		 String val13,
-		 String val14
-		 ){								
+		 String val14,
+		 String val15
+		 ){
 	setId(val);
 	setDocument_id(val2);
 	setHour_code_id(val3);
@@ -166,6 +173,7 @@ public class Block{
 	setAmountDbl(val12);
 	setClock_in(val13);
 	setClock_out(val14);
+	setNotes(val15);
     }
     void setVals(
 		 String val,
@@ -183,7 +191,8 @@ public class Block{
 		 String val13,
 		 String val14,
 		 boolean val15,
-		 String val16
+		 String val16,
+		 String val17
 		 ){								
 	setId(val);
 	setDocument_id(val2);
@@ -201,6 +210,7 @@ public class Block{
 	setClock_out(val14);
 	setIsHoliday(val15);
 	setHolidayName(val16);
+	setNotes(val17);
     }		
     public Block(String val){
 	setId(val);
@@ -230,6 +240,9 @@ public class Block{
     public String getDate(){
 	return date;
     }
+    public String getNotes(){
+	return notes;
+    }    
     public int getBegin_hour(){
 	return begin_hour;
     }		
@@ -327,6 +340,9 @@ public class Block{
     public boolean isHoliday(){
 	return isHoliday;
     }
+    public boolean hasBlockNotes(){
+	return notes != null && !notes.isEmpty();
+    }
     //
     // setters
     //
@@ -372,7 +388,11 @@ public class Block{
     public void setDate(String val){ 
 	if(val != null)
 	    date = val;
-    }		
+    }
+    public void setNotes(String val){ 
+	if(val != null)
+	    notes = val;
+    }    
     public void setBegin_hour(int val){
 	begin_hour = val;
     }
@@ -581,3 +601,5 @@ public class Block{
     }
 
 }
+//
+

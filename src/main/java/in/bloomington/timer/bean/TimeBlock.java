@@ -64,11 +64,12 @@ public class TimeBlock extends Block{
 		     int val8,
 		     double val9,
 		     int val10,
-		     double val11
+		     double val11,
+		     String val12 // notes
 		      ){
 	super(val, val2,
 	      val3,
-	      val4, val5, val6, val7, val8, val9, val10, val11);
+	      val4, val5, val6, val7, val8, val9, val10, val11, val12);
     }
     public TimeBlock(
 		     String val,
@@ -83,13 +84,14 @@ public class TimeBlock extends Block{
 		     double val10,
 		     int val11,
 		     double val12,
-		     String val13,
-		     String val14
+		     String val13, 
+		     String val14,
+		     String val15 // notes
 		     ){
 	super(val, val2, val3,
 	      val4,
 	      val5, val6, val7, val8, val9,
-	      val10, val11, val12, val13, val14);
+	      val10, val11, val12, val13, val14, val15);
     }
 												 
     public TimeBlock(
@@ -105,16 +107,18 @@ public class TimeBlock extends Block{
 		     double val10,
 		     int val11,
 		     double val12,
-										 
+		     
 		     String val13,
 		     String val14,
 		     boolean val15,
-		     String val16
+		     String val16,
+		     String val17 // notes
+		     
 		     ){
 	super(val, val2, val3,
 	      val4,
 	      val5, val6, val7, val8, val9,
-	      val10, val11, val12, val13, val14, val15, val16);
+	      val10, val11, val12, val13, val14, val15, val16, val17);
     }
     public TimeBlock(
 		     String val,
@@ -135,27 +139,28 @@ public class TimeBlock extends Block{
 		     String val14,
 		     boolean val15,
 		     String val16,
-		     boolean val17,
-							 
-		     int val18,
-		     String val19,
+		     String val17,  //notes
+		     
+		     boolean val18,
+		     int val19,
 		     String val20,
 		     String val21,
 		     String val22,
-		     String val23
+		     String val23,
+		     String val24
 		     ){
 	super(val, val2,
 	      val3,
 	      val4,
 	      val5, val6, val7, val8, val9,
-	      val10, val11, val12, val13, val14, val15, val16);
-	setInactive(val17);
-	setOrder_index(val18);
-	setHour_code(val19);
-	setCode_desc(val20);
-	setNw_code(val21);
-	setJob_name(val22);
-	setJob_id(val23);
+	      val10, val11, val12, val13, val14, val15, val16, val17);
+	setInactive(val18);
+	setOrder_index(val19);
+	setHour_code(val20);
+	setCode_desc(val21);
+	setNw_code(val22);
+	setJob_name(val23);
+	setJob_id(val24);
     }
     public TimeBlock(String val){
 	super(val);
@@ -185,7 +190,7 @@ public class TimeBlock extends Block{
     }
     public String getJob_name(){
 	return job_name;
-    }		
+    }
     public String getStart_date(){
 	if(start_date.isEmpty()){
 	    start_date = Helper.changeDateFormat(date);
@@ -254,6 +259,19 @@ public class TimeBlock extends Block{
 	    }
 	}
     }
+    public boolean showBeginTime(){
+	getHourCode();
+	return !(
+		 hourCode.isRecordMethodMonetary() ||
+		 hourCode.isRecordMethodHours());
+    }
+    public boolean showEndTime(){
+	getHourCode();
+	return !(
+		 hourCode.isRecordMethodMonetary() ||
+		 hourCode.isRecordMethodHours() ||
+		 isClockInOnly());
+    }		    
     public void setInactive(boolean val){
 	if(val)
 	    inactive = "y";
@@ -298,6 +316,7 @@ public class TimeBlock extends Block{
 	if(val > 0)
 	    order_index = val;
     }
+    
     public void setAction_type(String val){
 	if(val != null)
 	    action_type = val;
@@ -306,7 +325,8 @@ public class TimeBlock extends Block{
     public void setJob_id(String val){
 	if(val != null)
 	    job_id = val;
-    }		
+    }
+
     public void setRepeat_count(String val){
 	if(val != null && !val.isEmpty()){
 	    try{
@@ -339,6 +359,9 @@ public class TimeBlock extends Block{
     public void setHours_old(Double val){
 	if(val != null)
 	    hours_old = val;
+    }
+    public boolean hasNotes(){
+	return !notes.isEmpty();
     }
     // do display in calendar view
     public int getDayInt(){
@@ -1020,7 +1043,7 @@ public class TimeBlock extends Block{
 						
 	    "t.begin_hour,t.begin_minute,"+
 	    "t.end_hour,t.end_minute,"+
-	    "t.hours,t.minutes,t.amount,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),c.name,c.description,cf.nw_code "+
+	    "t.hours,t.minutes,t.amount,t.clock_in,t.clock_out,t.inactive, datediff(t.date,p.start_date),t.notes,c.name,c.description,cf.nw_code "+
 	    " from time_blocks t "+
 	    " join time_documents d on d.id=t.document_id "+
 	    " join pay_periods p on p.id=d.pay_period_id "+
@@ -1069,14 +1092,15 @@ public class TimeBlock extends Block{
 			rs.getString(13),
 			rs.getString(14),
 			false, // isHoliday
-			null // holiday
+			null, // holiday
+			rs.getString(17)
 			);
 								
 		setInactive(rs.getString(15) != null);
 		setOrder_index(rs.getInt(16));
-		setHour_code(rs.getString(17));
-		setCode_desc(rs.getString(18));
-		setNw_code(rs.getString(19));
+		setHour_code(rs.getString(18));
+		setCode_desc(rs.getString(19));
+		setNw_code(rs.getString(20));
 	    }
 	}
 	catch(Exception ex){
@@ -1291,6 +1315,7 @@ public class TimeBlock extends Block{
 						amount,
 						clock_in,
 						clock_out,
+						notes,
 						id,
 						action_type,
 						action_by_id,
@@ -1318,7 +1343,7 @@ public class TimeBlock extends Block{
 	    return errors;
 	}
 	if(action_type.isEmpty()) action_type="Add";
-	String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,null) ";
+	String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?,null,?) ";
 	String qq2 = "select LAST_INSERT_ID()";
 	checkForOvernight();
 	if((clock_in.isEmpty() && clock_out.isEmpty())
@@ -1431,7 +1456,11 @@ public class TimeBlock extends Block{
 		    if(clock_out.isEmpty())
 			pstmt.setNull(jj++,Types.CHAR);
 		    else
-			pstmt.setString(jj++, "y");								
+			pstmt.setString(jj++, "y");
+		    if(notes.isEmpty())
+			pstmt.setNull(jj++,Types.VARCHAR);
+		    else
+			pstmt.setString(jj++, notes);		    
 		    pstmt.executeUpdate();
 		    //
 		    pstmt2 = con.prepareStatement(qq2);
@@ -1439,6 +1468,8 @@ public class TimeBlock extends Block{
 		    if(rs.next()){
 			id = rs.getString(1);
 		    }
+		    System.err.println("tb id "+id);
+		    System.err.println("notes "+notes);
 		    // if we are using accruals, we need to deduce the
 		    // amount we used in this day
 		    if(isHourType()){
@@ -1449,11 +1480,20 @@ public class TimeBlock extends Block{
 							hour_code_id,
 							earn_code_reason_id,
 							date,
-							begin_hour, begin_minute,
-							end_hour, end_minute,
-							hours, minutes, amount,
-							clock_in,clock_out,
-							id,
+							
+							begin_hour,
+							begin_minute,
+							end_hour,
+							end_minute,
+							hours, //10
+							
+							minutes,
+							amount,
+							clock_in,
+							clock_out,
+							id, // 15
+							
+							notes,
 							action_type,
 							action_by_id,
 							null,
@@ -1526,7 +1566,8 @@ public class TimeBlock extends Block{
 						end_hour, end_minute,
 						hours, minutes, amount,
 						clock_in,clock_out,
-						id, action_type,
+						id,
+						notes, action_type,
 						action_by_id,null,
 						location_id);
 	    msg = tbl.doSave();
@@ -1598,7 +1639,7 @@ public class TimeBlock extends Block{
 	if(!msg.isEmpty()){
 	    return msg;
 	}
-	String qq = "update time_blocks set hour_code_id=?,earn_code_reason_id=?,begin_hour=?,begin_minute=?,end_hour=?,end_minute=?,hours=?,minutes=?,amount=?,clock_in=?,clock_out=? where id=? ";
+	String qq = "update time_blocks set hour_code_id=?,earn_code_reason_id=?,begin_hour=?,begin_minute=?,end_hour=?,end_minute=?,hours=?,minutes=?,amount=?,clock_in=?,clock_out=?,notes=? where id=? ";
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -1627,7 +1668,11 @@ public class TimeBlock extends Block{
 	    if(clock_out.isEmpty())
 		pstmt.setNull(jj++, Types.CHAR);
 	    else
-		pstmt.setString(jj++, "y");	
+		pstmt.setString(jj++, "y");
+	    if(notes.isEmpty())
+		pstmt.setNull(jj++, Types.VARCHAR);
+	    else
+		pstmt.setString(jj++, notes);	    
 	    //
 	    // we do not change inactive here
 	    // doDelete will take care of it
@@ -1653,7 +1698,8 @@ public class TimeBlock extends Block{
 						minutes,
 						amount,
 						clock_in,clock_out,
-						id, action_type,
+						id,
+						notes, action_type,
 						action_by_id,null,
 						location_id);
 	    msg = tbl.doSave();
@@ -1704,7 +1750,8 @@ public class TimeBlock extends Block{
 						minutes,
 						amount,
 						clock_in,clock_out,
-						id, action_type,
+						id,
+						notes, action_type,
 						action_by_id,
 						null,
 						location_id);
@@ -1715,3 +1762,11 @@ public class TimeBlock extends Block{
     }		
 
 }
+/**
+   
+alter table time_blocks add notes varchar(512);
+alter table time_block_logs add notes varchar(512) after time_block_id;
+
+       create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    r.id earn_code_reason_id,                                                       t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.minutes minutes,                                                              t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.notes as notes,                                                               t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      c.earn_factor earn_factor,                                                      c.holiday_related holiday_related,                                              cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id,                                                      r.description reason                                                           from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id                                 left join earn_code_reasons r on r.id=t.earn_code_reason_id  ;	
+
+ */

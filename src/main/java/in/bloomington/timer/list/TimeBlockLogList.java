@@ -71,7 +71,7 @@ public class TimeBlockLogList{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String msg="", qw="";
-	String qq = "select l.id,l.document_id,l.hour_code_id,l.earn_code_reason_id,date_format(l.date,'%m/%d/%Y'),l.begin_hour,begin_minute,l.end_hour,l.end_minute,l.hours,l.minutes,l.amount,l.clock_in,l.clock_out,l.time_block_id,l.action_type,l.action_by_id,date_format(l.action_time,'%m/%d/%y %H:%i'),l.location_id from time_block_logs l";
+	String qq = "select l.id,l.document_id,l.hour_code_id,l.earn_code_reason_id,date_format(l.date,'%m/%d/%Y'),l.begin_hour,begin_minute,l.end_hour,l.end_minute,l.hours,l.minutes,l.amount,l.clock_in,l.clock_out,l.time_block_id,l.notes,l.action_type,l.action_by_id,date_format(l.action_time,'%m/%d/%y %H:%i'),l.location_id from time_block_logs l";
 	qq += " join time_documents d on d.id=l.document_id ";
 	if(!document_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
@@ -156,12 +156,13 @@ public class TimeBlockLogList{
 				     rs.getDouble(12),
 				     rs.getString(13),
 				     rs.getString(14),
-				     rs.getString(15),
-																		 
-				     rs.getString(16),
+				     rs.getString(15), // tb id
+				     
+				     rs.getString(16), // notes
 				     rs.getString(17),
 				     rs.getString(18),
-				     rs.getString(19));
+				     rs.getString(19),
+				     rs.getString(20));
 		timeBlockLogs.add(one);
 	    }
 	}

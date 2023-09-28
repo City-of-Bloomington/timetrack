@@ -231,9 +231,10 @@ function loginTimer() {
 				<%@ include file="unscheduledTimes.jsp" %>				
 			</s:if>			
 			<s:if test="canCancelAction()">
-				<s:set var="canCancelAction" value="'true'" />
+			    <s:set var="canCancelAction" value="'true'" />
 			</s:if>
 			<%@ include file="timeActions.jsp" %>
+			<%@ include file="blockNotes.jsp" %>
 			<%@ include file="timeNotes.jsp" %>
 			<br />
 			<h1>Time Log History</h1>

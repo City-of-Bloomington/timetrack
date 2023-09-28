@@ -6,7 +6,6 @@
 	    <tr>
 		<th>Related Time Block</th>
 		<th>Hour Code</th>
-		<th>Earn Reason</th>
 		<th>Date</th>
 		<th>Start Time</th>
 		<th>End Time</th>
@@ -15,6 +14,8 @@
 		<th>Action Type</th>
 		<th>Action By</th>
 		<th>Action Date-Time</th>
+		<th>Has Notes?</th>
+		<th>Earn Code Reason</th>
 		<th>Location</th>
 	    </tr>
 	    <s:iterator var="one" value="timeBlockLogs">
@@ -30,6 +31,7 @@
 		    <td><s:property value="action_type" /></td>
 		    <td><s:property value="action_by" /></td>
 		    <td><s:property value="action_time" /></td>
+		    <td><s:if test="hasBlockNotes()">Yes</s:if><s:else>No</s:else></td>
 		    <td><s:if test="hasLocation()"><s:property value="location" /></s:if>&nbsp;</td>
 		</tr>
 	    </s:iterator>

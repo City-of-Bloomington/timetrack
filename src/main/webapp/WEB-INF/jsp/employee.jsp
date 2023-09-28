@@ -37,6 +37,7 @@
 		  <div class="form-group">
 		      <label>ID</label>
 		      <s:property value="%{emp.id}" />
+		      
 		  </div>
 	      </s:if>
 	      <s:if test="emp.id == ''">

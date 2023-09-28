@@ -44,6 +44,7 @@ public class Document implements Serializable{
     Map<JobType, Map<Integer, String>> daily = null;
     Map<JobType, Map<Integer, Integer>> dailyInt = null;		
     List<TimeBlock> timeBlocks = null;
+    List<TimeBlock> timeBlockWithNotes = null;
     List<String> warnings = new ArrayList<>();
     JobTask job = null;
     Group group = null;
@@ -528,6 +529,8 @@ public class Document implements Serializable{
 		    List<TimeBlock> ones2 = tl.getTimeBlocks();
 		    if(ones2 != null && ones2.size() > 0){
 			timeBlocks = ones2;
+			if(tl.hasTimeBlockWithNotes())
+			    timeBlockWithNotes = tl.getTimeBlockWithNotes();
 		    }
 		    usedWeeklyAccruals = tl.getUsedWeeklyAccruals();
 		    week1_flsa = tl.getWeek1_flsa();
@@ -588,6 +591,12 @@ public class Document implements Serializable{
 	    dailyBlocks = new TreeMap<>();
 	}
 	return timeBlocks;
+    }
+    public boolean hasTimeBlockWithNotes(){
+	return timeBlockWithNotes != null && timeBlockWithNotes.size() > 0;
+    }
+    public List<TimeBlock> getTimeBlockWithNotes(){
+	return timeBlockWithNotes;
     }
     public String getWeek1Total(){
 	return ""+dfn.format(week1Total);
