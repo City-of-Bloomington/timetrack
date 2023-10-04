@@ -1,6 +1,6 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
-    <s:form action="hourcodeCondition" id="form_id" method="post">
+  <s:form action="hourcodeCondition" id="form_id" method="post">
 	<s:hidden name="action2" id="action2" value="" />
 	<s:if test="hourcodeCondition.id == ''">
 	    <h1>New Earn Code Restriction</h1>
@@ -74,4 +74,5 @@
 	<%@ include file="hourcodeConditions.jsp" %>
     </s:if>
 </div>
+
 <%@ include file="footer.jsp" %>

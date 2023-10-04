@@ -12,7 +12,7 @@ import java.util.Hashtable;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
-import java.util.regex.*;  
+import java.util.regex.*;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
@@ -25,7 +25,8 @@ import in.bloomington.timer.list.*;
 public class TimeBlock extends Block{
 
     static Logger logger = LogManager.getLogger(TimeBlock.class);
-    static final long serialVersionUID = 4000L;		
+    static final long serialVersionUID = 4000L;
+    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");    
     private String inactive=""; // for deleted stuff;
     // String formatPattern = "##.####";
     // DecimalFormat dsf = new DecimalFormat(formatPattern);
@@ -815,6 +816,107 @@ public class TimeBlock extends Block{
 	}
 	return str;
     }
+    public String checkMonetaryRestrictions(){
+	String warn_msg ="", str="";
+	if(hour_code_id.isEmpty()){
+	    getHourCode();
+	    if(hourCode != null)
+		hour_code_id = hourCode.getId();
+	}
+	if(!hour_code_id.isEmpty()){
+	    if(hourCode.isRecordMethodMonetary()){
+		List<HourCodeExtraCondition> conditions = null;
+		HourCodeExtraConditionList ecel = new HourCodeExtraConditionList();
+		ecel.setHour_code_id(hour_code_id);
+		str = ecel.find();
+		if(str.isEmpty()){
+		    List<HourCodeExtraCondition> ones = ecel.getConditions();
+		    if(ones != null && ones.size() > 0){
+			conditions = ones;
+		    }
+		}
+		if(conditions != null){
+		    String emp_id = "";
+		    if(document == null){
+			getDocument();
+		    }
+		    if(document != null){
+			emp_id = document.getEmployee_id();
+		    }
+		    for(HourCodeExtraCondition one:conditions){
+			if(one.isDefaultValueFixed()){
+			    if(amount != hourCode.getDefaultMonetaryAmount()){
+				amount = hourCode.getDefaultMonetaryAmount();
+			    }
+			}
+			// check the total used for this year
+			double t_max = one.getMaxTotalPerYear();
+			if(t_max > 0){ // if this is 0, there is no max
+			    // find the total used so far
+			    double ttl_max = findTotalUsedFor(hour_code_id, emp_id);
+			    if(ttl_max + amount  > t_max){
+				warn_msg = "Total yearly max of "+t_max+" is reached, no more can be added ";
+				return warn_msg;
+			    }
+			}
+			// check for associated hour code (normally Regular)
+			String assoce_type = one.getHourCodeAssociateType();
+			if(!assoce_type.isEmpty()){
+			    if(!isAssociateTypeAvailable(assoce_type, emp_id)){
+				warn_msg = "The earn code must be used after a '"+assoce_type+"' earn code type is used on the same date";
+				return warn_msg;
+			    }
+			}
+			// check if it is used before on the same day
+			if(findNumberOfTimesUsed(hour_code_id, emp_id) + 1 > one.getTimesPerDay()){
+
+			    warn_msg = "This earn code can be used only once a day ";
+			    return warn_msg;
+			}
+		    }
+		}
+	    }
+	}
+	return warn_msg;
+    }
+     private boolean isAssociateTypeAvailable(String assoce_type, String emp_id){
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String qq = "select count(*)  from time_blocks t, time_documents d, "+
+	    " hour_codes c "+
+	    "where t.document_id=d.id and t.hour_code_id = c.id "+
+	    "and d.employee_id=? and t.date=? and t.inactive is null and c.type = ? ";
+	int cnt = 0;
+	if(date.isEmpty()){
+	    date = Helper.getToday();
+	}
+	con = UnoConnect.getConnection();				
+	if(con == null){
+	    logger.error("Counld not connect to DB :"+qq);
+	    return false;
+	}
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, emp_id);
+	    java.util.Date date_tmp = df.parse(date);
+	    pstmt.setDate(2, new java.sql.Date(date_tmp.getTime()));
+	    pstmt.setString(3, assoce_type);
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		cnt = rs.getInt(1);
+	    }
+	}
+	catch(Exception ex){
+	    logger.error(ex+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}	
+	return cnt > 0;
+
+    }
     public String checkHourCodeForHoliday(){
 	String ret = "";
 	getHourCode();
@@ -895,6 +997,84 @@ public class TimeBlock extends Block{
 	    }												
 	}
     }
+    /**
+     * used for monetary hour_code types
+     */
+    public double findTotalUsedFor(String hr_cod_id, String emp_id){
+	double ttl_max = 0;
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String qq = "select sum(t.amount) from time_blocks t, time_documents d "+
+	    "where t.document_id=d.id and t.hour_code_id = ? "+
+	    "and year(t.date) = ? and t.inactive is null and d.employee_id=? ";
+	if(date.isEmpty()){
+	    date = Helper.getToday();
+	}
+	con = UnoConnect.getConnection();				
+	if(con == null){
+	    logger.error("Counld not connect to DB :"+qq);
+	    return ttl_max;
+	}
+	try{
+	    String yy = date.substring(date.lastIndexOf("/")+1, date.length());
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, hr_cod_id);
+	    pstmt.setString(2, yy);
+	    pstmt.setString(3, emp_id);
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		ttl_max = rs.getDouble(1);
+	    }
+	}
+	catch(Exception ex){
+	    logger.error(ex+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}	
+	return ttl_max;
+    }
+    /**
+     * used for monetary hour_code types
+     */
+    public int findNumberOfTimesUsed(String hr_cod_id, String emp_id){
+	int cnt = 0;
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String qq = "select count(*) from time_blocks t, time_documents d "+
+	    "where t.document_id=d.id and t.hour_code_id = ? "+
+	    "and t.date = ? and t.inactive is null and d.employee_id=? ";
+	if(date.isEmpty()){
+	    date = Helper.getToday();
+	}
+	con = UnoConnect.getConnection();				
+	if(con == null){
+	    logger.error("Counld not connect to DB :"+qq);
+	    return cnt;
+	}
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, hr_cod_id);
+	    java.util.Date date_tmp = df.parse(date);
+	    pstmt.setDate(2, new java.sql.Date(date_tmp.getTime()));
+	    pstmt.setString(3, emp_id);
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		cnt = rs.getInt(1);
+	    }
+	}
+	catch(Exception ex){
+	    logger.error(ex+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}	
+	return cnt;
+    }    
     /**
      * check if the data entry conflict with existing data on the same
      * day for Time entry, we do not check for hours entry,
@@ -1420,6 +1600,10 @@ public class TimeBlock extends Block{
 		    if(!mgtext.isEmpty()){
 			return mgtext;
 		    }
+		    mgtext = checkMonetaryRestrictions();
+		    if(!mgtext.isEmpty()){
+			return mgtext;
+		    }		    
 		}
 		else{
 		    id=""; // for multiple input
@@ -1468,8 +1652,6 @@ public class TimeBlock extends Block{
 		    if(rs.next()){
 			id = rs.getString(1);
 		    }
-		    System.err.println("tb id "+id);
-		    System.err.println("notes "+notes);
 		    // if we are using accruals, we need to deduce the
 		    // amount we used in this day
 		    if(isHourType()){
@@ -1625,6 +1807,10 @@ public class TimeBlock extends Block{
 		if(dd > 0)
 		    amount = dd;
 		hours = 0;
+		msg = checkMonetaryRestrictions();
+		if(!msg.isEmpty()){
+		    return msg;
+		}
 	    }
 	}
 	else{

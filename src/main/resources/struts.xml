@@ -783,6 +783,13 @@
 		  <result name="input">/WEB-INF/jsp/hourcodeCondition.jsp</result>		
 		  <result name="error">/WEB-INF/jsp/hourcodeCondition.jsp</result>
 		  <result name="success">/WEB-INF/jsp/hourcodeCondition.jsp</result>
+		</action>
+		<action name="hourcodeExtraCondition" 
+			class="in.bloomington.timer.action.HourCodeExtraConditionAction" 
+			method="execute">
+		  <result name="input">/WEB-INF/jsp/hourcodeExtraCondition.jsp</result>		
+		  <result name="error">/WEB-INF/jsp/hourcodeExtraCondition.jsp</result>
+		  <result name="success">/WEB-INF/jsp/hourcodeExtraCondition.jsp</result>
 		</action>		
   </package>
 

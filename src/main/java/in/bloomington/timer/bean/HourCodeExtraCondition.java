@@ -14,66 +14,57 @@ import in.bloomington.timer.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HourCodeCondition implements Serializable{
+public class HourCodeExtraCondition implements Serializable{
 
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-    static Logger logger = LogManager.getLogger(HourCodeCondition.class);
+    static Logger logger = LogManager.getLogger(HourCodeExtraCondition.class);
     static final long serialVersionUID = 800L;
-    private String id="", hour_code_id="", department_id="", inactive="",
-	date="", salary_group_id="", group_id="";
-		
-    Type salaryGroup = null;
+    String id="", hour_code_id="", inactive="";
+    String default_value_fixed = ""; 
+    String hour_code_associate_type = "Regular";
+    int times_per_day = 1;
+    double max_total_per_year = 500.;
     HourCode hourCode = null;
-    Type department = null;
-    Group group = null;
-    public HourCodeCondition(
+    
+    public HourCodeExtraCondition(
 			     String val,
 			     String val2,
-			     String val3,
-			     String val4,
-			     String val5,
+			     Integer val3,
+			     boolean val4,
+			     Double val5,
 			     String val6,
 			     boolean val7
 			     ){
 	setId(val);
-	setHour_code_id(val2);
-	setDepartment_id(val3);
-	setSalary_group_id(val4);
-	setGroup_id(val5);
-	setDate(val6);
+	setHourCode_id(val2);
+	setTimesPerDay(val3);	
+	setDefaultValueFixed(val4);
+	setMaxTotalPerYear(val5);
+	setHourCodeAssociateType(val6);	
 	setInactive(val7);
     }
-    public HourCodeCondition(String val){
+    public HourCodeExtraCondition(String val){
 	setId(val);
     }
-    public HourCodeCondition(){
+    public HourCodeExtraCondition(){
     }		
     //
     // getters
     //
-    public String getHour_code_id(){
+    public String getHourCode_id(){
 	return hour_code_id;
     }
-    public String getGroup_id(){
-	if(group_id.isEmpty())
-	    return "-1";
-	return group_id;
+    public Integer getTimesPerDay(){
+	return times_per_day;
     }		
-    public String getDepartment_id(){
-	if(department_id.isEmpty())
-	    return "-1";
-	return department_id;
+    public boolean getDefaultValueFixed(){
+	return !default_value_fixed.isEmpty();
     }
-    public String getSalary_group_id(){
-	if(salary_group_id.isEmpty())
-	    return "-1";
-	return salary_group_id;
+    public Double getMaxTotalPerYear(){
+	return max_total_per_year;
     }
-    public String getDate(){
-	if(date.isEmpty()){
-	    date = Helper.getToday();
-	}
-	return date;
+    public String getHourCodeAssociateType(){
+	return hour_code_associate_type;
     }
     public boolean getInactive(){
 	return !inactive.isEmpty();
@@ -84,22 +75,9 @@ public class HourCodeCondition implements Serializable{
     public String getId(){
 	return id;
     }
-    public Type getDepartment(){
-	if(!department_id.isEmpty() && department == null){
-	    Type one = new Type(department_id);
-	    one.setTable_name("departments");
-	    String back = one.doSelect();
-	    if(back.isEmpty()){
-		department = one;
-	    }
-	    return department;
-	}
-	if(department == null){
-	    department = new Type("All","All");
-	}
-	return department;
+    public boolean isDefaultValueFixed(){
+	return !default_value_fixed.isEmpty();
     }
-		
     //
     // setters
     //
@@ -107,25 +85,27 @@ public class HourCodeCondition implements Serializable{
 	if(val != null)
 	    id = val;
     }
-    public void setHour_code_id (String val){
+    public void setHourCode_id (String val){
 	if(val != null && !val.equals("-1"))
 	    hour_code_id = val;
     }
-    public void setDepartment_id(String val){
-	if(val != null && !val.equals("-1"))
-	    department_id = val;
-    }
-    public void setGroup_id(String val){
-	if(val != null && !val.equals("-1"))
-	    group_id = val;
-    }		
-    public void setSalary_group_id(String val){
-	if(val != null && !val.equals("-1"))
-	    salary_group_id = val;
-    }
-    public void setDate(String val){
+    public void setTimesPerDay(Integer val){
 	if(val != null)
-	    date = val;
+	   times_per_day = val;
+    }
+    public void setHourCodeAssociateType(String val){
+	if(val != null)
+	    hour_code_associate_type = val;
+    }
+    public void setDefaultValueFixed(boolean val){
+	if(val)
+	    default_value_fixed = "y";
+	else
+	    default_value_fixed = "";
+    }
+    public void setMaxTotalPerYear(Double val){
+	if(val != null)
+	    max_total_per_year = val;
     }
     public void setInactive(boolean val){
 	if(val)
@@ -135,8 +115,8 @@ public class HourCodeCondition implements Serializable{
 	return id;
     }
     public boolean equals(Object o) {
-	if (o instanceof HourCodeCondition) {
-	    HourCodeCondition c = (HourCodeCondition) o;
+	if (o instanceof HourCodeExtraCondition) {
+	    HourCodeExtraCondition c = (HourCodeExtraCondition) o;
 	    if ( this.id.equals(c.getId())) 
 		return true;
 	}
@@ -153,17 +133,6 @@ public class HourCodeCondition implements Serializable{
 	}
 	return seed;
     }
-    public Type getSalaryGroup(){
-	if(!salary_group_id.isEmpty() && salaryGroup == null){
-	    Type one = new Type(salary_group_id);
-	    one.setTable_name("salary_groups");
-	    String back = one.doSelect();
-	    if(back.isEmpty()){
-		salaryGroup = one;
-	    }
-	}
-	return salaryGroup;
-    }
     public HourCode getHourCode(){
 	if(!hour_code_id.isEmpty() && hourCode == null){
 	    HourCode one = new HourCode(hour_code_id);
@@ -174,23 +143,14 @@ public class HourCodeCondition implements Serializable{
 	}
 	return hourCode;
     }
-    public Group getGroup(){
-	if(!group_id.isEmpty() && group == null){
-	    Group one = new Group(group_id);
-	    String back = one.doSelect();
-	    if(back.isEmpty()){
-		group = one;
-	    }
-	}
-	return group;
-    }				
     public String doSelect(){
 	//
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = "select id,hour_code_id,department_id,salary_group_id,group_id,date_format(date,'%m/%d/%Y'),inactive from hour_code_conditions where id =? ";
+	String qq = "select id,hour_code_id,times_per_day,default_value_fixed,max_total_per_year,hour_code_associate_type,inactive "+
+	    " from hour_code_extra_conditions where id =? ";
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -202,11 +162,11 @@ public class HourCodeCondition implements Serializable{
 	    pstmt.setString(1, id);
 	    rs = pstmt.executeQuery();
 	    if(rs.next()){
-		setHour_code_id(rs.getString(2));
-		setDepartment_id(rs.getString(3));
-		setSalary_group_id(rs.getString(4));
-		setGroup_id(rs.getString(5));
-		setDate(rs.getString(6));
+		setHourCode_id(rs.getString(2));
+		setTimesPerDay(rs.getInt(3));
+		setDefaultValueFixed(rs.getString(4) != null);
+		setMaxTotalPerYear(rs.getDouble(5));
+		setHourCodeAssociateType(rs.getString(6));
 		setInactive(rs.getString(7) != null);
 	    }
 	}
@@ -227,7 +187,7 @@ public class HourCodeCondition implements Serializable{
 	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = "insert into hour_code_conditions values(0,?,?,?,?,now(),null) ";
+	String qq = "insert into hour_code_extra_conditions values(0,?,?,?,?,?,null) ";
 	if(hour_code_id.isEmpty()){
 	    msg = " need to pick an hour code ";
 	    return msg;
@@ -241,21 +201,18 @@ public class HourCodeCondition implements Serializable{
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, hour_code_id);
-	    if(department_id.isEmpty())
-		pstmt.setNull(2,Types.INTEGER);
+	    pstmt.setInt(2, times_per_day);
+	    if(default_value_fixed.isEmpty())
+		pstmt.setNull(3,Types.CHAR);
 	    else
-		pstmt.setString(2, department_id);
-	    if(salary_group_id.isEmpty())
-		pstmt.setNull(3,Types.INTEGER);
+		pstmt.setString(3, "y");
+	    pstmt.setDouble(4, max_total_per_year);
+	    if(hour_code_associate_type.isEmpty())
+		pstmt.setNull(5, Types.VARCHAR);
 	    else
-		pstmt.setString(3, salary_group_id);
-	    if(group_id.isEmpty())
-		pstmt.setNull(4,Types.INTEGER);
-	    else
-		pstmt.setString(4, group_id);						
+		pstmt.setString(5, hour_code_associate_type);
 	    pstmt.executeUpdate();
 	    //
-	    date = Helper.getToday();
 	    qq = "select LAST_INSERT_ID()";
 	    pstmt2 = con.prepareStatement(qq);
 	    rs = pstmt2.executeQuery();
@@ -288,7 +245,10 @@ public class HourCodeCondition implements Serializable{
 	if(hour_code_id.isEmpty()){
 	    return " hour code is required";
 	}
-	String qq = "update hour_code_conditions set hour_code_id=?,department_id=?,salary_group_id=?,group_id=?,inactive=? where id=? ";
+	String qq = "update hour_code_extra_conditions set hour_code_id=?,"+
+	    " times_per_day=?,default_value_fixed=?,max_total_per_year=?,"+
+	    " hour_code_associate_type=?,"+
+	    "inactive=? where id=? ";
 				
 	logger.debug(qq);
 	con = UnoConnect.getConnection();				
@@ -300,19 +260,16 @@ public class HourCodeCondition implements Serializable{
 	    pstmt = con.prepareStatement(qq);
 	    int jj=1;
 	    pstmt.setString(jj++, hour_code_id);
-	    if(department_id.isEmpty())
-		pstmt.setNull(jj++, Types.INTEGER);
+	    pstmt.setInt(jj++, times_per_day);
+	    if(default_value_fixed.isEmpty())
+		pstmt.setNull(jj++,Types.CHAR);
 	    else
-		pstmt.setString(jj++, department_id);
-	    if(salary_group_id.isEmpty())
-		pstmt.setNull(jj++, Types.INTEGER);
+		pstmt.setString(jj++, default_value_fixed);
+	    pstmt.setDouble(jj++, max_total_per_year);
+	    if(hour_code_associate_type.isEmpty())
+		pstmt.setNull(jj++, Types.VARCHAR);
 	    else
-		pstmt.setString(jj++, salary_group_id);
-	    if(group_id.isEmpty())
-		pstmt.setNull(jj++, Types.INTEGER);
-	    else
-		pstmt.setString(jj++, group_id);								
-						
+		pstmt.setString(jj++, hour_code_associate_type);
 	    if(inactive.isEmpty()){
 		pstmt.setNull(jj++, Types.CHAR);
 	    }
@@ -338,3 +295,23 @@ public class HourCodeCondition implements Serializable{
     }
 
 }
+
+/**
+   //
+   // this is added to handle COMMUTE earn code
+   // used by regular employees once a day
+   // hour_code_type_associate type 'Regular'
+   //
+  create table hour_code_extra_conditions (
+  id int unsigned not null auto_increment,
+  hour_code_id int(10) unsigned NOT NULL,
+  times_per_day tinyint default 1,
+  default_value_fixed char(1) default 'y',
+  max_total_per_year double default 500,
+  hour_code_associate_type enum('Regular','Used','Earned','Overtime','Unpaid','Other','Call Out','Monetary') default 'Regular',
+  inactive char(1),
+  primary key(id),
+  FOREIGN KEY (hour_code_id) REFERENCES hour_codes (id)
+  )engine=InnoDB;
+  
+ */

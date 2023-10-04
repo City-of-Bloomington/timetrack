@@ -25,6 +25,7 @@
 		<li><a href="<s:property value='#application.url'/>hourcode.action">Earn Codes</a></li>
 		
 		<li><a href="<s:property value='#application.url'/>hourcodeCondition.action">Earn Code Restrictions</a></li>
+		<li><a href="<s:property value='#application.url'/>hourcodeExtraCondition.action">Earn Code Extra Restrictions</a></li>		
 		<li><a href="<s:property value='#application.url'/>codeRef.action">Earn Code Cross Reference</a></li>
 		<li><a href="<s:property value='#application.url'/>reasonCategory.action">Code Reason Categories (Police)</a></li>				
 		<li><a href="<s:property value='#application.url'/>codeReason.action">Earn Code Reasons (Police)</a></li>

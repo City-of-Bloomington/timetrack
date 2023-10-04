@@ -2,58 +2,58 @@
 
 <div class="time-block">
      	<s:form action="timeBlock" id="form_id" class="time-block-form" method="post"	>
-		<s:hidden id="document_id" name="timeBlock.document_id" value="%{timeBlock.document_id}" />
-		<s:hidden id="salary_group_id" name="timeBlock.salary_group_id" value="%{timeBlock.salary_group_id}" />
-		<s:hidden id="group_id" name="timeBlock.group_id" value="%{timeBlock.group_id}" />
+	    <s:hidden id="document_id" name="timeBlock.document_id" value="%{timeBlock.document_id}" />
+	    <s:hidden id="salary_group_id" name="timeBlock.salary_group_id" value="%{timeBlock.salary_group_id}" />
+	    <s:hidden id="group_id" name="timeBlock.group_id" value="%{timeBlock.group_id}" />
+	    <s:if test="timeBlock.id == ''">
+		<input type="hidden" name="action" value="Save">
+	    </s:if>
+	    <s:else>
+		<s:hidden id="timeBlock_id" name="timeBlock.id" value="%{timeBlock.id}" />
+		<s:hidden name="timeBlock.date" value="%{timeBlock.date}" />
+		<s:hidden name="timeBlock.order_index" value="%{timeBlock.order_index}" />
+		<s:hidden name="timeBlock.clock_in" value="%{timeBlock.clock_in}" />
+		<s:hidden name="timeBlock.clock_out" value="%{timeBlock.clock_out}" />
+		<s:hidden name="timeBlock.hour_code_id_old" value="%{timeBlock.hour_code_id}" />
+		<input type="hidden" id="<s:property value='timeBlock.hour_code_id' />_Hours_old" name="timeBlock.hours_old"
+		       value="<s:property value='timeBlock.hours' />" />
+		<input type="hidden" name="action" value="Save Changes">
+	    </s:else>
+	    <s:if test="hasEmpAccruals()">
+		<s:iterator var="one" value="empAccruals">
+		    <input type="hidden" id="<s:property value='related_hour_code_id' />_Hours"
+			   value="<s:property value='hours' />" />
+		    <input type="hidden" name="timeBlock.accrual_balance"
+			   value="<s:property value='related_hour_code_id' />_<s:property value='hours' />" />
+		</s:iterator>
+	    </s:if>
+	    <s:if test="hasMonetaryHourCodes()">
+		<s:iterator var="one" value="monetaryHourCodes">
+		    <input type="hidden" id="<s:property value='id' />_Monetary"
+			   value="<s:property value='defaultMonetaryAmount' />" />
+		</s:iterator>
+	    </s:if>
+	    <h1>
 		<s:if test="timeBlock.id == ''">
-			<input type="hidden" name="action" value="Save">
+		    Add Time Block
 		</s:if>
 		<s:else>
-			<s:hidden id="timeBlock_id" name="timeBlock.id" value="%{timeBlock.id}" />
-			<s:hidden name="timeBlock.date" value="%{timeBlock.date}" />
-			<s:hidden name="timeBlock.order_index" value="%{timeBlock.order_index}" />
-			<s:hidden name="timeBlock.clock_in" value="%{timeBlock.clock_in}" />
-			<s:hidden name="timeBlock.clock_out" value="%{timeBlock.clock_out}" />
-			<s:hidden name="timeBlock.hour_code_id_old" value="%{timeBlock.hour_code_id}" />
-			<input type="hidden" id="<s:property value='timeBlock.hour_code_id' />_Hours_old" name="timeBlock.hours_old"
-				     value="<s:property value='timeBlock.hours' />" />
-			<input type="hidden" name="action" value="Save Changes">
+		    Edit Time Block
 		</s:else>
-		<s:if test="hasEmpAccruals()">
-		    <s:iterator var="one" value="empAccruals">
-			<input type="hidden" id="<s:property value='related_hour_code_id' />_Hours"
-			       value="<s:property value='hours' />" />
-			<input type="hidden" name="timeBlock.accrual_balance"
-			       value="<s:property value='related_hour_code_id' />_<s:property value='hours' />" />
-		    </s:iterator>
-		</s:if>
-		<s:if test="hasMonetaryHourCodes()">
-		    <s:iterator var="one" value="monetaryHourCodes">
-			<input type="hidden" id="<s:property value='id' />_Monetary"
-			       value="<s:property value='defaultMonetaryAmount' />" />
-			</s:iterator>
-		</s:if>
-		<h1>
-		    <s:if test="timeBlock.id == ''">
-			Add Time Block
-		    </s:if>
-		    <s:else>
-			Edit Time Block
-		    </s:else>
-		    <small>Date:
-			<s:property value="timeBlock.date" /></small>
-		</h1>
-		<div class="alert">
-			<p></p>
-		</div>
-		<s:if test="timeBlock.id == ''">
-		    <div class="form-group" style="border-bottom: none;">
-			<label>Date Range</label>
-			<div class="date-range-picker">
-			    <div>
-				<label for="timeBlock.start_date">From</label>
-				<s:textfield name="timeBlock.start_date" type="date" value="%{timeBlock.start_date}"
-					     pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="start" />
+		<small>Date:
+		    <s:property value="timeBlock.date" /></small>
+	    </h1>
+	    <div class="alert">
+		<p></p>
+	    </div>
+	    <s:if test="timeBlock.id == ''">
+		<div class="form-group" style="border-bottom: none;">
+		    <label>Date Range</label>
+		    <div class="date-range-picker">
+			<div>
+			    <label for="timeBlock.start_date">From</label>
+			    <s:textfield name="timeBlock.start_date" type="date" value="%{timeBlock.start_date}"
+					 pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" placeholder="MM-DD-YYYY" id="start" />
 			    </div>
 			    <div>
 				<label for="timeBlock.end_date">To</label>
@@ -173,7 +173,7 @@
 			<div id="div_amount" class="form-group">
 			    <label>Amount $</label>
 			    <s:textfield name="timeBlock.amount" value="%{timeBlock.amountStr}" maxlength="6" id="amount_change"
-					       placeholder="(ddd.dd)" />
+					 placeholder="(ddd.dd)" />
 			</div>
 		</s:else>
 		<div id="div_notes" style="display:inline;" class="form-group">
