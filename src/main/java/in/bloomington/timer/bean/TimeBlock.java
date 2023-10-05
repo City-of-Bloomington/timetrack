@@ -867,8 +867,9 @@ public class TimeBlock extends Block{
 				return warn_msg;
 			    }
 			}
-			// check if it is used before on the same day
-			if(findNumberOfTimesUsed(hour_code_id, emp_id) + 1 > one.getTimesPerDay()){
+			// check if this or similar earn code was used
+			// before on the same day
+			if(findNumberOfTimesUsed(emp_id) + 1 > one.getTimesPerDay()){
 
 			    warn_msg = "This earn code can be used only once a day ";
 			    return warn_msg;
@@ -1039,14 +1040,24 @@ public class TimeBlock extends Block{
     /**
      * used for monetary hour_code types
      */
-    public int findNumberOfTimesUsed(String hr_cod_id, String emp_id){
+    // public int findNumberOfTimesUsed(String hr_cod_id, emp_id){    
+    public int findNumberOfTimesUsed(String emp_id){
 	int cnt = 0;
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
+	/**
+	   // certain earn code
 	String qq = "select count(*) from time_blocks t, time_documents d "+
 	    "where t.document_id=d.id and t.hour_code_id = ? "+
 	    "and t.date = ? and t.inactive is null and d.employee_id=? ";
+	*/
+	// any earn code in this category (COMMUTE)
+	String qq = "select count(*) from time_blocks t, time_documents d, "+
+	    "hour_code_extra_conditions x "+
+	    "where t.document_id=d.id and t.hour_code_id = x.hour_code_id "+
+	    "and t.date = ? and t.inactive is null and d.employee_id=? ";
+	
 	if(date.isEmpty()){
 	    date = Helper.getToday();
 	}
@@ -1057,10 +1068,10 @@ public class TimeBlock extends Block{
 	}
 	try{
 	    pstmt = con.prepareStatement(qq);
-	    pstmt.setString(1, hr_cod_id);
+	    // pstmt.setString(1, hr_cod_id);
 	    java.util.Date date_tmp = df.parse(date);
-	    pstmt.setDate(2, new java.sql.Date(date_tmp.getTime()));
-	    pstmt.setString(3, emp_id);
+	    pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
+	    pstmt.setString(2, emp_id);
 	    rs = pstmt.executeQuery();
 	    if(rs.next()){
 		cnt = rs.getInt(1);
