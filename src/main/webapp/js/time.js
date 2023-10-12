@@ -160,7 +160,7 @@ function handleShowCodeReason(val){
 	$("#reason_div_id").show();				
     })
     .error(function(x,status,err){
-        // alert(status+" "+err);
+        alert(status+" "+err);
     });
 }
 
@@ -224,12 +224,19 @@ $('#hour_code_select').change(function() {
         $('#div_time_in').hide();
         $('#div_time_out').hide();
         $('#div_overnight').hide();
-	$("#reason_div_id").hide();	
-	$("#select_reason_id").val('');
 	var $obj = $('#'+val);
 	if($obj){
 	    var amount = $obj.val();
-	    $('#amount_change').val(amount);						
+	    $('#amount_change').val(amount);
+	}
+	var codes = ['156','157']; // COMMUTE codes
+	var code_id = val.substring(0,val.indexOf('_')); // id only
+	if(codes.includes(code_id)){
+	    handleShowCodeReason(code_id);
+	}
+	else{
+	    $("#reason_div_id").hide();	
+	    $("#select_reason_id").val('');
 	}
     }		
     else{

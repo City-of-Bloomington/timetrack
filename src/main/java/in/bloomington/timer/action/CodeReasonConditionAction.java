@@ -130,6 +130,7 @@ public class CodeReasonConditionAction extends TopAction{
 	    HourCodeList tl = new HourCodeList();
 	    tl.setEarnTypesOnly(); // only earned or overtime
 	    tl.setRecord_method("Time");
+	    tl.setActiveOnly();
 	    String back = tl.find();
 	    if(back.isEmpty()){
 		List<HourCode> ones = tl.getHourCodes();
@@ -137,6 +138,18 @@ public class CodeReasonConditionAction extends TopAction{
 		    hourcodes = ones;
 		}
 	    }
+	    tl = new HourCodeList();
+	    back = tl.lookForCommutes();
+	    if(back.isEmpty()){
+		List<HourCode> ones = tl.getHourCodes();
+		if(ones != null && ones.size() > 0){
+		    if(hourcodes != null)
+			hourcodes.addAll(ones);
+		    else
+			hourcodes = ones;
+		}
+	    }	    
+	    
 	}
 	return hourcodes;
     }		

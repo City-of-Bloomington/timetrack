@@ -252,11 +252,12 @@ public class HourCodeList{
 	    " e.accrual_id,e.reg_default,e.type,"+
 	    " e.default_monetary_amount,e.earn_factor,e.holiday_related,"+
 	    " e.inactive, "+
-	    " f.nw_code,f.gl_string "+
+	    " f.nw_code,f.gl_string,count(g.hour_code_id)"+
 	    " from hour_codes e "+
 	    " left join code_cross_ref f on f.code_id=e.id "+
-	    " left join hour_code_conditions c on c.hour_code_id=e.id ";
-	String qw = "", msg="";
+	    " left join hour_code_conditions c on c.hour_code_id=e.id "+
+	    " left join code_reason_conditions g on g.hour_code_id=e.id  ";
+	String qw = "g.inactive is null ", msg="";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    back = " Could not connect to DB ";
@@ -315,6 +316,10 @@ public class HourCodeList{
 	    if(!qw.isEmpty()){
 		qw = " where "+qw;
 	    }
+	    qw += " group by e.id,e.name,e.description,e.record_method, "+
+	    " e.accrual_id, e.reg_default,e.type, "+
+	    " e.default_monetary_amount,e.earn_factor,e.holiday_related,"+
+	    " e.inactive,f.nw_code,f.gl_string ";
 	    qw += " order by e.name";
 	    qq += qw;
 	    logger.debug(qq);
@@ -353,6 +358,7 @@ public class HourCodeList{
 					    rs.getString(12),
 					    rs.getString(13)
 					    );
+		one.setReasonRequired(rs.getInt(14) > 0);
 		if(!hourCodes.contains(one))
 		    hourCodes.add(one);
 	    }
@@ -368,4 +374,81 @@ public class HourCodeList{
 	return msg;
     }						
 
+    public String lookForCommutes(){
+	String back = "";
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	Connection con = null;
+	//
+	// some hour codes are specific to certain departments
+	// other are for all department
+	// 
+	String qq = "select e.id,e.name,e.description,e.record_method,"+
+	    " e.accrual_id,e.reg_default,e.type,"+
+	    " e.default_monetary_amount,e.earn_factor,e.holiday_related,"+
+	    " e.inactive, "+
+	    " f.nw_code,f.gl_string,count(g.hour_code_id) "+
+	    " from hour_codes e "+
+	    " left join code_cross_ref f on f.code_id=e.id "+
+	    " left join hour_code_conditions c on c.hour_code_id=e.id "+
+	    " left join code_reason_conditions g on g.hour_code_id=e.id  ";
+	String qw = "", msg="";
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    back = " Could not connect to DB ";
+	    return back;
+	}							
+	try{
+	    if(!qw.isEmpty()) qw += " and "; 
+	    qw += " e.inactive is null and g.inactive is null ";
+	    qw += " and e.name like ? ";
+	    if(!qw.isEmpty()){
+		qw = " where "+qw;
+	    }
+	    qw += " group by e.id,e.name,e.description,e.record_method, "+
+	    " e.accrual_id, e.reg_default,e.type, "+
+	    " e.default_monetary_amount,e.earn_factor,e.holiday_related,"+
+	    " e.inactive,f.nw_code,f.gl_string ";	    
+	    qw += " order by e.name";
+	    qq += qw;
+	    logger.debug(qq);
+	    pstmt = con.prepareStatement(qq);
+	    //
+	    int jj=1;
+	    pstmt.setString(jj++, "COMMUT%");
+	    rs = pstmt.executeQuery();
+	    hourCodes = new ArrayList<>();
+	    while(rs.next()){
+		HourCode one = new HourCode(rs.getString(1),
+					    rs.getString(2),
+					    rs.getString(3),
+					    rs.getString(4),
+					    rs.getString(5),
+					    rs.getString(6) != null,
+					    rs.getString(7),
+					    rs.getDouble(8),
+					    rs.getDouble(9),
+					    rs.getString(10) != null,
+
+					    rs.getString(11) != null,
+					    rs.getString(12),
+					    rs.getString(13)
+					    );
+		one.setReasonRequired(rs.getInt(14) > 0);
+		if(!hourCodes.contains(one))
+		    hourCodes.add(one);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+    }						
+
+    
 }

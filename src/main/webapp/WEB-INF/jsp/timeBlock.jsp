@@ -186,15 +186,15 @@
 	</s:form>
 
 	<script>
-		function getTimeAndInsert(element) {
-			let timeNow = new Date().toLocaleTimeString('en-US', {
-				timeZone: 'America/Indiana/Indianapolis',
-				hour: '2-digit',
-				minute: '2-digit'
-			});
-
-			document.getElementById(element).value = timeNow;
-		}
+	 function getTimeAndInsert(element) {
+	     let timeNow = new Date().toLocaleTimeString('en-US', {
+		 timeZone: 'America/Indiana/Indianapolis',
+		 hour: '2-digit',
+		 minute: '2-digit'
+	     });
+	     
+	     document.getElementById(element).value = timeNow;
+	 }
 	</script>
 </div>
 <%@ include file="footer.jsp" %>

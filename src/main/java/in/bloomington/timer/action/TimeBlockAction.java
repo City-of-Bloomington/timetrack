@@ -258,24 +258,23 @@ public class TimeBlockAction extends TopAction{
 	if(earnReasons == null){
 	    getDocument();
 	    if(document != null){
-		// if(department != null && department.getName().equals("Police")){
 		// Police department_id=20
-		if(!department_id.isEmpty() && department_id.equals("20")){
-		    CodeReasonConditionList crcl = new CodeReasonConditionList();
-		    String salary_group_id = document.getJob().getSalary_group_id();
-		    crcl.setSalary_group_id(salary_group_id);
-		    if(!department_id.isEmpty()){
-			crcl.setDepartment_id(department_id);
-		    }
-		    crcl.setActiveOnly();
-		    String back = crcl.lookFor();
-		    if(back.isEmpty()){
-			List<EarnCodeReason> ones = crcl.getReasons();
-			if(ones != null && ones.size() > 0){
-			    earnReasons = ones;
-			}
+		// if(!department_id.isEmpty() && department_id.equals("20")){
+		CodeReasonConditionList crcl = new CodeReasonConditionList();
+		String salary_group_id = document.getJob().getSalary_group_id();
+		crcl.setSalary_group_id(salary_group_id);
+		if(!department_id.isEmpty()){
+		    crcl.setDepartment_id(department_id);
+		}
+		crcl.setActiveOnly();
+		String back = crcl.lookFor();
+		if(back.isEmpty()){
+		    List<EarnCodeReason> ones = crcl.getReasons();
+		    if(ones != null && ones.size() > 0){
+			earnReasons = ones;
 		    }
 		}
+		System.err.println(" earn reasons "+earnReasons.size());
 	    }
 	}
     }

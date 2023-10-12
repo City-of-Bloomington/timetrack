@@ -1199,7 +1199,7 @@ update time_block_logs set minutes = hours*60;
 ;;
 ;; update the view
 ;;
-     create or replace view time_blocks_view as                                         select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    t.earn_code_reason_id earn_code_reason_id,                                      t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.minutes minutes,                                                              t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      c.earn_factor earn_factor,                                                      c.holiday_related holiday_related,                                              cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id,                                                      r.description reason                                                            from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id 			                           left join earn_code_reasons r on r.id=t.earn_code_reason_id;
+     create or replace view time_blocks_view as                                         select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    t.earn_code_reason_id earn_code_reason_id,                                      t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.minutes minutes,                                                              t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      c.earn_factor earn_factor,                                                      c.holiday_related holiday_related,                                              cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id,                                                      r.description reason                                                            from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id 			               left join earn_code_reasons r on r.id=t.earn_code_reason_id;
 
 ;;
 ;; mark the following earn codes as holiday related H1.0, HCE1.0, HCE1.5, HCE2.0;; and HF
@@ -1327,13 +1327,14 @@ CREATE TABLE available_badges (
     )engine=InnoDB;
 
 //
+// next update start from here
 // adding notes to the time block records
 // changes 9/26/2023 (test server)
 //
 alter table time_blocks add notes varchar(512);
 alter table time_block_logs add notes varchar(512) after time_block_id;
 
-       create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    r.id earn_code_reason_id,                                                       t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.minutes minutes,                                                              t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.notes as notes,                                                               t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      c.earn_factor earn_factor,                                                      c.holiday_related holiday_related,                                              cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id,                                                      r.description reason                                                           from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id                                 left join earn_code_reasons r on r.id=t.earn_code_reason_id  ;
+  create or replace view time_blocks_view as                                            select t.id time_block_id,                                                     t.document_id document_id,                                                      t.hour_code_id hour_code_id,                                                    r.id earn_code_reason_id,                                                       t.date,                                                                         t.begin_hour begin_hour,                                                        t.begin_minute begin_minute,                                                    t.end_hour end_hour,                                                            t.end_minute end_minute,                                                        t.hours hours,                                                                  t.minutes minutes,                                                              t.amount amount,                                                                t.clock_in clock_in,                                                            t.clock_out clock_out,                                                          t.notes as notes,                                                               t.inactive inactive,                                                            datediff(t.date,p.start_date) order_id,                                         c.name code_name,                                                               c.description code_description,                                                 c.record_method record_method,                                                  c.accrual_id accrual_id,                                                        c.type code_type,                                                               c.default_monetary_amount,                                                      c.earn_factor earn_factor,                                                      c.holiday_related holiday_related,                                              cf.nw_code nw_code_name,                                                        ps.name job_name,                                                               j.id job_id,                                                                    d.pay_period_id pay_period_id,                                                  d.employee_id employee_id,                                                      r.description reason                                                           from time_blocks t                                                              join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join jobs j on d.job_id=j.id                                                    join positions ps on j.position_id=ps.id                                        join hour_codes c on t.hour_code_id=c.id                                        left join code_cross_ref cf on c.id=cf.code_id                                 left join earn_code_reasons r on r.id=t.earn_code_reason_id  ;
 
 ;;
 ;;
@@ -1350,3 +1351,60 @@ alter table time_block_logs add notes varchar(512) after time_block_id;
     primary key(id),
     FOREIGN KEY (hour_code_id) REFERENCES hour_codes (id)
     )engine=InnoDB;
+;;
+;; add the following to Database
+;;
+insert into hour_codes values
+(156, 'COMMUTE','Sustainable Commute Incentive','Monetary',null, null, 'Monetary' ,4.00,0.00, null,null),
+(157, 'COMMUTE_EXR','Sustainable Commute Exercise Incentive','Monetary',NULL, NULL, 'Monetary', 4.00, 0.00, NULL, NULL)
+
+;;
+;;
+insert into hour_code_extra_conditions values
+(1 , 156 , 1 , 'y' , 500 , 'Regular', NULL   ),
+(2 , 157 ,  1 , 'y' , 500 , 'Regular', NULL  );
+;;
+;;
+insert into reaso_categories values(18,'COMMUTE',null);
+insert into  hour_code_extra_conditions values
+ ( 1 ,          156 ,             1 , 'y'                   ,                500 , 'Regular'                  , NULL     ),
+(  2 ,          157 ,             1 , 'y'                   ,                500 , 'Regular'                  , NULL   );
+;;
+;;
+insert into earn_code_reasons values
+ (97 , 'Carpool'                               , 'COMMUTE: Carpool'                                ,                 18 , NULL    ),
+(  98 , 'Bus/public transit'                    , 'COMMUTE: Bus/public transit'                     ,                 18 , NULL    ),
+(  99 , 'Electric scooter'                      , 'COMMUTE: Electric scooter'                       ,                 18 , NULL     ),
+( 100 , 'Segway/Electric bike'                  , 'COMMUTE: Segway/Electric bike'                   ,                 18 , NULL     ),
+( 101 , 'Fully electronic car'                  , 'COMMUTE: Fully electronic car'                   ,                 18 , NULL     ),
+( 102 , 'Other (Specify in the text box below)' , 'COMMUTE: Other (Specifiy in the text box below)' ,                 18 , NULL     ),
+( 103 , 'Bike'                                  , 'COMMUTE: Bike'                                   ,                 18 , NULL     ),
+( 104 , 'Roll (for anyone in a wheelchair)'     , 'COMMUTE: Roll (for anyone in a wheelchair)'      ,                 18 , NULL     ),
+( 105 , 'Walk/Run'                              , 'COMMUTE: Walk/Run'                               ,                 18 | NULL     )
+;;
+;;
+;; the following will be added on 1/1/2024 (new year)
+;;
+insert into hour_code_conditions values
+(0,156,null, 1, null,'2024-01-01',null),
+(0,157,null, 1, null,'2024-01-01',null),
+(0,156,null, 2, null,'2024-01-01',null),
+(0,157,null, 2, null,'2024-01-01',null),
+(0,156,null, 4, null,'2024-01-01',null),
+(0,157,null, 4, null,'2024-01-01',null),
+(0,156,null, 5, null,'2024-01-01',null),
+(0,157,null, 5, null,'2024-01-01',null),
+(0,156,null, 6, null,'2024-01-01',null),
+(0,157,null, 6, null,'2024-01-01',null),
+(0,156,null, 7, null,'2024-01-01',null),
+(0,157,null, 7, null,'2024-01-01',null),
+(0,156,null, 8, null,'2024-01-01',null),
+(0,157,null, 8, null,'2024-01-01',null),
+(0,156,null, 9, null,'2024-01-01',null),
+(0,157,null, 9, null,'2024-01-01',null),
+(0,156,null, 10, null,'2024-01-01',null),
+(0,157,null, 10, null,'2024-01-01',null),
+(0,156,null, 11, null,'2024-01-01',null),
+(0,157,null, 11, null,'2024-01-01',null),
+(0,156,null, 12, null,'2024-01-01',null),
+(0,157,null, 12, null,'2024-01-01',null);

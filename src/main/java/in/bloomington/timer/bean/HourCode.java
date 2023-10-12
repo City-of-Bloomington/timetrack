@@ -38,7 +38,8 @@ public class HourCode{
     //
     private double default_monetary_amount=0.0, earn_factor=0.0;
     private String timeUsed="", timeEarned="", unpaid="";
-
+    // recently added 
+    private boolean reason_required = false;
     public HourCode(){
     }
     public HourCode(String val){
@@ -57,7 +58,8 @@ public class HourCode{
 		    String code_type,
 		    double default_amount,
 		    double earn_factor,
-		    boolean holiday_related){
+		    boolean holiday_related
+		    ){
 	setId(code_id);
 	setName(code_name);
 	setDescription(code_desc);
@@ -254,7 +256,11 @@ public class HourCode{
     public void setReg_default(boolean val){
 	if(val)
 	    reg_default = "y";
-    }		
+    }
+    public void setReasonRequired(boolean val){
+	if(val)
+	    reason_required = val;
+    }
     public String getCodeInfo(){
 	String ret = name;
 	if(!description.isEmpty()){
@@ -301,8 +307,11 @@ public class HourCode{
     public boolean isOther(){
 	return type.equals("Other");
     }
+    public boolean isReasonRequired(){
+	return reason_required;
+    }
     public boolean requireReason(){
-	return (isEarned() || isOvertime()) && record_method.equals("Time");
+	return reason_required || ((isEarned() || isOvertime()) && record_method.equals("Time"));
     }
     public boolean hasEarnFactor(){
 	return earn_factor > 0;
@@ -370,7 +379,13 @@ public class HourCode{
 	}
 	return codeRef;
     }
-		
+
+    /**
+     *
+     select h.id,h.name,h.description,h.record_method,                                      h.accrual_id, h.reg_default,h.type,                                             h.default_monetary_amount,h.earn_factor,h.holiday_related,                      h.inactive, f.nw_code,f.gl_string,count(g.hour_code_id)                         from hour_codes h left join code_cross_ref f on f.code_id=h.id                  left join code_reason_conditions g on g.hour_code_id=h.id                       where h.id=81 and g.inactive is null group by h.id,h.name,                      h.description,h.record_method, h.accrual_id, h.reg_default,h.type,              h.default_monetary_amount,h.earn_factor,h.holiday_related,                      h.inactive, f.nw_code,f.gl_string
+
+	    
+     */
     public String doSelect(){
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -380,9 +395,14 @@ public class HourCode{
 	    " h.accrual_id, h.reg_default,h.type,"+
 	    " h.default_monetary_amount,h.earn_factor,h.holiday_related,"+
 	    " h.inactive, "+
-	    " f.nw_code,f.gl_string "+
+	    " f.nw_code,f.gl_string,count(g.hour_code_id) "+
 	    " from hour_codes h left join code_cross_ref f on f.code_id=h.id "+
-	    " where h.id=? ";
+	    " left join code_reason_conditions g on g.hour_code_id=h.id  "+
+	    " where h.id=? and g.inactive is null "+
+	    " group by h.id,h.name,h.description,h.record_method, "+
+	    " h.accrual_id, h.reg_default,h.type, "+
+	    " h.default_monetary_amount,h.earn_factor,h.holiday_related,"+
+	    " h.inactive,f.nw_code,f.gl_string ";
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -408,6 +428,7 @@ public class HourCode{
 			rs.getString(12),
 			rs.getString(13)
 			);
+		setReasonRequired(rs.getInt(14) > 0);
 	    }
 	}
 	catch(Exception ex){
@@ -507,7 +528,7 @@ public class HourCode{
 	return msg;
     }
 
-    public	String doUpdate(){
+    public String doUpdate(){
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
