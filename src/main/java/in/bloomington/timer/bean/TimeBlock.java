@@ -1440,7 +1440,7 @@ public class TimeBlock extends Block{
 	    return errors;
 	}
 	if(action_type.isEmpty()) action_type="Add";
-	String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?, null) ";
+	String qq = "insert into time_blocks values(0,?,?,?,?, ?,?,?,?,?, ?,?,?,?, null,?) ";
 	String qq2 = "select LAST_INSERT_ID()";
 	msg = checkForConflicts();
 	if(!msg.isEmpty()){
@@ -1485,6 +1485,7 @@ public class TimeBlock extends Block{
 	    pstmt.setDouble(jj++, 0.0);
 	    pstmt.setString(jj++, "y"); // clock_in
 	    pstmt.setNull(jj++,Types.CHAR); // clock_out
+	    pstmt.setNull(jj++,Types.VARCHAR);
 	    pstmt.executeUpdate();
 	    //
 	    pstmt2 = con.prepareStatement(qq2);
@@ -1506,12 +1507,13 @@ public class TimeBlock extends Block{
 						amount,
 						clock_in,
 						clock_out,
-						notes,
 						id,
+						notes,
 						action_type,
 						action_by_id,
 						null,
 						location_id);
+	    
 	    msg += tbl.doSave();								
 	}
 	catch(Exception ex){

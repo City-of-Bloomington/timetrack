@@ -277,7 +277,7 @@ public class EmpList extends CommonInc{
 		    emp.setEmail(str);
 		}
 		Attribute phone = (Attribute)(atts.get("telephoneNumber"));
-		if (email != null){
+		if (phone != null){
 		    str = phone.get().toString();
 		    emp.setPhone(str);
 		}		

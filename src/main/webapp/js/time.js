@@ -229,7 +229,7 @@ $('#hour_code_select').change(function() {
 	    var amount = $obj.val();
 	    $('#amount_change').val(amount);
 	}
-	var codes = ['156','157']; // COMMUTE codes
+	var codes = ['157','158']; // COMMUTE codes
 	var code_id = val.substring(0,val.indexOf('_')); // id only
 	if(codes.includes(code_id)){
 	    handleShowCodeReason(code_id);

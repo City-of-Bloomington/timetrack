@@ -1326,6 +1326,19 @@ CREATE TABLE available_badges (
     foreign key(submitted_by_id) references employees(id)
     )engine=InnoDB;
 
+    create table term_notifications (
+    id int unsigned not null auto_increment,
+    send_time datetime,
+    sender_id int unsigned,
+    termination_id int unsigned,
+    recipient_emails varchar(256),
+    email_text text,
+    send_error text,
+    primary key(id),
+    foreign key(termination_id) references emp_terminations(id),
+    foreign key(sender_id) references employees(id)
+    )engine=InnoDB;
+
 //
 // next update start from here
 // adding notes to the time block records
@@ -1343,10 +1356,9 @@ alter table time_block_logs add notes varchar(512) after time_block_id;
     id int unsigned not null auto_increment,
     hour_code_id int(10) unsigned NOT NULL,
     times_per_day tinyint default 1,
-    default_value_fixed enum('Yes','No') default 'No',
+    default_value_fixed char(1) default NULL,
     max_total_per_year double default 500,
-    hour_code_type_associate enum('Regular'),
-    salary_group_exclude enum('Temp'),
+    hour_code_associate_type enum('Regular'),
     inactive char(1),
     primary key(id),
     FOREIGN KEY (hour_code_id) REFERENCES hour_codes (id)
@@ -1355,56 +1367,171 @@ alter table time_block_logs add notes varchar(512) after time_block_id;
 ;; add the following to Database
 ;;
 insert into hour_codes values
-(156, 'COMMUTE','Sustainable Commute Incentive','Monetary',null, null, 'Monetary' ,4.00,0.00, null,null),
-(157, 'COMMUTE_EXR','Sustainable Commute Exercise Incentive','Monetary',NULL, NULL, 'Monetary', 4.00, 0.00, NULL, NULL)
+(157, 'COMMUTE','Sustainable Commute Incentive','Monetary',null, null, 'Monetary' ,4.00,0.00, null,null),
+(158, 'COMMUTE_EXR','Sustainable Commute Exercise Incentive','Monetary',NULL, NULL, 'Monetary', 4.00, 0.00, NULL, NULL)
 
 ;;
 ;;
 insert into hour_code_extra_conditions values
-(1 , 156 , 1 , 'y' , 500 , 'Regular', NULL   ),
-(2 , 157 ,  1 , 'y' , 500 , 'Regular', NULL  );
+(1 , 157 , 1 , 'y' , 500 , 'Regular', NULL   ),
+(2 , 158 ,  1 , 'y' , 500 , 'Regular', NULL  );
 ;;
 ;;
-insert into reaso_categories values(18,'COMMUTE',null);
-insert into  hour_code_extra_conditions values
- ( 1 ,          156 ,             1 , 'y'                   ,                500 , 'Regular'                  , NULL     ),
-(  2 ,          157 ,             1 , 'y'                   ,                500 , 'Regular'                  , NULL   );
+insert into reason_categories values(18,'COMMUTE',null);
+
 ;;
 ;;
 insert into earn_code_reasons values
- (97 , 'Carpool'                               , 'COMMUTE: Carpool'                                ,                 18 , NULL    ),
-(  98 , 'Bus/public transit'                    , 'COMMUTE: Bus/public transit'                     ,                 18 , NULL    ),
-(  99 , 'Electric scooter'                      , 'COMMUTE: Electric scooter'                       ,                 18 , NULL     ),
-( 100 , 'Segway/Electric bike'                  , 'COMMUTE: Segway/Electric bike'                   ,                 18 , NULL     ),
-( 101 , 'Fully electronic car'                  , 'COMMUTE: Fully electronic car'                   ,                 18 , NULL     ),
-( 102 , 'Other (Specify in the text box below)' , 'COMMUTE: Other (Specifiy in the text box below)' ,                 18 , NULL     ),
-( 103 , 'Bike'                                  , 'COMMUTE: Bike'                                   ,                 18 , NULL     ),
-( 104 , 'Roll (for anyone in a wheelchair)'     , 'COMMUTE: Roll (for anyone in a wheelchair)'      ,                 18 , NULL     ),
-( 105 , 'Walk/Run'                              , 'COMMUTE: Walk/Run'                               ,                 18 | NULL     )
+ (97 , 'Carpool', 'COMMUTE: Carpool',18,NULL    ),
+(  98 , 'Bus/public transit','COMMUTE: Bus/public transit', 18 , NULL    ),
+(  99 , 'Electric scooter', 'COMMUTE: Electric scooter',18 , NULL     ),
+( 100 , 'Segway/Electric bike','COMMUTE: Segway/Electric bike',18 , NULL  ),
+( 101 , 'Fully electronic car','COMMUTE: Fully electronic car',18 , NULL     ),
+( 102 , 'Other (Specify in the text box below)' , 'COMMUTE: Other (Specifiy in the text box below)' ,18 , NULL),
+( 103 , 'Bike', 'COMMUTE: Bike',18,NULL     ),
+( 104 , 'Walk/Run', 'COMMUTE: Walk/Run',18, NULL     )
 ;;
 ;;
 ;; the following will be added on 1/1/2024 (new year)
 ;;
 insert into hour_code_conditions values
-(0,156,null, 1, null,'2024-01-01',null),
+(0,158,null, 1, null,'2024-01-01',null),
 (0,157,null, 1, null,'2024-01-01',null),
-(0,156,null, 2, null,'2024-01-01',null),
+(0,158,null, 2, null,'2024-01-01',null),
 (0,157,null, 2, null,'2024-01-01',null),
-(0,156,null, 4, null,'2024-01-01',null),
+(0,158,null, 4, null,'2024-01-01',null),
 (0,157,null, 4, null,'2024-01-01',null),
-(0,156,null, 5, null,'2024-01-01',null),
+(0,158,null, 5, null,'2024-01-01',null),
 (0,157,null, 5, null,'2024-01-01',null),
-(0,156,null, 6, null,'2024-01-01',null),
+(0,158,null, 6, null,'2024-01-01',null),
 (0,157,null, 6, null,'2024-01-01',null),
-(0,156,null, 7, null,'2024-01-01',null),
+(0,158,null, 7, null,'2024-01-01',null),
 (0,157,null, 7, null,'2024-01-01',null),
-(0,156,null, 8, null,'2024-01-01',null),
+(0,158,null, 8, null,'2024-01-01',null),
 (0,157,null, 8, null,'2024-01-01',null),
-(0,156,null, 9, null,'2024-01-01',null),
+(0,158,null, 9, null,'2024-01-01',null),
 (0,157,null, 9, null,'2024-01-01',null),
-(0,156,null, 10, null,'2024-01-01',null),
+(0,158,null, 10, null,'2024-01-01',null),
 (0,157,null, 10, null,'2024-01-01',null),
-(0,156,null, 11, null,'2024-01-01',null),
+(0,158,null, 11, null,'2024-01-01',null),
 (0,157,null, 11, null,'2024-01-01',null),
-(0,156,null, 12, null,'2024-01-01',null),
+(0,158,null, 12, null,'2024-01-01',null),
 (0,157,null, 12, null,'2024-01-01',null);
+
+insert into  code_reason_conditions values
+(0, 97, 157, 1, null,null,null),
+(0, 97, 157, 2, null,null,null),
+(0,97, 157, 4, null,null,null),
+(0,97, 157, 5, null,null,null),
+(0, 97, 157, 6, null,null,null),
+(0, 97, 157, 7, null,null,null),
+(0, 97, 157, 8, null,null,null),
+(0, 97, 157, 9, null,null,null),
+(0, 97, 157, 10, null,null,null),
+(0, 97, 157, 11, null,null,null),
+(0, 97, 157, 12, null,null,null),
+
+(0, 98, 157, 1, null,null,null),
+(0, 98, 157, 2, null,null,null),
+(0,98, 157, 4, null,null,null),
+(0,98, 157, 5, null,null,null),
+(0, 98, 157, 6, null,null,null),
+(0, 98, 157, 7, null,null,null),
+(0, 98, 157, 8, null,null,null),
+(0, 98, 157, 9, null,null,null),
+(0, 98, 157, 10, null,null,null),
+(0, 98, 157, 11, null,null,null),
+(0, 98, 157, 12, null,null,null),
+
+(0, 99, 157, 1, null,null,null),
+(0, 99, 157, 2, null,null,null),
+(0,99, 157, 4, null,null,null),
+(0,99, 157, 5, null,null,null),
+(0, 99, 157, 6, null,null,null),
+(0, 99, 157, 7, null,null,null),
+(0, 99, 157, 8, null,null,null),
+(0, 99, 157, 9, null,null,null),
+(0, 99, 157, 10, null,null,null),
+(0, 99, 157, 11, null,null,null),
+(0, 99, 157, 12, null,null,null),
+
+(0, 100, 157, 1, null,null,null),
+(0, 100, 157, 2, null,null,null),
+(0,100, 157, 4, null,null,null),
+(0,100, 157, 5, null,null,null),
+(0, 100, 157, 6, null,null,null),
+(0, 100, 157, 7, null,null,null),
+(0, 100, 157, 8, null,null,null),
+(0, 100, 157, 9, null,null,null),
+(0, 100, 157, 10, null,null,null),
+(0, 100, 157, 11, null,null,null),
+(0, 100, 157, 12, null,null,null),
+
+(0, 101, 157, 1, null,null,null),
+(0, 101, 157, 2, null,null,null),
+(0,101, 157, 4, null,null,null),
+(0,101, 157, 5, null,null,null),
+(0, 101, 157, 6, null,null,null),
+(0, 101, 157, 7, null,null,null),
+(0, 101, 157, 8, null,null,null),
+(0, 101, 157, 9, null,null,null),
+(0, 101, 157, 10, null,null,null),
+(0, 101, 157, 11, null,null,null),
+(0, 101, 157, 12, null,null,null),
+
+(0, 102, 157, 1, null,null,null),
+(0, 102, 157, 2, null,null,null),
+(0,102, 157, 4, null,null,null),
+(0,102, 157, 5, null,null,null),
+(0, 102, 157, 6, null,null,null),
+(0, 102, 157, 7, null,null,null),
+(0, 102, 157, 8, null,null,null),
+(0, 102, 157, 9, null,null,null),
+(0, 102, 157, 10, null,null,null),
+(0, 102, 157, 11, null,null,null),
+(0, 102, 157, 12, null,null,null);
+
+;;
+;;
+insert into  code_reason_conditions values
+(0, 103, 158, 1, null,null,null),
+(0, 103, 158, 2, null,null,null),
+(0,103, 158, 4, null,null,null),
+(0,103, 158, 5, null,null,null),
+(0, 103, 158, 6, null,null,null),
+(0, 103, 158, 7, null,null,null),
+(0, 103, 158, 8, null,null,null),
+(0, 103, 158, 9, null,null,null),
+(0, 103, 158, 10, null,null,null),
+(0, 103, 158, 11, null,null,null),
+(0, 103, 158, 12, null,null,null),
+
+(0, 104, 158, 1, null,null,null),
+(0, 104, 158, 2, null,null,null),
+(0,104, 158, 4, null,null,null),
+(0,104, 158, 5, null,null,null),
+(0, 104, 158, 6, null,null,null),
+(0, 104, 158, 7, null,null,null),
+(0, 104, 158, 8, null,null,null),
+(0, 104, 158, 9, null,null,null),
+(0, 104, 158, 10, null,null,null),
+(0, 104, 158, 11, null,null,null),
+(0, 104, 158, 12, null,null,null),
+
+(0, 102, 158, 1, null,null,null),
+(0, 102, 158, 2, null,null,null),
+(0,102, 158, 4, null,null,null),
+(0,102, 158, 5, null,null,null),
+(0, 102, 158, 6, null,null,null),
+(0, 102, 158, 7, null,null,null),
+(0, 102, 158, 8, null,null,null),
+(0, 102, 158, 9, null,null,null),
+(0, 102, 158, 10, null,null,null),
+(0, 102, 158, 11, null,null,null),
+(0, 102, 158, 12, null,null,null);
+
+
+;;
+;;
+
+

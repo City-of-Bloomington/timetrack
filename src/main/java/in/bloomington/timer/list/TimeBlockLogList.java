@@ -178,13 +178,13 @@ public class TimeBlockLogList{
     }
 
     /**
-       select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,minutes,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs order by id desc                                  into outfile '/var/lib/mysql-files/timetrack_logs.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
+       select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,minutes,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs where action_time >= str_to_date('01/01/2022','%m/%d/%Y') order by id desc                                                         into outfile '/var/lib/mysql-files/timetrack_logs.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
 
        select dayofweek(action_time) day, hour(action_time) hour,count(*) cnt from time_block_logs where action_time > str_to_date('01/01/2019','%m/%d/%Y') group by day, hour                                                                       	into outfile '/var/lib/mysql-files/timetrack_logs.csv'                          fields terminated by ','                                                        lines terminated by '\n';				
        //
        // starting pay period 12/31/2018 so we added one day
        //
-       select (dayofyear(action_time)+1)%14+1 day, hour(action_time) hour,count(*) cnt from time_block_logs where action_time >= str_to_date('01/01/2019','%m/%d/%Y') group by day, hour                
+       select (dayofyear(action_time)+1)%14+1 day, hour(action_time) hour,count(*) cnt from time_block_logs where action_time >= str_to_date('01/01/2022','%m/%d/%Y') group by day, hour                
 				
 
     */
