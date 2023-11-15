@@ -147,7 +147,7 @@
 	    <tr>
 		    <td>Number of Hours Worked in the Current Pay Period?</td>
 		    <td><s:property value="term.pay_period_worked_hrs" /></td>
-		    <td>Vaction Time</td>
+		    <td>Vacation Time</td>
 		    <td><s:property value="term.vac_time" /></td>
 		</tr>
 		<tr><td>Comp Time</td>

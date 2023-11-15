@@ -92,6 +92,10 @@ public class TerminateJobAction extends TopAction{
 		    if(!back.isEmpty()){
 			addError(back);
 		    }
+		    back = term.findEmployeeAddress();
+		    if(!back.isEmpty()){
+			addError(back);
+		    }
 		    back = term.findDocumentForInfo();
 		    if(!back.isEmpty()){
 			addError(back);
@@ -139,6 +143,10 @@ public class TerminateJobAction extends TopAction{
 		term.setSubmitted_date(Helper.getToday());
 		term.setLast_pay_period_date(last_pay_period_date);
 		back = term.populateOneJob(); // all jobs
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+		back = term.findEmployeeAddress();
 		if(!back.isEmpty()){
 		    addError(back);
 		}

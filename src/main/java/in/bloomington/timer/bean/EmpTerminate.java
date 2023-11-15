@@ -64,6 +64,7 @@ public class EmpTerminate{
     Map<String, List<String>> accruals = null;
     List<BenefitGroup> benefitGroups = null;
     Profile profile = null;
+    Address addr = null;
     //
     public EmpTerminate(){
 	
@@ -311,13 +312,16 @@ public class EmpTerminate{
 	return getEmp();
     }
     public String getDate_of_hire(){
-	return date_of_hire;
+	return Helper.changeDateFormat(date_of_hire);
     }
     public String getLast_pay_period_date(){
 	return last_pay_period_date;
     }
     public String getLast_day_of_work(){
-	return last_day_of_work;
+	if(last_day_of_work.isEmpty()){
+	    last_day_of_work =  last_pay_period_date;
+	}
+	return Helper.changeDateFormat(last_day_of_work);
     }
     public String getDepartment_id(){
 	return department_id;
@@ -739,6 +743,25 @@ public class EmpTerminate{
 	}
 	return back;
     }
+    public String findEmployeeAddress(){
+	String back = "";
+	if(emp == null){
+	    getEmployee();
+	}
+	if(emp != null){
+	    back = emp.findAddress();
+	    if(back.isEmpty()){
+		addr = emp.getAddress();
+		emp_address = addr.getLineAddress();
+		emp_city = addr.getCity();
+		emp_state = addr.getState();
+		emp_zip = addr.getZip();
+		date_of_birth = emp.getDob();
+	    }
+	    // System.err.println(" addr "+addr);
+	}
+	return back;
+    }
     public void setSupervisor(Employee val){
 	if(val != null){
 	    supervisor =val;
@@ -762,8 +785,14 @@ public class EmpTerminate{
     
 
     public void setDate_of_hire(String val){
-	if(val != null)
-	    date_of_hire=val;
+	if(val != null){
+	    if(val.indexOf("-") > 0){
+		date_of_hire = Helper.changeDateFormat(val);
+	    }
+	    else{
+		date_of_hire = val;
+	    }
+	}
     }
     public void setLast_pay_period_date(String val){
 	if(val != null)
@@ -771,7 +800,12 @@ public class EmpTerminate{
     }
     public void setLast_day_of_work(String val){
 	if(val != null)
-	    last_day_of_work=val;
+	    if(val.indexOf("-") > 0){
+		last_day_of_work = Helper.changeDateFormat(val);
+	    }
+	    else{
+		last_day_of_work=val;
+	    }
     }
     public void setDepartment_id(String val){
 	if(val != null)

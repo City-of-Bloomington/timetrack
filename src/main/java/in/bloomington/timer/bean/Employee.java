@@ -60,6 +60,8 @@ public class Employee implements Serializable, Comparable<Employee>{
     Department department = null;
     // GroupEmployee groupEmployee = null;
     boolean receive_email = true;
+    Address address = null;
+    String dob = ""; //needed for term
     //
     // for a given selected job and pay_period_id we need to find
     // salary group, hour codes
@@ -197,7 +199,9 @@ public class Employee implements Serializable, Comparable<Employee>{
     public String getUsername(){
 	return username;
     }
-    
+    public Address getAddress(){
+	return address;
+    }
     public String getFull_name(){
 	if(full_name.isEmpty()){
 	    full_name = first_name;
@@ -226,6 +230,9 @@ public class Employee implements Serializable, Comparable<Employee>{
     }
     public String getPhone(){
 	return phone;
+    }
+    public String getDob(){
+	return dob;
     }
     public String getRolesText(){
 	String ret = "";
@@ -286,6 +293,10 @@ public class Employee implements Serializable, Comparable<Employee>{
     // for auto complete
     public void setFull_name(String val){
 
+    }
+    public void setAddress(Address val){
+	if(val != null)
+	    address = val;
     }
     // sometimes in AD email is set as N/A
     public void setEmail(String val){
@@ -425,7 +436,21 @@ public class Employee implements Serializable, Comparable<Employee>{
 	if(val)
 	    inactive = "y";
     }
-
+    public void setDob(String val){
+	if(val != null){
+	    if(val.indexOf("-") > -1){
+		try{
+		    dob = val.substring(5,7)+"/"+val.substring(8)+"/"+val.substring(0,4);
+		}catch(Exception ex){
+		    System.err.println(ex);
+		}
+	    }
+	    else{
+		dob = val;
+	    }
+	}
+	
+    }
     public String toString(){
 	return getFull_name();
     }
@@ -1380,5 +1405,62 @@ public class Employee implements Serializable, Comparable<Employee>{
 	}
 	return msg;
     }						
+    //
+    // find employee current address from NW
+    //
+    public String findAddress(){
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String back = "";
+	if(employee_number.isEmpty()){
+	    back = "Employee number not set ";
+	    return back;
+	}
+	String qq = "select * from HR.vwEmployeeCurrentInfo eci where eci.EmployeeStatus = ? and eci.EmployeeNumber = ?";
+	con = SingleConnect.getNwConnection();
+	if(con == null){
+	    back = " Could not connect to DB ";
+	    logger.error(back);
+	    return back;
+	}
+	logger.debug(qq);
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1,"A");
+	    pstmt.setString(2, employee_number);
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		String line_1="", line_2="", city="", state="", zip="";
+		String str = rs.getString(5); //dob
+		if(str != null)
+		    setDob(str);
+		str = rs.getString(9);
+		if(str != null)
+		    line_1 = str;
+		str = rs.getString(10);
+		if(str != null)
+		    line_2 = str;
+		str = rs.getString(12);
+		if(str != null)
+		    city = str;
+		str = rs.getString(13);
+		if(str != null)
+		    state = str;
+		str = rs.getString(14);
+		if(str != null)
+		    zip = str;
+		address = new Address(null,id, line_1, line_2, city, state,zip,false);
+	    }
+	}
+	catch(Exception ex){
+	    back += ex;
+	    logger.error(ex+": "+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	}
+	return back;
+    }
 
 }

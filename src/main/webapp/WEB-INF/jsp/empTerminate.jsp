@@ -65,12 +65,12 @@
 		</tr>
 	    </s:if>
 	    <tr><td>Date of Birth</td>
-		<td><s:textfield name="term.date_of_birth" value="%{term.date_of_birth}" size="10" maxlength="10" />(example 07/04/1972)</td> 
+		<td><s:textfield name="term.date_of_birth" value="%{term.date_of_birth}" size="10" maxlength="10" /></td> 
 		<td>Date of Hire</td>
-		<td><s:textfield name="term.date_of_hire" value="%{term.date_of_hire}" size="10" maxlength="10" />(example 07/04/1996)</td> 
+		<td><s:textfield name="term.date_of_hire" value="%{term.date_of_hire}" type="date" size="10" maxlength="10" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" /></td> 
 	    </tr>
 	    <tr><td>Last Day of Work</td>
-		<td><s:textfield name="term.last_day_of_work" value="%{term.last_day_of_work}" size="10" maxlength="10" />(example 10/22/2023)</td> 
+		<td><s:textfield name="term.last_day_of_work" type="date" value="%{term.last_day_of_work}" size="10" maxlength="10" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" /></td> 
 		<td>Last Pay Period Ending</td>
 		<td><s:property value="term.last_pay_period_date"/></td>
 	    </tr>
@@ -105,15 +105,15 @@
 	    <caption>Permanent Mailing Address</caption>
 	    <tr>
 		<td>Address</td>
-		<td><s:textfield name="term.emp_address" value="%{term.emp_address}" size="30" maxlength="100" required="true" /> </td>
+		<td><s:textfield name="term.emp_address" value="%{term.emp_address}" size="30" maxlength="100" required="true" class="required" /> </td>
 		<td>City</td>
-		<td><s:textfield name="term.emp_city" value="%{term.emp_city}" size="30" required="true" maxlength="100" /> </td>		
+		<td><s:textfield name="term.emp_city" value="%{term.emp_city}" size="30" required="true" maxlength="100" class="required" /> </td>		
 	    </tr>		
 	    <tr>
 		<td>State</td>
-		<td><s:textfield name="term.emp_state" value="%{term.emp_state}" size="10" maxlength="30" required="true" /> </td>
+		<td><s:textfield name="term.emp_state" value="%{term.emp_state}" size="10" maxlength="30" required="true" class="required" /> </td>
 		<td>Zip Code</td>
-		<td><s:textfield name="term.emp_zip" value="%{term.emp_zip}" size="10" maxlength="10" required="true" /> </td>		
+		<td><s:textfield name="term.emp_zip" value="%{term.emp_zip}" size="10" maxlength="10" required="true" class="required" /> </td>		
 	    </tr>
 	    <tr>
 		<td>Phone Number</td>
@@ -175,7 +175,7 @@
 		<caption>Benefit Time Being Paid (Hours):</caption>
 		<tr><td>Number of Hours Worked in the Current Pay Period?</td>
 		    <td><s:textfield name="term.pay_period_worked_hrs" value="%{term.pay_period_worked_hrs}" size="5" maxlength="5" /></td>
-		    <td>Vaction Time</td>
+		    <td>Vacation Time</td>
 		    <td><s:textfield name="term.vac_time" value="%{term.vac_time}" size="5" maxlength="5" /></td>
 		</tr>
 		<tr><td>Comp Time</td>
