@@ -13,6 +13,9 @@ import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+//
+// an object to hold address, no database saving
+//
 public class Address{
 
     static final long serialVersionUID = 3700L;	
@@ -151,6 +154,12 @@ public class Address{
 	return ret;
     }
     //
+    // if you want to save the address info uncomment the following
+    // three functions
+    // FYI: Not tested 
+    /**
+     *
+     *
     public String doSelect(){
 	String back = "";
 	Connection con = null;
@@ -304,5 +313,5 @@ public class Address{
 	}
 	return msg;
     }		
-
+    */
 }

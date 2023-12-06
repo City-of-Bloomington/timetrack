@@ -186,6 +186,9 @@ public class PayPeriod implements Serializable{
 	}
 	return allMonths[startMonth-1]+"/"+allMonths[endMonth-1];
     }
+    //
+    // Note: to test end of year timewarp, data input must be done first
+    //       
     // if we have two different years, means we are
     // at the end of the year pay period, this is handled
     // by special case
@@ -194,13 +197,18 @@ public class PayPeriod implements Serializable{
 	return startYear < endYear;
 	// return true; // test for new year
     }
+    //
+ // Note: to test end of year timewarp, data input must be done first    
+    //
     // this is needed in December (31 days) only
     // to find the split day for the end of the year
     // pay period
     public int getDaysToYearEnd(){
 	return 31 - startDay + 1;
-	// return 13;
+	// return 7;
     }
+    //
+     // Note: to test end of year timewarp, data input must be done first
     /*
      * for the end of the year, the pay period is divided
      * into two ranges from (start_date, to 12/31/first year)
@@ -209,7 +217,7 @@ public class PayPeriod implements Serializable{
     public String getFirstPayEndDate(){
 	String ret = "";
 	if(hasTwoDifferentYears()){
-	    // ret = "11/26/2022"; // test
+	    // ret = "12/03/2023"; // test
 	    ret = "12/31/"+startYear;
 	}
 	else{

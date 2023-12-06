@@ -181,7 +181,7 @@ public class GroupManagerAction extends TopAction{
 	    empl.setActiveOnly();
 	    empl.setNotTerminated();
 	    //
-	    // managers can not manage their group
+	    // managers can not manage the group they are in
 	    //
 	    empl.setExclude_group_id(group_id);
 	    String back = empl.find();
