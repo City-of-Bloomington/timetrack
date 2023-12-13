@@ -9,8 +9,10 @@ import javax.servlet.ServletContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.util.ServletContextAware;
-import org.apache.struts2.interceptor.SessionAware;  
+//import org.apache.struts2.util.ServletContextAware;
+import org.apache.struts2.action.ServletContextAware;
+// import org.apache.struts2.interceptor.SessionAware;
+import org.apache.struts2.action.SessionAware;  
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 import org.apache.logging.log4j.LogManager;
@@ -57,6 +59,7 @@ public class WelcomeAction extends ActionSupport implements SessionAware, Servle
     public String getId(){
 	return id;
     }
+    /**
     @Override  
     public void setSession(Map<String, Object> map) {  
 	sessionMap=map;  
@@ -64,7 +67,17 @@ public class WelcomeAction extends ActionSupport implements SessionAware, Servle
     @Override  	
     public void setServletContext(ServletContext ctx) {  
         this.ctx = ctx;  
-    }  	 
+    }
+    */
+    @Override  
+    public void withSession(Map<String, Object> map) {  
+	sessionMap=map;  
+    }
+    @Override  	
+    public void withServletContext(ServletContext ctx) {  
+        this.ctx = ctx;  
+    }    
+    
 }
 
 
