@@ -9,6 +9,7 @@ import java.sql.*;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import javax.servlet.annotation.WebServlet;
 import javax.sql.*;
 import java.net.URL;
 import org.apache.logging.log4j.LogManager;
@@ -17,12 +18,13 @@ import org.jasig.cas.client.authentication.AttributePrincipal;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.util.CommonInc;
 
-public class Login extends HttpServlet{
+// comment this line if you want to use ADFS
+@WebServlet(urlPatterns = {"/CasLogin","/caslogin"}, loadOnStartup = 1)
+public class Login extends TopServlet{
 
     //
-    String cookieName = ""; // "cas_session";
+    String cookieName = ""; 
     String cookieValue = "";
-    String url="";
     static int count = 0;
     //
     // reserved usernames that issue a warning
@@ -88,9 +90,7 @@ public class Login extends HttpServlet{
 		url = host+"/timetrack/";
 	    }
 	}
-	else{
-	    url  = getServletContext().getInitParameter("url");
-	}
+	// else url from TopServlet
 	HttpSession session = null;
 	if(principal != null){
 	    final Map attributes = principal.getAttributes();

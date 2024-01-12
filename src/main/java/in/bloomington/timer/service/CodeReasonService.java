@@ -10,6 +10,7 @@ import java.io.*;
 import javax.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import javax.servlet.annotation.WebServlet;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -17,13 +18,11 @@ import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 
-
-public class CodeReasonService extends HttpServlet{
+@WebServlet(urlPatterns = {"/CodeReasonService"})
+public class CodeReasonService extends TopServlet{
 
     static final long serialVersionUID = 2210L;
-    static Logger logger = LogManager.getLogger(GroupService.class);
-    static String url="";
-    static boolean debug = false;
+    static Logger logger = LogManager.getLogger(CodeReasonService.class);
 		
     public void doGet(HttpServletRequest req,
 		      HttpServletResponse res)

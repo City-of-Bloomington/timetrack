@@ -9,41 +9,37 @@ import java.sql.*;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import javax.servlet.annotation.WebServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.bean.*;
 
+@WebServlet(urlPatterns = {"/Logout"})
+public class Logout extends TopServlet{
 
-public class Logout extends HttpServlet{
-
-		static final long serialVersionUID = 2800L;
-		static Logger logger = LogManager.getLogger(Logout.class);
-    String url = "", cas_url_prefix="";
-		
+    static final long serialVersionUID = 2800L;
+    static Logger logger = LogManager.getLogger(Logout.class);
+    
     public void doGet(HttpServletRequest req,
-					  HttpServletResponse res)
-		throws ServletException, IOException{
-
-		res.setContentType("text/html");
-		PrintWriter out = res.getWriter();
-		String name= "";
-		String value = "";
-		HttpSession session = req.getSession();
-		Employee user = null;
-		if(session != null){
-			user = (Employee)session.getAttribute("user");
-			session.removeAttribute("user");
-			session.invalidate();
-		}
-		if(url.equals("")){
-			url    = getServletContext().getInitParameter("url");
-			cas_url_prefix = getServletContext().getInitParameter("casServerUrlPrefix");
-		}
-		String str = cas_url_prefix+"/logout?url="+url;
-		res.sendRedirect(str);
-		return;
-
-
+		      HttpServletResponse res)
+	throws ServletException, IOException{
+	
+	res.setContentType("text/html");
+	PrintWriter out = res.getWriter();
+	String name= "";
+	String value = "";
+	HttpSession session = req.getSession();
+	Employee user = null;
+	if(session != null){
+	    user = (Employee)session.getAttribute("user");
+	    session.removeAttribute("user");
+	    session.invalidate();
+	}
+	String str = cas_url_prefix+"/logout?url="+url;
+	res.sendRedirect(str);
+	return;
+	
+	
     }
 
 }

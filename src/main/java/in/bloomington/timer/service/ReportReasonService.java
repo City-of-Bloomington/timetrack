@@ -10,6 +10,7 @@ import java.io.*;
 import javax.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import javax.servlet.annotation.WebServlet;
 import java.util.List;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -31,13 +32,11 @@ import in.bloomington.timer.util.Helper;
 import in.bloomington.timer.timewarp.WarpEntry;
 import in.bloomington.timer.report.ReasonReport;
 
-public class ReportReasonService extends HttpServlet{
+@WebServlet(urlPatterns = {"/ReportReasonService"})
+public class ReportReasonService extends TopServlet{
 
     static final long serialVersionUID = 2210L;
     static Logger logger = LogManager.getLogger(ReportReasonService.class);
-    static String url="";
-    static String outputFileLocation = ""; 
-    static boolean debug = false;
 		
     public void doGet(HttpServletRequest req,
 		      HttpServletResponse res)
@@ -77,8 +76,6 @@ public class ReportReasonService extends HttpServlet{
 	else{
 	    url  = getServletContext().getInitParameter("url");
 	}
-	// to be determined
-	outputFileLocation = getServletContext().getInitParameter("outputFileLocation");				
 	Enumeration<String> values = req.getParameterNames();
 	String [] vals = null;
 	while (values.hasMoreElements()){
