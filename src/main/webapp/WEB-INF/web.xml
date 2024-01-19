@@ -23,7 +23,8 @@
    <context-param>
      <param-name>quartz:start-on-load</param-name>
      <param-value>true</param-value>
-   </context-param>		
+   </context-param>
+   <!--
     <servlet>
       <servlet-name>Login</servlet-name>
       <servlet-class>in.bloomington.timer.service.Login</servlet-class>
@@ -135,7 +136,10 @@
   <servlet-mapping>
     <servlet-name>JobTitleService</servlet-name>
     <url-pattern>/JobTitleService</url-pattern>
-  </servlet-mapping>	
+  </servlet-mapping>
+   -->
+   <!-- uncomment the following if using CAS -->
+   <!--
   <filter>
     <filter-name>CAS Authentication Filter</filter-name>
     <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
@@ -153,30 +157,9 @@
     </init-param>
   </filter>
   <filter>
-    <filter-name>struts2</filter-name>
-    <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
-  </filter>
-
-  <filter>
-    <filter-name>Login Filter</filter-name>
-    <filter-class>in.bloomington.timer.util.LoginFilter</filter-class>
-  </filter>
-
-  <filter>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
     <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
   </filter>
-  <filter-mapping>
-    <filter-name>struts2</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <filter-mapping>
-    <filter-name>Login Filter</filter-name>
-    <url-pattern>/*</url-pattern>
-    <dispatcher>REQUEST</dispatcher>		
-    <dispatcher>FORWARD</dispatcher>
-  </filter-mapping>
   <filter-mapping> 
     <filter-name>CAS Authentication Filter</filter-name> 
     <url-pattern>/Login</url-pattern> 
@@ -189,6 +172,29 @@
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name> 
     <url-pattern>/Login</url-pattern> 
   </filter-mapping>
+   -->
+   
+   <filter>
+    <filter-name>Login Filter</filter-name>
+    <filter-class>in.bloomington.timer.util.LoginFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>struts2</filter-name>
+    <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>struts2</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>Login Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>		
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
   <listener>
     <listener-class>
       org.quartz.ee.servlet.QuartzInitializerListener
@@ -198,25 +204,25 @@
     <error-code>404</error-code>
     <location>/notFound.html</location>
   </error-page>
-	<!--
+  <!--
   <listener>
     <listener-class>
-			in.bloomington.timer.NotificationScheduler
+    in.bloomington.timer.NotificationScheduler
     </listener-class>
   </listener>
   <listener>
     <listener-class>
-			in.bloomington.timer.BatchSubmitScheduler
+    in.bloomington.timer.BatchSubmitScheduler
     </listener-class>
   </listener>
   <listener>
     <listener-class>
-			in.bloomington.timer.AccrualScheduler
+    in.bloomington.timer.AccrualScheduler
     </listener-class>
   </listener>
   <listener>
     <listener-class>
-			in.bloomington.timer.EmployeesUpdateScheduler
+    in.bloomington.timer.EmployeesUpdateScheduler
     </listener-class>
   </listener>
 	-->

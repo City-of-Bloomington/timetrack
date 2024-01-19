@@ -61,6 +61,7 @@ import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
 
+// not used
 public class CityClient {
 
     private static CityClient cityClient;
@@ -87,6 +88,9 @@ public class CityClient {
 	    params.add(new BasicNameValuePair("client_secret", config.getClientSecret()));
 	    params.add(new BasicNameValuePair("redirect_uri", config.getCallbackUri()));
 	    params.add(new BasicNameValuePair("grant_type", "authorization_code"));
+	    if(!config.getLocation_id().isEmpty()){
+		params.add(new BasicNameValuePair("location_id", config.getLocation_id()));
+	    }	   
 	    // params.add(new BasicNameValuePair("nonce", nonce));
 	    httpPost.setEntity(new UrlEncodedFormEntity(params));
 						

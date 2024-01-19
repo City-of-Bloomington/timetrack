@@ -22,9 +22,10 @@ public class Configuration{
     String scope="openid";
     String dicovery_uri = "";
     String username = "";
-    
+    public String location_id = ""; //needed for mobile app
     public Configuration(String val, String val2, String val3, String val4,
-		  String val5, String val6, String val7, String val8){
+			 String val5, String val6, String val7, String val8,
+			 String val9){
 	setAuthEndPoint(val);
 	setTokenEndPoint(val2);
 	setCallbackUri(val3);
@@ -32,7 +33,7 @@ public class Configuration{
 	setClientSecret(val5);
 	setScope(val6);
 	setUsername(val8);
-	
+	setLocation_id(val9);
     }
     void setAuthEndPoint(String val){
 	if(val != null)
@@ -65,7 +66,11 @@ public class Configuration{
      void setUsername(String val){
 	 if(val != null)
 	     username = val;
-     }    
+     }
+    public void setLocation_id(String val){
+	if(val != null)
+	    location_id = val;
+    }
     String getAuthEndPoint(){
 	return auth_end_point;
     }
@@ -90,6 +95,9 @@ public class Configuration{
     String getDicoveryUri(){
 	return dicovery_uri;
     }
+    String getLocation_id(){
+	return location_id;
+    }
     public String toString(){
 	String ret = "";
 	ret += " auth_end_point: "+auth_end_point;
@@ -99,6 +107,7 @@ public class Configuration{
 	ret += " client_secret: "+client_secret;
 	ret += " scope: "+scope;
 	ret += " username: "+username;
+	ret += " location_id:"+location_id;
 	return ret;
     }
 }

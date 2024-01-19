@@ -43,7 +43,7 @@ public class LoginFilter implements Filter {
 	HttpSession session = req.getSession(false);
 	if(session == null || session.getAttribute("user") == null){
 	    // these are our exludes
-	    if(uri.matches(".*(timeClock|PickJob|mobileClock).*") ||
+	    if(uri.matches(".*(timeClock|PickJob|mobileClock|callback).*") ||
 	       uri.matches(".*(Service|Login|css|jpg|png|gif|js)$")){
 
 		chain.doFilter(request, response);

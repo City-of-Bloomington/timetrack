@@ -9,7 +9,7 @@
 	<!-- to remove .action 
 	<constant name="struts.action.extension" value = ""/>
 	-->
-  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*,/JobTitleService*,/GroupManagerService*,/ManagerService*,/PositionService*,/CodeReasonService*,/NewEmployeeService*,/ReportReasonService*" />
+  <constant name="struts.action.excludePattern" value="/Login*,/Logout*,/EmployeeService*,/GroupService*,/DbEmployeeService*,/DepartmentService*,/JobTitleService*,/GroupManagerService*,/ManagerService*,/PositionService*,/CodeReasonService*,/NewEmployeeService*,/ReportReasonService*,/callback*" />
 
   <package name="default" extends="struts-default">
 

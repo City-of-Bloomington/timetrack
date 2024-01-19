@@ -53,11 +53,18 @@ public class CallBackServlet extends TopServlet {
 		error_flag = true;
 		System.err.println(" Error : "+value);		
 	    }
+	    System.err.println(" from resquset location_id "+location_id);
 	}
 	if(!error_flag){
 	    String code = request.getParameter("code");
 	    String state = request.getParameter("state");
 	    String original_state = (String)request.getSession().getAttribute("state");
+	    if(location_id.isEmpty()){
+		String str = (String)request.getSession().getAttribute("location_id");
+		if(str != null)
+		    location_id = str;
+		System.err.println(" from session location_id "+location_id);
+	    }
 	    // System.err.println(" state "+state);
 	    // System.err.println(" code "+code);	
 	    if(state == null || !original_state.equals(state)){

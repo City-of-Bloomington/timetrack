@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.UUID;
+import java.util.*;
 import org.json.*;
 
 import com.nimbusds.oauth2.sdk.*;
@@ -50,6 +51,7 @@ public class OidcClient {
     private URI requestURI = null;
     private JwtHandler jwtHandler = null;
     private Configuration config = null;
+    private Map<String, String> map = null;
     public static OidcClient getInstance() {
         if (oidcClient == null) {
             oidcClient = new OidcClient();
@@ -82,7 +84,8 @@ public class OidcClient {
 	    nonce = new Nonce();
 	    AuthorizationRequest request =
 		new AuthorizationRequest.Builder(
-						 new ResponseType("code"), clientID)
+						 new ResponseType("code"),
+						 clientID)
 		.scope(scope)
 		.state(state)
 		.redirectionURI(callback)

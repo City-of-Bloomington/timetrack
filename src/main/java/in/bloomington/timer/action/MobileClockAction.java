@@ -215,6 +215,7 @@ public class MobileClockAction extends TopAction{
 				
 	if(locations == null)
 	    prepareLocations();
+	System.err.println(" lat lng "+user_lat+" "+user_long);
 	if(user_lat == 0 && user_long == 0){
 	    return false;
 	}

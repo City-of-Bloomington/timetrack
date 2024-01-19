@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.Enumeration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.bean.*;
@@ -37,14 +38,15 @@ public class LoginServlet extends TopServlet {
     
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response){
-	String id="", location_id="", source="";
+	String id="", location_id="", source="", name="",value="";
+	Employee user = null;
 	try{
 	    HttpSession session = request.getSession();
-	    Employee user = (Employee)session.getAttribute("user");
+	    user = (Employee)session.getAttribute("user");
 	    Enumeration<String> values = request.getParameterNames();
 	    while (values.hasMoreElements()) {
 		name = values.nextElement().trim();
-		value = (req.getParameter(name)).trim();
+		value = (request.getParameter(name)).trim();
 		if(!value.isEmpty()){
 		    if (name.equals("id")) {
 			id = value;
@@ -62,13 +64,19 @@ public class LoginServlet extends TopServlet {
 		OidcClient oidcClient = OidcClient.getInstance();
 		//
 		//
+		if(!location_id.isEmpty()){
+		    config.setLocation_id(location_id);
+		}
 		oidcClient.setConfig(config);
 		URI redirectUrl = oidcClient.getRequestURI();
-		// System.err.println("login auth url "+redirectUrl.toString());
+		System.err.println("login auth url "+redirectUrl.toString());
 		State state = oidcClient.getState();
 		Nonce nonce = oidcClient.getNonce();
 		session.setAttribute("state",state.toString());
 		session.setAttribute("nonce",nonce.toString());
+		if(!location_id.isEmpty()){
+		    session.setAttribute("location_id",location_id);
+		}
 		// save state in session for verification later
 		response.sendRedirect(redirectUrl.toString());
 	    }
@@ -78,8 +86,9 @@ public class LoginServlet extends TopServlet {
 		if(!location_id.isEmpty()){
 		    source = "mobile.action?action=Next&location_id="+location_id;
 		}
-		else if(source.isEmpty())
+		else if(source.isEmpty()){
 		    source = "timeDetails.action";
+		}
 		out.println("<head><title></title><META HTTP-EQUIV="+
 			    "\"refresh\" CONTENT=\"0; URL=" + source+"\"></head>");
 		out.println("<body>");
