@@ -22,7 +22,7 @@
 		<tr>
 		    <td><s:property value="time_block_id" /></td>
 		    <td><s:property value="hourCode" /></td>
-		    <td><s:property value="earnCodeReason" /></td>
+
 		    <td><s:property value="date" /></td>
 		    <td><s:if test="showBeginTime()"><s:property value="beginHourMinute" /></s:if>&nbsp;</td>
 		    <td><s:if test="showEndTime()"><s:property value="endHourMinute" /></s:if>&nbsp;</td>
@@ -32,6 +32,7 @@
 		    <td><s:property value="action_by" /></td>
 		    <td><s:property value="action_time" /></td>
 		    <td><s:if test="hasBlockNotes()">Yes</s:if><s:else>No</s:else></td>
+		    <td><s:property value="earnCodeReason" /></td>
 		    <td><s:if test="hasLocation()"><s:property value="location" /></s:if>&nbsp;</td>
 		</tr>
 	    </s:iterator>

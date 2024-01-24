@@ -69,7 +69,7 @@ public class LoginServlet extends TopServlet {
 		}
 		oidcClient.setConfig(config);
 		URI redirectUrl = oidcClient.getRequestURI();
-		System.err.println("login auth url "+redirectUrl.toString());
+		// System.err.println("login auth url "+redirectUrl.toString());
 		State state = oidcClient.getState();
 		Nonce nonce = oidcClient.getNonce();
 		session.setAttribute("state",state.toString());

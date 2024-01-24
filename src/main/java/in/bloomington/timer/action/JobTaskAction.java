@@ -42,6 +42,7 @@ public class JobTaskAction extends TopAction{
     List<Position> shortListPositions = null;
     List<Position> currentPositions = null;
     List<String> empDeptIds = null;
+    boolean oneDpetOnly = false;
     public String execute(){
 	String ret = SUCCESS;
 	// String back = doPrepare();
@@ -85,6 +86,11 @@ public class JobTaskAction extends TopAction{
 	    else{
 		id = jobTask.getId();
 		Group group = jobTask.getGroup();
+		add_employee_id = jobTask.getEmployee_id();
+		getEmp();
+		if(emp.hasMultipleDepts()){
+		    empDeptIds = emp.getAlEmpDeptIds();
+		}
 		if(group != null){
 		    dept_id  = group.getDepartment_id();
 		}
@@ -171,6 +177,7 @@ public class JobTaskAction extends TopAction{
 	    if(emp.hasMultipleDepts()){
 		empDeptIds = emp.getAlEmpDeptIds();
 	    }
+	    System.err.println(" has multi dept "+( empDeptIds != null));
 	    if(id.isEmpty()){ 
 		fillJobInfo();
 	    }
@@ -178,6 +185,7 @@ public class JobTaskAction extends TopAction{
 	}
 	else{
 	    if(canEdit()){ // for certain dept only
+		oneDpetOnly = true;
 		dept = user.getDepartment();
 		if(dept != null){
 		    dept_id = dept.getId();
@@ -358,10 +366,17 @@ public class JobTaskAction extends TopAction{
 	}
 	return payPeriods;
     }
-    public List<Group> getGroups(){
+    public List<Group> getGroups(){ // for one dept
 	if(groups == null && !dept_id.isEmpty()){
 	    GroupList gl = new GroupList();
-	    gl.setDepartment_id(dept_id);
+	    if(!oneDpetOnly && empDeptIds != null){
+		for(String idd:empDeptIds){
+		    gl.setDepartment_id(idd);
+		}
+	    }
+	    else{
+		gl.setDepartment_id(dept_id);
+	    }
 	    gl.setActiveOnly();
 	    String back = gl.find();
 	    if(back.isEmpty()){

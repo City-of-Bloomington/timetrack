@@ -1220,13 +1220,11 @@ public class JobTask implements Serializable{
 	    msg = " group not set ";
 	    return msg;
 	}	
-	if(position_id.isEmpty()){
-	    if(!position_id_alt.isEmpty()){
-		position_id = position_id_alt;
-	    }
-	    else if(!alt_position_name.isEmpty()){
-		msg = findOrAddNewPosition();
-	    }
+	if(!alt_position_name.isEmpty()){
+	    msg = findOrAddNewPosition();
+	}
+	else if(!position_id_alt.isEmpty()){
+	    position_id = position_id_alt;
 	}	
 	if(position_id.isEmpty()){
 	    msg = " position not set ";

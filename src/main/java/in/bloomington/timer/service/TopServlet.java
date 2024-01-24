@@ -69,7 +69,7 @@ public class TopServlet extends HttpServlet {
 	    String discovery_uri = context.getInitParameter("discovery_uri");
 	    config = new
 		Configuration(auth_end_point, token_end_point, callback_uri, client_id, client_secret, scope, discovery_uri, username, location_id);
-	    System.err.println(config.toString());
+	    // System.err.println(config.toString());
 	}catch(Exception ex){
 	    System.err.println(" top init "+ex);
 	    logger.error(" "+ex);

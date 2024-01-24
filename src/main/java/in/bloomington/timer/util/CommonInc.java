@@ -75,7 +75,7 @@ public class CommonInc{
     // holiday earned earn codes
     public final static String holyCompTime10EarnCodeID = "50"; // HCE1.0		
     public final static String holyCompTime15EarnCodeID = "79"; // HCE1.5
-    public final static String holyCompTime20EarnCodeID = "48"; // HCE2.0
+    public final static String holyCompTime20EarnCodeID = "46"; // HCE2.0
     //
     // max monetary value allowed that can be earned when used
     // with monetary earn codes that does not have default value
