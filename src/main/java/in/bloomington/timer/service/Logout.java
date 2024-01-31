@@ -35,7 +35,7 @@ public class Logout extends TopServlet{
 	    session.removeAttribute("user");
 	    session.invalidate();
 	}
-	String str = cas_url_prefix+"/logout?url="+url;
+	String str = endpoint_logout_uri;
 	res.sendRedirect(str);
 	return;
 	
