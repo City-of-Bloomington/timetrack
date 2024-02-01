@@ -72,7 +72,8 @@ public class LoginServlet extends TopServlet {
 		// System.err.println("login auth url "+redirectUrl.toString());
 		State state = oidcClient.getState();
 		Nonce nonce = oidcClient.getNonce();
-		session.setAttribute("state",state.toString());
+		// session.setAttribute("state",state.toString());
+		session.setAttribute("state",state);
 		session.setAttribute("nonce",nonce.toString());
 		if(!location_id.isEmpty()){
 		    session.setAttribute("location_id",location_id);

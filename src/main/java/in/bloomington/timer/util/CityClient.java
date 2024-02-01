@@ -145,7 +145,7 @@ public class CityClient {
 	else{
 	    username2 = username;
 	}
-	System.err.println(username2);
+	// System.err.println(username2);
 	try{
 	    Employee user2 = new Employee(null, username2);
 	    String back = user2.doSelect();

@@ -13,7 +13,9 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.annotation.WebServlet;
+import com.nimbusds.oauth2.sdk.id.*;
 import java.io.*;
 import java.util.*;
 import java.io.IOException;
@@ -57,8 +59,25 @@ public class CallBackServlet extends TopServlet {
 	}
 	if(!error_flag){
 	    String code = request.getParameter("code");
-	    String state = request.getParameter("state");
-	    String original_state = (String)request.getSession().getAttribute("state");
+	    String state_str = request.getParameter("state");
+	    State state = new State(state_str);
+	    State original_state = null;
+	    HttpSession session = request.getSession();
+	    if(session != null)
+		original_state = (State)session.getAttribute("state");
+	    // State state = (State)request.getParameter("state");
+	    // String original_state = (String)request.getSession().getAttribute("state");
+	    if(session == null ||
+	       original_state == null ||
+	       !state.equals(original_state)){
+		System.err.println(" invalid state "+state);
+		System.err.println(" org state "+original_state);	
+		if(session != null)
+		    session.invalidate();
+		String str = url+"/Login";
+		response.sendRedirect(str);
+		return;
+	     }
 	    if(location_id.isEmpty()){
 		String str = (String)request.getSession().getAttribute("location_id");
 		if(str != null)
@@ -66,9 +85,17 @@ public class CallBackServlet extends TopServlet {
 		// System.err.println(" from session location_id "+location_id);
 	    }
 	    // System.err.println(" state "+state);
-	    // System.err.println(" code "+code);	
+	    // System.err.println(" code "+code);
+	    /**
 	    if(state == null || !original_state.equals(state)){
 		System.err.println(" invalid state "+state);
+		error_flag = true;
+		// 
+	    }
+	    */
+	    if(!state.equals(original_state)){
+		System.err.println(" invalid state "+state);
+		System.err.println(" org state "+original_state);		
 		error_flag = true;
 		// 
 	    }
