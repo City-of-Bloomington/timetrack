@@ -232,6 +232,7 @@ $('#hour_code_select').change(function() {
 	var codes = ['157','158']; // COMMUTE codes
 	var code_id = val.substring(0,val.indexOf('_')); // id only
 	if(codes.includes(code_id)){
+	    $('#amount_change').prop('readonly',true);
 	    handleShowCodeReason(code_id);
 	}
 	else{
