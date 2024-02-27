@@ -49,12 +49,12 @@
 				  <span><s:property value="holidayName" /></span>
 		  </s:if>
 		  <s:else>
-			  <div class="day"
-                data-block-id="<s:property value='id' />"
-                data-doc-id="<s:property value='document_id' />"
-                data-date="<s:property value='date' />"
-                data-order-index="<s:property value='#blockKey' />">
-						</s:else>
+		      <div class="day"
+			   data-block-id="<s:property value='id' />"
+			   data-doc-id="<s:property value='document_id' />"
+			   data-date="<s:property value='date' />"
+			   data-order-index="<s:property value='#blockKey' />">
+		  </s:else>
           </s:else>
           <s:property value="dayInt" />
         </s:if>
@@ -63,7 +63,7 @@
             data-job-id="<s:property value='job_id' />"
             data-block-id="<s:property value='id' />"
             data-date="<s:property value='date' />"
-						data-job-name="<s:property value='job_name' />"
+	       data-job-name="<s:property value='job_name' />"
             data-time-out="<s:property value='Time_out' />">
             <s:if test="hasNextLine()">
               <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>
@@ -71,7 +71,7 @@
             <span><b><s:property value="timeInfo" /></b></span>
             <span><s:property value='job_name' /></span>
 
-					</div>
+	  </div>
         </s:if>
       </s:iterator>
       </div><!-- /.day -->

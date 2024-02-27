@@ -1569,7 +1569,7 @@ public class TimeBlock extends Block{
 	}
 	if(hourCode != null){
 	    if(hourCode.requireReason() && earn_code_reason_id.isEmpty()){
-		msg = "You need to pick a reason for ean code ";		
+		msg = "You need to pick a reason for earn code ";		
 		return msg;
 	    }
 	}

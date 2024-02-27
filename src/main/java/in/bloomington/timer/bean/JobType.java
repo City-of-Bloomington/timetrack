@@ -17,50 +17,50 @@ import in.bloomington.timer.list.*;
  */
 public class JobType extends Type implements java.io.Serializable, Comparable<JobType> {
 
-		static final long serialVersionUID = 3700L;	
-		static Logger logger = LogManager.getLogger(JobType.class);
-		//
-		public JobType(){
-				super();
-		}
-		public JobType(String val){
-				//
-				super(val);
-    }		
-		public JobType(String val, String val2){
-				//
-				// initialize
-				//
-				super(val, val2);
+    static final long serialVersionUID = 3700L;	
+    static Logger logger = LogManager.getLogger(JobType.class);
+    //
+    public JobType(){
+	super();
     }
-		@Override
-		public boolean equals(Object obj){
-				if(obj instanceof JobType){
-						JobType one =(JobType)obj;
-						return id.equals(one.getId());
-				}
-				return false;				
-		}
-		@Override
-		public int hashCode(){
-				int seed = 37;
-				if(!id.isEmpty()){
-						try{
-								seed += Integer.parseInt(id);
-						}catch(Exception ex){
-						}
-				}
-				return seed;
-		}
-		public int getId_int(){
-				int seed = 23;
-				try{
-						seed += Integer.parseInt(id);
-				}catch(Exception ex){
-				}
-				return seed;
-		}
-		@Override
+    public JobType(String val){
+	//
+	super(val);
+    }		
+    public JobType(String val, String val2){
+	//
+	// initialize
+	//
+	super(val, val2);
+    }
+    @Override
+    public boolean equals(Object obj){
+	if(obj instanceof JobType){
+	    JobType one =(JobType)obj;
+	    return id.equals(one.getId());
+	}
+	return false;				
+    }
+    @Override
+    public int hashCode(){
+	int seed = 37;
+	if(!id.isEmpty()){
+	    try{
+		seed += Integer.parseInt(id);
+	    }catch(Exception ex){
+	    }
+	}
+	return seed;
+    }
+    public int getId_int(){
+	int seed = 23;
+	try{
+	    seed += Integer.parseInt(id);
+	}catch(Exception ex){
+	}
+	return seed;
+    }
+    @Override
     public int compareTo(JobType otherJob) {
         return (this.getId_int() - otherJob.getId_int());
     }
@@ -68,19 +68,19 @@ public class JobType extends Type implements java.io.Serializable, Comparable<Jo
     // getters
     //
     public String getJob_id(){
-				return id;
+	return id;
     }
     public String getJob_name(){
-				return name;
+	return name;
     }
     //
     // setters
     //
-		public void setJob_id(String val){
-				setId(val);
-		}
-		public void setJob_name(String val){
-				setName(val);
-		}		
+    public void setJob_id(String val){
+	setId(val);
+    }
+    public void setJob_name(String val){
+	setName(val);
+    }		
 		
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.TreeMap;
 import java.sql.*;
 import javax.sql.*;
@@ -61,11 +62,12 @@ public class Document implements Serializable{
     Map<String, Double> amountCodeWeek1 = null;
     Map<String, Double> amountCodeWeek2 = null;
 
-    Map<String, Double> reasonTotals = null; 
-    Map<String, Double> reasonWeek1 = null;
-    Map<String, Double> reasonWeek2 = null;
+    Map<String, List<Double>> reasonTotals = null; 
+    Map<String, List<Double>> reasonWeek1 = null;
+    Map<String, List<Double>> reasonWeek2 = null;
 		
     Map<Integer, List<TimeBlock>> dailyBlocks = null;
+    Map<Integer, DayBlocks> dayBlocksMap = null;
     List<EmployeeAccrual> employeeAccruals = null;
     List<TimeNote> timeNotes = null;
     List<TimeIssue> timeIssues = null;
@@ -514,6 +516,7 @@ public class Document implements Serializable{
 		    daily = tl.getDaily();
 		    dailyInt = tl.getDailyInt();
 		    dailyBlocks = tl.getDailyBlocks();
+		    dayBlocksMap = tl.getDayBlocksMap();
 		    hourCodeTotals = tl.getHourCodeTotals();
 		    hourCodeWeek1 = tl.getHourCodeWeek1();
 		    hourCodeWeek2 = tl.getHourCodeWeek2();
@@ -775,6 +778,40 @@ public class Document implements Serializable{
 	}
 	return employeeAccruals;
     }
+    private void checkWarningForCommute(){
+	if(dailyBlocks != null){
+	    // all reg codes
+	    // 18,19,20,21,22,23,93, 111,117,151,36,37,38,39,40,41
+	    Set<String> comSet = new HashSet<>(Arrays.asList("157","158")); // regular codes
+	    Set<String> regSet = new HashSet<>(Arrays.asList("1","18","19","20","21","22","23","36","37","38","39","40","41","93","111","117","151"));
+
+	    Set<Integer> orderIdSet = dailyBlocks.keySet();
+	    if(orderIdSet != null){
+		for(Integer order_id:orderIdSet){
+		    boolean hasRegular = false;
+		    boolean hasCommute = false;
+		    String day = "";
+		    List<TimeBlock> blocks = dailyBlocks.get(order_id);
+		    for(TimeBlock block:blocks){
+			day = block.getDate();
+			String code_id = block.getHour_code_id();
+			if(!code_id.isEmpty()){
+			    if(regSet.contains(code_id)){
+				hasRegular = true;
+			    }
+			    else if(comSet.contains(code_id)){
+				hasCommute = true;
+			    }
+			}
+		    }
+		    if(hasCommute && !hasRegular){
+			String str = " The Sustainable Commute Benefit can only be claimed on days you work regular hours.  Please add a Regular Hours block or remove the Sustainable Commute block on "+day;
+		    warnings.add(str);		    
+		    }
+		}
+	    }
+	}
+    }
     private void checkForExcessUse(double weekTotal,
 				   int whichWeek){
 	if(job != null){
@@ -942,6 +979,10 @@ public class Document implements Serializable{
 	getDailyBlocks();
 	return dailyBlocks != null;
     }
+    public boolean hasDayBlocksMap(){
+	getDayBlocksMap();
+	return dayBlocksMap != null;
+    }    
     public boolean hasTimeBlocks(){
 	return timeBlocks != null;
     }
@@ -986,6 +1027,12 @@ public class Document implements Serializable{
 	}
 	return dailyBlocks;
     }
+    public Map<Integer, DayBlocks> getDayBlocksMap(){
+	if(dayBlocksMap == null){
+	    prepareDaily();
+	}
+	return dayBlocksMap;
+    }    
     public Map<Integer, Double> getHourCodeTotals(){
 	return hourCodeTotals;
     }
@@ -1001,23 +1048,23 @@ public class Document implements Serializable{
     public Map<String, Double> getAmountCodeWeek2Dbl(){
 	return amountCodeWeek2;
     }
-    public Map<String, Double> getReasonTotalsDbl(){
+    public Map<String, List<Double>> getReasonTotalsDbl(){
 	return reasonTotals;
     }
-    public Map<String, Double> getReasonWeek1Dbl(){
+    public Map<String, List<Double>> getReasonWeek1Dbl(){
 	return reasonWeek1;
     }
-    public Map<String, Double> getReasonWeek2Dbl(){
+    public Map<String, List<Double>> getReasonWeek2Dbl(){
 	return reasonWeek2;
     }
-    public Map<String, String> getReasonTotals(){
-	return mapDoubleToStr(reasonTotals);
+    public Map<String, List<String>> getReasonTotals(){
+	return mapDoubleArrToStr(reasonTotals);
     }		
-    public Map<String, String> getReasonWeek1(){
-	return mapDoubleToStr(reasonWeek1);
+    public Map<String, List<String>> getReasonWeek1(){
+	return mapDoubleArrToStr(reasonWeek1);
     }
-    public Map<String, String> getReasonWeek2(){
-	return mapDoubleToStr(reasonWeek2);
+    public Map<String, List<String>> getReasonWeek2(){
+	return mapDoubleArrToStr(reasonWeek2);
     }		
     /**
      * we need to format double values to dd.dd format
@@ -1031,8 +1078,23 @@ public class Document implements Serializable{
 		map2.put(key, dfn.format(val));
 	    }
 	}
+
 	return map2;
     }
+    public Map<String, List<String>> mapDoubleArrToStr(Map<String, List<Double>> map){
+	Map<String, List<String>> map2 = new TreeMap<>();
+	if(map != null && !map.isEmpty()){
+	    Set<String> keys = map.keySet();
+	    for(String key:keys){
+		List<Double> val = map.get(key);		
+		List<String> val2 = new ArrayList<>();
+		val2.add(dfn.format(val.get(0))); //hours
+		val2.add(dfn.format(val.get(1))); //amount	
+		map2.put(key, val2);
+	    }
+	}
+	return map2;
+    }    
     public Map<String, String> getHourCodeWeek1(){
 	return mapDoubleToStr(hourCodeWeek1);
     }
@@ -1226,6 +1288,7 @@ public class Document implements Serializable{
 	    try{
 		checkForWarningsAfter();
 		checkForWarningsBefore();
+		checkWarningForCommute();
 	    }catch(Exception ex){
 		System.err.println("check warn "+ex);
 	    }

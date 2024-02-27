@@ -62,14 +62,15 @@ public class TimeBlockList{
     Map<String, Double> amountCodeWeek1 = new TreeMap<>();
     Map<String, Double> amountCodeWeek2 = new TreeMap<>();
 
-    Map<String, Double> reasonTotals = new TreeMap<>();
-    Map<String, Double> reasonWeek1 = new TreeMap<>();
-    Map<String, Double> reasonWeek2 = new TreeMap<>();		
+    Map<String, List<Double>> reasonTotals = new TreeMap<>();
+    Map<String, List<Double>> reasonWeek1 = new TreeMap<>();
+    Map<String, List<Double>> reasonWeek2 = new TreeMap<>();		
     Map<Integer, Double> usedAccrualTotals = new TreeMap<>();
-    Map<Integer, Double> earnedAccrualTotals = new TreeMap<>();		
+    Map<Integer, Double> earnedAccrualTotals = new TreeMap<>();
+    Map<Integer, DayBlocks> dayBlocksMap = new TreeMap<>();
     HolidayList holidays = null;
     //
-    // week 1,2 / hour_code_id /hours
+    // week 1,2 / hour_code_id minutes
     Map<JobType, Map<Integer, Integer>> dailyInt = new TreeMap<>();
 		
     Map<Integer, Map<Integer, Double>> usedWeeklyAccruals = new TreeMap<>();
@@ -168,6 +169,9 @@ public class TimeBlockList{
     public Map<Integer, List<TimeBlock>> getDailyBlocks(){
 	return dailyBlocks;
     }
+    public Map<Integer, DayBlocks> getDayBlocksMap(){
+	return dayBlocksMap;
+    }    
     public Map<Integer, Double> getHourCodeTotals(){
 	return hourCodeTotals;
     }
@@ -196,14 +200,14 @@ public class TimeBlockList{
     public Map<String, Double> getAmountCodeWeek2(){
 	return amountCodeWeek2;
     }
-    public Map<String, Double> getReasonTotals(){
+    public Map<String, List<Double>> getReasonTotals(){
 	return reasonTotals;
     }		
-    public Map<String, Double> getReasonWeek1(){
+    public Map<String, List<Double>> getReasonWeek1(){
 	return reasonWeek1;
     }
     // total hour codes for week2
-    public Map<String, Double> getReasonWeek2(){
+    public Map<String, List<Double>> getReasonWeek2(){
 	return reasonWeek2;
     }
     public boolean hasReasonTotals(){
@@ -233,6 +237,7 @@ public class TimeBlockList{
 	return unscheduleds != null && unscheduleds.size() > 0;
     }
     //
+    // returnign hours 
     // using total minutes instead of hours
     // then convert to hours
     public Map<JobType, Map<Integer, String>> getDaily(){
@@ -633,7 +638,7 @@ public class TimeBlockList{
 		}
 		if(!reason.isEmpty()){
 		    reason = code_name+" - "+reason;
-		    addToReasons(order_id, reason, hrs);
+		    addToReasons(order_id, reason, hrs, amnt);
 		}
 		code_name += ": "+code_desc;
 		JobType jtype = new JobType(job_id, job_name);
@@ -667,39 +672,46 @@ public class TimeBlockList{
     /**
      * list of earn code - earn_reason, hours
      */
-    void addToReasons(int order_id, String reason, double hrs){
+    void addToReasons(int order_id, String reason, double hrs, double amnt){
 	if(reasonTotals.containsKey(reason)){
-	    Double val = reasonTotals.get(reason);
-	    double val2 = val.doubleValue()+hrs;
+	    List<Double> val = reasonTotals.get(reason);
+	    List<Double> val2 = new ArrayList<>();
+	    val2.add(val.get(0)+hrs);
+	    val2.add(val.get(1)+amnt);
 	    reasonTotals.put(reason, val2);
 	    if(order_id < 7){
 		if(reasonWeek1.containsKey(reason)){
 		    val = reasonWeek1.get(reason);
-		    val2 = val.doubleValue()+hrs;										
+		    val2.add(val.get(0)+hrs);
+		    val2.add(val.get(1)+amnt);		    
 		    reasonWeek1.put(reason, val2);
 		}
 		else{
-		    reasonWeek1.put(reason, hrs);
+		    reasonWeek1.put(reason, val2);
 		}
 	    }
 	    else{
 		if(reasonWeek2.containsKey(reason)){
 		    val = reasonWeek2.get(reason);
-		    val2 = val.doubleValue()+hrs;										
+		    val2.add(val.get(0)+hrs);
+		    val2.add(val.get(1)+amnt);	
 		    reasonWeek2.put(reason, val2);
 		}
 		else{
-		    reasonWeek2.put(reason, hrs);
+		    reasonWeek2.put(reason, val2);
 		}
 	    }
 	}
 	else{
-	    reasonTotals.put(reason, hrs);
+	    List<Double> dl = new ArrayList<>();
+	    dl.add(hrs);
+	    dl.add(amnt);	    
+	    reasonTotals.put(reason, dl);
 	    if(order_id < 7){
-		reasonWeek1.put(reason, hrs);
+		reasonWeek1.put(reason, dl);
 	    }
 	    else{
-		reasonWeek2.put(reason, hrs);
+		reasonWeek2.put(reason, dl);
 	    }
 	}
     }
@@ -1224,7 +1236,7 @@ public class TimeBlockList{
 			else{
 			    week_total = mints;
 			}
-			map.put(7, week_total);
+			map.put(7, week_total); // first week
 			week1MintTotal = week_total;
 		    }
 		    else{
@@ -1234,7 +1246,7 @@ public class TimeBlockList{
 			else{
 			    week_total = mints;
 			}
-			map.put(15, week_total);
+			map.put(15, week_total); // second week
 			week2MintTotal = week_total;
 		    }
 		}
@@ -1255,6 +1267,15 @@ public class TimeBlockList{
 	    list.add(block);
 	}
 	dailyBlocks.put(order_id, list);
+	DayBlocks bb = dayBlocksMap.get(order_id);
+	if(bb != null){
+	    bb.addBlock(block);
+	}
+	else{
+	    DayBlocks one = new DayBlocks();
+	    one.addBlock(block);
+	    dayBlocksMap.put(order_id, one);
+	}
     }
     //
     // aggregate hour code for each week and total for payperiod
