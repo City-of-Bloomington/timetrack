@@ -62,6 +62,7 @@ public class MultiJobDoc{
 		
     Map<Integer, Double> usedAccrualTotals = null;
     Map<Integer, List<TimeBlock>> dailyBlocks = null;
+    Map<Integer, DayBlocks> dayBlocksMap = null;    
     List<EmployeeAccrual> employeeAccruals = null;
     List<TimeNote> timeNotes = null;
     List<TimeIssue> timeIssues = null;
@@ -281,7 +282,29 @@ public class MultiJobDoc{
 			} // else
 		    }
 		    // time blocks
-		    Map<Integer, List<TimeBlock>> blocks = doc.getDailyBlocks();
+		    Map<Integer, List<TimeBlock>> blocks = doc.getDailyBlocks();		    
+		    if(blocks != null){
+			if(dayBlocksMap == null){
+			    dayBlocksMap = new TreeMap<>();
+			}
+			for(int j=0;j<14;j++){
+			    if(blocks.containsKey(j)){
+				List<TimeBlock> bls = blocks.get(j);
+				if(bls != null){
+				    if(dayBlocksMap.containsKey(j)){
+					DayBlocks db = dayBlocksMap.get(j);
+					db.addBlocks(bls);
+					dayBlocksMap.put(j, db);
+				    }
+				    else{
+					DayBlocks db = new DayBlocks();
+					db.addBlocks(bls);
+					dayBlocksMap.put(j, db);
+				    }
+				}
+			    }
+			}
+		    }
 		    if(blocks != null){
 			if(dailyBlocks == null){
 			    dailyBlocks = blocks;
@@ -291,6 +314,7 @@ public class MultiJobDoc{
 				List<TimeBlock> bls = null, bls2=null;
 				if(dailyBlocks.containsKey(i)){
 				    bls = dailyBlocks.get(i);
+				    
 				}
 				if(blocks.containsKey(i)){
 				    bls2 = blocks.get(i);
@@ -303,7 +327,6 @@ public class MultiJobDoc{
 				else if(bls2 != null){
 				    bls = bls2;
 				}
-				dailyBlocks.put(i, bls);
 			    }
 			}
 		    }
@@ -661,6 +684,9 @@ public class MultiJobDoc{
     public Map<Integer, List<TimeBlock>> getDailyBlocks(){
 	return dailyBlocks;
     }
+    public Map<Integer, DayBlocks> getDayBlocksMap(){
+	return dayBlocksMap;
+    }    
     public Map<Integer, Double> getHourCodeTotals(){
 	return hourCodeTotals;
     }

@@ -24,6 +24,7 @@ function loginTimer() {
 	    </s:if>
 	    <s:if test="document.hasDailyBlocks()">
 		<s:set var="dailyBlocks" value="document.dailyBlocks" />
+		<s:set var="dayBlocksMap" value="document.dayBlocksMap" />
 	    </s:if>
 	    <s:if test="isNotEditable()">
 		<div class="alert"><p><b>Note:</b> Time Details (View Only)</p></div>

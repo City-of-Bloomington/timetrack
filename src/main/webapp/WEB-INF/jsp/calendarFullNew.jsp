@@ -10,9 +10,12 @@
   </div>
 
   <div class="week">
-      <s:iterator value="#dailyBlocks" var="block" >
-	  <s:set var="blockKey" value="#block.key" />
-	  <s:set var="blockList" value="#block.value" />
+      <s:iterator value="#dayBlocksMap" var="dayBlocks" >
+	  <s:set var="blockKey" value="#dayBlocks.key" />
+	  <s:set var="dayBlock" value="#dayBlocks.value" />
+	  <s:set var="dayInt" value="#dayBlock.dayInt" />
+	  <s:set var="dayHours" value="#dayBlock.dayHours" />
+	  <s:set var="blockList" value="#dayBlock.blocks" />      
 	  <s:if test="#blockKey == 7">
   </div><div class="week">
 	  </s:if>
@@ -71,12 +74,12 @@
 			  <div class="day"
 			       tabindex="1"
 			       data-block-id="<s:property value='id' />"
-                   data-doc-id="<s:property value='document_id' />"
+			       data-doc-id="<s:property value='document_id' />"
 			       data-date="<s:property value='date' />"
 			       data-order-index="<s:property value='#blockKey' />">
 		      </s:else>
 		  </s:else>
-		  <s:property value="dayInt" />
+		  <div style="width:50%;display:inline;float:left"> <b><s:property value="#dayInt" /></b> </div><s:if test="#dayHours != '0.0'"><div style="width:50%;display:inline;float:right"> (<i><s:property value="#dayHours" />h</i>)</div> <br /></s:if>
               </s:if>
 	      
               <s:if test="hasData()">

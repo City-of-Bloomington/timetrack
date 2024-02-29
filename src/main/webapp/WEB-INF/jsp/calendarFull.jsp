@@ -10,11 +10,14 @@
   </tr>
 
   <tr>
-    <s:iterator value="document.dailyBlocks" var="block" >
-      <s:set var="blockKey" value="#block.key" />
-      <s:set var="blockList" value="#block.value" />
-
-      <!-- this breaks into a new row -->
+      <s:iterator value="document.dayBlocksMap" var="dayBlocks" >
+	  <s:set var="blockKey" value="#dayBlocks.key" />
+	  <s:set var="dayBlock" value="#dayBlocks.value" />
+	  <s:set var="dayInt" value="#dayBlock.dayInt" />
+	  <s:set var="dayHours" value="#dayBlock.dayHours" />
+	  <s:set var="blockList" value="#dayBlock.blocks" />
+	  
+	  <!-- this breaks into a new row -->
       <s:if test="#blockKey == 7">
          </tr><tr>
       </s:if>
@@ -34,7 +37,7 @@
           <a href="#"
              class="hr_cell"
              onclick="return popwit('<s:property value='#application.url' />timeBlock?document_id=<s:property value='document_id' />&date=<s:property value='date' />&order_index=<s:property value='#blockKey' />','timeBlock');">
-            <s:property value="dayInt" />
+              <b> <s:property value="dayInt" /></b> (<i><s:property value="#dayHours" />h</i>)
           </a>
         </s:if>
 

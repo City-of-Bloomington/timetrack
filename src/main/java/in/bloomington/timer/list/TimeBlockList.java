@@ -1258,6 +1258,7 @@ public class TimeBlockList{
 	}
     }						
     void addToBlocks(int order_id, TimeBlock block){
+	
 	List<TimeBlock> list = dailyBlocks.get(order_id);
 	if(list != null){
 	    list.add(block);
@@ -1267,12 +1268,16 @@ public class TimeBlockList{
 	    list.add(block);
 	}
 	dailyBlocks.put(order_id, list);
+	//
+	// for DayBlocksMap
 	DayBlocks bb = dayBlocksMap.get(order_id);
 	if(bb != null){
 	    bb.addBlock(block);
 	}
 	else{
 	    DayBlocks one = new DayBlocks();
+	    int dayInt = block.getDayInt();
+	    one.setDayInt(dayInt);
 	    one.addBlock(block);
 	    dayBlocksMap.put(order_id, one);
 	}

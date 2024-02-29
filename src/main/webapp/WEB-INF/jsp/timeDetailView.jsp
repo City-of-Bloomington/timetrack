@@ -18,12 +18,14 @@
 	<%@ include file="calendarTopDetails.jsp" %>
 	<s:if test="showAllJobs()">
 	    <s:set var="dailyBlocks" value="mjdoc.dailyBlocks" />
+	    <s:set var="dayBlocksMap" value="mjdoc.dayBlocksMap" />	    
 	    <s:set var="daily" value="mjdoc.daily" />
 	    <s:set var="payPeriodTotal" value="mjdoc.payPeriodTotal" />
 	    <s:set var="payPeriodAmount" value="mjdoc.payPeriodAmount" />
 	</s:if>
 	<s:else>
 	    <s:set var="dailyBlocks" value="document.dailyBlocks" />
+	    <s:set var="dayBlocksMap" value="document.dayBlocksMap" />
 	    <s:set var="daily" value="document.daily" />
 	    <s:set var="payPeriodTotal" value="document.payPeriodTotal" />
 	</s:else>

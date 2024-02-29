@@ -67,6 +67,7 @@ public class Document implements Serializable{
     Map<String, List<Double>> reasonWeek2 = null;
 		
     Map<Integer, List<TimeBlock>> dailyBlocks = null;
+    
     Map<Integer, DayBlocks> dayBlocksMap = null;
     List<EmployeeAccrual> employeeAccruals = null;
     List<TimeNote> timeNotes = null;
@@ -1254,6 +1255,9 @@ public class Document implements Serializable{
 	if(dailyBlocks == null){
 	    dailyBlocks = new TreeMap<>();
 	}
+	if(dayBlocksMap == null){
+	    dayBlocksMap = new TreeMap<>();
+	}
 	for(int j=13;j >=0;j--){
 	    if(!dailyBlocks.containsKey(j)){
 		TimeBlock one =
@@ -1279,6 +1283,10 @@ public class Document implements Serializable{
 		lone.add(one);
 		//
 		dailyBlocks.put(j, lone);
+		// 
+		DayBlocks done = new DayBlocks();
+		done.addBlock(one);
+		dayBlocksMap.put(j, done);
 	    }
 	}
     }
