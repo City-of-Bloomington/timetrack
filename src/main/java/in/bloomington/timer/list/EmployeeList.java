@@ -332,7 +332,11 @@ public class EmployeeList extends CommonInc{
 	    }
 	    if(!exclude_group_id.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " e.id not in (select jj.employee_id from jobs jj where jj.group_id = ?)";
+		if(!job_table){
+		    qq += " join jobs j on j.employee_id=e.id ";
+		    job_table = true;
+		}
+		qw += " j.group_id <> ? and j.expire_date is null";
 	    }
 	    if(!no_document_for_payperiod_id.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
