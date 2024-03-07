@@ -98,7 +98,7 @@ public class CodeReasonConditionList{
 	if(!qw.isEmpty()){
 	    qq += " where "+qw;
 	}
-	qq += " order by r.description ";
+	qq += " order by r.name ";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = " Could not connect to DB ";
@@ -205,7 +205,7 @@ public class CodeReasonConditionList{
 	if(!qw.isEmpty()){
 	    qq += " where "+qw;
 	}
-	qq += " order by r.description ";
+	qq += " order by r.name ";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = " Could not connect to DB ";

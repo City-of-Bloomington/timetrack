@@ -59,7 +59,7 @@
 			   data-order-index="<s:property value='#blockKey' />">
 		  </s:else>
           </s:else>
-	  <div style="width:50%;display:inline;float:left"> <b><s:property value="#dayInt" /></b> </div><s:if test="#dayHours != '0.0'"><div style="width:50%;display:inline;float:right"> (<i><s:property value="#dayHours" />h</i>)</div> <br /></s:if>
+	  <div style="width:50%;display:inline;float:left"> <b><s:property value="#dayInt" /></b> </div><s:if test="#dayHours != '0.0'"><div style="width:50%;display:inline;float:right"> (<i><s:property value="#dayHours" />h</i>)</div></s:if><br />
         </s:if>
         <s:if test="hasData()">
           <div class="data"
