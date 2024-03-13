@@ -38,7 +38,6 @@
 			       data-doc-id="<s:property value='document_id' />"
 			       data-date="<s:property value='date' />"
 			       data-order-index="<s:property value='#blockKey' />">
-			      <span><s:property value="holidayName" /></span>
 		      </s:elseif>					  
 		      <s:else>
 			  <div class="day weekend"
@@ -65,9 +64,9 @@
 			       tabindex="1"
 			       data-block-id="<s:property value='id' />"
 			       data-doc-id="<s:property value='document_id' />"
-                   data-date="<s:property value='date' />"
+			       data-date="<s:property value='date' />"
 			       data-order-index="<s:property value='#blockKey' />">
-			      <span><s:property value="holidayName" /></span>
+
 		      </s:elseif>
 		      
 		      <s:else>
@@ -80,6 +79,9 @@
 		      </s:else>
 		  </s:else>
 		  <div style="width:50%;display:inline;float:left"> <b><s:property value="#dayInt" /></b> </div><s:if test="#dayHours != '0.0'"><div style="width:50%;display:inline;float:right"> (<i><s:property value="#dayHours" />h</i>)</div> </s:if><br />
+		  <s:if test="isHoliday()">
+		      <span><s:property value="holidayName" /></span><br />
+		  </s:if>
               </s:if>
 	      
               <s:if test="hasData()">
@@ -93,7 +95,6 @@
 		      <s:if test="hasNextLine()">
 			  <span><b>Hours:</b> <i><s:property value="timeInfoNextLine" /></i></span>
 		      </s:if>
-		      
 
 		      <span><b><s:property value="timeInfo" /></b></span>
 		      

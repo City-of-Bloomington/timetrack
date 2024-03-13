@@ -72,7 +72,10 @@
 		<div class="button-group">
 		    <a href="<s:property value='#application.url' />groupManagerAdd.action?group_id=<s:property value='group.id' />" class="button">Assign managers to group </a>
 		    <a href="<s:property value='#application.url' />groupJobTerminate.action?group_id=<s:property value='group.id' />" class="button">Terminate group jobs</a>	  
-		    <a href="<s:property value='#application.url'/>group.action" class="button">New Group</a><s:submit name="action" type="button" value="Save Changes" class="button"/>		    
+		    <a href="<s:property value='#application.url'/>group.action" class="button">New Group</a><s:submit name="action" type="button" value="Save Changes" class="button"/>
+		    <s:if test="group.hasNoShift()">
+			<a href="<s:property value='#application.url'/>groupShift.action?group_id=<s:property value='group.id' />" class="button">Add Time Rounding</a>		
+		    </s:if>
 		</div>
 	    </s:else>
 	</div>

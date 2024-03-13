@@ -306,6 +306,9 @@ public class Group implements Serializable{
     public List<GroupShift> getGroupShifts(){
 	return groupShifts;
     }
+    public boolean hasNoShift(){
+	return !hasShift();
+    }
     public boolean hasShift(){
 	if(shift == null)
 	    findShifts();

@@ -23,43 +23,44 @@
       <s:iterator value="#blockList" status="row" >
         <s:if test="#row.first">
           <s:if test="#blockKey==5 || #blockKey==6 || #blockKey==12 || #blockKey==13">
-		  <!-- this is for the weekend -->
-		  <s:if test="isHoliday()">
-			  <div class="day holiday"
-				  data-block-id="<s:property value='id' />"
-				  data-doc-id="<s:property value='document_id' />"
-				  data-date="<s:property value='date' />"
-				  data-order-index="<s:property value='#blockKey' />">
-				  <span><s:property value="holidayName" /></span>
+	      <!-- this is for the weekend -->
+	      <s:if test="isHoliday()">
+		  <div class="day holiday"
+		       data-block-id="<s:property value='id' />"
+		       data-doc-id="<s:property value='document_id' />"
+		       data-date="<s:property value='date' />"
+		       data-order-index="<s:property value='#blockKey' />">
 		  </s:if>
 		  <s:else>
-			  <div class="day weekend"
-				  data-block-id="<s:property value='id' />"
-				  data-doc-id="<s:property value='document_id' />"
-				  data-date="<s:property value='date' />"
-				  data-order-index="<s:property value='#blockKey' />">
-		  </s:else>
-          </s:if>
-
-          <s:else>
-            <!-- this is for each day -->
-		  <s:if test="isHoliday()">
-			  <div class="day holiday"
-				  data-block-id="<s:property value='id' />"
-				  data-doc-id="<s:property value='document_id' />"
-				  data-date="<s:property value='date' />"
-				  data-order-index="<s:property value='#blockKey' />">
-				  <span><s:property value="holidayName" /></span>
-		  </s:if>
-		  <s:else>
-		      <div class="day"
+		      <div class="day weekend"
 			   data-block-id="<s:property value='id' />"
 			   data-doc-id="<s:property value='document_id' />"
 			   data-date="<s:property value='date' />"
 			   data-order-index="<s:property value='#blockKey' />">
 		  </s:else>
+          </s:if>
+
+          <s:else>
+              <!-- this is for each day -->
+	      <s:if test="isHoliday()">
+		  <div class="day holiday"
+		       data-block-id="<s:property value='id' />"
+		       data-doc-id="<s:property value='document_id' />"
+		       data-date="<s:property value='date' />"
+		       data-order-index="<s:property value='#blockKey' />">
+	      </s:if>
+	      <s:else>
+		  <div class="day"
+		       data-block-id="<s:property value='id' />"
+		       data-doc-id="<s:property value='document_id' />"
+		       data-date="<s:property value='date' />"
+		       data-order-index="<s:property value='#blockKey' />">
+	      </s:else>
           </s:else>
 	  <div style="width:50%;display:inline;float:left"> <b><s:property value="#dayInt" /></b> </div><s:if test="#dayHours != '0.0'"><div style="width:50%;display:inline;float:right"> (<i><s:property value="#dayHours" />h</i>)</div></s:if><br />
+	  <s:if test="isHoliday()">
+	      <span><s:property value="holidayName" /></span><br />
+	  </s:if>	  
         </s:if>
         <s:if test="hasData()">
           <div class="data"

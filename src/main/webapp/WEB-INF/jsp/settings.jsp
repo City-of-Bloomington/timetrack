@@ -37,7 +37,7 @@
 		<li><a href="<s:property value='#application.url'/>position.action">Positions</a></li>
 		<li><a href="<s:property value='#application.url'/>salaryGroup.action">Salary Groups</a></li>
 		<li><a href="<s:property value='#application.url'/>serviceKey.action">Service Keys</a></li>				
-		<li><a href="<s:property value='#application.url'/>shift.action">Shifts</a></li>				
+		<li><a href="<s:property value='#application.url'/>shift.action">Shift Time Rounding</a></li>				
 		<li><a href="<s:property value='#application.url'/>node.action">Workflow Actions</a></li>
 	    </ul>
 	    <h2>Interventions</h2>
