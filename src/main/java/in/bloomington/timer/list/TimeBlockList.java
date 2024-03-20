@@ -34,6 +34,7 @@ public class TimeBlockList{
     String date = "";// specific day
     String code = "", code2 = ""; // needed for HAND and planning
     String accrual_as_of_date = "";
+    String salary_group_id = "";
     boolean active_only = false, for_today = false, dailyOnly=false,
 	clockInOnly = false, hasClockInAndOut = false, hasBlockNotes = false;
     double total_hours = 0.0, week1_flsa=0.0, week2_flsa=0.0;
@@ -102,6 +103,10 @@ public class TimeBlockList{
 	if(val != null)
 	    pay_period_id = val;
     }
+    public void setSalary_group_id (String val){
+	if(val != null)
+	    salary_group_id = val;
+    }    
     public void setDate_from (String val){
 	if(val != null)
 	    date_from = val;
@@ -444,7 +449,14 @@ public class TimeBlockList{
 		if(!qw.isEmpty()) qw += " and ";
 		qw += "v.job_id=? ";
 	    }
+	    if(!salary_group_id.isEmpty()){
+		if(department_id.isEmpty())
+		qq += " join jobs j on j.id=v.job_id ";
+		if(!qw.isEmpty()) qw += " and ";
+		qw += "j.salary_group_id=? ";		
+	    }
 	}
+	
 	if(!date_from.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += "v.date >= ? ";
@@ -510,6 +522,9 @@ public class TimeBlockList{
 		}
 		if(!job_id.isEmpty()){
 		    pstmt.setString(jj++, job_id);
+		}
+		if(!salary_group_id.isEmpty()){
+		    pstmt.setString(jj++, salary_group_id);
 		}
 	    }
 	    if(!date_from.isEmpty()){

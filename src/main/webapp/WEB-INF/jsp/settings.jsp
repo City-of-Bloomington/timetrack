@@ -103,6 +103,7 @@
 		<li><a href="<s:property value='#application.url'/>reportHand.action">HAND MPO</a></li>
 		<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO</a></li>
 		<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA</a></li>
+		<li><a href="<s:property value='#application.url'/>reportAsa.action">HR ASA</a></li>		
 		<li><a href="<s:property value='#application.url'/>reportEl.action">HR Emergency Leave (EL) </a></li>
 		<li><a href="<s:property value='#application.url'/>reportFiber.action">Engineering Fiber </a></li>		
 		<li><a href="<s:property value='#application.url'/>jobsReport.action">Employee Jobs</a></li>

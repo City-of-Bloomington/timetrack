@@ -411,6 +411,14 @@
 		  <result name="success">/WEB-INF/jsp/reports/reportFmla.jsp</result>
 		  <result name="csv">/WEB-INF/jsp/reports/fmlaReportCsv.jsp</result>
 		</action>
+		<action name="reportAsa" 
+			class="in.bloomington.timer.action.ReportHrASAAction" 
+			method="execute">
+		  <result name="input">/WEB-INF/jsp/reports/reportAsa.jsp</result>		
+		  <result name="error">/WEB-INF/jsp/reports/reportAsa.jsp</result>
+		  <result name="success">/WEB-INF/jsp/reports/reportAsa.jsp</result>
+		  <result name="csv">/WEB-INF/jsp/reports/asaReportCsv.jsp</result>
+		</action>		
 		<action name="reportFiber" 
 			class="in.bloomington.timer.action.ReportFiberAction" 
 			method="execute">

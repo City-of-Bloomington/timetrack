@@ -30,7 +30,7 @@ public class ReportFmlaAction extends TopAction{
     FmlaReport report = null;
     List<Integer> years = null;
     List<WarpEntry> dailyEntries = null;
-		String reportTitle = "Fmla Report ";
+    String reportTitle = "Fmla Report ";
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
@@ -56,7 +56,7 @@ public class ReportFmlaAction extends TopAction{
 		    if(ones != null && ones.size() > 0){
 			dailyEntries = ones;
 			addMessage("Found "+ones.size()+" daily entries");
-										}
+		    }
 		    else{
 			addMessage("No records found");
 		    }

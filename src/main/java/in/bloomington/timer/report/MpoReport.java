@@ -29,8 +29,10 @@ public class MpoReport{
     boolean debug = false, ignoreProfiles = false;
     String dept="", department_id="", type="html"; 
     String dept_ref_id="";
+    String salary_group_id="";
     String code="";
     String code2="";
+    Department department = null;
     Hashtable<String, Profile> profiles = null;
     List<BenefitGroup> benefitGroups = null;
     Map<String, List<WarpEntry>> mapEntries = null;
@@ -75,6 +77,36 @@ public class MpoReport{
     }
     public String getType(){
 	return type;
+    }
+    public String getSalary_group_id(){
+	if(salary_group_id.isEmpty())
+	    return "-1";
+	return salary_group_id;
+    }
+    public void setSalary_group_id(String val){
+	if(val != null && !val.equals("-1")){
+	    salary_group_id = val;
+	}
+    }
+    public String getDepartment_id(){
+	if(department_id.isEmpty())
+	    return "-1";
+	return department_id;
+    }
+    public Department getDepartment(){
+	if(department == null && !department_id.isEmpty()){
+	    Department one = new Department(department_id);
+	    String back = one.doSelect();
+	    if(back.isEmpty()){
+		department = one;
+		dept_ref_id = one.getRef_id();
+	    }
+	}
+	return department;
+    }
+    public boolean hasDepartment(){
+	getDepartment();
+	return department != null;
     }
     public Map<String, List<WarpEntry>> getMapEntries(){
 	return mapEntries;
@@ -221,6 +253,9 @@ public class MpoReport{
 	if(!department_id.isEmpty()){
 	    tbl.setDepartment_id(department_id);
 	}
+	if(!salary_group_id.isEmpty()){
+	    tbl.setSalary_group_id(salary_group_id);
+	}
 	msg = tbl.find();
 	if(!msg.isEmpty()){
 	    return msg;
@@ -266,11 +301,17 @@ public class MpoReport{
 	    " join pay_periods p on p.id=d.pay_period_id "+
 	    " join employees e on d.employee_id=e.id ";
 	String qw ="where t.inactive is null and t.date >= ? and t.date <= ? ";
-	if(!code2.isEmpty()){
-	    qw += " and (c.name like ? or c.name like ?) ";
+	if(!salary_group_id.isEmpty()){
+	    qq += " join jobs j on d.job_id=j.id ";
+	    qw += " and j.salary_group_id = ? ";
 	}
 	else{
-	    qw += " and c.name like ? ";
+	    if(!code2.isEmpty()){
+		qw += " and (c.name like ? or c.name like ?) ";
+	    }
+	    else {
+		qw += " and c.name like ? ";
+	    }
 	}
 	if(!department_id.isEmpty()){
 	    qq += " join department_employees de on de.employee_id=d.employee_id ";
@@ -294,9 +335,15 @@ public class MpoReport{
 	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 	    date_tmp = dateFormat.parse(end_date);
 	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-	    pstmt.setString(jj++, code);
-	    if(!code2.isEmpty())
-		pstmt.setString(jj++, code2);
+	    if(!salary_group_id.isEmpty()){
+		pstmt.setString(jj++, salary_group_id);
+	    }
+	    else{
+		pstmt.setString(jj++, code);
+		if(!code2.isEmpty()){
+		    pstmt.setString(jj++, code2);
+		}
+	    }
 	    if(!department_id.isEmpty()){
 		pstmt.setString(jj++, department_id);
 	    }
@@ -372,11 +419,17 @@ public class MpoReport{
 	    " join employees e on d.employee_id=e.id ";
 	String qw = " where t.inactive is null and "+
 	    " t.date >= ? and t.date <= ? ";
-	if(!code2.isEmpty()){
-	    qw += " and (c.name like ? or c.name like ?) ";
+	if(!salary_group_id.isEmpty()){
+	    qq += " join jobs j on d.job_id=j.id ";
+	    qw += " and j.salary_group_id = ? ";
 	}
 	else{
-	    qw += " and c.name like ? ";
+	    if(!code2.isEmpty()){
+		qw += " and (c.name like ? or c.name like ?) ";
+	    }
+	    else {
+		qw += " and c.name like ? ";
+	    }
 	}
 	if(!department_id.isEmpty()){
 	    qq += " join department_employees de on de.employee_id=d.employee_id ";
@@ -402,9 +455,14 @@ public class MpoReport{
 	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 	    date_tmp = dateFormat.parse(end_date);
 	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-	    pstmt.setString(jj++, code);
-	    if(!code2.isEmpty())
-		pstmt.setString(jj++, code2);
+	    if(!salary_group_id.isEmpty()){
+		pstmt.setString(jj++, salary_group_id);
+	    }
+	    else{
+		pstmt.setString(jj++, code);
+		if(!code2.isEmpty())
+		    pstmt.setString(jj++, code2);
+	    }
 	    if(!department_id.isEmpty()){
 		pstmt.setString(jj++, department_id);
 	    }
