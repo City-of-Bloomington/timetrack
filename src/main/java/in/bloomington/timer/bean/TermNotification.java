@@ -209,7 +209,7 @@ public class TermNotification{
 		text += "Regular Full-Time: Yes \n";
 	    }
 	    if(emp_type.indexOf("part") > -1){
-		text += "Part-Time Hours Per week: "+term.getHours_per_week()+"\n";
+		// text += "Part-Time Hours Per week: "+term.getHours_per_week()+"\n";
 	    }
 	    if(employee != null){
 		text += "New World Employee #: "+employee.getEmployee_number()+"\n";
@@ -218,13 +218,17 @@ public class TermNotification{
 	    if(term.hasDateOfBirth()){
 		text += "Date of Birth: "+term.getDate_of_birth()+"\n";
 	    }
+	    /**
 	    if(term.hasDateOfHire()){
-		text += "Date of Hire: "+term.getDate_of_hire()+"\n";
+		// text += "Date of Hire: "+term.getDate_of_hire()+"\n";
 	    }
-	    text += "Last Day of Work: "+term.getLast_day_of_work()+"\n";
+	    */
+	    text += "Last Day of Work: ";// term.getLast_day_of_work()+"\n";
 	    text += "Last Payroll Period: "+term.getLast_pay_period_date()+"\n";
-	    text += "Department: "+term.getDepartment()+"\n";
-	    text += "Terminated job title(s): "+term.getJobTitles()+"\n";
+	    // text += "Department: "+term.getDepartment()+"\n";
+	    // text += "Terminated job title(s): "+term.getJobTitles()+"\n";
+	    /*
+	      // TODO
 	    if(term.hasJobGrade()){
 		text += "Job Grade: "+term.getJob_grade()+"\n";
 	    }
@@ -234,8 +238,10 @@ public class TermNotification{
 	    if(!term.getPayRate().isEmpty()){
 		text += "Rate of Pay: "+term.getPayRate()+"\n";
 	    }
+
 	    text += "Supervisor: "+term.getSupervisor()+"\n";
 	    text += "Supervisor Phone Number: "+term.getSupervisor_phone()+"\n";
+	    */	    
 	    if(term.hasEmpAddress()){
 		text += "Address: "+term.getEmp_address()+"\n";
 		text += "City, State Zipcode: "+term.getEmpCityStateZip()+"\n";
@@ -284,9 +290,10 @@ public class TermNotification{
 		    text += "Close \n";
 		}
 	    }
-	    text += "Badge Return Status: "+term.getBadge_returned()+"\n";
+	    //ToDo
+	    // text += "Badge Return Status: "+term.getBadge_returned()+"\n";
 	    if(term.hasBenefits()){
-		text += "Number of Hours Worked in the Current Pay Period: "+term.getPay_period_worked_hrs()+"\n";
+		// text += "Number of Hours Worked in the Current Pay Period: "+term.getPay_period_worked_hrs()+"\n";
 		if(term.getVac_time() > 0){
 		text += "Vacation Time: "+term.getVac_time()+"\n";
 		}

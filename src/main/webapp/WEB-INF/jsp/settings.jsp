@@ -90,6 +90,7 @@
 	    <h2>Target Employee</h2>
 	    <ul>
 		<li><a href="<s:property value='#application.url'/>switch.action">Change Target Employee</a></li>
+		<li><a href="<s:property value='#application.url'/>nw_emp_jobs.action">NW Employee Jobs</a></li>
 	    </ul>
 	    <h2>Timewarp</h2>
 	    <ul>

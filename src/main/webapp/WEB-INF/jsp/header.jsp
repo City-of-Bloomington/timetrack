@@ -29,14 +29,14 @@
 
   <div class="tabs container">
     <s:if test="#session != null && #session.user != null">
-	    <a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
+	<a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
 
       <s:if test="user.canMaintain()">
-              <a href="<s:property value='#application.url'/>dataEntry.action">Time Maintenance</a>
+          <a href="<s:property value='#application.url'/>dataEntry.action">Time Maintenance</a>
       </s:if>
 
       <s:if test="user.canReview()">
-              <a href="<s:property value='#application.url'/>review.action">Timesheet Review</a>
+          <a href="<s:property value='#application.url'/>review.action">Timesheet Review</a>
       </s:if>
 
       <s:if test="user.canApprove()">
@@ -46,13 +46,13 @@
 	  <a href="<s:property value='#application.url'/>activeEmployees.action">Current Employees</a>
       </s:if>
       <s:if test="user.canPayrollProcess()">
-              <a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>
+          <a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>
       </s:if>
       <s:if test="user.isHrAdmin()">
-              <a href="<s:property value='#application.url'/>reportFmla.action">FMLA Report</a>
-              <a href="<s:property value='#application.url'/>reportEl.action">EL Report</a>	      
-              <a href="<s:property value='#application.url'/>lookup.action">Lookup Employee Time Entries</a>
-							
+          <a href="<s:property value='#application.url'/>reportFmla.action">FMLA Report</a>
+          <a href="<s:property value='#application.url'/>reportEl.action">EL Report</a>	      
+	  <li><a href="<s:property value='#application.url'/>reportAsa.action">ASA Report</a></li>								
+          <a href="<s:property value='#application.url'/>lookup.action">Lookup Time Entries</a>
       </s:if>
       <s:if test="user.isITSAdmin()">
 	  <a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>

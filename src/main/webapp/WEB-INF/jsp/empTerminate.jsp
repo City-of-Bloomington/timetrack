@@ -8,16 +8,12 @@
 	<s:hidden name="term.submitted_by_id" value="%{term.submitted_by_id}" />	
 	<s:hidden name="term.department_id" value="%{term.department_id}" />	
 	<s:hidden name="term.employee_id" value="%{term.employee_id}" />
-	<s:hidden name="term.group_id" value="%{term.group_id}" />	
 	<s:hidden name="term.full_name" value="%{term.full_name}" />
-	<s:hidden name="term.job_ids" value="%{term.job_ids}" />
 	<s:hidden name="term.email" value="%{term.email}" />	
-	<s:hidden name="term.supervisor_id" value="%{term.supervisor_id}" />	
-	<s:hidden name="term.hours_per_week" value="%{term.hours_per_week}" />
 	<s:hidden name="term.employment_type" value="%{term.employment_type}" />
 	<s:hidden name="term.last_pay_period_date" value="%{term.last_pay_period_date}" />
 	<s:if test="term.id != ''">
-	    <h1>Employee Termination <s:property value="term.id" /> </h1>
+	    <h1>Employee Job(s) Termination <s:property value="term.id" /> </h1>
 	</s:if>	    
 	<s:else>
 	    <h1>New Employee Termination </h1>
@@ -51,56 +47,60 @@
 	<table border="1"><caption> Employment Information</caption>
 	    <tr><td>Employee</td>
 		<td><s:property value="term.full_name" /></td>
-	    </tr>
-	    <tr><td>Employee Type</td>
+		<td>Employee Type</td>
 		<td><s:property value="term.employment_type" /></td>
-		<td>Hours Per Week</td>
-		<td><s:property value="term.hours_per_week" /></td>
 	    </tr>
 	    <s:if test="term.employee != null">
 		<tr><td>New World Employee #:</td>
 		    <td><s:property value="term.employee.employee_number" /></td>
-		    <td>Badge ID: </td>
-		    <td><s:property value="term.employee.id_code" /></td>
+		    <td>Department</td>
+		    <td><s:property value="term.department" /></td>
 		</tr>
 	    </s:if>
 	    <tr><td>Date of Birth</td>
 		<td><s:textfield name="term.date_of_birth" value="%{term.date_of_birth}" size="10" maxlength="10" /></td> 
-		<td>Date of Hire</td>
-		<td><s:textfield name="term.date_of_hire" value="%{term.date_of_hire}" type="date" size="10" maxlength="10" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" /></td> 
-	    </tr>
-	    <tr><td>Last Day of Work</td>
-		<td><s:textfield name="term.last_day_of_work" type="date" value="%{term.last_day_of_work}" size="10" maxlength="10" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" /></td> 
 		<td>Last Pay Period Ending</td>
 		<td><s:property value="term.last_pay_period_date"/></td>
 	    </tr>
-	    <tr><td>Department</td>
-		<td><s:property value="term.department" /></td>
-		<td>Group </td>
-		<td><s:property value="term.group" /></td>		
-	    </tr>
-	    <tr><td>Terminating Job Title(s)</td>
-		<td colspan="3"><s:property value="term.jobTitles" /></td>
-	    </tr>
-	    <s:if test="term.hasOtherActiveJobs()">
-	    <tr><td>Other Active Job(s)</td>
-		<td colspan="3"><s:property value="term.otherJobTitles" /></td>
-	    </tr>
-	    </s:if>
-	    <tr><td>Job Grade</td>
-		<td><s:textfield name="term.job_grade" value="%{term.job_grade}" size="30" maxlength="100" /> </td>
-		<td>Job Step</td>
-		<td><s:textfield name="term.job_step" value="%{term.job_step}" size="30" maxlength="100" /> </td>
-	    </tr>
-	    <tr><td>Rate of Pay</td>
-		<td><s:textfield name="term.payRate" value="%{term.payRate}" size="30" maxlength="100" /> </td>
-	    </tr>	    
-	    <tr><td>Supervisor Name</td>
-		<td><s:property value="term.supervisor" /> </td>
-		<td>Supervisor Phone</td>
-		<td><s:textfield name="term.supervisor_phone" value="%{term.supervisor_phone}" size="10" maxlength="20" /> </td>
-	    </tr>
 	</table>
+	<s:if test="term.hasJobTerms()">
+	    <table>
+		<caption>Terminating Job(s)</caption>
+		<tr>
+		    <th>Job Title</th>
+		    <th>Grade</th>
+		    <th>Step</th>
+		    <th>Pay Rate</th>
+		    <th>Weekly Hrs</th>
+		    <th>Supervisor</th>
+		    <th>supervisor Phone</th>
+		    <th>Start Date</th>
+		    <th>Last Day Of Work</th>
+		    <th>Badge Code</th>
+		    <th>Badge Returned</th>
+		</tr>
+		<s:iterator var="one" value="term.jobTerms">
+		    <tr>
+		    <td><s:property value="job_title" /></td>
+		    <td><s:property value="job_grade" /></td>
+		    <td><s:property value="job_step" /></td>
+		    <td><s:property value="payRate" /></td>
+		    <td><s:property value="weeklyHours" /></td>
+		    <td><s:property value="supervisor" /></td>
+		    <td><s:property value="supervisor_phone" /></td>
+		    <td><s:property value="start_date" /></td>
+		    <td><s:property value="last_day_of_work" /></td>
+		    <td><s:property value="badge_code" /></td>
+		    <td><select name="term.badge_returned">
+			<option value="<s:property value='id' />_Yes">Yes</option>
+			<option value="<s:property value='id' />_No">No</option>
+			<option value="<s:property value='id' />_NA">NA</option>
+		    </select>
+		    </td>
+		    </tr>
+		</s:iterator>
+	    </table>
+	</s:if>
 	<table border="1">
 	    <caption>Permanent Mailing Address</caption>
 	    <tr>
@@ -195,13 +195,12 @@
 	    </tr>
 	</table>
 	<div class="button-group">
-	    <s:if test="term.id != '' && term.needSend()">	    
-		<s:submit name="action" type="button" value="Save Changes" class="button"/>
-		<s:submit name="action" type="button" value="Send Notification" class="button"/>		
-	    </s:if>
-	    <s:else>
+	    <s:if test="term.isStarted()">
 		<s:submit name="action" type="button" value="Submit" class="button"/>
-	    </s:else>
+	    </s:if>	    
+	    <s:elseif test="term.isReady()">	    
+		<s:submit name="action" type="button" value="Send Notification" class="button"/>		
+	    </s:elseif>
 	</div>
     </s:form>
 </div>

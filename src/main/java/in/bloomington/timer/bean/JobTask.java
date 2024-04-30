@@ -1739,6 +1739,39 @@ public class JobTask implements Serializable{
 	}							
 	return msg;
     }
+    /**
+       create or replace view jobs_view as
+	    select
+	    j.id job_id,
+	    p.name job_title, 
+	    concat_ws(' ',e.first_name,e.last_name) employee_name,
+	    g.name group_name,
+	    d.name department_name,
+	    j.position_id position_id,
+	    j.salary_group_id salary_group_id,
+	    j.employee_id employee_id,
+	    j.group_id group_id,
+	    j.effective_date effective_date,
+	    j.expire_date expire_date,
+	    j.primary_flag primary_flag,
+	    j.weekly_regular_hours weekly_regular_hours,
+	    j.comp_time_weekly_hours comp_time_weekly_hours,
+	    j.comp_time_factor comp_time_factor,
+	    j.holiday_comp_factor holiday_comp_factro,
+	    j.hourly_rate hourly_rate,
+	    j.added_date added_date,
+	    j.irregular_work_days irregular_work_days,
+	    j.inactive inactive, 
+	    sg.name salary_group_name
+	    from jobs j 
+	    join employees e on j.employee_id=e.id 
+	    join salary_groups sg on sg.id=j.salary_group_id 
+	    join positions p on j.position_id=p.id 
+	    join `groups` g on g.id=j.group_id 
+	    join departments d on g.department_id=d.id;
 
+
+     */
+    
 }
 

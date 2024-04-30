@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
+import in.bloomington.timer.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,17 +21,24 @@ public class EmpTerminate{
     static final long serialVersionUID = 3700L;	
     static Logger logger = LogManager.getLogger(EmpTerminate.class);
     static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");    
-    String id="", employee_id="", full_name="", job_id="", job_ids = "",
-	jobTitles="", group_id="";
-    String job_grade="", job_step="", supervisor_id="", supervisor_phone="";
+    String id="", employee_id="", full_name="",
+	jobTitles="";
+    // String job_grade="", job_step="", supervisor_id="", supervisor_phone="";
     String employment_type="", // full, part time, temp, union
-	date_of_hire="", last_pay_period_date="",
-	pay_period_id = "",
-	department_id=""; // department 
+	last_pay_period_date="";
+
+	
     String emp_address="", emp_city="", emp_state="",
 	emp_zip="", emp_phone="", emp_alt_phone="",
-	last_day_of_work="", date_of_birth="",
+    // last_day_of_work="",
+	date_of_birth="",
 	personal_email="";
+    //
+    // job ids we are going to terminate
+    String[] job_ids = null;
+    String process_status = ""; // Started, Ready, Completed
+    String pay_period_id = "";
+	
     //ITS
     String email="", email_account_action="",  // Active, Forward to
 	forward_emails ="", // multiple
@@ -43,22 +51,23 @@ public class EmpTerminate{
 	calendar_to_email="",
 	zoom_action="", // Close, Transfer to
 	zoom_to_email="";
-    String badge_returned=""; //NA, Yes, No
-    int hours_per_week=0;    
-    double pay_period_worked_hrs=0, comp_time=0, vac_time=0, pto=0;
-    String pay_rate = "";
+    String[] badge_returned = null; //NA, Yes, No
+    double comp_time=0, vac_time=0, pto=0;
     String remarks="",submitted_by_id ="", submitted_date="";
     String other_job_titles = "";
     String recipients_informed="";
     List<DepartmentEmployee> departmentEmployees = null;
     List<GroupManager> groupManagers = null;
     List<JobTask> jobs = null;
+    List<JobTerminate> jobTerms = null;
     List<Document> documents = null;
+    List<JobTerminate> jobTerminates = null;
     Document valid_document = null;
+    // we need these for info
     JobTask job = null;
-    Group group = null;
+    Group oneGroup = null;
     Department department = null;
-    Employee emp = null, supervisor = null, submitted_by=null;
+    Employee emp = null, submitted_by=null;
     String[] forward_emails_arr = null;
     String[] drive_to_shared_email_arr = null;
     Map<String, List<String>> accruals = null;
@@ -86,106 +95,78 @@ public class EmpTerminate{
 		String str19, String str20, String str21,
 		String str22, String str23, String str24,
 		
-		String str25, String str26, String str27,
-		String str28, String str29, String str30,
+		double str25, double str26, double str27,
+		String str28, String str29,String str30,
 		
-		String str31, String str32, String str33,
-		String str34, int str35, String str36,
-
-		double str37,
-		
-		double str38, double str39, double str40,
-		String str41, String str42, String str43,
-		
-		boolean str44){
+		String str31, boolean str32){
 	setVals(str, str2, str3, str4, str5,
 		str6, str7, str8, str9, str10,
 		str11, str12, str13, str14, str15,
 		str16, str17, str18, str19, str20,
 		str21, str22, str23, str24, str25,
 		str26, str27, str28, str29, str30,
-		str31, str32, str33, str34, str35,
-		str36, str37, str38, str39, str40,
-		str41, str42,str43, str44);
+		str31, str32);
 		
     }
 			
     void setVals(
 		String str, String str2, String str3,
 		String str4, String str5, String str6,
-		
 		String str7, String str8, String str9,
-		String str10, String str11, String str12,
 		
+		String str10, String str11, String str12,
 		String str13, String str14, String str15,
 		String str16, String str17, String str18,
 		
 		String str19, String str20, String str21,
 		String str22, String str23, String str24,
+		double str25, double str26, double str27,
+
+		String str28,
+		String str29,
+		String str30,
 		
-		String str25, String str26, String str27,
-		String str28, String str29, String str30,
-		
-		String str31, String str32, String str33,
-		String str34, int str35, String str36,
-		
-		double str37,
-		double str38, double str39, double str40,
-		String str41, String str42, String str43,
-		
-		boolean str44){
+		String str31,
+		boolean str32){
 	setId(str);
 	setEmployee_id(str2);
 	setFull_name(str3);
-	setJob_ids(str4);
-	setJob_grade(str5);
+	setEmployment_type(str4);
+	setLast_pay_period_date(str5);
+	
+	setEmp_address(str6);
+	setEmp_city(str7);
+	setEmp_state(str8);
+	setEmp_zip(str9);
+	setEmp_phone(str10);
+	
+	setEmp_alt_phone(str11);
+	setDate_of_birth(str12);
+	setPersonal_email(str13); 
+	setEmail(str14); 
+	setEmail_account_action(str15);
+	
+	setForward_emails(str16);
+	setForward_days_cnt(str17);
+	setDrive_action(str18);
+	setDrive_to_person_email(str19);
+	setDrive_to_shared_emails(str20);
+	
+	setCalendar_action(str21);
+	setCalendar_to_email(str22);
+	setZoom_action(str23);
+	setZoom_to_email(str24);
+	setComp_time(str25);
+	
+	setVac_time(str26);
+	setPto(str27);
+	setRemarks(str28);
+	setSubmitted_by_id(str29);
+	setSubmitted_date(str30);
 
-	setJob_step(str6);
-	setSupervisor_id(str7);
-	setSupervisor_phone(str8);
-	setEmployment_type(str9);
-	setDate_of_hire(str10);
+	setProcess_status(str31);	
+	setRecipients_informed(str32);
 
-	setLast_pay_period_date(str11);
-	setGroup_id(str12);	
-	setDepartment_id(str13);
-	setEmp_address(str14);
-	setEmp_city(str15);
-	
-	setEmp_state(str16);
-	setEmp_zip(str17);
-	setEmp_phone(str18);
-	setEmp_alt_phone(str19);
-	setLast_day_of_work(str20);
-	
-	setDate_of_birth(str21);
-	setPersonal_email(str22);
-	setEmail(str23);
-	setEmail_account_action(str24);
-	setForward_emails(str25);
-	
-	setForward_days_cnt(str26);
-	setDrive_action(str27);
-	setDrive_to_person_email(str28);
-	setDrive_to_shared_emails(str29);
-	setCalendar_action(str30);
-	
-	setCalendar_to_email(str31);
-	setZoom_action(str32);
-	setZoom_to_email(str33);
-	setBadge_returned(str34);
-	setHours_per_week(str35);
-	setPayRate(str36);
-	
-	setPay_period_worked_hrs(str37);
-	setComp_time(str38);
-	setVac_time(str39);
-	setPto(str40);
-	setRemarks(str41);
-	
-	setSubmitted_by_id(str42);
-	setSubmitted_date(str43);
-	setRecipients_informed(str44);
     }
     public boolean equals(Object obj){
 	if(obj instanceof EmpTerminate){
@@ -216,6 +197,10 @@ public class EmpTerminate{
     //
     // getters
     //
+    public void setJobTerms(List<JobTerminate> vals){
+	if(vals != null)
+	    jobTerms = vals;
+    }
     public String getId(){
 	return id;
     }
@@ -223,128 +208,49 @@ public class EmpTerminate{
 	return employee_id;
     }
     public String getFull_name(){
-	return full_name;
-    }    
-    public String getJob_id(){ // adding one job a time
-	return job_id;
-    }
-    public String getJob_ids(){
-	findJobIds();
-	return job_ids;
-    }
-    public String getJob_grade(){ // adding one job a time
-	if(job_grade.isEmpty()){
-	    findProfile();
-	    if(profile != null){
-		job_grade = ""+profile.getGrade();
-	    }
+	if(full_name.isEmpty()){
+	    getEmployee();
+	    full_name = emp.getFull_name();
 	}
-	return job_grade;
+	return full_name;
     }
-    void findJobIds(){
-	if(job_ids.isEmpty()){
-	    if(jobs != null){
-		for(JobTask one:jobs){
-		    if(!job_ids.isEmpty()) job_ids += ",";
-		    job_ids += one.getId();
+    public void setJob_ids(String[] vals){
+	if(vals != null)
+	    job_ids = vals;
+    }
+
+    public String getEmployment_type(){
+	if(employment_type.isEmpty()){
+	    if(job == null){
+		populateOneJob();
+	    }
+	    if(job != null){
+		employment_type = job.getSalaryGroup().getName();
+		if(!employment_type.equals("Temp")){
+		    employment_type = "Full Time "+employment_type;
 		}
 	    }
 	}
-    }
-    public String getPayRate(){
-	if(pay_rate.isEmpty()){
-	    findProfile();
-	    if(profile != null){
-		pay_rate = ""+profile.getHourlyRate();
-	    }
-	}
-	return pay_rate;
-    }
-    public void setPayRate(String val){
-	if(val != null && !val.isEmpty()){
-	    pay_rate = val;
-	}
-    }
-    public String getJob_step(){ // adding one job a time
-	return job_step;
-    }
-    public String getEmployment_type(){
 	return employment_type;
-    }
-    public String getSupervisor_id(){
-	if(supervisor_id.isEmpty() && supervisor != null){
-	    supervisor_id = supervisor.getId();
-	}
-	return supervisor_id;
-    }
-    public String getSupervisor_phone(){
-	return supervisor_phone;
-    }
-    public Employee getSupervisor(){
-	if(supervisor == null && !supervisor_id.isEmpty()){
-	    Employee one = new Employee(supervisor_id);
-	    String back = one.doSelect();
-	    if(back.isEmpty()){
-		supervisor = one;
-	    }
-	}
-	return supervisor;
     }
     
     public Employee getEmp(){
 	if(emp == null){
-	    if(employee_id.isEmpty() && !job_id.isEmpty()){
-		JobTask job = new JobTask(job_id);
-		String back = job.doSelect();
-		employee_id = job.getEmployee_id();
-	    }
 	    if(!employee_id.isEmpty()){
 		Employee one = new Employee(employee_id);
 		String back = one.doSelect();
 		if(back.isEmpty()){
 		    emp = one;
 		}
-	    }	    
+	    }
 	}
 	return emp;				
     }
     public Employee getEmployee(){
 	return getEmp();
     }
-    public String getDate_of_hire(){
-	return Helper.changeDateFormat(date_of_hire);
-    }
     public String getLast_pay_period_date(){
 	return last_pay_period_date;
-    }
-    public String getLast_day_of_work(){
-	if(last_day_of_work.isEmpty()){
-	    last_day_of_work =  last_pay_period_date;
-	}
-	return Helper.changeDateFormat(last_day_of_work);
-    }
-    public String getDepartment_id(){
-	return department_id;
-    }
-    public Department getDepartment(){
-	if(department == null && !department_id.isEmpty()){
-	    department = new Department(department_id);
-	    department.doSelect();
-	}
-	return department;
-    }
-    public Group getGroup(){
-	if(group == null){
-	    getJobs();
-	    if(job != null){
-		group = job.getGroup();
-		group_id = group.getId();
-	    }
-	}
-	return group;
-    }
-    public String getGroup_id(){
-	return group_id;
     }
     public String getEmp_address(){
 	return emp_address;
@@ -370,11 +276,15 @@ public class EmpTerminate{
     public String getDate_of_birth(){
 	return date_of_birth;
     }
+    public String getProcess_status(){
+	return process_status;
+    }    
     //
     // ITS
     public String getEmail(){
 	return email;
     }
+    
     public String getEmail_account_action(){
 	return email_account_action;
     }
@@ -385,10 +295,19 @@ public class EmpTerminate{
     public String getForward_days_cnt(){
 	return forward_days_cnt;
     }
-        
+    /**
+    public String getLast_day_of_work(){
+	return last_day_of_work;
+    }
+    */
     public String getDrive_action(){
 	return drive_action;
     }
+    /**
+    public String getBadge_returned(){
+	return badge_returned;
+    }
+    */
     
     public String getDrive_to_person_email(){
 	return drive_to_person_email;
@@ -445,17 +364,9 @@ public class EmpTerminate{
     public String getZoom_to_email(){
 	return zoom_to_email;
     }    
-    public String getBadge_returned(){
-	return badge_returned;
-    }
+
     public boolean getRecipients_informed(){
 	return !recipients_informed.isEmpty();
-    }
-    public int getHours_per_week(){
-	return hours_per_week;
-    }
-    public double getPay_period_worked_hrs(){
-	return pay_period_worked_hrs;
     }
     public double getComp_time(){
 	return comp_time;
@@ -489,9 +400,6 @@ public class EmpTerminate{
 	}
 	return submitted_by;
     }
-    public boolean hasDateOfHire(){
-	return !date_of_hire.isEmpty();
-    }
     public boolean hasDateOfBirth(){
 	return !date_of_birth.isEmpty();
     }        
@@ -504,12 +412,7 @@ public class EmpTerminate{
     public boolean hasPhones(){
 	return !emp_phone.isEmpty() || !emp_alt_phone.isEmpty();
     }
-    public boolean hasJobGrade(){
-	return !job_grade.isEmpty();
-    }
-    public boolean hasJobStep(){
-	return !job_step.isEmpty();
-    }
+
     public boolean hasEmail(){
 	return !email.isEmpty();
     }
@@ -542,98 +445,28 @@ public class EmpTerminate{
 	if(val != null)
 	    id = val;
     }
-    public void setJob_id(String val){
-	if(val != null && !val.isEmpty()){
-	    if(job_id.isEmpty()){
-		job_id = val; // we need one to get group and dept info
-	    }
-	    // if(!job_ids.isEmpty())job_ids += ","; // comma separated
-	    // job_ids += val;
+    public void setBadge_returned(String[] vals){
+	if(vals != null){
+	    badge_returned = vals;
 	}
-    }    
+    }
     public String toString(){
 	return id;
     }
-    public boolean hasDepartments(){
-	return departmentEmployees != null && departmentEmployees.size() > 0;
+    /**
+    public void setLast_day_of_work(String val){
+	if(val != null)
+	    last_day_of_work = val;
     }
-    public List<DepartmentEmployee> getDepartmentEmployees(){
-	return departmentEmployees;
-    }
+    */
     public boolean isGroupManager(){
 	return groupManagers != null && groupManagers.size() > 0;
     }
     public List<GroupManager> getGroupManagers(){
 	return groupManagers;
     }
-    public boolean hasJob(){
-	return !job_id.isEmpty();
-    }
-    public void setJobs(List<JobTask> vals){ // needed for final term
-	if(vals != null){
-	    jobs = vals;{
-	    if(job == null)
-		job = jobs.get(0); //  we need one to get info
-
-	    }
-	    job_ids = "";
-	    findJobIds();
-	}
-    }
-    //
-    // when dealing with one job termination
-    //
-    public JobTask getJob(){
-	if(!job_id.isEmpty() && job == null){
-	    JobTask one = new JobTask(job_id);
-	    String back = one.doSelect();
-	    if(back.isEmpty()){
-		job = one;
-		employee_id = job.getEmployee_id();
-	    }
-	}
-	return job;
-    }
-    public List<JobTask> getJobs(){
-	if(jobs == null){
-	    if(job_ids.indexOf(",") > -1){
-		try{
-		    String[] id_arr = job_ids.split(",");
-		    
-		    if(id_arr != null && id_arr.length > 1){
-			for(String str:id_arr){
-			    JobTask one = new JobTask(str);
-			    String back = one.doSelect();
-			    if(back.isEmpty()){
-				if(jobs == null)
-				    jobs = new ArrayList<>();
-				employee_id = one.getEmployee_id();
-				jobs.add(one);
-				if(job == null){
-				    job = one;
-				}
-			    }
-			}
-		    }
-		}catch(Exception ex){
-		    logger.error("Error jobs ids "+job_ids+" "+ex);
-		}
-	    }
-	    else if(!job_ids.isEmpty()){
-		job_id = job_ids;
-		getJob();
-		jobs = new ArrayList<>();
-		jobs.add(job);
-	    }
-	    else{
-		jobs = new ArrayList<>();
-		getJob();
-		jobs.add(job);
-	    }
-	}
-	return jobs;
-    }
     public String getJobTitles(){
+	/**
 	getJobs();	
 	if(jobTitles.isEmpty() && jobs != null){
 	    for(JobTask one:jobs){
@@ -642,10 +475,37 @@ public class EmpTerminate{
 	    }
 	}
 	return jobTitles;
+	*/
+	return "";
     }
     public boolean hasJobs(){
-	getJobs();
+	findJobs();
 	return jobs != null && jobs.size() > 0;
+    }
+    public boolean hasJobTerms(){
+	return jobTerms != null && jobTerms.size() > 0;
+    }
+    public List<JobTerminate> getJobTerms(){
+	return jobTerms;
+    }
+    String findJobs(){
+	String back = "";
+	if(jobTerms != null){
+	    for(JobTerminate jt:jobTerms){
+		JobTask one = jt.getJob();
+		if(one != null){
+		    if(job == null)
+			one = job;
+		    if(jobs == null)
+			jobs = new ArrayList<>();
+		    jobs.add(one);
+		}
+	    }
+	}
+	else{
+	    back = "No job term found";
+	}
+	return back;
     }
     //
     // setters
@@ -654,53 +514,59 @@ public class EmpTerminate{
 	if(val != null)
 	    employee_id = val;
     }
+    public void setProcess_status(String val){
+	if(val != null)
+	    process_status = val;
+    }    
     public void setFull_name(String val){
 	if(val != null)
 	    full_name = val;
     }    
-    public void setJob_ids(String val){
-	if(val != null)
-	    job_ids=val;
-    }
-    public void setJob_grade(String val){ // adding one job a time
-	if(val != null)
-	    job_grade=val;
-    }
-    public void setJob_step(String val){ // adding one job a time
-	if(val != null)
-	    job_step=val;
-    }
+
     public void setEmployment_type(String val){
 	if(val != null)
 	    employment_type=val;
     }
-    public void setSupervisor_id(String val){
-	if(val != null)
-	    supervisor_id=val;
+    public boolean isStarted(){
+	return process_status.equals("Started");
     }
-    public String findSupervisor(){
-	String back = "";
-	if(supervisor == null){
-	    getGroup();
-	    if(!group_id.isEmpty()){
-		GroupManagerList gml = new GroupManagerList();
-		gml.setGroup_id(group_id);
-		gml.setActiveOnly();
-		gml.setNotExpired();
-		gml.setApproversOnly();
-		back = gml.find();
+    public boolean isReady(){
+	return process_status.equals("Ready");
+    }    
+    void findDocuments(){
+	//
+	findPayPeriodId();
+	if(documents == null &&
+	    !pay_period_id.isEmpty()){
+	    
+	    for(JobTerminate jj:jobTerms){
+		DocumentList dl = new DocumentList();
+		dl.setJob_id(jj.getJob_id()); 
+		dl.setPay_period_id(pay_period_id);
+		String back = dl.findForCleanUp();
 		if(back.isEmpty()){
-		    List<GroupManager> managers = gml.getManagers();
-		    if(managers != null && managers.size() > 0){
-			// we pick the first (primary)
-			supervisor = managers.get(0).getEmployee();
-			supervisor_id = supervisor.getId();
+		    List<Document> ones = dl.getDocuments();
+		    if(ones != null && ones.size() > 0){
+			if(documents == null)
+			    documents = ones;
+			else{
+			    documents.addAll(ones);
+			}
 		    }
 		}
 	    }
 	}
+    }
+    public String doCleanUp(){
+	String back = "";
+	CleanUp cleanUp = new CleanUp();
+	if(hasDocuments()){
+	    cleanUp.setDocuments(documents);
+	    back = cleanUp.doClean();
+	}
 	return back;
     }
+    /**
     public String findAllJobs(){
 	String back = "";
 	if(jobs == null && !job_id.isEmpty()){
@@ -726,23 +592,8 @@ public class EmpTerminate{
 	    }
 	}
 	return back;
-    }    
-    
-    public String findSupervisorPhone(EnvBean bean){
-	//
-	String back = "";
-	if(supervisor != null && bean != null){
-	    EmpList empl = new EmpList(bean, supervisor.getUsername());
-	    back = empl.find();
-	    if(back.isEmpty()){
-		List<Employee> emps = empl.getEmps();
-		if(emps != null && emps.size() > 0){
-		    supervisor_phone = emps.get(0).getPhone();
-		}
-	    }
-	}
-	return back;
     }
+    */
     public String findEmployeeAddress(){
 	String back = "";
 	if(emp == null){
@@ -762,55 +613,18 @@ public class EmpTerminate{
 	}
 	return back;
     }
-    public void setSupervisor(Employee val){
-	if(val != null){
-	    supervisor =val;
-	    supervisor_id = val.getId();
-	}
-    }
-    public void setGroup_id(String val){
-	if(val != null)
-	    group_id = val;
-    }
     public void setSubmitted_by(Employee val){
 	if(val != null){
 	    submitted_by =val;
 	    submitted_by_id = val.getId();
 	}
     }    
-    public void setSupervisor_phone(String val){
-	if(val != null)
-	    supervisor_phone=val;
-    }
-    
 
-    public void setDate_of_hire(String val){
-	if(val != null){
-	    if(val.indexOf("-") > 0){
-		date_of_hire = Helper.changeDateFormat(val);
-	    }
-	    else{
-		date_of_hire = val;
-	    }
-	}
-    }
     public void setLast_pay_period_date(String val){
 	if(val != null)
 	    last_pay_period_date=val;
     }
-    public void setLast_day_of_work(String val){
-	if(val != null)
-	    if(val.indexOf("-") > 0){
-		last_day_of_work = Helper.changeDateFormat(val);
-	    }
-	    else{
-		last_day_of_work=val;
-	    }
-    }
-    public void setDepartment_id(String val){
-	if(val != null)
-	    department_id=val;
-    }
+
     public void setEmp_address(String val){
 	if(val != null)
 	    emp_address=val;
@@ -972,21 +786,7 @@ public class EmpTerminate{
 	if(val != null)
 	    zoom_to_email = val;
     }    
-    public void setBadge_returned(String val){
-	if(val != null && !val.equals("-1")){
-	    badge_returned = val;
-	}
-    }
-    
-    
-    public void setHours_per_week(Integer val){
-	if(val != null)
-	    hours_per_week = val;
-    }
-    public void setPay_period_worked_hrs(Double val){
-	if(val != null)
-	    pay_period_worked_hrs = val;
-    }
+
     public void setComp_time(Double val){
 	if(val != null)
 	    comp_time = val;
@@ -1011,26 +811,32 @@ public class EmpTerminate{
 	if(val != null)
 	    submitted_date = val;
     }
+    public Department getDepartment(){
+	if(department == null){
+	    populateOneJob();
+	}
+	return department;
+    }
     public String populateOneJob(){
 	String back = "";
-	if(job == null && !job_id.isEmpty()){
-	    JobTask one  = new JobTask(job_id);
-	    back = one.doSelect();
-	    if(back.isEmpty()){
-		job = one;
-	    }
+	String one_job_id = "";
+	if(job_ids != null){
+	    one_job_id = job_ids[0]; // the first
 	}
-	if(job != null && back.isEmpty()){
-	    employment_type = job.getSalaryGroup().getName();
-	    group = job.getGroup();
-	    group_id = job.getGroup_id();
-	    date_of_hire = job.getEffective_date();
-	    department_id = group.getDepartment_id();
-	    department = group.getDepartment();
-	    emp = job.getEmployee();
-	    full_name = emp.getFull_name();
-	    email = emp.getEmail();
-	    hours_per_week = job.getWeekly_regular_hours();
+	else if(jobTerms != null){
+	    one_job_id = jobTerms.get(0).getJob_id();
+	}
+	JobTask jj = new JobTask(one_job_id);
+	back = jj.doSelect();
+	if(back.isEmpty()){
+	    job = jj;
+	}
+	if(job != null){
+	    Group gg = job.getGroup();
+	    if(gg != null) {
+		oneGroup = gg;
+		department = oneGroup.getDepartment();
+	    }
 	}
 	return back;
     }
@@ -1038,8 +844,35 @@ public class EmpTerminate{
 	if(val)
 	    recipients_informed = "y";
     }
+    public String expireSelectedJobs(){
+	System.err.println(" expire jobs ");
+	String back = "";
+	if(jobTerms != null && jobTerms.size() > 0){
+	    for(JobTerminate jj:jobTerms){
+		back += jj.expireJob(last_pay_period_date);
+	    }
+	}
+	else{
+	    back = "No job found ";
+	}
+	return back;
+    }
+    String findPayPeriodId(){
+	String back="";
+	if(pay_period_id.isEmpty()){
+	    PayPeriod pp = new PayPeriod();	
+	    if(pp.findByEndDate(last_pay_period_date)){
+		pay_period_id = pp.getId();
+	    }
+	    else{
+		back = " could not find pay_period_id for "+last_pay_period_date;
+	    }
+	}
+	return back;
+    }    
     public String populateMulitJobs(){
 	String back = "";
+	/**
 	getJobs();
 	if(jobs != null){
 	    job = jobs.get(0);
@@ -1052,6 +885,7 @@ public class EmpTerminate{
 		}
 	    }
 	}
+	*/
 	return back;
     }
     public String doTerminate(){
@@ -1060,7 +894,7 @@ public class EmpTerminate{
 	    back = " last pay period date not set ";
 	    return back;
 	}
-	getJobs();
+	findJobs();
 	System.err.println(" after get jobs ");
 	if(jobs != null && jobs.size() > 0){
 	    for(JobTask one:jobs){
@@ -1082,16 +916,14 @@ public class EmpTerminate{
 		    }
 		}
 		if(emp.hasDepartments()){
-		    /**
 		       // we are keeping the dept info for now since
 		       // some employees come back such as seasonal
-		    List<DepartmentEmployee> ones =
-			emp.getDepartmentEmployees();
-		    for(DepartmentEmployee one:ones){
-			one.setExpire_date(last_pay_priod_date);
-			back += one.doUpdate();
-		    }
-		    */
+		    // List<DepartmentEmployee> ones =
+		    // emp.getDepartmentEmployees();
+		    // for(DepartmentEmployee one:ones){
+		    // one.setExpire_date(last_pay_priod_date);
+		    // back += one.doUpdate();
+		    //}
 		}
 		System.err.println(" before cleanup ");		
 		if(hasDocuments()){
@@ -1106,6 +938,7 @@ public class EmpTerminate{
 	}
 	return back;
     }
+    /**
     void findDocuments(){
 	//
 
@@ -1141,6 +974,7 @@ public class EmpTerminate{
 	    }
 	}
     }
+    */
     
     boolean hasDocuments(){
 	findDocuments();
@@ -1296,19 +1130,11 @@ public class EmpTerminate{
 	String qq = "insert into emp_terminations values(0,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "?,?,?,null)";
+	    "'Started', null)";
+	process_status="Started";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    back = "Could not connect to DB";
-	    return back;
-	}
-	if(job_ids.isEmpty()){
-	    back = "job(s) not set ";
-	    return back;
-	}
-	if(supervisor_id.isEmpty()){
-	    back = "supervisor not set ";
 	    return back;
 	}
 	if(submitted_by_id.isEmpty()){
@@ -1340,157 +1166,135 @@ public class EmpTerminate{
 	finally{
 	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
 	    UnoConnect.databaseDisconnect(con);
-	}	
+	}
+	/**
+	if(back.isEmpty()){
+	    back = saveJobTerms();
+	}
+	*/
+	return back;
+    }
+    public String saveJobTerms(){
+	String back = "";
+	if(jobTerms != null && jobTerms.size() > 0){
+	    for(JobTerminate jj:jobTerms){
+		jj.setTerminate_id(id);
+		back += jj.doSave();
+	    }
+	}
+	else{
+	    back = "No job set to termiante ";
+	}
 	return back;
     }
     String setParams(PreparedStatement pstmt){
 	String back = "";
+	int jj=1;
 	if(employee_id.isEmpty()){
 	    getEmployee();
 	}
 	try{
 	    pstmt.setString(1, employee_id);
+	    if(full_name.isEmpty()){
+		getFull_name();
+	    }
 	    pstmt.setString(2, full_name);
-	    pstmt.setString(3, job_ids);
-	    if(job_grade.isEmpty())
-		pstmt.setNull(4, Types.VARCHAR);
-	    else
-		pstmt.setString(4, job_grade);
-	    if(job_step.isEmpty())
+	    pstmt.setString(3, employment_type);
+	    pstmt.setDate(4, new java.sql.Date(dateFormat.parse(last_pay_period_date).getTime()));
+	    if(emp_address.isEmpty())
 		pstmt.setNull(5, Types.VARCHAR);
+	    else	    	    
+		pstmt.setString(5, emp_address);
+	    if(emp_city.isEmpty())
+		pstmt.setNull(6, Types.VARCHAR);
 	    else	    
-		pstmt.setString(5, job_step);
-	    pstmt.setString(6, supervisor_id);
-	    if(supervisor_phone.isEmpty())
+		pstmt.setString(6, emp_city);
+	    if(emp_state.isEmpty())
 		pstmt.setNull(7, Types.VARCHAR);
 	    else
-		pstmt.setString(7, supervisor_phone);
-	    pstmt.setString(8, employment_type);
-	    if(date_of_hire.isEmpty())
-		pstmt.setNull(9, Types.DATE);
-	    else{
-		pstmt.setDate(9, new java.sql.Date(dateFormat.parse(date_of_hire).getTime()));	
+		pstmt.setString(7, emp_state);
+	    if(emp_zip.isEmpty())
+		pstmt.setNull(8, Types.VARCHAR);
+	    else	    
+		pstmt.setString(8, emp_zip);
+	    if(emp_phone.isEmpty())
+		pstmt.setNull(9, Types.VARCHAR);
+	    else
+		pstmt.setString(9, emp_phone);
+	    if(emp_alt_phone.isEmpty())
+		pstmt.setNull(10, Types.VARCHAR);
+	    else
+		pstmt.setString(10, emp_alt_phone);
+	    if(date_of_birth.isEmpty()){
+		pstmt.setNull(11, Types.DATE);
 	    }
-	    pstmt.setDate(10, new java.sql.Date(dateFormat.parse(last_pay_period_date).getTime()));
-	    if(group_id.isEmpty()){
-		pstmt.setNull(11, Types.VARCHAR);		
-	    }
-	    else{
-		pstmt.setString(11, group_id);		
-	    }
-	    if(department_id.isEmpty())
+	    else
+		pstmt.setDate(11, new java.sql.Date(dateFormat.parse(date_of_birth).getTime()));	    
+	    if(personal_email.isEmpty())
 		pstmt.setNull(12, Types.VARCHAR);
 	    else	    
-		pstmt.setString(12, department_id);
-	    if(emp_address.isEmpty())
+		pstmt.setString(12, personal_email);
+	    if(email.isEmpty())
 		pstmt.setNull(13, Types.VARCHAR);
-	    else	    	    
-		pstmt.setString(13, emp_address);
-	    if(emp_city.isEmpty())
+	    else
+		pstmt.setString(13, email);
+	    if(email_account_action.isEmpty())
 		pstmt.setNull(14, Types.VARCHAR);
-	    else	    
-		pstmt.setString(14, emp_city);
-	    if(emp_state.isEmpty())
+	    else
+		pstmt.setString(14, email_account_action);
+	    if(forward_emails.isEmpty())
 		pstmt.setNull(15, Types.VARCHAR);
 	    else
-		pstmt.setString(15, emp_state);
-	    if(emp_zip.isEmpty())
-		pstmt.setNull(16, Types.VARCHAR);
-	    else	    
-		pstmt.setString(16, emp_zip);
-	    if(emp_phone.isEmpty())
-		pstmt.setNull(17, Types.VARCHAR);
+		pstmt.setString(15, forward_emails);
+	    if(forward_days_cnt.isEmpty())
+		pstmt.setNull(16, Types.INTEGER);
 	    else
-		pstmt.setString(17, emp_phone);
-	    if(emp_alt_phone.isEmpty())
+		pstmt.setString(16, forward_days_cnt);
+	    if(drive_action.isEmpty())
+		pstmt.setNull(17, Types.VARCHAR);
+	    else	    
+		pstmt.setString(17, drive_action);
+	    if(drive_to_person_email.isEmpty())
 		pstmt.setNull(18, Types.VARCHAR);
 	    else
-		pstmt.setString(18, emp_alt_phone);
-	    if(last_day_of_work.isEmpty())
-		pstmt.setNull(19, Types.DATE);
-	    else {
-		pstmt.setDate(19, new java.sql.Date(dateFormat.parse(last_day_of_work).getTime()));		
-	    }
-	    if(date_of_birth.isEmpty())
-		pstmt.setNull(20, Types.DATE);
-	    else{
-		pstmt.setDate(20, new java.sql.Date(dateFormat.parse(date_of_birth).getTime()));
-	    }
-	    if(personal_email.isEmpty())
-		pstmt.setNull(21, Types.VARCHAR);
+		pstmt.setString(18, drive_to_person_email);
+	    if(drive_to_shared_emails.isEmpty())
+		pstmt.setNull(19, Types.VARCHAR);
 	    else	    
-		pstmt.setString(21, personal_email);
-	    if(email.isEmpty())
+		pstmt.setString(19, drive_to_shared_emails);
+	    if(calendar_action.isEmpty())
+		pstmt.setNull(20, Types.VARCHAR);
+	    else	    
+		pstmt.setString(20, calendar_action);
+	    if(calendar_to_email.isEmpty())
+		pstmt.setNull(21, Types.VARCHAR);
+	    else
+		pstmt.setString(21, calendar_to_email);
+	    if(zoom_action.isEmpty())
 		pstmt.setNull(22, Types.VARCHAR);
 	    else
-		pstmt.setString(22, email);
-	    if(email_account_action.isEmpty())
-		pstmt.setNull(23, Types.VARCHAR);
-	    else
-		pstmt.setString(23, email_account_action);
-	    if(forward_emails.isEmpty())
-		pstmt.setNull(24, Types.VARCHAR);
-	    else
-		pstmt.setString(24, forward_emails);
-	    if(forward_days_cnt.isEmpty())
-		pstmt.setNull(25, Types.INTEGER);
-	    else
-		pstmt.setString(25, forward_days_cnt);
-	    if(drive_action.isEmpty())
-		pstmt.setNull(26, Types.VARCHAR);
-	    else	    
-		pstmt.setString(26, drive_action);
-	    if(drive_to_person_email.isEmpty())
-		pstmt.setNull(27, Types.VARCHAR);
-	    else
-		pstmt.setString(27, drive_to_person_email);
-	    if(drive_to_shared_emails.isEmpty())
-		pstmt.setNull(28, Types.VARCHAR);
-	    else	    
-		pstmt.setString(28, drive_to_shared_emails);
-	    if(calendar_action.isEmpty())
-		pstmt.setNull(29, Types.VARCHAR);
-	    else	    
-		pstmt.setString(29, calendar_action);
-	    if(calendar_to_email.isEmpty())
-		pstmt.setNull(30, Types.VARCHAR);
-	    else
-		pstmt.setString(30, calendar_to_email);
-	    if(zoom_action.isEmpty())
-		pstmt.setNull(31, Types.VARCHAR);
-	    else
-		pstmt.setString(31, zoom_action);
+		pstmt.setString(22, zoom_action);
 	    if(zoom_to_email.isEmpty())
-		pstmt.setNull(32, Types.VARCHAR);
+		pstmt.setNull(23, Types.VARCHAR);
 	    else	    
-		pstmt.setString(32, zoom_to_email);
-	    if(badge_returned.isEmpty())
-		pstmt.setNull(33, Types.VARCHAR);
-	    else
-		pstmt.setString(33, badge_returned);
-	    pstmt.setInt(34, hours_per_week);
-	    if(pay_rate.isEmpty()){
-		pstmt.setNull(35, Types.VARCHAR);
-	    }
-	    else
-		pstmt.setString(35, pay_rate);
-
-	    pstmt.setDouble(36, pay_period_worked_hrs);
-	    pstmt.setDouble(37, comp_time);
-	    
-	    pstmt.setDouble(38, vac_time);
-	    pstmt.setDouble(39, pto);
+		pstmt.setString(23, zoom_to_email);
+	    pstmt.setDouble(24, comp_time);
+	    pstmt.setDouble(25, vac_time);
+	    pstmt.setDouble(26, pto);
 	    if(remarks.isEmpty())
-		pstmt.setNull(40, Types.VARCHAR);
+		pstmt.setNull(27, Types.VARCHAR);
 	    else	    
-		pstmt.setString(40, remarks);
+		pstmt.setString(27, remarks);
 	    if(submitted_by_id.isEmpty())
-		pstmt.setNull(41, Types.VARCHAR);
+		pstmt.setNull(28, Types.VARCHAR);
 	    else
-		pstmt.setString(41, submitted_by_id);
+		pstmt.setString(28, submitted_by_id);
 	    if(submitted_date.isEmpty())
 		submitted_date = Helper.getToday();
-	    pstmt.setDate(42, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
+	    pstmt.setDate(29, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
+	    if(!id.isEmpty()){
+		pstmt.setString(30,process_status);		
+	    }
 	}catch(Exception ex){
 	    back += ex;
 	}
@@ -1498,39 +1302,52 @@ public class EmpTerminate{
     }
     public String doUpdate(){
 	Connection con = null;
-	PreparedStatement pstmt = null;
+	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
 	String qq = "update emp_terminations set "+
-	    "employee_id=?,full_name=?,job_ids=?,job_grade=?,"+
-	    "job_step=?, supervisor_id=?, supervisor_phone=?, employment_type=?,"+
-	    "date_of_hire=?,"+ // date
+	    "employee_id=?,"+
+	    "full_name=?,"+
+	    "employment_type=?,"+
 	    "last_pay_period_date=?,"+ // date
+	    "emp_address=?,"+
 	    
-	    "group_id=?,department_id=?,emp_address=?,emp_city=?,emp_state=?,"+
-	    "emp_zip=?,emp_phone=?,emp_alt_phone=?,"+
-	    "last_day_of_work=?,"+ // date
-	    "date_of_birth=?,"+// date
-	    
-	    "personal_email=?,email=?,email_account_action=?,forward_emails=?,forward_days_cnt=?,"+
-	    "drive_action=?,drive_to_person_email=?,drive_to_shared_emails=?,calendar_action=?,calendar_to_email=?,"+
+	    "emp_city=?,"+
+	    "emp_state=?,"+
+	    "emp_zip=?,"+
+	    "emp_phone=?,"+
+	    "emp_alt_phone=?,"+
 
-	    "zoom_action=?,zoom_to_email=?,badge_returned=?,hours_per_week=?,pay_rate=?, pay_period_worked_hrs=?,"+
-	    "comp_time=?,vac_time=?,pto=?,remarks=?,submitted_by_id=?,"+
-	    "submitted_date=? "+ // date
-	    " where id = ? "; 
+	    "date_of_birth=?,"+
+	    "personal_email=?,"+
+	    "email=?,"+
+	    "email_account_action=?,"+
+	    "forward_emails=?,"+
+	    
+	    "forward_days_cnt=?,"+
+	    "drive_action=?,"+
+	    "drive_to_person_email=?,"+
+	    "drive_to_shared_emails=?,"+
+	    "calendar_action=?,"+
+	    
+	    "calendar_to_email=?,"+
+	    "zoom_action=?,"+
+	    "zoom_to_email=?,"+
+	    "comp_time=?,"+
+	    "vac_time=?,"+
+	    
+	    "pto=?,"+
+	    "remarks=?,"+
+	    "submitted_by_id=?,"+
+	    "submitted_date=?, "+ // date
+	    "process_status=? "+
+	    
+	    " where id = ? ";
+	String qq2 = "update job_terminations set badge_returned=? where id=?";
 	String back = "";
 	logger.debug(qq);
 	con = UnoConnect.getConnection();				
 	if(con == null){
 	    back = "Could not connect to DB ";
-	    return back;
-	}
-	if(job_ids.isEmpty()){
-	    back = "job(s) not set ";
-	    return back;
-	}
-	if(supervisor_id.isEmpty()){
-	    back = "supervisor not set ";
 	    return back;
 	}
 	if(submitted_by_id.isEmpty()){
@@ -1545,8 +1362,19 @@ public class EmpTerminate{
 	    pstmt = con.prepareStatement(qq);
 	    back = setParams(pstmt);
 	    if(back.isEmpty()){
-		pstmt.setString(43, id);
+		pstmt.setString(31, id);
 		pstmt.executeUpdate();
+	    }
+	    if(badge_returned != null){
+		pstmt2 = con.prepareStatement(qq2);
+		for(String str:badge_returned){
+		    if(str.indexOf("_") > -1){
+			String[] vals = str.split("_");
+			pstmt2.setString(1, vals[1]);
+			pstmt2.setString(2, vals[0]);
+			pstmt2.executeUpdate();
+		    }
+		}
 	    }
 	}
 	catch(Exception ex){
@@ -1554,16 +1382,17 @@ public class EmpTerminate{
 	    logger.error(ex+":"+qq);
 	}
 	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return back;
     }
-    public String changeRecipientInformFlag(){
+    public String changeInformFlagAndCompletedStatus(){
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;	
-	String qq = "update emp_terminations set recipients_informed='y' "+
+	String qq = "update emp_terminations set recipients_informed='y', "+
+	    " process_status='Completed' "+
 	    " where id=?";
 	String back = "";
 	logger.debug(qq);
@@ -1593,24 +1422,44 @@ public class EmpTerminate{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String qq = "select  "+
-	    "id,employee_id,full_name,job_ids,job_grade,"+
-	    "job_step, supervisor_id, supervisor_phone, employment_type,"+
-	    "date_format(date_of_hire,'%m/%d/%Y'),"+ // date
-	    
+	    "id,"+
+	    "employee_id,"+
+	    "full_name,"+
+	    "employment_type,"+
 	    "date_format(last_pay_period_date,'%m/%d/%Y'),"+ // date
-	    "group_id,department_id,emp_address,emp_city,emp_state,"+
 	    
-	    "emp_zip,emp_phone,emp_alt_phone,"+
-	    "date_format(last_day_of_work,'%m/%d/%Y'),"+ // date
-	    "date_format(date_of_birth,'%m/%d/%Y'),"+ // date
+	    "emp_address,"+
+	    "emp_city,"+
+	    "emp_state,"+
+	    "emp_zip,"+
+	    "emp_phone,"+
 	    
-	    "personal_email,email,email_account_action,forward_emails,forward_days_cnt,"+
-	    "drive_action,drive_to_person_email,drive_to_shared_emails,calendar_action,calendar_to_email,"+
-
-	    "zoom_action,zoom_to_email,badge_returned,hours_per_week,pay_rate,pay_period_worked_hrs,"+
-	    "comp_time,vac_time,pto,remarks,submitted_by_id,"+
+	    "emp_alt_phone,"+
+	    "date_format(date_of_birth,'%m/%d/%Y'),"+ // date	    
+	    "personal_email,"+
+	    "email,"+
+	    "email_account_action,"+
+	    
+	    "forward_emails,"+
+	    "forward_days_cnt,"+
+	    "drive_action,"+
+	    "drive_to_person_email,"+
+	    "drive_to_shared_emails,"+
+	    
+	    "calendar_action,"+
+	    "calendar_to_email,"+
+	    "zoom_action,"+
+	    "zoom_to_email,"+
+	    "comp_time,"+
+	    
+	    "vac_time,"+
+	    "pto,"+
+	    "remarks,"+
+	    "submitted_by_id,"+
 	    "date_format(submitted_date,'%m/%d/%Y'), "+ // date
-	    "recipients_informed "+
+	    
+	    "process_status, "+
+	    "recipients_informed "+	    
 	    " from emp_terminations where id =? "; 
 	String back = "";
 	logger.debug(qq);
@@ -1651,31 +1500,17 @@ public class EmpTerminate{
 			rs.getString(21),
 			rs.getString(22),
 			rs.getString(23),
-			rs.getString(24),
-			rs.getString(25),
+			rs.getString(24),			
+			rs.getDouble(25),
 			
-			rs.getString(26),
-			rs.getString(27),
-			rs.getString(28),
+			rs.getDouble(26),
+			rs.getDouble(27),
+			rs.getString(28),			
 			rs.getString(29),
 			rs.getString(30),
-			
-			rs.getString(31),
-			rs.getString(32),
-			rs.getString(33),
-			rs.getString(34),
-			rs.getInt(35),
-			
-			rs.getString(36),
-			rs.getDouble(37),
-			rs.getDouble(38),
-			rs.getDouble(39),
-			rs.getDouble(40),
-			
-			rs.getString(41),
-			rs.getString(42),
-			rs.getString(43),
-			rs.getString(44) != null);
+			rs.getString(32),			
+			rs.getString(31) != null);
+
 	    }
 	}
 	catch(Exception ex){
@@ -1686,6 +1521,19 @@ public class EmpTerminate{
 	    Helper.databaseDisconnect(pstmt, rs);
 	    UnoConnect.databaseDisconnect(con);
 	}
+	if(back.isEmpty()){
+	    back = findJobTerms();
+	}
+	return back;
+    }
+    String findJobTerms(){
+	String back = "";
+	JobTerminateList jtl = new JobTerminateList();
+	jtl.setTerminate_id(id);
+	back = jtl.find();
+	if(back.isEmpty()){
+	    jobTerms = jtl.getJobTerms();
+	}
 	return back;
     }
     /**
@@ -1693,64 +1541,51 @@ public class EmpTerminate{
     id int unsigned not null auto_increment,
     employee_id int unsigned,
     full_name varchar(80),
-    job_ids varchar(80),
-    job_grade varchar(32),
-    
-    job_step varchar(32),
-    supervisor_id int unsigned,
-    supervisor_phone varchar(32),
     employment_type varchar(32),
-    date_of_hire date, 
-    
     last_pay_period_date date,
-    group_id int unsigned,
-    department_id int unsigned,
+
     emp_address varchar(80),
     emp_city varchar(80),
-    
     emp_state varchar(80),
     emp_zip varchar(16),
     emp_phone varchar(24),
-    emp_alt_phone varchar(20),
-    last_day_of_work date,
     
+    emp_alt_phone varchar(20),
     date_of_birth date,
     personal_email varchar(80),
     email varchar(80),
     email_account_action varchar(32),
-    forward_emails varchar(160),
     
+    forward_emails varchar(160),
     forward_days_cnt int,
     drive_action varchar(32),
     drive_to_person_email varchar(80),
     drive_to_shared_emails varchar(160),
-    calendar_action varchar(32),
     
+    calendar_action varchar(32),
     calendar_to_email varchar(80),
     zoom_action varchar(32),
     zoom_to_email varchar(80),
-    badge_returned varchar(32),
-    hours_per_week int,
-
-    pay_rate varchar(64),
-    pay_period_worked_hrs double,
     comp_time double,
+    
     vac_time double,
     pto  double,
-    
     remarks text,
     submitted_by_id int unsigned,
     submitted_date date,
+
+    term_status enum('Started','Ready','Completed'),
     recipients_informed char(1),
     primary key(id),
     foreign key(employee_id) references employees(id),
-    foreign key(group_id) references groups(id),    
-    foreign key(supervisor_id) references employees(id),    
     foreign key(submitted_by_id) references employees(id)
     )engine=InnoDB;
 
+    alter table emp_terminations add process_status enum('Started','Ready','Completed') after submitted_date;
     //
-    alter table emp_terminations add pay_rate varchar(64) after hours_per_week;
+    // add foreign key to term_notifications if emp_terminations is dropped
+    //
+    alter table term_notifications add foreign key(termination_id) references emp_terminations (id);
     
      */
 

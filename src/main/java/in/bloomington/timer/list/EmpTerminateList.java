@@ -87,24 +87,45 @@ public class EmpTerminateList{
 	checkLimitFlag();
 	Connection con = UnoConnect.getConnection();
 	String qq = "select  "+
-	    "id,employee_id,full_name,job_ids,job_grade,"+
-	    "job_step, supervisor_id, supervisor_phone, employment_type,"+
-	    "date_format(date_of_hire,'%m/%d/%Y'),"+ // date
-	    
+	    "id,"+
+	    "employee_id,"+
+	    "full_name,"+
+	    "employment_type,"+
 	    "date_format(last_pay_period_date,'%m/%d/%Y'),"+ // date
-	    "group_id,department_id,emp_address,emp_city,emp_state,"+
 	    
-	    "emp_zip,emp_phone,emp_alt_phone,"+
-	    "date_format(last_day_of_work,'%m/%d/%Y'),"+ // date
-	    "date_format(date_of_birth,'%m/%d/%Y'),"+ // date
+	    "emp_address,"+
+	    "emp_city,"+
+	    "emp_state,"+
+	    "emp_zip,"+
+	    "emp_phone,"+
 	    
-	    "personal_email,email,email_account_action,forward_emails,forward_days_cnt,"+
-	    "drive_action,drive_to_person_email,drive_to_shared_emails,calendar_action,calendar_to_email,"+
-
-	    "zoom_action,zoom_to_email,badge_returned,hours_per_week,pay_rate,pay_period_worked_hrs,"+
-	    "comp_time,vac_time,pto,remarks,submitted_by_id,"+
+	    "emp_alt_phone,"+
+	    "date_format(date_of_birth,'%m/%d/%Y'),"+ // date	    
+	    "personal_email,"+
+	    "email,"+
+	    "email_account_action,"+
+	    
+	    "forward_emails,"+
+	    "forward_days_cnt,"+
+	    "drive_action,"+
+	    "drive_to_person_email,"+
+	    "drive_to_shared_emails,"+
+	    
+	    "calendar_action,"+
+	    "calendar_to_email,"+
+	    "zoom_action,"+
+	    "zoom_to_email,"+
+	    "comp_time,"+
+	    
+	    "vac_time,"+
+	    "pto,"+
+	    "remarks,"+
+	    "submitted_by_id,"+
 	    "date_format(submitted_date,'%m/%d/%Y'), "+ // date
+
+	    "process_status, "+	    
 	    "recipients_informed "+
+
 	    " from emp_terminations "; 				
 	if(con == null){
 	    back = "Could not connect to DB";
@@ -120,14 +141,7 @@ public class EmpTerminateList{
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " last_pay_period_date <= ? ";
 	    }
-	    if(!department_id.isEmpty()){
-		if(!qw.isEmpty()) qw += " and ";
-		qw += " department_id = ? ";		
-	    }
-	    if(!group_id.isEmpty()){
-		if(!qw.isEmpty()) qw += " and ";
-		qw += " group_id = ? ";		
-	    }
+
 	    if(!submitted_by_id.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " submitted_by_id = ? ";		
@@ -162,15 +176,6 @@ public class EmpTerminateList{
 		java.util.Date date_tmp = df.parse(date_to);
 		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 	    }
-	    if(!department_id.isEmpty()){
-		pstmt.setString(jj++, department_id);
-	    }
-	    if(!group_id.isEmpty()){
-		pstmt.setString(jj++, group_id);
-	    }
-	    if(!submitted_by_id.isEmpty()){
-		pstmt.setString(jj++, submitted_by_id);
-	    }
 	    rs = pstmt.executeQuery();
 	    if(terms == null)
 		terms = new ArrayList<>();
@@ -200,35 +205,22 @@ public class EmpTerminateList{
 				     rs.getString(18),
 				     rs.getString(19),
 				     rs.getString(20),
-			
+				     
 				     rs.getString(21),
 				     rs.getString(22),
 				     rs.getString(23),
 				     rs.getString(24),
-				     rs.getString(25),
+				     rs.getDouble(25),
 				     
-				     rs.getString(26),
-				     rs.getString(27),
+				     rs.getDouble(26),
+				     rs.getDouble(27),
 				     rs.getString(28),
 				     rs.getString(29),
 				     rs.getString(30),
 				     
-				     rs.getString(31),
-				     rs.getString(32),
-				     rs.getString(33),
-				     rs.getString(34),
-				     rs.getInt(35),
+				     rs.getString(32),	     
+				     rs.getString(31) != null);
 
-				     rs.getString(36),
-				     rs.getDouble(37),
-				     rs.getDouble(38),
-				     rs.getDouble(39),
-				     rs.getDouble(40),
-				     rs.getString(41),
-				     
-				     rs.getString(42),
-				     rs.getString(43),
-				     rs.getString(44) != null);
 		if(!terms.contains(one))
 		    terms.add(one);
 	    }

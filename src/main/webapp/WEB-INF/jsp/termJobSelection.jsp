@@ -14,10 +14,10 @@
 	    <%@ include file="errors.jsp" %>
 	</s:if>
 	<ul>
-	    <li>Select the last day of pay period </li>
-	    <li>Select the jobs you want to terminate. </li>
+	    <li>Select the last day of pay period last day of work</li>
+	    <li>Add Last Day of Work</li>
+	    <li>Select the jobs you want to terminate. Make sure they end on the same 'Last Day of work'</li>
 	    <li>Click Next to terminate the selected job(s).</li>
-	    <li>If you  want to to do final tremination click on 'Final Termination' to go to the temination form.</li>
 	</ul>
 	<div>
 	    <div class="form-group">
@@ -30,6 +30,11 @@
 		    <s:property value="job" />
 		</div>
 	    </s:if>
+	    <div class="form-group">
+		<label>Last Day of Work</label>
+		<s:textfield name="last_day_of_work" value="%{last_day_of_work}" size="10" maxlength="10" required="required" />(mm/dd/yyyy)
+	    </div>	    
+	</div>	    
 	    <div class="form-group">
 		<label>Last Pay Period Ending Date</label>
 		<s:select name="last_pay_period_date" value="%{last_pay_period_date}" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick End Date" required="required" />
@@ -65,9 +70,6 @@
 	    <div class="button-group">
 		<s:submit name="action" type="button" value="Next" class="button"/>
 	    </div>
-	    <div class="button-group">
-		<s:submit name="action" type="button" value="Final Termination" class="button"/> (all jobs)
-	    </div>	    
 	</s:if>
     </s:form>
 </div>

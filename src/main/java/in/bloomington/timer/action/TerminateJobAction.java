@@ -24,9 +24,9 @@ public class TerminateJobAction extends TopAction{
     //
     String emp_id = "", pay_period_id="",
 	full_name="",
-	department_id="",
+	department_id="", 
 	expire_date="", source="";
-    String last_pay_period_date = "";
+    String last_pay_period_date = "", last_day_of_work = "";
     List<Document> documents = null;
     Employee emp = null;
     EmpTerminate term = null;
@@ -37,6 +37,7 @@ public class TerminateJobAction extends TopAction{
     Group group = null;
     List<JobTask> jobs = null;
     List<PayPeriod> payPeriods = null;
+    List<JobTerminate> jobTerms = null;
     boolean hasMoreThanOneJob = false;
     boolean hasTempJobs = false;
     String terminateTitle = "Employee Termination Wizard";
@@ -73,7 +74,9 @@ public class TerminateJobAction extends TopAction{
 		addError(back);
 	    }
 	}
-	else if(action.equals("Next")){
+	/**
+	else if(action.equals("Next")){ 
+	    
 	    if(hasJobWithBenefits()){
 		if(last_pay_period_date.isEmpty()){
 		    addMessage("Last pay period date is required");
@@ -82,16 +85,24 @@ public class TerminateJobAction extends TopAction{
 		else{
 		    getTerm();
 		    term.setEmployee_id(emp_id);
-		    term.setJob_id(job_id);
-		    term.findSupervisor();
-		    term.findSupervisorPhone(envBean);
+		    //term.setJob_id(job_id);
+		    // term.findSupervisor();
+		    //term.findSupervisorPhone(envBean);
+		    term.setEmployee_id(emp_id);
+		    term.setJob_ids(selected_job_ids);
 		    term.setSubmitted_by(user);
 		    term.setSubmitted_date(Helper.getToday());
 		    term.setLast_pay_period_date(last_pay_period_date);
+		    back = findMatchingJobsInNW();
+		    if(back.isEmpty()){
+			term.setJobTerms(jobTerms);
+		    }
+
 		    back = term.populateOneJob();
 		    if(!back.isEmpty()){
 			addError(back);
 		    }
+
 		    back = term.findEmployeeAddress();
 		    if(!back.isEmpty()){
 			addError(back);
@@ -101,6 +112,7 @@ public class TerminateJobAction extends TopAction{
 			addError(back);
 		    }
 		    term.setAccrualValues();
+		    term.doSave();// process_status = "Started"
 		}
 	    }
 	    else {
@@ -129,51 +141,83 @@ public class TerminateJobAction extends TopAction{
 		}
 	    }
 	}
-	else if(action.startsWith("Final")){
-	    // ToDo
+	*/
+	else if(action.startsWith("Next")){ 
+	    //
 	    if((!job_id.isEmpty() || selected_job_ids!= null) &&
 	       !last_pay_period_date.isEmpty()){
 		getTerm();
+		if(emp_id.isEmpty()){
+		    getJob(); // to get emp_id
+		}
 		term.setEmployee_id(emp_id);
-		term.setJob_id(job_id);
-		term.findAllJobs();
-		term.findSupervisor();
-		term.findSupervisorPhone(envBean);
+		term.setJob_ids(selected_job_ids);
+		// term.findAllJobs();
+		// term.findSupervisor();
+		// term.findSupervisorPhone(envBean);
 		term.setSubmitted_by(user);
 		term.setSubmitted_date(Helper.getToday());
 		term.setLast_pay_period_date(last_pay_period_date);
-		back = term.populateOneJob(); // all jobs
+		back = term.doSave();
 		if(!back.isEmpty()){
 		    addError(back);
 		}
-		back = term.findEmployeeAddress();
+		id = term.getId();
+		back += findMatchingJobsInNW();
+		if(back.isEmpty() && jobTerms.size() > 0){
+		    term.setJobTerms(jobTerms);
+		}
+		back = term.populateOneJob(); 
 		if(!back.isEmpty()){
 		    addError(back);
 		}
-		back = term.findDocumentForInfo();
+		back += term.findEmployeeAddress();
 		if(!back.isEmpty()){
 		    addError(back);
 		}
-		term.setAccrualValues();		
+		if(hasJobWithBenefits()){
+		    back += term.findDocumentForInfo();
+		    if(!back.isEmpty()){
+			addError(back);
+		    }
+		    term.setAccrualValues();
+		}
+		/**
+		term.setProcess_status("Ready");
+		back = term.doUpdate();
+		if(!back.isEmpty()){
+		    addError(back);
+		}
+		*/
 	    }
 	    else{
 		addError("last pay period date not set");
 		ret = "select_jobs";
 		return ret;
 	    }
-	}
+	}	    
 	else if(action.equals("Submit")){ 
 	    if(term != null){
+		back = term.expireSelectedJobs();
+		if(!back.isEmpty()){
+		    addError(back);
+		}		
+		back += term.doTerminate(); // include clean
+		if(!back.isEmpty()){
+		    addError(back);
+		}
 		term.setSubmitted_by(user);
-		back = term.doSave();
+		term.setProcess_status("Ready");
+		back += term.doUpdate();
 		if(!back.isEmpty()){
 		    addError(back);
 		}
 		else {
-		    addMessage("Successfully updated");
+		    addMessage("Saved Successfully");
 		}
 	    }
-	}	
+	}
+	/**
 	else if(action.startsWith("Save")){ //update
 	    if(term != null){
 		term.setSubmitted_by(user);
@@ -186,11 +230,12 @@ public class TerminateJobAction extends TopAction{
 		}
 	    }
 	}
+	*/
 	else if(action.startsWith("Send")){
 	    getTerm();
 	    if(term != null){
 		back = term.doSelect();
-		back = term.doTerminate();
+		// back = term.doTerminate();
 		TermNotification tn = new TermNotification();
 		tn.setTerm(term);
 		tn.setTermination_id(term.getId());
@@ -200,7 +245,7 @@ public class TerminateJobAction extends TopAction{
 		    addError(back);
 		}
 		else {
-		    back = term.changeRecipientInformFlag();
+		    back = term.changeInformFlagAndCompletedStatus();
 		    if(!back.isEmpty()){
 			addError(back);
 		    }
@@ -212,6 +257,40 @@ public class TerminateJobAction extends TopAction{
 	}	
 	return ret;
     }
+
+    String findMatchingJobsInNW(){
+	String back = "";
+	getEmp();
+	if(emp != null){
+	    NWEmployeeJobs nej = new NWEmployeeJobs(envBean,
+						    emp.getId(),
+						    emp.getEmployee_number(),
+						    last_day_of_work,
+						    selected_job_ids);
+	    back = nej.find();
+	    System.err.println(" NW "+back);
+	    List<JobTerminate> ones = nej.findMatchingJobs();
+	    if(ones != null){
+		jobTerms = ones;
+		for(JobTerminate jj:jobTerms){
+		    jj.setTerminate_id(id);
+		    jj.findSupervisor();
+		    jj.findSupervisorInfo(envBean);
+		    jj.setBadge_code(emp.getId_code());
+		    back += jj.doSave();
+		}
+		if(!back.isEmpty()){
+		    System.err.println(" after jobterm save "+back);
+		}
+	    }
+	    else{
+		back = "No job term found ";
+		System.err.println(" no match found ");
+	    }
+	}
+	return back;
+    }
+    
     public EmpTerminate getTerm(){
 	if(term == null){
 	    term = new EmpTerminate();
@@ -305,7 +384,17 @@ public class TerminateJobAction extends TopAction{
 	    String back = one.doSelect();
 	    if(back.isEmpty()){
 		job = one;
+		emp_id = job.getEmployee_id();
 	    }
+	}
+	else if(selected_job_ids != null){
+	    job_id = selected_job_ids[0];
+	    JobTask one = new JobTask(job_id);
+	    String back = one.doSelect();
+	    if(back.isEmpty()){
+		job = one;
+		emp_id = job.getEmployee_id();
+	    }	    
 	}
 	return job;
     }
@@ -386,6 +475,10 @@ public class TerminateJobAction extends TopAction{
 	if(val != null && !val.isEmpty() && !val.equals("-1"))		
 	    last_pay_period_date = val;
     }
+    public void setLast_day_of_work(String val){
+	if(val != null && !val.isEmpty())		
+	    last_day_of_work = val;
+    }    
     public void setSource(String val){
 	if(val != null && !val.isEmpty())		
 	    source = val;
@@ -405,6 +498,7 @@ public class TerminateJobAction extends TopAction{
 	}
 	return payPeriods;
     }
+    /**
     String expireSelectedJobs(String[] jjs){
 	String back = "";
 	for(String j:jjs){
@@ -415,6 +509,8 @@ public class TerminateJobAction extends TopAction{
 	}
 	return back;
     }
+    */
+    /**
     public CleanUp getCleanUp(){
 	cleanUp = new CleanUp();
 	if(hasDocuments()){
@@ -464,7 +560,8 @@ public class TerminateJobAction extends TopAction{
     boolean hasDocuments(){
 	findDocuments();
 	return documents != null && documents.size() > 0;
-    }	   
+    }
+    */
 }
 
 
