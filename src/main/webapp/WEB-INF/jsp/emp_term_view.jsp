@@ -12,62 +12,60 @@
     <table border="1"><caption> Employment Information</caption>
 	<tr><td>Employee</td>
 	    <td><s:property value="term.full_name" /></td>
-	</tr>
-	<tr><td>Employee Type</td>
+	    <td>Employee Type</td>
 	    <td><s:property value="term.employment_type" /></td>
-	    <td>Hours Per Week</td>
-	    <td><s:property value="term.hours_per_week" /></td>
 	</tr>
-	<s:if test="term.employee != null">
-	    <tr><td>New World Employee #:</td>
-		<td><s:property value="term.employee.employee_number" /></td>
-		<td>Badge ID: </td>
-		<td><s:property value="term.employee.id_code" /></td>
-	    </tr>
-	</s:if>	
-	<s:if test ="hasDate_of_birth()">
-	    <tr><td>Date of Birth</td>
-		<td><s:property value="term.date_of_birth" /></td>
-	    </tr>
-	</s:if>
-	<s:if test ="term.hasDate_of_hire()">
-	    <tr>
-		<td>Date of Hire</td>
-		<td><s:property value="term.date_of_hire" /></td> 
-	    </tr>
-	</s:if>	
-	<tr><td>Last Day of Work</td>
-	    <td><s:property value="term.last_day_of_work"/></td>	    
+	<tr><td>New World Employee #:</td>
+	    <td><s:property value="term.employee.employee_number" /></td>
+	    <td>Date of Birth</td>
+	    <td><s:property value="term.date_of_birth" /></td>
+	</tr>
+	<tr>
 	    <td>Last Pay Period Ending</td>
 	    <td><s:property value="term.last_pay_period_date"/></td>
-	</tr>
-	<tr><td>Department</td>
+	    <td>Department</td>
 	    <td><s:property value="term.department" /></td>
-	    <td>Group </td>
-	    <td><s:property value="term.group" /></td>		
-	</tr>
-	<tr><td>Terminating Job Title(s)</td>
-	    <td colspan="3"><s:property value="term.jobTitles" /></td>
 	</tr>
 	<s:if test="term.hasOtherActiveJobs()">
 	    <tr><td>Other Active Job(s)</td>
 		<td colspan="3"><s:property value="term.otherJobTitles" /></td>
 	    </tr>
 	</s:if>
-	<tr><td>Job Grade</td>
-	    <td><s:property value="term.job_grade" /> </td>
-	    <td>Job Step</td>
-	    <td><s:property value="term.job_step" /> </td>
-	</tr>
-	<tr><td>Rate of Pay</td>
-	    <td><s:property value="term.payRate" /> </td>
-	</tr>	
-	<tr><td>Supervisor Name</td>
-	    <td><s:property value="term.supervisor" /> </td>
-	    <td>Supervisor Phone</td>
-	    <td><s:property value="term.supervisor_phone" /> </td>
-	</tr>
     </table>
+    <s:if test="term.hasJobTerms()">
+	<table>
+	    <caption>Terminating Job(s)</caption>
+	    <tr>
+		<th>Job Title</th>
+		<th>Grade</th>
+		<th>Step</th>
+		<th>Pay Rate</th>
+		<th>Weekly Hrs</th>
+		<th>Supervisor</th>
+		<th>supervisor Phone</th>
+		<th>Start Date</th>
+		<th>Last Day Of Work</th>
+		<th>Badge Code</th>
+		<th>Badge Returned</th>
+	    </tr>
+	    <s:iterator var="one" value="term.jobTerms">
+		<tr>
+		    <td><s:property value="job_title" /></td>
+		    <td><s:property value="job_grade" /></td>
+		    <td><s:property value="job_step" /></td>
+		    <td><s:property value="payRate" /></td>
+		    <td><s:property value="weeklyHours" /></td>
+		    <td><s:property value="supervisor" /></td>
+		    <td><s:property value="supervisor_phone" /></td>
+		    <td><s:property value="start_date" /></td>
+		    <td><s:property value="last_day_of_work" /></td>
+		    <td><s:property value="badge_code" /></td>
+		    <td><s:property value='badge_returned' /></td>
+		    </td>
+		</tr>
+	    </s:iterator>
+	</table>
+    </s:if>    
     <table border="1">
 	<caption>Permanent Mailing Address</caption>
 	<tr>
@@ -158,9 +156,6 @@
 	</table>
     </s:if>
     <table border="1" width="70%">	    	
-	<tr><td>Employee ID Badge Returned?</td>
-	    <td><s:property value="term.badge_returned" /></td>
-	</tr>
 	<tr><td>Remarks</td>
 	    <td><s:property value="term.remarks"/>
 	    </td>

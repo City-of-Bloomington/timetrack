@@ -208,40 +208,31 @@ public class TermNotification{
 	    if(!emp_type.equals("temp") && emp_type.indexOf("part") > -1){
 		text += "Regular Full-Time: Yes \n";
 	    }
-	    if(emp_type.indexOf("part") > -1){
-		// text += "Part-Time Hours Per week: "+term.getHours_per_week()+"\n";
-	    }
 	    if(employee != null){
 		text += "New World Employee #: "+employee.getEmployee_number()+"\n";
-		text += "Badge ID: "+employee.getId_code()+"\n";
-	    }
-	    if(term.hasDateOfBirth()){
 		text += "Date of Birth: "+term.getDate_of_birth()+"\n";
 	    }
-	    /**
-	    if(term.hasDateOfHire()){
-		// text += "Date of Hire: "+term.getDate_of_hire()+"\n";
-	    }
-	    */
-	    text += "Last Day of Work: ";// term.getLast_day_of_work()+"\n";
 	    text += "Last Payroll Period: "+term.getLast_pay_period_date()+"\n";
-	    // text += "Department: "+term.getDepartment()+"\n";
+	    text += "Department: "+term.getDepartment()+"\n";
 	    // text += "Terminated job title(s): "+term.getJobTitles()+"\n";
-	    /*
-	      // TODO
-	    if(term.hasJobGrade()){
-		text += "Job Grade: "+term.getJob_grade()+"\n";
+	    List<JobTerminate> jobTerms = term.getJobTerms();
+	    if(jobTerms != null){
+		text += " -- -- -- -- \n";
+		for(JobTerminate one:jobTerms){
+		    text += "Job: "+one.getNwJobTitle()+"\n";
+		    text += "Weekly Hrs: "+one.getWeeklyHours()+"\n";
+		    text += "Job Grade: "+one.getJob_grade()+"\n";
+		    text += "Job Step: "+one.getJob_step()+"\n";
+		    text += "Rate of Pay: "+one.getPayRate()+"\n";
+		    text += "Started Date: "+one.getStart_date()+"\n";
+		    text += "Last day of Work: "+one.getLast_day_of_work()+"\n";
+		    text += "Supervisor: "+one.getSupervisor()+"\n";
+		    text += "Supervisor Phone: "+one.getSupervisor_phone()+"\n";		    text += "Badge Code: "+one.getBadge_code()+"\n";
+		    text += "Badge Code Returned: "+one.getBadge_returned()+"\n"
+;
+		    text += " -- -- -- -- \n";
+		}
 	    }
-	    if(term.hasJobStep()){
-		text += "Job Step: "+term.getJob_step()+"\n";
-	    }
-	    if(!term.getPayRate().isEmpty()){
-		text += "Rate of Pay: "+term.getPayRate()+"\n";
-	    }
-
-	    text += "Supervisor: "+term.getSupervisor()+"\n";
-	    text += "Supervisor Phone Number: "+term.getSupervisor_phone()+"\n";
-	    */	    
 	    if(term.hasEmpAddress()){
 		text += "Address: "+term.getEmp_address()+"\n";
 		text += "City, State Zipcode: "+term.getEmpCityStateZip()+"\n";

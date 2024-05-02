@@ -3,8 +3,6 @@
     
     <s:form action="terminateJobs" id="form_id" method="post">
 	<h1>Job Termination Selection</h1>
-	<input type="hidden" name="job_id" id="job_id"
-	       value="<s:property value='job_id' />"  />
 	<s:if test="hasMessages()">
 	    <s:set var="messages" value="%{messages}" />
 	    <%@ include file="messages.jsp" %>
@@ -19,6 +17,7 @@
 	    <li>Select the jobs you want to terminate. Make sure they end on the same 'Last Day of work'</li>
 	    <li>Click Next to terminate the selected job(s).</li>
 	</ul>
+	<s:hidden name="emp_id" value="%{emp_id}" />	
 	<div>
 	    <div class="form-group">
 		<label>Employee</label>

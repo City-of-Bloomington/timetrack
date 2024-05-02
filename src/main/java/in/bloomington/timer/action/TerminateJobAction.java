@@ -74,77 +74,10 @@ public class TerminateJobAction extends TopAction{
 		addError(back);
 	    }
 	}
-	/**
-	else if(action.equals("Next")){ 
-	    
-	    if(hasJobWithBenefits()){
-		if(last_pay_period_date.isEmpty()){
-		    addMessage("Last pay period date is required");
-		    return "set_expire_date";
-		}
-		else{
-		    getTerm();
-		    term.setEmployee_id(emp_id);
-		    //term.setJob_id(job_id);
-		    // term.findSupervisor();
-		    //term.findSupervisorPhone(envBean);
-		    term.setEmployee_id(emp_id);
-		    term.setJob_ids(selected_job_ids);
-		    term.setSubmitted_by(user);
-		    term.setSubmitted_date(Helper.getToday());
-		    term.setLast_pay_period_date(last_pay_period_date);
-		    back = findMatchingJobsInNW();
-		    if(back.isEmpty()){
-			term.setJobTerms(jobTerms);
-		    }
-
-		    back = term.populateOneJob();
-		    if(!back.isEmpty()){
-			addError(back);
-		    }
-
-		    back = term.findEmployeeAddress();
-		    if(!back.isEmpty()){
-			addError(back);
-		    }
-		    back = term.findDocumentForInfo();
-		    if(!back.isEmpty()){
-			addError(back);
-		    }
-		    term.setAccrualValues();
-		    term.doSave();// process_status = "Started"
-		}
-	    }
-	    else {
-		// termination of one or more jobs but not final
-		if((!job_id.isEmpty() || selected_job_ids!= null) &&
-		   !last_pay_period_date.isEmpty()){
-		    back = expireSelectedJobs(selected_job_ids);
-		    if(hasDocuments()){
-			getCleanUp();
-			back = cleanUp.doClean();
-			if(back.isEmpty()){
-			    addMessage("Cleanup Success");
-			}
-			else{
-			    addError(back);
-			}
-		    }
-		    if(back.isEmpty())
-			addMessage("Termination Success");
-		    ret = "select_jobs";		    
-		}
-		else{
-		    addError("No job selected Or last pay period date not set");
-		    ret = "select_jobs";
-		    return ret;
-		}
-	    }
-	}
-	*/
 	else if(action.startsWith("Next")){ 
 	    //
-	    if((!job_id.isEmpty() || selected_job_ids!= null) &&
+	    if(selected_job_ids != null &&
+	       !last_day_of_work.isEmpty() &&
 	       !last_pay_period_date.isEmpty()){
 		getTerm();
 		if(emp_id.isEmpty()){
@@ -191,17 +124,24 @@ public class TerminateJobAction extends TopAction{
 		*/
 	    }
 	    else{
-		addError("last pay period date not set");
+		if(last_pay_period_date.isEmpty())
+		    addError("last pay period date not set");
+		if(last_day_of_work.isEmpty())
+		    addError("Last day of work not set");
+		if(selected_job_ids == null)
+		    addError("No job selected ");
 		ret = "select_jobs";
+		findAllJobs();
 		return ret;
 	    }
 	}	    
 	else if(action.equals("Submit")){ 
 	    if(term != null){
-		back = term.expireSelectedJobs();
-		if(!back.isEmpty()){
-		    addError(back);
-		}		
+		back = term.findJobTerms();
+		// back = term.expireSelectedJobs();
+		// if(!back.isEmpty()){
+		//   addError(back);
+		// }		
 		back += term.doTerminate(); // include clean
 		if(!back.isEmpty()){
 		    addError(back);
@@ -213,7 +153,7 @@ public class TerminateJobAction extends TopAction{
 		    addError(back);
 		}
 		else {
-		    addMessage("Saved Successfully");
+		    addMessage("Terminated Successfully");
 		}
 	    }
 	}
@@ -339,22 +279,24 @@ public class TerminateJobAction extends TopAction{
     }
     String findAllJobs(){
 	String back = "";
-	if(!job_id.isEmpty()){
+	if(emp_id.isEmpty() && !job_id.isEmpty()){
 	    JobTask job = new JobTask(job_id);
 	    back = job.doSelect();
 	    if(back.isEmpty()){
 		emp_id = job.getEmployee_id();
-		JobTaskList jl = new JobTaskList();
-		jl.setEmployee_id(emp_id);
-		jl.setNotExpired();
-		back = jl.find();
-		if(back.isEmpty()){
-		    List<JobTask> ones = jl.getJobs();
-		    if(ones != null){
-			if(ones.size() > 0){
-			    jobs = ones;
-			    job = ones.get(0);
-			}
+	    }
+	}
+	if(!emp_id.isEmpty()){
+	    JobTaskList jl = new JobTaskList();
+	    jl.setEmployee_id(emp_id);
+	    jl.setNotExpired();
+	    back = jl.find();
+	    if(back.isEmpty()){
+		List<JobTask> ones = jl.getJobs();
+		if(ones != null){
+		    if(ones.size() > 0){
+			jobs = ones;
+			job = ones.get(0);
 		    }
 		}
 	    }
@@ -471,6 +413,9 @@ public class TerminateJobAction extends TopAction{
 	if(val != null && !val.isEmpty())		
 	    emp_id = val;
     }
+    public String getEmp_id(){
+	return emp_id;
+    }
     public void setLast_pay_period_date(String val){
 	if(val != null && !val.isEmpty() && !val.equals("-1"))		
 	    last_pay_period_date = val;
@@ -482,7 +427,13 @@ public class TerminateJobAction extends TopAction{
     public void setSource(String val){
 	if(val != null && !val.isEmpty())		
 	    source = val;
-    }		
+    }
+    public String getLast_day_of_work(){
+	return last_day_of_work;
+    }
+    public String getLast_pay_period_date(){
+	return last_pay_period_date;
+    }
     public List<PayPeriod> getPayPeriods(){
 	if(payPeriods == null){
 	    PayPeriodList tl = new PayPeriodList();
@@ -498,70 +449,7 @@ public class TerminateJobAction extends TopAction{
 	}
 	return payPeriods;
     }
-    /**
-    String expireSelectedJobs(String[] jjs){
-	String back = "";
-	for(String j:jjs){
-	    JobTask one = new JobTask(j);
-	    back = one.doSelect();
-	    one.setExpire_date(last_pay_period_date);
-	    back = one.doUpdate();
-	}
-	return back;
-    }
-    */
-    /**
-    public CleanUp getCleanUp(){
-	cleanUp = new CleanUp();
-	if(hasDocuments()){
-	    cleanUp.setDocuments(documents);
-	}
-	return cleanUp;
-    }
-    void findDocuments(){
-	//
-	findPayPeriodId();
-	if(documents == null
-	   && selected_job_ids != null
-	   && !pay_period_id.isEmpty()){
-	    
-	    for(String jj_id:selected_job_ids){
-		DocumentList dl = new DocumentList();
-		dl.setJob_id(jj_id); // in case one job
-		dl.setPay_period_id(pay_period_id);
-		String back = dl.findForCleanUp();
-		if(back.isEmpty()){
-		    List<Document> ones = dl.getDocuments();
-		    if(ones != null && ones.size() > 0){
-			if(documents == null)
-			    documents = ones;
-			else{
-			    documents.addAll(ones);
-			}
-		    }
-		}
-	    }
-	}
-    }
-    String findPayPeriodId(){
-	String back="";
-	if(pay_period_id.isEmpty()){
-	    PayPeriod pp = new PayPeriod();	
-	    if(pp.findByEndDate(last_pay_period_date)){
-		pay_period_id = pp.getId();
-	    }
-	    else{
-		back = " could not find pay_period_id for "+expire_date;
-	    }
-	}
-	return back;
-    }
-    // when terminating all jobs for an employee
-    boolean hasDocuments(){
-	findDocuments();
-	return documents != null && documents.size() > 0;
-    }
-    */
+
 }
 
 

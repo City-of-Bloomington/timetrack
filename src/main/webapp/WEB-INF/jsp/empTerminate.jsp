@@ -12,6 +12,7 @@
 	<s:hidden name="term.email" value="%{term.email}" />	
 	<s:hidden name="term.employment_type" value="%{term.employment_type}" />
 	<s:hidden name="term.last_pay_period_date" value="%{term.last_pay_period_date}" />
+	<s:hidden name="term.date_of_birth" value="%{term.date_of_birth}" />	
 	<s:if test="term.id != ''">
 	    <h1>Employee Job(s) Termination <s:property value="term.id" /> </h1>
 	</s:if>	    
@@ -58,7 +59,7 @@
 		</tr>
 	    </s:if>
 	    <tr><td>Date of Birth</td>
-		<td><s:textfield name="term.date_of_birth" value="%{term.date_of_birth}" size="10" maxlength="10" /></td> 
+		<td><s:property value="term.date_of_birth" /></td> 
 		<td>Last Pay Period Ending</td>
 		<td><s:property value="term.last_pay_period_date"/></td>
 	    </tr>
@@ -92,8 +93,8 @@
 		    <td><s:property value="last_day_of_work" /></td>
 		    <td><s:property value="badge_code" /></td>
 		    <td><select name="term.badge_returned">
-			<option value="<s:property value='id' />_Yes">Yes</option>
 			<option value="<s:property value='id' />_No">No</option>
+			<option value="<s:property value='id' />_Yes">Yes</option>
 			<option value="<s:property value='id' />_NA">NA</option>
 		    </select>
 		    </td>

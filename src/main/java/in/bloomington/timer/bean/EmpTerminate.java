@@ -490,15 +490,21 @@ public class EmpTerminate{
     }
     String findJobs(){
 	String back = "";
-	if(jobTerms != null){
+	if(jobs == null && jobTerms != null){
 	    for(JobTerminate jt:jobTerms){
-		JobTask one = jt.getJob();
-		if(one != null){
-		    if(job == null)
-			one = job;
-		    if(jobs == null)
-			jobs = new ArrayList<>();
-		    jobs.add(one);
+		JobTask one = new JobTask(jt.getJob_id());
+		back = one.doSelect();
+		if(back.isEmpty()){
+		    if(one != null){
+			if(job == null)
+			    one = job;
+			if(jobs == null)
+			    jobs = new ArrayList<>();
+			jobs.add(one);
+		    }
+		}
+		else{
+		    System.err.println(" back "+back);
 		}
 	    }
 	}
@@ -845,7 +851,6 @@ public class EmpTerminate{
 	    recipients_informed = "y";
     }
     public String expireSelectedJobs(){
-	System.err.println(" expire jobs ");
 	String back = "";
 	if(jobTerms != null && jobTerms.size() > 0){
 	    for(JobTerminate jj:jobTerms){
@@ -894,18 +899,9 @@ public class EmpTerminate{
 	    back = " last pay period date not set ";
 	    return back;
 	}
+	expireSelectedJobs();
 	findJobs();
-	System.err.println(" after get jobs ");
 	if(jobs != null && jobs.size() > 0){
-	    for(JobTask one:jobs){
-		if(one != null){
-		    if(job == null)
-			job = one; // we need one for next action
-		    one.setExpire_date(last_pay_period_date);
-		    System.err.println(" terminate job one at a time ");
-		    back += one.doTerminate();
-		}
-	    }
 	    if(jobs.size() == 1){
 		emp = job.getEmployee();
 		if(emp != null && emp.isGroupManager()){
@@ -915,6 +911,7 @@ public class EmpTerminate{
 			back += one.doUpdate();
 		    }
 		}
+		/**
 		if(emp.hasDepartments()){
 		       // we are keeping the dept info for now since
 		       // some employees come back such as seasonal
@@ -925,57 +922,19 @@ public class EmpTerminate{
 		    // back += one.doUpdate();
 		    //}
 		}
-		System.err.println(" before cleanup ");		
-		if(hasDocuments()){
-		    CleanUp cleanUp = new CleanUp();
-		    cleanUp.setDocuments(documents);
-		    String msg = cleanUp.doClean();
-		    if(msg.isEmpty()){
-			back += " clean up problem "+msg;
-		    }
+		*/
+	    }
+	    if(hasDocuments()){
+		CleanUp cleanUp = new CleanUp();
+		cleanUp.setDocuments(documents);
+		String msg = cleanUp.doClean();
+		if(!msg.isEmpty()){
+		    back += " clean up problem "+msg;
 		}
 	    }
 	}
 	return back;
     }
-    /**
-    void findDocuments(){
-	//
-
-	if(!last_pay_period_date.isEmpty()){
-	    PayPeriod pp = new PayPeriod();
-	    if(pp.findByEndDate(last_pay_period_date)){
-		pay_period_id = pp.getId();
-	    }
-	    else{
-		System.err.println(" could not find pay_period_id for "+last_pay_period_date);
-	    }
-	}
-	if(documents == null
-	   && jobs != null
-	   && !pay_period_id.isEmpty()){
-	    for(JobTask one:jobs){
-		DocumentList dl = new DocumentList();
-		dl.setPay_period_id(pay_period_id);
-		dl.setJob_id(one.getId());
-		String back = dl.findForCleanUp();
-		if(back.isEmpty()){
-		    List<Document> ones = dl.getDocuments();
-		    if(ones != null && ones.size() > 0){
-			if(documents == null)
-			    documents = ones;
-			else{
-			    for(Document doc:ones){
-				documents.add(doc);
-			    }
-			}
-		    }
-		}
-	    }
-	}
-    }
-    */
-    
     boolean hasDocuments(){
 	findDocuments();
 	return documents != null && documents.size() > 0;
@@ -1193,6 +1152,8 @@ public class EmpTerminate{
 	if(employee_id.isEmpty()){
 	    getEmployee();
 	}
+	if(employment_type.isEmpty())
+	    getEmployment_type();
 	try{
 	    pstmt.setString(1, employee_id);
 	    if(full_name.isEmpty()){
@@ -1526,7 +1487,7 @@ public class EmpTerminate{
 	}
 	return back;
     }
-    String findJobTerms(){
+    public String findJobTerms(){
 	String back = "";
 	JobTerminateList jtl = new JobTerminateList();
 	jtl.setTerminate_id(id);

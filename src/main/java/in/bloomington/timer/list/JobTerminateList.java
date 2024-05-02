@@ -51,7 +51,7 @@ public class JobTerminateList{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
-	String qq = "select  "+
+	String qq = "select  t.id,"+
 	    "t.terminate_id,"+
 	    "t.job_id,"+
 	    "t.job_grade,"+
@@ -102,7 +102,7 @@ public class JobTerminateList{
 	    if(!qw.isEmpty()){
 		qq += " where "+qw;
 	    }
-	    qq += " order by id desc ";
+	    qq += " order by t.id desc ";
 	    if(set_limit)
 		qq += " limit 10 ";
 	    logger.debug(qq);

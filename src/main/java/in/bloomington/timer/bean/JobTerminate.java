@@ -321,6 +321,9 @@ public class JobTerminate{
 		job = one;
 		emp = job.getEmployee();
 	    }
+	    else{
+		System.err.println(" find job error "+back);
+	    }
 	}
 	return job;
     }
@@ -708,7 +711,7 @@ public class JobTerminate{
 	    " join positions p on p.id = j.position_id "+
 	    " left join employees e on e.id=j.employee_id "+	    
 	    " left join employees e2 on e2.id=t.supervisor_id "+
-	    " where id =? "; 
+	    " where t.id =? "; 
 	String back = "";
 	logger.debug(qq);
 	con = UnoConnect.getConnection();				
