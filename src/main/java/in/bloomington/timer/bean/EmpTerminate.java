@@ -52,6 +52,7 @@ public class EmpTerminate{
 	zoom_action="", // Close, Transfer to
 	zoom_to_email="";
     String[] badge_returned = null; //NA, Yes, No
+    String[] start_date = null;
     double comp_time=0, vac_time=0, pto=0;
     String remarks="",submitted_by_id ="", submitted_date="";
     String other_job_titles = "";
@@ -303,11 +304,7 @@ public class EmpTerminate{
     public String getDrive_action(){
 	return drive_action;
     }
-    /**
-    public String getBadge_returned(){
-	return badge_returned;
-    }
-    */
+
     
     public String getDrive_to_person_email(){
 	return drive_to_person_email;
@@ -445,20 +442,14 @@ public class EmpTerminate{
 	if(val != null)
 	    id = val;
     }
-    public void setBadge_returned(String[] vals){
+    public void setStart_date(String[] vals){
 	if(vals != null){
-	    badge_returned = vals;
+	    start_date = vals;
 	}
-    }
+    }    
     public String toString(){
 	return id;
     }
-    /**
-    public void setLast_day_of_work(String val){
-	if(val != null)
-	    last_day_of_work = val;
-    }
-    */
     public boolean isGroupManager(){
 	return groupManagers != null && groupManagers.size() > 0;
     }
@@ -1041,7 +1032,7 @@ public class EmpTerminate{
 	return recipients_informed.isEmpty();
     }
     public boolean isCompleted(){
-	return !recipients_informed.isEmpty();
+	return !recipients_informed.isEmpty() || process_status.equals("Completed");
     }    
     // needed for profile
     void findBenefitGroups(){
@@ -1263,7 +1254,7 @@ public class EmpTerminate{
     }
     public String doUpdate(){
 	Connection con = null;
-	PreparedStatement pstmt = null, pstmt2=null;
+	PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 	ResultSet rs = null;
 	String qq = "update emp_terminations set "+
 	    "employee_id=?,"+
@@ -1304,6 +1295,7 @@ public class EmpTerminate{
 	    
 	    " where id = ? ";
 	String qq2 = "update job_terminations set badge_returned=? where id=?";
+	String qq3 = "update job_terminations set start_date=? where id=?";	
 	String back = "";
 	logger.debug(qq);
 	con = UnoConnect.getConnection();				
@@ -1337,13 +1329,24 @@ public class EmpTerminate{
 		    }
 		}
 	    }
+	    if(start_date != null){
+		pstmt3 = con.prepareStatement(qq3);
+		for(String str:start_date){
+		    if(str.indexOf("_") > -1){
+			String[] vals = str.split("_");
+			pstmt3.setString(1, vals[1]);
+			pstmt3.setString(2, vals[0]);
+			pstmt3.executeUpdate();
+		    }
+		}
+	    }	    
 	}
 	catch(Exception ex){
 	    back += ex;
 	    logger.error(ex+":"+qq);
 	}
 	finally{
-	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3);
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return back;
@@ -1469,8 +1472,8 @@ public class EmpTerminate{
 			rs.getString(28),			
 			rs.getString(29),
 			rs.getString(30),
-			rs.getString(32),			
-			rs.getString(31) != null);
+			rs.getString(31),			
+			rs.getString(32) != null);
 
 	    }
 	}

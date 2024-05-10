@@ -256,30 +256,83 @@ public class NWEmployeeJobs{
 4 ChangedUserId
 5 ChangedDate
 6 GradeType
-
+//
+// HR.HRReport_EmployeePayRateReport
+// output
+//
+       1 OrgStructureID
+       2 DepartmentCode
+       3 DepartmentDescription
+       4 EmployeeID
+       5 EmployeeNumber
+       6 EmployeeName
+       7 PrimaryFlag
+       8 GradeType
+       9 CurrentRate
+       10 GradeCode
+       11 StepCode
+       12 GradeStepDesc
+       13 AnnualSalary
+       14 ProjectedRate
+       15 ProjectedAnnualSalary
+       16 LongevityHourly
+       17 CertificationHourly
+       18 SpecialAssignmentHourly
+       19 BaseAnnual
+       20 LongevityAnnual
+       21 CertificationAnnual
+       22 SpecialAssignmentAnnual
+       23 AnnualHours
+       24 NumberofPayment
+       25 CycleHours
        
 
      */
+
+    
     public  String find3(){
 	//
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String msg="", back="";
+	CallableStatement cs = null;
 	// using current date
 	/*
-	  String qq = "select p.JobTitle, e.EmployeeNumber, p.* "+
-	  " from hr.vwEmployeeJobWithPosition p, "+
-	  " hr.employee e "+
-	  " where e.EmployeeId = p.EmployeeID "+
-	  " and getdate() between EffectiveDate and EffectiveEndDate "+
-	  " and getdate() between PositionDetailESD and PositionDetailEED "+
-	  " and e.EmployeeNumber = ? "+
-	  " order by e.employeenumber ";
+        exec HR.HRReport_EmployeePayRateReport
+	@EffectiveDate=NULL,
+	@ProjectedIncrease=NULL,
+	@EmployeeID=NULL,
+	@strOrgStructureID=NULL,
+	@strxGroupHeaderID=NULL,
+	@strPayTypeID=NULL,
+	@RoundDecimals=2,
+	@ProposedRate=0,
+	@IncludeLongevity=1,
+	@IncludeSP=1,
+	@IncludeCertification=1,
+	@UserID=3,
+	@PrimaryOnly=0;
 	*/
-	String qq = "select g.* "+
-	    " from   hr.Grade g  ";
+	/**
+        String qq = "exec HR.HRReport_EmployeePayRateReport "+
+	    "@EffectiveDate=NULL,"+
+	    "@ProjectedIncrease=NULL,"+
+	    "@EmployeeID=NULL,"+
+	    "@strOrgStructureID=NULL,"+
+	    "@strxGroupHeaderID=NULL,"+
+	    "@strPayTypeID=NULL,"+
+	    "@RoundDecimals=2,"+
+	    "@ProposedRate=0,"+
+	    "@IncludeLongevity=1,"+
+	    "@IncludeSP=1,"+
+	    "@IncludeCertification=1,"+
+	    "@UserID=3,"+
+	    "@PrimaryOnly=0;";
+	*/
 	con = SingleConnect.getNwConnection();
+	String qq =
+	    "{CALL HR.HRReport_EmployeePayRateReport(null,null,?,null,null,null,2,0,1,1,1,3,0)}";
 	if(con == null){
 	    msg = " Could not connect to DB ";
 	    logger.error(msg);
@@ -287,19 +340,27 @@ public class NWEmployeeJobs{
 	}
 	try{
 	    if(debug)
-		logger.debug(qq);
-	    pstmt = con.prepareStatement(qq);
-	    rs = pstmt.executeQuery();
+		logger.debug(qq);	    
+	    cs = con.prepareCall(qq);
+	    cs.setString(1,"6561");
+	    cs.executeQuery();
+	    rs = cs.getResultSet();	    
+	    /*
 	    ResultSetMetaData rsmd = rs.getMetaData();
 	    int columnCount = rsmd.getColumnCount();
 	    for (int i = 1; i <= columnCount; i++ ) {
 		String name = rsmd.getColumnName(i);
 		System.err.println(i+" "+name);
 	    }
+	    */
 	    while(rs.next()){
-		String gradeId = rs.getString(1);
-		String gradeCode = rs.getString(3);
-		System.err.println(gradeId+" "+gradeCode);
+		String emp_id = rs.getString(4);
+		String emp_num = rs.getString(5);
+		String emp_name = rs.getString(6);
+		String cr_rate = rs.getString(9);
+		String e_grade = rs.getString(10);
+		String e_g_step = rs.getString(12);
+		System.err.println(emp_id+" "+emp_name+" "+emp_num+" "+cr_rate+", "+e_grade+", "+e_g_step);
 	    }
 
 	}
@@ -482,6 +543,24 @@ public class NWEmployeeJobs{
        25 CycleHours
 
 
+        exec HR.HRReport_EmployeePayRateReport
+	@EffectiveDate=NULL,
+	@ProjectedIncrease=NULL,
+	@EmployeeID=NULL,
+	@strOrgStructureID=NULL,
+	@strxGroupHeaderID=NULL,
+	@strPayTypeID=NULL,
+	@RoundDecimals=2,
+	@ProposedRate=0,
+	@IncludeLongevity=1,
+	@IncludeSP=1,
+	@IncludeCertification=1,
+	@UserID=3,
+	@PrimaryOnly=0;
+
+
+	
+       
     */
 
 }

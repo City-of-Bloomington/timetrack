@@ -38,11 +38,13 @@
 	    <li>Please use the tab key to navigate through the form </li>
 	    <li>Do not hit Enter until you are completely finished, or the form will be submitted.</li>
 	    <li>After you enter the employee related data, please click on 'Submit'.</li>
-	    <li>If 'Submint' is successful, click on 'Send Notification' HR and ITS will receive an email to take additional actions </li>
+	    <li>If 'Submit' is successful, click on 'Send Notification' HR and ITS will receive emails to take additional actions </li>
 	</ul>
 	<p><strong>Attention:</strong></p>
 	<ul>
 	    <li>Please fill out the form completely. Failure to do so may cause unnecessary delays in the termination process!</li>
+	    <li>If you did any change to the job(s) below click on the refresh button below to see the changes.</li>
+
 	</ul>
 		
 	<table border="1"><caption> Employment Information</caption>
@@ -79,6 +81,7 @@
 		    <th>Last Day Of Work</th>
 		    <th>Badge Code</th>
 		    <th>Badge Returned</th>
+		    <th>Edit</th>
 		</tr>
 		<s:iterator var="one" value="term.jobTerms">
 		    <tr>
@@ -92,11 +95,11 @@
 		    <td><s:property value="start_date" /></td>
 		    <td><s:property value="last_day_of_work" /></td>
 		    <td><s:property value="badge_code" /></td>
-		    <td><select name="term.badge_returned">
-			<option value="<s:property value='id' />_No">No</option>
-			<option value="<s:property value='id' />_Yes">Yes</option>
-			<option value="<s:property value='id' />_NA">NA</option>
-		    </select>
+		    <td><s:property value='badge_returned' /></td>
+		    <td>
+			<input name="action" 
+			       type="button" value="Edit" 
+			        onclick="window.open('<s:property value='#application.url'/>JobTermEdit?id=<s:property value='id' />&opener=terminateJobs.action','Edit Job','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,top=300,left=400,resizable=1,width=400,height=600');return false;" />
 		    </td>
 		    </tr>
 		</s:iterator>
@@ -198,6 +201,7 @@
 	<div class="button-group">
 	    <s:if test="term.isStarted()">
 		<s:submit name="action" type="button" value="Submit" class="button"/>
+		<a href="<s:property value='#application.url' />terminateJobs.action?id=<s:property value='term.id' />" class="button"> Refresh </a>
 	    </s:if>	    
 	    <s:elseif test="term.isReady()">	    
 		<s:submit name="action" type="button" value="Send Notification" class="button"/>		

@@ -25,7 +25,7 @@ public class JobTerminate{
     String job_grade="", job_step="", supervisor_id="", supervisor_phone="";
     String start_date="", last_day_of_work="", weekly_hours="";
     
-    String badge_code="", badge_returned=""; //NA, Yes, No
+    String badge_code="", badge_returned="No"; //NA, Yes, No
     String pay_rate = "", nw_job_title="";
     //
     // derived from join

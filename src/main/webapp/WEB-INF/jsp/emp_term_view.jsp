@@ -61,7 +61,6 @@
 		    <td><s:property value="last_day_of_work" /></td>
 		    <td><s:property value="badge_code" /></td>
 		    <td><s:property value='badge_returned' /></td>
-		    </td>
 		</tr>
 	    </s:iterator>
 	</table>

@@ -52,7 +52,23 @@ public class TerminateJobAction extends TopAction{
 		    addError(back);
 		}
 		else{
-		    ret = "view";
+		    if(!term.isStarted()){
+			System.err.println(" ret view ");
+			ret = "view";
+		    }
+		    else{
+			back += term.findEmployeeAddress();
+			if(!back.isEmpty()){
+			    addError(back);
+			}
+			if(hasJobWithBenefits()){
+			    back += term.findDocumentForInfo();
+			    if(!back.isEmpty()){
+				addError(back);
+			    }
+			    term.setAccrualValues();
+			}
+		    }
 		}
 	    }
 	    else{
@@ -65,13 +81,6 @@ public class TerminateJobAction extends TopAction{
 		else { // one job
 		    ret = "set_expire_date";
 		}
-	    }
-	}
-	else if(action.equals("Edit")){
-	    term = new EmpTerminate(id);
-	    back = term.doSelect();
-	    if(!back.isEmpty()){
-		addError(back);
 	    }
 	}
 	else if(action.startsWith("Next")){ 
@@ -115,13 +124,6 @@ public class TerminateJobAction extends TopAction{
 		    }
 		    term.setAccrualValues();
 		}
-		/**
-		term.setProcess_status("Ready");
-		back = term.doUpdate();
-		if(!back.isEmpty()){
-		    addError(back);
-		}
-		*/
 	    }
 	    else{
 		if(last_pay_period_date.isEmpty())
@@ -138,11 +140,7 @@ public class TerminateJobAction extends TopAction{
 	else if(action.equals("Submit")){ 
 	    if(term != null){
 		back = term.findJobTerms();
-		// back = term.expireSelectedJobs();
-		// if(!back.isEmpty()){
-		//   addError(back);
-		// }		
-		back += term.doTerminate(); // include clean
+		back += term.doTerminate(); 
 		if(!back.isEmpty()){
 		    addError(back);
 		}
@@ -157,20 +155,6 @@ public class TerminateJobAction extends TopAction{
 		}
 	    }
 	}
-	/**
-	else if(action.startsWith("Save")){ //update
-	    if(term != null){
-		term.setSubmitted_by(user);
-		back = term.doUpdate();
-		if(!back.isEmpty()){
-		    addError(back);
-		}
-		else {
-		    addMessage("Successfully updated");
-		}
-	    }
-	}
-	*/
 	else if(action.startsWith("Send")){
 	    getTerm();
 	    if(term != null){

@@ -27,11 +27,11 @@ public class ReportHrASAAction extends TopAction{
     List<TimeBlock> timeBlocks = null;
     List<WarpEntry> entries = null;
     List<Department> depts = null;
-    HrASAReport report = null;
+    HrASAReport report = null; // changed report name to ACA
     List<SalaryGroup> salaryGroups = null;
     List<Integer> years = null;
     List<WarpEntry> dailyEntries = null;
-    String reportTitle = "ASA Report ";
+    String reportTitle = "ACA Report ";
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
@@ -87,7 +87,7 @@ public class ReportHrASAAction extends TopAction{
     
     public String getReportTitle(){
 	if(report != null){
-	    reportTitle = " ASA Report "+report.getStart_date()+" - "+report.getEnd_date();
+	    reportTitle = " ACA Report "+report.getStart_date()+" - "+report.getEnd_date();
 	}
 	return reportTitle;
     }
