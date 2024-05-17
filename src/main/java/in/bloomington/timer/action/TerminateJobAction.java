@@ -191,25 +191,43 @@ public class TerminateJobAction extends TopAction{
 						    emp.getEmployee_number(),
 						    last_day_of_work,
 						    selected_job_ids);
+
 	    back = nej.find();
-	    System.err.println(" NW "+back);
-	    List<JobTerminate> ones = nej.findMatchingJobs();
-	    if(ones != null){
-		jobTerms = ones;
-		for(JobTerminate jj:jobTerms){
-		    jj.setTerminate_id(id);
-		    jj.findSupervisor();
-		    jj.findSupervisorInfo(envBean);
+	    if(hasJobWithBenefits()){
+		if(nej.hasNwJob()){
+		    JobTerminate jj = nej.updateFoundJob();
 		    jj.setBadge_code(emp.getId_code());
 		    back += jj.doSave();
+		    if(!back.isEmpty()){
+			System.err.println(" after jobterm save "+back);
+		    }
+		    jobTerms = new ArrayList<>();
+		    jobTerms.add(jj);
 		}
-		if(!back.isEmpty()){
-		    System.err.println(" after jobterm save "+back);
+		else{
+		    back = "No job term found ";
+		    System.err.println(" no match found ");
 		}
 	    }
 	    else{
-		back = "No job term found ";
-		System.err.println(" no match found ");
+		List<JobTerminate> ones = nej.findMatchingJobs();
+		if(ones != null){
+		    jobTerms = ones;
+		    for(JobTerminate jj:jobTerms){
+			jj.setTerminate_id(id);
+			// jj.findSupervisor();
+			// jj.findSupervisorInfo(envBean);
+			jj.setBadge_code(emp.getId_code());
+			back += jj.doSave();
+		    }
+		    if(!back.isEmpty()){
+			System.err.println(" after jobterm save "+back);
+		    }
+		}
+		else{
+		    back = "No job term found ";
+		    System.err.println(" no match found ");
+		}
 	    }
 	}
 	return back;

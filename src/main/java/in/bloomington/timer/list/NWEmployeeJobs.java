@@ -18,7 +18,7 @@ import in.bloomington.timer.bean.*;
 
 /**
  * find employee jobs in New World app
- * needed for temp employee
+ * needed for employee job(s) termination
  */
    
 
@@ -31,7 +31,7 @@ public class NWEmployeeJobs{
     PayPeriod payPeriod = null;
     String end_date = null;
     String last_day_of_work = "";
-    String date = "04/17/2024";
+    String date = "05/17/2024";
     String employee_number="2661", employee_id="1635",
 	first_name="", last_name=""; //Jackson Eads
     List<JobTerminate> jobTerms = null;
@@ -142,6 +142,22 @@ public class NWEmployeeJobs{
 		jobs.add(one);
 	    }
 	}
+    }
+    public boolean hasNwJob(){
+       	return
+	    jobs != null && jobs.size() > 0 &&
+	    jobTerms != null && jobTerms.size() > 0;
+    }
+    public JobTerminate updateFoundJob(){
+	JobTask jj = jobs.get(0);
+	JobTerminate jt = jobTerms.get(0);
+	jt.setJob_title(jj.getName().trim());
+	jt.setJob_id(jj.getId());
+	jt.setGroup_id(jj.getGroup_id());
+	jt.setWeeklyHours(""+jj.getWeekly_regular_hours());
+	jt.findSupervisor();
+	jt.findSupervisorInfo(envBean);	    
+	return jt;
     }
     public List<JobTerminate> findMatchingJobs(){
 	if(jobs != null && jobs.size() > 0 &&
@@ -285,13 +301,25 @@ public class NWEmployeeJobs{
        23 AnnualHours
        24 NumberofPayment
        25 CycleHours
-       
+// example output
+Emp Num, Name,Start Date,Hr Rate,Job Title,Grade, Step, Annual Pay, Pay Type
 
-     */
-
-    
-    public  String find3(){
+2661 Eads, Jackson L 2021-05-10 15.750000 FSC-ATT-GF, Class A - ATTENDANT/LABORER I, 1, 16380.00 Hourly
+2661 Eads, Jackson L 2021-05-10 16.150000 FSC-SUP-GF, Parks Class D - Supervisor/Laborer II, 3, 16796.00 Hourly
+2661 Eads, Jackson L 2021-05-10 15.950000 TLSP-LABII-GF, Parks Class D - Supervisor/Laborer II, 1, 16588.00 Hourly
+2661 Eads, Jackson L 2021-05-10 15.950000 WIN-LABII-GF, Parks Class D - Supervisor/Laborer II, 1, 16588.00 Hourly
+2807 Overtoom, Greg 2021-10-04 44.964192 null, Grade 10 - City Job Grade 10, null, 93525.52 Annual
+2784 Wells, Cameron T 2021-08-23 32.780769 null, 602 - Officer 1st Class, 1, 68184.00 Annual
+2188 Deck, Logan M 2019-04-22 23.020000 null, Fire Hourly - Fire Hourly, null, 67219.78 Hourly
+2730 Lasher, Jason 2021-06-14 22.450000 null, 106 - AFSCME-106, 3, 46696.00 Hourly
+    */
+    public String find3(){
+	return find();
+    }
+    public  String find(){
 	//
+	// 2661:Temp,  2807:Full, 2784:Police,3070:fire, 2730:Union
+	// String[] emp_nums = {"2661","2807","2784","2188","2730"};
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
@@ -313,6 +341,32 @@ public class NWEmployeeJobs{
 	@IncludeCertification=1,
 	@UserID=3,
 	@PrimaryOnly=0;
+
+	// second proceduce
+1 EmployeeID
+2 EmployeeNumber
+3 EmployeeName
+4 Department
+5 BenefitGroup
+6 HireDate
+7 EffectiveDate
+8 PrimaryJob
+9 Position
+10 Title
+11 PayGroup
+12 FlsaCode
+13 GradeCode
+14 StepCode
+15 PayType Annual, Hourly
+16 HourlyRate
+17 PayPeriod
+18 Annual
+19 FTE
+20 Project
+21 PositionEntryDate
+
+PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
+	
 	*/
 	/**
         String qq = "exec HR.HRReport_EmployeePayRateReport "+
@@ -332,6 +386,8 @@ public class NWEmployeeJobs{
 	*/
 	con = SingleConnect.getNwConnection();
 	String qq =
+	    "{call dbo.Bloomington_EmployeeGradeStepRateTitle_template(null,?)}";
+	String qq2 =
 	    "{CALL HR.HRReport_EmployeePayRateReport(null,null,?,null,null,null,2,0,1,1,1,3,0)}";
 	if(con == null){
 	    msg = " Could not connect to DB ";
@@ -342,33 +398,99 @@ public class NWEmployeeJobs{
 	    if(debug)
 		logger.debug(qq);	    
 	    cs = con.prepareCall(qq);
-	    cs.setString(1,"6561");
+	    // for(String str:emp_nums){
+	    
+	    cs.setString(1,employee_number);
 	    cs.executeQuery();
-	    rs = cs.getResultSet();	    
-	    /*
-	    ResultSetMetaData rsmd = rs.getMetaData();
-	    int columnCount = rsmd.getColumnCount();
-	    for (int i = 1; i <= columnCount; i++ ) {
-		String name = rsmd.getColumnName(i);
-		System.err.println(i+" "+name);
-	    }
+	    rs = cs.getResultSet();
+	    /**
+	       ResultSetMetaData rsmd = rs.getMetaData();
+	       int columnCount = rsmd.getColumnCount();
+	       for (int i = 1; i <= columnCount; i++ ) {
+	       String name = rsmd.getColumnName(i);
+	       System.err.println(i+" "+name);
+	       }
 	    */
+	    boolean needStep = false;
 	    while(rs.next()){
-		String emp_id = rs.getString(4);
-		String emp_num = rs.getString(5);
-		String emp_name = rs.getString(6);
-		String cr_rate = rs.getString(9);
-		String e_grade = rs.getString(10);
-		String e_g_step = rs.getString(12);
-		System.err.println(emp_id+" "+emp_name+" "+emp_num+" "+cr_rate+", "+e_grade+", "+e_g_step);
+		/**
+		String emp_id = rs.getString(1);
+		String emp_num = rs.getString(2);
+		String emp_name = rs.getString(3);
+		String h_date = rs.getString(6);
+		// String postion = rs.getString(9); // better than job title
+		String p_rate = rs.getString(16);
+		String j_title = rs.getString(9);
+		String e_grade = rs.getString(13);
+		String e_step = rs.getString(14); // null for fire
+		String p_type = rs.getString(15);
+		String p_annual = rs.getString(18);
+		String p_date = rs.getString(21); // position date
+		System.err.println(emp_num+" "+emp_name+" "+j_title+" "+h_date+" "+p_rate+", "+e_grade+", "+e_step+", "+p_annual+" "+p_type);
+		*/
+		String rate = "";
+		String week_hrs = "20";
+		String emp_name = rs.getString(3);		
+		String jobTitle = rs.getString(9);
+		String effect_date = rs.getString(6);
+		String grade = rs.getString(13);
+		String step_code = rs.getString(14);
+		if(step_code == null)
+		    needStep = true;
+		// String week_hrs = rs.getString(4);
+		String hr_rate = rs.getString(16);
+		String annual_rate = rs.getString(18);
+		String p_type = rs.getString(15);
+		String p_date = rs.getString(21);
+		if(p_type != null && p_type.equals("Annual")){
+		    rate = annual_rate;
+		    week_hrs = "40";
+		}
+		else{
+		    if(hr_rate != null && hr_rate.lastIndexOf(".") > -1){
+			rate = hr_rate.substring(0,hr_rate.lastIndexOf(".")+3);
+		    }
+		}
+		if(grade != null && grade.indexOf("- City") > 0){
+		    grade = grade.substring(0, grade.indexOf("- City"));
+		}
+		System.err.println("Emp "+emp_name);
+		System.err.println("job "+jobTitle);
+		System.err.println("date "+effect_date);
+		System.err.println("grade "+grade);
+		System.err.println("step code "+step_code);
+		// System.err.println("Weekly hrs "+week_hrs);
+		System.err.println(" rate "+rate);
+		System.err.println(" position date "+p_date);
+		if(jobTerms == null)
+		    jobTerms = new ArrayList<>();
+		JobTerminate jt = new JobTerminate(jobTitle,grade,step_code,rate,p_date, week_hrs);
+		jt.setLast_day_of_work(last_day_of_work);
+		jobTerms.add(jt);
 	    }
-
+	    if(needStep && jobTerms.size() == 1){
+		logger.debug(qq2);
+		System.err.println(qq2);
+		cs = con.prepareCall(qq2);
+		
+		cs.setString(1,employee_number);
+		cs.executeQuery();
+		rs = cs.getResultSet();
+		if(rs.next()){
+		    String step_code = rs.getString(11);
+		    System.err.println(" step code "+step_code);
+		    if(step_code != null){
+			jobTerms.get(0).setJob_step(step_code);
+		    }
+		}
+	    }
 	}
 	catch(Exception ex){
 	    back += ex;
 	    logger.error(ex+":"+qq);
 	}
 	finally{
+	    Helper.databaseDisconnect(cs, rs);
 	    Helper.databaseDisconnect(pstmt, rs);
 	}
 	return back;
@@ -400,7 +522,7 @@ public class NWEmployeeJobs{
 20 JobEventReasonId
 21 PositionNumber
     */       
-    public  String find(){
+    public  String findOld(){
 	//
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -557,9 +679,12 @@ public class NWEmployeeJobs{
 	@IncludeCertification=1,
 	@UserID=3,
 	@PrimaryOnly=0;
+	
+	   AND (@EmployeeNumber is NULL OR (EMP.EmployeeNumber=@EmployeeNumber))
 
 
 	
+	exec dbo.Bloomington_EmployeeGradeStepRateTitle_template @AsOfDate=NULL,@EmployeeNumber=NULL;
        
     */
 
