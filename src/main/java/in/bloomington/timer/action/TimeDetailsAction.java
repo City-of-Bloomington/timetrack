@@ -34,6 +34,7 @@ public class TimeDetailsAction extends TopAction{
     List<JobTask> jobs = null;
     List<Type> jobTypes = null;
     List<PayPeriod> payPeriods = null;
+    Annuancement annuance = null;
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("timeDetails.action");
@@ -464,7 +465,19 @@ public class TimeDetailsAction extends TopAction{
 	}
 	return jobTypes;
     }
-				
+    void findCurrentAnnuance(){
+	AnnuancementList al = new AnnuancementList();
+	if(al.hasCurrentAnnuance()){
+	    annuance = al.getCurrentAnnuance();
+	}
+    }
+    public boolean hasAnnuance(){
+	findCurrentAnnuance();
+	return annuance != null;
+    }
+    public Annuancement getAnnuance(){
+	return annuance;
+    }
 }
 
 

@@ -22,6 +22,14 @@ function loginTimer() {
 		<s:set var="messages" value="%{messages}" />
 		<%@ include file="messages.jsp" %>
 	    </s:if>
+	    <s:if test="hasAnnuance()">
+		<s:if test="annuance.hasUrl()">
+		    <b> <a href="<s:property value='annuance.annuanceUrl' />"><s:property value="annuance.annuanceText"/></a></b>
+		</s:if>
+		<s:else>
+		    <b><s:property value="annuance.annuanceText"/></b>
+		</s:else>
+	    </s:if>
 	    <s:if test="document.hasDailyBlocks()">
 		<s:set var="dailyBlocks" value="document.dailyBlocks" />
 		<s:set var="dayBlocksMap" value="document.dayBlocksMap" />

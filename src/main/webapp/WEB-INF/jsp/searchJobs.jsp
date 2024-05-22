@@ -85,18 +85,18 @@
 	    <div class="form-group">
 		<label>Active ?</label>
 		<s:radio name="joblst.active_status" value="%{joblst.active_status}" list="#{'-1':'All','Active':'Yes','Inactive':'No'}" />
-			</div>			
+	    </div>			
 			
-			<div class="button-group">
-				<a href="<s:property value='#application.url' />jobTask.action" class="button">New Job</a>
-				<s:submit name="action" type="button" value="Submit" class="button"/>
-			</div>
-		</div>
-	</s:form>
-	<s:if test="hasJobs()">
-		<s:set var="jobTasks" value="jobs" />
-		<s:set var="jobsTitle" value="jobsTitle" />
-		<%@ include file="jobTasks.jsp" %>
-	</s:if>
+	    <div class="button-group">
+		<a href="<s:property value='#application.url' />jobTask.action" class="button">New Job</a>
+		<s:submit name="action" type="button" value="Submit" class="button"/>
+	    </div>
+	</div>
+    </s:form>
+    <s:if test="hasJobs()">
+	<s:set var="jobTasks" value="jobs" />
+	<s:set var="jobsTitle" value="jobsTitle" />
+	<%@ include file="jobTasks.jsp" %>
+    </s:if>
 </div>
 <%@ include file="footer.jsp" %>

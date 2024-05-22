@@ -75,12 +75,12 @@ public class TerminateJobAction extends TopAction{
 		if(!job_id.isEmpty()){
 		    hasTempJobs = !hasJobWithBenefits();
 		}
-		if(hasTempJobs){
-		    ret = "select_jobs";
-		}
-		else { // one job
-		    ret = "set_expire_date";
-		}
+		// if(hasTempJobs){
+		ret = "select_jobs";
+		    //}
+		    // else { // one job
+		    //ret = "set_expire_date";
+		    //}
 	    }
 	}
 	else if(action.startsWith("Next")){ 

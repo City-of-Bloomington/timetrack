@@ -134,6 +134,13 @@
       <result name="error">/WEB-INF/jsp/accrual.jsp</result>
       <result name="success">/WEB-INF/jsp/accrual.jsp</result>
     </action>
+    <action name="annuance" 
+	    class="in.bloomington.timer.action.AnnuancementAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/annuance.jsp</result>		
+      <result name="error">/WEB-INF/jsp/annuance.jsp</result>
+      <result name="success">/WEB-INF/jsp/annuance.jsp</result>
+    </action>    
     <action name="mygroups" 
 	    class="in.bloomington.timer.action.MyGroupsAction" 
 	    method="execute">
