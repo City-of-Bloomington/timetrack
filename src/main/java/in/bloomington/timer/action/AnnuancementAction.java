@@ -21,7 +21,7 @@ public class AnnuancementAction extends TopAction{
     static final long serialVersionUID = 3800L;	
     static Logger logger = LogManager.getLogger(AnnuancementAction.class);
     //
-    String annuancementsTitle = "Annuancements";
+    String annuancementsTitle = "Announcements";
     Annuancement annuance = null;
     List<Annuancement> annuancements = null;
 

@@ -3,10 +3,10 @@
     <s:form action="annuance" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:if test="annuance.id == ''">
-	    <h1>New Annuancement</h1>
+	    <h1>New Announcement</h1>
 	</s:if>
 	<s:else>
-	    <h1>Edit Annuancement: <s:property value="%{annuance.id}" /> </h1>
+	    <h1>Edit Announcement: <s:property value="%{annuance.id}" /> </h1>
 	    <s:hidden name="annuance.id" value="%{annuance.id}" />
 	</s:else>
 	<s:if test="hasMessages()">
@@ -18,9 +18,9 @@
 	    <%@ include file="errors.jsp" %>
 	</s:elseif>
 	<div class="width-one-half">
-	    <p><strong>Note:</strong> Annunacement Text and Expire Date fields are required </p>
+	    <p><strong>Note:</strong> Announcement Text and Expire Date fields are required </p>
 	    <div class="form-group">
-		<label>Annuancement Text*</label>
+		<label>Announcement Text*</label>
 		<s:textfield name="annuance.annuanceText" value="%{annuance.annuanceText}" size="30" maxlength="160" requiredLabel="true" required="true" />
 	    </div>
 	    <div class="form-group">
@@ -29,10 +29,10 @@
 	    </div>
 	    <div class="form-group">
 		<label>Start Date</label>
-		<s:textfield name="annuance.startDate" value="%{annuance.startDate}" size="10" maxlength="10" />(mm/dd/yyyy, The start date of the annuancement to show up)
+		<s:textfield name="annuance.startDate" value="%{annuance.startDate}" size="10" maxlength="10" />(mm/dd/yyyy, The start date of the announcement to show up)
 	    </div>
 	    <div class="form-group">
-		<label>Expire Date*</label>
+		<label>Expire Date/Event Date</label>
 		<s:textfield name="annuance.expireDate" value="%{annuance.expireDate}" size="10" maxlength="10" requiredField="true" required="true" />(mm/dd/yyyy)
 	    </div>
 	    <div>

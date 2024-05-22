@@ -3,8 +3,8 @@
     <thead>
 	<tr>
 	    <th>ID</th>
-	    <th>Annuancement Text</th>
-	    <th>Annuancement Url</th>
+	    <th>Announcement Text</th>
+	    <th>Announcement Url</th>
 	    <th>Start Date</th>
 	    <th>Expire Date</th>
 	</tr>
