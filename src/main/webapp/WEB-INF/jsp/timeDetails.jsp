@@ -71,8 +71,13 @@ function loginTimer() {
 			    </s:else>
 			</s:if>
 			<s:else>
+			    <s:if test="isUserCurrentEmployee() && document.isApproved()">
+				<div>
+				    <a class="button" href="<s:property value='#application.url'/>/requestCancel?document_id=<s:property value='%{document.id}' />">Request Entry Change</a>
+				</div>
+			    </s:if>
 			    <div class="submitted-on">
-				<strong>Submitted on:&nbsp;<s:property value="document.submitTimeAction.action_time" /></strong>
+				<strong>Submitted on:&nbsp;<s:property value="document.submitTimeAction.action_time" />&nbsp;&nbsp;</strong>
 			    </div>
 			</s:else>
 		    </s:if>

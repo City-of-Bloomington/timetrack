@@ -21,6 +21,7 @@ public class TimeActionAction extends TopAction{
     static Logger logger = LogManager.getLogger(TimeActionAction.class);
     //
     TimeAction timeAction = null;
+    List<TimeAction> otherActions = null; 
     String timeActionsTitle = "Time Actions";
     String document_id = "", workflow_id="";
     String source = ""; // where we are coming from
@@ -55,6 +56,14 @@ public class TimeActionAction extends TopAction{
 		    addError(back);
 		}
 		else{ // normally we return to TimeDetails
+		    if(hasOtherActions()){
+			for(TimeAction one:otherActions){
+			    if(!one.getId().equals(timeAction.getId())){
+				one.setCancelled_by(user.getId());
+				back = one.doCancel();
+			    }
+			}
+		    }
 		    addMessage("Cancelled Successfully");
 		    ret = "timeDetails";
 		}
@@ -86,6 +95,25 @@ public class TimeActionAction extends TopAction{
 	    timeAction.setWorkflow_id(workflow_id);
 	}
 	return timeAction;
+    }
+    
+    private boolean hasOtherActions(){
+	if(otherActions == null)
+	    findOtherTimeActions();
+	return otherActions != null && otherActions.size() > 0;
+    }
+    private void findOtherTimeActions(){
+	TimeActionList tal = new TimeActionList();
+	tal.setDocument_id(document_id);
+	tal.setActiveOnly();
+	tal.setApproversAndProcessorsOnly();
+	String back = tal.find();
+	if(back.isEmpty()){
+	    List<TimeAction> ones = tal.getTimeActions();
+	    if(ones != null && ones.size() > 0){
+		otherActions = ones;
+	    }
+	}
     }
     public void setTimeAction(TimeAction val){
 	if(val != null){

@@ -1529,9 +1529,108 @@ insert into  code_reason_conditions values
 (0, 102, 158, 10, null,null,null),
 (0, 102, 158, 11, null,null,null),
 (0, 102, 158, 12, null,null,null);
-
+;;
+    create table annuancements (
+    id int unsigned not null auto_increment,
+    annuance_text varchar(160) not null,
+    annuance_url varchar(160),
+    start_date date,
+    expire_date date,
+    primary key(id)
+    )engine=InnoDB;
 
 ;;
+    create table emp_terminations (
+    id int unsigned not null auto_increment,
+    employee_id int unsigned,
+    full_name varchar(80),
+    employment_type varchar(32),
+    last_pay_period_date date,
+    emp_address varchar(80),
+    emp_city varchar(80),
+    emp_state varchar(80),
+    emp_zip varchar(16),
+    emp_phone varchar(24),
+    emp_alt_phone varchar(20),
+    date_of_birth date,
+    personal_email varchar(80),
+    email varchar(80),
+    email_account_action varchar(32),
+    forward_emails varchar(160),
+    forward_days_cnt int,
+    drive_action varchar(32),
+    drive_to_person_email varchar(80),
+    drive_to_shared_emails varchar(160),
+    calendar_action varchar(32),
+    calendar_to_email varchar(80),
+    zoom_action varchar(32),
+    zoom_to_email varchar(80),
+    comp_time double,
+    vac_time double,
+    pto  double,
+    remarks text,
+    submitted_by_id int unsigned,
+    submitted_date date,
+    term_status enum('Started','Ready','Completed'),
+    recipients_informed char(1),
+    primary key(id),
+    foreign key(employee_id) references employees(id),
+    foreign key(submitted_by_id) references employees(id)
+    )engine=InnoDB;
+    ;;
+    create table term_notifications (
+    id int unsigned not null auto_increment,
+    send_time datetime,
+    sender_id int unsigned,
+    termination_id int unsigned,
+    recipient_emails varchar(256),
+    email_text text,
+    send_error text,
+    primary key(id),
+    foreign key(termination_id) references emp_terminations(id),
+    foreign key(sender_id) references employees(id)
+    )engine=InnoDB;
+    ;;
+    
+    create table job_terminations (
+    id int unsigned not null auto_increment,
+    terminate_id int unsigned,    
+    job_id int unsigned,
+    job_grade varchar(80),
+    job_step varchar(16),
+    pay_rate double,
+    weekly_hours int,
+    supervisor_id int unsigned,
+    supervisor_phone varchar(16),
+    start_date date,
+    last_day_of_work date,
+    badge_code varchar(8),
+    badge_returned varchar(32),
+    nw_job_title varchar(80),
+    primary key(id),
+    foreign key(job_id) references jobs(id),        
+    foreign key(supervisor_id) references employees(id),
+    foreign key(terminate_id) references emp_terminations(id)  
+    )engine=InnoDB;
 ;;
-
+;;
+;;
+       ;; employees, managers and jobs for certain pay period
+       ;;
+       select d.name dept_name,
+       concat_ws(' ',e.last_name,e.first_name) full_name,
+       p.name job_name,       
+       e.employee_number,
+       concat_ws(' ',e2.last_name,e2.first_name) manager_name,
+       e2.employee_number manager_number
+       from jobs j                                                                     join positions p on j.position_id=p.id                                          join employees e on j.employee_id=e.id
+       join time_documents t on t.job_id=j.id
+       join time_actions ta on ta.document_id=t.id
+       join employees e2 on ta.action_by=e2.id 
+       join groups g on g.id = j.group_id
+      join departments d on d.id = g.department_id
+      where t.pay_period_id=689 and ta.workflow_id=3
+      and ta.action_by=e2.id
+      order by dept_name,full_name,job_name
+      into outfile '/var/lib/mysql-files/employee_jobs.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
 

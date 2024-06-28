@@ -294,6 +294,7 @@ public class Document implements Serializable{
 	}
 	return false;
     }
+    // approvers and processors
     void findEditors(){
 	GroupManagerList gml = new GroupManagerList();
 	gml.setApproversAndProcessorsOnly();
@@ -334,7 +335,20 @@ public class Document implements Serializable{
 	    }
 	}
 	return false;
-    }		
+    }
+    public boolean isActionedBy(Employee emp){
+	if(editors == null){
+	    findEditors(); // payroll approvers
+	}
+	if(editors != null){
+	    for(GroupManager one:editors){
+		if(one.getEmployee_id().equals(emp.getId())){
+		    return true;
+		}
+	    }
+	}
+	return false;
+    }	    
     public boolean hasNextActioners(){
 	if(hasLastWorkflow() && nextActioners == null){
 	    getJob();
@@ -438,6 +452,7 @@ public class Document implements Serializable{
 	}
 	return false;
     }
+    
     /**
      * normally Payroll Approve (Process) is the last action 
      */ 

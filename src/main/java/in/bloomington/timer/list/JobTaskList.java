@@ -846,9 +846,24 @@ JobTask one =
 		
     /**
        ;;
-       ;; find employees jobs and group names
+       ;; employees, managers and jobs for certain pay period
        ;;
-       select e.employee_number,                                                       concat_ws(' ',e.last_name,e.first_name) full_name,                              p.name job_name,                                                                g.name group_name                                                               from jobs j                                                                     join positions p on j.position_id=p.id                                          join employees e on j.employee_id=e.id                                          join 'groups' g on g.id = j.group_id                                            where j.inactive is null and e.inactive is null                                 and e.employee_number is not null                                               and j.effective_date < now()                                                    and (j.expire_date > now() or j.expire_date is null)                            order by p.name,e.employee_number                                               into outfile '/var/lib/mysql-files/employee_jobs.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
+       select d.name dept_name,
+       concat_ws(' ',e.last_name,e.first_name) full_name,
+       p.name job_name,       
+       e.employee_number,
+       concat_ws(' ',e2.last_name,e2.first_name) manager_name,
+       e2.employee_number manager_number
+       from jobs j                                                                     join positions p on j.position_id=p.id                                          join employees e on j.employee_id=e.id
+       join time_documents t on t.job_id=j.id
+       join time_actions ta on ta.document_id=t.id
+       join employees e2 on ta.action_by=e2.id 
+       join groups g on g.id = j.group_id
+      join departments d on d.id = g.department_id
+      where t.pay_period_id=689 and ta.workflow_id=3
+      and ta.action_by=e2.id
+      order by dept_name,full_name,job_name
+      into outfile '/var/lib/mysql-files/employee_jobs.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
 
     */
 		

@@ -408,7 +408,9 @@ public class TimeDetailsAction extends TopAction{
 	    //
 	    // we want to know if the user is one of payroll processors
 	    //
-	    boolean ret = document != null && document.isProcesser(user);
+	    boolean ret = document != null &&
+		// (document.isProcesser(user) ||
+		 document.isActionedBy(user);
 	    if(ret){
 		TimeAction lastAction = document.getLastTimeAction();
 		ret =  lastAction != null && lastAction.canBeCancelled();

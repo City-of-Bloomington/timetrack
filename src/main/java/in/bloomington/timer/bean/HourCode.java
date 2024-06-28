@@ -311,7 +311,7 @@ public class HourCode{
 	return reason_required;
     }
     public boolean requireReason(){
-	return reason_required || ((isEarned() || isOvertime()) && record_method.equals("Time"));
+	return reason_required;
     }
     public boolean hasEarnFactor(){
 	return earn_factor > 0;
