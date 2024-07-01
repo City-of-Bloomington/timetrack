@@ -167,6 +167,12 @@ public class TimeAction implements Serializable{
 	}
 	return actioner;
     }
+    public boolean isApproveAction(){
+	return workflow_id.equals("3");
+    }
+    public boolean isProcessAction(){
+	return workflow_id.equals("4");
+    }    
     public Employee getCanceller(){
 	if(canceller == null && !cancelled_by.isEmpty()){
 	    Employee one = new Employee(cancelled_by);
