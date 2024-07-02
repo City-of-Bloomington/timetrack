@@ -24,75 +24,82 @@ public class RequestCancelAction extends TopAction{
     //
     String document_id="";
     Document document = null;
-    RequestCancel request = null;
+    RequestCancel requst = null;
     Employee approver = null;
     Employee processor = null;
     String notification_status = "";
     public String execute(){
+	doPrepare();
 	String ret = SUCCESS;
 	String back = "";
 	if(action.equals("Submit")){
 	    if(user == null)
 		getUser();
-	    getRequest();
-	    request.setRequestBy_id(user.getId());
-	    if(request.hasApprover()){
-		approver = request.getApprover();
+	    getRequst();
+	    requst.setRequestBy_id(user.getId());
+	    if(requst.hasApprover()){
+		approver = requst.getApprover();
 	    }
-	    if(request.hasProcessor()){
-		processor = request.getProcessor();
+	    if(requst.hasProcessor()){
+		processor = requst.getProcessor();
 	    }
 	    back = notifyManagers();
 	    if(back.isEmpty()){
 		notification_status = "Success ";
-		request.setNotificationStatus("Success");
+		requst.setNotificationStatus("Success");
 	    }
 	    else{
 		notification_status = "Failure ";
-		request.setNotificationStatus("Failure");
+		requst.setNotificationStatus("Failure");
 	    }
-	    back = request.doSave();
+	    System.err.println(" saving ");
+	    back = requst.doSave();
 	    if(!back.isEmpty()){
 		addError(back);
 	    }
 	    else{
 		if(notification_status.equals("Success")){
-		    back = "Saved Successfully and the supervisor(s) informed";
+		    back = "Saved successfully, supervisor(s) informed";
 		}
 		addMessage(back);
-		id = request.getId();
+		id = requst.getId();
 	    }
 	}				
 	else{
 	    if(user == null)
 		getUser();
-	    getRequest();
+	    getRequst();
 	    if(!document_id.isEmpty()){
-		request.setDocument_id(document_id);
-		request.setRequestBy_id(user.getId());
+		requst.setDocument_id(document_id);
+		requst.setRequestBy_id(user.getId());
 	    }
 	}
 	return ret;
     }
-    public RequestCancel getRequest(){
-	if(request == null){
-	    request = new RequestCancel();
+    public RequestCancel getRequst(){
+	if(requst == null){
+	    requst = new RequestCancel();
 	}
-	return request;
+	return requst;
     }
-    public void setRequest(RequestCancel val){
+    public void setRequst(RequestCancel val){
 	if(val != null){
-	    request = val;
+	    requst = val;
 	}
     }
     public void setAction2(String val){
 	if(val != null && !val.isEmpty())		
 	    action = val;
     }
+    public void setDocument_id(String val){
+	if(val != null && !val.isEmpty())		
+	    document_id = val;
+    }    
     private String notifyManagers(){
 	String back = "";
 	if(approver != null || processor != null){
-	    if(activeMail){
+	    // if(activeMail){
+	    if(true){
 		String to = "", cc="", email_from="", subject="", message="";
 		getUser();
 		if(user != null){
@@ -100,13 +107,13 @@ public class RequestCancelAction extends TopAction{
 			email_from = user.getEmail();
 		    }
 		    else{
-			email_from = "donotreply@bloomington.in.gov";
+			email_from = "no_reply@bloomington.in.gov";
 		    }
 		}
 		if(approver != null){
 		    to = approver.getFull_name()+"<"+approver.getEmail()+">";
 		}
-		if(processor != null){
+		if(processor != null && approver != null && !approver.equals(processor)){
 		    if(to.isEmpty()){
 			to = processor.getFull_name()+"<"+processor.getEmail()+">";		    }
 		    else{
@@ -114,7 +121,15 @@ public class RequestCancelAction extends TopAction{
 		    }
 		}
 		subject = "Approval cancel request from employee "+user;
-		message = "";
+		message = "The employee "+user.getFull_name()+" requested that your approval for his/her timesheet be cancelled so that an update can be performed regarding certain date(s) and times for the reasons given below;\n";
+
+		message += requst.getRequestReason()+"\n";
+		message += "Here is the related document "+
+		    "<a href=\""+url+"timeDetails.action?document_id="+requst.getDocument_id()+"\">link</a> \n";		
+		message += "If you cancel your approval that means you agree with the change. After the employee changes the related records you need to reapprove the timesheet again. \n"+
+		    "If you do not cancel that means you do not agree and the time records will stay the same. You may contact your employee for further details. \n\n"+
+		    "Thanks\n\nITS\n";
+		System.err.println(message);
 		MailHandle mail =
 		    new MailHandle(mail_host,
 				   to, 
@@ -125,7 +140,7 @@ public class RequestCancelAction extends TopAction{
 				   message,
 				   debug
 				   );
-		back = mail.send();
+		// back = mail.send();
 	    }
 	    else{
 		back = "email activity flag is turned off, if you need to send email this flag need to be turned on in your configuration file";

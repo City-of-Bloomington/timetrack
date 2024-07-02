@@ -26,7 +26,7 @@ public class RequestCancel implements java.io.Serializable{
     Employee requestBy = null;
     Employee approver = null;
     Employee processor = null;
-    
+    List<TimeAction> actions = null;
     //
     public RequestCancel(){
 
@@ -98,7 +98,7 @@ public class RequestCancel implements java.io.Serializable{
 	    id = val;
     }
     public void setRequestReason(String val){
-	if(val != null)
+	if(val != null && !val.trim().isEmpty())
 	    request_reason = val.trim();
     }
     public void setRequestDate(String val){
@@ -140,7 +140,6 @@ public class RequestCancel implements java.io.Serializable{
     }
     private String findActioners(){
 	String back = "";
-	List<TimeAction> actions = null;
 	if(!document_id.isEmpty()){
 	    TimeActionList tal = new TimeActionList();
 	    tal.setDocument_id(document_id);
@@ -248,7 +247,7 @@ public class RequestCancel implements java.io.Serializable{
 	String qq = " insert into cancel_requests values(0,?,?,now(),?,?,?,?)";
 	findActioners();
 	if(request_reason.isEmpty()){
-	    msg = "requst reason is required";
+	    msg = "request reason is required";
 	    return msg;
 	}
 	if(document_id.isEmpty()){

@@ -62,9 +62,17 @@
 	    class="in.bloomington.timer.action.TypeAction" 
 	    method="execute">
       <result name="input">/WEB-INF/jsp/type.jsp</result>		
-			<result name="error">/WEB-INF/jsp/type.jsp</result>
-			<result name="success">/WEB-INF/jsp/type.jsp</result>
+      <result name="error">/WEB-INF/jsp/type.jsp</result>
+      <result name="success">/WEB-INF/jsp/type.jsp</result>
     </action>
+    <action name="requestCancel" 
+	    class="in.bloomington.timer.action.RequestCancelAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/cancel_request.jsp</result>		
+      <result name="error">/WEB-INF/jsp/cancel_request.jsp</result>
+      <result name="success">/WEB-INF/jsp/cancel_request.jsp</result>
+    </action>    
+    
     <action name="nw_emp_jobs"
 	    class="in.bloomington.timer.action.NWEmpJobsAction" 
 	    method="execute">
