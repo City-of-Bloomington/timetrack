@@ -264,6 +264,24 @@ public class TimeDetailsAction extends TopAction{
 	     (document.isPunchClockOnly() || document.isApproved()));
 	return ret;
     }
+    public boolean canUserRequestChange(){
+	return !isThereSimilarRequest() &&
+	    isUserCurrentEmployee() &&
+	    document.isApproved();
+    }
+    private boolean isThereSimilarRequest(){
+	if(document_id.isEmpty()){
+	    getDocument();
+	    document_id = document.getId();
+	}
+	RequestCancelList rcl = new RequestCancelList(document_id);
+	String back = rcl.find();
+	if(back.isEmpty()){
+	    List<RequestCancel> ones = rcl.getRequests();
+	    return ones != null && ones.size() > 0;
+	}
+	return false;
+    }
     public PayPeriod getPayPeriod(){
 	//
 	// if pay period is not set, we look for current one

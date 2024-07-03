@@ -26,6 +26,7 @@ public class RequestCancel implements java.io.Serializable{
     Employee requestBy = null;
     Employee approver = null;
     Employee processor = null;
+    Document document = null;
     List<TimeAction> actions = null;
     //
     public RequestCancel(){
@@ -124,7 +125,17 @@ public class RequestCancel implements java.io.Serializable{
     public void setNotificationStatus(String val){
 	if(val != null)
 	    notification_status = val;
-    }        
+    }
+    public Document getDocument(){
+	if(document == null && !document_id.isEmpty()){
+	    Document one = new Document(document_id);
+	    String back = one.doSelect();
+	    if(back.isEmpty()){
+		document = one;
+	    }
+	}
+	return document;
+    }
     public Employee getRequestBy(){
 	if(requestBy == null && !request_by_id.isEmpty()){
 	    Employee one = new Employee(request_by_id);
@@ -204,7 +215,7 @@ public class RequestCancel implements java.io.Serializable{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq = "select id,document_id,request_reason,date_format(request_date,'%m/%d/%Y %h:%i'),request_by_id,approver_id,processor_id,nofication_status "+
+	String qq = "select id,document_id,request_reason,date_format(request_date,'%m/%d/%Y %h:%i'),request_by_id,approver_id,processor_id,notification_status "+
 	    "from cancel_requests where id=?";
 	con = UnoConnect.getConnection();
 	if(con == null){

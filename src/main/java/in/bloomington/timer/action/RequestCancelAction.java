@@ -98,6 +98,11 @@ public class RequestCancelAction extends TopAction{
     private String notifyManagers(){
 	String back = "";
 	if(approver != null || processor != null){
+	    Document document = requst.getDocument();
+	    PayPeriod payPeriod = null;
+	    if(document != null){
+		payPeriod = document.getPayPeriod();
+	    }
 	    // if(activeMail){
 	    if(true){
 		String to = "", cc="", email_from="", subject="", message="";
@@ -120,15 +125,13 @@ public class RequestCancelAction extends TopAction{
 			cc = processor.getFull_name()+"<"+processor.getEmail()+">";
 		    }
 		}
-		subject = "Approval cancel request from employee "+user;
-		message = "The employee "+user.getFull_name()+" requested that your approval for his/her timesheet be cancelled so that an update can be performed regarding certain date(s) and times for the reasons given below;\n";
 
+		subject = "Cancel Timesheet Approval Request for "+user;
+		
+		message = user.getFull_name()+" has requested cancelling your approval of their "+payPeriod+" timesheet <a href=\""+url+"timeDetails.action?document_id="+requst.getDocument_id()+"\">link</a> so that they can make the following change,\n";
 		message += requst.getRequestReason()+"\n";
-		message += "Here is the related document "+
-		    "<a href=\""+url+"timeDetails.action?document_id="+requst.getDocument_id()+"\">link</a> \n";		
-		message += "If you cancel your approval that means you agree with the change. After the employee changes the related records you need to reapprove the timesheet again. \n"+
-		    "If you do not cancel that means you do not agree and the time records will stay the same. You may contact your employee for further details. \n\n"+
-		    "Thanks\n\nITS\n";
+		message += "Cancelling your approval means you agree with the proposed change. After the employee changes the related records you will be able to review and approve the updated timesheet.\n\n";
+		    message += "Thanks\n\nITS\n";
 		System.err.println(message);
 		MailHandle mail =
 		    new MailHandle(mail_host,
