@@ -202,6 +202,9 @@ public class TermNotification{
 	    employee = term.getEmployee();
 	    
 	    text = "Employee Job(s) Termination \n\n";
+	    if(term.isPartialTermination()){
+		text += "Note: Partial Termination \n\n";
+	    }
 	    text += "Employee: "+term.getFull_name()+"\n";	    
 	    text += "Employment Type: "+term.getEmployment_type()+"\n";
 	    String emp_type = term.getEmployment_type().toLowerCase();

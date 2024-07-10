@@ -40,6 +40,7 @@ public class Document implements Serializable{
     Employee initiater = null;
     Workflow lastWorkflow = null;
     List<TimeAction> timeActions = null;
+    List<TimeAction> validTimeActions = null;
     List<Triplet<String, String, String>> unscheduleds = null;
     //
     Map<JobType, Map<Integer, String>> daily = null;
@@ -238,6 +239,21 @@ public class Document implements Serializable{
 	}
 	return timeActions;
     }
+    public List<TimeAction> getValidTimeActions(){
+	if(validTimeActions == null && !id.isEmpty()){
+	    TimeActionList tal = new TimeActionList(id);
+	    tal.setActiveOnly();
+	    tal.setSortby("a.id desc");
+	    String back = tal.find();
+	    if(back.isEmpty()){
+		List<TimeAction> ones = tal.getTimeActions();
+		if(ones != null && ones.size() > 0){
+		    validTimeActions = ones;
+		}
+	    }
+	}
+	return validTimeActions;
+    }    
     public TimeAction getLastTimeAction(){
 	if(hasTimeBlocks() && lastTimeAcion == null){
 	    getTimeActions();
@@ -441,9 +457,9 @@ public class Document implements Serializable{
 	return false;
     }
     public boolean isApproved(){
-	getTimeActions();
-	if(timeActions != null){
-	    for(TimeAction one:timeActions){ 
+	getValidTimeActions();
+	if(validTimeActions != null){
+	    for(TimeAction one:validTimeActions){ 
 		Workflow wf = one.getWorkflow();
 		if(wf.isApproved()){
 		    return true;

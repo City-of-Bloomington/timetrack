@@ -33,14 +33,16 @@
 		<label>Last Day of Work (mm/dd/yyyy)</label>
 		<div class="date-range-picker">
 		    <div>
-			<s:textfield name="last_day_of_work" value="%{last_day_of_work}" size="10" maxlength="10" cssClass="date" requiredLabel="true" required="true" />
+			<s:textfield name="last_day_of_work" value="%{last_day_of_work}" size="10" maxlength="10" type="date" cssClass="date" requiredLabel="true" required="true" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY"/>
 		    </div>
 		</div>
-	    </div>	    
+	    </div>
+	    <!-- 
 	    <div class="form-group">
 		<label>Last Pay Period Ending Date</label>
 		<s:select name="last_pay_period_date" value="%{last_pay_period_date}" list="payPeriods" listKey="endDate" listValue="endDate" headerKey="-1" headerValue="Pick End Date" required="required" />
-	    </div>	    
+	    </div>
+	    -->
 	</div>
 	<s:if test="hasJobs()">
 	    <table class="width-full">

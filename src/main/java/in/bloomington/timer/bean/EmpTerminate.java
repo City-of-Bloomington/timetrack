@@ -60,6 +60,7 @@ public class EmpTerminate{
     List<DepartmentEmployee> departmentEmployees = null;
     List<GroupManager> groupManagers = null;
     List<JobTask> jobs = null;
+    List<JobTask> otherJobs = null;
     List<JobTerminate> jobTerms = null;
     List<Document> documents = null;
     List<JobTerminate> jobTerminates = null;
@@ -481,26 +482,43 @@ public class EmpTerminate{
     }
     String findJobs(){
 	String back = "";
-	if(jobs == null && jobTerms != null){
-	    for(JobTerminate jt:jobTerms){
-		JobTask one = new JobTask(jt.getJob_id());
-		back = one.doSelect();
-		if(back.isEmpty()){
-		    if(one != null){
-			if(job == null)
-			    one = job;
-			if(jobs == null)
-			    jobs = new ArrayList<>();
-			jobs.add(one);
+	if(jobs == null){
+	    if(jobTerms != null && jobTerms.size() > 0){
+		for(JobTerminate jt:jobTerms){
+		    JobTask one = new JobTask(jt.getJob_id());
+		    back = one.doSelect();
+		    if(back.isEmpty()){
+			if(one != null){
+			    if(job == null)
+				job = one;
+			    if(jobs == null)
+				jobs = new ArrayList<>();
+			    jobs.add(one);
+			}
+		    }
+		    else{
+			System.err.println(" back "+back);
 		    }
 		}
-		else{
-		    System.err.println(" back "+back);
+	    }
+	    else if(job_ids != null){
+		for(String str:job_ids){
+		    JobTask one = new JobTask(str);
+		    back = one.doSelect();
+		    if(back.isEmpty()){
+			if(one != null){
+			    if(job == null)
+				job = one;
+			    if(jobs == null)
+				jobs = new ArrayList<>();
+			    jobs.add(one);
+			}
+		    }
 		}
 	    }
-	}
-	else{
-	    back = "No job term found";
+	    else{
+		back = "No job term found";
+	    }
 	}
 	return back;
     }
@@ -563,34 +581,55 @@ public class EmpTerminate{
 	}
 	return back;
     }
-    /**
-    public String findAllJobs(){
+    private String findOtherJobs(){
 	String back = "";
-	if(jobs == null && !job_id.isEmpty()){
-	    JobTask one = new JobTask(job_id);
-	    back = one.doSelect();
-	    if(back.isEmpty()){
-		job = one;
+	List<JobTask> allJobs = null;
+	JobTaskList jl = new JobTaskList();
+	jl.setEmployee_id(employee_id);
+	jl.setNotExpired();
+	back = jl.find();
+	if(back.isEmpty()){
+	    List<JobTask> ones = jl.getJobs();
+	    if(ones != null){
+		if(ones.size() > 0){
+		    allJobs = ones;
+		}
 	    }
-	    if(employee_id.isEmpty()){
-		employee_id = job.getEmployee_id();
-	    }
-	    JobTaskList jl = new JobTaskList();
-	    jl.setEmployee_id(employee_id);
-	    jl.setNotExpired();
-	    back = jl.find();
-	    if(back.isEmpty()){
-		List<JobTask> ones = jl.getJobs();
-		if(ones != null){
-		    if(ones.size() > 0){
-			jobs = ones;
+	}
+	// System.err.println(" all jobs "+allJobs.size());
+	if(allJobs != null && allJobs.size() > 0){
+	    if(jobs == null)
+		findJobs();
+	    if(jobs != null && jobs.size() > 0){
+		for(JobTask aj:allJobs){
+		    boolean found = false;
+		    for(JobTask jj:jobs){
+			if(jj.getId().equals(aj.getId())){
+			    found = true;
+			    break;
+			}
+		    }
+		    if(!found){
+			if(otherJobs == null)
+			    otherJobs = new ArrayList<>();
+			otherJobs.add(aj);
 		    }
 		}
 	    }
 	}
 	return back;
     }
-    */
+    public boolean hasOtherJobs(){
+	if(job != null && !job.getSalaryGroup().isTemporary()) return false;
+	if(otherJobs == null || otherJobs.size() == 0){
+	    findOtherJobs();
+	}
+	return otherJobs != null && otherJobs.size() > 0;
+	    
+    }
+    public boolean isPartialTermination(){
+	return hasOtherJobs();
+    }
     public String findEmployeeAddress(){
 	String back = "";
 	if(emp == null){
@@ -599,14 +638,16 @@ public class EmpTerminate{
 	if(emp != null){
 	    back = emp.findAddress();
 	    if(back.isEmpty()){
-		addr = emp.getAddress();
-		emp_address = addr.getLineAddress();
-		emp_city = addr.getCity();
-		emp_state = addr.getState();
-		emp_zip = addr.getZip();
-		date_of_birth = emp.getDob();
+		Address one = emp.getAddress();
+		if(one != null){
+		    addr = one;
+		    emp_address = addr.getLineAddress();
+		    emp_city = addr.getCity();
+		    emp_state = addr.getState();
+		    emp_zip = addr.getZip();
+		    date_of_birth = emp.getDob();
+		}
 	    }
-	    // System.err.println(" addr "+addr);
 	}
 	return back;
     }
@@ -1117,11 +1158,6 @@ public class EmpTerminate{
 	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
 	    UnoConnect.databaseDisconnect(con);
 	}
-	/**
-	if(back.isEmpty()){
-	    back = saveJobTerms();
-	}
-	*/
 	return back;
     }
     public String saveJobTerms(){
@@ -1538,7 +1574,7 @@ public class EmpTerminate{
     submitted_by_id int unsigned,
     submitted_date date,
 
-    term_status enum('Started','Ready','Completed'),
+    process_status enum('Started','Ready','Completed'),
     recipients_informed char(1),
     primary key(id),
     foreign key(employee_id) references employees(id),

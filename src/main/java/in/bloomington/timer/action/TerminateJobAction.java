@@ -86,9 +86,9 @@ public class TerminateJobAction extends TopAction{
 	else if(action.startsWith("Next")){ 
 	    //
 	    if(selected_job_ids != null &&
-	       !last_day_of_work.isEmpty() &&
-	       !last_pay_period_date.isEmpty()){
+	       !last_day_of_work.isEmpty()){
 		getTerm();
+		findLastPayPeriodDate();
 		if(emp_id.isEmpty()){
 		    getJob(); // to get emp_id
 		}
@@ -105,9 +105,12 @@ public class TerminateJobAction extends TopAction{
 		    addError(back);
 		}
 		id = term.getId();
-		back += findMatchingJobsInNW();
+		back = findMatchingJobsInNW();
 		if(back.isEmpty() && jobTerms.size() > 0){
 		    term.setJobTerms(jobTerms);
+		}
+		else{ // no jobs found
+
 		}
 		back = term.populateOneJob(); 
 		if(!back.isEmpty()){
@@ -126,8 +129,6 @@ public class TerminateJobAction extends TopAction{
 		}
 	    }
 	    else{
-		if(last_pay_period_date.isEmpty())
-		    addError("last pay period date not set");
 		if(last_day_of_work.isEmpty())
 		    addError("Last day of work not set");
 		if(selected_job_ids == null)
@@ -181,7 +182,20 @@ public class TerminateJobAction extends TopAction{
 	}	
 	return ret;
     }
-
+    void findLastPayPeriodDate(){
+	if(!last_day_of_work.isEmpty()){
+	    if(last_day_of_work.indexOf("-") > -1){
+		last_day_of_work = Helper.changeDateFormat(last_day_of_work);
+	    }
+	    PayPeriod pp = new PayPeriod();
+	    pp.setDate(last_day_of_work);
+	    String back = pp.find();
+	    if(back.isEmpty()){
+		last_pay_period_date = pp.getEndDate();
+	    }
+	}
+	System.err.println(" last pay period date "+last_pay_period_date);
+    }
     String findMatchingJobsInNW(){
 	String back = "";
 	getEmp();
@@ -419,8 +433,14 @@ public class TerminateJobAction extends TopAction{
 	return emp_id;
     }
     public void setLast_pay_period_date(String val){
-	if(val != null && !val.isEmpty() && !val.equals("-1"))		
-	    last_pay_period_date = val;
+	if(val != null && !val.isEmpty() && !val.equals("-1")){
+	    if(val.indexOf("-") > 0){
+		last_pay_period_date = Helper.changeDateFormat(val);
+	    }
+	    else{
+		last_pay_period_date = val;
+	    }
+	}
     }
     public void setLast_day_of_work(String val){
 	if(val != null && !val.isEmpty())		

@@ -46,7 +46,9 @@
 	    <li>If you did any change to the job(s) below click on the refresh button below to see the changes.</li>
 
 	</ul>
-		
+	<s:if test="term.isPartialTermination()">
+	    <center><h3>Note: Partial Termination </h3></center>
+	</s:if>
 	<table border="1"><caption> Employment Information</caption>
 	    <tr><td>Employee</td>
 		<td><s:property value="term.full_name" /></td>

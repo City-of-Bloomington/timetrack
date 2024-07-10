@@ -160,29 +160,48 @@ public class NWEmployeeJobs{
 	return jt;
     }
     public List<JobTerminate> findMatchingJobs(){
-	if(jobs != null && jobs.size() > 0 &&
-	   jobTerms != null && jobTerms.size() > 0){
-	    for(JobTask jj:jobs){
-		boolean found = false;
-		String jttl = jj.getName().trim();
-		for(JobTerminate jt:jobTerms){
-		    String jttl2 = jt.getNwJobTitle().trim();
-		    if(jttl.equals(jttl2)){
-			System.err.println("match job "+jttl+":"+jttl2);
-			jt.setJob_id(jj.getId());
-			jt.setJob_title(jttl);
-			jt.setGroup_id(jj.getGroup_id());
-			jt.setWeeklyHours(""+jj.getWeekly_regular_hours());
-			jt.findSupervisorInfo(envBean);
-			found = true;
-			if(matchedJobs == null)
-			    matchedJobs = new ArrayList<>();
-			matchedJobs.add(jt);
-			break;
-		    }
+	if(jobs != null && jobs.size() > 0){
+	    if(jobTerms == null){
+		jobTerms = new ArrayList<>();
+		for(JobTask jj:jobs){
+		    JobTerminate one = new JobTerminate();
+		    one.setJob_id(jj.getId());
+		    String jttl = jj.getName().trim();
+		    one.setJob_title(jttl);
+		    one.setGroup_id(jj.getGroup_id());
+		    one.setWeeklyHours(""+jj.getWeekly_regular_hours());
+		    one.setStart_date(jj.getEffective_date());
+		    one.setLast_day_of_work(last_day_of_work);
+		    one.findSupervisorInfo(envBean);		
+		    jobTerms.add(one);
+		    if(matchedJobs == null)
+			matchedJobs = new ArrayList<>();		
+		    matchedJobs.add(one);
 		}
-		if(!found){
-		    logger.error(" no job match found for job title "+jttl);
+	    }
+	    else{
+		for(JobTask jj:jobs){
+		    boolean found = false;
+		    String jttl = jj.getName().trim();
+		    for(JobTerminate jt:jobTerms){
+			String jttl2 = jt.getNwJobTitle().trim();
+			if(jttl.equals(jttl2)){
+			    System.err.println("match job "+jttl+":"+jttl2);
+			    jt.setJob_id(jj.getId());
+			    jt.setJob_title(jttl);
+			    jt.setGroup_id(jj.getGroup_id());
+			    jt.setWeeklyHours(""+jj.getWeekly_regular_hours());
+			    jt.findSupervisorInfo(envBean);
+			    found = true;
+			    if(matchedJobs == null)
+				matchedJobs = new ArrayList<>();
+			    matchedJobs.add(jt);
+			    break;
+			}
+		    }
+		    if(!found){
+			logger.error(" no job match found for job title "+jttl);
+		    }
 		}
 	    }
 	}

@@ -79,9 +79,13 @@ public class Address{
 	return line_2;
     }
     public String getLineAddress(){
-	String ret = line_1;
-	if(!line_2.isEmpty()){
-	    ret += " "+line_2;
+	String ret = "";
+	if(line_1 != null && !line_1.isEmpty()){
+	    ret = line_1;
+	}
+	if(line_2 != null && !line_2.isEmpty()){
+	    if(!ret.isEmpty()) ret += " "; 
+	    ret += line_2;
 	}
 	return ret;
     }

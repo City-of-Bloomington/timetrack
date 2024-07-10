@@ -103,8 +103,8 @@ public class RequestCancelAction extends TopAction{
 	    if(document != null){
 		payPeriod = document.getPayPeriod();
 	    }
-	    // if(activeMail){
-	    if(true){
+	    if(activeMail){
+		// if(true){
 		String to = "", cc="", email_from="", subject="", message="";
 		getUser();
 		if(user != null){
@@ -143,7 +143,7 @@ public class RequestCancelAction extends TopAction{
 				   message,
 				   debug
 				   );
-		// back = mail.send();
+		back = mail.send();
 	    }
 	    else{
 		back = "email activity flag is turned off, if you need to send email this flag need to be turned on in your configuration file";
