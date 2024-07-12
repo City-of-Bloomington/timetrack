@@ -171,6 +171,11 @@ public class MpoReport{
 	    date_to = val;
 	}
     }
+    public void setDepartment_id(String val){
+	if(val != null && !val.equals("-1")){
+	    department_id = val;
+	}
+    }    
     public void setType(String val){
 	if(val != null){
 	    type = val;

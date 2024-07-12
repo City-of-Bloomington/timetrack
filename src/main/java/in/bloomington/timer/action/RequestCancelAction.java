@@ -103,8 +103,8 @@ public class RequestCancelAction extends TopAction{
 	    if(document != null){
 		payPeriod = document.getPayPeriod();
 	    }
-	    if(activeMail){
-		// if(true){
+	    // if(activeMail){
+	    if(true){
 		String to = "", cc="", email_from="", subject="", message="";
 		getUser();
 		if(user != null){
