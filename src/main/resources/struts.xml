@@ -393,6 +393,14 @@
       <result name="success">/WEB-INF/jsp/reports/groupsReport.jsp</result>
       <result name="csv">/WEB-INF/jsp/reports/reportGroupManagersCsv.jsp</result>
     </action>
+    <action name="report" 
+	    class="in.bloomington.timer.action.ReportAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/reports/reportInput.jsp</result>		
+      <result name="error">/WEB-INF/jsp/reports/reportInput.jsp</result>
+      <result name="success">/WEB-INF/jsp/reports/reportInput.jsp</result>
+      <result name="csv">/WEB-INF/jsp/reports/reportCsv.jsp</result>
+    </action>    
     
     <action name="reportTimes" 
 	    class="in.bloomington.timer.action.ReportTimesAction" 

@@ -372,7 +372,8 @@ public class HourCodeList{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;
-    }						
+    }
+
 
     public String lookForCommutes(){
 	String back = "";
@@ -448,7 +449,52 @@ public class HourCodeList{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;
-    }						
+    }
+    public String findAbbreviatedList(){
+	String back = "";
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	Connection con = null;
+	//
+	String qq = "select e.id, concat_ws(':',e.name,e.description) "+
+	    " from hour_codes e ";
+	String qw = "", msg="";
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    back = " Could not connect to DB ";
+	    return back;
+	}							
+	try{
+	    qw += " e.inactive is null ";
+	    if(!qw.isEmpty()){
+		qw = " where "+qw;
+	    }
+	    qw += " order by e.name";
+	    qq += qw;
+	    logger.debug(qq);
+	    pstmt = con.prepareStatement(qq);
+	    //
+	    rs = pstmt.executeQuery();
+	    hourCodes = new ArrayList<>();
+	    while(rs.next()){
+		HourCode one = new HourCode(rs.getString(1),
+					    rs.getString(2)
+					    );
+		if(!hourCodes.contains(one))
+		    hourCodes.add(one);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+    }    
+    
 
     
 }

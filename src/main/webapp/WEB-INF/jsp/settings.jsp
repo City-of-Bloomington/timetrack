@@ -103,6 +103,7 @@
 	    <ul>
 		<li><a href="<s:property value='#application.url'/>activeEmails.action">Active Employee Emails</a></li>
 		<li><a href="<s:property value='#application.url'/>reportHand.action">HAND MPO</a></li>
+		<li><a href="<s:property value='#application.url'/>report.action">Generic</a></li>		
 		<li><a href="<s:property value='#application.url'/>reportPlan.action">Planning MPO</a></li>
 		<li><a href="<s:property value='#application.url'/>reportFmla.action">HR FMLA</a></li>
 		<li><a href="<s:property value='#application.url'/>reportAsa.action">HR ASA</a></li>		

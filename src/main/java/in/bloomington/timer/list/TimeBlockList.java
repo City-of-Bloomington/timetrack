@@ -33,6 +33,7 @@ public class TimeBlockList{
     String date_from="", date_to="", document_id="", department_id="";
     String date = "";// specific day
     String code = "", code2 = ""; // needed for HAND and planning
+    String codeSet = null; //needed for reports, comma separated values
     String accrual_as_of_date = "";
     String salary_group_id = "";
     boolean active_only = false, for_today = false, dailyOnly=false,
@@ -127,6 +128,10 @@ public class TimeBlockList{
 	if(val != null)
 	    code2 = val;
     }
+    public void setCodeSet(String val){
+	if(val != null)
+	    codeSet = val;
+    }    
     // hours duration for clock-in, clock-out 
     public void setDuration(String val){
 	if(val != null)
@@ -469,13 +474,19 @@ public class TimeBlockList{
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += "v.date = ? ";
 	}
-	if(!code.isEmpty() && !code2.isEmpty()){
+	if(codeSet != null){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw += "(v.code_name like ? or v.code_name like ?)";
+		qw += "v.hour_code_id in ("+codeSet+") ";
 	}
-	else if(!code.isEmpty()){
-	    if(!qw.isEmpty()) qw += " and ";
-	    qw += "v.code_name like ? ";
+	else{
+	    if(!code.isEmpty() && !code2.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += "(v.code_name like ? or v.code_name like ?)";
+	    }
+	    else if(!code.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += "v.code_name like ? ";
+	    }
 	}
 	if(clockInOnly){
 	    if(!qw.isEmpty()) qw += " and ";
