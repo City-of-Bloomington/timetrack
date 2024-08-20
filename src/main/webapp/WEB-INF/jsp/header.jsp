@@ -25,10 +25,14 @@
   </script>
 </head>
 <body class="fn1 timetrack">
-  <%@ include file="headerNavigation.jsp" %>
-
-  <div class="tabs container">
-    <s:if test="#session != null && #session.user != null">
+    <%@ include file="headerNavigation.jsp" %>
+    <s:if test="isAppInTestMode()">
+	<div class="tabs container">
+	    <h3 style="background-color:yellow;text-align:center">----&nbsp;&nbsp;Test Mode&nbsp;&nbsp;----</h3>
+	</div>
+    </s:if>
+    <div class="tabs container">
+	<s:if test="#session != null && #session.user != null">
 	<a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
 
       <s:if test="user.canMaintain()">

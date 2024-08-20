@@ -39,6 +39,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     static String mail_host = null;
     static String uri="",url="", proxy_url="";
     static String xls_output_location="";
+    static String app_mode="";
     String action="", id="", employee_id="";
     List<String> errors = new ArrayList<>(),
 	messages = new ArrayList<>();
@@ -113,6 +114,10 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		if(val != null && val.equals("true")){
 		    activeMail = true;
 		}
+		val = ctx.getInitParameter("app_mode");
+		if(val != null && !val.isEmpty()){
+		    app_mode = val;
+		}		
 	    }
 	    if(envBean == null){
 		envBean = new EnvBean();
@@ -200,6 +205,9 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 	    }
 	}
 	return employee;
+    }
+    public boolean isAppInTestMode(){
+	return app_mode.equals("Test");
     }
     public boolean hasEmployee(){
 	getEmployee();
