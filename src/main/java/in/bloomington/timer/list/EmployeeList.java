@@ -385,7 +385,7 @@ public class EmployeeList extends CommonInc{
 	}
 	if(!qw.isEmpty())
 	    qq += " where "+qw;
-	qq += " order by e.last_name,e.first_name ";
+	qq += " order by e.first_name,e.last_name ";
 	String back = "";
 	logger.debug(qq);
 	// System.err.println(qq);
