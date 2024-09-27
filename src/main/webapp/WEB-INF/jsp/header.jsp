@@ -96,6 +96,9 @@
       </s:if>
       <s:if test="user.canRunTimewarp()">
 	  <a href="<s:property value='#application.url'/>tmwrpWrap.action">Timewarp </a>	
+      </s:if>
+      <s:if test="user.isLeaveEligible()">
+	  <a href="<s:property value='#application.url'/>leave_request.action?job_id=<s:property value='user.job_id' />">Leave Request </a>	
       </s:if>      
     </s:if>
   </div>

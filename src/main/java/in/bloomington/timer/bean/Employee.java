@@ -957,6 +957,11 @@ public class Employee implements Serializable, Comparable<Employee>{
 	    return jobs.get(0);
 	return null;
     }
+    public String getJob_id(){
+	JobTask job = getJob();
+	if(job != null) return job.getId();
+	return "";
+    }
     public boolean hasNoJob(){
 	getAllJobs();
 	return allJobs == null || allJobs.size() == 0;

@@ -169,6 +169,10 @@ public class HourCodeList{
 		    qw += " (c.group_id = ? or c.group_id is null)";
 		}								
 	    }
+	    if(!type.isEmpty()){
+		if(!qw.isEmpty()) qw += " and "; 
+		qw += " e.type = ? ";
+	    }
 	    if(active_only){
 		if(!qw.isEmpty()) qw += " and "; 								
 		qw += " e.inactive is null "; 
@@ -201,6 +205,9 @@ public class HourCodeList{
 		if(!group_id.isEmpty()){
 		    pstmt.setString(jj++, group_id);
 		}								
+	    }
+	    if(!type.isEmpty()){
+		pstmt.setString(jj++, type);
 	    }
 	    rs = pstmt.executeQuery();
 	    hourCodes = new ArrayList<>();

@@ -553,6 +553,9 @@ public class JobTask implements Serializable{
 	}
 	return "";
     }
+    public String getTitle(){
+	return getName();
+    }
     public String toString(){
 	String str = getName();
 	if(str != null && !str.isEmpty()){
