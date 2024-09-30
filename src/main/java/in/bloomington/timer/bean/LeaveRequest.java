@@ -221,6 +221,9 @@ public class LeaveRequest implements java.io.Serializable{
 	}
     }
     public Document getDocument(){
+	if(pay_period_id.isEmpty()){
+	    findCurrentPayPeriod();
+	}
 	if(document == null && !job_id.isEmpty()){
 	    DocumentList dl = new DocumentList();
 	    dl.setJob_id(job_id);

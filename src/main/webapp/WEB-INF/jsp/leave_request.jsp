@@ -67,8 +67,32 @@
 		<s:textfield name="leave.requestDetails" value="%{leave.requestDetails}" size="50" maxlength="300" /><br />
 	    </div>
 	    <div>
-		<label>Employee Accruals</label><br />
-		ToDo <br />
+	    <s:if test="hasDocument()">
+	    <s:if test="document.hasAllAccruals()">
+		<h3>Accrual Summary</h3>
+			<table class="accruals-summary width-full">
+			<tr>
+			<th width="40%">Accrual Category</th>
+			<th width="15%">Carry Over Balance (as of <s:property value="document.accrualAsOfDate" />)</th>
+			<s:if test="document.isPendingAccrualAllowed()">
+				<th width="15%">Pending Accrual</th>
+			</s:if>
+			<th width="15%">Usage</th>
+			<th>Available Balance </th>
+			</tr>
+		<s:iterator value="document.allAccruals" var="one" >
+		    <s:set var="key" value="#one.key" />
+		    <s:set var="list" value="#one.value" />
+		    <tr>
+			<td><s:property value="#key" /></td>
+			<s:iterator value="#list" status="row">
+			    <td><s:property /></td>
+			</s:iterator>
+		    </tr>
+		</s:iterator>
+	</table>
+</s:if>
+</s:if>
 	    </div>
 	    <s:if test="leave.id == ''">
 		<div class="button-group">

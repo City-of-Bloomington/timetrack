@@ -26,6 +26,7 @@ public class LeaveRequestAction extends TopAction{
     LeaveRequest leave = null;
     List<LeaveRequest> requests = null;
     List<HourCode> hourCodes = null;
+    Document document = null;
     JobTask job = null;
     String earn_code_id="";
     public String execute(){
@@ -103,7 +104,15 @@ public class LeaveRequestAction extends TopAction{
 				
 	return leavesTitle;
     }
-
+    public Document getDocument(){
+	if(leave != null)
+	    document = leave.getDocument();
+	return document;
+    }
+    public boolean hasDocument(){
+	getDocument();
+	return document != null;
+    }
     public void setAction2(String val){
 	if(val != null && !val.isEmpty())		
 	    action = val;

@@ -3,7 +3,7 @@
   <s:hidden name="action2" id="action2" value="" />
   <h1>Approve Timesheets
     <small><b>Approver:&nbsp;</b><s:property value="user.full_name" /></small>
-  </h1>
+   </h1>
 
   <s:if test="hasErrors()">
     <s:set var="errors" value="errors" />
