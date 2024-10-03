@@ -28,7 +28,7 @@ public class LeaveRequestAction extends TopAction{
     List<HourCode> hourCodes = null;
     Document document = null;
     JobTask job = null;
-    String earn_code_id="";
+    String[] earn_code_ids = {""};
     public String execute(){
 	String ret = SUCCESS;
 	String back = canProceed("leaveRequest.action");
@@ -38,7 +38,7 @@ public class LeaveRequestAction extends TopAction{
 	if(action.equals("Save")){
 	    leave.setInitiated_by(user.getId());
 	    leave.setJob_id(job_id);
-	    leave.setEarn_code_id(earn_code_id);
+	    leave.setEarn_code_ids(earn_code_ids);
 	    back = leave.doSave();
 	    if(!back.isEmpty()){
 		addError(back);
@@ -48,7 +48,7 @@ public class LeaveRequestAction extends TopAction{
 	    }
 	}				
 	else if(action.startsWith("Save")){
-	    leave.setEarn_code_id(earn_code_id);
+	    leave.setEarn_code_ids(earn_code_ids);
 	    leave.setInitiated_by(user.getId());
 	    back = leave.doUpdate();
 	    if(!back.isEmpty()){
@@ -67,7 +67,7 @@ public class LeaveRequestAction extends TopAction{
 		    addError(back);
 		}
 		job_id = leave.getJob_id();
-		earn_code_id = leave.getEarn_code_id();
+		earn_code_ids = leave.getEarn_code_ids();
 	    }
 	}	
 	else{		
@@ -78,7 +78,7 @@ public class LeaveRequestAction extends TopAction{
 		    addError(back);
 		}
 		job_id = leave.getJob_id();
-		earn_code_id = leave.getEarn_code_id();
+		earn_code_ids = leave.getEarn_code_ids();
 		ret = "view";
 	    }
 	}
@@ -125,18 +125,18 @@ public class LeaveRequestAction extends TopAction{
 	if(val != null && !val.isEmpty())		
 	    job_id = val;
     }
-    public void setEarn_code_id(String val){
-	if(val != null && !val.isEmpty())		
-	    earn_code_id = val;
+    public void setEarn_code_ids(String[] val){
+	if(val != null)		
+	    earn_code_ids = val;
     }    
     public String getJob_id(){
 	return job_id;
     }
-    public String getEarn_code_id(){
-	if(earn_code_id.isEmpty()){
-	    earn_code_id = leave.getEarn_code_id();
+    public String[] getEarn_code_ids(){
+	if(earn_code_ids == null){
+	    earn_code_ids = leave.getEarn_code_ids();
 	}
-	return earn_code_id;
+	return earn_code_ids;
     }    
     
     public List<LeaveRequest> getRequests(){

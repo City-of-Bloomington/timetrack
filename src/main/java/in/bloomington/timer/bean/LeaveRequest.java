@@ -21,8 +21,8 @@ public class LeaveRequest implements java.io.Serializable{
     String id="", start_date="", end_date="",
 	job_id="", initiated_by="", request_date="", request_details="";
     String start_date_ff="", end_date_ff="";
-    float total_hours = 24.0f;
-    String earn_code_id="2"; // PTO
+    float total_hours = 8.0f;
+    String[] earn_code_ids = {"2"}; // PTO
     JobTask job = null;
     Group group = null;
     Document document = null;
@@ -38,12 +38,12 @@ public class LeaveRequest implements java.io.Serializable{
 	//
 	setId(val);
     }		
-    public LeaveRequest(String val, String val2, String val3, String val4, String val5, Float val6, String val7, String val8, String val9, String val10, String val11){
+    public LeaveRequest(String val, String val2, String val3, String val4, String[] val5, Float val6, String val7, String val8, String val9, String val10, String val11){
 	setId(val);
 	setJob_id(val2);	
 	setStartDate(val3);
 	setLastDate(val4);
-	setEarn_code_id(val5);
+	setEarn_code_ids(val5);
 	setTotalHours(val6);	
 	setRequestDetails(val7);
 	setInitiated_by(val8);
@@ -68,6 +68,7 @@ public class LeaveRequest implements java.io.Serializable{
 	}
 	return seed;
     }
+
     //
     // getters
     //
@@ -97,16 +98,15 @@ public class LeaveRequest implements java.io.Serializable{
     public String getJob_id(){
 	return job_id;
     }
-    public String getEarn_code_id(){
-	return earn_code_id;
+    public String[] getEarn_code_ids(){
+	return earn_code_ids;
     }    
     public float getTotalHours(){
 	return total_hours;
     }
     public String getRequestDate(){
 	return request_date;
-    }    
-    
+    }
     //
     // setters
     //
@@ -129,8 +129,7 @@ public class LeaveRequest implements java.io.Serializable{
     public void setEndDateFF(String val){
 	if(val != null)
 	    end_date_ff=val;
-    }    
-    
+    }
     public void setRequestDetails(String val){
 	if(val != null)
 	    request_details=val;
@@ -143,9 +142,9 @@ public class LeaveRequest implements java.io.Serializable{
 	if(val != null)
 	    job_id=val;
     }
-    public void setEarn_code_id(String val){
-	if(val != null)
-	    earn_code_id = val;
+    public void setEarn_code_ids(String[] vals){
+	if(vals != null)
+	    earn_code_ids = vals;
     }
     public void setTotalHours(Float val){
 	if(val != null)
@@ -161,6 +160,7 @@ public class LeaveRequest implements java.io.Serializable{
     public String toString(){
 	return id;
     }
+
     public JobTask getJob(){
 	if(job == null && !job_id.isEmpty()){
 	    JobTask one = new JobTask(job_id);
@@ -180,17 +180,22 @@ public class LeaveRequest implements java.io.Serializable{
 	}
 	return group;
     }
-    public String getEarnCode(){
+
+    public String getEarnCodes(){
 	String ret = "";
-	if(!earn_code_id.isEmpty()){
-	    HourCode one = new HourCode(earn_code_id);
-	    String back = one.doSelect();
-	    if(back.isEmpty()){
-		ret = one.getName();
+	if(earn_code_ids != null){
+	    for(String str:earn_code_ids){
+		HourCode one = new HourCode(str);
+		String back = one.doSelect();
+		if(back.isEmpty()){
+		    if(!ret.isEmpty()) ret += ", ";
+		    ret += one.getName();
+		}
 	    }
 	}
 	return ret;
     }
+
     public String getJobTitle(){
 	getJob();
 	if(job != null){
@@ -239,7 +244,11 @@ public class LeaveRequest implements java.io.Serializable{
 	return document;
     }
     public String getDate_range(){
-	return start_date_ff+" - "+end_date_ff;
+	String ret = "";
+	if(start_date_ff != null && !start_date_ff.isEmpty()){
+	    ret = start_date_ff+" - "+end_date_ff;
+	}
+	return ret;
     }
     public String getManagerName(){
 	String full_name = "";
@@ -278,7 +287,7 @@ public class LeaveRequest implements java.io.Serializable{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq = "select id,job_id,date_format(start_date,'%Y-%m-%d'),date_format(end_date,'%Y-%m-%d'),hour_code_id,total_hours,request_details,initiated_by,date_format(request_date,'%m/%d/%Y'), date_format(start_date,'%m/%d/%Y'), date_format(end_date,'%m/%d/%Y') "+
+	String qq = "select id,job_id,start_date,end_date,hour_code_ids,total_hours,request_details,initiated_by,date_format(request_date,'%m/%d/%Y'), date_format(start_date,'%m/%d/%Y'), date_format(end_date,'%m/%d/%Y') "+
 	    "from leave_requests where id=?";
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -291,10 +300,23 @@ public class LeaveRequest implements java.io.Serializable{
 	    pstmt.setString(1,id);
 	    rs = pstmt.executeQuery();
 	    if(rs.next()){
+		String earn_codes = rs.getString(5);
+		String[] arr = {""};
+		if(earn_codes != null){
+		    if(earn_codes.indexOf(",") > 0){
+			try{
+			    arr = earn_codes.split(",");
+			}catch(Exception ex){
+			    System.err.println(ex);
+			}		    }
+		    else{
+			arr[0] = earn_codes;
+		    }
+		}
 		setJob_id(rs.getString(2));
 		setStartDate(rs.getString(3));
 		setLastDate(rs.getString(4));
-		setEarn_code_id(rs.getString(5));
+		setEarn_code_ids(arr);
 		setTotalHours(rs.getFloat(6));
 		setRequestDetails(rs.getString(7));
 		setInitiated_by(rs.getString(8));
@@ -320,7 +342,7 @@ public class LeaveRequest implements java.io.Serializable{
 	Connection con = null;
 	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
-	String msg="", str="";
+	String msg="";
 	String qq = " insert into leave_requests values(0,?,?,?,?, ?,?,?,now())";
 	if(start_date.isEmpty()){
 	    msg = "start date is required";
@@ -330,12 +352,12 @@ public class LeaveRequest implements java.io.Serializable{
 	    msg = "end date is required";
 	    return msg;
 	}
-	if(earn_code_id.isEmpty()){
+	if(earn_code_ids == null){
 	    msg = "Hour Code is required";
 	    return msg;
 	}
-	if(total_hours <= 16){
-	    msg = "Total hours must be more than 16 ";
+	if(total_hours <= 0){
+	    msg = "Total hours must be set ";
 	    return msg;
 	}
 	if(job_id.isEmpty()){
@@ -347,13 +369,19 @@ public class LeaveRequest implements java.io.Serializable{
 	    msg = "Could not connect to DB ";
 	    return msg;
 	}
-				
+	String earn_codes_str = "";
+	for(String str:earn_code_ids){
+	    if(!earn_codes_str.isEmpty()) earn_codes_str +=",";
+	    earn_codes_str += str;
+	}				
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, job_id);
-	    pstmt.setDate(2, new java.sql.Date(dateFormat.parse(start_date).getTime()));
-	    pstmt.setDate(3, new java.sql.Date(dateFormat.parse(end_date).getTime()));
-	    pstmt.setString(4, earn_code_id);
+	    //pstmt.setDate(2, new java.sql.Date(dateFormat.parse(start_date).getTime()));
+	    // pstmt.setDate(3, new java.sql.Date(dateFormat.parse(end_date).getTime()));
+	    pstmt.setString(2, start_date);
+	    pstmt.setString(3, end_date);	    
+	    pstmt.setString(4, earn_codes_str);
 	    pstmt.setFloat(5, total_hours);
 	    if(request_details.isEmpty()){
 		pstmt.setNull(6, Types.VARCHAR);
@@ -385,8 +413,8 @@ public class LeaveRequest implements java.io.Serializable{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String msg="", str="", qq2="";
-	String qq = " update leave_requests set job_id=?, start_date=?,end_date=?,hour_code_id=?,total_hours=?,request_details=?,initiated_by=? where id=?";
+	String msg="", qq2="";
+	String qq = " update leave_requests set job_id=?, start_date=?,end_date=?,hour_code_ids=?,total_hours=?,request_details=?,initiated_by=? where id=?";
 	if(id.isEmpty()){
 	    msg = "job id is required";
 	    return msg;
@@ -399,18 +427,23 @@ public class LeaveRequest implements java.io.Serializable{
 	    msg = "end date is required";
 	    return msg;
 	}
-	if(earn_code_id.isEmpty()){
+	if(earn_code_ids == null){
 	    msg = "Hour Code is required";
 	    return msg;
 	}
-	if(total_hours <= 16){
-	    msg = "Total hours must be more than 16 ";
+	if(total_hours <= 0){
+	    msg = "Total hours must be set ";
 	    return msg;
 	}
 	if(job_id.isEmpty()){
 	    msg = "Job is required";
 	    return msg;
-	}	
+	}
+	String earn_codes_str = "";
+	for(String str:earn_code_ids){
+	    if(!earn_codes_str.isEmpty()) earn_codes_str +=",";
+	    earn_codes_str += str;
+	}
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = "Could not connect to DB ";
@@ -419,9 +452,13 @@ public class LeaveRequest implements java.io.Serializable{
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, job_id);
+	    /**
 	    pstmt.setDate(2, new java.sql.Date(dateFormat.parse(start_date).getTime()));
 	    pstmt.setDate(3, new java.sql.Date(dateFormat.parse(end_date).getTime()));
-	    pstmt.setString(4, earn_code_id);
+	    */
+	    pstmt.setString(2, start_date);
+	    pstmt.setString(3, end_date);	   	    
+	    pstmt.setString(4, earn_codes_str);
 	    pstmt.setFloat(5, total_hours);
 	    if(request_details.isEmpty()){
 		pstmt.setNull(6, Types.VARCHAR);
@@ -451,7 +488,7 @@ id int unsigned auto_increment,
 job_id int unsigned not null,
 start_date date not null,
 end_date date not null,
-hour_code_id int unsigned,
+hour_code_ids varchar(54),
 total_hours decimal(5,2),
 request_details varchar(1024),
 initiated_by int unsigned not null,

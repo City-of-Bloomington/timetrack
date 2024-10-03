@@ -72,7 +72,14 @@
       <result name="error">/WEB-INF/jsp/leave_request.jsp</result>
       <result name="success">/WEB-INF/jsp/leave_request.jsp</result>
       <result name="view">/WEB-INF/jsp/leave_view.jsp</result>
-    </action>    
+    </action>
+    <action name="leave_review" 
+	    class="in.bloomington.timer.action.LeaveReviewAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/leave_review.jsp</result>		
+      <result name="error">/WEB-INF/jsp/leave_review.jsp</result>
+      <result name="success">/WEB-INF/jsp/leave_review.jsp</result>
+    </action>        
     <action name="requestCancel" 
 	    class="in.bloomington.timer.action.RequestCancelAction" 
 	    method="execute">

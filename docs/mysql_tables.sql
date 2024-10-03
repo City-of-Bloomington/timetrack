@@ -1633,4 +1633,32 @@ insert into  code_reason_conditions values
       and ta.action_by=e2.id
       order by dept_name,full_name,job_name
       into outfile '/var/lib/mysql-files/employee_jobs.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
+;;
+;; leave management tables
+;;
+create table leave_requests(
+id int unsigned auto_increment,
+job_id int unsigned not null,
+start_date date not null,
+end_date date not null,
+hour_code_ids varchar(64),
+total_hours decimal(5,2),
+request_details varchar(1024),
+initiated_by int unsigned not null,
+request_date date,
+primary key(id),
+foreign key(job_id) references jobs(id),
+foreign key(initiated_by) references employees(id)
+)engine=InnoDB;
 
+create table leave_reviews(
+id int unsigned auto_increment,
+leave_id int unsigned not null,
+review_date date,
+review_status enum('Approved','Denied'),
+review_notes varchar(1024),
+reviewed_by int unsigned not null,
+primary key(id),
+foreign key(review_id) references leave_requests(id),
+foreign key(reviewed_by) references employees(id)
+)engine=InnoDB;

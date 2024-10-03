@@ -22,13 +22,11 @@
 	<br />
 	<b>Date Range: </b><s:property value="leave.date_range" /><br />
 	<br />
-	<b>Earn Code: </b><s:property value="leave.earnCode" /><br />
+	<b>Proposed Hour Codes to be used: </b><s:property value="leave.earnCodes" /><br />
 	<br />
-	<b>Total Hours:</b> <s:property value="leave.totalHours" /><br />
-	<s:if test="leave.hasNotes()">
-	    <br />
-	    <b>Leave Notes: </b><s:property value="leave.requestDetails" /><br />
-	</s:if>
+	<b>Length of Proposed Leave (Total Hours): </b><s:property value="leave.totalHours" /><br />
+	<br />
+	<b>Proposed Leave Description: </b><s:property value="leave.requestDetails" /><br />
 	<br />
 	<a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='leave.id' />&action=Edit">Edit</a><br />
 	-------------------------------- <br />

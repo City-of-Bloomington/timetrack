@@ -222,7 +222,7 @@ public class TermNotification{
 	    if(jobTerms != null){
 		text += " -- -- -- -- \n";
 		for(JobTerminate one:jobTerms){
-		    text += "Job: "+one.getNwJobTitle()+"\n";
+		    text += "Job: "+one.getJobTitleAny()+"\n";
 		    text += "Weekly Hrs: "+one.getWeeklyHours()+"\n";
 		    text += "Job Grade: "+one.getJob_grade()+"\n";
 		    text += "Job Step: "+one.getJob_step()+"\n";

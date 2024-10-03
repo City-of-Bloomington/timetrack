@@ -188,6 +188,16 @@ public class JobTerminate{
     public String getNwJobTitle(){
 	return nw_job_title;
     }
+    public String getJobTitleAny(){
+	String ret = "";
+	if(!nw_job_title.isEmpty()){
+	    ret = nw_job_title;
+	}
+	else{
+	    ret = job_title;
+	}
+	return ret;
+    }
     public boolean hasSupervisor(){
 	getSupervisor();
 	return supervisor != null;
