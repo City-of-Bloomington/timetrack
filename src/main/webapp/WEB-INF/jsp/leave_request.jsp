@@ -21,7 +21,7 @@
 	    <%@ include file="messages.jsp" %>
 	</s:elseif>
 	<p>
-	    Leave Request for Job; <s:property value="leave.jobTitle" /><br />
+	    Leave Request for Job: <s:property value="leave.jobTitle" /><br />
 	    Work Group: <s:property value="leave.group" /><br />
 	    Group Manager to be notified: <s:property value="leave.managerName"/><br />
 	</p>	

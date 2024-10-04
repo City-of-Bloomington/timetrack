@@ -77,8 +77,9 @@ public class LeaveRequestList{
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
 	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), "+
-	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y') "+
-	    "from leave_requests t ";
+	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes "+
+	    "from leave_requests t "+
+	    "left join leave_reviews r on r.leave_id=t.id ";
 	qq += " join jobs j on j.id=t.job_id ";
 	if(con == null){
 	    back = "Could not connect to DB";
@@ -167,6 +168,9 @@ public class LeaveRequestList{
 			arr[0] = hr_codes;
 		    }
 		}
+		String statusStr = rs.getString(12);
+		if(statusStr == null)
+		    statusStr = "Pending";
 		LeaveRequest one =
 		    new LeaveRequest(rs.getString(1),
 				     rs.getString(2),
@@ -178,7 +182,11 @@ public class LeaveRequestList{
 				     rs.getString(8),
 				     rs.getString(9),
 				     rs.getString(10),
-				     rs.getString(11));
+				     rs.getString(11),
+				     statusStr,
+				     rs.getString(13),
+				     rs.getString(14)
+				     );
 		if(!requests.contains(one))
 		    requests.add(one);
 	    }

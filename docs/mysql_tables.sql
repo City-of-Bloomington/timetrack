@@ -1659,6 +1659,6 @@ review_status enum('Approved','Denied'),
 review_notes varchar(1024),
 reviewed_by int unsigned not null,
 primary key(id),
-foreign key(review_id) references leave_requests(id),
+foreign key(leave_id) references leave_requests(id),
 foreign key(reviewed_by) references employees(id)
 )engine=InnoDB;

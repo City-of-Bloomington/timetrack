@@ -28,6 +28,16 @@
 	<br />
 	<b>Proposed Leave Description: </b><s:property value="leave.requestDetails" /><br />
 	<br />
+	<b>Review Status: </b><s:property value="leave.reviewStatus" /><br />
+	<br />
+	<s:if test="leave.hasReviewer()">
+	    <b>Reviewer: </b><s:property value="leave.reviewer" /><br />
+	    <br />
+	    <s:if test="leave.hasReviewNotes()">
+		<b>Review Notes: </b><s:property value="leave.reviewNotes" /><br />
+		<br />
+	    </s:if>
+	</s:if>
 	<a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='leave.id' />&action=Edit">Edit</a><br />
 	-------------------------------- <br />
     </p>

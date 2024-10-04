@@ -45,7 +45,9 @@
 
       <s:if test="user.canApprove()">
           <a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>
+          <a href="<s:property value='#application.url'/>leave_review.action">Leave Review</a>	  
       </s:if>
+      
       <s:if test="user.isTermManager()">
 	  <a href="<s:property value='#application.url'/>activeEmployees.action">Current Employees</a>
       </s:if>

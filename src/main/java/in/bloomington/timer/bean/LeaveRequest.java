@@ -26,10 +26,14 @@ public class LeaveRequest implements java.io.Serializable{
     JobTask job = null;
     Group group = null;
     Document document = null;
-    Employee employee = null;
+    Employee employee = null, reviewer=null;
     PayPeriod payPeriod = null;
     String pay_period_id = ""; //current only
     GroupManager manager = null;
+    //
+    // review variables
+    String status="", reviewed_by="", review_notes;
+    //
     //
     public LeaveRequest(){
 
@@ -38,7 +42,7 @@ public class LeaveRequest implements java.io.Serializable{
 	//
 	setId(val);
     }		
-    public LeaveRequest(String val, String val2, String val3, String val4, String[] val5, Float val6, String val7, String val8, String val9, String val10, String val11){
+    public LeaveRequest(String val, String val2, String val3, String val4, String[] val5, Float val6, String val7, String val8, String val9, String val10, String val11, String val12, String val13, String val14){
 	setId(val);
 	setJob_id(val2);	
 	setStartDate(val3);
@@ -49,7 +53,10 @@ public class LeaveRequest implements java.io.Serializable{
 	setInitiated_by(val8);
 	setRequestDate(val9);
 	setStartDateFF(val10);
-	setEndDateFF(val11);		
+	setEndDateFF(val11);
+	setReviewStatus(val12);
+	setReviewed_by(val13);
+	setReviewNotes(val14);
     }		
     public boolean equals(Object obj){
 	if(obj instanceof LeaveRequest){
@@ -107,6 +114,12 @@ public class LeaveRequest implements java.io.Serializable{
     public String getRequestDate(){
 	return request_date;
     }
+    public String getReviewStatus(){
+	return status;
+    }
+    public String getReviewNotes(){
+	return review_notes;
+    }    
     //
     // setters
     //
@@ -154,9 +167,27 @@ public class LeaveRequest implements java.io.Serializable{
 	if(val != null)
 	    request_date=val;
     }
+    public void setReviewStatus(String val){
+	if(val != null)
+	    status=val;
+    }
+    public void setReviewed_by(String val){
+	if(val != null)
+	    reviewed_by=val;
+    }
+    public void setReviewNotes(String val){
+	if(val != null)
+	    review_notes=val;
+    }    
     public boolean hasNotes(){
 	return !request_details.isEmpty();
     }
+    public boolean hasReviewer(){
+	return !reviewed_by.isEmpty();
+    }
+    public boolean hasReviewNotes(){
+	return !review_notes.isEmpty();
+    }    
     public String toString(){
 	return id;
     }
@@ -211,6 +242,18 @@ public class LeaveRequest implements java.io.Serializable{
 	}
 	return employee;
     }
+    public Employee getReviewer(){
+	if(reviewer == null){
+	    if(!reviewed_by.isEmpty()){
+		Employee one = new Employee(reviewed_by);
+		String back = one.doSelect();
+		if(back.isEmpty()){
+		    reviewer = one;
+		}
+	    }
+	}
+	return reviewer;
+    }    
     void findCurrentPayPeriod(){
 	if(pay_period_id.isEmpty()){
 	    PayPeriodList ppl = new PayPeriodList();
@@ -287,8 +330,10 @@ public class LeaveRequest implements java.io.Serializable{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq = "select id,job_id,start_date,end_date,hour_code_ids,total_hours,request_details,initiated_by,date_format(request_date,'%m/%d/%Y'), date_format(start_date,'%m/%d/%Y'), date_format(end_date,'%m/%d/%Y') "+
-	    "from leave_requests where id=?";
+	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), date_format(t.start_date,'%m/%d/%Y'), date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes "+
+	    "from leave_requests t "+
+	    " left join leave_reviews r on r.leave_id=t.id "+
+	    "where t.id=?";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    back = "Could not connect to DB";
@@ -322,7 +367,15 @@ public class LeaveRequest implements java.io.Serializable{
 		setInitiated_by(rs.getString(8));
 		setRequestDate(rs.getString(9));
 		setStartDateFF(rs.getString(10));
-		setEndDateFF(rs.getString(11));		
+		setEndDateFF(rs.getString(11));
+		if(rs.getString(12) == null){
+		    setReviewStatus("Pending");
+		}
+		else{
+		    setReviewStatus(rs.getString(12));
+		}
+		setReviewed_by(rs.getString(13));
+		setReviewNotes(rs.getString(14));
 	    }
 	    else{
 		back ="Record "+id+" Not found";

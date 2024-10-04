@@ -188,9 +188,6 @@ public class LeaveReview implements java.io.Serializable{
 	    msg = "Could not connect to DB ";
 	    return msg;
 	}
-	System.err.println(" review_by "+reviewed_by);
-	System.err.println(" status "+status);
-	System.err.println(" notes "+notes);	
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, leave_id);
