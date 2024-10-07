@@ -32,21 +32,21 @@
 	</div>
     </s:if>
     <div class="tabs container">
-	<s:if test="#session != null && #session.user != null">
+      <s:if test="#session != null && #session.user != null">
 	<a href="<s:property value='#application.url'/>timeDetails.action">Time Details</a>
-
-      <s:if test="user.canMaintain()">
+	<s:if test="user.canMaintain()">
           <a href="<s:property value='#application.url'/>dataEntry.action">Time Maintenance</a>
-      </s:if>
-
-      <s:if test="user.canReview()">
+	</s:if>
+	<s:if test="user.canReview()">
           <a href="<s:property value='#application.url'/>review.action">Timesheet Review</a>
-      </s:if>
-
-      <s:if test="user.canApprove()">
+	</s:if>
+       <s:if test="user.canApprove()">
           <a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>
-          <a href="<s:property value='#application.url'/>leave_review.action">Leave Review</a>	  
-      </s:if>
+
+       </s:if>
+	<s:if test="user.isLeaveEligible()">
+	  <a href="<s:property value='#application.url'/>leave_request.action?job_id=<s:property value='user.job_id' />">Leave Request </a>	
+	</s:if>      
       
       <s:if test="user.isTermManager()">
 	  <a href="<s:property value='#application.url'/>activeEmployees.action">Current Employees</a>
@@ -54,6 +54,9 @@
       <s:if test="user.canPayrollProcess()">
           <a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>
       </s:if>
+      <s:if test="user.canApprove()">      
+          <a href="<s:property value='#application.url'/>leave_review.action">Leave Review</a>
+	</s:if>
       <s:if test="user.isHrAdmin()">
           <a href="<s:property value='#application.url'/>reportFmla.action">FMLA Report</a>
           <a href="<s:property value='#application.url'/>reportEl.action">EL Report</a>	      
@@ -91,7 +94,6 @@
       <s:if test="user.canRunFireReport()">
           <a href="<s:property value='#application.url'/>shiftTime.action?department_id=16">Employee Shift Times</a>
       </s:if>
-      
       <s:if test="user.isParkAdmin()">
 	  <a href="<s:property value='#application.url'/>jobsReport.action?department_id=5">Current Employees Jobs</a>
 	  <a href="<s:property value='#application.url'/>reportTimes.action?department_id=5">Employee Time Details</a>
@@ -99,9 +101,6 @@
       <s:if test="user.canRunTimewarp()">
 	  <a href="<s:property value='#application.url'/>tmwrpWrap.action">Timewarp </a>	
       </s:if>
-      <s:if test="user.isLeaveEligible()">
-	  <a href="<s:property value='#application.url'/>leave_request.action?job_id=<s:property value='user.job_id' />">Leave Request </a>	
-      </s:if>      
     </s:if>
   </div>
 

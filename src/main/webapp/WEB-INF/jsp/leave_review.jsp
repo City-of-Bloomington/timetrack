@@ -1,6 +1,6 @@
 <%@  include file="header.jsp" %>
 <div class="internal-page">
-    <div class="width-one-half">    
+     <div>
 	<s:if test="hasLeaveRequest()">
 	    <s:form action="leave_review" id="form_id" method="post" >
 		<s:hidden name="action2" id="action2" value="" />

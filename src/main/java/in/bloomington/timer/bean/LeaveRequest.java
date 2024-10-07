@@ -21,7 +21,7 @@ public class LeaveRequest implements java.io.Serializable{
     String id="", start_date="", end_date="",
 	job_id="", initiated_by="", request_date="", request_details="";
     String start_date_ff="", end_date_ff="";
-    float total_hours = 8.0f;
+    float total_hours = 0.0f;
     String[] earn_code_ids = {"2"}; // PTO
     JobTask job = null;
     Group group = null;

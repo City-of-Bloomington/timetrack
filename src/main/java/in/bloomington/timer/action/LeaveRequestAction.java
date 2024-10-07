@@ -27,8 +27,10 @@ public class LeaveRequestAction extends TopAction{
     List<LeaveRequest> requests = null;
     List<HourCode> hourCodes = null;
     Document document = null;
+    List<EmployeeAccrual> empAccruals = null;
     JobTask job = null;
     String[] earn_code_ids = {""};
+    String[] hr_code_prefered_order = {"4","6","2","8"};
     public String execute(){
 	String ret = SUCCESS;
 	String back = canProceed("leaveRequest.action");
@@ -113,6 +115,25 @@ public class LeaveRequestAction extends TopAction{
 	getDocument();
 	return document != null;
     }
+    boolean hasAccruals(){
+	if(empAccruals == null){
+	    findEmployeeAccruals();
+	}
+	return empAccruals != null && empAccruals.size() > 0;
+    }
+    void findEmployeeAccruals(){
+	if(hasDocument()){
+	    getDocument();
+	    if(document != null){
+		if(document.hasEmpAccruals()){
+		    List<EmployeeAccrual> ones = document.getEmpAccruals();
+		    if(ones != null && ones.size() > 0){
+			empAccruals = ones;
+		    }
+		}
+	    }
+	}
+    }
     public void setAction2(String val){
 	if(val != null && !val.isEmpty())		
 	    action = val;
@@ -164,7 +185,40 @@ public class LeaveRequestAction extends TopAction{
 	// earn codes are part of finding document
 	//
 	findHourCodes();
+	addAccrualsToHourCodes();
+	reorderHourCodes();
 	return hourCodes;
+    }
+    void reorderHourCodes(){
+	List<HourCode> ll = new ArrayList<>();
+	if(hourCodes != null && hourCodes.size() > 0){
+	    for(String str:hr_code_prefered_order){
+		for(int jj=0;jj<hourCodes.size();jj++){
+		    HourCode one = hourCodes.get(jj);
+		    if(one.getId().equals(str)){
+			ll.add(one);
+			hourCodes.remove(jj);
+		    }
+		}
+	    }
+	    if(ll.size() > 0){
+		ll.addAll(hourCodes);
+		hourCodes = ll;
+	    }
+	}
+    }
+    void addAccrualsToHourCodes(){
+	if(hasAccruals() && hourCodes != null){
+	    for(EmployeeAccrual one:empAccruals){
+		if(one.getHours() > 0){
+		    for(HourCode code:hourCodes){
+			if(code.getId().equals(one.getRelated_hour_code_id())){
+			    code.setDescription(code.getDescription()+" ("+one.getHours()+")");
+			}
+		    }
+		}
+	    }
+	}
     }
     public JobTask getJob(){
 	if(!job_id.isEmpty()){
