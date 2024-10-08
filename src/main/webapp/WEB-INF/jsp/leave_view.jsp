@@ -38,7 +38,6 @@
 		<br />
 	    </s:if>
 	</s:if>
-	<a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='leave.id' />&action=Edit">Edit</a><br />
 	-------------------------------- <br />
     </p>
 </div>

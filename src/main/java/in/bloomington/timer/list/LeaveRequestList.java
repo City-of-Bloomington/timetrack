@@ -21,6 +21,7 @@ public class LeaveRequestList{
     static final long serialVersionUID = 3800L;
     String job_id="", date_from="", date_to="", sortBy="t.id desc";
     String pay_period_id = "", initiated_by="";
+    String limit="";
     String group_id="", group_ids=""; // for reviewers
     boolean active_only = false;
     boolean not_reviewed = false;
@@ -59,7 +60,12 @@ public class LeaveRequestList{
     public void setGroup_ids(String val){ // comma separated
 	if(val != null)
 	    group_ids=val;
-    }    
+    }
+    public void setMaxLimit(int val){
+	if(val > 0){
+	    limit = ""+val;
+	}
+    }
     public void setActiveOnly(){
 	active_only = true;
     }
@@ -126,6 +132,9 @@ public class LeaveRequestList{
 	    }
 	    if(!sortBy.isEmpty()){
 		qq += " order by "+sortBy;
+	    }
+	    if(!limit.isEmpty()){
+		qq += " limit "+limit;
 	    }
 	    logger.debug(qq);
 	    pstmt = con.prepareStatement(qq);

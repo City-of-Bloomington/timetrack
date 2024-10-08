@@ -20,6 +20,12 @@ public class LeaveReview implements java.io.Serializable{
     static Logger logger = LogManager.getLogger(LeaveReview.class);
     String id="", status="", // Approved, Denied
 	leave_id="", reviewed_by="", date="", notes="";
+    //
+    // the form will have 3 leave request max
+    //
+    String notes_1="",notes_2="",notes_3="";
+    String rev_status_1="",rev_status_2="",rev_status_3="";
+    String leave_id_1="",leave_id_2="",leave_id_3="";
     LeaveRequest leave = null;
     Employee reviewer = null;
     //
@@ -104,6 +110,42 @@ public class LeaveReview implements java.io.Serializable{
 	if(val != null)
 	    leave_id=val;
     }
+    public void setLeave_id_1(String val){
+	if(val != null)
+	    leave_id_1=val;
+    }
+    public void setLeave_id_2(String val){
+	if(val != null)
+	    leave_id_2=val;
+    }
+    public void setLeave_id_3(String val){
+	if(val != null)
+	    leave_id_3=val;
+    }    
+    public void setRev_status_1(String val){
+	if(val != null)
+	    rev_status_1=val;
+    }
+    public void setRev_status_2(String val){
+	if(val != null)
+	    rev_status_2=val;
+    }
+    public void setRev_status_3(String val){
+	if(val != null)
+	    rev_status_3=val;
+    }
+    public void setNotes_1(String val){
+	if(val != null)
+	    notes_1=val;
+    }
+    public void setNotes_2(String val){
+	if(val != null)
+	    notes_2=val;
+    }
+    public void setNotes_3(String val){
+	if(val != null)
+	    notes_3=val;
+    }    
     public boolean hasNotes(){
 	return !notes.isEmpty();
     }
@@ -170,17 +212,45 @@ public class LeaveReview implements java.io.Serializable{
 	return back;
     }
     public String doSave(){
+	String back = "";
+	if(!leave_id_1.isEmpty()){
+	    String str = saveOne(leave_id_1, rev_status_1, notes_1);
+	    if(!str.isEmpty()){
+		back = "Leave request "+leave_id_1+" enncountered this problem "+str;
+	    }
+	}
+	if(!leave_id_2.isEmpty()){
+	    String str = saveOne(leave_id_2, rev_status_2, notes_2);
+	    if(!str.isEmpty()){
+		if(!back.isEmpty()) back += ", ";
+		back += "Leave request "+leave_id_2+" enncountered this problem "+str;
+	    }
+	}
+	if(!leave_id_3.isEmpty()){
+	    String str = saveOne(leave_id_3, rev_status_3, notes_3);
+	    if(!str.isEmpty()){
+		if(!back.isEmpty()) back += ", ";
+		back += "Leave request "+leave_id_3+" enncountered this problem "+str;
+	    }
+	}
+	return back;
+    }
+    public String saveOne(String leave_one, String status_one, String rev_notes){	
 	Connection con = null;
 	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
 	String msg="", str="";
 	String qq = " insert into leave_reviews values(0,?,now(),?,?, ?)";
-	if(leave_id.isEmpty()){
+	if(leave_one.isEmpty()){
 	    msg = "Leave request is required";
 	    return msg;
 	}
-	if(status.isEmpty()){
+	if(status_one.isEmpty()){
 	    msg = "Review Status is required";
+	    return msg;
+	}
+	if(status_one.equals("Denied") && rev_notes.isEmpty()){
+	    msg = "If leave is denied a reason must be provided";
 	    return msg;
 	}
 	con = UnoConnect.getConnection();
@@ -190,13 +260,13 @@ public class LeaveReview implements java.io.Serializable{
 	}
 	try{
 	    pstmt = con.prepareStatement(qq);
-	    pstmt.setString(1, leave_id);
-	    pstmt.setString(2, status);
-	    if(notes.isEmpty()){
+	    pstmt.setString(1, leave_one);
+	    pstmt.setString(2, status_one);
+	    if(rev_notes.isEmpty()){
 		pstmt.setNull(3, Types.VARCHAR);
 	    }
 	    else
-		pstmt.setString(3, notes);
+		pstmt.setString(3, rev_notes);
 	    pstmt.setString(4, reviewed_by);	    
 	    pstmt.executeUpdate();
 	    //

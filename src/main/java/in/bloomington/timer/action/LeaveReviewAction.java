@@ -39,8 +39,9 @@ public class LeaveReviewAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("leaveReview.action");
-	if(action.equals("Save")){
+	if(action.equals("Submit")){
 	    getUser();
+	    System.err.println(" user "+user);
 	    review.setReviewed_by(user.getId());
 	    back = review.doSave();
 	    if(!back.isEmpty()){
@@ -50,20 +51,15 @@ public class LeaveReviewAction extends TopAction{
 		addMessage("Saved Successfully");
 	    }	    
 	}
-	else if(action.startsWith("Save")){
-	    getUser();
-	    review.setReviewed_by(user.getId());
-	    back = review.doUpdate();
-	    if(!back.isEmpty()){
-		addError(back);
-	    }
-	    else{
-		addMessage("Updated Successfully");
-	    }	    
-	}	
 	else if(!leave_id.isEmpty()){
 	    getReview();
 	    review.setLeave_id(leave_id);
+	}
+	else{
+	    findLeaveRequests();
+	    if(leaves == null || leaves.size() == 0){
+		addMessage("There is no leave requests"); 
+	    }
 	}
 	return ret;
     }
@@ -288,6 +284,7 @@ public class LeaveReviewAction extends TopAction{
 	    rrl.setGroup_id(group_id);
 	}
 	rrl.setNotReviewed();
+	rrl.setMaxLimit(3); // review 3 at a time
 	String back = rrl.find();
 	if(back.isEmpty()){
 	    List<LeaveRequest> ones = rrl.getRequests();
