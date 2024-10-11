@@ -69,7 +69,8 @@
 		<li><a href="<s:property value='#application.url'/>inform.action?action=logs">Email Logs (By Group Managers)</a></li>
 		<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Entry History</a></li>
 		<li><a href="<s:property value='#application.url'/>termNotificationLogs.action">Employee Termination notification Logs</a></li>
-		<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Active Users (Email list)</a></li>		
+		<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Active Users (Email list)</a></li>
+		<li><a href="<s:property value='#application.url'/>leave_email_logs.action">Leave Email Logs</a></li>		
 	    </ul>
 	</div>
 	<div class="width-one-half float-right">

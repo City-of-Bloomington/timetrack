@@ -9,7 +9,7 @@
 	<th>Total Hours</th>
 	<th>Review Status</th>
 	<th>Reviewer</th>	
-	<th>Review Notes</th>
+	<th>Review Comments</th>
     </tr>
     <s:iterator var="one" value="#reviews">
 	<tr>

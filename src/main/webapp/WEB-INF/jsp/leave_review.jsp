@@ -14,8 +14,9 @@
 	<ul>
 	    <li>You may 'Approve' or 'Deny' each request. </li>
 	    <li>If you Deny a request, please provide the reason in the
-		'Review Decision' field. </li>
+		'Review Comments' field. </li>
 	    <li>The employee will be notified by your decision.</li>
+	    <li>Each review will have no more than three request at a time</li>
 	</ul>
 	<s:if test="hasLeaves()">
 	    <s:form action="leave_review" id="form_id" method="post" >
@@ -23,8 +24,8 @@
 		<table>
 		    <caption>Current Leave Requests</caption>
 		    <tr>
+			<td><b>Employee</b></td>			
 			<td><b>Request Date</b></td>
-			<td><b>Employee</b></td>
 			<td><b>Job Title</b></td>
 			<td><b>Date Range</b></td>
 			<td><b>Hour Code(s)</b></td>	    
@@ -33,8 +34,8 @@
 		    </tr>
 		    <s:iterator var="one" value="leaves" status="rowStatus">
 			<tr>
-			    <td><s:property value="requestDate" /></td>
 			    <td><s:property value="employee" /></td>
+			    <td><s:property value="requestDate" /></td>
 			    <td><s:property value="jobTitle" /></td>
 			    <td><s:property value="date_range" /></td>
 			    <td><s:property value="earnCodes" /></td>
@@ -46,7 +47,7 @@
 			    <td colspan="3"><b>Review Decision: </b>
 				<input type="radio" name="review.rev_status_<s:property value='#rowStatus.count' />" value="Approved" />Approve
 				<input type="radio" name="review.rev_status_<s:property value='#rowStatus.count' />" value="Denied" />Deny
-				<td colspan="4"><b>Review Notes: </b><input type="text" name="review.notes_<s:property value='#rowStatus.count'/>" value="" size="45" maxlength="360" />
+				<td colspan="4"><b>Review Comments: </b><input type="text" name="review.notes_<s:property value='#rowStatus.count'/>" value="" size="40" maxlength="360" />
 			    </td>
 			</tr>
 		    </s:iterator>

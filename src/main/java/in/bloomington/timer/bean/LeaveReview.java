@@ -20,6 +20,9 @@ public class LeaveReview implements java.io.Serializable{
     static Logger logger = LogManager.getLogger(LeaveReview.class);
     String id="", status="", // Approved, Denied
 	leave_id="", reviewed_by="", date="", notes="";
+    boolean activeMail = false;
+    String mail_host = "";
+    Employee user = null;
     //
     // the form will have 3 leave request max
     //
@@ -145,7 +148,18 @@ public class LeaveReview implements java.io.Serializable{
     public void setNotes_3(String val){
 	if(val != null)
 	    notes_3=val;
-    }    
+    }
+    public void setActiveMail(){
+	activeMail = true;
+    }
+    public void setMail_host(String val){
+	if(val != null)
+	    mail_host = val;
+    }
+    public void setUser(Employee val){
+	if(val != null)
+	    user = val;
+    }
     public boolean hasNotes(){
 	return !notes.isEmpty();
     }
@@ -213,24 +227,32 @@ public class LeaveReview implements java.io.Serializable{
     }
     public String doSave(){
 	String back = "";
-	if(!leave_id_1.isEmpty()){
+	if(!leave_id_1.isEmpty() && !rev_status_1.isEmpty()){
 	    String str = saveOne(leave_id_1, rev_status_1, notes_1);
 	    if(!str.isEmpty()){
 		back = "Leave request "+leave_id_1+" enncountered this problem "+str;
 	    }
+	    else if(activeMail){
+		informEmployee(leave_id_1, rev_status_1, notes_1);
+	    }
 	}
-	if(!leave_id_2.isEmpty()){
+	if(!leave_id_2.isEmpty() && !rev_status_2.isEmpty()){
 	    String str = saveOne(leave_id_2, rev_status_2, notes_2);
 	    if(!str.isEmpty()){
 		if(!back.isEmpty()) back += ", ";
 		back += "Leave request "+leave_id_2+" enncountered this problem "+str;
+	    } else if(activeMail){
+		informEmployee(leave_id_2, rev_status_2, notes_2);
 	    }
+
 	}
-	if(!leave_id_3.isEmpty()){
+	if(!leave_id_3.isEmpty() && !rev_status_3.isEmpty()){
 	    String str = saveOne(leave_id_3, rev_status_3, notes_3);
 	    if(!str.isEmpty()){
 		if(!back.isEmpty()) back += ", ";
 		back += "Leave request "+leave_id_3+" enncountered this problem "+str;
+	    }else if(activeMail){
+		informEmployee(leave_id_3, rev_status_3, notes_3);
 	    }
 	}
 	return back;
@@ -326,7 +348,70 @@ public class LeaveReview implements java.io.Serializable{
 	doSelect();
 	return msg;
     }		
-
+    String informEmployee(String leave_one,
+			  String rev_status_one,
+			  String rev_notes_one){
+	String back = "";
+	String manager_email="";
+	String emp_email="";
+	String subject = "";
+	String email_msg = "";
+	String email_from = "";
+	String email_to = "";
+	Employee manager = null;
+	LeaveRequest leave = new LeaveRequest(leave_one);
+	back = leave.doSelect();
+	if(!back.isEmpty()){
+	    back += " could not get leave record "+back;
+	    return back;
+	}
+	Employee emp = leave.getEmployee();
+	subject = "Leave review for "+emp.getFull_name();
+	if(emp != null){
+	    email_to = emp.getEmail();
+	}
+	email_from = user.getEmail();
+	email_msg = "Hi "+emp.getFull_name()+"\n\n";
+	email_msg += "Your leave request for "+leave.getTotalHours()+" hrs of "+
+	    "'"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+" is "+rev_status_one+" ";
+	if(rev_status_one.equals("Denied")){
+	    email_msg += " for the following reason(s):\n "+rev_notes_one+".";
+	}
+	email_msg += "\n\n ";
+	email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
+	email_msg += "Thanks\n\n";
+	email_msg += user.getFull_name();
+	email_msg += "\n\n";
+	//
+	// for logs
+	String email_txt = "Hi "+emp.getFull_name()+"\n";
+	email_txt += "Your leave request for "+leave.getTotalHours()+" hrs of "+
+	    leave.getEarnCodes()+" for your "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+" is "+rev_status_one+" ";
+	if(rev_status_one.equals("Denied")){
+	    email_txt += " for the following reason(s): "+rev_notes_one+".\n";
+	}
+	email_txt += "Leave Description: "+leave.getRequestDetails();
+	email_txt += "Thanks\n";
+	email_txt += user.getFull_name();
+	MailHandle mailer = new
+	    MailHandle(mail_host,
+		       email_to,
+		       email_from,
+		       email_from, // cc
+		       null,											 
+		       subject,
+		       email_msg
+		       );
+	back += mailer.send();
+	LeaveEmailLog lel = new LeaveEmailLog(
+					      email_to,
+					      email_from,
+					      email_txt,
+					      "Review",
+					      back);
+	back += lel.doSave();
+	return back;
+    }    
 }
 /*
 

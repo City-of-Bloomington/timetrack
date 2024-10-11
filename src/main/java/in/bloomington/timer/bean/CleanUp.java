@@ -87,7 +87,7 @@ public class CleanUp{
 	String back = "";
 	Connection con = null;
 	PreparedStatement pstmt = null, pstmt2=null,pstmt3=null,pstmt4=null,
-	    pstmt5=null, pstmt6=null,pstmt7=null;
+	    pstmt5=null, pstmt6=null,pstmt7=null, pstmt8=null;
 	ResultSet rs = null;
 	if(!hasDocuments()){
 	    back = " No documents found";
@@ -107,7 +107,9 @@ public class CleanUp{
 	String qq4 = " select id from tmwrp_runs where document_id in ("+set+")";
 	String qq5 = " delete from tmwrp_blocks where run_id in ";
 	String qq6 = " delete from tmwrp_runs where id in ";
-	String qq7 = " delete from time_documents where id in ("+set+")";
+	String qq7 = " delete from time_notes where document_id in ("+set+")";	
+	String qq8 = " delete from time_documents where id in ("+set+")";
+	
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    back = "Could not connect to DB";
@@ -139,14 +141,16 @@ public class CleanUp{
 		pstmt6.executeUpdate();
 	    }
 	    pstmt7 = con.prepareStatement(qq7);
-	    pstmt7.executeUpdate();						
+	    pstmt7.executeUpdate();
+	    pstmt8 = con.prepareStatement(qq8);
+	    pstmt8.executeUpdate();	    
 	}
 	catch(Exception ex){
 	    back += ex+":"+qq;
 	    logger.error(back);
 	}
 	finally{
-	    Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3, pstmt4, pstmt4, pstmt6, pstmt7);
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2, pstmt3, pstmt4, pstmt4, pstmt6, pstmt7, pstmt8);
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return back;

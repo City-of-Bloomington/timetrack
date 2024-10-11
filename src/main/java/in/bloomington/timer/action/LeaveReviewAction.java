@@ -43,6 +43,12 @@ public class LeaveReviewAction extends TopAction{
 	    getUser();
 	    System.err.println(" user "+user);
 	    review.setReviewed_by(user.getId());
+	    if(activeMail){ 
+		//if(true){
+		review.setActiveMail();
+		review.setMail_host(mail_host);
+		review.setUser(user); // current manager
+	    }
 	    back = review.doSave();
 	    if(!back.isEmpty()){
 		addError(back);
@@ -312,6 +318,7 @@ public class LeaveReviewAction extends TopAction{
 	    }
 	}
     }
+
 }
 
 

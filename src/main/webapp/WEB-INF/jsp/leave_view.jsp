@@ -34,7 +34,7 @@
 	    <b>Reviewer: </b><s:property value="leave.reviewer" /><br />
 	    <br />
 	    <s:if test="leave.hasReviewNotes()">
-		<b>Review Notes: </b><s:property value="leave.reviewNotes" /><br />
+		<b>Review Comments: </b><s:property value="leave.reviewNotes" /><br />
 		<br />
 	    </s:if>
 	</s:if>

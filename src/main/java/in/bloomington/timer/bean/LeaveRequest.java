@@ -220,7 +220,7 @@ public class LeaveRequest implements java.io.Serializable{
 		String back = one.doSelect();
 		if(back.isEmpty()){
 		    if(!ret.isEmpty()) ret += ", ";
-		    ret += one.getName();
+		    ret += one.getCodeInfo();
 		}
 	    }
 	}

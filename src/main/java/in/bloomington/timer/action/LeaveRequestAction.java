@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import in.bloomington.timer.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,9 +47,14 @@ public class LeaveRequestAction extends TopAction{
 		addError(back);
 	    }
 	    else{
+		if(activeMail){
+		//if(true){
+		    // now iform the supervisor		    
+		    back = informManager();
+		}
 		addMessage("Saved Successfully");
 	    }
-	}				
+	}   // update is not really needed
 	else if(action.startsWith("Save")){
 	    leave.setEarn_code_ids(earn_code_ids);
 	    leave.setInitiated_by(user.getId());
@@ -60,7 +66,7 @@ public class LeaveRequestAction extends TopAction{
 		addMessage("Updated Successfully");
 		ret = "view";
 	    }
-	}
+	} // not needed as well
 	else if(action.startsWith("Edit")){
 	    if(!id.isEmpty()){
 		getLeave();
@@ -254,6 +260,87 @@ public class LeaveRequestAction extends TopAction{
 		}
 	    }
 	}
+    }
+    String informManager(){
+	String back = "";
+	    
+	if(leave == null){
+	    back = "No leave request to process";
+	    return back;
+	}
+	String manager_email="";
+	String emp_email="";
+	String subject = "";
+	String email_msg = "";
+	String email_from = "";
+	String email_to = "";
+	Employee manager = null;	
+	Employee emp = leave.getEmployee();
+	subject = "Leave request for "+emp.getFull_name();
+	if(emp != null){
+	    email_from = emp.getEmail();
+	}
+	GroupManager groupManager = leave.getManager();
+	if(groupManager != null){
+	    Employee one = groupManager.getEmployee();
+	    if(one != null)
+		manager = one;
+	    email_to = manager.getEmail();
+	}
+
+	/**
+	email_msg = "<!DOCTYPE html>";
+	email_msg += "<htmL lang=\"en\">";
+	email_msg += "<head>";
+	email_msg += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
+	email_msg += "<title>Leave Request</title>\n";
+	email_msg += "</head>\n";
+	email_msg += "<body>\n";
+	*/
+	email_msg = "Hi "+manager.getFull_name()+"\n\n";
+	email_msg += "I am requesting "+leave.getTotalHours()+" hrs of '"+
+	    leave.getEarnCodes()+"' leave from "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+".\n\n"; 
+	if(leave.hasNotes()){
+	    email_msg += "Leave Description: "+leave.getRequestDetails()+
+"\n\n";
+	}
+	email_msg += "Thanks\n\n";
+	email_msg += emp.getFull_name();
+	email_msg += "\n\n";
+	// email_msg += "<br /><br />";
+	// email_msg += "</body></html>";
+	//
+	// text for logs
+	String email_txt ="Hi "+manager.getFull_name()+"\n";
+	email_txt += "I am requesting "+leave.getTotalHours()+" hrs of "+
+	    leave.getEarnCodes()+" leave from "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+".\n"; 
+
+	if(leave.hasNotes()){
+	    email_txt += "<b>Leave Description:</b> "+leave.getRequestDetails()+"\n";
+	}
+	email_txt += "Thanks ";
+	email_txt += emp.getFull_name();
+
+
+	    
+	MailHandle mailer = new
+	    MailHandle(mail_host,
+		       email_to,
+		       email_from,
+		       email_from, // cc
+		       null,											 
+		       subject,
+		       email_msg
+		       );
+	back += mailer.send();
+	LeaveEmailLog lel = new LeaveEmailLog(
+					      email_to,
+					      email_from,
+					      email_txt,
+					      "Request",
+					      back);
+	back += lel.doSave();
+	return back;
     }
 }
 
