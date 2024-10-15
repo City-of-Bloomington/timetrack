@@ -373,12 +373,19 @@ public class LeaveReview implements java.io.Serializable{
 	email_from = user.getEmail();
 	email_msg = "Hi "+emp.getFull_name()+"\n\n";
 	email_msg += "Your leave request for "+leave.getTotalHours()+" hrs of "+
-	    "'"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+" is "+rev_status_one+" ";
-	if(rev_status_one.equals("Denied")){
-	    email_msg += " for the following reason(s):\n "+rev_notes_one+".";
+	    "'"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+" is "+rev_status_one+"";
+	if(rev_status_one.equals("Approved")){
+	    email_msg +=".\n\n";
+	    email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
+	    email_msg += "Now go ahead and add the leave times to your time details page.\n\n";
+	}	
+	else if(rev_status_one.equals("Denied")){
+	    email_msg += " for the following reason(s):\n "+rev_notes_one+".\n\n";
+	    email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
+
+	    
 	}
-	email_msg += "\n\n ";
-	email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
+
 	email_msg += "Thanks\n\n";
 	email_msg += user.getFull_name();
 	email_msg += "\n\n";

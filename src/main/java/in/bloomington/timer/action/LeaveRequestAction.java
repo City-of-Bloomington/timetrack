@@ -31,7 +31,8 @@ public class LeaveRequestAction extends TopAction{
     List<EmployeeAccrual> empAccruals = null;
     JobTask job = null;
     String[] earn_code_ids = {""};
-    String[] hr_code_prefered_order = {"4","6","2","8"};
+    String[] hr_code_prefered_order = {"2","4","6","8"};
+    String[] hr_code_exclude = {"3","73","120","147" };
     public String execute(){
 	String ret = SUCCESS;
 	String back = canProceed("leaveRequest.action");
@@ -48,10 +49,12 @@ public class LeaveRequestAction extends TopAction{
 	    }
 	    else{
 		if(activeMail){
-		//if(true){
+		    //if(true){
 		    // now iform the supervisor		    
 		    back = informManager();
 		}
+		id = leave.getId();
+		ret = "view";
 		addMessage("Saved Successfully");
 	    }
 	}   // update is not really needed
@@ -191,10 +194,30 @@ public class LeaveRequestAction extends TopAction{
 	// earn codes are part of finding document
 	//
 	findHourCodes();
+	removeExcludedHourCodes();
 	addAccrualsToHourCodes();
 	reorderHourCodes();
 	return hourCodes;
     }
+    public String getHourCodesListSize(){
+	String size="0";
+	size = ""+getHourCodes().size();
+	return size;
+    }
+	
+    void removeExcludedHourCodes(){
+	List<HourCode> ll = new ArrayList<>();
+	if(hourCodes != null && hourCodes.size() > 0){
+	    for(String str:hr_code_exclude){
+		for(int jj=0;jj<hourCodes.size();jj++){
+		    HourCode one = hourCodes.get(jj);
+		    if(one.getId().equals(str)){
+			hourCodes.remove(jj);
+		    }
+		}
+	    }
+	}
+    }    
     void reorderHourCodes(){
 	List<HourCode> ll = new ArrayList<>();
 	if(hourCodes != null && hourCodes.size() > 0){
@@ -288,18 +311,9 @@ public class LeaveRequestAction extends TopAction{
 	    email_to = manager.getEmail();
 	}
 
-	/**
-	email_msg = "<!DOCTYPE html>";
-	email_msg += "<htmL lang=\"en\">";
-	email_msg += "<head>";
-	email_msg += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
-	email_msg += "<title>Leave Request</title>\n";
-	email_msg += "</head>\n";
-	email_msg += "<body>\n";
-	*/
 	email_msg = "Hi "+manager.getFull_name()+"\n\n";
 	email_msg += "I am requesting "+leave.getTotalHours()+" hrs of '"+
-	    leave.getEarnCodes()+"' leave from "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+".\n\n"; 
+	    leave.getEarnCodes()+"' leave from my "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+".\n\n"; 
 	if(leave.hasNotes()){
 	    email_msg += "Leave Description: "+leave.getRequestDetails()+
 "\n\n";
@@ -307,21 +321,6 @@ public class LeaveRequestAction extends TopAction{
 	email_msg += "Thanks\n\n";
 	email_msg += emp.getFull_name();
 	email_msg += "\n\n";
-	// email_msg += "<br /><br />";
-	// email_msg += "</body></html>";
-	//
-	// text for logs
-	String email_txt ="Hi "+manager.getFull_name()+"\n";
-	email_txt += "I am requesting "+leave.getTotalHours()+" hrs of "+
-	    leave.getEarnCodes()+" leave from "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+".\n"; 
-
-	if(leave.hasNotes()){
-	    email_txt += "<b>Leave Description:</b> "+leave.getRequestDetails()+"\n";
-	}
-	email_txt += "Thanks ";
-	email_txt += emp.getFull_name();
-
-
 	    
 	MailHandle mailer = new
 	    MailHandle(mail_host,
@@ -336,7 +335,7 @@ public class LeaveRequestAction extends TopAction{
 	LeaveEmailLog lel = new LeaveEmailLog(
 					      email_to,
 					      email_from,
-					      email_txt,
+					      email_msg,
 					      "Request",
 					      back);
 	back += lel.doSave();

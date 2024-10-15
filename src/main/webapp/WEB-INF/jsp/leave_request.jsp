@@ -4,13 +4,15 @@
     <s:form action="leave_request" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="leave.job_id" value="%{leave.job_id}" />
-	<s:hidden name="job_id" value="%{leave.job_id}" />			
-	<h2>ACTIVE Leave Request</h2>
-	<s:if test="leave.id != ''">
+	<s:hidden name="job_id" value="%{leave.job_id}" />
+	<s:if test="leave.id == ''">
+	    <h2>New Leave Request</h2>
+	</s:if>
+	<s:elseif test="leave.id != ''">
 	    <s:hidden name="leave.id" value="%{leave.id}" />
 	    <s:hidden name="id" value="%{leave.id}" />	    
 	    <h1>Edit Leave Request <s:property value="leave.id" /></h1>
-	</s:if>
+	</s:elseif>
 	<s:if test="hasErrors()">
 	    <s:set var="errors" value="errors" />
 	    <%@ include file="errors.jsp" %>
@@ -23,8 +25,11 @@
 	    Leave Request for Job: <s:property value="leave.jobTitle" /><br />
 	    Work Group: <s:property value="leave.group" /><br />
 	    Group Manager to be notified: <s:property value="leave.managerName"/><br />
-	</p>	
+	</p>
+	<!-- 
 	<div class="width-full">
+	    -->
+	<div class="time-block">	    
 	    <div class="form-group" style="border-bottom: none;">
 		<label>Date Range</label>
 		<div class="date-range-picker">
@@ -38,10 +43,10 @@
 			<s:textfield name="leave.lastDate" value="%{leave.lastDate}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" requiredLabel="true"  required="true" />
 		    </div>
 		    &nbsp;&nbsp;&nbsp;
-		    <div>	    
-			<label>Length of Proposed Leave (Total Hours): *</label>
-			<s:if test="leave.id == ''">  
-			      <s:textfield name="leave.totalHours" value="" size="5" maxlength="5" placeholder="(xxx.xx)" required="true" /><br />
+		    <div id="div_time_in" class="form-group">
+			<label>Length of Proposed Leave</label>
+			<s:if test="leave.id == ''">
+			    <s:textfield name="leave.totalHours" value="" size="5" maxlength="5" placeholder="Total hrs (xxx.xx)" required="true" /><br />
 			</s:if>
 			<s:else>
 			      <s:textfield name="leave.totalHours" value="%{leave.totalHours}" size="5" maxlength="5" placeholder="(xxx.xx)" required="true" /><br />
@@ -51,21 +56,27 @@
 	    </div>
 	    <div class="form-group">
 		<label>Proposed Hour Codes to be used: *</label>
-		<table>
+		<table style="border:3px solid">
 		    <s:iterator value="hourCodes" var="one" status="row">
 			<s:if test="#row.index%3 == 0">
 			    <tr>
 			</s:if>
 			<s:if test="id in earn_code_ids">
-			    <td><input type="checkbox" name="earn_code_ids" value="<s:property value='id' />" checked="checked" /><s:property value="codeInfo" /></td>
+			    <td style="border:1px solid"><input type="checkbox" name="earn_code_ids" value="<s:property value='id' />" checked="checked" /><s:property value="codeInfo" /></td>
 			</s:if>
 			<s:else>
-			    <td><input type="checkbox" name="earn_code_ids" value="<s:property value='id' />" /><s:property value="codeInfo" /></td>
+			    <td style="border:1px solid"><input type="checkbox" name="earn_code_ids" value="<s:property value='id' />" /><s:property value="codeInfo" /></td>
 			</s:else>
 			<s:if test="#row.index%3 == 2">
 			    </tr>
 			</s:if>			    
 		    </s:iterator>
+		    <s:if test="hourCodesListSize%3 == 1">
+			<td>&nbsp;</td><td>&nbsp;</td></tr>
+		    </s:if>
+		    <s:elseif test="hourCodesListSize%3 == 2">
+			<td>&nbsp;</td></tr>
+		    </s:elseif>
 		</table>
 	    </div>
 	    <div class="form-group">

@@ -44,16 +44,15 @@
           <a href="<s:property value='#application.url'/>approve.action">Timesheet Approval</a>
 
        </s:if>
-	<s:if test="user.isLeaveEligible()">
-	  <a href="<s:property value='#application.url'/>leave_request.action?job_id=<s:property value='user.job_id' />">Leave Request </a>	
-	</s:if>      
-      
       <s:if test="user.isTermManager()">
 	  <a href="<s:property value='#application.url'/>activeEmployees.action">Current Employees</a>
       </s:if>
       <s:if test="user.canPayrollProcess()">
           <a href="<s:property value='#application.url'/>payrollProcess.action">Payroll Approval</a>
       </s:if>
+      <s:if test="user.isLeaveEligible()">
+	  <a href="<s:property value='#application.url'/>leave_request.action?job_id=<s:property value='user.job_id' />">Leave Request </a>	
+      </s:if>      
       <s:if test="user.canApprove()">      
           <a href="<s:property value='#application.url'/>leave_review.action">Leave Review</a>
 	</s:if>
