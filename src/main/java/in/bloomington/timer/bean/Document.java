@@ -75,7 +75,8 @@ public class Document implements Serializable{
     List<TimeIssue> timeIssues = null;
     List<Employee> nextActioners = null;
     List<GroupManager> editors = null;
-    List<GroupManager> processors = null;		
+    List<GroupManager> processors = null;
+    List<LeaveRequest> leaveRequests = null;
     TimeAction lastTimeAcion = null;
     Map<String, AccrualWarning> warningMap = new TreeMap<>();
     //
@@ -447,7 +448,41 @@ public class Document implements Serializable{
 		}
 	    }
 	}
-    }		
+    }
+    public boolean hasLeaveRequests(){
+	if(leaveRequests == null){
+	    findLeaveRequests();
+	}
+	return leaveRequests != null && leaveRequests.size() > 0;
+    }
+    void findLeaveRequests(){
+	System.err.println(" pay_period_id "+pay_period_id);
+	System.err.println(" job_id "+job_id);
+	if(job_id.isEmpty()){
+	    getJob_id();
+	}
+	if(pay_period_id.isEmpty()){
+	    getPay_period_id();
+	}
+	if(job_id.isEmpty() || pay_period_id.isEmpty()){
+	    logger.error("job_id or pay_period_id are not set ");
+	    return;
+	}	
+	LeaveRequestList rrl = new LeaveRequestList();	
+	rrl.setIsReviewed();
+	rrl.setPay_period_id(pay_period_id);
+	rrl.setJob_id(job_id);
+	rrl.setApprovedOnly();
+	String back = rrl.find();
+	if(back.isEmpty()){
+	    List<LeaveRequest> ones = rrl.getRequests();
+	    if(ones != null)
+		leaveRequests = ones;
+	}	
+    }
+    public List<LeaveRequest> getLeaveRequests(){
+	return leaveRequests;
+    }
     public boolean canBeApproved(){
 	getLastTimeAction();
 	if(lastTimeAcion != null){

@@ -405,6 +405,10 @@ public class LeaveRequest implements java.io.Serializable{
 	    msg = "end date is required";
 	    return msg;
 	}
+	// we can use start_date > end_date 
+	if(start_date.compareTo(end_date) > 0){
+	    msg = "Start date can not be more than end date "; 
+	}
 	if(earn_code_ids == null){
 	    msg = "Hour Code is required";
 	    return msg;

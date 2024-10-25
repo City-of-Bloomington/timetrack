@@ -126,15 +126,15 @@ public class LeaveReview implements java.io.Serializable{
 	    leave_id_3=val;
     }    
     public void setRev_status_1(String val){
-	if(val != null)
+	if(val != null && !val.equals("-1"))
 	    rev_status_1=val;
     }
     public void setRev_status_2(String val){
-	if(val != null)
+	if(val != null && !val.equals("-1"))
 	    rev_status_2=val;
     }
     public void setRev_status_3(String val){
-	if(val != null)
+	if(val != null && !val.equals("-1"))
 	    rev_status_3=val;
     }
     public void setNotes_1(String val){

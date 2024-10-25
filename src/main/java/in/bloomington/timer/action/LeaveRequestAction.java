@@ -168,13 +168,30 @@ public class LeaveRequestAction extends TopAction{
 	}
 	return earn_code_ids;
     }    
-    
+    void findCurrentPayPeriod(){
+	//
+	if(pay_period_id.isEmpty()){
+	    PayPeriodList ppl = new PayPeriodList();
+	    ppl.currentOnly();
+	    String back = ppl.find();
+	    if(back.isEmpty()){
+		List<PayPeriod> ones = ppl.getPeriods();
+		if(ones != null && ones.size() > 0){
+		    pay_period_id = ones.get(0).getId();
+		}
+	    }
+	}
+    }    
     public List<LeaveRequest> getRequests(){
 	if(requests == null){
+	    findCurrentPayPeriod();
 	    LeaveRequestList tl = new LeaveRequestList();
 	    //tl.setInitiated_by(user.getId());
 	    tl.setJob_id(job_id);
 	    tl.setActiveOnly();
+	    tl.setPay_period_id(pay_period_id);
+	    tl.setCurrentAndFuture();
+	    //tl.setDecided();
 	    String back = tl.find();
 	    if(back.isEmpty()){
 		List<LeaveRequest> ones = tl.getRequests();
@@ -185,7 +202,7 @@ public class LeaveRequestAction extends TopAction{
 	}
 	return requests;
     }
-    public boolean hasRequests(){
+    public boolean hasDecidedRequests(){
 	getRequests();
 	return requests != null && requests.size() > 0;
     }

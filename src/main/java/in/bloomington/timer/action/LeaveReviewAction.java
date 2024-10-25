@@ -36,6 +36,8 @@ public class LeaveReviewAction extends TopAction{
     LeaveRequest leave = null;
     LeaveReview review = null;
     List<LeaveReview> reviews = null;
+    String display_ids = ""; // next to show
+    String displayed_ids = ""; // previous showing
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("leaveReview.action");
@@ -233,7 +235,13 @@ public class LeaveReviewAction extends TopAction{
 	if(val != null && !val.equals("-1")){
 	    department_id = val;
 	}
-    }		
+    }
+    // diplayed from current showing to
+    // ignore in next showing
+    public void setDisplayed_ids(String val){
+	if(val != null)
+	    displayed_ids = val;
+    }
     public Department getDepartment(){
 	if(department == null){
 	    if(department_id.isEmpty()){
@@ -289,7 +297,8 @@ public class LeaveReviewAction extends TopAction{
 	else if(!group_id.isEmpty()){
 	    rrl.setGroup_id(group_id);
 	}
-	rrl.setNotReviewed();
+	if(!displayed_ids.isEmpty())
+	    rrl.setIdsToIgnore(displayed_ids);
 	rrl.setMaxLimit(3); // review 3 at a time
 	String back = rrl.find();
 	if(back.isEmpty()){
@@ -297,6 +306,18 @@ public class LeaveReviewAction extends TopAction{
 	    if(ones != null)
 		leaves = ones;
 	}
+    }
+    public String getDisplay_ids(){
+	if(leaves == null){
+	    findLeaveRequests();
+	}
+	if(leaves != null){
+	    for(LeaveRequest one:leaves){
+		if(!display_ids.isEmpty()) display_ids +=",";
+		display_ids += one.getId();
+	    }
+	}
+	return display_ids;
     }
     public List<LeaveReview> getReviews(){
 	return reviews;

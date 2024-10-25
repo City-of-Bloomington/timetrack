@@ -9,37 +9,25 @@
 	<%@ include file="messages.jsp" %>
     </s:elseif>    
     <h1>Leave Request <s:property value="leave.id" /> </h1>
-    <p>
-	<b>Employee:</b> <s:property value="leave.employee" /><br />
-	<br />	
-	<b>Leave Request for Job:</b> <s:property value="leave.jobTitle" /><br />
-	<br />
-	<b>Request Date:</b> <s:property value="leave.requestDate" /><br />
-	<br />
-	<b>Work Group:</b> <s:property value="leave.group" /><br />
-	<br />
-	<b>Group Manager to be notified:</b> <s:property value="leave.managerName"/><br />
-	<br />
-	<b>Date Range: </b><s:property value="leave.date_range" /><br />
-	<br />
-	<b>Proposed Hour Codes to be used: </b><s:property value="leave.earnCodes" /><br />
-	<br />
-	<b>Length of Proposed Leave (Total Hours): </b><s:property value="leave.totalHours" /><br />
-	<br />
-	<b>Proposed Leave Description: </b><s:property value="leave.requestDetails" /><br />
-	<br />
-	<b>Review Status: </b><s:property value="leave.reviewStatus" /><br />
-	<br />
+    <br />
+    <ul>
+	<li><b>Employee:</b> <s:property value="leave.employee" /></li>	
+	<li><b>Leave Request for Job:</b> <s:property value="leave.jobTitle" /><br /></li>
+	<Li><b>Request Date:</b> <s:property value="leave.requestDate" /></Li>
+	<li><b>Work Group:</b> <s:property value="leave.group" /></li>
+	<li><b>Group Manager to be notified:</b> <s:property value="leave.managerName"/></li>
+	<li><b>Date Range: </b><s:property value="leave.date_range" /></li>
+	<li><b>Proposed Hour Codes to be used: </b><s:property value="leave.earnCodes" /></li>
+	<li><b>Length of Proposed Leave (Total Hours): </b><s:property value="leave.totalHours" /></li>
+	<li><b>Proposed Leave Description: </b><s:property value="leave.requestDetails" /></li>
+	<li><b>Review Status: </b><s:property value="leave.reviewStatus" /></li>
 	<s:if test="leave.hasReviewer()">
-	    <b>Reviewer: </b><s:property value="leave.reviewer" /><br />
-	    <br />
+	    <li><b>Reviewer: </b><s:property value="leave.reviewer" /></li>
 	    <s:if test="leave.hasReviewNotes()">
-		<b>Review Comments: </b><s:property value="leave.reviewNotes" /><br />
-		<br />
+		<li><b>Review Comments: </b><s:property value="leave.reviewNotes" /></li>
 	    </s:if>
 	</s:if>
-	-------------------------------- <br />
-    </p>
+    </ul>
 </div>
 <s:if test="hasRequests()">
     <s:set var="leave_requests" value="requests" />

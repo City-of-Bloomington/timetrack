@@ -136,7 +136,7 @@ public class SalaryGroup implements Serializable{
     // all groups are leave elegible except temp workers
     //
     public boolean isLeaveEligible(){
-	return !isTemporary();
+	return isExempt() || isNonExempt() || isPartTime();
     }
     //
     // setters

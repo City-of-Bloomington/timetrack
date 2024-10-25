@@ -825,12 +825,17 @@ public class TimeBlock extends Block{
 	}
 	if(!hour_code_id.isEmpty()){
 	    if(hourCode.isRecordMethodMonetary()){
+		/**
 		List<HourCodeExtraCondition> conditions = null;
 		HourCodeExtraConditionList ecel = new HourCodeExtraConditionList();
+		*/
+		List<HourCodeExtra> conditions = null;
+		HourCodeExtraList ecel = new HourCodeExtraList();		
 		ecel.setHour_code_id(hour_code_id);
 		str = ecel.find();
 		if(str.isEmpty()){
-		    List<HourCodeExtraCondition> ones = ecel.getConditions();
+		    // List<HourCodeExtraCondition> ones = ecel.getConditions();
+		    List<HourCodeExtra> ones = ecel.getExtras();
 		    if(ones != null && ones.size() > 0){
 			conditions = ones;
 		    }
@@ -843,17 +848,23 @@ public class TimeBlock extends Block{
 		    if(document != null){
 			emp_id = document.getEmployee_id();
 		    }
-		    for(HourCodeExtraCondition one:conditions){
+		    for(HourCodeExtra one:conditions){
 			if(one.isDefaultValueFixed()){
 			    if(amount != hourCode.getDefaultMonetaryAmount()){
 				amount = hourCode.getDefaultMonetaryAmount();
 			    }
 			}
+			List<String> hourCode_ids = one.getHourCode_ids();
 			// check the total used for this year
 			double t_max = one.getMaxTotalPerYear();
 			if(t_max > 0){ // if this is 0, there is no max
 			    // find the total used so far
-			    double ttl_max = findTotalUsedFor(hour_code_id, emp_id);
+			    double ttl_max = 0;
+			    if(hourCode_ids != null){
+				for(String hr_id:hourCode_ids){
+				    ttl_max += findTotalUsedFor(hr_id, emp_id);
+				}
+			    }
 			    if(ttl_max + amount  > t_max){
 				warn_msg = "Total yearly max of "+t_max+" is reached, no more can be added ";
 				return warn_msg;

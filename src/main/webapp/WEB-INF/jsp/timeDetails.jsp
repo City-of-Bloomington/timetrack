@@ -119,6 +119,11 @@ function loginTimer() {
 			<s:set var="unionned" value="'false'" />
 		    </s:else>
 		</s:else>
+		<s:if test="document.hasLeaveRequests()">
+		    <h1>Approved Leaves in this Pay Period </h1>
+		    <s:set var="leave_requests" value="document.leaveRequests" />
+		    <%@ include file="leaves_approved.jsp" %>
+		</s:if>
 		<h1>Pay Period Summary</h1>
 		<s:if test="hasMultipleJobs()">
 		    <s:if test="mjdoc.hasWarnings()">

@@ -23,8 +23,11 @@ public class LeaveRequestList{
     String pay_period_id = "", initiated_by="";
     String limit="";
     String group_id="", group_ids=""; // for reviewers
+    String ids_to_ignore = ""; 
     boolean active_only = false;
-    boolean not_reviewed = false;
+    boolean is_reviewed = false, not_reviewed=false;
+    boolean approved_only = false;
+    boolean current_and_future_only = false;
     List<LeaveRequest> requests = null;
 		
     public LeaveRequestList(){
@@ -66,15 +69,31 @@ public class LeaveRequestList{
 	    limit = ""+val;
 	}
     }
+    public void setIdsToIgnore(String val){ // comma separated
+	if(val != null)
+	    ids_to_ignore=val;
+    }    
     public void setActiveOnly(){
 	active_only = true;
     }
+    public void setIsReviewed(){
+	is_reviewed = true;
+    }
     public void setNotReviewed(){
 	not_reviewed = true;
+    }    
+    public void setApprovedOnly(){
+	approved_only = true;
     }
     public void setSortBy(String val){
 	if(val != null)
 	    sortBy = val;
+    }
+    public void setDecided(){
+	is_reviewed = true;
+    }
+    public void setCurrentAndFuture(){
+	current_and_future_only = true;
     }
     public String find(){
 		
@@ -100,7 +119,14 @@ public class LeaveRequestList{
 	    if(!pay_period_id.isEmpty()){
 		qq += ", pay_periods p ";
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " (p.start_date >= t.start_date and p.start_date <= p.end_date) or (p.end_date >= t.start_date and p.end_date <= t.end_date) ";
+		qw += " ((p.start_date >= t.start_date and p.start_date < t.end_date) or "+
+		    "(p.end_date > t.start_date and p.end_date <= t.end_date) or "+
+		    "(p.start_date <= t.start_date and p.end_date >= t.end_date) ";
+		if(current_and_future_only){
+		    if(!qw.isEmpty()) qw += " or ";
+		    qw += " t.end_date >= p.end_date ";
+		}
+		qw +=" ) ";
 		qw += " and p.id = ? ";
 	    }
 	    if(!date_from.isEmpty()){
@@ -123,9 +149,22 @@ public class LeaveRequestList{
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " j.group_id = ? ";
 	    }
-	    if(not_reviewed){
+	    if(is_reviewed){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " t.id in (select leave_id from leave_reviews)";
+	    }
+	    else if(not_reviewed){
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " t.id not in (select leave_id from leave_reviews)";
+	    }
+	    if(!ids_to_ignore.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " t.id not in ("+ids_to_ignore+")";
+	    }
+	    if(approved_only){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " r.review_status='Approved' ";
+		
 	    }
 	    if(!qw.isEmpty()){
 		qq += " where "+qw;
