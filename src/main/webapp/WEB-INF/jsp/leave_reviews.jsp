@@ -1,6 +1,7 @@
 
-<table><legend>Leave Reviews</legend>
+<table>
     <tr>
+	<th>&nbsp;</th>
 	<th>ID</th>
 	<th>Review Date</th>
 	<th>Employee </th>
@@ -13,6 +14,7 @@
     </tr>
     <s:iterator var="one" value="#reviews">
 	<tr>
+	    <td>&nbsp;</td>
 	    <td><s:property value="id" /></td>
 	    <td><s:property value="date" /></td>
 	    <td><s:property value="leave.employee" /></td>

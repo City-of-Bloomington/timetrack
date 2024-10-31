@@ -1636,13 +1636,14 @@ insert into  code_reason_conditions values
 ;;
 ;; leave management tables
 ;;
+
 create table leave_requests(
 id int unsigned auto_increment,
 job_id int unsigned not null,
 start_date date not null,
 end_date date not null,
 hour_code_ids varchar(64),
-total_hours decimal(5,2),
+total_hours decimal(6,2),
 request_details varchar(1024),
 initiated_by int unsigned not null,
 request_date date,
@@ -1662,3 +1663,41 @@ primary key(id),
 foreign key(leave_id) references leave_requests(id),
 foreign key(reviewed_by) references employees(id)
 )engine=InnoDB;
+;;
+;;
+create table leave_emaiL_logs(
+id int unsigned auto_increment primary key,
+email_to varchar(80),
+email_from varchar(80),
+email_msg varchar(1024),
+sent_date date not null,
+email_type enum('Request','Review'),
+error_msg varchar(2048)
+)engine=InnoDB;
+;;
+;;
+
+  create table hour_code_extras (
+  id int unsigned not null auto_increment,
+  times_per_day tinyint default 1,
+  default_value_fixed char(1) default 'y',
+  max_total_per_year double default 500,
+  hour_code_associate_type enum('Regular','Used','Earned','Overtime','Unpaid','Other','Call Out','Monetary') default 'Regular',
+  inactive char(1),
+  primary key(id)
+  )engine=InnoDB;
+
+  create table hour_code_extra_related (
+  id int unsigned not null auto_increment,
+  hour_code_extra_id int unsigned not null,  
+  hour_code_id int unsigned NOT NULL,
+  FOREIGN KEY (hour_code_id) REFERENCES hour_codes(id),
+  FOREIGN KEY (hour_code_extra_id) REFERENCES hour_code_extras(id),    
+  primary key(id)  
+  )engine=InnoDB;    
+
+  insert into hour_code_extras values(0,1,'y',500,'Regular',null);
+  insert into hour_code_extra_related values(0,1,157);
+  insert into hour_code_extra_related values(0,1,158);  
+
+

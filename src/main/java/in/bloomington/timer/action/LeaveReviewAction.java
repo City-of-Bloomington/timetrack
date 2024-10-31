@@ -38,6 +38,7 @@ public class LeaveReviewAction extends TopAction{
     List<LeaveReview> reviews = null;
     String display_ids = ""; // next to show
     String displayed_ids = ""; // previous showing
+    int leaves_total_number = 0;
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("leaveReview.action");
@@ -129,6 +130,13 @@ public class LeaveReviewAction extends TopAction{
 	getManagers();
 	return managers != null && managers.size() > 0;
     }
+    public Integer getLeavesTotalNumber(){
+	if(leaves_total_number == 0)
+	    findLeaveRequests();
+	return leaves_total_number;
+	
+    }
+	
     public List<GroupManager> getManagers(){
 				
 	GroupManagerList gml = new GroupManagerList(user.getId());
@@ -285,7 +293,8 @@ public class LeaveReviewAction extends TopAction{
 	if(group_id.isEmpty()){
 	    getGroup();
 	}
-	LeaveRequestList rrl = new LeaveRequestList();	
+	LeaveRequestList rrl = new LeaveRequestList();
+	rrl.setNotReviewed();
 	if(hasMoreThanOneGroup()){
 	    String group_ids = "";
 	    for(Group gg:groups){
@@ -299,12 +308,22 @@ public class LeaveReviewAction extends TopAction{
 	}
 	if(!displayed_ids.isEmpty())
 	    rrl.setIdsToIgnore(displayed_ids);
-	rrl.setMaxLimit(3); // review 3 at a time
+	// rrl.setMaxLimit(3); // review 3 at a time
 	String back = rrl.find();
 	if(back.isEmpty()){
 	    List<LeaveRequest> ones = rrl.getRequests();
-	    if(ones != null)
-		leaves = ones;
+	    if(ones != null){
+		leaves_total_number = ones.size();
+		if(leaves_total_number <=3){
+		    leaves = ones;
+		}
+		else{
+		    leaves = new ArrayList<>();
+		    for(int jj=0;jj<3;jj++){
+			leaves.add(ones.get(jj));
+		    }
+		}
+	    }
 	}
     }
     public String getDisplay_ids(){

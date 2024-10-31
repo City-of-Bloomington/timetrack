@@ -83,9 +83,8 @@
 	    <br />
 	    <br />
 	    <fieldset>
-		<br />
 		Note: Please consider the following to request a leave <br />
-		<ul>
+		<ul style="margin:0;padding:0;">
 		    <li> Documentation/approval is required for Leave over 16 hours.  It is optional for leave under 16.</li>
 		    <li> After you Submit your request, your supervisor will be notified by your request </li>
 		    <li> After your supervisor receives the notification, he/she will review your request and may 'Approve' or Deny the request </li>
