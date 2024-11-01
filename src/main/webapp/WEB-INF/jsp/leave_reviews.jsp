@@ -12,8 +12,13 @@
 	<th>Reviewer</th>	
 	<th>Review Comments</th>
     </tr>
-    <s:iterator var="one" value="#reviews">
-	<tr>
+    <s:iterator var="one" value="#reviews" status="rowStatus">
+	<s:if test="#rowStatus.count%2 == 0">
+	    <tr style="background-color:#efefef">
+	</s:if>
+	<s:else>
+	    <tr>
+	</s:else>	
 	    <td>&nbsp;</td>
 	    <td><s:property value="id" /></td>
 	    <td><s:property value="date" /></td>

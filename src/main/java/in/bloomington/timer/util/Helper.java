@@ -22,7 +22,8 @@ public class Helper{
     static final long serialVersionUID = 2300L;
     static Logger logger = LogManager.getLogger(Helper.class);
     final static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        		
+    final static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+    
     static int c_con = 0;
     final static String bgcolor = "silver";// #bfbfbf gray
     final static String fgcolor = "navy";// for titles
@@ -645,6 +646,7 @@ public class Helper{
 	}
 	return ret;
     }
+    
     public final static boolean isOldDate(final String date){
 	if(date == null || date.isEmpty()) return false;
 	String dt = getToday();
@@ -658,6 +660,21 @@ public class Helper{
 	}
 	return false;
     }
+    // date in yyyy-mm-dd format
+    public final static boolean isOldDate2(final String date){
+	if(date == null || date.isEmpty()) return false;
+	String dt = getToday();
+	try{
+	    java.util.Date today = sdf.parse(dt);
+	    java.util.Date date2 = sdf2.parse(date);
+	    return date2.compareTo(today) < 0;
+	}
+	catch(Exception ex){
+	    System.err.println(ex);
+	}
+	return false;
+    }
+    // date in mm/dd/yyyy format
     public final static boolean isFutureDate(final String date){
 	if(date == null || date.isEmpty()) return false;
 	String dt = getToday();

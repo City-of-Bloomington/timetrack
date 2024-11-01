@@ -35,6 +35,7 @@ public class LeaveReviewAction extends TopAction{
     List<LeaveRequest> leaves = null;
     LeaveRequest leave = null;
     LeaveReview review = null;
+    Employee reviewer = null;
     List<LeaveReview> reviews = null;
     String display_ids = ""; // next to show
     String displayed_ids = ""; // previous showing
@@ -55,6 +56,7 @@ public class LeaveReviewAction extends TopAction{
 	    back = review.doSave();
 	    if(!back.isEmpty()){
 		addError(back);
+		displayed_ids = "";
 	    }
 	    else{
 		addMessage("Saved Successfully");
@@ -81,6 +83,13 @@ public class LeaveReviewAction extends TopAction{
 	    }
 	}
 	return leave;
+    }
+    public Employee getReviewer(){
+	if(reviewer == null){
+	    getUser();
+	    reviewer = user;
+	}
+	return reviewer;
     }
     public void setAction2(String val){
 	if(val != null && !val.isEmpty())		
@@ -111,6 +120,7 @@ public class LeaveReviewAction extends TopAction{
 	}
 	return review;
     }
+    
     public void setReview(LeaveReview val){
 	if(val != null)
 	    review = val;
@@ -138,7 +148,7 @@ public class LeaveReviewAction extends TopAction{
     }
 	
     public List<GroupManager> getManagers(){
-				
+	getUser();
 	GroupManagerList gml = new GroupManagerList(user.getId());
 	getPay_period_id();
 	gml.setPay_period_id(pay_period_id);
@@ -314,12 +324,12 @@ public class LeaveReviewAction extends TopAction{
 	    List<LeaveRequest> ones = rrl.getRequests();
 	    if(ones != null){
 		leaves_total_number = ones.size();
-		if(leaves_total_number <=3){
+		if(leaves_total_number <=5){
 		    leaves = ones;
 		}
 		else{
 		    leaves = new ArrayList<>();
-		    for(int jj=0;jj<3;jj++){
+		    for(int jj=0;jj<5;jj++){
 			leaves.add(ones.get(jj));
 		    }
 		}

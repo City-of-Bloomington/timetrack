@@ -31,6 +31,7 @@ public class LeaveRequestAction extends TopAction{
     List<EmployeeAccrual> empAccruals = null;
     JobTask job = null;
     String[] earn_code_ids = {""};
+    String[] earn_code_ids_alt = {""};
     String[] hr_code_prefered_order = {"2","4","6","8"};
     String[] hr_code_exclude = {"3","73","120","147" };
     public String execute(){
@@ -39,7 +40,7 @@ public class LeaveRequestAction extends TopAction{
 	if(!back.isEmpty()){
 	    return back;
 	}
-	if(action.equals("Save")){
+	if(action.startsWith("Submit")){
 	    leave.setInitiated_by(user.getId());
 	    leave.setJob_id(job_id);
 	    leave.setEarn_code_ids(earn_code_ids);
@@ -49,12 +50,14 @@ public class LeaveRequestAction extends TopAction{
 	    }
 	    else{
 		if(activeMail){
-		    //if(true){
-		    // now iform the supervisor		    
 		    back = informManager();
 		}
-		id = leave.getId();
-		ret = "view";
+		// reset
+		earn_code_ids = new String[1];
+		earn_code_ids[0] = ""; 
+		leave = new LeaveRequest();
+		leave.setJob_id(job_id);
+		leave.setInitiated_by(user.getId());
 		addMessage("Saved Successfully");
 	    }
 	}   // update is not really needed
@@ -158,7 +161,7 @@ public class LeaveRequestAction extends TopAction{
     public void setEarn_code_ids(String[] val){
 	if(val != null)		
 	    earn_code_ids = val;
-    }    
+    }
     public String getJob_id(){
 	return job_id;
     }
@@ -167,7 +170,7 @@ public class LeaveRequestAction extends TopAction{
 	    earn_code_ids = leave.getEarn_code_ids();
 	}
 	return earn_code_ids;
-    }    
+    }
     void findCurrentPayPeriod(){
 	//
 	if(pay_period_id.isEmpty()){

@@ -22,7 +22,7 @@ public class LeaveRequest implements java.io.Serializable{
 	job_id="", initiated_by="", request_date="", request_details="";
     String start_date_ff="", end_date_ff="";
     float total_hours = 0.0f;
-    String[] earn_code_ids = {"2"}; // PTO
+    String[] earn_code_ids = {""}; // PTO
     JobTask job = null;
     Group group = null;
     Document document = null;
@@ -405,10 +405,16 @@ public class LeaveRequest implements java.io.Serializable{
 	    msg = "end date is required";
 	    return msg;
 	}
+	if(Helper.isOldDate2(start_date)){
+	    msg = "Start date can not be in the past";
+	    return msg;
+	}
 	// we can use start_date > end_date 
 	if(start_date.compareTo(end_date) > 0){
 	    msg = "Start date can not be more than end date "; 
 	}
+	String today = Helper.getToday();
+	
 	if(earn_code_ids == null){
 	    msg = "Hour Code is required";
 	    return msg;
@@ -430,12 +436,14 @@ public class LeaveRequest implements java.io.Serializable{
 	for(String str:earn_code_ids){
 	    if(!earn_codes_str.isEmpty()) earn_codes_str +=",";
 	    earn_codes_str += str;
-	}				
+	}
+	if(earn_codes_str.trim().isEmpty()){
+	    msg = "Hour Codes are required";
+	    return msg;
+	}
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, job_id);
-	    //pstmt.setDate(2, new java.sql.Date(dateFormat.parse(start_date).getTime()));
-	    // pstmt.setDate(3, new java.sql.Date(dateFormat.parse(end_date).getTime()));
 	    pstmt.setString(2, start_date);
 	    pstmt.setString(3, end_date);	    
 	    pstmt.setString(4, earn_codes_str);

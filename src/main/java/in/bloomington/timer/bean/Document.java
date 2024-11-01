@@ -456,8 +456,6 @@ public class Document implements Serializable{
 	return leaveRequests != null && leaveRequests.size() > 0;
     }
     void findLeaveRequests(){
-	System.err.println(" pay_period_id "+pay_period_id);
-	System.err.println(" job_id "+job_id);
 	if(job_id.isEmpty()){
 	    getJob_id();
 	}

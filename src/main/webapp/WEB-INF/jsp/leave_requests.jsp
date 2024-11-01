@@ -1,5 +1,5 @@
-<table class="width-full">
-    <thead>
+<table style="border:1px solid">
+	<thead>
 	<tr>
 	    <th>&nbsp;</th>
 	    <th>Request Date</th>

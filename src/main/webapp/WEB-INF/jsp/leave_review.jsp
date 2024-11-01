@@ -1,7 +1,7 @@
 <%@  include file="header.jsp" %>
 <div class="internal-page">
     <div>
-	<h1>Leave Review</h1>
+	<h1>Leave Review <small><b>Reviewer:&nbsp;</b><s:property value="reviewer" /></small> </h1>
 	<s:if test="hasErrors()">
 	    <s:set var="errors" value="errors" />
 	    <%@ include file="errors.jsp" %>
@@ -12,7 +12,7 @@
 	</s:elseif>
 	<s:if test="hasLeaves()">
 	    <br />
-	    <h2>Current Leave Requests (<s:property value="leavesTotalNumber" /> For Review)</h2>	    
+	    <h1 style="border-bottom:0">Current Leave Requests (<s:property value="leavesTotalNumber" /> Pending Reviews)</h1>	    
 	    <s:form action="leave_review" id="form_id" method="post" >
 		<s:hidden name="action2" id="action2" value="" />
 		<s:hidden name="displayed_ids" value="%{display_ids}" />
@@ -49,7 +49,7 @@
 			<s:else>
 			    <tr>
 			</s:else>			
-			<td style="background-color:white">&nbsp;</td><td style="background-color:white"><b>Request Notes:</b></td><td colspan="6"> <s:property value="requestDetails" /></td>
+			<td>&nbsp;</td><td><b>Request Notes:</b></td><td colspan="6"> <s:property value="requestDetails" /></td>
 			</tr>
 			<input type="hidden" name="review.leave_id_<s:property value='#rowStatus.count'/>" value="<s:property value='id' />" />			
 			<s:if test="#rowStatus.count%2 == 0">
@@ -66,7 +66,7 @@
 				    <option value="Denied">Deny</option>
 				</select> *
 			    </td>
-			    <td colspan="3" style="background-color:white"><b>Review Notes: </b><input type="text" name="review.notes_<s:property value='#rowStatus.count'/>" value="" size="40" maxlength="360" />
+			    <td colspan="3"><b>Review Notes: </b><input type="text" name="review.notes_<s:property value='#rowStatus.count'/>" value="" size="40" maxlength="360" />
 			    </td>
 			</tr>
 			<tr style="background-color:gainsboro"><td colspan="7">&nbsp;</td></tr>
@@ -83,14 +83,17 @@
 	    <ul style="margin:0;padding:0">
 		<li>You may 'Approve' or 'Deny' each request. </li>
 		<li>If you Deny a request, please provide the reason in the
-		    'Review Comments' field. </li>
+		    'Review Notes' field. </li>
 		<li>The employee will be notified by your decision.</li>
 		<li>Each review will have no more than three request at a time</li>
 	    </ul>
 	</fieldset>
     </div>
+    <br />
     <s:if test="hasReviews()">
-	<h2>Approval History</h2>
+	<hr />
+	<br />
+	<h1 style="border-bottom:0">Leave Approval History</h1>
 	<s:set var="reviews" value="reviews" />
 	<%@ include file="leave_reviews.jsp" %>
     </s:if>

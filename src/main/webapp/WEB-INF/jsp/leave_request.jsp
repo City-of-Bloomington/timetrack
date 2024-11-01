@@ -1,9 +1,18 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
-    <h1>LEAVE REQUESTS</h1>
+    <h1>LEAVE REQUESTS <small><b>Requester:&nbsp;</b><s:property value="user"/>&nbsp;<b> Reviewer:&nbsp;</b><s:property value="leave.managerName" /> </small></h1>
+    <s:if test="hasErrors()">
+	<s:set var="errors" value="errors" />
+	<%@ include file="errors.jsp" %>
+    </s:if>
+    <s:elseif test="hasMessages()">
+	<s:set var="messages" value="messages" />
+	<%@ include file="messages.jsp" %>
+    </s:elseif>
+    <br />
     <s:if test="hasDecidedRequests()">
 	<br />
-	<h2>Recent Leave Requests</h2>
+	<h1 style="border-bottom:0">Active Leave Requests</h1>
 	<s:set var="leave_requests" value="requests" />
 	<s:set var="leavesTitle" value="leavesTitle" />
 	<s:set var="skipEmployee" value="'true'" />
@@ -12,19 +21,12 @@
     </s:if>    
     <s:form action="leave_request" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
-	<s:hidden name="leave.job_id" value="%{leave.job_id}" />
-	<s:hidden name="job_id" value="%{leave.job_id}" />
-	<h2>New Leave Request</h2>
-	<s:if test="hasErrors()">
-	    <s:set var="errors" value="errors" />
-	    <%@ include file="errors.jsp" %>
-	</s:if>
-	<s:elseif test="hasMessages()">
-	    <s:set var="messages" value="messages" />
-	    <%@ include file="messages.jsp" %>
-	</s:elseif>
+	<s:hidden name="leave.job_id" value="%{job_id}" />
+	<s:hidden name="job_id" value="%{job_id}" />
+
+	<br />
+	<h1>New Leave Request</h1>
 	
-	Leave Request for Job: <s:property value="leave.jobTitle" />, <s:property value="leave.group" />, Manager to be notified: <s:property value="leave.managerName"/><br /><br />
 	<div class="time-block">	    
 	    <div class="form-group" style="border-bottom: none;">
 		<label>Date Range</label>
@@ -50,16 +52,16 @@
 		</div>
 	    </div>
 	    <strong>Proposed Hour Codes to be used *</strong><br />
-	    <table style="border:3px solid">
+	    <table style="border:1px solid">
 		<s:iterator value="hourCodes" var="one" status="row">
 		    <s:if test="#row.index%3 == 0">
 			<tr>
 		    </s:if>
 		    <s:if test="id in earn_code_ids">
-			<td style="border:1px solid"><input type="checkbox" name="earn_code_ids" value="<s:property value='id' />" checked="checked" /><s:property value="codeInfo" /></td>
+			<td style="border:1px solid"> <input type="checkbox" name="earn_code_ids" value="<s:property value='id' />" checked="checked" /> <s:property value="codeInfo" /></td>
 		    </s:if>
 		    <s:else>
-			<td style="border:1px solid"><input type="checkbox" name="earn_code_ids" value="<s:property value='id' />" /><s:property value="codeInfo" /></td>
+			<td style="border:1px solid"> <input type="checkbox" name="earn_code_ids" value="<s:property value='id' />" /> <s:property value="codeInfo" /></td>
 		    </s:else>
 		    <s:if test="#row.index%3 == 2">
 			</tr>
@@ -78,7 +80,7 @@
 		<s:textarea name="leave.requestDetails" value="%{leave.requestDetails}" rows="4" cols="50" wrap="true" required="true" /><br />
 	    </div>
 	    <div class="button-group">
-		<s:submit name="action" type="button" value="Save" class="button"/>
+		<s:submit name="action" type="button" value="Submit Request" class="button"/>
 	    </div>
 	    <br />
 	    <br />
