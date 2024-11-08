@@ -29,19 +29,19 @@
 	
 	<div class="time-block">	    
 	    <div class="form-group" style="border-bottom: none;">
-		<label>Date Range</label>
+		<label>Proposed Dates and Hours</label>
 		<div class="date-range-picker">
 		    <div>	    
-			<label>Leave Start Date *</label>
+			<label>First Day on Leave *</label>
 			<s:textfield name="leave.startDate" value="%{leave.startDate}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" id="start" requiredLabel="true" required="true" />
 		    </div>
 		    <div>		    
-			<label>Leave End Date *</label>
+			<label>Last Day on Leave *</label>
 			<s:textfield name="leave.lastDate" value="%{leave.lastDate}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" requiredLabel="true"  required="true" />
 		    </div>
 		    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		    <div id="div_time_in" class="form-group">
-			<label>Length of Proposed Leave *</label>
+			<label>Leave Hours to be used *</label>
 			<s:if test="leave.id == ''">
 			    <s:textfield style="height:31px;width:150px" name="leave.totalHours" value="" size="5" maxlength="5" placeholder="Total hrs (xxx.xx)" required="true" /><br />
 			</s:if>

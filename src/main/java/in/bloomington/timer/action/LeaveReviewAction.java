@@ -69,7 +69,7 @@ public class LeaveReviewAction extends TopAction{
 	else{
 	    findLeaveRequests();
 	    if(leaves == null || leaves.size() == 0){
-		addMessage("There is no leave requests"); 
+		addMessage("There are no leave requests"); 
 	    }
 	}
 	return ret;

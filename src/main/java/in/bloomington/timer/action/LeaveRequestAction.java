@@ -36,7 +36,7 @@ public class LeaveRequestAction extends TopAction{
     String[] hr_code_exclude = {"3","73","120","147" };
     public String execute(){
 	String ret = SUCCESS;
-	String back = canProceed("leaveRequest.action");
+	String back = doPrepare("leaveRequest.action");
 	if(!back.isEmpty()){
 	    return back;
 	}
@@ -49,8 +49,12 @@ public class LeaveRequestAction extends TopAction{
 		addError(back);
 	    }
 	    else{
+		//if(true){
 		if(activeMail){
 		    back = informManager();
+		    if(!back.isEmpty()){ // saved even if manger not informed
+			addMessage(back);
+		    }
 		}
 		// reset
 		earn_code_ids = new String[1];
@@ -58,7 +62,7 @@ public class LeaveRequestAction extends TopAction{
 		leave = new LeaveRequest();
 		leave.setJob_id(job_id);
 		leave.setInitiated_by(user.getId());
-		addMessage("Saved Successfully");
+		addMessage("Submitted Successfully");
 	    }
 	}   // update is not really needed
 	else if(action.startsWith("Save")){
@@ -330,6 +334,10 @@ public class LeaveRequestAction extends TopAction{
 		manager = one;
 	    email_to = manager.getEmail();
 	}
+	else{
+	    back = "No group manager to inform ";
+	    return back;
+	}
 
 	email_msg = "Hi "+manager.getFull_name()+"\n\n";
 	email_msg += "I am requesting "+leave.getTotalHours()+" hrs of '"+
@@ -338,6 +346,7 @@ public class LeaveRequestAction extends TopAction{
 	    email_msg += "Leave Description: "+leave.getRequestDetails()+
 "\n\n";
 	}
+	email_msg += "To approve or deny this request you may visit the \""+url+"leave_review.action\" Leave Review page in TimeTrack \n\n";
 	email_msg += "Thanks\n\n";
 	email_msg += emp.getFull_name();
 	email_msg += "\n\n";

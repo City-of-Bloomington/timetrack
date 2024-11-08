@@ -417,6 +417,7 @@ public class JobTask implements Serializable{
 	    if(!group.getDepartment_id().equals("1"))
 	    return false;
 	}
+	getSalaryGroup();
 	return salaryGroup != null && salaryGroup.isLeaveEligible();
     }
     public int getWeekly_regular_hours(){

@@ -230,16 +230,6 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 	    getEmployee();
 	}
     }
-    /**
-    @Override  
-    public void setSession(Map<String, Object> map) {  
-	sessionMap=map;  
-    }
-    @Override  	
-    public void setServletContext(ServletContext ctx) {  
-        this.ctx = ctx;  
-    }
-    */
     @Override  
     public void withSession(Map<String, Object> map) {  
 	sessionMap=map;  
