@@ -187,7 +187,10 @@ public class LeaveRequest implements java.io.Serializable{
     }
     public boolean hasReviewNotes(){
 	return !review_notes.isEmpty();
-    }    
+    }
+    public boolean isSameDayLeave(){
+	return start_date.equals(end_date);
+    }
     public String toString(){
 	return id;
     }
@@ -288,8 +291,13 @@ public class LeaveRequest implements java.io.Serializable{
     }
     public String getDate_range(){
 	String ret = "";
-	if(start_date_ff != null && !start_date_ff.isEmpty()){
-	    ret = start_date_ff+" - "+end_date_ff;
+	if(start_date_ff != null && !start_date_ff.isEmpty()){	
+	    if(start_date_ff.equals(end_date_ff)){
+		    ret = start_date_ff;
+	    }
+	    else{
+		ret = start_date_ff+" - "+end_date_ff;
+	    }
 	}
 	return ret;
     }
@@ -405,9 +413,13 @@ public class LeaveRequest implements java.io.Serializable{
 	    msg = "end date is required";
 	    return msg;
 	}
-	if(Helper.isOldDate2(start_date)){
-	    msg = "Start date can not be in the past";
-	    return msg;
+	if(payPeriod == null)
+	    findCurrentPayPeriod();
+	if(payPeriod != null){
+	    if(start_date.compareTo(payPeriod.getStartDateYmd()) < 0){
+		msg = "Start date can not be before the current pay period";
+		return msg;
+	    }
 	}
 	// we can use start_date > end_date 
 	if(start_date.compareTo(end_date) > 0){

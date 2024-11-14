@@ -27,10 +27,15 @@ public class LeaveReview implements java.io.Serializable{
     // the form will have 3 leave request max
     //
     String notes_1="",notes_2="",notes_3="", notes_4="", notes_5="";
+    String notes_6="",notes_7="",notes_8="", notes_9="", notes_10="";    
     String rev_status_1="",rev_status_2="",rev_status_3="", rev_status_4="",
 	rev_status_5="";
+    String rev_status_6="",rev_status_7="",rev_status_8="", rev_status_9="",
+	rev_status_10="";    
     String leave_id_1="",leave_id_2="",leave_id_3="", leave_id_4="",
 	leave_id_5="";
+    String leave_id_6="",leave_id_7="",leave_id_8="", leave_id_9="",
+	leave_id_10="";    
     LeaveRequest leave = null
 	;
     Employee reviewer = null;
@@ -135,7 +140,27 @@ public class LeaveReview implements java.io.Serializable{
     public void setLeave_id_5(String val){
 	if(val != null)
 	    leave_id_5=val;
-    }        
+    }
+    public void setLeave_id_6(String val){
+	if(val != null)
+	    leave_id_6=val;
+    }
+    public void setLeave_id_7(String val){
+	if(val != null)
+	    leave_id_7=val;
+    }
+    public void setLeave_id_8(String val){
+	if(val != null)
+	    leave_id_8=val;
+    }
+    public void setLeave_id_9(String val){
+	if(val != null)
+	    leave_id_9=val;
+    }
+    public void setLeave_id_10(String val){
+	if(val != null)
+	    leave_id_10=val;
+    }    
     public void setRev_status_1(String val){
 	if(val != null && !val.equals("-1"))
 	    rev_status_1=val;
@@ -155,7 +180,27 @@ public class LeaveReview implements java.io.Serializable{
     public void setRev_status_5(String val){
 	if(val != null && !val.equals("-1"))
 	    rev_status_5=val;
-    }    
+    }
+    public void setRev_status_6(String val){
+	if(val != null && !val.equals("-1"))
+	    rev_status_6=val;
+    }
+    public void setRev_status_7(String val){
+	if(val != null && !val.equals("-1"))
+	    rev_status_7=val;
+    }
+    public void setRev_status_8(String val){
+	if(val != null && !val.equals("-1"))
+	    rev_status_8=val;
+    }
+    public void setRev_status_9(String val){
+	if(val != null && !val.equals("-1"))
+	    rev_status_9=val;
+    }
+    public void setRev_status_10(String val){
+	if(val != null && !val.equals("-1"))
+	    rev_status_10=val;
+    }        
     public void setNotes_1(String val){
 	if(val != null)
 	    notes_1=val;
@@ -175,7 +220,27 @@ public class LeaveReview implements java.io.Serializable{
     public void setNotes_5(String val){
 	if(val != null)
 	    notes_5=val;
-    }    
+    }
+    public void setNotes_6(String val){
+	if(val != null)
+	    notes_6=val;
+    }
+    public void setNotes_7(String val){
+	if(val != null)
+	    notes_7=val;
+    }
+    public void setNotes_8(String val){
+	if(val != null)
+	    notes_8=val;
+    }
+    public void setNotes_9(String val){
+	if(val != null)
+	    notes_9=val;
+    }
+    public void setNotes_10(String val){
+	if(val != null)
+	    notes_10=val;
+    }        
     public void setActiveMail(){
 	activeMail = true;
     }
@@ -299,6 +364,51 @@ public class LeaveReview implements java.io.Serializable{
 	    }else if(activeMail){
 		informEmployee(leave_id_5, rev_status_5, notes_5);
 	    }
+	}
+	if(!leave_id_6.isEmpty() && !rev_status_6.isEmpty()){
+	    String str = saveOne(leave_id_6, rev_status_6, notes_6);
+	    if(!str.isEmpty()){
+		if(!back.isEmpty()) back += ", ";
+		back += "Leave request "+leave_id_6+" enncountered this problem "+str;
+	    }else if(activeMail){
+		informEmployee(leave_id_6, rev_status_6, notes_6);
+	    }
+	}
+	if(!leave_id_7.isEmpty() && !rev_status_7.isEmpty()){
+	    String str = saveOne(leave_id_7, rev_status_7, notes_7);
+	    if(!str.isEmpty()){
+		if(!back.isEmpty()) back += ", ";
+		back += "Leave request "+leave_id_7+" enncountered this problem "+str;
+	    }else if(activeMail){
+		informEmployee(leave_id_7, rev_status_7, notes_7);
+	    }
+	}
+	if(!leave_id_8.isEmpty() && !rev_status_8.isEmpty()){
+	    String str = saveOne(leave_id_8, rev_status_8, notes_8);
+	    if(!str.isEmpty()){
+		if(!back.isEmpty()) back += ", ";
+		back += "Leave request "+leave_id_8+" enncountered this problem "+str;
+	    }else if(activeMail){
+		informEmployee(leave_id_8, rev_status_8, notes_8);
+	    }
+	}
+	if(!leave_id_9.isEmpty() && !rev_status_9.isEmpty()){
+	    String str = saveOne(leave_id_9, rev_status_9, notes_9);
+	    if(!str.isEmpty()){
+		if(!back.isEmpty()) back += ", ";
+		back += "Leave request "+leave_id_9+" enncountered this problem "+str;
+	    }else if(activeMail){
+		informEmployee(leave_id_9, rev_status_9, notes_9);
+	    }
+	}
+	if(!leave_id_10.isEmpty() && !rev_status_10.isEmpty()){
+	    String str = saveOne(leave_id_10, rev_status_10, notes_10);
+	    if(!str.isEmpty()){
+		if(!back.isEmpty()) back += ", ";
+		back += "Leave request "+leave_id_10+" enncountered this problem "+str;
+	    }else if(activeMail){
+		informEmployee(leave_id_10, rev_status_10, notes_10);
+	    }
 	}	
 	return back;
     }
@@ -416,42 +526,38 @@ public class LeaveReview implements java.io.Serializable{
 	    email_to = emp.getEmail();
 	}
 	email_from = user.getEmail();
-	email_msg = "Hi "+emp.getFull_name()+"\n\n";
-	email_msg += "Your leave request for "+leave.getTotalHours()+" hrs of "+
-	    "'"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+" is "+rev_status_one+"";
+	email_msg = emp.getFull_name()+" this is an automated notice sent by the TimeTrack system on behalf of "+user.getFull_name()+" for your leave request for "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position ";
+	if(leave.isSameDayLeave()){
+	    email_msg +=" on "+leave.getStartDateFF();
+	}
+	else{
+	    email_msg += " between "+leave.getDate_range();
+	    
+	}
+	email_msg += " is "+rev_status_one+"";
 	if(rev_status_one.equals("Approved")){
 	    email_msg +=".\n\n";
 	    email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
 	    if(!rev_notes_one.isEmpty()){
 		email_msg += "Review notes: "+rev_notes_one+"\n\n";
 	    }	    
-	    email_msg += "Now go ahead and add the leave times to your time details page.\n\n";
+	    email_msg += "You can go ahead and add the leave times to your time details page.\n\n";
 
 	}	
 	else if(rev_status_one.equals("Denied")){
 	    email_msg += " for the following reason(s):\n "+rev_notes_one+".\n\n";
-	    email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
+	    if(leave.hasNotes()){
+		email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
+	    }
 	}
-	email_msg += "Thanks\n\n";
-	email_msg += user.getFull_name();
-	email_msg += "\n\n";
+	email_msg += "-TimeTack\n\n";
 	//
-	// for logs
-	String email_txt = "Hi "+emp.getFull_name()+"\n";
-	email_txt += "Your leave request for "+leave.getTotalHours()+" hrs of "+
-	    leave.getEarnCodes()+" for your "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+" is "+rev_status_one+" ";
-	if(rev_status_one.equals("Denied")){
-	    email_txt += " for the following reason(s): "+rev_notes_one+".\n";
-	}
-	email_txt += "Leave Description: "+leave.getRequestDetails();
-	email_txt += "Thanks\n";
-	email_txt += user.getFull_name();
 	MailHandle mailer = new
 	    MailHandle(mail_host,
-		       email_to,
+		       "sibow@bloomington.in.gov",//email_to,
 		       email_from,
 		       email_from, // cc
-		       null,											 
+		       null,
 		       subject,
 		       email_msg
 		       );
@@ -459,7 +565,7 @@ public class LeaveReview implements java.io.Serializable{
 	LeaveEmailLog lel = new LeaveEmailLog(
 					      email_to,
 					      email_from,
-					      email_txt,
+					      email_msg,
 					      "Review",
 					      back);
 	back += lel.doSave();

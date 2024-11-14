@@ -17,17 +17,20 @@ import in.bloomington.timer.bean.*;
 public class LeaveRequestList{
 
     static Logger logger = LogManager.getLogger(LeaveRequestList.class);
-    static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); 
+    static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    static SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");    
     static final long serialVersionUID = 3800L;
     String job_id="", date_from="", date_to="", sortBy="t.id desc";
+    String date_from_ff="", date_to_ff="";
     String pay_period_id = "", initiated_by="";
     String limit="";
     String group_id="", group_ids=""; // for reviewers
+    String filter_emp_id="";
     String ids_to_ignore = ""; 
     boolean active_only = false;
     boolean is_reviewed = false, not_reviewed=false;
     boolean approved_only = false;
-    boolean current_and_future_only = false;
+
     List<LeaveRequest> requests = null;
 		
     public LeaveRequestList(){
@@ -48,6 +51,15 @@ public class LeaveRequestList{
 	if(val != null)
 	    date_to = val;
     }
+    public void setDate_from_ff(String val){
+	if(val != null)
+	    date_from_ff = val;
+    }
+    public void setDate_to_ff(String val){
+	if(val != null)
+	    date_to_ff = val;
+    }    
+    
     public void setPay_period_id(String val){
 	if(val != null)
 	    pay_period_id = val;
@@ -72,7 +84,11 @@ public class LeaveRequestList{
     public void setIdsToIgnore(String val){ // comma separated
 	if(val != null)
 	    ids_to_ignore=val;
-    }    
+    }
+    public void setFilter_emp_id(String val){
+	if(val != null)
+	    filter_emp_id = val;
+    }
     public void setActiveOnly(){
 	active_only = true;
     }
@@ -92,9 +108,6 @@ public class LeaveRequestList{
     public void setDecided(){
 	is_reviewed = true;
     }
-    public void setCurrentAndFuture(){
-	current_and_future_only = true;
-    }
     public String find(){
 		
 	String back = "";
@@ -104,8 +117,8 @@ public class LeaveRequestList{
 	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), "+
 	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes "+
 	    "from leave_requests t "+
+	    "join jobs j on j.id=t.job_id "+
 	    "left join leave_reviews r on r.leave_id=t.id ";
-	qq += " join jobs j on j.id=t.job_id ";
 	if(con == null){
 	    back = "Could not connect to DB";
 	    return back;
@@ -119,28 +132,37 @@ public class LeaveRequestList{
 	    if(!pay_period_id.isEmpty()){
 		qq += ", pay_periods p ";
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " ((p.start_date >= t.start_date and p.start_date < t.end_date) or "+
-		    "(p.end_date > t.start_date and p.end_date <= t.end_date) or "+
-		    "(p.start_date <= t.start_date and p.end_date >= t.end_date) ";
-		if(current_and_future_only){
-		    if(!qw.isEmpty()) qw += " or ";
-		    qw += " t.end_date >= p.end_date ";
+		qw += " p.start_date <= t.start_date ";
+		if(approved_only){
+		    if(!qw.isEmpty()) qw += " and ";
+		    qw += " p.end_date >= t.start_date ";
 		}
-		qw +=" ) ";
-		qw += " and p.id = ? ";
+		qw += " and p.id = ? ";		
 	    }
 	    if(!date_from.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " (t.start_date >= ? and t.end_date <= ?)";		
+		qw += " (t.start_date >= ? and t.end_date >= ?)";		
 	    }
 	    if(!date_to.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " (t.start_date <= ? and t.end_date >= ?)";		
+		qw += " (t.start_date <= ? and t.end_date <= ?)";		
 	    }
+	    if(!date_from_ff.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " (t.start_date >= ? and t.end_date >= ?)";		
+	    }
+	    if(!date_to_ff.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " (t.start_date <= ? and t.end_date <= ?)";		
+	    }	    
 	    if(!initiated_by.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " t.initiated_by = ? ";
 	    }
+	    if(!filter_emp_id.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " j.employee_id = ? ";
+	    }	    
 	    if(!group_ids.isEmpty()){
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " j.group_id in ("+group_ids+") ";
@@ -192,9 +214,20 @@ public class LeaveRequestList{
 		pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date_to).getTime()));
 		pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date_to).getTime()));		
 	    }
+	    if(!date_from_ff.isEmpty()){
+		pstmt.setDate(jj++, new java.sql.Date(df2.parse(date_from_ff).getTime()));
+		pstmt.setDate(jj++, new java.sql.Date(df2.parse(date_from_ff).getTime()));	
+	    }
+	    if(!date_to_ff.isEmpty()){
+		pstmt.setDate(jj++, new java.sql.Date(df2.parse(date_to_ff).getTime()));
+		pstmt.setDate(jj++, new java.sql.Date(df2.parse(date_to_ff).getTime()));	
+	    }	    
 	    if(!initiated_by.isEmpty()){
 		pstmt.setString(jj++,initiated_by);
 	    }
+	    if(!filter_emp_id.isEmpty()){
+		pstmt.setString(jj++, filter_emp_id);
+	    }	    
 	    if(!group_id.isEmpty()){
 		pstmt.setString(jj++, group_id);
 	    }

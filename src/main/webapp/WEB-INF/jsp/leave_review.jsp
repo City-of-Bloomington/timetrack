@@ -15,10 +15,46 @@
 	    <h1 style="border-bottom:0">Current Leave Requests (<s:property value="leavesTotalNumber" /> Pending Reviews)</h1>	    
 	    <s:form action="leave_review" id="form_id" method="post" >
 		<s:hidden name="action2" id="action2" value="" />
-		<s:hidden name="displayed_ids" value="%{display_ids}" />
+		<fieldset>
+		<div class="time-block">	    
+		    <div class="form-group" style="border-bottom: none;">
+			<label>&nbsp;</label>
+			<div class="date-range-picker">
+			    <div>
+				<label>&nbsp;&nbsp;</label>
+				<b>Filter by </b>
+			    </div>
+			    <s:if test="hasEmployees()">
+				<div>
+				    <label>Employee </label>
+				    <s:select name="filter_emp_id" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="All" style="height:31px;width:150px" /> 
+				</div>
+			    </s:if>			    
+			    <div>	    
+				<label>Date From </label>
+				<s:textfield name="date_from" value="%{date_from}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" id="date_from" />&nbsp;&nbsp;
+			    </div>
+			    <div>
+				&nbsp;&nbsp;&nbsp;
+			    </div>
+			    <div>		    
+				<label>Date To</label>
+				<s:textfield name="date_to" value="%{date_to}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" />
+			    </div>
+			    <div>
+			    &nbsp;&nbsp;&nbsp;
+			    </div>			    
+			    <div>		    
+				<label>&nbsp;</label>
+				<s:submit name="action" type="button" value="Refresh List" class="button" style="height:31px;width:150px" />				
+			    </div>
+			</div>
+		    </div>
+		</div>
+		</fieldset>
 		<table>
 		    <tr>
-			<th>&nbsp</th>
+			<th>&nbsp;</th>
 			<th>Employee</th>			
 			<th>Request Date</th>
 			<th>Job Title</th>
@@ -85,7 +121,7 @@
 		<li>If you Deny a request, please provide the reason in the
 		    'Review Notes' field. </li>
 		<li>The employee will be notified by your decision.</li>
-		<li>Each review will have no more than three request at a time</li>
+		<li>Each review will have no more than ten request at a time</li>
 	    </ul>
 	</fieldset>
     </div>

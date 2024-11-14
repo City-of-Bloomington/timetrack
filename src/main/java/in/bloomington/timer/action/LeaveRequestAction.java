@@ -49,7 +49,7 @@ public class LeaveRequestAction extends TopAction{
 		addError(back);
 	    }
 	    else{
-		//if(true){
+		// if(true){
 		if(activeMail){
 		    back = informManager();
 		    if(!back.isEmpty()){ // saved even if manger not informed
@@ -197,7 +197,7 @@ public class LeaveRequestAction extends TopAction{
 	    tl.setJob_id(job_id);
 	    tl.setActiveOnly();
 	    tl.setPay_period_id(pay_period_id);
-	    tl.setCurrentAndFuture();
+	    // tl.setCurrentAndFuture();
 	    //tl.setDecided();
 	    String back = tl.find();
 	    if(back.isEmpty()){
@@ -338,25 +338,33 @@ public class LeaveRequestAction extends TopAction{
 	    back = "No group manager to inform ";
 	    return back;
 	}
+	email_msg = manager.getFull_name()+", this is an automated notice sent by the TimeTrack system on behalf of "+emp.getFull_name()+", "+leave.getJobTitle()+".\n";
 
-	email_msg = "Hi "+manager.getFull_name()+"\n\n";
-	email_msg += "I am requesting "+leave.getTotalHours()+" hrs of '"+
-	    leave.getEarnCodes()+"' leave from my "+leave.getJobTitle()+" position for the period "+leave.getDate_range()+".\n\n"; 
+	if(leave.isSameDayLeave()){
+	    email_msg += emp.getFull_name()+" has requested your approval for proposed Leave time of "+leave.getTotalHours()+" hours on "+leave.getStartDateFF()+
+	  " from '"+leave.getEarnCodes()+"'. ";
+	}
+	else{
+	    email_msg += emp.getFull_name()+" has requested your approval for proposed Leave time of "+leave.getTotalHours()+" hours between "+leave.getDate_range()+
+	  " from '"+leave.getEarnCodes()+"'. ";
+	}
 	if(leave.hasNotes()){
-	    email_msg += "Leave Description: "+leave.getRequestDetails()+
+	    
+	    email_msg += "Leave Description follows:\n\n "+leave.getRequestDetails()+
 "\n\n";
 	}
+	else{
+	    email_msg += "\n\n";
+	}
 	email_msg += "To approve or deny this request you may visit the \""+url+"leave_review.action\" Leave Review page in TimeTrack \n\n";
-	email_msg += "Thanks\n\n";
-	email_msg += emp.getFull_name();
-	email_msg += "\n\n";
+	email_msg += "-TimeTrack\n\n";
 	    
 	MailHandle mailer = new
 	    MailHandle(mail_host,
 		       email_to,
 		       email_from,
 		       email_from, // cc
-		       null,											 
+		       null,
 		       subject,
 		       email_msg
 		       );

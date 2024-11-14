@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
 import in.bloomington.timer.list.*;
@@ -22,12 +23,14 @@ public class LeaveReviewAction extends TopAction{
     static final long serialVersionUID = 1150L;	
     static Logger logger = LogManager.getLogger(LeaveReviewAction.class);
     //
+    static final int max_requests = 10;
     List<Group> groups = null;
     List<GroupManager> managers = null;
     String groupsTitle = "Manage Group(s)";
     String group_id="", pay_period_id="", leave_id="",
 	department_id=""; 
     String selected_group_id = "";
+    String filter_emp_id="", date_from="", date_to="";
     String[] statusVals = {"Approved","Denied"};
     PayPeriod payPeriod = null;
     Group group = null;
@@ -37,18 +40,16 @@ public class LeaveReviewAction extends TopAction{
     LeaveReview review = null;
     Employee reviewer = null;
     List<LeaveReview> reviews = null;
-    String display_ids = ""; // next to show
-    String displayed_ids = ""; // previous showing
+    List<Employee> employees = null;//for filter
     int leaves_total_number = 0;
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("leaveReview.action");
 	if(action.equals("Submit")){
 	    getUser();
-	    System.err.println(" user "+user);
 	    review.setReviewed_by(user.getId());
 	    if(activeMail){ 
-		// if(true){
+		//if(true){
 		review.setActiveMail();
 		review.setMail_host(mail_host);
 		review.setUser(user); // current manager
@@ -56,11 +57,16 @@ public class LeaveReviewAction extends TopAction{
 	    back = review.doSave();
 	    if(!back.isEmpty()){
 		addError(back);
-		displayed_ids = "";
 	    }
 	    else{
 		addMessage("Saved Successfully");
 	    }	    
+	}
+	else if(action.startsWith("Refresh")){
+	    findLeaveRequests();
+	    if(leaves == null || leaves.size() == 0){
+		addMessage("There are no leave requests"); 
+	    }
 	}
 	else if(!leave_id.isEmpty()){
 	    getReview();
@@ -106,6 +112,22 @@ public class LeaveReviewAction extends TopAction{
 	   leave_id = val;
 	}
     }
+    public void setDate_from(String val){
+	if(val != null && !val.isEmpty()){		
+	   date_from = val;
+	}
+    }
+    public String getDate_from(){
+	return date_from;
+    }
+    public String getDate_to(){
+	return date_to;
+    }    
+    public void setDate_to(String val){
+	if(val != null && !val.isEmpty()){		
+	   date_to = val;
+	}
+    }    
     public String getLeave_id(){
 	return leave_id = "";
     }
@@ -254,12 +276,17 @@ public class LeaveReviewAction extends TopAction{
 	    department_id = val;
 	}
     }
-    // diplayed from current showing to
-    // ignore in next showing
-    public void setDisplayed_ids(String val){
-	if(val != null)
-	    displayed_ids = val;
+    public void setFilter_emp_id(String val){
+	if(val != null && !val.equals("-1")){
+	    filter_emp_id = val;
+	}
     }
+    public String getFilter_emp_id(){
+	if(filter_emp_id.isEmpty())
+	    return "-1";
+	return filter_emp_id;
+    }
+	
     public Department getDepartment(){
 	if(department == null){
 	    if(department_id.isEmpty()){
@@ -286,6 +313,19 @@ public class LeaveReviewAction extends TopAction{
 	    }
 	}
     }
+    public boolean hasEmployees(){
+	getEmployees();
+	return employees != null && employees.size() > 0;
+    }
+    public List<Employee> getEmployees(){
+	if(employees == null)
+	    findLeaveRequests();
+	if(employees != null && employees.size() > 1){
+	    Collections.sort(employees);
+	}
+	return employees;
+	
+    }
     public boolean hasLeaveRequest(){
 	return !leave_id.isEmpty();
     }
@@ -305,6 +345,15 @@ public class LeaveReviewAction extends TopAction{
 	}
 	LeaveRequestList rrl = new LeaveRequestList();
 	rrl.setNotReviewed();
+	if(!date_from.isEmpty()){
+	    rrl.setDate_from_ff(date_from);
+	}
+	if(!date_to.isEmpty()){
+	    rrl.setDate_to_ff(date_to);
+	}
+	if(!filter_emp_id.isEmpty()){
+	    rrl.setFilter_emp_id(filter_emp_id);
+	}
 	if(hasMoreThanOneGroup()){
 	    String group_ids = "";
 	    for(Group gg:groups){
@@ -316,38 +365,32 @@ public class LeaveReviewAction extends TopAction{
 	else if(!group_id.isEmpty()){
 	    rrl.setGroup_id(group_id);
 	}
-	if(!displayed_ids.isEmpty())
-	    rrl.setIdsToIgnore(displayed_ids);
-	// rrl.setMaxLimit(3); // review 3 at a time
 	String back = rrl.find();
 	if(back.isEmpty()){
 	    List<LeaveRequest> ones = rrl.getRequests();
 	    if(ones != null){
+		if(employees == null)
+		    employees = new ArrayList<>();
+		for(LeaveRequest one:ones){
+		    Employee empp = one.getEmployee();
+		    if(!employees.contains(empp)){
+			employees.add(empp);
+		    }
+		}
 		leaves_total_number = ones.size();
-		if(leaves_total_number <=5){
+		if(leaves_total_number <= max_requests){
 		    leaves = ones;
 		}
 		else{
 		    leaves = new ArrayList<>();
-		    for(int jj=0;jj<5;jj++){
+		    for(int jj=0;jj<max_requests;jj++){
 			leaves.add(ones.get(jj));
 		    }
 		}
 	    }
 	}
     }
-    public String getDisplay_ids(){
-	if(leaves == null){
-	    findLeaveRequests();
-	}
-	if(leaves != null){
-	    for(LeaveRequest one:leaves){
-		if(!display_ids.isEmpty()) display_ids +=",";
-		display_ids += one.getId();
-	    }
-	}
-	return display_ids;
-    }
+    
     public List<LeaveReview> getReviews(){
 	return reviews;
     }

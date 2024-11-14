@@ -1,0 +1,45 @@
+Timetrack Leave Management
+--------------------------
+
+A-How to apply for a time leave
+-------------------------------
+In timetrack time details page, there is a tab called 'Leave Request'
+when you click on it, you get to the 'Leave Request' form.
+ 
+Please consider the following to request a leave:
+ 1-Documentation/approval is required for Leave over 16 hours. It is optional for leave under 16.
+   - Click on 'First Day on Leave' date picker to pick the start date. 
+   - Do the same for 'Last Day on Leave'. If it is one day enter the same date for both fields.
+   - Use the 'Leave Hours to be used' field to enter the total number of hours.
+   - First Day on Leave date should be within current pay period date range or beyond.
+   - Select from the 'Proposed Hour Codes to be used' the hour codes your are going 
+     to use. You may choose more than one.
+   - In 'Propesed Leave Description' field enter the purpose of your leave.
+   - Review you entries then click on 'Submit'.
+ 
+ 2-After you Submit your request, your supervisor will be notified by your request.
+ 3-After your supervisor receives the notification, he/she will review your request and may 'Approve' or Deny the request.
+ 4-You will receive an email from your supervisor about the descision.
+ 5-If your request is approved, you can go ahead and add the related leave dates and hours to your timesheet.
+ 6-The approved leave requests will show up in your time detail page if they are within
+   current pay period under the title 'Approved Leave Requests in this Pay Period'.
+
+B-How to Review a Leave Request by Group Supervisors
+----------------------------------------------------
+If you are a group supervisor(approver) in timetrack, you will have a tab called, 'Leave Review'.
+When you click on this tab, you may find a list of leave requests from your subordonnant.
+If the list is long you may filter the list by 'Employee' and/or date range.
+The review list will have no more than ten records at a time.
+To review each request:
+-Look at each request dates, hours and hour codes and description and decide if you 
+ approve or deny each request by clicking on 'Review Decision' options. 
+-If you Deny a request, please provide the reason in the 'Review Notes' field.
+-You may leave some of leave requests undecided by keeping the 'No Action' option selected
+ so that you can do some investigation and do better decision later.
+-The employee will be notified by your decision.
+-When the request is approved the employee may add the leave dates and times to 
+ his/her timesheet page for related pay period.
+
+
+  
+

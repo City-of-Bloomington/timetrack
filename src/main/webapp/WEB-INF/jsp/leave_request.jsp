@@ -88,11 +88,12 @@
 		Note: Please consider the following to request a leave <br />
 		<ul style="margin:0;padding:0;">
 		    <li> Documentation/approval is required for Leave over 16 hours.  It is optional for leave under 16.</li>
-		    <li> After you Submit your request, your supervisor will be notified by your request </li>
-		    <li> After your supervisor receives the notification, he/she will review your request and may 'Approve' or Deny the request </li>
-		    <li> You will receive an email from your supervisor about the descision </li>
-		    <li> If your request is approved, you can go ahead and add the related leave dates and hours to your timesheet </li>
-		    <li> * Fields are required</li>	    
+		    <li> Leave request proposed start date should be within the current pay period or beyond. </li>
+		    <li> After you Submit your request, your supervisor will be notified by your request. </li>
+		    <li> After your supervisor receives the notification, he/she will review your request and may 'Approve' or Deny the request. </li>
+		    <li> You will receive an email from your supervisor about the descision. </li>
+		    <li> If your request is approved, you can go ahead and add the related leave dates and hours to your timesheet. </li>
+		    <li> * Fields are required </li>	    
 		</ul>
 	    </fieldset>
 	</div>
