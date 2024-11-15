@@ -132,7 +132,7 @@ public class LeaveRequestList{
 	    if(!pay_period_id.isEmpty()){
 		qq += ", pay_periods p ";
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " p.start_date <= t.start_date ";
+		qw += " (p.start_date <= t.start_date or t.end_date >= p.start_date)";
 		if(approved_only){
 		    if(!qw.isEmpty()) qw += " and ";
 		    qw += " p.end_date >= t.start_date ";

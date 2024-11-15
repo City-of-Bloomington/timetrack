@@ -345,6 +345,11 @@ public class LeaveReviewAction extends TopAction{
 	}
 	LeaveRequestList rrl = new LeaveRequestList();
 	rrl.setNotReviewed();
+	if(pay_period_id.isEmpty()){
+	    getPayPeriod();
+	}
+	if(!pay_period_id.isEmpty())
+	    rrl.setPay_period_id(pay_period_id);
 	if(!date_from.isEmpty()){
 	    rrl.setDate_from_ff(date_from);
 	}

@@ -529,10 +529,6 @@ public class LeaveRequest implements java.io.Serializable{
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, job_id);
-	    /**
-	    pstmt.setDate(2, new java.sql.Date(dateFormat.parse(start_date).getTime()));
-	    pstmt.setDate(3, new java.sql.Date(dateFormat.parse(end_date).getTime()));
-	    */
 	    pstmt.setString(2, start_date);
 	    pstmt.setString(3, end_date);	   	    
 	    pstmt.setString(4, earn_codes_str);
