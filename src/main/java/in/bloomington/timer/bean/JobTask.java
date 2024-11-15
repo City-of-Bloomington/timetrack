@@ -411,14 +411,15 @@ public class JobTask implements Serializable{
     }
     public boolean isLeaveEligible(){
 	getSalaryGroup();
-	// temporary for ITS only
+	// for ITS, HR
 	getGroup();
 	if(group != null){
-	    if(!group.getDepartment_id().equals("1"))
-	    return false;
+	    if((group.getDepartment_id().equals("1")||
+		group.getDepartment_id().equals("4"))){
+		return salaryGroup != null && salaryGroup.isLeaveEligible();
+	    }
 	}
-	getSalaryGroup();
-	return salaryGroup != null && salaryGroup.isLeaveEligible();
+	return false;
     }
     public int getWeekly_regular_hours(){
 	return weekly_regular_hours;

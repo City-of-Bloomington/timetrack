@@ -35,6 +35,8 @@ public class LeaveRequestAction extends TopAction{
     String[] hr_code_prefered_order = {"2","4","6","8"};
     String[] hr_code_exclude = {"3","73","120","147" };
     public String execute(){
+	getUser();
+	resetEmployee();
 	String ret = SUCCESS;
 	String back = doPrepare("leaveRequest.action");
 	if(!back.isEmpty()){

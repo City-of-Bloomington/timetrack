@@ -44,9 +44,10 @@ public class LeaveReviewAction extends TopAction{
     int leaves_total_number = 0;
     public String execute(){
 	String ret = SUCCESS;
+	getUser();
+	resetEmployee();
 	String back = doPrepare("leaveReview.action");
 	if(action.equals("Submit")){
-	    getUser();
 	    review.setReviewed_by(user.getId());
 	    if(activeMail){ 
 		//if(true){

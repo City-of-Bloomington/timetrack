@@ -17,15 +17,16 @@
 	<s:set var="leavesTitle" value="leavesTitle" />
 	<s:set var="skipEmployee" value="'true'" />
 	<%@ include file="leave_requests.jsp" %>
+	
 	<br />
+	<hr />
     </s:if>    
     <s:form action="leave_request" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="leave.job_id" value="%{job_id}" />
 	<s:hidden name="job_id" value="%{job_id}" />
-
 	<br />
-	<h1>New Leave Request</h1>
+	<h1 style="border-bottom:none;">New Leave Request</h1>
 	
 	<div class="time-block">	    
 	    <div class="form-group" style="border-bottom: none;">
@@ -87,7 +88,7 @@
 	    <fieldset>
 		Note: Please consider the following to request a leave <br />
 		<ul style="margin:0;padding:0;">
-		    <li> Documentation/approval is required for Leave over 16 hours.  It is optional for leave under 16.</li>
+		    <li> Documentation/approval is required for Leave over 16 hours.  It is optional for leave under 16. No medical or personal information.
 		    <li> Leave request proposed start date should be within the current pay period or beyond. </li>
 		    <li> After you Submit your request, your supervisor will be notified by your request. </li>
 		    <li> After your supervisor receives the notification, he/she will review your request and may 'Approve' or Deny the request. </li>

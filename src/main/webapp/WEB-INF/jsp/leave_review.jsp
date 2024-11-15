@@ -15,10 +15,9 @@
 	    <h1 style="border-bottom:0">Current Leave Requests (<s:property value="leavesTotalNumber" /> Pending Reviews)</h1>	    
 	    <s:form action="leave_review" id="form_id" method="post" >
 		<s:hidden name="action2" id="action2" value="" />
-		<fieldset>
+		<table border="1" width="100%"><tr><td>
 		<div class="time-block">	    
 		    <div class="form-group" style="border-bottom: none;">
-			<label>&nbsp;</label>
 			<div class="date-range-picker">
 			    <div>
 				<label>&nbsp;&nbsp;</label>
@@ -46,12 +45,12 @@
 			    </div>			    
 			    <div>		    
 				<label>&nbsp;</label>
-				<s:submit name="action" type="button" value="Refresh List" class="button" style="height:31px;width:150px" />				
+				<s:submit name="action" type="button" value="Refresh List" class="button" style="height:31px;width:150px" />
 			    </div>
 			</div>
 		    </div>
 		</div>
-		</fieldset>
+		</td></tr></table>
 		<table>
 		    <tr>
 			<th>&nbsp;</th>
