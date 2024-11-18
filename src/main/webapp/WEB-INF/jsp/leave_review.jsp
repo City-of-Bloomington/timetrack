@@ -116,11 +116,11 @@
 	<fieldset>
 	    Please review the current leave requests. <br />
 	    <ul style="margin:0;padding:0">
-		<li>You may 'Approve' or 'Deny' each request. </li>
-		<li>If you Deny a request, please provide the reason in the
-		    'Review Notes' field. </li>
-		<li>The employee will be notified by your decision.</li>
-		<li>Each review will have no more than ten request at a time</li>
+		<li>You may 'Approve' or 'Deny' or take No Action on each listed request.</li>
+		<li>If you Deny a request, please provide the reason in the 'Review Notes' field.</li>
+		<li>If you take No Action, then the request will remain in your queue for later consideration.</li>
+		<li>The employee will be notified by TimeTrack of your decision.</li>
+
 	    </ul>
 	</fieldset>
     </div>

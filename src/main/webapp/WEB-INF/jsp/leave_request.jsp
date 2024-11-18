@@ -86,15 +86,16 @@
 	    <br />
 	    <br />
 	    <fieldset>
-		Note: Please consider the following to request a leave <br />
+		Note: When reguesting leave, please consider the following: <br />
 		<ul style="margin:0;padding:0;">
-		    <li> Documentation/approval is required for Leave over 16 hours.  It is optional for leave under 16. No medical or personal information.
-		    <li> Leave request proposed start date should be within the current pay period or beyond. </li>
-		    <li> After you Submit your request, your supervisor will be notified by your request. </li>
-		    <li> After your supervisor receives the notification, he/she will review your request and may 'Approve' or Deny the request. </li>
-		    <li> You will receive an email from your supervisor about the descision. </li>
-		    <li> If your request is approved, you can go ahead and add the related leave dates and hours to your timesheet. </li>
-		    <li> * Fields are required </li>	    
+		    <li>Do not include detailed medical or personal information in your request.</li>
+		    <li>Per HR policies, Leave Requests greater than 16 hours should be made 2 weeks in advance and for less than 16 hours 24 hours in advance.</li>
+		    <li>Leave Management is only available to authorized divisions and work groups.</li>
+		    <li>Once you Submit a Leave Request, Time Track will notify your Supervisor.</li>
+		    <li>Your Supervisor may then Approve or Deny the request.  TimeTrack will email you a notification of your supervisor's decision.</li>
+		    <li>Once a leave request is approved, you may add your anticipated Time Off to your timesheet in Time Track.  You will still need to ensure your Timesheet reflects the actual Leave Hours taken when your timesheet is submitted.</li>
+		    <li>All fields on this form are required, including a description of your proposed Leave.</li>
+
 		</ul>
 	    </fieldset>
 	</div>
