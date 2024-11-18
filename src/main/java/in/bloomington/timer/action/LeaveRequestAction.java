@@ -328,7 +328,8 @@ public class LeaveRequestAction extends TopAction{
 	subject = "Leave request for "+emp.getFull_name();
 	if(emp != null){
 	    email_from = emp.getEmail();
-	}
+	}		// we need only one
+
 	GroupManager groupManager = leave.getManager();
 	if(groupManager != null){
 	    Employee one = groupManager.getEmployee();
@@ -340,27 +341,26 @@ public class LeaveRequestAction extends TopAction{
 	    back = "No group manager to inform ";
 	    return back;
 	}
+	/**
 	email_msg = manager.getFull_name()+", this is an automated notice sent by the Time Track system on behalf of "+emp.getFull_name()+", "+leave.getJobTitle()+".\n";
-
+	*/
 	if(leave.isSameDayLeave()){
-	    email_msg += emp.getFull_name()+" has requested your approval for proposed Leave time of "+leave.getTotalHours()+" hours on "+leave.getStartDateFF()+
-	  " from '"+leave.getEarnCodes()+"'. ";
+	    email_msg += emp.getFull_name()+" requests "+leave.getTotalHours()+" hours of "+leave.getEarnCodes()+" leave from their "+leave.getJobTitle()+" position on "+leave.getStartDateFF()+".\n\n";
 	}
 	else{
-	    email_msg += emp.getFull_name()+" has requested your approval for proposed Leave time of "+leave.getTotalHours()+" hours between "+leave.getDate_range()+
-	  " from '"+leave.getEarnCodes()+"'. ";
+	    email_msg += emp.getFull_name()+" requests "+leave.getTotalHours()+" hours of "+leave.getEarnCodes()+" leave from their "+leave.getJobTitle()+" position for "+leave.getDate_range()+".\n\n";
+	    
 	}
 	if(leave.hasNotes()){
 	    
-	    email_msg += "Leave Description follows: "+leave.getRequestDetails()+
+	    email_msg += "Leave Description: "+leave.getRequestDetails()+
 "\n\n";
 	}
 	else{
 	    email_msg += "\n\n";
 	}
-	email_msg += "To approve or deny this request you may visit the \""+url+"leave_review.action\" Leave Review page in Time Track \n\n";
-	email_msg += "-Time Track\n\n";
-	    
+	email_msg += " Go to Time Track Leave Review (https://bloomington.in.gov/timetrack/leave_review.action) to review this request.\n\n";
+	
 	MailHandle mailer = new
 	    MailHandle(mail_host,
 		       email_to,

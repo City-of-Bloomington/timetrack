@@ -172,22 +172,24 @@ public class LeaveReviewAction extends TopAction{
 	
     public List<GroupManager> getManagers(){
 	getUser();
-	GroupManagerList gml = new GroupManagerList(user.getId());
-	getPay_period_id();
-	gml.setPay_period_id(pay_period_id);
-	gml.setApproversOnly();
-	String back = gml.find();
-	if(back.isEmpty()){
-	    List<GroupManager> ones = gml.getManagers();
-	    if(ones != null && ones.size() > 0){
-		managers = ones;
-		for(GroupManager one:managers){
-		    Group one2 = one.getGroup();
-		    if(one2 != null){
-			if(groups == null)
-			    groups = new ArrayList<>();
-			if(!groups.contains(one2))
-			    groups.add(one2);
+	if(user != null){
+	    GroupManagerList gml = new GroupManagerList(user.getId());
+	    getPay_period_id();
+	    gml.setPay_period_id(pay_period_id);
+	    gml.setApproversOnly();
+	    String back = gml.find();
+	    if(back.isEmpty()){
+		List<GroupManager> ones = gml.getManagers();
+		if(ones != null && ones.size() > 0){
+		    managers = ones;
+		    for(GroupManager one:managers){
+			Group one2 = one.getGroup();
+			if(one2 != null){
+			    if(groups == null)
+				groups = new ArrayList<>();
+			    if(!groups.contains(one2))
+				groups.add(one2);
+			}
 		    }
 		}
 	    }
@@ -304,11 +306,9 @@ public class LeaveReviewAction extends TopAction{
 	return department;
     }
     void findDepartment(){
-	// to do
 	getGroups();
 	if(hasGroups()){
 	    if(groups != null && groups.size() > 0){
-		// we need only one
 		Group one = groups.get(0);
 		department_id = one.getDepartment_id();
 	    }

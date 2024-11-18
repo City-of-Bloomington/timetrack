@@ -521,36 +521,27 @@ public class LeaveReview implements java.io.Serializable{
 	    return back;
 	}
 	Employee emp = leave.getEmployee();
-	subject = "Leave review for "+emp.getFull_name();
+	subject = "Leave request for "+emp.getFull_name();
 	if(emp != null){
 	    email_to = emp.getEmail();
 	}
 	email_from = user.getEmail();
-	email_msg = emp.getFull_name()+" this is an automated notice sent by the Time Track system on behalf of "+user.getFull_name()+" for your leave request for "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position ";
+	email_msg += "Your leave request for "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+" for your "+leave.getJobTitle()+" position ";
 	if(leave.isSameDayLeave()){
-	    email_msg +=" on "+leave.getStartDateFF();
+	    email_msg += " on "+leave.getDate_range();
 	}
 	else{
 	    email_msg += " between "+leave.getDate_range();
+	}
+	email_msg += " is "+rev_status_one+"\n\n";
+	email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
+	if(!rev_notes_one.isEmpty()){
+	    email_msg += "Review notes: "+rev_notes_one+"\n\n";
 	    
-	}
-	email_msg += " is "+rev_status_one+"";
+	}	    
 	if(rev_status_one.equals("Approved")){
-	    email_msg +=".\n\n";
-	    email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
-	    if(!rev_notes_one.isEmpty()){
-		email_msg += "Review notes: "+rev_notes_one+"\n\n";
-	    }	    
-	    email_msg += "You can go ahead and add the leave times to your time details page.\n\n";
-
+	    email_msg += "Please update your availability in any calendars or out of office notifications.\n\n";
 	}	
-	else if(rev_status_one.equals("Denied")){
-	    email_msg += " for the following reason(s): "+rev_notes_one+".\n\n";
-	    if(leave.hasNotes()){
-		email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
-	    }
-	}
-	email_msg += "-Time Tack\n\n";
 	//
 	MailHandle mailer = new
 	    MailHandle(mail_host,
