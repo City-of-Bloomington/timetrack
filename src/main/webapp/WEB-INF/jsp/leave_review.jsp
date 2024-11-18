@@ -119,7 +119,7 @@
 		<li>You may 'Approve' or 'Deny' or take No Action on each listed request.</li>
 		<li>If you Deny a request, please provide the reason in the 'Review Notes' field.</li>
 		<li>If you take No Action, then the request will remain in your queue for later consideration.</li>
-		<li>The employee will be notified by TimeTrack of your decision.</li>
+		<li>The employee will be notified by Time Track of your decision.</li>
 
 	    </ul>
 	</fieldset>

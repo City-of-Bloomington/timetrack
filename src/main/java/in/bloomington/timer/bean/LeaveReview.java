@@ -526,7 +526,7 @@ public class LeaveReview implements java.io.Serializable{
 	    email_to = emp.getEmail();
 	}
 	email_from = user.getEmail();
-	email_msg = emp.getFull_name()+" this is an automated notice sent by the TimeTrack system on behalf of "+user.getFull_name()+" for your leave request for "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position ";
+	email_msg = emp.getFull_name()+" this is an automated notice sent by the Time Track system on behalf of "+user.getFull_name()+" for your leave request for "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position ";
 	if(leave.isSameDayLeave()){
 	    email_msg +=" on "+leave.getStartDateFF();
 	}
@@ -545,12 +545,12 @@ public class LeaveReview implements java.io.Serializable{
 
 	}	
 	else if(rev_status_one.equals("Denied")){
-	    email_msg += " for the following reason(s):\n "+rev_notes_one+".\n\n";
+	    email_msg += " for the following reason(s): "+rev_notes_one+".\n\n";
 	    if(leave.hasNotes()){
 		email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
 	    }
 	}
-	email_msg += "-TimeTack\n\n";
+	email_msg += "-Time Tack\n\n";
 	//
 	MailHandle mailer = new
 	    MailHandle(mail_host,

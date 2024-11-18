@@ -340,7 +340,7 @@ public class LeaveRequestAction extends TopAction{
 	    back = "No group manager to inform ";
 	    return back;
 	}
-	email_msg = manager.getFull_name()+", this is an automated notice sent by the TimeTrack system on behalf of "+emp.getFull_name()+", "+leave.getJobTitle()+".\n";
+	email_msg = manager.getFull_name()+", this is an automated notice sent by the Time Track system on behalf of "+emp.getFull_name()+", "+leave.getJobTitle()+".\n";
 
 	if(leave.isSameDayLeave()){
 	    email_msg += emp.getFull_name()+" has requested your approval for proposed Leave time of "+leave.getTotalHours()+" hours on "+leave.getStartDateFF()+
@@ -352,14 +352,14 @@ public class LeaveRequestAction extends TopAction{
 	}
 	if(leave.hasNotes()){
 	    
-	    email_msg += "Leave Description follows:\n\n "+leave.getRequestDetails()+
+	    email_msg += "Leave Description follows: "+leave.getRequestDetails()+
 "\n\n";
 	}
 	else{
 	    email_msg += "\n\n";
 	}
-	email_msg += "To approve or deny this request you may visit the \""+url+"leave_review.action\" Leave Review page in TimeTrack \n\n";
-	email_msg += "-TimeTrack\n\n";
+	email_msg += "To approve or deny this request you may visit the \""+url+"leave_review.action\" Leave Review page in Time Track \n\n";
+	email_msg += "-Time Track\n\n";
 	    
 	MailHandle mailer = new
 	    MailHandle(mail_host,
