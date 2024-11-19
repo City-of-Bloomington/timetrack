@@ -345,10 +345,10 @@ public class LeaveRequestAction extends TopAction{
 	email_msg = manager.getFull_name()+", this is an automated notice sent by the Time Track system on behalf of "+emp.getFull_name()+", "+leave.getJobTitle()+".\n";
 	*/
 	if(leave.isSameDayLeave()){
-	    email_msg += emp.getFull_name()+" requests "+leave.getTotalHours()+" hours of "+leave.getEarnCodes()+" leave from their "+leave.getJobTitle()+" position on "+leave.getStartDateFF()+".\n\n";
+	    email_msg += emp.getFull_name()+" requests "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' leave from their "+leave.getJobTitle()+" position on "+leave.getStartDateFF()+".\n\n";
 	}
 	else{
-	    email_msg += emp.getFull_name()+" requests "+leave.getTotalHours()+" hours of "+leave.getEarnCodes()+" leave from their "+leave.getJobTitle()+" position for "+leave.getDate_range()+".\n\n";
+	    email_msg += emp.getFull_name()+" requests "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' leave from their "+leave.getJobTitle()+" position for "+leave.getDate_range()+".\n\n";
 	    
 	}
 	if(leave.hasNotes()){
