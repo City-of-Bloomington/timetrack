@@ -107,6 +107,11 @@ public class GroupsReport{
 	return msg;	    
 	
     }
-    
+
+    /**
+	 select g.name group_name,concat_ws(' ',e.first_name, e.last_name) emp_name,wn.name role_name,gm.primary_flag isPrimary                                          from `groups` g left join group_managers gm on g.id=gm.group_id                   join workflow_nodes wn on wn.id=gm.wf_node_id                                   join employees e on e.id=gm.employee_id                                         where g.department_id=? and gm.expire_date is null                              and gm.inactive is null                                                         and wn.id in (3,4,5)                                                            order by group_name, role_name, emp_name ";
+
+
+     */
 }
 

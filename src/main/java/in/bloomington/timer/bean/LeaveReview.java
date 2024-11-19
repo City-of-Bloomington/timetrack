@@ -526,7 +526,7 @@ public class LeaveReview implements java.io.Serializable{
 	    email_to = emp.getEmail();
 	}
 	email_from = user.getEmail();
-	email_msg += "Your leave request for "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+" for your "+leave.getJobTitle()+" position ";
+	email_msg += "Your leave request for "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position ";
 	if(leave.isSameDayLeave()){
 	    email_msg += " on "+leave.getDate_range();
 	}
@@ -545,7 +545,7 @@ public class LeaveReview implements java.io.Serializable{
 	//
 	MailHandle mailer = new
 	    MailHandle(mail_host,
-		       "sibow@bloomington.in.gov",//email_to,
+		       email_to,
 		       email_from,
 		       email_from, // cc
 		       null,
