@@ -41,19 +41,41 @@
 	<s:if test="action != ''">
 	    <s:if test="hasData()">
 		<table>
-		    <caption>Groups and Related Workflow Managers</caption>
-		    <tr>
-			<td align="center"><b>Group</b></td>
-			<td align="center"><b>Manager</b></td>
-			<td align="center"><b>Action</b></td>
-			<td align="center"><b>Is Primary?</b></td>	    
-		    </tr>
-		    <s:iterator var="row" value="entries">
+		    <caption>Dept-Group Jobs</caption>
+		    <s:iterator var="row" value="entries" status="rowStatus">
+			<s:if test="#rowStatus.index==0">
 			<tr>
 			    <s:iterator var="row2" value="top">
-				<td><s:property /> </td>
+				<th><b><s:property /> </b></th>
 			    </s:iterator>
 			</tr>
+			</s:if>
+			<s:else>
+			    <tr>
+				<s:iterator var="row2" value="top">
+				    <td><s:property /> </td>
+				</s:iterator>
+			    </tr>
+			</s:else>
+		    </s:iterator>
+		</table>		
+		<table>
+		    <caption>Dept - Groups and Managers</caption>
+		    <s:iterator var="row" value="entries2" status="rowStatus2">
+			<s:if test="#rowStatus2.index==0">
+			    <tr>
+				<s:iterator var="row2" value="top">
+				    <th><b><s:property /> </b></th>
+				</s:iterator>
+			    </tr>
+			</s:if>
+			<s:else>
+			    <tr>
+				<s:iterator var="row2" value="top">
+				    <td><s:property /> </td>
+				</s:iterator>
+			    </tr>
+			</s:else>
 		    </s:iterator>
 		</table>
 	    </s:if>

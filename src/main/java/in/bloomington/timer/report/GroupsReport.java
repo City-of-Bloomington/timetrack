@@ -24,6 +24,7 @@ public class GroupsReport{
     String department_id = "";
     Department department = null;
     List<List<String>> entries = null;
+    List<List<String>> entries2 = null;    
     public GroupsReport(){
 
     }
@@ -52,19 +53,39 @@ public class GroupsReport{
 	getDepartment();
 	return department != null;
     }
-    public List<List<String>> getEntries(){
+    public List<List<String>> getJobs(){
 	return entries;
     }
-    public boolean hasData(){
+    public List<List<String>> getManagers(){
+	return entries2;
+    }    
+    public boolean hasJobs(){
 	return entries != null && entries.size() > 0;
     }
-    public String find(){
+    public boolean hasManagers(){
+	return entries2 != null && entries2.size() > 0;
+    }    
+    public String findJobs(){
 	String msg = "";
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq =
-	    " select g.name group_name,concat_ws(' ',e.first_name, e.last_name) emp_name,wn.name role_name,gm.primary_flag isPrimary                                          from `groups` g left join group_managers gm on g.id=gm.group_id                   join workflow_nodes wn on wn.id=gm.wf_node_id                                   join employees e on e.id=gm.employee_id                                         where g.department_id=? and gm.expire_date is null                              and gm.inactive is null                                                         and wn.id in (3,4,5)                                                            order by group_name, role_name, emp_name ";
+	String qq = "select "+
+	    "g.name group_name,"+	
+	    "concat_ws(' ',e.first_name, e.last_name) emp_name,"+
+	    "p.name job_title,"+
+	    "sg.name salary_group, "+	    
+	    "j.weekly_regular_hours week_hours, "+
+	    "j.comp_time_weekly_hours week_comp_hours "+
+	    "from jobs j "+ 
+	    "join salary_groups sg on sg.id=j.salary_group_id "+ 
+	    "join employees e on e.id = j.employee_id "+
+	    "join positions p on j.position_id=p.id "+
+	    "join `groups` g on j.group_id=g.id "+
+	    "join departments d on d.id=g.department_id "+
+	    "where d.id=? "+
+	    "and j.expire_date is null "+
+	    "order by group_name,emp_name ";
 	if(department_id.isEmpty()){
 	    msg = " department ID not specified";
 	    return msg;
@@ -79,20 +100,32 @@ public class GroupsReport{
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, department_id);
+	    
 	    rs = pstmt.executeQuery();
+	    if(entries == null)
+		entries = new ArrayList<>();
+	    List<String> row = new ArrayList<>();
+	    row.add("Dept - Group Name");
+	    row.add("Employee");
+	    row.add("Job Title");
+	    row.add("Salary Group");
+	    row.add("Weekly Hrs");
+	    row.add("Weekly Comp Hrs");
+	    entries.add(row);
 	    while(rs.next()){
-		if(entries == null)
-		    entries = new ArrayList<>();
-		String groupName = rs.getString(1);
-		String roleName = rs.getString(2);
-		String employeeName = rs.getString(3);
-		String str = rs.getString(4);
-		String isPrimary = (str == null)?"No":"Yes";
-		List<String> row = new ArrayList<>();
-		row.add(groupName);
-		row.add(roleName);
-		row.add(employeeName);
-		row.add(isPrimary);
+		String group_name = rs.getString(1);
+		String emp_name = rs.getString(2);
+		String job_title = rs.getString(3);
+		String salary_group = rs.getString(4);
+		String weekly_hrs = rs.getString(5);
+		String comp_hrs = rs.getString(6);		
+		row = new ArrayList<>();
+		row.add(group_name);
+		row.add(emp_name);
+		row.add(job_title);
+		row.add(salary_group);
+		row.add(weekly_hrs);
+		row.add(comp_hrs);
 		entries.add(row);
 	    }
 	}
@@ -105,13 +138,131 @@ public class GroupsReport{
 	    UnoConnect.databaseDisconnect(con);
 	}						
 	return msg;	    
-	
     }
+    public String findManagers(){
+	String msg = "";
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String qq = "select a.group_name, a.approvers,b.processors from( "+
+	    "select g.name group_name, g.id group_id, group_concat(distinct concat_ws(' ',e.first_name,e.last_name, if(gm.primary_flag is not null,\"(Primary)\",\"\")) "+
+	    "order by e.first_name "+
+	    "asc separator ';') approvers "+
+	    "from `groups` g "+
+	    "left join group_managers gm on g.id=gm.group_id "+
+	    "join workflow_nodes wn on wn.id=gm.wf_node_id "+
+	    "join employees e on e.id=gm.employee_id "+
+	    "where g.department_id=? and gm.expire_date is null "+
+	    "and wn.id=3 "+
+	    "group by g.id order by g.name) a, "+
+	    "(select g.name group_name, g.id group_id, "+
+	    "group_concat(distinct concat_ws(' ',e.first_name,e.last_name, if(gm.primary_flag is not null,\"(Primary)\",\"\")) "+
+	    "order by e.first_name "+
+	    "asc separator ';') processors "+
+	    "from `groups` g "+
+	    "left join group_managers gm on g.id=gm.group_id "+
+	    "join workflow_nodes wn on wn.id=gm.wf_node_id "+
+	    "join employees e on e.id=gm.employee_id "+
+	    "where g.department_id=? and gm.expire_date is null "+
+	    "and wn.id=4 "+
+	    "group by g.id order by g.name) b "+
+	    "where a.group_id=b.group_id";
+	if(department_id.isEmpty()){
+	    msg = " department ID not specified";
+	    return msg;
+	}
+	con = Helper.getConnection();
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    logger.error(msg);
+	    return msg;
+	}
+	logger.debug(qq);
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, department_id);
+	    pstmt.setString(2, department_id);	    
+	    rs = pstmt.executeQuery();
+	    if(entries2 == null)
+		entries2 = new ArrayList<>();
+	    List<String> row = new ArrayList<>();
+	    row.add("Dept - Group Name");
+	    row.add("Approvers");
+	    row.add("Payroll Approvers");
+	    entries2.add(row);
+	    while(rs.next()){
+		String group_name = rs.getString(1);
+		String approvers = rs.getString(2);
+		String processors = rs.getString(3);
+		row = new ArrayList<>();
+		row.add(group_name);
+		row.add(approvers);
+		row.add(processors);
+		entries2.add(row);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}						
+	return msg;	    
+    }    
 
+    
     /**
 	 select g.name group_name,concat_ws(' ',e.first_name, e.last_name) emp_name,wn.name role_name,gm.primary_flag isPrimary                                          from `groups` g left join group_managers gm on g.id=gm.group_id                   join workflow_nodes wn on wn.id=gm.wf_node_id                                   join employees e on e.id=gm.employee_id                                         where g.department_id=? and gm.expire_date is null                              and gm.inactive is null                                                         and wn.id in (3,4,5)                                                            order by group_name, role_name, emp_name ";
 
+	 // employee job and groups
+	select
+	    g.name group_name,	
+	    concat_ws(' ',e.first_name, e.last_name) emp_name,
+	    p.name job_title ,
+	    sg.name salary_group,	    
+	    j.weekly_regular_hours week_hours,
+	    j.comp_time_weekly_hours week_comp_hours
+	    from jobs j 
+	    join salary_groups sg on sg.id=j.salary_group_id 
+	    join employees e on e.id = j.employee_id 
+	    join positions p on j.position_id=p.id 
+	    join `groups` g on j.group_id=g.id 
+	    join departments d on d.id=g.department_id 
+	    where d.id=1
+	    and j.expire_date is null
+	    order by group_name,emp_name
 
+
+//
+// group managers
+//
+	    select a.group_name, a.approvers,b.processors from(
+	    select g.name group_name, g.id group_id, group_concat(distinct concat_ws(' ',e.first_name,e.last_name, if(gm.primary_flag is not null,"(Primary)","")) 
+	    order by e.first_name 
+	    asc separator ';') approvers
+	    from `groups` g
+	    left join group_managers gm on g.id=gm.group_id
+	    join workflow_nodes wn on wn.id=gm.wf_node_id
+	    join employees e on e.id=gm.employee_id
+	    where g.department_id=1 and gm.expire_date is null
+	    and wn.id=3
+	    group by g.id order by g.name) a,
+	    (select g.name group_name, g.id group_id, 
+	    group_concat(distinct concat_ws(' ',e.first_name,e.last_name, if(gm.primary_flag is not null,"(Primary)","")) 
+	    order by e.first_name
+	    asc separator ';') processors
+	    from `groups` g
+	    left join group_managers gm on g.id=gm.group_id
+	    join workflow_nodes wn on wn.id=gm.wf_node_id
+	    join employees e on e.id=gm.employee_id
+	    where g.department_id=1 and gm.expire_date is null
+	    and wn.id=4
+	    group by g.id order by g.name) b
+	    where a.group_id=b.group_id;
+	    
+	    
      */
 }
 

@@ -26,8 +26,9 @@ public class ReportGroupsAction extends TopAction{
     GroupsReport report = new GroupsReport();
     String dept_id="";
     List<List<String>> entries = null;
+    List<List<String>> entries2 = null;    
     String outputType = "html"; // html, csv
-    String fileName = "groups_and_managers.csv";
+    String fileName = "jobs_groups_managers.csv";
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare();
@@ -36,12 +37,18 @@ public class ReportGroupsAction extends TopAction{
 	}
 	if(!action.isEmpty()){
 	    report.setDepartment_id(dept_id);
-	    back = report.find();
+	    back = report.findJobs();
 	    if(back.isEmpty()){
-		if(report.hasData()){
-		    entries = report.getEntries();
+		if(report.hasJobs()){
+		    entries = report.getJobs();
 		}
 	    }
+	    back = report.findManagers();
+	    if(back.isEmpty()){
+		if(report.hasManagers()){
+		    entries2 = report.getManagers();
+		}
+	    }	    
 	    if(outputType.equals("csv")){
 		ret = "csv";
 	    }
@@ -62,6 +69,9 @@ public class ReportGroupsAction extends TopAction{
     public List<List<String>> getEntries(){
 	return entries;
     }
+    public List<List<String>> getEntries2(){
+	return entries2;
+    }    
     public boolean hasData(){
 	return entries != null;
     }

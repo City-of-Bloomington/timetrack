@@ -8,8 +8,11 @@ String str = (String)request.getAttribute("fileName");
 response.setHeader("Content-Disposition","inline; filename="+str);
 response.setContentType("application/csv");
 %>
-Group,Manager,Action,Is Primary\n
+Group, Employee, Job, Salary Group, Weekly hrs, Comp Weekly Hrs\n
 <s:iterator var="one" value="#entries"><s:iterator var="row" value="#one" status="status">"<s:property  />"<s:if test="!#status.last">,</s:if></s:iterator>
+</s:iterator>
+Group,Approvers,Payroll Approvers\n
+<s:iterator var="one" value="#entries2"><s:iterator var="row" value="#one" status="status2">"<s:property  />"<s:if test="!#status2.last">,</s:if></s:iterator>
 </s:iterator>
 
 

@@ -415,6 +415,7 @@ public class JobTask implements Serializable{
 	getGroup();
 	if(group != null){
 	    if((group.getDepartment_id().equals("1")||
+		group.getDepartment_id().equals("15")||
 		group.getDepartment_id().equals("4"))){
 		return salaryGroup != null && salaryGroup.isLeaveEligible();
 	    }
