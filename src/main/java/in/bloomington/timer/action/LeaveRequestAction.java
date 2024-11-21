@@ -26,6 +26,7 @@ public class LeaveRequestAction extends TopAction{
     String leavesTitle = "Previous Leave Requests";
     LeaveRequest leave = null;
     List<LeaveRequest> requests = null;
+    List<LeaveRequest> pending_leaves = null;    
     List<HourCode> hourCodes = null;
     Document document = null;
     List<EmployeeAccrual> empAccruals = null;
@@ -66,30 +67,38 @@ public class LeaveRequestAction extends TopAction{
 		leave.setInitiated_by(user.getId());
 		addMessage("Submitted Successfully");
 	    }
-	}   // update is not really needed
-	else if(action.startsWith("Save")){
-	    leave.setEarn_code_ids(earn_code_ids);
-	    leave.setInitiated_by(user.getId());
-	    back = leave.doUpdate();
+	}
+	if(action.equals("Cancel")){
+	    getLeave();
+	    back = leave.doSelect();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    LeaveReview review = new LeaveReview();
+	    review.setLeave_id(leave.getId());
+	    review.setLeave(leave);
+	    review.setReviewed_by(user.getId());
+	    back = review.doCancel();
 	    if(!back.isEmpty()){
 		addError(back);
 	    }
 	    else{
-		addMessage("Updated Successfully");
-		ret = "view";
-	    }
-	} // not needed as well
-	else if(action.startsWith("Edit")){
-	    if(!id.isEmpty()){
-		getLeave();
-		back = leave.doSelect();
-		if(!back.isEmpty()){
-		    addError(back);
+		//if(true){
+		if(activeMail){
+		    back = informCancellation();
+		    if(!back.isEmpty()){ 
+			addMessage(back);
+		    }
 		}
+		addMessage("Cancelled Successfully");		    
 		job_id = leave.getJob_id();
-		earn_code_ids = leave.getEarn_code_ids();
+		leave = new LeaveRequest();
+		leave.setJob_id(job_id);
+		earn_code_ids = new String[1];
+		earn_code_ids[0] = "";
+		leave.setInitiated_by(user.getId());
 	    }
-	}	
+	}		
 	else{		
 	    getLeave();
 	    if(!id.isEmpty()){
@@ -195,12 +204,9 @@ public class LeaveRequestAction extends TopAction{
 	if(requests == null){
 	    findCurrentPayPeriod();
 	    LeaveRequestList tl = new LeaveRequestList();
-	    //tl.setInitiated_by(user.getId());
 	    tl.setJob_id(job_id);
-	    tl.setActiveOnly();
 	    tl.setPay_period_id(pay_period_id);
-	    // tl.setCurrentAndFuture();
-	    //tl.setDecided();
+	    // tl.setIsReviewed();
 	    String back = tl.find();
 	    if(back.isEmpty()){
 		List<LeaveRequest> ones = tl.getRequests();
@@ -211,6 +217,29 @@ public class LeaveRequestAction extends TopAction{
 	}
 	return requests;
     }
+    /**
+    public boolean hasPendingLeaves(){
+	getPendingLeaves();
+	return pending_leaves != null && pending_leaves.size() > 0;
+    }
+    public List<LeaveRequest> getPendingLeaves(){
+	if(pending_leaves == null){
+	    findCurrentPayPeriod();
+	    LeaveRequestList tl = new LeaveRequestList();
+	    tl.setJob_id(job_id);
+	    tl.setPay_period_id(pay_period_id);
+	    tl.setNotReviewed();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<LeaveRequest> ones = tl.getRequests();
+		if(ones != null && ones.size() > 0){
+		    pending_leaves = ones;
+		}
+	    }
+	}
+	return pending_leaves;
+    }
+    */
     public boolean hasDecidedRequests(){
 	getRequests();
 	return requests != null && requests.size() > 0;
@@ -377,6 +406,66 @@ public class LeaveRequestAction extends TopAction{
 	back += lel.doSave();
 	return back;
     }
+    String informCancellation(){
+	String back = "";
+	    
+	if(leave == null){
+	    back = "No leave request to process";
+	    return back;
+	}
+	String manager_email="";
+	String emp_email="";
+	String subject = "";
+	String email_msg = "";
+	String email_from = "";
+	String email_to = "";
+	String today = Helper.getToday();
+	Employee manager = null;	
+	Employee emp = leave.getEmployee();
+	subject = "[Time Track] "+today+" Leave request for "+emp.getFull_name()+" cancelled";
+	if(emp != null){
+	    email_from = emp.getEmail();
+	}		
+	GroupManager groupManager = leave.getManager();
+	if(groupManager != null){
+	    Employee one = groupManager.getEmployee();
+	    if(one != null)
+		manager = one;
+	    email_to = manager.getEmail();
+	}
+	else{
+	    back = "No group manager to inform ";
+	    return back;
+	}
+	if(leave.isSameDayLeave()){
+	    email_msg += emp.getFull_name()+" cancelled the request "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' leave from their "+leave.getJobTitle()+" position on "+leave.getStartDateFF()+"\n\n";
+	}
+	else{
+	    email_msg += emp.getFull_name()+" cancelled the request "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' leave from their "+leave.getJobTitle()+" position for "+leave.getDate_range()+"\n\n";
+	    
+	}
+	if(leave.hasNotes()){
+	    email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
+	}
+	MailHandle mailer = new
+	    MailHandle(mail_host,
+		       email_to,
+		       email_from,
+		       email_from, // cc
+		       null,
+		       subject,
+		       email_msg
+		       );
+	back += mailer.send();
+	LeaveEmailLog lel = new LeaveEmailLog(
+					      email_to,
+					      email_from,
+					      email_msg,
+					      "Cancelled Request",
+					      back);
+	back += lel.doSave();
+	return back;
+    }    
 }
 
 

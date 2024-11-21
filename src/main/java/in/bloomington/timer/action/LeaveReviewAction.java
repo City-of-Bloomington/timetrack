@@ -69,6 +69,7 @@ public class LeaveReviewAction extends TopAction{
 		addMessage("There are no leave requests"); 
 	    }
 	}
+	
 	else if(!leave_id.isEmpty()){
 	    getReview();
 	    review.setLeave_id(leave_id);

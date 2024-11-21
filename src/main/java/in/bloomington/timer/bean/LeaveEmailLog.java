@@ -18,7 +18,7 @@ public class LeaveEmailLog{
     static final long serialVersionUID = 3700L;	
     static Logger logger = LogManager.getLogger(LeaveEmailLog.class);
     String id="", email_from="", email_to="", message="",date="",
-	email_type = "Request", // Request, Review, default=Request
+	email_type = "Request", // Request, Review, Cancelled Request, default=Request
 	error_msg="";
     //
     public LeaveEmailLog(String val){
@@ -197,13 +197,16 @@ public class LeaveEmailLog{
 
 }
 /**
-create table leave_emaiL_logs(
+create table leave_email_logs(
 id int unsigned auto_increment primary key,
 email_to varchar(80),
 email_from varchar(80),
 email_msg varchar(1200),
 sent_date date not null,
-email_type enum('Request','Review'),
+email_type enum('Request','Review','Cancelled Request'),
 error_msg varchar(1200)
 )engine=InnoDB;
+
+alter table leave_email_logs modify email_type enum('Request','Review','Cancelled Request');
+
 */

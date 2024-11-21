@@ -555,6 +555,7 @@ public class LeaveRequest implements java.io.Serializable{
     }		
 
 }
+
 /*
 create table leave_requests(
 id int unsigned auto_increment,

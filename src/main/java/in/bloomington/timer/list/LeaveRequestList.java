@@ -27,7 +27,6 @@ public class LeaveRequestList{
     String group_id="", group_ids=""; // for reviewers
     String filter_emp_id="";
     String ids_to_ignore = ""; 
-    boolean active_only = false;
     boolean is_reviewed = false, not_reviewed=false;
     boolean approved_only = false;
 
@@ -88,9 +87,6 @@ public class LeaveRequestList{
     public void setFilter_emp_id(String val){
 	if(val != null)
 	    filter_emp_id = val;
-    }
-    public void setActiveOnly(){
-	active_only = true;
     }
     public void setIsReviewed(){
 	is_reviewed = true;

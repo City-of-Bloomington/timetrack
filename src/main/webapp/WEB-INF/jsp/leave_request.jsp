@@ -20,7 +20,7 @@
 	
 	<br />
 	<hr />
-    </s:if>    
+    </s:if>
     <s:form action="leave_request" id="form_id" method="post" >
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="leave.job_id" value="%{job_id}" />

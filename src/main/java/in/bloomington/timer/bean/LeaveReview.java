@@ -18,7 +18,7 @@ public class LeaveReview implements java.io.Serializable{
     static final long serialVersionUID = 3700L;
     static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd"); 
     static Logger logger = LogManager.getLogger(LeaveReview.class);
-    String id="", status="", // Approved, Denied
+    String id="", status="", // Approved, Denied, Cancelled
 	leave_id="", reviewed_by="", date="", notes="";
     boolean activeMail = false;
     String mail_host = "";
@@ -121,6 +121,10 @@ public class LeaveReview implements java.io.Serializable{
 	if(val != null)
 	    leave_id=val;
     }
+    public void setLeave(LeaveRequest val){
+	if(val != null)
+	    leave=val;
+    }    
     public void setLeave_id_1(String val){
 	if(val != null)
 	    leave_id_1=val;
@@ -465,6 +469,48 @@ public class LeaveReview implements java.io.Serializable{
 	doSelect();
 	return msg;
     }
+    public String doCancel(){	
+	Connection con = null;
+	PreparedStatement pstmt = null, pstmt2=null;
+	ResultSet rs = null;
+	String msg="", str="";
+	String qq = " insert into leave_reviews values(0,?,now(),?,?, ?)";
+	if(leave_id.isEmpty()){
+	    msg = "Leave request is required";
+	    return msg;
+	}
+	status = "Cancelled";
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = "Could not connect to DB ";
+	    return msg;
+	}
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, leave_id);
+	    pstmt.setString(2, status);
+	    pstmt.setNull(3, Types.VARCHAR);
+	    pstmt.setString(4, reviewed_by);	    
+	    pstmt.executeUpdate();
+	    //
+	    qq = "select LAST_INSERT_ID()";
+	    pstmt2 = con.prepareStatement(qq);
+	    rs = pstmt2.executeQuery();
+	    if(rs.next()){
+		id = rs.getString(1);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	doSelect();
+	return msg;
+    }    
     public String doUpdate(){
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -569,7 +615,7 @@ create table leave_reviews(
 id int unsigned auto_increment,
 leave_id int unsigned not null,
 review_date date,
-review_status enum('Approved','Denied'),
+review_status enum('Approved','Denied','Cancelled'),
 review_notes varchar(1024),
 reviewed_by int unsigned not null,
 primary key(id),
@@ -577,7 +623,7 @@ foreign key(leave_id) references leave_requests(id),
 foreign key(reviewed_by) references employees(id)
 )engine=InnoDB;
 
-
+alter table leave_reviews modify review_status enum('Approved','Denied','Cancelled');
 
 
  */
