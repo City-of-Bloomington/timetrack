@@ -413,6 +413,10 @@ public class LeaveRequest implements java.io.Serializable{
 	    msg = "end date is required";
 	    return msg;
 	}
+	if(start_date.compareTo(end_date) > 0){
+	    msg ="Start date must be less or equal End Date";
+	    return msg;
+	}
 	if(payPeriod == null)
 	    findCurrentPayPeriod();
 	if(payPeriod != null){

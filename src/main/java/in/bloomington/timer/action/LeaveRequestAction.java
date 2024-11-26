@@ -354,7 +354,7 @@ public class LeaveRequestAction extends TopAction{
 	String email_to = "";
 	Employee manager = null;	
 	Employee emp = leave.getEmployee();
-	subject = "Leave request for "+emp.getFull_name();
+	subject = "[Time Track] Leave request for "+emp.getFull_name();
 	if(emp != null){
 	    email_from = emp.getEmail();
 	}		// we need only one

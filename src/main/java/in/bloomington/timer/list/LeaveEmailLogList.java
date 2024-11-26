@@ -32,7 +32,7 @@ public class LeaveEmailLogList{
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
 	String qq = "select id,email_to,email_from, email_msg,date_format(sent_date,'%m/%d/%Y'),emaiL_type,error_msg "+
-	    "from leave_emaiL_logs order by id desc limit 20";
+	    "from leave_emaiL_logs order by id desc limit 100";
 	if(con == null){
 	    back = "Could not connect to DB";
 	    return back;

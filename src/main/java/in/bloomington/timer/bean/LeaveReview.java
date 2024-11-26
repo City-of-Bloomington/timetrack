@@ -567,7 +567,7 @@ public class LeaveReview implements java.io.Serializable{
 	    return back;
 	}
 	Employee emp = leave.getEmployee();
-	subject = "Leave request for "+emp.getFull_name();
+	subject = "[Time Track] Leave request for "+emp.getFull_name();
 	if(emp != null){
 	    email_to = emp.getEmail();
 	}

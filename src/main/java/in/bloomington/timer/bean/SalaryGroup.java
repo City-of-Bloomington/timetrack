@@ -100,7 +100,7 @@ public class SalaryGroup implements Serializable{
 	return name.indexOf("Temp") > -1; // for Temp and Temp W/Ben
     }
     public boolean isPartTime(){
-	return name.equals("Part Time");
+	return name.startsWith("Part");
     }		
     public boolean isUnionned(){
 	return name.equals("Union") || name.equals("AFSCME");
