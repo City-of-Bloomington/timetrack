@@ -7,6 +7,8 @@ package in.bloomington.timer.bean;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
@@ -20,6 +22,14 @@ public class JobTask implements Serializable{
 
     static Logger logger = LogManager.getLogger(JobTask.class);
     static final long serialVersionUID = 2400L;
+    static Set<String> deptSet = new HashSet<>();
+    static {
+	deptSet.add("1");
+	deptSet.add("4");
+	deptSet.add("11");
+	deptSet.add("14");
+	deptSet.add("15");
+    }
     private String id="",
 	employee_id="", group_id="",
 	employee_number="", // needed for update from nw
@@ -411,12 +421,10 @@ public class JobTask implements Serializable{
     }
     public boolean isLeaveEligible(){
 	getSalaryGroup();
-	// for ITS, HR
+	// for ITS, HR, CONTROLLER, ESD, CFRD
 	getGroup();
 	if(group != null){
-	    if((group.getDepartment_id().equals("1")||
-		group.getDepartment_id().equals("15")||
-		group.getDepartment_id().equals("4"))){
+	    if(deptSet.contains(group.getDepartment_id())){
 		return salaryGroup != null && salaryGroup.isLeaveEligible();
 	    }
 	}

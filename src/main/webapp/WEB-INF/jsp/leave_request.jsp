@@ -100,7 +100,14 @@
 	    </fieldset>
 	</div>
     </s:form>
-    
+      <s:if test="hasHistory()">
+	<br />
+	<h1 style="border-bottom:0">Leave Request History</h1>
+	<s:set var="leave_history" value="history" />
+	<%@ include file="leave_emp_history.jsp" %>
+	<br />
+	<hr />
+    </s:if>
 </div>
 
 <%@ include file="footer.jsp" %>

@@ -26,7 +26,8 @@ public class LeaveRequestAction extends TopAction{
     String leavesTitle = "Previous Leave Requests";
     LeaveRequest leave = null;
     List<LeaveRequest> requests = null;
-    List<LeaveRequest> pending_leaves = null;    
+    List<LeaveRequest> pending_leaves = null;
+    List<LeaveRequest> history_leaves = null;
     List<HourCode> hourCodes = null;
     Document document = null;
     List<EmployeeAccrual> empAccruals = null;
@@ -109,6 +110,9 @@ public class LeaveRequestAction extends TopAction{
 		job_id = leave.getJob_id();
 		earn_code_ids = leave.getEarn_code_ids();
 		ret = "view";
+	    }
+	    else{
+		findHistory();
 	    }
 	}
 	return ret;
@@ -216,6 +220,29 @@ public class LeaveRequestAction extends TopAction{
 	    }
 	}
 	return requests;
+    }
+    void findHistory(){
+	if(history_leaves == null){
+	    if(pay_period_id.isEmpty())
+		findCurrentPayPeriod();
+	    LeaveRequestList tl = new LeaveRequestList();
+	    tl.setJob_id(job_id);
+	    tl.setPay_period_id(pay_period_id);
+	    String back = tl.findForHistory();
+	    if(back.isEmpty()){
+		List<LeaveRequest> ones = tl.getRequests();
+		if(ones != null && ones.size() > 0){
+		    history_leaves = ones;
+		}
+	    }
+	}
+    }
+    public List<LeaveRequest> getHistory(){
+	return history_leaves;
+    }
+    public boolean hasHistory(){
+	findHistory();
+	return history_leaves != null && history_leaves.size() > 0;
     }
     /**
     public boolean hasPendingLeaves(){
@@ -385,7 +412,7 @@ public class LeaveRequestAction extends TopAction{
 	else{
 	    email_msg += "\n\n";
 	}
-	email_msg += " Go to Time Track Leave Review (https://bloomington.in.gov/timetrack/leave_review.action) to review this request.\n\n";
+	email_msg += "Go to Time Track Leave Review (https://bloomington.in.gov/timetrack/leave_review.action) to review this request.\n\n";
 	
 	MailHandle mailer = new
 	    MailHandle(mail_host,
