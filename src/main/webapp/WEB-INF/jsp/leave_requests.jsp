@@ -16,7 +16,6 @@
 	    <s:if test="#skipEmployee">		
 		<th>Action</th>
 	    </s:if>
-	    <th>Details</th>
 	</tr>
     </thead>
     <tbody>
@@ -48,17 +47,15 @@
 		    <td>Pending</td>
 		</s:else>
 		<td><s:if test="hasReviewer()"><s:property value="reviewer" /></s:if><e:else>&nbsp;</e:else></td>
+		<td width="14%">
 		<s:if test="#skipEmployee">
-		    <td>
-			<s:if test="hasReviewer()">
-			    &nbsp;
-			</s:if>
-			<s:else>
-			    <a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='id' />&action=Cancel">Cancel Request</a>
-			</s:else>
-		    </td>
+		    <s:if test="canBeCancelled()">
+			<a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='id' />&action=Edit">Edit</a>	<br />		
+			<a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='id' />&action=startCancel">Cancel Request</a>&nbsp;
+		    </s:if>
 		</s:if>
-		<td><a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='id' />&action=view">More Details</a></td>
+		&nbsp;
+		</td>
 	    </tr>
 	</s:iterator>
     </tbody>

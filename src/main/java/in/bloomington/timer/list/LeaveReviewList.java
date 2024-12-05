@@ -20,6 +20,8 @@ public class LeaveReviewList{
     static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); 
     static final long serialVersionUID = 3800L;
     String leave_id="", date_from="", date_to="", sortBy="id desc";
+    String date_from_ff="", date_to_ff="";
+    String employee_id="";
     String reviewed_by="";
     List<LeaveReview> reviews = null;
 		
@@ -41,10 +43,22 @@ public class LeaveReviewList{
 	if(val != null)
 	    date_to = val;
     }
+    public void setDate_from_ff(String val){
+	if(val != null)
+	    date_from_ff = val;
+    }
+    public void setDate_to_ff(String val){
+	if(val != null)
+	    date_to_ff = val;
+    }    
     public void setReviewed_by(String val){
 	if(val != null)
 	    reviewed_by=val;
-    }    
+    }
+    public void setEmployee_id(String val){
+	if(val != null)
+	    employee_id=val;
+    }        
     public void setSortBy(String val){
 	if(val != null)
 	    sortBy = val;
@@ -55,8 +69,9 @@ public class LeaveReviewList{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
-	String qq = "select id,leave_id,date_format(review_date,'%m/%d/%Y'),review_status,review_notes,reviewed_by "+
-	    "from leave_reviews ";
+	String qq = "select r.id,r.leave_id,date_format(r.review_date,'%m/%d/%Y'),r.review_status,r.review_notes,r.reviewed_by "+
+	    "from leave_reviews r join leave_requests l on l.id=r.leave_id "+
+	    "join jobs j on j.id=l.job_id ";
 	if(con == null){
 	    back = "Could not connect to DB";
 	    return back;
@@ -79,6 +94,18 @@ public class LeaveReviewList{
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " reviewed_by = ? ";
 	    }
+	    if(!date_from_ff.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " review_date >= ? ";		
+	    }
+	    if(!date_to_ff.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " review_date <= ? ";
+	    }
+	    if(!employee_id.isEmpty()){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " j.employee_id = ? ";
+	    }	    
 	    if(!qw.isEmpty()){
 		qq += " where "+qw;
 	    }
@@ -100,6 +127,15 @@ public class LeaveReviewList{
 	    if(!reviewed_by.isEmpty()){
 		pstmt.setString(jj++,reviewed_by);
 	    }
+	    if(!date_from_ff.isEmpty()){
+		pstmt.setString(jj++, date_from_ff);
+	    }
+	    if(!date_to_ff.isEmpty()){
+		pstmt.setString(jj++, date_to_ff);
+	    }
+	    if(!employee_id.isEmpty()){
+		pstmt.setString(jj++,employee_id);
+	    }	    
 	    rs = pstmt.executeQuery();
 	    if(reviews == null)
 		reviews = new ArrayList<>();

@@ -22,7 +22,7 @@ public class LeaveRequestAction extends TopAction{
     static final long serialVersionUID = 3800L;	
     static Logger logger = LogManager.getLogger(LeaveRequestAction.class);
     //
-    String pay_period_id = "", job_id = "";
+    String pay_period_id = "", job_id = "", cancel_reason="";
     String leavesTitle = "Previous Leave Requests";
     LeaveRequest leave = null;
     List<LeaveRequest> requests = null;
@@ -44,7 +44,7 @@ public class LeaveRequestAction extends TopAction{
 	if(!back.isEmpty()){
 	    return back;
 	}
-	if(action.startsWith("Submit")){
+	if(action.startsWith("Submit Request")){
 	    leave.setInitiated_by(user.getId());
 	    leave.setJob_id(job_id);
 	    leave.setEarn_code_ids(earn_code_ids);
@@ -69,7 +69,48 @@ public class LeaveRequestAction extends TopAction{
 		addMessage("Submitted Successfully");
 	    }
 	}
-	if(action.equals("Cancel")){
+	else if(action.equals("Edit")){
+	    getLeave();
+	    back = leave.doSelect();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		job_id = leave.getJob_id();
+		earn_code_ids = leave.getEarn_code_ids();
+	    }
+	}	
+	else if(action.startsWith("Save")){
+	    leave.setInitiated_by(user.getId());
+	    leave.setJob_id(job_id);
+	    leave.setEarn_code_ids(earn_code_ids);
+	    back = leave.doUpdate();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		// reset
+		id = "";
+		earn_code_ids = new String[1];
+		earn_code_ids[0] = ""; 
+		leave = new LeaveRequest();
+		leave.setJob_id(job_id);
+		leave.setInitiated_by(user.getId());
+		addMessage("Saved Successfully");
+	    }
+	}
+	else if(action.startsWith("startCancel")){
+	    getLeave();
+	    back = leave.doSelect();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		job_id = leave.getJob_id();
+		ret = "leave_cancel";
+	    }
+	}		
+	else if(action.startsWith("Submit Cancel")){
 	    getLeave();
 	    back = leave.doSelect();
 	    if(!back.isEmpty()){
@@ -79,6 +120,7 @@ public class LeaveRequestAction extends TopAction{
 	    review.setLeave_id(leave.getId());
 	    review.setLeave(leave);
 	    review.setReviewed_by(user.getId());
+	    review.setCancelReason(cancel_reason);
 	    back = review.doCancel();
 	    if(!back.isEmpty()){
 		addError(back);
@@ -169,6 +211,10 @@ public class LeaveRequestAction extends TopAction{
 	if(val != null && !val.isEmpty())		
 	    action = val;
     }
+    public void setCancel_reason(String val){
+	if(val != null && !val.isEmpty())		
+	    cancel_reason = val;
+    }    
     public void setPay_period_id(String val){
 	if(val != null && !val.isEmpty())		
 	    pay_period_id = val;
@@ -190,6 +236,9 @@ public class LeaveRequestAction extends TopAction{
 	}
 	return earn_code_ids;
     }
+    public String getCancel_reason(){
+	return cancel_reason;
+    }    
     void findCurrentPayPeriod(){
 	//
 	if(pay_period_id.isEmpty()){
@@ -210,7 +259,6 @@ public class LeaveRequestAction extends TopAction{
 	    LeaveRequestList tl = new LeaveRequestList();
 	    tl.setJob_id(job_id);
 	    tl.setPay_period_id(pay_period_id);
-	    // tl.setIsReviewed();
 	    String back = tl.find();
 	    if(back.isEmpty()){
 		List<LeaveRequest> ones = tl.getRequests();
@@ -267,7 +315,7 @@ public class LeaveRequestAction extends TopAction{
 	return pending_leaves;
     }
     */
-    public boolean hasDecidedRequests(){
+    public boolean hasCurrentRequests(){
 	getRequests();
 	return requests != null && requests.size() > 0;
     }

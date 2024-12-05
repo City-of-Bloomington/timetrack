@@ -15,7 +15,8 @@
 	    <h1 style="border-bottom:0">Current Leave Requests (<s:property value="leavesTotalNumber" /> Pending Reviews)</h1>	    
 	    <s:form action="leave_review" id="form_id" method="post" >
 		<s:hidden name="action2" id="action2" value="" />
-		<table border="1" width="100%"><tr><td>
+		<!-- 
+		<table border="0"><tr style="background-color:gainsboro"><td>
 		<div class="time-block">	    
 		    <div class="form-group" style="border-bottom: none;">
 			<div class="date-range-picker">
@@ -51,6 +52,27 @@
 		    </div>
 		</div>
 		</td></tr></table>
+		-->
+		<table style="border:none;spacing:none;">
+		    <tr style="background-color:gainsboro;border:none">
+			<td style="border:0px"><label>&nbsp;&nbsp;</label></td>
+			<s:if test="hasEmployees()">			
+			    <td style="border:none"><label>Employee</label></td>
+			</s:if>
+			<td style="border:none"><label>Date from</label></td>
+			<td style="border:none"><label>Date to</label></td>
+			<td style="border:none"><label>&nbsp;&nbsp;</label></td>
+		    </tr>
+		    <tr style="background-color:gainsboro;border:none;spacing:none;">
+			<td style="border:none;padding-bottom:none;"><label>Filter by</label></td>
+			<s:if test="hasEmployees()">				
+			    <td style="border:none;padding-bottom:none;"><s:select name="filter_emp_id" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="All" style="height:26px;width:150px" /> </td>
+			</s:if>
+			<td style="border:none;padding-bottom:none;"><s:textfield name="date_from" value="%{date_from}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" id="date_from" /></td>
+			<td style="border:none;padding-bottom:none;"><s:textfield name="date_to" value="%{date_to}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" /></td>
+			<td style="border:none;padding-bottom:none;"><s:submit name="action" type="button" value="Refresh List" class="button" style="height:26px;width:150px" /></td>
+		    </tr>
+		</table>
 		<table>
 		    <tr>
 			<th>&nbsp;</th>
@@ -69,16 +91,15 @@
 			<s:else>
 			    <tr>
 			</s:else>
-			    <td>&nbsp;</td>
-			    <td><s:property value="employee" /></td>
-			    <td><s:property value="requestDate" /></td>
-			    <td><s:property value="jobTitle" /></td>
-			    <td><s:property value="date_range" /></td>
-			    <td><s:property value="totalHours" /></td>
-			    <td><s:property value="earnCodes" /></td>
+			<td>&nbsp;</td>
+			<td><s:property value="employee" /></td>
+			<td><s:property value="requestDate" /></td>
+			<td><s:property value="jobTitle" /></td>
+			<td><s:property value="date_range" /></td>
+			<td><s:property value="totalHours" /></td>
+			<td><s:property value="earnCodes" /></td>
 			    </tr>
-			    
-			<s:if test="#rowStatus.count%2 == 0">
+			    <s:if test="#rowStatus.count%2 == 0">
 			    <tr style="background-color:#efefed">
 			</s:if>
 			<s:else>
@@ -123,14 +144,41 @@
 
 	    </ul>
 	</fieldset>
-    </div>
+			    
     <br />
     <s:if test="hasReviews()">
 	<hr />
 	<br />
 	<h1 style="border-bottom:0">Leave Approval History</h1>
+	<s:if test="isRevFilterNeeded()">
+	    <s:form action="leave_review" id="form_id2" method="post" >
+		<s:hidden name="action2" id="action2" value="" />	    
+		<table style="border:none;spacing:none;">
+		    <tr style="background-color:gainsboro;border:none">
+			<td style="border:0px"><label>&nbsp;&nbsp;</label></td>
+			<s:if test="hasRevEmployees()">			
+			    <td style="border:none"><label>Employee</label></td>
+			</s:if>
+			<td style="border:none"><label>Date from</label></td>
+			<td style="border:none"><label>Date to</label></td>
+			<td style="border:none"><label>&nbsp;&nbsp;</label></td>
+		    </tr>
+		
+		    <tr style="background-color:gainsboro;border:none;spacing:none;">
+			<td style="border:none;padding-bottom:none;"><label>Filter by</label></td>
+			<s:if test="hasRevEmployees()">				
+			    <td style="border:none;padding-bottom:none;"><s:select name="rev_filter_emp_id" list="rev_employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="All" style="height:26px;width:150px" /> </td>
+			</s:if>
+			<td style="border:none;padding-bottom:none;"><s:textfield name="rev_date_from" value="%{rev_date_from}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" id="rev_date_from" /></td>
+			<td style="border:none;padding-bottom:none;"><s:textfield name="rev_date_to" value="%{rev_date_to}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" /></td>
+			<td style="border:none;padding-bottom:none;"><s:submit name="action" type="button" value="Refresh List" class="button" style="height:26px;width:150px" /></td>
+		    </tr>
+		</table>
+	    </s:form>
+	</s:if>
 	<s:set var="reviews" value="reviews" />
 	<%@ include file="leave_reviews.jsp" %>
     </s:if>
+    </div>
 </div>
 <%@  include file="footer.jsp" %>

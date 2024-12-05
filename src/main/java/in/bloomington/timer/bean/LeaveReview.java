@@ -19,7 +19,7 @@ public class LeaveReview implements java.io.Serializable{
     static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd"); 
     static Logger logger = LogManager.getLogger(LeaveReview.class);
     String id="", status="", // Approved, Denied, Cancelled
-	leave_id="", reviewed_by="", date="", notes="";
+	leave_id="", reviewed_by="", date="", notes="", cancel_reason="";
     boolean activeMail = false;
     String mail_host = "";
     Employee user = null;
@@ -109,6 +109,10 @@ public class LeaveReview implements java.io.Serializable{
 	if(val != null)
 	    notes=val;
     }
+    public void setCancelReason(String val){
+	if(val != null)
+	    cancel_reason=val;
+    }    
     public void setReviewStatus(String val){
 	if(val != null)
 	    status=val;
@@ -489,7 +493,8 @@ public class LeaveReview implements java.io.Serializable{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, leave_id);
 	    pstmt.setString(2, status);
-	    pstmt.setNull(3, Types.VARCHAR);
+	    cancel_reason = "Request cancelled by the employee for the following reason: "+cancel_reason;
+	    pstmt.setString(3, cancel_reason);
 	    pstmt.setString(4, reviewed_by);	    
 	    pstmt.executeUpdate();
 	    //
@@ -586,7 +591,7 @@ public class LeaveReview implements java.io.Serializable{
 	    
 	}	    
 	if(rev_status_one.equals("Approved")){
-	    email_msg += "Please update your availability in any calendars or out of office notifications.\n\n";
+	    email_msg += "Please update your availability in your personal calendar, department time off calendar, and any out of office notifications.\n\n";
 	}	
 	//
 	MailHandle mailer = new

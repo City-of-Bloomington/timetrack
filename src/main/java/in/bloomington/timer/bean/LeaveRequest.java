@@ -310,6 +310,14 @@ public class LeaveRequest implements java.io.Serializable{
 	}
 	return full_name;
     }
+    public boolean canBeCancelled(){
+	if(!hasReviewer()){
+	    if(payPeriod == null)
+		findCurrentPayPeriod();
+	    return (start_date.compareTo(payPeriod.getStartDateYmd()) >= 0);
+	}
+	return false;
+    }
     // for notification
     public GroupManager getManager(){
 	findGroupManager();

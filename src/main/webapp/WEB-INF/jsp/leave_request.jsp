@@ -10,11 +10,10 @@
 	<%@ include file="messages.jsp" %>
     </s:elseif>
     <br />
-    <s:if test="hasDecidedRequests()">
+    <s:if test="hasCurrentRequests()">
 	<br />
 	<h1 style="border-bottom:0">Active Leave Requests</h1>
 	<s:set var="leave_requests" value="requests" />
-	<s:set var="leavesTitle" value="leavesTitle" />
 	<s:set var="skipEmployee" value="'true'" />
 	<%@ include file="leave_requests.jsp" %>
 	
@@ -25,9 +24,16 @@
 	<s:hidden name="action2" id="action2" value="" />
 	<s:hidden name="leave.job_id" value="%{job_id}" />
 	<s:hidden name="job_id" value="%{job_id}" />
-	<br />
-	<h1 style="border-bottom:none;">New Leave Request</h1>
-	
+	<s:if test="leave.id != ''">
+	    <s:hidden name="leave.id" value="%{leave.id}" />
+	    <s:hidden name="id" value="%{leave.id}" />
+	    <br />
+	    <h1 style="border-bottom:none;">Edit Leave Request</h1>	    
+	</s:if>
+	<s:else>
+	    <br />
+	    <h1 style="border-bottom:none;">New Leave Request</h1>
+	</s:else>
 	<div class="time-block">	    
 	    <div class="form-group" style="border-bottom: none;">
 		<label>Proposed Dates and Hours</label>
@@ -81,7 +87,12 @@
 		<s:textarea name="leave.requestDetails" value="%{leave.requestDetails}" rows="4" cols="50" wrap="true" required="true" /><br />
 	    </div>
 	    <div class="button-group">
-		<s:submit name="action" type="button" value="Submit Request" class="button"/>
+		<s:if test="leave.id == ''">
+		    <s:submit name="action" type="button" value="Submit Request" class="button"/>
+		</s:if>
+		<s:else>
+		    <s:submit name="action" type="button" value="Save Changes" class="button"/>
+		</s:else>
 	    </div>
 	    <br />
 	    <br />

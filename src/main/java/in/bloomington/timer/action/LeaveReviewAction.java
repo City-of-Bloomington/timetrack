@@ -30,7 +30,10 @@ public class LeaveReviewAction extends TopAction{
     String group_id="", pay_period_id="", leave_id="",
 	department_id=""; 
     String selected_group_id = "";
+    // leave filter
     String filter_emp_id="", date_from="", date_to="";
+    // review filter
+    String rev_filter_emp_id="", rev_date_from="", rev_date_to="";    
     String[] statusVals = {"Approved","Denied"};
     PayPeriod payPeriod = null;
     Group group = null;
@@ -41,6 +44,7 @@ public class LeaveReviewAction extends TopAction{
     Employee reviewer = null;
     List<LeaveReview> reviews = null;
     List<Employee> employees = null;//for filter
+    List<Employee> rev_employees = null;//for history filter    
     int leaves_total_number = 0;
     public String execute(){
 	String ret = SUCCESS;
@@ -125,11 +129,27 @@ public class LeaveReviewAction extends TopAction{
     public String getDate_to(){
 	return date_to;
     }    
+    public void setRev_date_to(String val){
+	if(val != null && !val.isEmpty()){		
+	   rev_date_to = val;
+	}
+    }
+    public void setRev_date_from(String val){
+	if(val != null && !val.isEmpty()){		
+	   rev_date_from = val;
+	}
+    }
+    public String getRev_date_from(){
+	return rev_date_from;
+    }
+    public String getRev_date_to(){
+	return rev_date_to;
+    }    
     public void setDate_to(String val){
 	if(val != null && !val.isEmpty()){		
 	   date_to = val;
 	}
-    }    
+    }        
     public String getLeave_id(){
 	return leave_id = "";
     }
@@ -285,11 +305,17 @@ public class LeaveReviewAction extends TopAction{
 	    filter_emp_id = val;
 	}
     }
-    public String getFilter_emp_id(){
-	if(filter_emp_id.isEmpty())
+    public void setRev_filter_emp_id(String val){
+	if(val != null && !val.equals("-1")){
+	    rev_filter_emp_id = val;
+	}
+    }    
+    public String getRev_filter_emp_id(){
+	if(rev_filter_emp_id.isEmpty())
 	    return "-1";
-	return filter_emp_id;
+	return rev_filter_emp_id;
     }
+    
 	
     public Department getDepartment(){
 	if(department == null){
@@ -407,14 +433,49 @@ public class LeaveReviewAction extends TopAction{
 	return reviews != null && reviews.size() > 0;
 	
     }
+    //
+    // we need a filter if we have more than 3 reviews
+    //
+    public boolean isRevFilterNeeded(){
+	if(hasReviews()){
+	    return reviews != null && reviews.size() > 3;
+	}
+	return false;
+    }
+    public boolean hasRevEmployees(){
+	return rev_employees != null && rev_employees.size() > 0;
+    }
+    public List<Employee> getRev_employees(){
+	return rev_employees;
+    }
     void findReviews(){
 	LeaveReviewList lrl = new LeaveReviewList();
 	lrl.setReviewed_by(user.getId());
+	if(!rev_date_from.isEmpty()){
+	    lrl.setDate_from_ff(rev_date_from);
+	}
+	if(!rev_date_to.isEmpty()){
+	    lrl.setDate_to_ff(rev_date_to);
+	}
+	if(!rev_filter_emp_id.isEmpty()){
+	    lrl.setEmployee_id(rev_filter_emp_id);
+	}	
 	String back = lrl.find();
 	if(back.isEmpty()){
 	    List<LeaveReview> ones = lrl.getReviews();
 	    if(ones != null && ones.size() > 0){
 		reviews = ones;
+	    }
+	    if(reviews != null){
+		for(LeaveReview one:reviews){
+		    Employee emp = one.getLeave().getEmployee();
+		    if(emp != null){
+			if(rev_employees == null)
+			    rev_employees = new ArrayList<>();
+			rev_employees.add(emp);
+		    }
+		}
+		
 	    }
 	}
     }
