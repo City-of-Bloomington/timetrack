@@ -29,6 +29,7 @@ public class LeaveRequestAction extends TopAction{
     List<LeaveRequest> pending_leaves = null;
     List<LeaveRequest> history_leaves = null;
     List<HourCode> hourCodes = null;
+    List<LeaveLog> leaveLogs = null;
     Document document = null;
     List<EmployeeAccrual> empAccruals = null;
     JobTask job = null;
@@ -126,6 +127,7 @@ public class LeaveRequestAction extends TopAction{
 		addError(back);
 	    }
 	    else{
+		leave.addLeaveLog();
 		//if(true){
 		if(activeMail){
 		    back = informCancellation();
@@ -238,7 +240,21 @@ public class LeaveRequestAction extends TopAction{
     }
     public String getCancel_reason(){
 	return cancel_reason;
-    }    
+    }
+    public boolean hasLeaveLogs(){
+	if(!id.isEmpty()){
+	    LeaveLogList lll = new LeaveLogList(id);
+	    String back = lll.find();
+	    if(back.isEmpty()){
+		leaveLogs = lll.getLogs();
+	    }
+	}
+	return leaveLogs != null && leaveLogs.size() > 0;
+    }
+    public List<LeaveLog> getLeaveLogs(){
+	return leaveLogs;
+    }
+	
     void findCurrentPayPeriod(){
 	//
 	if(pay_period_id.isEmpty()){

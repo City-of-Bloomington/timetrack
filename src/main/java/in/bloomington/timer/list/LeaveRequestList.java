@@ -111,7 +111,7 @@ public class LeaveRequestList{
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
 	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), "+
-	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes "+
+	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date "+
 	    "from leave_requests t "+
 	    "join jobs j on j.id=t.job_id "+
 	    "left join leave_reviews r on r.leave_id=t.id ";
@@ -262,7 +262,9 @@ public class LeaveRequestList{
 				     rs.getString(11),
 				     statusStr,
 				     rs.getString(13),
-				     rs.getString(14)
+				     rs.getString(14),
+				     rs.getString(15),
+				     rs.getString(16)
 				     );
 		if(!requests.contains(one))
 		    requests.add(one);
@@ -285,7 +287,7 @@ public class LeaveRequestList{
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
 	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), "+
-	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes "+
+	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date "+
 	    "from leave_requests t "+
 	    "join jobs j on j.id=t.job_id "+
 	    "left join leave_reviews r on r.leave_id=t.id ";
@@ -359,33 +361,6 @@ public class LeaveRequestList{
 	    if(!pay_period_id.isEmpty()){
 		pstmt.setString(jj++,pay_period_id);
 	    }
-	    /**
-	    if(!date_from.isEmpty()){
-		pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date_from).getTime()));
-		pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date_from).getTime()));		
-	    }
-	    if(!date_to.isEmpty()){
-		pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date_to).getTime()));
-		pstmt.setDate(jj++, new java.sql.Date(dateFormat.parse(date_to).getTime()));		
-	    }
-	    if(!date_from_ff.isEmpty()){
-		pstmt.setDate(jj++, new java.sql.Date(df2.parse(date_from_ff).getTime()));
-		pstmt.setDate(jj++, new java.sql.Date(df2.parse(date_from_ff).getTime()));	
-	    }
-	    if(!date_to_ff.isEmpty()){
-		pstmt.setDate(jj++, new java.sql.Date(df2.parse(date_to_ff).getTime()));
-		pstmt.setDate(jj++, new java.sql.Date(df2.parse(date_to_ff).getTime()));	
-	    }	    
-	    if(!initiated_by.isEmpty()){
-		pstmt.setString(jj++,initiated_by);
-	    }
-	    if(!filter_emp_id.isEmpty()){
-		pstmt.setString(jj++, filter_emp_id);
-	    }	    
-	    if(!group_id.isEmpty()){
-		pstmt.setString(jj++, group_id);
-	    }
-	    */
 	    rs = pstmt.executeQuery();
 	    if(requests == null)
 		requests = new ArrayList<>();
@@ -421,7 +396,9 @@ public class LeaveRequestList{
 				     rs.getString(11),
 				     statusStr,
 				     rs.getString(13),
-				     rs.getString(14)
+				     rs.getString(14),
+				     rs.getString(15),
+				     rs.getString(16)
 				     );
 		if(!requests.contains(one))
 		    requests.add(one);

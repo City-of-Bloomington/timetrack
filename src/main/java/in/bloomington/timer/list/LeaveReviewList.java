@@ -19,7 +19,7 @@ public class LeaveReviewList{
     static Logger logger = LogManager.getLogger(LeaveReviewList.class);
     static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy"); 
     static final long serialVersionUID = 3800L;
-    String leave_id="", date_from="", date_to="", sortBy="id desc";
+    String leave_id="", date_from="", date_to="", sortBy="r.id desc";
     String date_from_ff="", date_to_ff="";
     String employee_id="";
     String reviewed_by="";

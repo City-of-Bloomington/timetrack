@@ -281,8 +281,8 @@ public class EmployeeList extends CommonInc{
 		group_table = true;
 		//
 		// city directors = 18, human resource = 4
-		//
-		if(includeAllDirectors){
+		// 
+		if(includeAllDirectors){ 
 		    if(!qw.isEmpty()) qw += " and ";
 		    qw += " (de.department_id in(?,4) or de.department2_id=18) and de.employee_id=e.id ";// all city directors dept=18
 		}

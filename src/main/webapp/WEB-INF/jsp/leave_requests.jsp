@@ -13,6 +13,7 @@
 	    <th>Leave Description</th>
 	    <th>Review Status</th>
 	    <th>Reviewer</th>
+	    <th>Review Comments</th>
 	    <s:if test="#skipEmployee">		
 		<th>Action</th>
 	    </s:if>
@@ -22,7 +23,9 @@
 	<s:iterator var="one" value="#leave_requests">
 	    <tr>
 		<td>&nbsp;</td>
-		<td><s:property value="requestDate" /></td>
+		<td>
+		    <a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='id' />"><s:property value="requestDate" /></a>
+		</td>
 		<s:if test="!#skipEmployee">		
 		    <td><s:property value="employee" /></td>
 		    <td><s:property value="jobTitle" /></td>
@@ -47,10 +50,13 @@
 		    <td>Pending</td>
 		</s:else>
 		<td><s:if test="hasReviewer()"><s:property value="reviewer" /></s:if><e:else>&nbsp;</e:else></td>
+		<td><s:if test="hasReviewNotes()"><s:property value="reviewNotes" /></s:if><e:else>&nbsp;</e:else></td>		
 		<td width="14%">
 		<s:if test="#skipEmployee">
-		    <s:if test="canBeCancelled()">
-			<a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='id' />&action=Edit">Edit</a>	<br />		
+		    <s:if test="canBeEdited()">
+			<a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='id' />&action=Edit">Edit</a>	<br />
+		    </s:if>
+		    <s:if test="canBeCancelled()">		    
 			<a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='id' />&action=startCancel">Cancel Request</a>&nbsp;
 		    </s:if>
 		</s:if>

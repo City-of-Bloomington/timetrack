@@ -470,10 +470,53 @@ public class LeaveReview implements java.io.Serializable{
 	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
 	    UnoConnect.databaseDisconnect(con);
 	}
-	doSelect();
+	LeaveRequest leave = new LeaveRequest(leave_one);
+	msg = leave.doSelect();
+	msg = leave.addLeaveLog();
 	return msg;
     }
-    public String doCancel(){	
+    public String doCancel(){
+	Connection con = null;
+	PreparedStatement pstmt = null, pstmt2=null;
+	ResultSet rs = null;
+	String msg="", str="";
+	String qq = " select id from leave_reviews where leave_id=?";
+	if(leave_id.isEmpty()){
+	    msg = "Leave request id not set ";
+	    return msg;
+	}
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = "Could not connect to DB ";
+	    return msg;
+	}
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, leave_id);
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		id = rs.getString(1);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	if(id.isEmpty()){
+	    msg = performCancel();
+	}
+	else if(msg.isEmpty()){
+	    status = "Cancelled";
+	    notes = "Request is cancelled by the employee for the following reason: "+cancel_reason;
+	    msg = doUpdate();
+	}
+	return msg;
+    }
+    public String performCancel(){	
 	Connection con = null;
 	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
@@ -521,7 +564,7 @@ public class LeaveReview implements java.io.Serializable{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String msg="", str="", qq2="";
-	String qq = " update leave_reviews set review_status=?,review_notes=?,reviewed_by=? where id=?";
+	String qq = " update leave_reviews set review_status=?,review_notes=?,reviewed_by=?,review_date=CURDATE() where id=?";
 	if(id.isEmpty()){
 	    msg = " id is required";
 	    return msg;
@@ -629,6 +672,30 @@ foreign key(reviewed_by) references employees(id)
 )engine=InnoDB;
 
 alter table leave_reviews modify review_status enum('Approved','Denied','Cancelled');
+;;
+;;
+create table leave_logs(
+id int unsigned auto_increment,
+leave_id int unsigned not null,
+job_id int unsigned not null,
+start_date date not null,
+end_date date not null,
+hour_code_ids varchar(54),
+total_hours decimal(5,2),
+request_details varchar(1024),
+initiated_by int unsigned not null,
+request_date date,
+review_id int unsigned not null,
+review_date date,
+review_status enum('Approved','Denied','Cancelled'),
+review_notes varchar(1024),
+reviewed_by int unsigned not null,
+primary key(id),
+foreign key(leave_id) references leave_requests(id),
+foreign key(review_id) references leave_reviews(id),
+foreign key(initiated_by) references employees(id),
+foreign key(reviewed_by) references employees(id)
+)engine=InnoDB;
 
 
  */

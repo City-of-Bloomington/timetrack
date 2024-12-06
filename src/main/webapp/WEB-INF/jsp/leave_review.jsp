@@ -15,44 +15,6 @@
 	    <h1 style="border-bottom:0">Current Leave Requests (<s:property value="leavesTotalNumber" /> Pending Reviews)</h1>	    
 	    <s:form action="leave_review" id="form_id" method="post" >
 		<s:hidden name="action2" id="action2" value="" />
-		<!-- 
-		<table border="0"><tr style="background-color:gainsboro"><td>
-		<div class="time-block">	    
-		    <div class="form-group" style="border-bottom: none;">
-			<div class="date-range-picker">
-			    <div>
-				<label>&nbsp;&nbsp;</label>
-				<b>Filter by </b>
-			    </div>
-			    <s:if test="hasEmployees()">
-				<div>
-				    <label>Employee </label>
-				    <s:select name="filter_emp_id" list="employees" listKey="id" listValue="full_name" headerKey="-1" headerValue="All" style="height:31px;width:150px" /> 
-				</div>
-			    </s:if>			    
-			    <div>	    
-				<label>Date From </label>
-				<s:textfield name="date_from" value="%{date_from}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" id="date_from" />&nbsp;&nbsp;
-			    </div>
-			    <div>
-				&nbsp;&nbsp;&nbsp;
-			    </div>
-			    <div>		    
-				<label>Date To</label>
-				<s:textfield name="date_to" value="%{date_to}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" />
-			    </div>
-			    <div>
-			    &nbsp;&nbsp;&nbsp;
-			    </div>			    
-			    <div>		    
-				<label>&nbsp;</label>
-				<s:submit name="action" type="button" value="Refresh List" class="button" style="height:31px;width:150px" />
-			    </div>
-			</div>
-		    </div>
-		</div>
-		</td></tr></table>
-		-->
 		<table style="border:none;spacing:none;">
 		    <tr style="background-color:gainsboro;border:none">
 			<td style="border:0px"><label>&nbsp;&nbsp;</label></td>
@@ -80,7 +42,7 @@
 			<th>Request Date</th>
 			<th>Job Title</th>
 			<th>Date Range</th>
-			<th>Total Hours<</th>			
+			<th>Total Hours</th>			
 			<th>Hour Code(s)</th>	    
 		    </tr>
 		    <tr style="background-color:gainsboro"><td colspan="7">&nbsp;</td></tr>		    
@@ -105,7 +67,7 @@
 			<s:else>
 			    <tr>
 			</s:else>			
-			<td>&nbsp;</td><td><b>Request Notes:</b></td><td colspan="6"> <s:property value="requestDetails" /></td>
+			<td>&nbsp;</td><td><b>Leave Description:</b></td><td colspan="6"> <s:property value="requestDetails" /></td>
 			</tr>
 			<input type="hidden" name="review.leave_id_<s:property value='#rowStatus.count'/>" value="<s:property value='id' />" />			
 			<s:if test="#rowStatus.count%2 == 0">
@@ -149,7 +111,7 @@
     <s:if test="hasReviews()">
 	<hr />
 	<br />
-	<h1 style="border-bottom:0">Leave Approval History</h1>
+	<h1 style="border-bottom:0">Leave Review History</h1>
 	<s:if test="isRevFilterNeeded()">
 	    <s:form action="leave_review" id="form_id2" method="post" >
 		<s:hidden name="action2" id="action2" value="" />	    

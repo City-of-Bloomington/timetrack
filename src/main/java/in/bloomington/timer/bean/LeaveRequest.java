@@ -32,7 +32,7 @@ public class LeaveRequest implements java.io.Serializable{
     GroupManager manager = null;
     //
     // review variables
-    String status="", reviewed_by="", review_notes;
+    String status="", reviewed_by="", review_notes="", review_id="", review_date="";
     //
     //
     public LeaveRequest(){
@@ -42,7 +42,7 @@ public class LeaveRequest implements java.io.Serializable{
 	//
 	setId(val);
     }		
-    public LeaveRequest(String val, String val2, String val3, String val4, String[] val5, Float val6, String val7, String val8, String val9, String val10, String val11, String val12, String val13, String val14){
+    public LeaveRequest(String val, String val2, String val3, String val4, String[] val5, Float val6, String val7, String val8, String val9, String val10, String val11, String val12, String val13, String val14, String val15, String val16){
 	setId(val);
 	setJob_id(val2);	
 	setStartDate(val3);
@@ -57,6 +57,8 @@ public class LeaveRequest implements java.io.Serializable{
 	setReviewStatus(val12);
 	setReviewed_by(val13);
 	setReviewNotes(val14);
+	setReview_id(val15);
+	setReviewDate(val16);
     }		
     public boolean equals(Object obj){
 	if(obj instanceof LeaveRequest){
@@ -119,6 +121,12 @@ public class LeaveRequest implements java.io.Serializable{
     }
     public String getReviewNotes(){
 	return review_notes;
+    }
+    public String getReview_id(){
+	return review_id;
+    }
+    public String getReviewDate(){
+	return review_date;
     }    
     //
     // setters
@@ -167,6 +175,14 @@ public class LeaveRequest implements java.io.Serializable{
 	if(val != null)
 	    request_date=val;
     }
+    public void setReview_id(String val){
+	if(val != null)
+	    review_id = val;
+    }
+    public void setReviewDate(String val){
+	if(val != null)
+	    review_date = val;
+    }    
     public void setReviewStatus(String val){
 	if(val != null)
 	    status=val;
@@ -190,6 +206,18 @@ public class LeaveRequest implements java.io.Serializable{
     }
     public boolean isSameDayLeave(){
 	return start_date.equals(end_date);
+    }
+    public boolean isApproved(){
+	return status.equals("Approved");
+    }
+    public boolean isDenied(){
+	return status.equals("Denied");
+    }    
+    public boolean isCancelled(){
+	return status.equals("Cancelled");
+    }
+    public boolean isNotReviewed(){
+	return status.isEmpty() || status.equals("Pending");
     }
     public String toString(){
 	return id;
@@ -310,8 +338,18 @@ public class LeaveRequest implements java.io.Serializable{
 	}
 	return full_name;
     }
+    // if approved or not reviewed yet
     public boolean canBeCancelled(){
-	if(!hasReviewer()){
+	if(isNotReviewed() || isApproved()){
+	    if(payPeriod == null)
+		findCurrentPayPeriod();
+	    return (start_date.compareTo(payPeriod.getStartDateYmd()) >= 0);
+	}
+	return false;
+    }
+    // Not reviewed yet
+    public boolean canBeEdited(){
+	if(isNotReviewed()){
 	    if(payPeriod == null)
 		findCurrentPayPeriod();
 	    return (start_date.compareTo(payPeriod.getStartDateYmd()) >= 0);
@@ -346,7 +384,7 @@ public class LeaveRequest implements java.io.Serializable{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), date_format(t.start_date,'%m/%d/%Y'), date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes "+
+	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), date_format(t.start_date,'%m/%d/%Y'), date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date "+
 	    "from leave_requests t "+
 	    " left join leave_reviews r on r.leave_id=t.id "+
 	    "where t.id=?";
@@ -392,6 +430,8 @@ public class LeaveRequest implements java.io.Serializable{
 		}
 		setReviewed_by(rs.getString(13));
 		setReviewNotes(rs.getString(14));
+		setReview_id(rs.getString(15));
+		setReviewDate(rs.getString(16));
 	    }
 	    else{
 		back ="Record "+id+" Not found";
@@ -496,6 +536,7 @@ public class LeaveRequest implements java.io.Serializable{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	doSelect();
+	addLeaveLog();
 	return msg;
     }
     public String doUpdate(){
@@ -563,9 +604,28 @@ public class LeaveRequest implements java.io.Serializable{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	doSelect();
+	addLeaveLog();
 	return msg;
     }		
-
+    public String addLeaveLog(){
+	LeaveLog log = new LeaveLog();
+	log.setLeave_id(id);
+	log.setJob_id(job_id);	
+	log.setStartDate(start_date);
+	log.setLastDate(end_date);
+	log.setEarn_code_ids(earn_code_ids);
+	log.setTotalHours(total_hours);	
+	log.setRequestDetails(request_details);
+	log.setInitiated_by(initiated_by);
+	log.setRequestDate(request_date);
+	log.setReview_id(review_id);
+	log.setReviewDate(review_date);
+	log.setReviewStatus(status);
+	log.setReviewNotes(review_notes);	
+	log.setReviewed_by(reviewed_by);
+	String msg = log.doSave();
+	return msg;
+    }
 }
 
 /*
