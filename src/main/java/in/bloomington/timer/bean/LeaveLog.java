@@ -376,7 +376,7 @@ public class LeaveLog implements java.io.Serializable{
 	ResultSet rs = null;
 	String msg="";
 	String qq = " insert into leave_logs values(0,?,?,?,?, ?,?,?,?,?,"+
-	    "?,?,?,?,?)";
+	    "?,curdate(),?,?,?)";
 	con = UnoConnect.getConnection();	    
 	if(con == null){
 	    msg = "Could not connect to DB ";
@@ -408,18 +408,27 @@ public class LeaveLog implements java.io.Serializable{
 	    pstmt.setDate(9, new java.sql.Date(df2.parse(request_date).getTime()));	    
 	    if(review_id.isEmpty()){
 		pstmt.setNull(10, Types.INTEGER);
-		pstmt.setNull(11, Types.VARCHAR);
-		pstmt.setString(12, "Pending");
-		pstmt.setNull(13, Types.VARCHAR);
-		pstmt.setNull(14, Types.VARCHAR);
 	    }
 	    else{
 		pstmt.setString(10, review_id);	    
-		pstmt.setString(11, review_date);
-		pstmt.setString(12, status);
-		pstmt.setString(13, review_notes);
-		pstmt.setString(14, reviewed_by);
-		
+	    }
+	    if(status.isEmpty()){
+		pstmt.setString(11, "Pending");
+	    }
+	    else{
+		pstmt.setString(11, status);		
+	    }
+	    if(review_notes.isEmpty()){
+		pstmt.setNull(12, Types.VARCHAR);
+	    }
+	    else{
+		pstmt.setString(12, review_notes);
+	    }
+	    if(reviewed_by.isEmpty()){
+		pstmt.setNull(13, Types.VARCHAR);
+	    }
+	    else{
+		pstmt.setString(13, reviewed_by);
 	    }
 	    pstmt.executeUpdate();
 	    //
@@ -458,12 +467,10 @@ initiated_by int unsigned not null,
 request_date date,
 review_id int unsigned,
 review_date date,
-review_status enum('Approved','Denied','Cancelled'),
+review_status enum('Approved','Denied','Cancelled','Pending','Edited'),
 review_notes varchar(1024),
 reviewed_by int unsigned,
 primary key(id),
-foreign key(leave_id) references leave_requests(id),
-foreign key(review_id) references leave_reviews(id),
 foreign key(initiated_by) references employees(id),
 foreign key(reviewed_by) references employees(id)
 )engine=InnoDB;

@@ -127,6 +127,9 @@ public class LeaveRequestAction extends TopAction{
 		addError(back);
 	    }
 	    else{
+		leave.setReviewStatus("Cancelled");
+		leave.setReviewed_by(user.getId());
+		leave.setReviewNotes(cancel_reason);
 		leave.addLeaveLog();
 		//if(true){
 		if(activeMail){

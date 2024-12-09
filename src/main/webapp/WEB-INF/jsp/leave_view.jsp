@@ -28,7 +28,22 @@
 	    </s:if>
 	</s:if>
     </ul>
+    <s:if test="leave.canBeEdited()">
+     <ul>    	 
+      <li> <a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='leave.id' />&action=Edit">Edit</a></li>
+      </ul>
+    </s:if>
+    <s:if test="leave.canBeCancelled()">
+     <ul>    	 
+      <li> <a href="<s:property value='#application.url' />leave_request.action?id=<s:property value='leave.id' />&action=startCancel">Cancel Request</a></li>
+      </ul>
+    </s:if>    
 </div>
+<s:if test="leave.hasLeaveLogs()">
+    <h2> Leave Request History </h2>
+    <s:set var="leave_logs" value="leave.leaveLogs" />      
+    <%@ include file="leave_logs.jsp" %>
+</s:if>
 <s:if test="hasRequests()">
     <s:set var="leave_requests" value="requests" />
     <s:set var="leavesTitle" value="leavesTitle" />

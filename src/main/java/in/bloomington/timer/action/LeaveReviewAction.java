@@ -472,7 +472,8 @@ public class LeaveReviewAction extends TopAction{
 		    if(emp != null){
 			if(rev_employees == null)
 			    rev_employees = new ArrayList<>();
-			rev_employees.add(emp);
+			if(!rev_employees.contains(emp))
+			    rev_employees.add(emp);
 		    }
 		}
 		

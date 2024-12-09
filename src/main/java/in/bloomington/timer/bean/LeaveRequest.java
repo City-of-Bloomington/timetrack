@@ -22,6 +22,7 @@ public class LeaveRequest implements java.io.Serializable{
 	job_id="", initiated_by="", request_date="", request_details="";
     String start_date_ff="", end_date_ff="";
     float total_hours = 0.0f;
+    String cancel_reason = "";
     String[] earn_code_ids = {""}; // PTO
     JobTask job = null;
     Group group = null;
@@ -30,6 +31,7 @@ public class LeaveRequest implements java.io.Serializable{
     PayPeriod payPeriod = null;
     String pay_period_id = ""; //current only
     GroupManager manager = null;
+    List<LeaveLog> leaveLogs = null;
     //
     // review variables
     String status="", reviewed_by="", review_notes="", review_id="", review_date="";
@@ -216,6 +218,10 @@ public class LeaveRequest implements java.io.Serializable{
     public boolean isCancelled(){
 	return status.equals("Cancelled");
     }
+    public void setCancelReason(String val){
+	if(val != null)
+	    cancel_reason = val;
+    }
     public boolean isNotReviewed(){
 	return status.isEmpty() || status.equals("Pending");
     }
@@ -355,6 +361,28 @@ public class LeaveRequest implements java.io.Serializable{
 	    return (start_date.compareTo(payPeriod.getStartDateYmd()) >= 0);
 	}
 	return false;
+    }
+    public List<LeaveLog> getLeaveLogs(){
+	if(!id.isEmpty() && leaveLogs == null){
+	    findLeaveLogs();
+	}
+	return leaveLogs;
+    }
+    void findLeaveLogs(){
+	if(!id.isEmpty()){
+	    LeaveLogList lll = new LeaveLogList(id);
+	    String back = lll.find();
+	    if(back.isEmpty()){
+		List<LeaveLog> logs = lll.getLogs();
+		if(logs != null && logs.size() > 0){
+		    leaveLogs = logs;
+		}
+	    }
+	}
+    }
+    public boolean hasLeaveLogs(){
+	getLeaveLogs();
+	return leaveLogs != null && leaveLogs.size() > 0;
     }
     // for notification
     public GroupManager getManager(){
@@ -604,10 +632,13 @@ public class LeaveRequest implements java.io.Serializable{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	doSelect();
-	addLeaveLog();
+	addLeaveLog("Edited");
 	return msg;
-    }		
+    }
     public String addLeaveLog(){
+	return addLeaveLog("");
+    }
+    public String addLeaveLog(String newStatus){
 	LeaveLog log = new LeaveLog();
 	log.setLeave_id(id);
 	log.setJob_id(job_id);	
@@ -620,9 +651,16 @@ public class LeaveRequest implements java.io.Serializable{
 	log.setRequestDate(request_date);
 	log.setReview_id(review_id);
 	log.setReviewDate(review_date);
-	log.setReviewStatus(status);
+	if(newStatus.isEmpty()){
+	    log.setReviewStatus(status);
+	    log.setReviewed_by(reviewed_by);	    
+	}
+	else{
+	    log.setReviewStatus(newStatus);
+	    getEmployee();
+	    log.setReviewed_by(employee.getId());
+	}
 	log.setReviewNotes(review_notes);	
-	log.setReviewed_by(reviewed_by);
 	String msg = log.doSave();
 	return msg;
     }
