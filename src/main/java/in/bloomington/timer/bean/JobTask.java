@@ -26,10 +26,12 @@ public class JobTask implements Serializable{
     static {
 	deptSet.add("1");
 	deptSet.add("4");
+	deptSet.add("9");	
 	deptSet.add("10");	
 	deptSet.add("11");
 	deptSet.add("14");
 	deptSet.add("15");
+	deptSet.add("45");	
     }
     private String id="",
 	employee_id="", group_id="",

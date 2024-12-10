@@ -1,5 +1,5 @@
 <table style="border:1px solid">
-	<thead>
+    <thead>
 	<tr>
 	    <th>&nbsp;</th>
 	    <th>Request Date</th>
@@ -10,8 +10,8 @@
 	    <th>Total Hours</th>
 	    <th>Leave Description</th>
 	    <th>Action Date</th>
-	    <th>Review Status</th>
-	    <th>Reviewer</th>
+	    <th>Action</th>
+	    <th>Action By</th>
 	    <th>Review Comments</th>
 	</tr>
     </thead>

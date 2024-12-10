@@ -150,10 +150,15 @@
 
             <s:set var="daily" value="daily" />
             <s:set var="payPeriodTotal" value="payPeriodTotal" />
-						<s:set var="payPeriodAmount" value="payPeriodAmount" />
+	    <s:set var="payPeriodAmount" value="payPeriodAmount" />
             <div class="m-b-40">
-							<%@ include file="dailySummary.jsp" %>
-						</div>
+		<%@ include file="dailySummary.jsp" %>
+	    </div>
+	    <s:if test="hasLeaveRequests()">
+		<h1>Approved Leave in this Pay Period </h1>
+		<s:set var="leave_requests" value="leaveRequests" />
+		<%@ include file="leaves_approved.jsp" %>
+	    </s:if>	    
             <s:if test="hasTimeIssues()">
               <s:set var="timeIssuesTitle" value="'Outstanding Issues'" />
               <s:set var="timeIssues" value="timeIssues" />
