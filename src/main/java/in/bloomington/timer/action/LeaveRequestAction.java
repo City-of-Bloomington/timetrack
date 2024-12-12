@@ -278,6 +278,7 @@ public class LeaveRequestAction extends TopAction{
 	    LeaveRequestList tl = new LeaveRequestList();
 	    tl.setJob_id(job_id);
 	    tl.setPay_period_id(pay_period_id);
+	    tl.setNotCancelled();
 	    String back = tl.find();
 	    if(back.isEmpty()){
 		List<LeaveRequest> ones = tl.getRequests();

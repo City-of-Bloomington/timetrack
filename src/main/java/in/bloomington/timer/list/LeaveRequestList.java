@@ -29,7 +29,7 @@ public class LeaveRequestList{
     String ids_to_ignore = ""; 
     boolean is_reviewed = false, not_reviewed=false;
     boolean approved_only = false;
-
+    boolean not_cancelled = false;
     List<LeaveRequest> requests = null;
 		
     public LeaveRequestList(){
@@ -97,6 +97,9 @@ public class LeaveRequestList{
     public void setApprovedOnly(){
 	approved_only = true;
     }
+    public void setNotCancelled(){
+	not_cancelled = true;
+    }    
     public void setSortBy(String val){
 	if(val != null)
 	    sortBy = val;
@@ -182,7 +185,10 @@ public class LeaveRequestList{
 	    if(approved_only){
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " r.review_status='Approved' ";
-		
+	    }
+	    else if(not_cancelled){
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " (r.review_status is null or r.review_status='Approved') ";
 	    }
 	    if(!qw.isEmpty()){
 		qq += " where "+qw;
@@ -312,37 +318,12 @@ public class LeaveRequestList{
 	    if(!pay_period_id.isEmpty()){
 		qq += ", pay_periods p ";
 		if(!qw.isEmpty()) qw += " and ";
-		qw += " p.start_date > t.start_date ";
+		qw += " (p.start_date > t.start_date or r.review_status='Cancelled')";
 		qw += " and p.id = ? ";		
 	    }
-	    /**
-	    if(!date_from.isEmpty()){
-		if(!qw.isEmpty()) qw += " and ";
-		qw += " (t.start_date >= ? and t.end_date >= ?)";		
-	    }
-	    if(!date_to.isEmpty()){
-		if(!qw.isEmpty()) qw += " and ";
-		qw += " (t.start_date <= ? and t.end_date <= ?)";		
-	    }
-	    if(!date_from_ff.isEmpty()){
-		if(!qw.isEmpty()) qw += " and ";
-		qw += " (t.start_date >= ? and t.end_date >= ?)";		
-	    }
-	    if(!date_to_ff.isEmpty()){
-		if(!qw.isEmpty()) qw += " and ";
-		qw += " (t.start_date <= ? and t.end_date <= ?)";		
-	    }
-	    */
 	    // reviewed only
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " t.id in (select leave_id from leave_reviews)";
-	    /**
-	    if(approved_only){
-		if(!qw.isEmpty()) qw += " and ";
-		qw += " r.review_status='Approved' ";
-		
-	    }
-	    */
 	    if(!qw.isEmpty()){
 		qq += " where "+qw;
 	    }
