@@ -25,6 +25,7 @@ public class GroupManagerList{
 	processorsOnly=false, exclude_reviewers = false,
 	reviewersOnly=false, timeMaintainOnly = false,
 	approversAndProcessorsOnly = false,
+	leaveReviewOnly = false,
 	notExpired = false;
 		
     List<GroupManager> managers = null;
@@ -71,6 +72,9 @@ public class GroupManagerList{
     public void setProcessorsOnly(){
 	processorsOnly = true;
     }
+    public void setLeaveReviewOnly(){
+	leaveReviewOnly = true;
+    }    
     public void setApproversAndProcessorsOnly(){
 	approversAndProcessorsOnly = true;
     }		
@@ -135,6 +139,10 @@ public class GroupManagerList{
 	    if(!qw.isEmpty()) qw += " and ";						
 	    qw += " wn.name like 'Approve'";
 	}
+	else if(leaveReviewOnly){
+	    if(!qw.isEmpty()) qw += " and ";						
+	    qw += " wn.name like 'Leave%'";
+	}	
 	else if(processorsOnly){
 	    if(!qw.isEmpty()) qw += " and ";						
 	    qw += " wn.name like 'Payroll%'";

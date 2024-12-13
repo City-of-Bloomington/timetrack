@@ -51,6 +51,7 @@ public class Employee implements Serializable, Comparable<Employee>{
     List<GroupManager> processors = null;
     List<GroupManager> reviewers = null;
     List<GroupManager> enterors = null;
+    List<GroupManager> leaveReviewers = null;    
     List<DepartmentEmployee> departmentEmployees = null;
     // List<GroupEmployee> groupEmployees = null;
     // List<GroupEmployee> allGroupEmployees = null; // include expired ones too
@@ -692,7 +693,10 @@ public class Employee implements Serializable, Comparable<Employee>{
     }
     public List<GroupManager> getEnterors(){
 	return enterors;
-    }		
+    }
+    public List<GroupManager> getLeaveReviewers(){
+	return leaveReviewers;
+    }    
     public boolean canPayrollProcess(){
 	if(processors == null){
 	    GroupManagerList gml = new GroupManagerList(id);
@@ -752,6 +756,26 @@ public class Employee implements Serializable, Comparable<Employee>{
 	    }
 	}
 	return enterors != null && enterors.size() > 0;
+    }
+
+    public boolean canLeaveReview(){
+	if(leaveReviewers == null){
+	    GroupManagerList gml = new GroupManagerList(id);
+	    gml.setActiveOnly();
+	    gml.setLeaveReviewOnly();
+	    if(pay_period_id.isEmpty()){
+		findPayPeriod();
+	    }
+	    gml.setPay_period_id(pay_period_id);
+	    String back = gml.find();
+	    if(back.isEmpty()){
+		List<GroupManager> ones = gml.getManagers();
+		if(ones != null){
+		    leaveReviewers = ones;
+		}
+	    }
+	}
+	return leaveReviewers != null && leaveReviewers.size() > 0;
     }
     public boolean isGroupManager(){
 	if(groupManagers == null){

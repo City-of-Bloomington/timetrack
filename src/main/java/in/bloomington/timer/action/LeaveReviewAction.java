@@ -198,6 +198,7 @@ public class LeaveReviewAction extends TopAction{
 	    getPay_period_id();
 	    gml.setPay_period_id(pay_period_id);
 	    gml.setApproversOnly();
+	    // gml.setLeaveReviewOnly();
 	    String back = gml.find();
 	    if(back.isEmpty()){
 		List<GroupManager> ones = gml.getManagers();

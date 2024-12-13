@@ -155,7 +155,7 @@
 	</s:if>
 	<s:if test="emp.canPayrollProcess()">
 	    <s:set var="groupManagers" value="%{emp.processors}" />
-	    <s:set var="groupManagersTitle" value="'Payroll Approver of Groups '" />
+	    <s:set var="groupManagersTitle" value="'Payroll Approver of Groups'" />
 	    <%@ include file="groupManagers.jsp" %>
 	</s:if>			
 	<s:if test="emp.canApprove()">
@@ -163,6 +163,7 @@
 	    <s:set var="groupManagersTitle" value="'Approver of Groups '" />
 	    <%@ include file="groupManagers.jsp" %>
 	</s:if>
+
 	<s:if test="emp.canReview()">
 	    <s:set var="groupManagers" value="%{emp.reviewers}" />
 	    <s:set var="groupManagersTitle" value="'Review of Groups'" />
@@ -172,7 +173,12 @@
 	    <s:set var="groupManagers" value="%{emp.enterors}" />
 	    <s:set var="groupManagersTitle" value="'Maintain of Groups'" />
 	    <%@ include file="groupManagers.jsp" %>
-	</s:if>			
+	</s:if>
+	<s:if test="emp.canLeaveReview()">
+	    <s:set var="groupManagers" value="%{emp.leaveReviewers}" />
+	    <s:set var="groupManagersTitle" value="'Leave Reviewer of Groups'"/>
+	    <%@ include file="groupManagers.jsp" %>
+	</s:if>
     </s:if>
 </div>
 <%@ include file="footer.jsp" %>

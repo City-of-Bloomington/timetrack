@@ -483,6 +483,14 @@ public class EmployeeList extends CommonInc{
 
       select distinct e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.ad_sid,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive                     from employees e                                                                join department_employees de on de.employee_id=e.id                             left join jobs j on j.employee_id=e.id                                          left join `groups` g on g.id=j.group_id,                                          pay_periods pd                                                                  where  pd.id=631 and (de.department_id = 3 or de.department2_id=3 or g.department_id=3) and  ((de.effective_date <= pd.start_date  and de.expire_date is null or de.expire_date >= pd.end_date )  or (j.effective_date <= pd.start_date and  j.expire_date is null or j.expire_date >= pd.end_date)) and  e.employee_number is not null order by e.last_name,e.first_name
 
+
+      select distinct concat_ws(' ',e.first_name,e.last_name),e.email
+      from employees e
+      join jobs j on j.employee_id=e.id                                               join `groups` g on g.id=j.group_id
+      where j.expire_date is null and g.department_id=16
+      and j.salary_group_id in (1,2,5,11);
+      
+      
     */
 
 				

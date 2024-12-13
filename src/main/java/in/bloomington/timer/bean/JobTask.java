@@ -24,14 +24,25 @@ public class JobTask implements Serializable{
     static final long serialVersionUID = 2400L;
     static Set<String> deptSet = new HashSet<>();
     static {
-	deptSet.add("1");
-	deptSet.add("4");
+	deptSet.add("6"); // clerk
+	deptSet.add("20"); // Police
+	deptSet.add("23"); // Utilities
+	deptSet.add("36"); // council
+	/**
+	deptSet.add("1"); // ITS
+	deptSet.add("3");	
+	deptSet.add("4"); // HAND
+	deptSet.add("5"); // Park	
+	deptSet.add("7"); // planning
+	deptSet.add("8");		
 	deptSet.add("9");	
 	deptSet.add("10");	
 	deptSet.add("11");
 	deptSet.add("14");
 	deptSet.add("15");
-	deptSet.add("45");	
+	deptSet.add("16"); // fire	
+	deptSet.add("45");
+	*/
     }
     private String id="",
 	employee_id="", group_id="",
@@ -424,10 +435,10 @@ public class JobTask implements Serializable{
     }
     public boolean isLeaveEligible(){
 	getSalaryGroup();
-	// for ITS, HR, CONTROLLER, ESD, CFRD
 	getGroup();
 	if(group != null){
-	    if(deptSet.contains(group.getDepartment_id())){
+	    // if not one of excluded
+	    if(!deptSet.contains(group.getDepartment_id())){
 		return salaryGroup != null && salaryGroup.isLeaveEligible();
 	    }
 	}

@@ -475,4 +475,9 @@ foreign key(initiated_by) references employees(id),
 foreign key(reviewed_by) references employees(id)
 )engine=InnoDB;
 
+insert into leave_logs select 0,id,job_id,start_date,end_date,hour_code_ids,total_hours,request_details,initiated_by,request_date,null,null,null,null,null from leave_requests where request_date < '2024-12-11';
+
+insert into leave_logs select 0,l.id,l.job_id,l.start_date,l.end_date,l.hour_code_ids,l.total_hours,l.request_details,l.initiated_by,l.request_date,r.id,r.review_date,r.review_status,r.review_notes,r.reviewed_by from leave_requests l, leave_reviews r where r.leave_id= l.id and l.request_date < '2024-12-11';
+
+
  */

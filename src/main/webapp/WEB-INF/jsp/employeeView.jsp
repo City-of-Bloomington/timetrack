@@ -93,7 +93,12 @@
 		<s:set var="groupManagers" value="%{emp.enterors}" />
 		<s:set var="groupManagersTitle" value="'Maintainers of Groups'" />
 		<%@ include file="groupManagers.jsp" %>
-	    </s:if>					
+	    </s:if>
+	    <s:if test="emp.canLeaveReview()">
+		<s:set var="groupManagers" value="%{emp.leaveReviewers}" />
+		<s:set var="groupManagersTitle" value="'Leave Reviewer of Groups'"/>
+		<%@ include file="groupManagers.jsp" %>
+	    </s:if>	    
 	</s:if>
 	
 </div>
