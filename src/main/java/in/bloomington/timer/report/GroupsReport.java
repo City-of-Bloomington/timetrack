@@ -146,7 +146,7 @@ public class GroupsReport{
 	ResultSet rs = null;
 	String qq = "select a.group_name, a.approvers,b.processors from( "+
 	    "select g.name group_name, g.id group_id, group_concat(distinct concat_ws(' ',e.first_name,e.last_name, if(gm.primary_flag is not null,\"(Primary)\",\"\")) "+
-	    "order by e.first_name "+
+	    "order by gm.primary_flag desc, e.first_name "+
 	    "asc separator ';') approvers "+
 	    "from `groups` g "+
 	    "left join group_managers gm on g.id=gm.group_id "+
@@ -157,7 +157,7 @@ public class GroupsReport{
 	    "group by g.id order by g.name) a, "+
 	    "(select g.name group_name, g.id group_id, "+
 	    "group_concat(distinct concat_ws(' ',e.first_name,e.last_name, if(gm.primary_flag is not null,\"(Primary)\",\"\")) "+
-	    "order by e.first_name "+
+	    "order by gm.primary_flag desc, e.first_name "+
 	    "asc separator ';') processors "+
 	    "from `groups` g "+
 	    "left join group_managers gm on g.id=gm.group_id "+

@@ -53,7 +53,7 @@
       <s:if test="user.isLeaveEligible()">
 	  <a href="<s:property value='#application.url'/>leave_request.action?job_id=<s:property value='user.job_id' />">Leave Request </a>	
       </s:if>      
-      <s:if test="user.canApprove() && user.isLeaveEligible()">      
+      <s:if test="user.canLeaveReview() && user.isLeaveEligible()">      
           <a href="<s:property value='#application.url'/>leave_review.action">Leave Review</a>
       </s:if>
       <s:if test="user.isHrAdmin()">

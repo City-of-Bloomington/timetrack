@@ -538,4 +538,9 @@ insert into workflow_nodes values(7,'Leave Review','Review Leave Request','y','L
 
 insert into group_managers select 0,m.group_id,m.employee_id,7,m.start_date,null,m.primary_flag,null from group_managers m,groups g where m.expire_date is null and m.group_id=g.id and m.wf_node_id=3 and m.primary_flag is not null and g.department_id not in (8,16,30,36);
 
+delete from group_managers where wf_node_id=7;
+
+select * from groups g where g.id not in (select group_id from group_managers where wf_node_id=7) and g.department_id not in (8,16,20,36);
+
+
  */

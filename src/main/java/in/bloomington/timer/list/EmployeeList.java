@@ -484,11 +484,39 @@ public class EmployeeList extends CommonInc{
       select distinct e.id,e.username,e.first_name,e.last_name,e.id_code,e.employee_number,e.ad_sid,e.email,e.roles,date_format(e.added_date,'%m/%d/%Y'),e.inactive                     from employees e                                                                join department_employees de on de.employee_id=e.id                             left join jobs j on j.employee_id=e.id                                          left join `groups` g on g.id=j.group_id,                                          pay_periods pd                                                                  where  pd.id=631 and (de.department_id = 3 or de.department2_id=3 or g.department_id=3) and  ((de.effective_date <= pd.start_date  and de.expire_date is null or de.expire_date >= pd.end_date )  or (j.effective_date <= pd.start_date and  j.expire_date is null or j.expire_date >= pd.end_date)) and  e.employee_number is not null order by e.last_name,e.first_name
 
 
-      select distinct concat_ws(' ',e.first_name,e.last_name),e.email
+      select distinct d.name,concat_ws(' ',e.first_name,e.last_name) full_name,e.email
       from employees e
       join jobs j on j.employee_id=e.id                                               join `groups` g on g.id=j.group_id
-      where j.expire_date is null and g.department_id=16
-      and j.salary_group_id in (1,2,5,11);
+      join departments d on d.id = g.department_id
+      where j.expire_date is null and g.department_id in (3,5,7,8)
+      and e.email is not null and e.email <> ''
+      and j.salary_group_id in (1,2,5,11)
+      order by d.name,full_name
+      into outfile '/var/lib/mysql-files/employees_emails.csv'                         fields terminated by ','                                                        lines terminated by '\n';
+
+update code_cross_ref set GL_String = '110115151000' where id = '2';
+update code_cross_ref set GL_String = '240315150000' where id = '18';
+update code_cross_ref set GL_String = '240415150000' where id = '19';
+update code_cross_ref set GL_String = '110115151600' where id = '20';
+update code_cross_ref set GL_String = '110115150500' where id = '21';
+
+update code_cross_ref set GL_String = '110115151000' where id = '22';
+update code_cross_ref set GL_String = '110115152000' where id = '23';
+update code_cross_ref set GL_String = '240615150002' where id = '24';
+update code_cross_ref set GL_String = '223415150000' where id = '25';
+update code_cross_ref set GL_String = '110115156000' where id = '26';
+
+update code_cross_ref set GL_String = '240315150000' where id = '27';
+update code_cross_ref set GL_String = '110115156000' where id = '28';
+update code_cross_ref set GL_String = '110115151600' where id = '29';
+update code_cross_ref set GL_String = '110115150500' where id = '30';
+update code_cross_ref set GL_String = '110115152000' where id = '31';
+
+update code_cross_ref set GL_String = '240615150002' where id = '32';
+update code_cross_ref set GL_String = '110115151000' where id = '33';
+
+      
+
       
       
     */
