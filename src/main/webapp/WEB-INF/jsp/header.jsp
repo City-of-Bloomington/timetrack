@@ -61,7 +61,8 @@
           <a href="<s:property value='#application.url'/>reportEl.action">EL Report</a>	      
 	  <a href="<s:property value='#application.url'/>reportAsa.action">ACA Report</a>								
           <a href="<s:property value='#application.url'/>lookup.action">Lookup Time Entries</a>
-	  <a href="<s:property value='#application.url'/>report.action">Generic Report</a>		  
+	  <a href="<s:property value='#application.url'/>report.action">Generic Report</a>
+	  <li><a href="<s:property value='#application.url'/>groupsReport.action">Groups Report</a></li>		  
       </s:if>
       <s:if test="user.isITSAdmin()">
 	  <a href="<s:property value='#application.url'/>searchEmployees.action">Search Employees</a>

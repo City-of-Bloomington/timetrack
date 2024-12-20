@@ -54,7 +54,6 @@ public class LeaveRequestAction extends TopAction{
 		addError(back);
 	    }
 	    else{
-		// if(true){
 		if(activeMail){
 		    back = informManager();
 		    if(!back.isEmpty()){ // saved even if manger not informed

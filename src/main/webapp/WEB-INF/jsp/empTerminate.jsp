@@ -27,9 +27,11 @@
 	    <s:set var="errors" value="%{errors}" />
 	    <%@ include file="errors.jsp" %>
 	</s:if>
-	<s:if test="term.id != ''">	
-	    <p>If you need to update any data, do so and hit the 'Save Changes'.
-		<br />
+	<s:if test="term.id != ''">
+	    <s:if test="term.isStarted()">
+		<p>If you need to update any data, do so and hit the 'Submit'.</p>
+	    </s:if>
+	    <p>
 		If all data are correct, do not forget to click on 'Send Notification' so that related parties are informed
 	    </p>
 	</s:if>
@@ -133,9 +135,15 @@
 	    </tr>	    
 	</table>
 	<table border="1"><caption>ITS Information </caption>
+	    <tr><td>Is this a suspension? </td>
+		<td colspan="2">
+		    <s:checkbox name="term.suspension" value="%{term.suspension}" />Yes (the employee may return back)
+		</td>
+	    </tr>	    
 	    <tr><td>Employee Email Address</td>
 		<td colspan="2"><s:property value="term.email" /></td>
 	    </tr>
+	    
 	    <tr>
 		<td>Email Account Requested Action</td>
 		<td><s:select name="term.email_account_action" value="%{term.email_account_action}" list="#{'Archive':'Archive','Personal':'Forward to'}" /></td>

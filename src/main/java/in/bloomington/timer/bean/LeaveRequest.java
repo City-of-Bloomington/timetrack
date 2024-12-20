@@ -394,7 +394,7 @@ public class LeaveRequest implements java.io.Serializable{
 	    GroupManagerList gml = new GroupManagerList();
 	    getGroup();
 	    gml.setGroup_id(group.getId());
-	    gml.setApproversOnly();
+	    gml.setLeaveReviewOnly();
 	    gml.setActiveOnly();
 	    gml.setNotExpired();
 	    String back = gml.find();

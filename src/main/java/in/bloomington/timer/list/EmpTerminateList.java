@@ -120,6 +120,7 @@ public class EmpTerminateList{
 	    "vac_time,"+
 	    "pto,"+
 	    "remarks,"+
+	    "suspension,"+
 	    "submitted_by_id,"+
 	    "date_format(submitted_date,'%m/%d/%Y'), "+ // date
 
@@ -215,11 +216,12 @@ public class EmpTerminateList{
 				     rs.getDouble(26),
 				     rs.getDouble(27),
 				     rs.getString(28),
-				     rs.getString(29),
+				     rs.getString(29) != null,
 				     rs.getString(30),
 				     
+				     rs.getString(31),
 				     rs.getString(32),	     
-				     rs.getString(31) != null);
+				     rs.getString(33) != null);
 
 		if(!terms.contains(one))
 		    terms.add(one);

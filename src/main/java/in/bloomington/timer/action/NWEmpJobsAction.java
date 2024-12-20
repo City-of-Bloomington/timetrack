@@ -21,11 +21,12 @@ public class NWEmpJobsAction extends TopAction{
     static final long serialVersionUID = 3800L;	
     static Logger logger = LogManager.getLogger(NWEmpJobsAction.class);
     //
-    String date = "04/18/2024";
-    String emp_number="2661", emp_id="1635";
+    String date = "12/20/2024";
+    String emp_number="3495", emp_id="2359";
+    // String emp_number="864", emp_id="13";    
     List<JobTask> jobs = null;
     NWEmployeeJobs nwEmpJobs = null;
-    String pay_period_id = "686";
+    String pay_period_id = "702";
     public String execute(){
 	String ret = SUCCESS;
 	
@@ -57,9 +58,11 @@ public class NWEmpJobsAction extends TopAction{
 	if(!emp_id.isEmpty() && jobs == null){
 	    JobTaskList jtl = new JobTaskList();
 	    jtl.setEmployee_id(emp_id);
+
 	    if(!pay_period_id.isEmpty()){
 		jtl.setPay_period_id(pay_period_id);
 	    }
+
 	    jtl.setActiveOnly();
 	    String back = jtl.find();
 	    if(back.isEmpty()){

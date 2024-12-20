@@ -87,6 +87,11 @@
 	    <tr><td>Employee Email Address</td>
 		<td colspan="2"><s:property value="term.email" /></td>
 	    </tr>
+	    <s:if test="term.suspension">
+		<tr><td>Suspension</td>
+		    <td colspan="2">Yes</td>
+		</tr>
+	    </s:if>
 	    <tr><td>Email Account Requested Action</td>
 		<s:if test="term.forward_emails != ''">		
 		    <td>

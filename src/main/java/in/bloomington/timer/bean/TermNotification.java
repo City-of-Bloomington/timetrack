@@ -236,6 +236,9 @@ public class TermNotification{
 		    text += " -- -- -- -- \n";
 		}
 	    }
+	    if(term.getSuspension()){
+		text += "This is a Suspension (the employee may return back)\n";		
+	    }
 	    if(term.hasEmpAddress()){
 		text += "Address: "+term.getEmp_address()+"\n";
 		text += "City, State Zipcode: "+term.getEmpCityStateZip()+"\n";
@@ -327,13 +330,12 @@ public class TermNotification{
 	}	
 	to_email = first_recipient;
 	if(!recipient_emails.isEmpty()){
-	    cc = recipient_emails;
+	   cc = recipient_emails;
 	}
 	back = composeEmailText();
 	if(!back.isEmpty()){
 	    logger.error(back);
 	}
-	
 	/**
 	System.err.println(" from "+from_email);
 	System.err.println(" to "+to_email);

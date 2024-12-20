@@ -32,8 +32,15 @@ public class NWEmployeeJobs{
     String end_date = null;
     String last_day_of_work = "";
     String date = "05/17/2024";
+
+       // temp emp
     String employee_number="2661", employee_id="1635",
 	first_name="", last_name=""; //Jackson Eads
+    /**
+    // full time
+    String employee_number="2871", employee_id="1702",
+	first_name="", last_name=""; //Josh
+    */
     List<JobTerminate> jobTerms = null;
     List<JobTerminate> matchedJobs = null;
     //
@@ -334,6 +341,7 @@ Emp Num, Name,Start Date,Hr Rate,Job Title,Grade, Step, Annual Pay, Pay Type
     */
     public String find3(){
 	return find();
+	// return findOld();
     }
     public  String find(){
 	//
@@ -402,6 +410,8 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 	    "@IncludeCertification=1,"+
 	    "@UserID=3,"+
 	    "@PrimaryOnly=0;";
+
+	    
 	*/
 	con = SingleConnect.getNwConnection();
 	String qq =
@@ -414,6 +424,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 	    return msg;
 	}
 	try{
+	    
 	    if(debug)
 		logger.debug(qq);	    
 	    cs = con.prepareCall(qq);

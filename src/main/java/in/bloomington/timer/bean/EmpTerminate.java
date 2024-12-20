@@ -25,7 +25,7 @@ public class EmpTerminate{
 	jobTitles="";
     // String job_grade="", job_step="", supervisor_id="", supervisor_phone="";
     String employment_type="", // full, part time, temp, union
-	last_pay_period_date="";
+	last_pay_period_date="", suspension="";
 
 	
     String emp_address="", emp_city="", emp_state="",
@@ -98,16 +98,16 @@ public class EmpTerminate{
 		String str22, String str23, String str24,
 		
 		double str25, double str26, double str27,
-		String str28, String str29,String str30,
-		
-		String str31, boolean str32){
+		String str28, boolean str29, String str30,
+		String str31,
+		String str32, boolean str33){
 	setVals(str, str2, str3, str4, str5,
 		str6, str7, str8, str9, str10,
 		str11, str12, str13, str14, str15,
 		str16, str17, str18, str19, str20,
 		str21, str22, str23, str24, str25,
 		str26, str27, str28, str29, str30,
-		str31, str32);
+		str31, str32, str33);
 		
     }
 			
@@ -125,11 +125,12 @@ public class EmpTerminate{
 		double str25, double str26, double str27,
 
 		String str28,
-		String str29,
+		boolean str29,
 		String str30,
-		
 		String str31,
-		boolean str32){
+		
+		String str32,
+		boolean str33){
 	setId(str);
 	setEmployee_id(str2);
 	setFull_name(str3);
@@ -163,11 +164,12 @@ public class EmpTerminate{
 	setVac_time(str26);
 	setPto(str27);
 	setRemarks(str28);
-	setSubmitted_by_id(str29);
-	setSubmitted_date(str30);
+	setSuspension(str29);
+	setSubmitted_by_id(str30);
+	setSubmitted_date(str31);
 
-	setProcess_status(str31);	
-	setRecipients_informed(str32);
+	setProcess_status(str32);	
+	setRecipients_informed(str33);
 
     }
     public boolean equals(Object obj){
@@ -297,11 +299,10 @@ public class EmpTerminate{
     public String getForward_days_cnt(){
 	return forward_days_cnt;
     }
-    /**
-    public String getLast_day_of_work(){
-	return last_day_of_work;
+    public boolean getSuspension(){
+	return !suspension.isEmpty();
     }
-    */
+
     public String getDrive_action(){
 	return drive_action;
     }
@@ -470,11 +471,13 @@ public class EmpTerminate{
 	*/
 	return "";
     }
+    
     public boolean hasJobs(){
 	findJobs();
 	return jobs != null && jobs.size() > 0;
     }
     public boolean hasJobTerms(){
+	findJobs();
 	return jobTerms != null && jobTerms.size() > 0;
     }
     public List<JobTerminate> getJobTerms(){
@@ -683,6 +686,10 @@ public class EmpTerminate{
 	if(val != null)
 	    emp_phone = val;
     }
+    public void setSuspension(boolean val){
+	if(val)
+	    suspension = "y";
+    }    
     public void setEmp_alt_phone(String val){
 	if(val != null)
 	    emp_alt_phone = val;
@@ -943,18 +950,6 @@ public class EmpTerminate{
 			back += one.doUpdate();
 		    }
 		}
-		/**
-		if(emp.hasDepartments()){
-		       // we are keeping the dept info for now since
-		       // some employees come back such as seasonal
-		    // List<DepartmentEmployee> ones =
-		    // emp.getDepartmentEmployees();
-		    // for(DepartmentEmployee one:ones){
-		    // one.setExpire_date(last_pay_priod_date);
-		    // back += one.doUpdate();
-		    //}
-		}
-		*/
 	    }
 	    if(hasDocuments()){
 		CleanUp cleanUp = new CleanUp();
@@ -1121,7 +1116,7 @@ public class EmpTerminate{
 	String qq = "insert into emp_terminations values(0,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "'Started', null)";
+	    "?,'Started', null)";
 	process_status="Started";
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -1160,6 +1155,7 @@ public class EmpTerminate{
 	}
 	return back;
     }
+    /**
     public String saveJobTerms(){
 	String back = "";
 	if(jobTerms != null && jobTerms.size() > 0){
@@ -1173,6 +1169,7 @@ public class EmpTerminate{
 	}
 	return back;
     }
+    */
     String setParams(PreparedStatement pstmt){
 	String back = "";
 	int jj=1;
@@ -1273,15 +1270,19 @@ public class EmpTerminate{
 		pstmt.setNull(27, Types.VARCHAR);
 	    else	    
 		pstmt.setString(27, remarks);
+	    if(suspension.isEmpty())
+		pstmt.setNull(28, Types.CHAR);
+	    else	    
+		pstmt.setString(28, "y");	    
 	    if(submitted_by_id.isEmpty())
-		pstmt.setNull(28, Types.VARCHAR);
+		pstmt.setNull(29, Types.VARCHAR);
 	    else
-		pstmt.setString(28, submitted_by_id);
+		pstmt.setString(29, submitted_by_id);
 	    if(submitted_date.isEmpty())
 		submitted_date = Helper.getToday();
-	    pstmt.setDate(29, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
+	    pstmt.setDate(30, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
 	    if(!id.isEmpty()){
-		pstmt.setString(30,process_status);		
+		pstmt.setString(31,process_status);		
 	    }
 	}catch(Exception ex){
 	    back += ex;
@@ -1325,6 +1326,7 @@ public class EmpTerminate{
 	    
 	    "pto=?,"+
 	    "remarks=?,"+
+	    "suspension=?,"+
 	    "submitted_by_id=?,"+
 	    "submitted_date=?, "+ // date
 	    "process_status=? "+
@@ -1351,7 +1353,7 @@ public class EmpTerminate{
 	    pstmt = con.prepareStatement(qq);
 	    back = setParams(pstmt);
 	    if(back.isEmpty()){
-		pstmt.setString(31, id);
+		pstmt.setString(32, id);
 		pstmt.executeUpdate();
 	    }
 	    if(badge_returned != null){
@@ -1455,9 +1457,9 @@ public class EmpTerminate{
 	    "vac_time,"+
 	    "pto,"+
 	    "remarks,"+
+	    "suspension,"+
 	    "submitted_by_id,"+
 	    "date_format(submitted_date,'%m/%d/%Y'), "+ // date
-	    
 	    "process_status, "+
 	    "recipients_informed "+	    
 	    " from emp_terminations where id =? "; 
@@ -1505,11 +1507,12 @@ public class EmpTerminate{
 			
 			rs.getDouble(26),
 			rs.getDouble(27),
-			rs.getString(28),			
-			rs.getString(29),
+			rs.getString(28),
+			rs.getString(29) != null,
 			rs.getString(30),
-			rs.getString(31),			
-			rs.getString(32) != null);
+			rs.getString(31),
+			rs.getString(32),			
+			rs.getString(33) != null);
 
 	    }
 	}
@@ -1586,7 +1589,8 @@ public class EmpTerminate{
     // add foreign key to term_notifications if emp_terminations is dropped
     //
     alter table term_notifications add foreign key(termination_id) references emp_terminations (id);
-    
+
+    alter table emp_terminations add suspension char(1) after remarks;
      */
 
 }

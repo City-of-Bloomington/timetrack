@@ -330,6 +330,7 @@ public class JobTerminate{
 	    if(back.isEmpty()){
 		job = one;
 		emp = job.getEmployee();
+		weekly_hours = ""+job.getWeekly_regular_hours();
 	    }
 	    else{
 		System.err.println(" find job error "+back);
@@ -356,31 +357,7 @@ public class JobTerminate{
 	if(val != null)
 	    supervisor_id=val;
     }
-    /**
-    public String findSupervisor(){
-	String back = "";
-	if(supervisor == null){
-	    getJob();
-	    if(job != null){
-		GroupManagerList gml = new GroupManagerList();
-		gml.setGroup_id(job.getGroup_id());
-		gml.setActiveOnly();
-		gml.setNotExpired();
-		gml.setApproversOnly();
-		back = gml.find();
-		if(back.isEmpty()){
-		    List<GroupManager> managers = gml.getManagers();
-		    if(managers != null && managers.size() > 0){
-			// we pick the first (primary)
-			supervisor = managers.get(0).getEmployee();
-			supervisor_id = supervisor.getId();
-		    }
-		}
-	    }
-	}
-	return back;
-    }
-    */
+
     public String findSupervisorInfo(EnvBean bean){
 	String back = findSupervisor();
 	if(back.isEmpty()){

@@ -494,6 +494,24 @@ public class EmployeeList extends CommonInc{
       order by d.name,full_name
       into outfile '/var/lib/mysql-files/employees_emails.csv'                         fields terminated by ','                                                        lines terminated by '\n';
 
+            select distinct
+	    d.name dept_name,
+	    g.name group_name,	    
+	    concat_ws(' ',e.first_name,e.last_name) full_name,
+	    e.email emp_email
+      from employees e
+      join group_managers r on r.employee_id = e.id      
+      join jobs j on j.employee_id=e.id                                               join `groups` g on g.id=r.group_id
+      join departments d on d.id = g.department_id
+      where j.expire_date is null 
+      and r.employee_id=e.id and r.expire_date is null
+      and r.primary_flag is not null
+      and r.wf_node_id=4
+      order by dept_name, group_name, full_name
+      into outfile '/var/lib/mysql-files/group_processors.csv'                         fields terminated by ','                                                        lines terminated by '\n';
+
+      
+
 update code_cross_ref set GL_String = '110115151000' where id = '2';
 update code_cross_ref set GL_String = '240315150000' where id = '18';
 update code_cross_ref set GL_String = '240415150000' where id = '19';
@@ -516,7 +534,13 @@ update code_cross_ref set GL_String = '240615150002' where id = '32';
 update code_cross_ref set GL_String = '110115151000' where id = '33';
 
       
-
+      select distinct g.name group_name, concat_ws(' ',e.first_name,e.last_name) full_name,e.email
+      from employees e
+      join jobs j on j.employee_id=e.id                                               join `groups` g on g.id=j.group_id
+      where j.expire_date is null and g.id in (36,303,294,35,57)
+      and e.email is not null and e.email <> ''
+      order by group_name, full_name
+      into outfile '/var/lib/mysql-files/police_emails.csv'                         fields terminated by ','                                                        lines terminated by '\n';
       
       
     */

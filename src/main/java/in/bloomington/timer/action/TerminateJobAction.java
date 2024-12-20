@@ -77,10 +77,15 @@ public class TerminateJobAction extends TopAction{
 		}
 		// if(hasTempJobs){
 		ret = "select_jobs";
-		    //}
-		    // else { // one job
-		    //ret = "set_expire_date";
-		    //}
+	    }
+	}
+	else if(action.equals("Edit")){
+	    if(!id.isEmpty()){
+		term = new EmpTerminate(id);
+		back = term.doSelect();
+		if(!back.isEmpty()){
+		    addError(back);
+		}
 	    }
 	}
 	else if(action.startsWith("Next")){ 
@@ -88,12 +93,14 @@ public class TerminateJobAction extends TopAction{
 	    if(selected_job_ids != null &&
 	       !last_day_of_work.isEmpty()){
 		getTerm();
+		getEmp();
 		findLastPayPeriodDate();
 		if(emp_id.isEmpty()){
 		    getJob(); // to get emp_id
 		}
 		term.setEmployee_id(emp_id);
 		term.setJob_ids(selected_job_ids);
+		term.setEmail(emp.getEmail());
 		// term.findAllJobs();
 		// term.findSupervisor();
 		// term.findSupervisorPhone(envBean);
@@ -179,7 +186,7 @@ public class TerminateJobAction extends TopAction{
 		    ret = "view";
 		}
 	    }
-	}	
+	}
 	return ret;
     }
     void findLastPayPeriodDate(){
@@ -211,6 +218,10 @@ public class TerminateJobAction extends TopAction{
 		if(nej.hasNwJob()){
 		    JobTerminate jj = nej.updateFoundJob();
 		    jj.setBadge_code(emp.getId_code());
+		    jj.setTerminate_id(id);
+		    jj.setLast_day_of_work(last_day_of_work);
+		    jj.findSupervisor();
+		    jj.findSupervisorInfo(envBean);
 		    back += jj.doSave();
 		    if(!back.isEmpty()){
 			System.err.println(" after jobterm save "+back);
@@ -219,8 +230,21 @@ public class TerminateJobAction extends TopAction{
 		    jobTerms.add(jj);
 		}
 		else{
-		    back = "No job term found ";
-		    System.err.println(" no match found ");
+		    for(String  j_id:selected_job_ids){
+			JobTerminate jj = new JobTerminate();
+			jj.setJob_id(j_id);
+			jj.setLast_day_of_work(last_day_of_work);
+			jj.setBadge_code(emp.getId_code());
+			jj.setTerminate_id(id);
+			jj.findSupervisor();
+			jj.findSupervisorInfo(envBean);
+			back = jj.doSave();
+			if(!back.isEmpty()){
+			    System.err.println(" after jobterm save "+back);
+			}
+			jobTerms = new ArrayList<>();
+			jobTerms.add(jj);
+		    }
 		}
 	    }
 	    else{
@@ -229,9 +253,11 @@ public class TerminateJobAction extends TopAction{
 		    jobTerms = ones;
 		    for(JobTerminate jj:jobTerms){
 			jj.setTerminate_id(id);
-			// jj.findSupervisor();
-			// jj.findSupervisorInfo(envBean);
+			jj.findSupervisor();
+			jj.findSupervisorInfo(envBean);
 			jj.setBadge_code(emp.getId_code());
+			jj.setLast_day_of_work(last_day_of_work);
+			jj.setBadge_code(emp.getId_code());			
 			back += jj.doSave();
 		    }
 		    if(!back.isEmpty()){
