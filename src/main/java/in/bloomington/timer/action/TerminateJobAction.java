@@ -167,22 +167,27 @@ public class TerminateJobAction extends TopAction{
 	    getTerm();
 	    if(term != null){
 		back = term.doSelect();
-		// back = term.doTerminate();
 		TermNotification tn = new TermNotification();
 		tn.setTerm(term);
 		tn.setTermination_id(term.getId());
 		tn.setSender(user);
-		back = tn.doSend(mail_host);
-		if(!back.isEmpty()){
-		    addError(back);
-		}
-		else {
-		    back = term.changeInformFlagAndCompletedStatus();
+		if(activeMail){
+		    back = tn.doSend(mail_host);
 		    if(!back.isEmpty()){
 			addError(back);
 		    }
-		    else
-			addMessage("Send Successfully");
+		    else {
+			back = term.changeInformFlagAndCompletedStatus();
+			if(!back.isEmpty()){
+			    addError(back);
+			}
+			else
+			    addMessage("Send Successfully");
+			ret = "view";
+		    }
+		}
+		else{
+		    addMessage("Inactivve Email");
 		    ret = "view";
 		}
 	    }

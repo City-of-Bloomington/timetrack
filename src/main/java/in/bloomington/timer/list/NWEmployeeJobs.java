@@ -31,16 +31,16 @@ public class NWEmployeeJobs{
     PayPeriod payPeriod = null;
     String end_date = null;
     String last_day_of_work = "";
-    String date = "05/17/2024";
+    String date = "01/02/2025";
 
+    /**
        // temp emp
     String employee_number="2661", employee_id="1635",
 	first_name="", last_name=""; //Jackson Eads
-    /**
-    // full time
-    String employee_number="2871", employee_id="1702",
-	first_name="", last_name=""; //Josh
     */
+    // full time
+    String employee_number="100002301", employee_id="1",
+	first_name="", last_name=""; //Josh
     List<JobTerminate> jobTerms = null;
     List<JobTerminate> matchedJobs = null;
     //
@@ -220,27 +220,7 @@ public class NWEmployeeJobs{
     }
 
     /**
-       table p
-       1 EmployeeJobID
-2 EffectiveDate
-3 EffectiveEndDate
-4 EmployeeID
-5 GradeId
-6 GradeType
-7 GradeStepId
-8 CycleHours
-9 DailyHours
-10 DepartmentId
-11 RateAmount
-12 PositionId
-13 JobId
-14 JobTitle
-15 PositionDetailESD
-16 PositionDetailEED
-17 IsPrimaryJob
-18 JobEventReasonId
-19 PositionNumber
-//
+
 // table ej
 1 EmployeeJobId
 2 EmployeeId
@@ -327,6 +307,9 @@ public class NWEmployeeJobs{
        23 AnnualHours
        24 NumberofPayment
        25 CycleHours
+//
+
+       
 // example output
 Emp Num, Name,Start Date,Hr Rate,Job Title,Grade, Step, Annual Pay, Pay Type
 
@@ -369,7 +352,7 @@ Emp Num, Name,Start Date,Hr Rate,Job Title,Grade, Step, Annual Pay, Pay Type
 	@UserID=3,
 	@PrimaryOnly=0;
 
-	// second proceduce
+	// Bloomington_EmployeeGradeStepRateTitle_template output
 1 EmployeeID
 2 EmployeeNumber
 3 EmployeeName
@@ -413,9 +396,13 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 
 	    
 	*/
+	if(date.isEmpty()){
+	    date = Helper.getToday();
+	}
+	System.err.println("  date "+date);
 	con = SingleConnect.getNwConnection();
 	String qq =
-	    "{call dbo.Bloomington_EmployeeGradeStepRateTitle_template(null,?)}";
+	    "{call dbo.Bloomington_EmployeeGradeStepRateTitle_template(?,?)}";
 	String qq2 =
 	    "{CALL HR.HRReport_EmployeePayRateReport(null,null,?,null,null,null,2,0,1,1,1,3,0)}";
 	if(con == null){
@@ -429,17 +416,17 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		logger.debug(qq);	    
 	    cs = con.prepareCall(qq);
 	    // for(String str:emp_nums){
-	    
-	    cs.setString(1,employee_number);
+	    cs.setString(1,date);	    
+	    cs.setString(2,employee_number);
 	    cs.executeQuery();
 	    rs = cs.getResultSet();
 	    /**
-	       ResultSetMetaData rsmd = rs.getMetaData();
-	       int columnCount = rsmd.getColumnCount();
-	       for (int i = 1; i <= columnCount; i++ ) {
-	       String name = rsmd.getColumnName(i);
-	       System.err.println(i+" "+name);
-	       }
+	    ResultSetMetaData rsmd = rs.getMetaData();
+	    int columnCount = rsmd.getColumnCount();
+	    for (int i = 1; i <= columnCount; i++ ) {
+		String name = rsmd.getColumnName(i);
+		System.err.println(i+" "+name);
+	    }
 	    */
 	    boolean needStep = false;
 	    while(rs.next()){
@@ -460,10 +447,14 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		*/
 		String rate = "";
 		String week_hrs = "20";
-		String emp_name = rs.getString(3);		
-		String jobTitle = rs.getString(9);
+		String emp_name = rs.getString(3);
+		String b_group = rs.getString(5);
+		    
+		String jobTitle = rs.getString(9); // position
 		String effect_date = rs.getString(6);
+		String flsa_code = rs.getString(12);;
 		String grade = rs.getString(13);
+
 		String step_code = rs.getString(14);
 		if(step_code == null)
 		    needStep = true;
@@ -488,6 +479,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		System.err.println("job "+jobTitle);
 		System.err.println("date "+effect_date);
 		System.err.println("grade "+grade);
+		System.err.println("b group "+b_group);
 		System.err.println("step code "+step_code);
 		// System.err.println("Weekly hrs "+week_hrs);
 		System.err.println(" rate "+rate);
@@ -500,7 +492,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 	    }
 	    if(needStep && jobTerms.size() == 1){
 		logger.debug(qq2);
-		System.err.println(qq2);
+		//System.err.println(qq2);
 		cs = con.prepareCall(qq2);
 		
 		cs.setString(1,employee_number);
@@ -715,7 +707,10 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 
 	
 	exec dbo.Bloomington_EmployeeGradeStepRateTitle_template @AsOfDate=NULL,@EmployeeNumber=NULL;
-       
+	//
+	// 2025 grades
+	//
+	
     */
 
 }

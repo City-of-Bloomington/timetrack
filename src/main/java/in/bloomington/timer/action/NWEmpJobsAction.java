@@ -21,12 +21,12 @@ public class NWEmpJobsAction extends TopAction{
     static final long serialVersionUID = 3800L;	
     static Logger logger = LogManager.getLogger(NWEmpJobsAction.class);
     //
-    String date = "12/20/2024";
-    String emp_number="3495", emp_id="2359";
+    String date = "01/02/2025";
+    String emp_number="100002301", emp_id="4";
     // String emp_number="864", emp_id="13";    
     List<JobTask> jobs = null;
     NWEmployeeJobs nwEmpJobs = null;
-    String pay_period_id = "702";
+    String pay_period_id = "704";
     public String execute(){
 	String ret = SUCCESS;
 	

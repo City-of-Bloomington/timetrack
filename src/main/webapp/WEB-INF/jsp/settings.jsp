@@ -120,10 +120,11 @@
 		<li><a href="<s:property value='#application.url'/>reportUnscheduled.action">Unscheduled Times</a></li>
 		
 	    </ul>			
-	    <h2>Schedulers</h2>
+	    <h2>Schedulers & Updates</h2>
 	    <ul>
 		<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Employees' accruals</a></li>
 		<li><a href="<s:property value='#application.url'/>profileSchedule.action">Employees Profile Update</a></li>
+		<li><a href="<s:property value='#application.url'/>emp_jobs_update.action">Employees Job Update</a></li>		
 		<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees' Update from AD (LDAP)</a></li>				
 		<li><a href="<s:property value='#application.url'/>notificationSchedule.action">Employees reminder notification</a></li>
 		<li><a href="<s:property value='#application.url'/>termNotificationSchedule.action">Termination notification Reminder</a></li>		

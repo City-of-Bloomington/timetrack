@@ -103,6 +103,13 @@
       <result name="success">/WEB-INF/jsp/nw_emp_jobs.jsp</result>
       <result name="error">/WEB-INF/jsp/nw_emp_jobs.jsp</result>	
     </action>
+    <action name="emp_jobs_update"
+	    class="in.bloomington.timer.action.EmpJobsUpdateAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/emp_jobs_update.jsp</result>
+      <result name="success">/WEB-INF/jsp/emp_jobs_update.jsp</result>
+      <result name="error">/WEB-INF/jsp/emp_jobs_update.jsp</result>	
+    </action>    
     <action name="jobIntervention" 
 	    class="in.bloomington.timer.action.JobInterventionAction" 
 	    method="execute">
