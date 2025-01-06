@@ -31,16 +31,14 @@ public class EmployeeJobsHandel{
     PayPeriod payPeriod = null;
     String end_date = null;
     String last_day_of_work = "";
-    String date = "01/02/2025";
+    String date = "";
 
-    // full time
-    String employee_number="100002301", employee_id="1",
-	first_name="", last_name=""; 
     //
     List<String> benefitGroups = new ArrayList<>();
     HashMap<String, Integer> gradeCompTbl = null;
     HashMap<String, String> benSalTbl = null;
     HashMap<String, JobTask> jobTbl = null;
+    HashMap<String, List<JobTask>> jobTblTemp = null;    
     String[] job_ids = null;
     //
     // basic constructor
@@ -48,22 +46,6 @@ public class EmployeeJobsHandel{
     public EmployeeJobsHandel(){
 
     }
-    /**
-    public NWEmployeeJobs(EnvBean bean,
-			  String val,
-			  String val2,
-			  String val3,
-			  String[] vals
-			 ){
-	setEnvBean(bean);
-	setEmployee_id(val);
-	setEmployeeNumber(val2);
-	setLast_day_of_work(val3);
-	setJob_ids(vals);
-	//
-	findSelectedJobs();
-    }
-    */
     //
     // setters
     //
@@ -125,9 +107,26 @@ public class EmployeeJobsHandel{
 	    List<JobTask> ones = jtl.getJobs();
 	    if(ones != null && ones.size() > 0){
 		jobTbl = new HashMap<>();
+		jobTblTemp = new HashMap<>();
 		for(JobTask job:ones){
 		    String str = job.getEmployee_number();
-		    jobTbl.put(str, job);
+		    String salary_group_id = job.getSalary_group_id();
+		    if(salary_group_id.equals("3") || //temp
+		       salary_group_id.equals("12")){ // temp w/ben
+			if(jobTblTemp.containsKey(str)){
+			    List<JobTask> jobs = jobTblTemp.get(str);
+			    jobs.add(job);
+			    jobTblTemp.put(str, jobs);
+			}
+			else{
+			    List<JobTask> jobs = new ArrayList<>();
+			    jobs.add(job);
+			    jobTblTemp.put(str, jobs);
+			}
+		    }
+		    else{
+			jobTbl.put(str, job);
+		    }
 		    // System.err.println(" adding "+jj+", "+str+": "+job);
 		    jj++;
 		}
@@ -293,7 +292,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 	    }
 	    */
 	    boolean needStep = false;
-	    int jj = 1;
+	    int jj = 1, jj2=1;
 	    while(rs.next()){
 		String emp_num = rs.getString(2);
 		String rate = "";
@@ -304,10 +303,10 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		String jTitle = rs.getString(9); // position
 		// System.err.println("NW job before "+jTitle);
 		if(jTitle.indexOf(" - ") > 0){
-		    jobTitle = jTitle.substring(jTitle.indexOf(" - ")+3);
+		    jobTitle = jTitle.substring(jTitle.indexOf(" - ")+3).trim();
 		}
 		else{
-		    jobTitle = jTitle;
+		    jobTitle = jTitle.trim();
 		}
 		String effect_date = rs.getString(6);
 		String flsa_code = rs.getString(12);;
@@ -356,27 +355,52 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		String salary_group_id = null;
 		Integer comp_hours = null;
 		JobTask job = null;
+		List<JobTask> jobs = null;
 		boolean need_update = false;
 		String changes = "";
+		String change_title = "";
+		if(benSalTbl.containsKey(ben_group)){
+		    salary_group_id = benSalTbl.get(ben_group);
+		}
+		if(gradeCompTbl.containsKey(grade)){
+		    comp_hours = gradeCompTbl.get(grade);
+		}
 		if(jobTbl.containsKey(emp_num)){
 		    job = jobTbl.get(emp_num);
 		}
-		// System.err.println(" job "+job);
+		else if(jobTblTemp.containsKey(emp_num)){
+		    jobs = jobTblTemp.get(emp_num);
+		    for(JobTask one:jobs){
+			if(!one.getSalary_group_id().equals(salary_group_id)){
+			    one.setSalary_group_id(salary_group_id);
+			    one.doUpdate();
+			}			
+		    }
+		}
 		if(job != null){
 		    String job_sal_group_id = job.getSalary_group_id();
 		    int job_com_hours = job.getComp_time_weekly_hours();
-		    String job_title = job.getTitle();
-		    if(benSalTbl.containsKey(ben_group)){
-			salary_group_id = benSalTbl.get(ben_group);
-		    }
-		    if(gradeCompTbl.containsKey(grade)){
-			comp_hours = gradeCompTbl.get(grade);
-		    }
+		    String job_title = job.getTitle().trim();
 		    // System.err.println(" grade "+grade);
 		    // System.err.println(" comp_hours "+comp_hours);
-		    if(salary_group_id == null || salary_group_id.equals("3")){ // temp
-			//System.err.println("");
+		    if(salary_group_id == null){
 			continue;
+		    }
+		    if(salary_group_id.equals("3")){
+			if(job_sal_group_id.equals("3")){
+			    // both temp
+			    continue;
+			}
+			else{ // anything else
+			    job.setSalary_group_id(salary_group_id);
+			    job.setWeekly_regular_hours(20);
+			    job.setComp_time_factor(1.);
+			    job.setHoliday_comp_factor(1.);
+			    job.setAlt_position_name(jobTitle);
+			    job.setEffective_date(p_date);
+			    need_update = true;
+			    changes += "salary_group_id: "+salary_group_id;
+			}
 		    }
 		    else if(salary_group_id.equals("1")){
 			if(!job_sal_group_id.equals(salary_group_id)){
@@ -385,6 +409,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 				job.setComp_time_weekly_hours(comp_hours);
 				job.setComp_time_factor(1.);
 				job.setHoliday_comp_factor(1.);
+				job.setEffective_date(p_date);
 				need_update = true;
 				changes += "salary_group_id: "+salary_group_id;
 			    }
@@ -394,6 +419,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 				//System.err.println(" comp_hours "+comp_hours);
 				if(!comp_hours.equals(job_com_hours)){
 				    job.setComp_time_weekly_hours(comp_hours);
+				    job.setEffective_date(p_date);
 				    need_update = true;
 				    changes += "comp_week_hours: "+comp_hours;
 				}
@@ -401,8 +427,9 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 			}
 			if(!job_title.equals(jobTitle)){
 			    job.setAlt_position_name(jobTitle);
+			    job.setEffective_date(p_date);
 			    need_update = true;
-			    changes += "title: "+jobTitle;
+			    change_title += "title: "+jobTitle;
 			}
 		    }
 		    else if(salary_group_id.equals("2")){
@@ -410,15 +437,18 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 			    changes += "salary_group_id: "+salary_group_id;
 			    job.setSalary_group_id(salary_group_id);
 			    if(comp_hours != null){
+				job.setWeekly_regular_hours(40);
 				job.setComp_time_weekly_hours(comp_hours);
 				job.setComp_time_factor(1.5);
 				job.setHoliday_comp_factor(1.5);
+				job.setEffective_date(p_date);
 				need_update = true;
 			    }
 			}
 			if(!job_title.equals(jobTitle)){
 			    job.setAlt_position_name(jobTitle);
-			    changes += "title: "+jobTitle;
+			    job.setEffective_date(p_date);
+			    change_title += "title: "+jobTitle;
 			    need_update = true;
 			}			
 		    }
@@ -427,19 +457,29 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 			//
 			if(!job_sal_group_id.equals(salary_group_id)){
 			    job.setSalary_group_id(salary_group_id);
+			    job.setEffective_date(p_date);
 			    changes += "salary_group_id: "+salary_group_id;
 			    need_update = true;			    
 			}
 			if(!job_title.equals(jobTitle)){
 			    job.setAlt_position_name(jobTitle);
-			    changes += "title: "+jobTitle;
+			    job.setEffective_date(p_date);
+			    change_title += "title: "+jobTitle;
 			    need_update = true;
 			}			
 		    }
 		    if(need_update){
-			System.err.println(empInfo);
-			System.err.println(" changes "+jj+": "+emp_num+", "+changes);
-			jj++;
+			back += job.doUpdate();
+			if(!change_title.isEmpty()){
+			    System.err.println(empInfo);
+			    System.err.println(" changes "+jj+": "+emp_num+", "+change_title);
+			    jj++;
+			}
+			if(!changes.isEmpty()){
+			    System.err.println(empInfo);
+			    System.err.println(" changes "+jj2+": "+emp_num+", "+changes);
+			    jj2++;
+			}
 			System.err.println(" ");			
 		    }
 		}

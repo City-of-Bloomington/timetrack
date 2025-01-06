@@ -71,6 +71,7 @@ public class JobTask implements Serializable{
     double comp_time_factor=1.0, holiday_comp_factor=1.0;
     double hourly_rate=0;
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+    SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");    
     SalaryGroup salaryGroup = null;
     Position position = null;
     Employee employee = null;
@@ -1294,10 +1295,18 @@ public class JobTask implements Serializable{
 	    pstmt.setString(2, salary_group_id);
 	    pstmt.setString(3, employee_id);
 	    pstmt.setString(4, group_id);
-	    if(effective_date.isEmpty())
+	    if(effective_date.isEmpty()){
 		effective_date = Helper.getToday();
-	    java.util.Date date_tmp = df.parse(effective_date);
+	    }
+	    java.util.Date date_tmp = null;	    
+	    if(effective_date.indexOf("-") > 0){
+		date_tmp = df2.parse(effective_date);
+	    }
+	    else{
+		date_tmp = df.parse(effective_date);
+	    }
 	    pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
+
 	    if(!expire_date.isEmpty()){
 		date_tmp = df.parse(expire_date);
 		pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));

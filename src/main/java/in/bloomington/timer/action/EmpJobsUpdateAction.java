@@ -22,7 +22,7 @@ public class EmpJobsUpdateAction extends TopAction{
     static final long serialVersionUID = 3800L;	
     static Logger logger = LogManager.getLogger(EmpJobsUpdateAction.class);
     EmployeeJobsHandel handel = null;
-    String date = "01/02/2025";
+    String date = Helper.getToday();
     public String execute(){
 	String ret = SUCCESS;
 	String back = "";
