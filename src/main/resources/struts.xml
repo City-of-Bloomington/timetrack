@@ -81,6 +81,13 @@
       <result name="error">/WEB-INF/jsp/leave_review.jsp</result>
       <result name="success">/WEB-INF/jsp/leave_review.jsp</result>
     </action>
+    <action name="group_leave" 
+	    class="in.bloomington.timer.action.GroupLeaveAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/group_leave.jsp</result>		
+      <result name="error">/WEB-INF/jsp/group_leave.jsp</result>
+      <result name="success">/WEB-INF/jsp/group_leave.jsp</result>
+    </action>    
     <action name="leave_email_logs" 
 	    class="in.bloomington.timer.action.LeaveEmailLogsAction" 
 	    method="execute">

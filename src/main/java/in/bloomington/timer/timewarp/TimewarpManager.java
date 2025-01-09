@@ -116,11 +116,16 @@ public class TimewarpManager{
 	if(payPeriod.hasTwoDifferentYears()){
 	    twoDifferentYears = true;
 	    splitDay = payPeriod.getDaysToYearEnd();
+	    // System.err.println(" splitDay "+splitDay);
 	    if(splitDay == 0 || splitDay == 7){
 		noWeekSplit = true;
 	    }
 	    else if(splitDay < 7){
 		weekOneHasSplit = true;
+		noWeekSplit = false;
+	    }
+	    else if(splitDay < 14){ // 8,9,10,11,12,13
+		weekOneHasSplit = false;
 		noWeekSplit = false;
 	    }
 	    //
@@ -148,7 +153,8 @@ public class TimewarpManager{
 	block.setRun_id(run_id);
 	if(back.isEmpty() && !run_id.isEmpty()){
 	    Hashtable<String, Double> hash = new Hashtable<>();;
-	    Hashtable<String, Double> hash2 = null;						
+	    Hashtable<String, Double> hash2 = null;
+	    
 	    if(!twoDifferentYears){
 		hash = process.getWeek1All();
 		if(!hash.isEmpty()){
@@ -167,9 +173,10 @@ public class TimewarpManager{
 		    back += block.doSaveBolk(hash, "Week 2",cycle_order, "Amount");
 		}							
 	    }
-	    else{
+	    else{ // two different years
 		//end of the year blocks
 		//
+		// System.err.println(" no week split "+noWeekSplit);
 		if(noWeekSplit){ // two weeks are completely separate
 		    // in two different years
 		    hash =  process.getWeek1All();
@@ -187,9 +194,10 @@ public class TimewarpManager{
 		    hash = process.getWeek2MonetaryHash();
 		    if(!hash.isEmpty()){											
 			back += block.doSaveBolk(hash, "Week 2",2, "Amount");
-		    }										
+		    }
 		}
 		else {
+		    // System.err.println(" week one split "+weekOneHasSplit);
 		    if(weekOneHasSplit){
 			// first pay period
 			// week 1 split 1 only
@@ -246,6 +254,7 @@ public class TimewarpManager{
 			}										
 		    }
 		    else{
+			System.err.println(" week two split true ");
 			// hours
 			hash  =  process.getWeek1All();
 			if(!hash.isEmpty()){										
@@ -275,7 +284,7 @@ public class TimewarpManager{
 			    back += block.doSaveBolk(hash, "Week 2",1, "Amount");
 			}												
 			//
-			// second pay period
+			// second pay
 			// hours
 			hash = process.getWeek1().getEarnedHours();
 			if(!hash.isEmpty()){

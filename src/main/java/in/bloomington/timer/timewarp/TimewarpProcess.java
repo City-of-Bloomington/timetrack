@@ -209,7 +209,7 @@ public class TimewarpProcess{
 					   "week2");
 	    }
 	}
-	else{ // not split
+	else{ // no split
 	    week1 = new TmwrpWeekEntry(debug, 
 				       department,
 				       job,
@@ -355,6 +355,7 @@ public class TimewarpProcess{
 	//
 	Hashtable<String, Double> nreg  = new Hashtable<>();
 	// when two weeks are completely separated
+	System.err.println("w1 noWeekSplit "+noWeekSplit);
 	if(noWeekSplit){
 	    nreg  =  getWeek1All();
 	}
@@ -367,7 +368,7 @@ public class TimewarpProcess{
 		// all week 1 
 		nreg  =  getWeek1All();
 		// plus week 2 split 1
-		Hashtable<String, Double> nreg2  =	getWeekSplitNonRegularHours(2, 1); // week 2 split 1
+		Hashtable<String, Double> nreg2  = getWeekSplitNonRegularHours(2, 1); // week 2 split 1
 		if(!nreg2.isEmpty())
 		    mergeTwoHashes(nreg2, nreg);
 	    }
@@ -389,7 +390,7 @@ public class TimewarpProcess{
 		// all week 1 
 		table  =  getWeek1MonetaryHash();
 		// plus week 2 split 1
-		Hashtable<String, Double> table2  =	getWeekSplitMonetaryHash(2, 1); // week 2 split 1
+		Hashtable<String, Double> table2  =  getWeekSplitMonetaryHash(2, 1); // week 2 split 1
 		if(!table2.isEmpty())
 		    mergeTwoHashes(table2, table);
 	    }
@@ -432,6 +433,7 @@ public class TimewarpProcess{
 		
     public void findHoursSecondPay(){
 	Hashtable<String, Double> nreg  = new Hashtable<>();
+	System.err.println("w2 "+noWeekSplit);
 	if(noWeekSplit){
 	    nreg =  getWeek2All();
 	}

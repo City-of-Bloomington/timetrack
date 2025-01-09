@@ -1400,7 +1400,30 @@ public class TimeBlockList{
      //
 		 
      select e.id,concat_ws(' ',e.first_name,e.last_name), t.hours,t.date             from time_blocks t,time_documents d, employees e,tmwrp_runs r,jobs j            where d.id=t.document_id  and d.employee_id=e.id and r.document_id=d.id         and d.job_id=j.id                                                               and t.inactive is null and t.hour_code_id=1                                     and (r.week1_grs_reg_hrs > 32 or r.week2_grs_reg_hrs >32)                       and t.date in ('2019-11-05','2019-11-11')                                       and j.salary_group_id in (1,2,5,11,12)                                          order by e.first_name,e.last_name,t.date
-		
+
+
+     select dp.name, e.employee_number,concat_ws(' ',e.first_name,e.last_name), t.hours,c.name,t.date from time_blocks t,time_documents d, employees e, jobs j, hour_codes c, groups g, departments dp 
+     where d.id=t.document_id  and d.employee_id=e.id
+     and d.job_id=j.id  and t.hour_code_id=c.id                                      and t.inactive is null and t.hour_code_id > 1                                   and t.date in ('2024-12-30','2024-12-31') and t.hours > 0
+     and j.group_id=g.id and dp.id =g.department_id 
+     order by dp.name,e.first_name,e.last_name,t.date
+     into outfile '/var/lib/mysql-files/time_data.csv'
+     fields terminated by ','                                                        lines terminated by '\n';
+
+     select dp.name, e.employee_number employee_num,concat_ws(' ',e.first_name,e.last_name) full_name, sum(t.hours),c.name hour_code from time_blocks t,time_documents d, employees e, jobs j, hour_codes c, groups g, departments dp 
+     where d.id=t.document_id  and d.employee_id=e.id
+     and d.job_id=j.id  and t.hour_code_id=c.id                                      and t.inactive is null and t.hour_code_id <> 1 and t.hour_code_id <> 14
+     and not c.name like '%REG%' 
+     and t.date in ('2024-12-30','2024-12-31') and t.hours > 0
+     and j.group_id=g.id and dp.id =g.department_id
+     group by dp.name, employee_num, full_name,hour_code
+     order by dp.name,full_name,hour_code
+     into outfile '/var/lib/mysql-files/time_data2.csv'
+     fields terminated by ','                                                        lines terminated by '\n';	          
+     
+     
+
+     
     */
 			
 		

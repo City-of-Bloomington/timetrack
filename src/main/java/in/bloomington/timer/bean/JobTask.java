@@ -434,15 +434,20 @@ public class JobTask implements Serializable{
 	return false;
     }
     public boolean isLeaveEligible(){
+	boolean ret = false;
 	getSalaryGroup();
 	getGroup();
 	if(group != null){
 	    // if not one of excluded
 	    if(!deptSet.contains(group.getDepartment_id())){
-		return salaryGroup != null && salaryGroup.isLeaveEligible();
+		ret = salaryGroup != null && salaryGroup.isLeaveEligible();
+	    }
+	    if(!ret){
+		GroupLeave gl = new GroupLeave();
+		ret = gl.isLeaveEligible(group_id, salary_group_id);
 	    }
 	}
-	return false;
+	return ret;
     }
     public int getWeekly_regular_hours(){
 	return weekly_regular_hours;

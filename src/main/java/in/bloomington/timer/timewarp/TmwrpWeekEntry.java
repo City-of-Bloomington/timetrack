@@ -180,11 +180,15 @@ public class TmwrpWeekEntry{
 	try{
 	    if(te != null){
 		// daySeq 0,1,2,3,4,5,6
+		// System.err.println(" split day "+splitDay);
+		// System.err.println(" index "+te.getOrder_index());
 		if((te.getOrder_index()%7) < splitDay){
+		    // System.err.println("one "+te.getHours());
 		    splitOne.add(te);
 		}
 		else{
 		    splitTwo.add(te);
+		    // System.err.println("two "+te.getHours());
 		}
 	    }
 	}catch(Exception ex){
@@ -248,6 +252,7 @@ public class TmwrpWeekEntry{
     public boolean hasMonetary(){
 	return monetaryHash != null && !monetaryHash.isEmpty();
     }
+
     public Hashtable<String, Double> getAll(){
 	Hashtable<String, Double> all = new Hashtable<String, Double>();
 	if(!hash.isEmpty()){
@@ -332,6 +337,7 @@ public class TmwrpWeekEntry{
 	Hashtable<String, Double> table = splitOne.getNonRegularHours();
 	if(!table.isEmpty())
 	    mergeWithHash(table, hash);
+
 	if(hasSplitDay()){
 	    Hashtable<String, Double> table2 = splitTwo.getNonRegularHours();
 	    if(!table2.isEmpty())

@@ -554,7 +554,8 @@ public class TmwrpWrapAction extends TopAction{
 			    if(sgrp != null && sgrp.isTemporary()){
 				csvLine += job.getName();
 			    }
-			    allCsvLines.add(csvLine);														
+			    allCsvLines.add(csvLine);
+			    
 			}
 		    }
 		    if(run.hasCycle2AmountRows()){

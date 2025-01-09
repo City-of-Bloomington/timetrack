@@ -175,7 +175,11 @@ public class TmwrpWeekSplit{
 		}
 	    }
 	}
-    }		
+    }
+    // added 1/7
+    public Hashtable<String, Double> getHash(){
+	return hash;
+    }    
     //
     // for union or similar, regular only
     //

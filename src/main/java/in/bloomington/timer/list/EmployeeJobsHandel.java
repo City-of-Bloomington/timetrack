@@ -311,6 +311,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		String effect_date = rs.getString(6);
 		String flsa_code = rs.getString(12);;
 		String grade = rs.getString(13);
+		String nw_grade = grade;
 		if(grade.indexOf("-") > 0){
 		    grade = grade.substring(0, grade.indexOf("-"));
 		    grade = grade.trim();
@@ -325,7 +326,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		String p_date = rs.getString(21);
 		if(p_type != null && p_type.equals("Annual")){
 		    rate = annual_rate;
-		    week_hrs = "40";
+		    // week_hrs = "40";
 		}
 		else{
 		    if(hr_rate != null && hr_rate.lastIndexOf(".") > -1){
@@ -344,7 +345,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		System.err.println("grade "+grade);
 		System.err.println("b group "+ben_group);
 		*/
-		String empInfo = emp_name+", grade:"+grade+", b_group:"+ben_group;		
+		String empInfo = emp_name+", nw_grade:"+nw_grade+", grade:"+grade+", b_group:"+ben_group;		
 		/**
 		System.err.println("date "+effect_date);
 		System.err.println("step code "+step_code);
@@ -470,11 +471,13 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		    }
 		    if(need_update){
 			back += job.doUpdate();
+			/**
 			if(!change_title.isEmpty()){
 			    System.err.println(empInfo);
 			    System.err.println(" changes "+jj+": "+emp_num+", "+change_title);
 			    jj++;
 			}
+			*/
 			if(!changes.isEmpty()){
 			    System.err.println(empInfo);
 			    System.err.println(" changes "+jj2+": "+emp_num+", "+changes);
