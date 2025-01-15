@@ -25,42 +25,42 @@ import org.apache.logging.log4j.Logger;
 public class CurrentEmployeesJob implements Job{
 
     boolean debug = true;
-		static final long serialVersionUID = 55L;		
-		static Logger logger = LogManager.getLogger(CurrentEmployeesJob.class);
-		EnvBean envBean = null;
-		public CurrentEmployeesJob(){
+    static final long serialVersionUID = 55L;		
+    static Logger logger = LogManager.getLogger(CurrentEmployeesJob.class);
+    EnvBean envBean = null;
+    public CurrentEmployeesJob(){
 
-		}
-		public void execute(JobExecutionContext context)
+    }
+    public void execute(JobExecutionContext context)
         throws JobExecutionException {
-				try{
-						JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-						if(dataMap != null){
-								EnvBean val = (EnvBean) dataMap.get("envBean");
-								if(val != null){
-										envBean = val;
-								}
-						}
-						doInit();
-						doWork();
-						doDestroy();
-				}
-				catch(Exception ex){
-						logger.error(ex);
-						System.err.println(ex);
-				}
+	try{
+	    JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+	    if(dataMap != null){
+		EnvBean val = (EnvBean) dataMap.get("envBean");
+		if(val != null){
+		    envBean = val;
 		}
-		public void doInit(){
+	    }
+	    doInit();
+	    doWork();
+	    doDestroy();
+	}
+	catch(Exception ex){
+	    logger.error(ex);
+	    System.err.println(ex);
+	}
+    }
+    public void doInit(){
 
-		}
-		public void doDestroy() {
-		}	    
+    }
+    public void doDestroy() {
+    }	    
     public void doWork(){
-				HandleCurrentEmployees handle = new HandleCurrentEmployees(envBean);
-				String msg = handle.process();
-				if(!msg.isEmpty())
-						logger.error(msg);
-		}
+	HandleCurrentEmployees handle = new HandleCurrentEmployees(envBean);
+	String msg = handle.process();
+	if(!msg.isEmpty())
+	    logger.error(msg);
+    }
 		
 }
 

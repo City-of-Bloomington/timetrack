@@ -19,30 +19,39 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-public class EmailLog{
-    static Logger logger = LogManager.getLogger(EmailLog.class);
+public class ExcessAccrualEmailLog{
+    static Logger logger = LogManager.getLogger(ExcessAccrualEmailLog.class);
     final static long serialVersionUID = 292L;
     boolean debug = false;		
-    String date_time = "", type="", // Approvers, Processors
-	user_id="",
+    String date_time = "", 
 	email_from = "",
 	id = "",
 	email_to="",
-	cc="",
-	bcc="",
+	email_cc="",
+	sent_date="",
 	subject="",
 	text_message="",
-	send_errors="";
+	sent_errors="";
     Employee user = null;
-    public EmailLog(boolean val){
-	debug = val;
+    public ExcessAccrualEmailLog(){
+
     }
-    public EmailLog(boolean val, String val2){
-	debug = val;
-	if(val2 != null)
-	    id = val2;
-    }
-    public EmailLog(boolean deb,
+    public ExcessAccrualEmailLog(
+		    String val,
+		    String val2,
+		    String val3,
+		    String val4,
+		    String val5,
+		    String val6
+		    ){
+	setEmailFrom(val);
+	setEmailTo(val2);
+	setEmailCc(val3);
+	setSubject(val4);
+	setTextMessage(val5);
+	setSentErrors(val6);
+    }	    
+    public ExcessAccrualEmailLog(
 		    String val,
 		    String val2,
 		    String val3,
@@ -50,87 +59,31 @@ public class EmailLog{
 		    String val5,
 		    String val6,
 		    String val7,
-		    String val8,
-		    String val9,
-		    String val10,
-		    String val11
+		    String val8
 		    ){
-	debug = deb;
 	setId(val);
-	setUser_id(val2);
+	setDate(val2);	
 	setEmailFrom(val3);
 	setEmailTo(val4);
-	setCc(val5);
-	setBcc(val6);
-	setSubject(val7);
-	setTextMessage(val8);
-	setSendErrors(val9);
-	setDateTime(val10);
-	setType(val11);
-    }	
-		
-    public EmailLog(boolean deb,
-		    String val,
-		    String val2,
-		    String val3,
-		    String val4,
-		    String val5,
-		    String val6,
-		    String val7,
-		    String val8,
-		    String val9
-		    ){
-	debug = deb;
-	setUser_id(val);
-	setEmailFrom(val2);
-	setEmailTo(val3);
-	setCc(val4);
-	setBcc(val5);
+	setEmailCc(val5);
 	setSubject(val6);
 	setTextMessage(val7);
-	setSendErrors(val8);
-	setType(val9);
-				
+	setSentErrors(val8);
     }	
+
     public String getId(){
 	return id;
     }
-    public String getUser_id(){
-	return user_id;
-    }
-    public String getType(){
-	return type;
-    }		
-    public String getDateTime(){
-	return date_time;
+    public String getDate(){
+	return sent_date;
     }
 
     public String getEmailTo(){
 	return email_to;
     }
-    public String getCc(){
-	return cc;
+    public String getEmailCc(){
+	return email_cc;
     }
-    public	String getBcc(){
-	return bcc;
-    }
-    public String getReceipiants(){
-	String ret = email_to;
-	if(!cc.isEmpty()){
-	    if(!ret.isEmpty()) ret += ", ";						
-	    ret += cc;
-	}
-	if(!bcc.isEmpty()){
-	    if(!ret.isEmpty()) ret += ", ";
-	    if(bcc.indexOf(",") > -1){
-		ret += bcc.replace(",",", ");
-	    }
-	    else{
-		ret += bcc;
-	    }
-	}
-	return ret;
-    }		
     public String getEmailFrom(){
 	return email_from;
     }
@@ -140,46 +93,28 @@ public class EmailLog{
     public String getTextMessage(){
 	return text_message;
     }
-    public String getSendErrors(){
-	return send_errors;
+    public String getSentErrors(){
+	return sent_errors;
     }
     public String getStatus(){
-	return send_errors.isEmpty()? "Success":"Failure";
+	return sent_errors.isEmpty()? "Success":"Failure";
     }
     public boolean isFailure(){
-	return !send_errors.isEmpty();
+	return !sent_errors.isEmpty();
     }
     public boolean isSuccess(){
-	return send_errors.isEmpty();
-    }
-    public Employee getRunBy(){
-	if(user == null && !user_id.isEmpty()){
-	    Employee one = new Employee(user_id);
-	    String back = one.doSelect();
-	    if(back.isEmpty()){
-		user = one;
-	    }
-	}
-	return user;
+	return sent_errors.isEmpty();
     }
     //
     public 	void setId(String val){
 	if(val != null)
 	    id = val;
     }
-    public 	void setUser_id(String val){
+    public 	void setDate(String val){
 	if(val != null)
-	    user_id = val;
-    }		
-    public 	void setDateTime(String val){
-	if(val != null)
-	    date_time = val;
+	    sent_date = val;
     }
 
-    public 	void setType(String val){
-	if(val != null)
-	    type = val;
-    }
     public 	void setEmailTo(String val){
 	if(val != null)
 	    email_to = val;
@@ -188,13 +123,9 @@ public class EmailLog{
 	if(val != null)
 	    email_from = val;
     }		
-    public	void setCc(String val){
+    public	void setEmailCc(String val){
 	if(val != null)
-	    cc = val;
-    }
-    public void setBcc(String val){
-	if(val != null)
-	    bcc = val;
+	    email_cc = val;
     }
     public void setSubject(String val){
 	if(val != null)
@@ -204,9 +135,9 @@ public class EmailLog{
 	if(val != null)
 	    text_message = val;
     }
-    public void setSendErrors(String val){
+    public void setSentErrors(String val){
 	if(val != null)
-	    send_errors = val;
+	    sent_errors = val;
     }
 		
     public String doSave(){
@@ -215,9 +146,8 @@ public class EmailLog{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq = " insert into email_logs values(0,?,now(),?,?, "+
-	    "?,?,?,?,?,"+
-	    "?)";				
+	String qq = " insert into excess_accrual_email_logs values(0,now(),?,?, "+
+	    "?,?,?,?)";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    back = "Could not connect to Database ";
@@ -228,39 +158,30 @@ public class EmailLog{
 		logger.debug(qq);
 	    }
 	    pstmt = con.prepareStatement(qq);			
-	    pstmt.setString(1, user_id);
 	    if(email_from.isEmpty())
+		pstmt.setNull(1, Types.VARCHAR);								
+	    else
+		pstmt.setString(1, email_from);
+	    if(email_to.isEmpty())
 		pstmt.setNull(2, Types.VARCHAR);								
 	    else
-		pstmt.setString(2, email_from);
-	    if(email_to.isEmpty())
+		pstmt.setString(2, email_to);						
+	    if(email_cc.isEmpty())
 		pstmt.setNull(3, Types.VARCHAR);								
 	    else
-		pstmt.setString(3, email_to);						
-	    if(cc.isEmpty())
+		pstmt.setString(3, email_cc);
+	    if(subject.isEmpty())
 		pstmt.setNull(4, Types.VARCHAR);								
 	    else
-		pstmt.setString(4, cc);
-	    if(bcc.isEmpty())
+		pstmt.setString(4, subject);
+	    if(text_message.isEmpty())
 		pstmt.setNull(5, Types.VARCHAR);								
 	    else
-		pstmt.setString(5, bcc);
-	    if(subject.isEmpty())
+		pstmt.setString(5, text_message);
+	    if(sent_errors.isEmpty())
 		pstmt.setNull(6, Types.VARCHAR);								
 	    else
-		pstmt.setString(6, subject);
-	    if(text_message.isEmpty())
-		pstmt.setNull(7, Types.VARCHAR);								
-	    else
-		pstmt.setString(7, text_message);
-	    if(send_errors.isEmpty())
-		pstmt.setNull(8, Types.VARCHAR);								
-	    else
-		pstmt.setString(8, send_errors);
-	    if(type.isEmpty())
-		pstmt.setNull(9, Types.VARCHAR);								
-	    else
-		pstmt.setString(9, type);						
+		pstmt.setString(6, sent_errors);
 	    pstmt.executeUpdate();
 	}catch(Exception ex){
 	    back += ex+":"+qq;
@@ -279,7 +200,7 @@ public class EmailLog{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String qq = "";
-	qq = " select id,user_id,to_char(date_time,'%m/%d/%Y %H:%i'),email_from,email_to,cc,bcc,subject,text_message,send_errors,type from email_logs where id=? ";
+	qq = " select id,to_char(sent_date,'%m/%d/%Y'),email_from,email_to,email_cc,email_subject,email_msg,error_msg from excess_accrual_email_logs where id=? ";
 	if(debug)
 	    logger.debug(qq);
 	con = UnoConnect.getConnection();
@@ -293,16 +214,13 @@ public class EmailLog{
 	    rs = pstmt.executeQuery();
 	    if(rs.next()){
 		setId(rs.getString(1));
-		setUser_id(rs.getString(2));										
-		setDateTime(rs.getString(3));
-		setEmailFrom(rs.getString(4));					
-		setEmailTo(rs.getString(5));
-		setCc(rs.getString(6));										
-		setBcc(rs.getString(7));
-		setSubject(rs.getString(8));
-		setTextMessage(rs.getString(9));
-		setSendErrors(rs.getString(10));
-		setType(rs.getString(11));
+		setDate(rs.getString(2));
+		setEmailFrom(rs.getString(3));					
+		setEmailTo(rs.getString(4));
+		setEmailCc(rs.getString(5));										
+		setSubject(rs.getString(6));
+		setTextMessage(rs.getString(7));
+		setSentErrors(rs.getString(8));
 	    }
 	    else{
 		back = "No match found";
@@ -319,7 +237,23 @@ public class EmailLog{
     }
 	
 }
+/**
+create table excess_accrual_email_logs(
+id int unsigned auto_increment primary key,
+sent_date date,
+email_from varchar(80),
+email_to varchar(80),
+email_cc varchar(160),
+email_subject varchar(80),
+email_msg varchar(1200),
+error_msg varchar(1200)
+)Engine=InnoDB;
 
+
+
+
+
+ */
 
 
 

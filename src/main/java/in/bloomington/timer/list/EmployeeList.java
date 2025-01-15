@@ -541,6 +541,17 @@ update code_cross_ref set GL_String = '110115151000' where id = '33';
       and e.email is not null and e.email <> ''
       order by group_name, full_name
       into outfile '/var/lib/mysql-files/police_emails.csv'                         fields terminated by ','                                                        lines terminated by '\n';
+
+       select distinct g.name group_name, concat_ws(' ',e.first_name,e.last_name) full_name,e.email
+      from employees e
+      join jobs j on j.employee_id=e.id                                               join `groups` g on g.id=j.group_id
+      where j.expire_date is null and g.department_id=36
+      and j.salary_group_id in (1,2,11)
+      and e.email is not null and e.email <> ''
+      order by group_name, full_name
+      into outfile '/var/lib/mysql-files/utility_emails.csv'                         fields terminated by ','                                                        lines terminated by '\n';
+
+      
       
       
     */
