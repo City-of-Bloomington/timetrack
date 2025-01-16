@@ -8,7 +8,7 @@
 	<th>Sent Status</th>
 	<th>Error Msg</th>
     </tr>
-    <s:iterator var="one" value="email_logs">
+    <s:iterator var="one" value="#excess_logs">
 	<tr>
 	    <td><s:property value="date" /></td>
 	    <td><s:property value="emailfrom" /></td>	    

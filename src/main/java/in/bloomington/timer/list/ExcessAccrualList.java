@@ -47,7 +47,7 @@ public class ExcessAccrualList{
 	Connection con = UnoConnect.getConnection();
 	System.err.println(" theshold "+threshold_value);
 	System.err.println(" accrual id "+accrual_id);	
-	String qq = "select a.accrual_id,c.name,a.employee_id,"+
+	String qq = "select a.accrual_id,c.description, a.employee_id,"+
 	    " concat_ws(' ',e.first_name,e.last_name),e.email,"+
 	    "a.hours, "+	    
 	    "date_format(a.date,'%m/%d/%Y'),j.group_id "+

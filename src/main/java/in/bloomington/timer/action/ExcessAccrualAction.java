@@ -164,25 +164,25 @@ public class ExcessAccrualAction extends TopAction{
 	    for(ExcessAccrual one:excesses){
 		Employee supervisor = one.getSupervisor();
 		System.err.println(one.getEmployeeName()+" "+one.getAccrualValue()+" "+supervisor);
-		// back += composeAndEmail(one, supervisor);
+		back += composeAndEmail(one, supervisor);
+		break; //only one
 	    }
 	}
 	return back;
     }
     String composeAndEmail(ExcessAccrual excess, Employee supervisor){
 	String back = "";
-	    
+	System.err.println(" emp email "+excess.getEmployee_email());
+	System.err.println(" emp email "+supervisor.getEmail());
 	if(excess == null){
 	    back = "No excess accrual record";
 	    return back;
 	}
 	String email_from = "no_reply@bloomington.in.gov";
-	String email_to = excess.getEmployee_email();
-	String email_cc = supervisor.getEmail()+","+hr_email;
+	String email_to = "sibow@bloomington.in.gov";// excess.getEmployee_email();
+	String email_cc = null;//supervisor.getEmail()+","+hr_email;
 	String subject = "[Time Track] Excess Accrual hours for "+excess.getEmployeeName();
-	String email_msg = "Your Accrual of "+excess.getAccrualName()+" exceeded "+excess.getTresholdValue()+", we recommend using the related hour code when taking time off instead of the other hour codes such as PTO ";
-	    
-
+	String email_msg = "Your Accrual of \""+excess.getAccrualName()+"\" exceeded "+excess.getTresholdValue()+" currently at ("+excess.getAccrualValue()+" hours), we recommend using the related hour code (CU: Comp Time Used) when taking time off instead of the other hour codes such as PTO ";
 	
 	MailHandle mailer = new
 	    MailHandle(mail_host,
@@ -194,6 +194,12 @@ public class ExcessAccrualAction extends TopAction{
 		       email_msg
 		       );
 	back += mailer.send();
+	String sent_error = null;
+	if(!back.isEmpty()){
+	    sent_error = back;
+	}
+	ExcessAccrualEmailLog elog = new ExcessAccrualEmailLog(email_from,email_to,email_cc,subject, email_msg, sent_error);
+	back += elog.doSave();
 	return back;
     }    
 
