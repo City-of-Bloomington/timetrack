@@ -121,7 +121,7 @@ public class ExcessAccrualAction extends TopAction{
     private String doClean(){
 	String msg = "";
 	if(quartzMisc != null){
-	    msg = quartzMisc.doClean();
+	    msg = quartzMisc.doClean("excess_accrual"); // job group
 	}
 	return msg;
     }    
@@ -182,7 +182,8 @@ public class ExcessAccrualAction extends TopAction{
 	String email_to = "sibow@bloomington.in.gov";// excess.getEmployee_email();
 	String email_cc = null;//supervisor.getEmail()+","+hr_email;
 	String subject = "[Time Track] Excess Accrual hours for "+excess.getEmployeeName();
-	String email_msg = "Your Accrual of \""+excess.getAccrualName()+"\" exceeded "+excess.getTresholdValue()+" currently at ("+excess.getAccrualValue()+" hours), we recommend using the related hour code (CU: Comp Time Used) when taking time off instead of the other hour codes such as PTO ";
+	String email_msg = "Your "+excess.getAccrualValue()+" hours of accrued comp time exceeds "+excess.getTresholdValue()+". It is recommend that you comp time when you take time off instead the other Leave to reduce your accrued comp time balance.";	
+	
 	
 	MailHandle mailer = new
 	    MailHandle(mail_host,
