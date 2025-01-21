@@ -485,5 +485,20 @@ public class PayPeriod implements Serializable{
 	}
 	return msg;
     }
+    /**
+       create table pay_periods_alt(
+       id int(10) unsigned NOT NULL AUTO_INCREMENT,
+      start_date date DEFAULT NULL,
+      end_date date DEFAULT NULL,
+      PRIMARY KEY (id)
+         ) ENGINE=InnoDB  ;
+	 
+insert into pay_periods_alt select id,start_date,end_date from pay_periods;
+insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 2 DAY),date_sub(end_date,INTERVAL 2 DAY) from pay_periods;
 
+update pay_periods_alt set start_date=date_sub(start_date,INTERVAL 2 DAY);
+update pay_periods_alt set end_date=date_sub(end_date,INTERVAL 2 DAY);
+
+
+     */
 }
