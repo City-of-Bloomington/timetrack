@@ -58,8 +58,6 @@
 	    <hr />
 	    
 	    <!--  we need these as global since they will be used multiple times -->
-	    <s:set var="week1DateRange" value="payPeriod.week1DateRange" />
-	    <s:set var="week2DateRange" value="payPeriod.week2DateRange" />
 	    
 	    <s:if test="hasNonDocEmps() || hasNotSubmittedEmps() || hasNotApprovedEmps()">
 		<div class="approve-process-header-lists">
@@ -153,11 +151,18 @@
 				<s:set var="warnings" value="warnings" />
 				<%@ include file="warnings.jsp" %>
 			    </s:if>
+			    <s:set var="week1DateRange" value="payPeriod.week1DateRange" />
+			    <s:set var="week2DateRange" value="payPeriod.week2DateRange" />
 			    <s:set var="daily" value="daily" />
 			    <s:set var="payPeriodTotal" value="payPeriodTotal" />
 			    <s:set var="payPeriodAmount" value="payPeriodAmount" />
 			    <div class="m-b-40">
-				<%@ include file="dailySummary.jsp" %>
+				<s:if test="isInPoliceShiftGroup()">
+				    <%@ include file="dailySummaryAlt.jsp" %>
+				</s:if>
+				<s:else>
+				    <%@ include file="dailySummary.jsp" %>		    
+				</s:else>	
 			    </div>
 			    <s:if test="hasLeaveRequests()">
 				<h1>Approved Leave in this Pay Period </h1>

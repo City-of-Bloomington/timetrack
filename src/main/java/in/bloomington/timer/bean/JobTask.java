@@ -23,25 +23,17 @@ public class JobTask implements Serializable{
     static Logger logger = LogManager.getLogger(JobTask.class);
     static final long serialVersionUID = 2400L;
     static Set<String> deptSet = new HashSet<>();
+    static Set<String> policeShiftGroupSet = new HashSet<>();
     static {
 	deptSet.add("6"); // clerk
 	deptSet.add("23"); // Utilities
 	deptSet.add("36"); // council
-	/**
-	deptSet.add("1"); // ITS
-	deptSet.add("3");	
-	deptSet.add("4"); // HAND
-	deptSet.add("5"); // Park	
-	deptSet.add("7"); // planning
-	deptSet.add("8");		
-	deptSet.add("9");	
-	deptSet.add("10");	
-	deptSet.add("11");
-	deptSet.add("14");
-	deptSet.add("15");
-	deptSet.add("16"); // fire	
-	deptSet.add("45");
-	*/
+    }
+    static {
+	policeShiftGroupSet.add("32"); //police dispatch
+    }
+    static boolean isInPoliceShiftGroup(String str){
+	return policeShiftGroupSet.contains(str);
     }
     private String id="",
 	employee_id="", group_id="",
@@ -378,6 +370,15 @@ public class JobTask implements Serializable{
     public boolean hasEffective_date(){
 	return !effective_date.isEmpty();
     }
+    public boolean isInPoliceShiftGroup(){
+	if(group_id.isEmpty()){
+	    getGroup_id();
+	}
+	if(!group_id.isEmpty()){
+	    return policeShiftGroupSet.contains(group_id);
+	}
+	return false;
+    }
     public String getExpire_date(){
 	return expire_date;
     }
@@ -598,6 +599,9 @@ public class JobTask implements Serializable{
 	    return str;
 	}
 	return id;
+    }
+    public boolean isExpired(){
+	return !expire_date.isEmpty();
     }
     public boolean equals(Object o) {
 	if (o instanceof JobTask) {

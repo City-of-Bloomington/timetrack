@@ -30,6 +30,7 @@ public class PayPeriodList{
     int aheadPeriods = 0; // each period is 14 (pay period cycle)
     boolean avoidFuturePeriods = false;
     boolean approveSuitable = false;
+    boolean inPoliceShiftGroup = false;    
     List<PayPeriod> periods = null;
     List<Integer> years = null;
     public PayPeriodList(){
@@ -92,6 +93,9 @@ public class PayPeriodList{
     public void setApproveSuitable(){
 	approveSuitable = true;
     }
+    public void setInPoliceShiftGroup(){
+	inPoliceShiftGroup = true;
+    }    
     public void setLimit(String val){
 	if(val != null)
 	    limit = val;
@@ -116,16 +120,26 @@ public class PayPeriodList{
 	    "date_format(p.end_date,'%m/%d/%Y'), "+
 	    "year(p.start_date),month(p.start_date),day(p.start_date),"+
 	    "year(p.end_date),month(p.end_date),day(p.end_date),"+
-	    "datediff(p.end_date,p.start_date),p.start_date,p.end_date "+
-	    "from pay_periods p ";
+	    "datediff(p.end_date,p.start_date),p.start_date,p.end_date ";
+	if(inPoliceShiftGroup){
+	    qq += "from pay_periods_alt p ";
+	}
+	else{
+	    qq += "from pay_periods p ";
+	}
 	String qq2 = "select p2.id,"+
 	    "date_format(p2.start_date,'%m/%d/%Y'), "+
 	    "date_format(p2.end_date,'%m/%d/%Y'), "+
 	    "year(p2.start_date),month(p2.start_date),day(p2.start_date),"+
 	    "year(p2.end_date),month(p2.end_date),day(p2.end_date),"+
 	    "datediff(p2.end_date,p2.start_date), "+
-	    "p2.start_date,p2.end_date "+
-	    "from pay_periods p2 ";
+	    "p2.start_date,p2.end_date ";
+	if(inPoliceShiftGroup){
+	    qq2 += "from pay_periods_alt p2 ";
+	}
+	else{
+	    qq2 += "from pay_periods p2 ";
+	}
 	String qw = "";
 	String qo = " order by "+order_by;
 	if(currentOnly){
@@ -147,16 +161,6 @@ public class PayPeriodList{
 		    " and p2.start_date > date_sub(curdate(), interval 90 day) ";
 	    }
 	}
-	/**
-	   else if(onePeriodAheadOnly){
-	   qw = " p.start_date <= date_add(curdate(), interval 14 day) ";
-	   if(!employee_id.isEmpty()){
-	   qq2 += ", time_documents d  "+
-	   " where d.pay_period_id=p2.id and d.employee_id=? "+
-	   " and p2.start_date > date_sub(curdate(), interval 90 day) ";
-	   }
-	   }
-	*/
 	else if(avoidFuturePeriods){
 	    qw = " p.start_date <= curdate() ";
 	}

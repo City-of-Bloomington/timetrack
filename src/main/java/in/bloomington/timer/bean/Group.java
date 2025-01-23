@@ -633,7 +633,15 @@ department = new Department(department_id,
      check groups for clock_time_required flag for parks groups
      //
      //
-     
+
+     //
+     // groups with different pay period date range
+     //
+     create table group_pay_period_alt(
+     id int unsigned auto_increment primary key,
+     group_id int unsigned not null,
+     foreign key(group_id) references groups(id)
+     )engine=InnoDB;
 
      
      */
