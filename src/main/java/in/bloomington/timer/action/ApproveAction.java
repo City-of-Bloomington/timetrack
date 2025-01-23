@@ -450,7 +450,6 @@ public class ApproveAction extends TopAction{
 	return department;
     }
     void findDepartment(){
-	// to do
 	getGroups();
 	if(hasGroups()){
 	    if(groups != null && groups.size() > 0){

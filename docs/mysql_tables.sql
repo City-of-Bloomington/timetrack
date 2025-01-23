@@ -1750,3 +1750,70 @@ insert into grade_comp_hours values(0,'Grade 04',40),
 (0,'Grade 12',50),
 (0,'Grade 13',50),
 (0,'Grade 14',50)
+;;
+;;
+;; 1/20/2024
+;;
+      create table pay_periods_alt(
+      id int(10) unsigned NOT NULL AUTO_INCREMENT,
+      start_date date DEFAULT NULL,
+      end_date date DEFAULT NULL,
+      PRIMARY KEY (id)
+         ) ENGINE=InnoDB  ;
+	 
+insert into pay_periods_alt select id,start_date,end_date from pay_periods;
+insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 2 DAY),date_sub(end_date,INTERVAL 2 DAY) from pay_periods;
+;;
+;;
+     create table group_pay_period_alt(
+     id int unsigned auto_increment primary key,
+     group_id int unsigned not null,
+     foreign key(group_id) references groups(id)
+     )engine=InnoDB;
+     ;;
+     insert into group_pay_period_alt values(0,32);
+
+;;
+;; alt view
+;;
+ CREATE or replace VIEW  time_blocks_view_alt  AS
+ select  t.id  AS  time_block_id ,
+  t.document_id AS  document_id ,
+  t.hour_code_id  AS  hour_code_id ,
+  r.id  AS  earn_code_reason_id ,
+  t.date  AS  date ,
+  t.begin_hour  AS  begin_hour ,
+  t.begin_minute  AS  begin_minute ,
+  t.end_hour  AS  end_hour ,
+  t.end_minute  AS  end_minute ,
+  t.hours  AS  hours ,
+  t.minutes  AS  minutes ,
+  t.amount  AS  amount ,
+  t.clock_in  AS  clock_in ,
+  t.clock_out  AS  clock_out ,
+  t.notes  AS  notes ,
+  t.inactive  AS  inactive ,
+  (to_days( t.date ) - to_days( p.start_date )) AS  order_id,
+  c.name  AS  code_name ,
+  c.description  AS  code_description ,
+  c.record_method  AS  record_method ,
+  c.accrual_id  AS  accrual_id ,
+  c.type  AS  code_type ,
+  c.default_monetary_amount  AS  default_monetary_amount ,
+  c.earn_factor  AS  earn_factor ,
+  c.holiday_related  AS  holiday_related ,
+  cf.nw_code  AS  nw_code_name ,
+  ps.name AS job_name,
+  j.id AS job_id,
+ d.pay_period_id AS pay_period_id,
+ d.employee_id AS employee_id,
+ r.description AS reason
+ from (((((((time_blocks t join time_documents d on((d.id = t.document_id)))
+ join pay_periods_alt p on((p.id = d.pay_period_id)))
+ join jobs j on((d.job_id = j.id)))
+ join positions ps on((j.position_id = ps.id)))
+ join hour_codes c on((t.hour_code_id = c.id)))
+ left join code_cross_ref cf on((c.id = cf.code_id)))
+ left join earn_code_reasons r on((r.id = t.earn_code_reason_id)));
+;;
+

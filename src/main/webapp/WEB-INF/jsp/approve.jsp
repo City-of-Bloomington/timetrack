@@ -32,7 +32,7 @@
         </s:else>
       </div>
     </div>
-
+    
     <div class="calendar-header-controls">
       <div class="button-group">
         <a href="<s:property value='#application.url' />approve.action?pay_period_id=<s:property value='previousPayPeriod.id' />" class="button hide-text has-icon chevron-left"><span>Backwards</span></a>
@@ -42,21 +42,19 @@
       <s:if test="hasNoDocNorSubmitEmps()">
         <a href="<s:property value='#application.url' />inform.action?employee_ids=<s:property value='employee_ids' />&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a>				
       </s:if>
-			<s:if test="hasNotApprovedEmps()">
-				<hr />
-				<div class="form-group">
-					<label for="check_all"><strong>Select all approve eligible individuals.</strong></label>
-					<small class="status-tag approval-ready select-all">
-						<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
-					</small>
-				</div>
-			</s:if>
+      <s:if test="hasNotApprovedEmps()">
+	  <hr />
+	  <div class="form-group">
+	      <label for="check_all"><strong>Select all approve eligible individuals.</strong></label>
+	      <small class="status-tag approval-ready select-all">
+		  <input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
+	      </small>
+	  </div>
+      </s:if>
     </div>
 
     <hr />
 
-    <s:set var="week1DateRange" value="payPeriod.week1DateRange" />
-    <s:set var="week2DateRange" value="payPeriod.week2DateRange" />
 
     <s:if test="hasNonDocEmps() || hasNotSubmittedEmps() || hasNotApprovedEmps()">
       <div class="approve-process-header-lists">
@@ -98,7 +96,6 @@
               <a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" />
                 <s:property value="employee" />
               </a>
-
               <s:if test="canBeApproved()">
                 <s:if test="isUserCurrentEmployee()">
                   <small class="status-tag approval-ready">
@@ -144,16 +141,22 @@
             </ul>
 
             <s:if test="hasWarnings()">
-              <s:set var="warnings" value="warnings" />
-              <%@ include file="warnings.jsp" %>
+		<s:set var="warnings" value="warnings" />
+		<%@ include file="warnings.jsp" %>
             </s:if>
-
+	    <s:set var="week1DateRange" value="payPeriod.week1DateRange" />
+	    <s:set var="week2DateRange" value="payPeriod.week2DateRange" />
             <s:set var="daily" value="daily" />
             <s:set var="payPeriodTotal" value="payPeriodTotal" />
 	    <s:set var="payPeriodAmount" value="payPeriodAmount" />
-            <div class="m-b-40">
-		<%@ include file="dailySummary.jsp" %>
-	    </div>
+	    <div class="m-b-40">
+		<s:if test="isInPoliceShiftGroup()">
+		    <%@ include file="dailySummaryAlt.jsp" %>
+		</s:if>
+		<s:else>
+		    <%@ include file="dailySummary.jsp" %>		    
+		</s:else>
+	    </div>	    
 	    <s:if test="hasLeaveRequests()">
 		<h1>Approved Leave in this Pay Period </h1>
 		<s:set var="leave_requests" value="leaveRequests" />
@@ -164,27 +167,27 @@
               <s:set var="timeIssues" value="timeIssues" />
               <%@ include file="timeIssues.jsp" %>
             </s:if>
-						<div class="monetary-hours-tables">							
-							<s:if test="hasTmwrpRun()">
-								<s:if test="tmwrpRun.hasWeek1Rows()">
-									<s:set var="rows" value="tmwrpRun.week1Rows" />
-									<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
-									<s:set var="whichWeek" value="'week-one'" />
-									<%@ include file="weeklyTmwrp.jsp" %>
-								</s:if>
-								<s:if test="tmwrpRun.hasWeek2Rows()">
-									<s:set var="rows" value="tmwrpRun.week2Rows" />
-									<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
-									<s:set var="whichWeek" value="'week-two'" />
-									<%@ include file="weeklyTmwrp.jsp" %>
-								</s:if>
-							</s:if>
+	    <div class="monetary-hours-tables">							
+		<s:if test="hasTmwrpRun()">
+		    <s:if test="tmwrpRun.hasWeek1Rows()">
+			<s:set var="rows" value="tmwrpRun.week1Rows" />
+			<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
+			<s:set var="whichWeek" value="'week-one'" />
+			<%@ include file="weeklyTmwrp.jsp" %>
+		    </s:if>
+		    <s:if test="tmwrpRun.hasWeek2Rows()">
+			<s:set var="rows" value="tmwrpRun.week2Rows" />
+			<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
+			<s:set var="whichWeek" value="'week-two'" />
+			<%@ include file="weeklyTmwrp.jsp" %>
+		    </s:if>
+		</s:if>
             </div>
-						<s:if test="hasUnscheduleds()">
-							<s:set var="unscheduledTitle" value="'Unscheduled Times'" />
-							<s:set var="unscheduleds" value="unscheduleds" />
-							<%@ include file="unscheduledTimes.jsp" %>				
-						</s:if>								
+	    <s:if test="hasUnscheduleds()">
+		<s:set var="unscheduledTitle" value="'Unscheduled Times'" />
+		<s:set var="unscheduleds" value="unscheduleds" />
+		<%@ include file="unscheduledTimes.jsp" %>				
+	    </s:if>								
           </div>
         </s:if>
       </s:iterator>
@@ -192,9 +195,9 @@
 
     <div class="approval-button-row">
       <s:if test="isUserCurrentEmployee()">
-				<s:if test="hasNotApprovedEmps()">
-					<s:submit name="action" type="button" value="Approve" class="button"/>
-				</s:if>
+	  <s:if test="hasNotApprovedEmps()">
+	      <s:submit name="action" type="button" value="Approve" class="button"/>
+	  </s:if>
       </s:if>
     </div>
   </s:if>

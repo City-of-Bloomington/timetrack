@@ -35,7 +35,7 @@ public class PayPeriod implements Serializable{
     {"Jan","Feb","Mar","Apr","May","Jun",
      "Jul","Aug","Sep","Oct","Nov","Dec"};		
     static SimpleDateFormat dateFormat = Helper.dateFormat;
-
+    boolean inPoliceShiftGroup = false;
     public PayPeriod(){
     }
     public PayPeriod(String val){
@@ -186,6 +186,9 @@ public class PayPeriod implements Serializable{
 	}
 	return allMonths[startMonth-1]+"/"+allMonths[endMonth-1];
     }
+    public void setInPoliceShiftGroup(){
+	inPoliceShiftGroup = true;
+    }
     //
     // Note: to test end of year timewarp, data input must be done first
     //       
@@ -286,8 +289,13 @@ public class PayPeriod implements Serializable{
 	String msg="", str="";
 	int days = 0;
 	String qq = "select  "+
-	    "datediff(p.start_date,?) "+
-	    "from pay_periods p where id=?";
+	    "datediff(p.start_date,?) ";
+	if(inPoliceShiftGroup){
+	    qq += "from pay_periods_alt p where id=?";
+	}
+	else{
+	    qq += "from pay_periods p where id=?";
+	}
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = " could not connect to Database ";
@@ -327,8 +335,14 @@ public class PayPeriod implements Serializable{
 	    "date_format(p.end_date,'%m/%d/%Y'), "+
 	    "year(p.start_date),month(p.start_date),day(p.start_date),"+
 	    "year(p.end_date),month(p.end_date),day(p.end_date), "+
-	    "datediff(p.end_date,p.start_date) "+
-	    "from pay_periods p where ";
+	    "datediff(p.end_date,p.start_date) ";
+	if(inPoliceShiftGroup){
+	    qq += "from pay_periods_alt p where ";
+
+	}
+	else{
+	    qq += "from pay_periods p where ";
+	}
 	if(!id.isEmpty()){
 	    return doSelect();
 	}
@@ -387,8 +401,14 @@ public class PayPeriod implements Serializable{
 	    "date_format(p.end_date,'%m/%d/%Y'), "+
 	    "year(p.start_date),month(p.start_date),day(p.start_date),"+
 	    "year(p.end_date),month(p.end_date),day(p.end_date), "+
-	    "datediff(p.end_date,p.start_date) "+
-	    "from pay_periods p where p.end_date = ? ";
+	    "datediff(p.end_date,p.start_date) ";
+	if(inPoliceShiftGroup){
+	  qq += "from pay_periods_alt p ";
+	}
+	else{
+	  qq += "from pay_periods p ";
+	}
+	qq += "where p.end_date = ? ";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = " could not connect to Database ";
@@ -439,8 +459,14 @@ public class PayPeriod implements Serializable{
 	    "date_format(p.end_date,'%m/%d/%Y'), "+
 	    "year(p.start_date),month(p.start_date),day(p.start_date),"+
 	    "year(p.end_date),month(p.end_date),day(p.end_date), "+
-	    "p.start_date,p.end_date "+
-	    "from pay_periods p where id=?";
+	    "p.start_date,p.end_date ";
+	if(inPoliceShiftGroup){
+	    qq +=" from pay_periods_alt p ";
+	}
+	else{
+	    qq +=" from pay_periods p ";
+	}
+	qq += " where id=?";
 	if(id.isEmpty()){
 	    msg = " id not set ";
 	    logger.error(msg);

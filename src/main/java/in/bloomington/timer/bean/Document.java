@@ -86,6 +86,7 @@ public class Document implements Serializable{
     TmwrpRun tmwrpRun = null;
     boolean accrualAdjusted = false, warning_flag_set=false,
 	need_warning = true, prepare_called=false;
+    boolean inPoliceShiftGroup = false;
     public Document(String val,
 		    String val2,
 		    String val3,
@@ -191,8 +192,13 @@ public class Document implements Serializable{
 	return seed;
     }
     public PayPeriod getPayPeriod(){
+	if(job == null)
+	    getJob();
 	if(!pay_period_id.isEmpty() && payPeriod == null){
-	    PayPeriod one = new PayPeriod(pay_period_id);
+	    PayPeriod one = new PayPeriod(pay_period_id);	    
+	    if(inPoliceShiftGroup){
+		one.setInPoliceShiftGroup();
+	    }
 	    String back = one.doSelect();
 	    if(back.isEmpty()){
 		payPeriod = one;
@@ -425,6 +431,7 @@ public class Document implements Serializable{
 	    if(back.isEmpty()){
 		job = one;
 		group = job.getGroup();
+		inPoliceShiftGroup = job.isInPoliceShiftGroup();
 	    }
 	    else{
 		System.err.println(" job "+back);
@@ -568,12 +575,17 @@ public class Document implements Serializable{
     }
 		
     public void prepareDaily(boolean includeEmptyBlocks){
-
+	if(job == null){
+	    getJob();
+	}
 	if(daily == null && !id.isEmpty() && !prepare_called){
 	    prepare_called = true;						
 	    TimeBlockList tl = new TimeBlockList();
 	    tl.setDocument_id(id);
 	    tl.setActiveOnly();
+	    if(inPoliceShiftGroup){
+		tl.isInPoliceShiftGroup();
+	    }
 	    String back = tl.find();
 	    if(back.isEmpty()){
 		Map<JobType, Map<Integer, String>> ones = tl.getDaily();
@@ -759,6 +771,7 @@ public class Document implements Serializable{
 	}
 	if(job != null){
 	    group = job.getGroup();
+	    inPoliceShiftGroup = job.isInPoliceShiftGroup();
 	}
 	return job;
     }
@@ -788,6 +801,11 @@ public class Document implements Serializable{
 	    }
 	}
 	return salaryGroup;
+    }
+    public boolean isInPoliceShiftGroup(){
+	if(job == null)
+	    getJob();
+	return inPoliceShiftGroup;
     }
     public boolean isExempt(){
 	if(salaryGroup == null)

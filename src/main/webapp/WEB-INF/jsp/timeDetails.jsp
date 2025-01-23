@@ -37,11 +37,21 @@ function loginTimer() {
 	    <s:if test="isNotEditable()">
 		<div class="alert"><p><b>Note:</b> Time Details (View Only)</p></div>
 		<%@ include file="calendarTopDetails.jsp" %>
-		<%@ include file="calendarFullView.jsp" %>
+		<s:if test="isInPoliceShiftGroup()">		
+		    <%@ include file="calendarFullViewAlt.jsp" %>
+		</s:if>
+		<s:else>
+		    <%@ include file="calendarFullView.jsp" %>
+		</s:else>
 	    </s:if>
 	    <s:else>
 		<%@ include file="calendarTopDetails.jsp" %>
-		<%@ include file="calendarFullNew.jsp" %>
+		<s:if test="isInPoliceShiftGroup()">
+		    <%@ include file="calendarFullAlt.jsp" %>
+		</s:if>
+		<s:else>
+		    <%@ include file="calendarFullNew.jsp" %>
+		</s:else>
 	    </s:else>
 
 	    <div class="time-details">
@@ -71,13 +81,6 @@ function loginTimer() {
 			    </s:else>
 			</s:if>
 			<s:else>
-			    <!--
-			    <s:if test="canUserRequestChange()">
-				<div>
-				    <a class="button" href="<s:property value='#application.url'/>/requestCancel?document_id=<s:property value='%{document.id}' />">Request Entry Change</a>
-				</div>
-			    </s:if>
-			    -->
 			    <div class="submitted-on">
 				<strong>Submitted on:&nbsp;<s:property value="document.submitTimeAction.action_time" />&nbsp;&nbsp;</strong>
 			    </div>
@@ -137,7 +140,13 @@ function loginTimer() {
 			<%@ include file="warnings.jsp" %>
 		    </s:if>
 		</s:else>
-		<%@ include file="dailySummary.jsp" %>
+		<s:if test="isInPoliceShiftGroup()">		
+		    <%@ include file="dailySummaryAlt.jsp" %>
+		</s:if>
+		<s:else>
+		    <%@ include file="dailySummary.jsp" %>
+		</s:else>
+		
 		<div class="monetary-hours-tables">											
 		    <s:if test="hasMultipleJobs()">
 			<s:if test="showAllJobs()">
