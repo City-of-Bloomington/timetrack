@@ -24,7 +24,7 @@ public class LeaveRequestList{
     String date_from_ff="", date_to_ff="";
     String pay_period_id = "", initiated_by="";
     String limit="";
-    String group_id="", group_ids=""; // for reviewers
+    String group_id="", group_ids="", department_id=""; // for reviewers
     String filter_emp_id="";
     String ids_to_ignore = ""; 
     boolean is_reviewed = false, not_reviewed=false;
@@ -71,6 +71,10 @@ public class LeaveRequestList{
 	if(val != null)
 	    group_id=val;
     }
+    public void setDepartment_id(String val){
+	if(val != null)
+	    department_id=val;
+    }    
     public void setGroup_ids(String val){ // comma separated
 	if(val != null)
 	    group_ids=val;
@@ -106,6 +110,10 @@ public class LeaveRequestList{
     }
     public void setDecided(){
 	is_reviewed = true;
+    }
+    public void setLimit(String val){
+	if(val != null)
+	    limit = val;
     }
     public String find(){
 		
@@ -170,6 +178,11 @@ public class LeaveRequestList{
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " j.group_id = ? ";
 	    }
+	    if(!department_id.isEmpty()){
+		qq += " join groups g on j.group_id=g.id ";
+		if(!qw.isEmpty()) qw += " and ";
+		qw += " g.department_id = ? ";		
+	    }
 	    if(is_reviewed){
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " t.id in (select leave_id from leave_reviews)";
@@ -232,6 +245,9 @@ public class LeaveRequestList{
 	    }	    
 	    if(!group_id.isEmpty()){
 		pstmt.setString(jj++, group_id);
+	    }
+	    if(!department_id.isEmpty()){
+		pstmt.setString(jj++, department_id);
 	    }
 	    rs = pstmt.executeQuery();
 	    if(requests == null)

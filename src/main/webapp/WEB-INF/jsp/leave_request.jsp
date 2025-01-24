@@ -113,7 +113,7 @@
     </s:form>
       <s:if test="hasHistory()">
 	<br />
-	<h1 style="border-bottom:0">Leave Request History</h1>
+	<h1 style="border-bottom:0">Leave Request History <a href="<s:property value='#application.url' />leave_history.action"> (Leave Advance Search) </a></h1>
 	<s:set var="leave_history" value="history" />
 	<%@ include file="leave_emp_history.jsp" %>
 	<br />
