@@ -25,7 +25,6 @@ public class JobTask implements Serializable{
     static Set<String> deptSet = new HashSet<>();
     static {
 	deptSet.add("6"); // clerk
-	deptSet.add("23"); // Utilities
 	deptSet.add("36"); // council
 	/**
 	deptSet.add("1"); // ITS
