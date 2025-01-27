@@ -90,7 +90,6 @@
 		<li><a href="<s:property value='#application.url'/>search_terminations.action">Terminations</a></li>		
 		<li><a href="<s:property value='#application.url'/>searchConditions.action">Earn Code Restrictions</a></li>
 		<li><a href="<s:property value='#application.url'/>searchReasonConditions.action">Code Reason Restrictions</a></li>
-		<li><a href="<s:property value='#application.url'/>leave_history.action">Leave Advance Search</a></li>		
 	    </ul>
 	    <h2>Target Employee</h2>
 	    <ul>
@@ -120,6 +119,7 @@
 		<li><a href="<s:property value='#application.url'/>reportReason.action">Police Code Reasons</a></li>
 		<li><a href="<s:property value='#application.url'/>reportPublicWorks.action">Asset Management (Public Works)</a></li>
 		<li><a href="<s:property value='#application.url'/>reportUnscheduled.action">Unscheduled Times</a></li>
+		<li><a href="<s:property value='#application.url'/>leave_history.action">Departmental Leave</a></li>		
 		
 	    </ul>			
 	    <h2>Schedulers & Updates</h2>

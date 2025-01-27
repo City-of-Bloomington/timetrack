@@ -123,9 +123,15 @@ public class LeaveRequestList{
 	Connection con = UnoConnect.getConnection();
 	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), "+
 	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date "+
-	    "from leave_requests t "+
-	    "join jobs j on j.id=t.job_id "+
-	    "left join leave_reviews r on r.leave_id=t.id ";
+	    " from leave_requests t "+
+	    " join jobs j on j.id=t.job_id "+
+	    " left join leave_reviews r on r.leave_id=t.id ";
+	if(!department_id.isEmpty()){
+	    qq += " join groups g on j.group_id=g.id ";
+	}	
+	if(!pay_period_id.isEmpty()){
+	    qq += ", pay_periods p ";
+	}
 	if(con == null){
 	    back = "Could not connect to DB";
 	    return back;
@@ -137,7 +143,6 @@ public class LeaveRequestList{
 		qw += " t.job_id = ? ";
 	    }
 	    if(!pay_period_id.isEmpty()){
-		qq += ", pay_periods p ";
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " (p.start_date <= t.start_date or t.end_date >= p.start_date)";
 		if(approved_only){
@@ -179,7 +184,6 @@ public class LeaveRequestList{
 		qw += " j.group_id = ? ";
 	    }
 	    if(!department_id.isEmpty()){
-		qq += " join groups g on j.group_id=g.id ";
 		if(!qw.isEmpty()) qw += " and ";
 		qw += " g.department_id = ? ";		
 	    }

@@ -10,7 +10,7 @@
 	<th>Hour Code(s)</th>	 
 	<th>Total Hours</th>
 	<th>Leave Description</th>
-	<th>Review Status</th>
+	<th>Leave Status</th>
 	<th>Reviewer</th>	
 	<th>Review Comments</th>
     </tr>

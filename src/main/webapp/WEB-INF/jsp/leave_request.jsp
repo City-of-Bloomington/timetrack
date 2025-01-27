@@ -28,11 +28,15 @@
 	    <s:hidden name="leave.id" value="%{leave.id}" />
 	    <s:hidden name="id" value="%{leave.id}" />
 	    <br />
-	    <h1 style="border-bottom:none;">Edit Leave Request</h1>	    
+	    <h1 style="border-bottom:none;">Edit Leave Request
+<a href="<s:property value='#application.url' />leave_history.action"> (Departmental Leave Report) </a>
+	    </h1>	    
 	</s:if>
 	<s:else>
 	    <br />
-	    <h1 style="border-bottom:none;">New Leave Request</h1>
+	    <h1 style="border-bottom:none;">New Leave Request (check 
+'<a href="<s:property value='#application.url' />leave_history.action"> Departmental Leave Report </a>' for conflicts)
+	    </h1>
 	</s:else>
 	<div class="time-block">	    
 	    <div class="form-group" style="border-bottom: none;">
@@ -113,7 +117,8 @@
     </s:form>
       <s:if test="hasHistory()">
 	<br />
-	<h1 style="border-bottom:0">Leave Request History <a href="<s:property value='#application.url' />leave_history.action"> (Leave Advance Search) </a></h1>
+	<h1 style="border-bottom:0">Leave Request History 
+	</h1>
 	<s:set var="leave_history" value="history" />
 	<%@ include file="leave_emp_history.jsp" %>
 	<br />

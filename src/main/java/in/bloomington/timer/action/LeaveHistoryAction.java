@@ -32,12 +32,14 @@ public class LeaveHistoryAction extends TopAction{
     String emp_id="", date_from="", date_to="";
     //
     // String[] statusVals = {"Approved","Denied"};
+    PayPeriod payPeriod = null, currentPayPeriod = null;
     Group group = null;
     Department department = null;
     List<LeaveRequest> leaves = null;
     LeaveRequest leave = null;
     List<Employee> employees = null;//for filter
     List<Department> departments = null;
+    List<PayPeriod> payPeriods = null;    
     int leaves_total_number = 0;
     boolean allDepts = false;
     public String execute(){
@@ -60,12 +62,16 @@ public class LeaveHistoryAction extends TopAction{
 		dept_id = employee.getDepartment_id();	
 	    }   
 	    findLeaveRequests();
-	    if(leaves != null && leaves.size() > 0){
-		addMessage("Found "+leaves.size()+" approved leave requests");
-	    }
-	    else{
-		addMessage("No approved leave requests found");
-	    }
+	}
+	else{
+	    getCurrentPayPeriod();
+	    findLeaveRequests();
+	}
+	if(leaves != null && leaves.size() > 0){
+	    addMessage("Found "+leaves.size()+" approved leave requests");
+	}
+	else{
+	    addMessage("No approved leave requests found");
 	}
 	return ret;
     }
@@ -77,6 +83,17 @@ public class LeaveHistoryAction extends TopAction{
 	if(val != null && !val.equals("-1")){		
 	    group_id = val;
 	}
+    }
+    public void setPay_period_id(String val){
+	if(val != null && !val.equals("-1")){		
+	    pay_period_id = val;
+	}
+    }
+    public String getPay_period_id(){
+	if(pay_period_id.isEmpty()){
+	    return "-1";
+	}
+	return pay_period_id;
     }
     public void setDate_from(String val){
 	if(val != null && !val.isEmpty()){		
@@ -182,7 +199,54 @@ public class LeaveHistoryAction extends TopAction{
 	    emp_id = val;
 	}
     }
-	
+    public List<PayPeriod> getPayPeriods(){
+	if(payPeriods == null){
+	    PayPeriodList tl = new PayPeriodList();
+	    tl.setTwoPeriodsAheadOnly();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<PayPeriod> ones = tl.getPeriods();
+		if(ones != null && ones.size() > 0){
+		    payPeriods = ones;
+		}
+	    }
+	}
+	return payPeriods;
+    }
+    public PayPeriod getPayPeriod(){
+	//
+	if(payPeriod == null){
+	    if(!pay_period_id.isEmpty()){
+		PayPeriod one = new PayPeriod(pay_period_id);
+		String back = one.doSelect();
+		if(back.isEmpty())
+		    payPeriod = one;
+	    }
+	    else {
+		getCurrentPayPeriod();
+	    }
+	}
+	return payPeriod;
+    }		
+    public PayPeriod getCurrentPayPeriod(){
+	//
+	if(currentPayPeriod == null){
+	    PayPeriodList ppl = new PayPeriodList();
+	    ppl.currentOnly();
+	    String back = ppl.find();
+	    if(back.isEmpty()){
+		List<PayPeriod> ones = ppl.getPeriods();
+		if(ones != null && ones.size() > 0){
+		    currentPayPeriod = ones.get(0);
+		    if(pay_period_id.isEmpty()){
+			pay_period_id = currentPayPeriod.getId();
+			payPeriod = currentPayPeriod;
+		    }
+		}
+	    }
+	}
+	return currentPayPeriod;
+    }	
     public Department getDepartment(){
 	if(department == null){
 	    if(!dept_id.isEmpty()){
@@ -237,15 +301,20 @@ public class LeaveHistoryAction extends TopAction{
 	}
 	if(!date_from.isEmpty()){
 	    rrl.setDate_from_ff(date_from);
+	    pay_period_id = "";
 	}
 	if(!date_to.isEmpty()){
 	    rrl.setDate_to_ff(date_to);
+	    pay_period_id = "";	    
 	}
 	if(!emp_id.isEmpty()){
 	    rrl.setFilter_emp_id(emp_id);
 	}
 	if(!group_id.isEmpty()){
 	    rrl.setGroup_id(group_id);
+	}
+	if(!pay_period_id.isEmpty()){
+	    rrl.setPay_period_id(pay_period_id);
 	}
 	// rrl.setLimit("100");
 	String back = rrl.find();

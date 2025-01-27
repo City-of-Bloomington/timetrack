@@ -1,7 +1,7 @@
 <%@  include file="header.jsp" %>
 <div class="internal-page">
     <div>
-	<h1>Leave Advance Search </h1>
+	<h1>Departmental Leave Report </h1>
 	<s:if test="hasErrors()">
 	    <s:set var="errors" value="errors" />
 	    <%@ include file="errors.jsp" %>
@@ -15,13 +15,11 @@
 	    <s:hidden name="action2" id="action2" value="" />	    
 	    <table style="border:none;spacing:none;">
 		<tr style="background-color:gainsboro;border:none">
-		    <td style="border:0px"><label>&nbsp;&nbsp;</label></td>
-		    <td style="border:none"><label>Department</label></td>
-		    <td style="border:none"><label>Group</label></td>
-		    <td style="border:none"><label>Employee</label></td>
+		    <td style="border:none"><b>Department</b></td>
+		    <td style="border:none"><b>Group</b></td>
+		    <td style="border:none"><b>Employee</b></td>
 		</tr>
 		<tr style="background-color:gainsboro;border:none;spacing:none;">
-		    <td style="border:none;padding-bottom:none;"><label>Filter by</label></td>
 		    <td style="border:none;padding-bottom:none;">
 			<s:if test="showAllDepts()">
 			    <s:select name="dept_id" value="%{dept_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />
@@ -49,32 +47,32 @@
 		    </td>			
 		</tr>
 		<tr style="background-color:gainsboro;border:none">
-		    <td style="border:0px"><label>&nbsp;&nbsp;</label></td>
-		    <td style="border:none"><label>Date from</label></td>
-		    <td style="border:none"><label>Date to</label></td>
-		    <td style="border:0px"><label>&nbsp;&nbsp;</label></td>
+		    <td style="border:0px"><b>Pay Period</b></td>
+		    <td style="border:none"><b>Date from</b></td>
+		    <td style="border:none"><b>Date to</b></td>
 		</tr>
 		<tr style="background-color:gainsboro;border:none">
-		    <td style="border:0px"><label>&nbsp;&nbsp;</label></td>
+		    <td style="border:none;padding-bottom:none;">
+        	    <s:select name="pay_period_id" value="%{pay_period_id}" list="payPeriods" listKey="id" listValue="dateRange" headerKey="-1" headerValue="All" />		    
+		    </td>
 		    <td style="border:none;padding-bottom:none;"><s:textfield name="date_from" value="%{date_from}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" id="date_from" />
 		    </td>
 		    <td style="border:none;padding-bottom:none;"><s:textfield name="date_to" value="%{date_to}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" />
 			
 		    </td>
-		    <td style="border:0px"><label>&nbsp;&nbsp;</label></td>
-		</tr>
-		<tr style="background-color:gainsboro;border:none">		
-		    <td style="border:none;padding-bottom:none;"><s:submit name="action" type="button" value="Submit" class="button" style="height:26px;width:150px" />
-		    </td>
-		    <td style="border:0px" colspan="3">&nbsp;</td>
 		</tr>
 	    </table>
+	     <div class="button-group">
+		    <s:submit name="action" type="button" value="Submit" class="button" style="height:26px;width:150px" />
+	     </div>
 	</s:form>
     </div>
+    <br />
     <s:if test="hasLeaves()">
 	<table>
 	    <tr>
 		<th>&nbsp;</th>
+		<th>Request Date</th>
 		<th>Employee </th>
 		<th>Job Title</th>
 		<th>Leave Date Range </th>
@@ -89,6 +87,7 @@
 		    <tr>
 		</s:else>	
 		<td>&nbsp;</td>
+		<td><s:property value="requestDate" /></td>		
 		<td><s:property value="employee" /></td>
 		<td><s:property value="jobTitle" /></td>
 		<td><s:property value="date_range" /></td>
