@@ -1,17 +1,17 @@
-<%@  include file="header.jsp" %>
+<%@  include file="../header.jsp" %>
 <div class="internal-page">
     <div>
 	<h1>Departmental Leave Report </h1>
 	<s:if test="hasErrors()">
 	    <s:set var="errors" value="errors" />
-	    <%@ include file="errors.jsp" %>
+	    <%@ include file="../errors.jsp" %>
 	</s:if>
 	<s:elseif test="hasMessages()">
 	    <s:set var="messages" value="messages" />
-	    <%@ include file="messages.jsp" %>
+	    <%@ include file="../messages.jsp" %>
 	</s:elseif>
 	<br />
-	<s:form action="leave_history" id="form_id" method="post" >
+	<s:form action="leave_report" id="form_id" method="post" >
 	    <s:hidden name="action2" id="action2" value="" />	    
 	    <table style="border:none;spacing:none;">
 		<tr style="background-color:gainsboro;border:none">
@@ -98,4 +98,4 @@
 	</table>
     </s:if>
 </div>
-<%@  include file="footer.jsp" %>
+<%@  include file="../footer.jsp" %>

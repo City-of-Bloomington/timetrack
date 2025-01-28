@@ -181,6 +181,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		    if(str != null && str.length() > 0){
 			setEmployee_id(str);
 			employee = user;
+			employee_id = user.getId();
 		    }
 		}
 	    }

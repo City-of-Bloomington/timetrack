@@ -1,6 +1,7 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
-    <h1>LEAVE REQUESTS <small><b>Requester:&nbsp;</b><s:property value="user"/>&nbsp;<b> Reviewer:&nbsp;</b><s:property value="leave.managerName" /> </small></h1>
+    <h1>LEAVE REQUESTS <small><b>Requester:&nbsp;</b><s:property value="user"/>&nbsp;<b> Reviewer:&nbsp;</b><s:property value="leave.managerName" /> </small></h1><br />
+    <b>(check '<a href="<s:property value='#application.url' />leave_report.action"> Departmental Leave Report </a>' for conflicts)</b><br />
     <s:if test="hasErrors()">
 	<s:set var="errors" value="errors" />
 	<%@ include file="errors.jsp" %>
@@ -27,17 +28,12 @@
 	<s:if test="leave.id != ''">
 	    <s:hidden name="leave.id" value="%{leave.id}" />
 	    <s:hidden name="id" value="%{leave.id}" />
-	    <br />
-	    <h1 style="border-bottom:none;">Edit Leave Request
-<a href="<s:property value='#application.url' />leave_history.action"> (Departmental Leave Report) </a>
-	    </h1>	    
+	    <h1 style="border-bottom:none;">Edit Leave Request</h1>	    
 	</s:if>
 	<s:else>
-	    <br />
-	    <h1 style="border-bottom:none;">New Leave Request (check 
-'<a href="<s:property value='#application.url' />leave_history.action"> Departmental Leave Report </a>' for conflicts)
-	    </h1>
+	    <h1 style="border-bottom:none;">New Leave Request</h1>
 	</s:else>
+
 	<div class="time-block">	    
 	    <div class="form-group" style="border-bottom: none;">
 		<label>Proposed Dates and Hours</label>

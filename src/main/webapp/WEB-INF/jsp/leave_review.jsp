@@ -10,6 +10,8 @@
 	    <s:set var="messages" value="messages" />
 	    <%@ include file="messages.jsp" %>
 	</s:elseif>
+	<br />
+	<b>(check '<a href="<s:property value='#application.url' />leave_report.action"> Departmental Leave Report </a>' for conflicts)</b><br />	
 	<s:if test="hasLeaves()">
 	    <br />
 	    <h1 style="border-bottom:0">Current Leave Requests (<s:property value="leavesTotalNumber" /> Pending Reviews)</h1>	    

@@ -18,10 +18,10 @@ import in.bloomington.timer.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LeaveHistoryAction extends TopAction{
+public class LeaveReportAction extends TopAction{
 
     static final long serialVersionUID = 1150L;	
-    static Logger logger = LogManager.getLogger(LeaveHistoryAction.class);
+    static Logger logger = LogManager.getLogger(LeaveReportAction.class);
     //
     static final int max_requests = 100;
     List<Group> groups = null;
@@ -46,7 +46,7 @@ public class LeaveHistoryAction extends TopAction{
 	String ret = SUCCESS;
 	getUser();
 	resetEmployee();
-	String back = doPrepare("leaveHistory.action");
+	String back = doPrepare("leaveReport.action");
 	getEmployee();
 	if(employee.isAdmin()){
 	    allDepts = true;
