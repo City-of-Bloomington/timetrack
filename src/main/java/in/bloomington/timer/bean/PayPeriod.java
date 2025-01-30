@@ -520,10 +520,11 @@ public class PayPeriod implements Serializable{
          ) ENGINE=InnoDB  ;
 	 
 insert into pay_periods_alt select id,start_date,end_date from pay_periods;
-insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 2 DAY),date_sub(end_date,INTERVAL 2 DAY) from pay_periods;
-
-update pay_periods_alt set start_date=date_sub(start_date,INTERVAL 2 DAY);
-update pay_periods_alt set end_date=date_sub(end_date,INTERVAL 2 DAY);
+insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 1 DAY),date_sub(end_date,INTERVAL 1 DAY) from pay_periods;
+;;
+;;
+update pay_periods_alt set start_date=date_sub(start_date,INTERVAL 1 DAY);
+update pay_periods_alt set end_date=date_sub(end_date,INTERVAL 1 DAY);
 
 
      */
