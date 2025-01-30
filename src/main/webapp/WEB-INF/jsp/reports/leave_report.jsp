@@ -22,7 +22,7 @@
 		<tr style="background-color:gainsboro;border:none;spacing:none;">
 		    <td style="border:none;padding-bottom:none;">
 			<s:if test="showAllDepts()">
-			    <s:select name="dept_id" value="%{dept_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />
+			    <s:select name="dept_id" value="%{dept_id}" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="All" id="department_id_change" />
 			</s:if>
 			<s:else>
 			    <s:property value="department" />

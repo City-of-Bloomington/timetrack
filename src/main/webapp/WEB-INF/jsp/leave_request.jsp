@@ -1,7 +1,7 @@
 <%@ include file="header.jsp" %>
 <div class="internal-page">
     <h1>LEAVE REQUESTS <small><b>Requester:&nbsp;</b><s:property value="user"/>&nbsp;<b> Reviewer:&nbsp;</b><s:property value="leave.managerName" /> </small></h1><br />
-    <b>(check '<a href="<s:property value='#application.url' />leave_report.action"> Departmental Leave Report </a>' for conflicts)</b><br />
+
     <s:if test="hasErrors()">
 	<s:set var="errors" value="errors" />
 	<%@ include file="errors.jsp" %>
@@ -106,7 +106,7 @@
 		    <li>Your Supervisor may then Approve or Deny the request.  TimeTrack will email you a notification of your supervisor's decision.</li>
 		    <li>Once a leave request is approved, you may add your anticipated Time Off to your timesheet in Time Track.  You will still need to ensure your Timesheet reflects the actual Leave Hours taken when your timesheet is submitted.</li>
 		    <li>All fields on this form are required, including a description of your proposed Leave.</li>
-
+		    <li>To check for leave conflicts, review the '<a href="<s:property value='#application.url' />leave_report.action"> Departmental Leave Report </a>' </li>
 		</ul>
 	    </fieldset>
 	</div>

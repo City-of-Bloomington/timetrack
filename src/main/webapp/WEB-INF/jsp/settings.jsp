@@ -119,13 +119,15 @@
 		<li><a href="<s:property value='#application.url'/>reportReason.action">Police Code Reasons</a></li>
 		<li><a href="<s:property value='#application.url'/>reportPublicWorks.action">Asset Management (Public Works)</a></li>
 		<li><a href="<s:property value='#application.url'/>reportUnscheduled.action">Unscheduled Times</a></li>
-		<li><a href="<s:property value='#application.url'/>leave_history.action">Departmental Leave</a></li>		
+		<li><a href="<s:property value='#application.url'/>leave_report.action">Departmental Leave</a></li>		
 		
 	    </ul>			
 	    <h2>Schedulers & Updates</h2>
 	    <ul>
 		<li><a href="<s:property value='#application.url'/>accrualSchedule.action">Employees' accruals</a></li>
-		<li><a href="<s:property value='#application.url'/>excess_accruals.action">Excess accrual email warnings</a></li>		
+		<!-- 
+		<li><a href="<s:property value='#application.url'/>excess_accruals.action">Excess accrual email warnings</a></li>
+		-->
 		<li><a href="<s:property value='#application.url'/>profileSchedule.action">Employees Profile Update</a></li>
 		<li><a href="<s:property value='#application.url'/>emp_jobs_update.action">Employees Job Update</a></li>		
 		<li><a href="<s:property value='#application.url'/>empsUpdateSchedule.action">Employees' Update from AD (LDAP)</a></li>				

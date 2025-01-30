@@ -51,19 +51,21 @@ public class LeaveReportAction extends TopAction{
 	if(employee.isAdmin()){
 	    allDepts = true;
 	}
-	if(dept_id.isEmpty()){
-	    dept_id = employee.getDepartment_id();	
-	}
 	if(!action.isEmpty()){
 	    if(employee.isAdmin()){
 		allDepts = true;
 	    }
-	    if(dept_id.isEmpty()){
-		dept_id = employee.getDepartment_id();	
-	    }   
+	    else{
+		if(dept_id.isEmpty()){
+		    dept_id = employee.getDepartment_id();	
+		}
+	    }
 	    findLeaveRequests();
 	}
 	else{
+	    if(dept_id.isEmpty()){
+		dept_id = employee.getDepartment_id();	
+	    }
 	    getCurrentPayPeriod();
 	    findLeaveRequests();
 	}
@@ -192,6 +194,9 @@ public class LeaveReportAction extends TopAction{
     public void setDept_id(String val){
 	if(val != null && !val.equals("-1")){
 	    dept_id = val;
+	}
+	else{
+	    dept_id = "";
 	}
     }
     public void setEmp_id(String val){

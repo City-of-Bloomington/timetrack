@@ -11,7 +11,6 @@
 	    <%@ include file="messages.jsp" %>
 	</s:elseif>
 	<br />
-	<b>(check '<a href="<s:property value='#application.url' />leave_report.action"> Departmental Leave Report </a>' for conflicts)</b><br />	
 	<s:if test="hasLeaves()">
 	    <br />
 	    <h1 style="border-bottom:0">Current Leave Requests (<s:property value="leavesTotalNumber" /> Pending Reviews)</h1>	    
@@ -105,7 +104,7 @@
 		<li>If you Deny a request, please provide the reason in the 'Review Notes' field.</li>
 		<li>If you take No Action, then the request will remain in your queue for later consideration.</li>
 		<li>The employee will be notified by Time Track of your decision.</li>
-
+		<li>To check for leave conflicts, review the '<a href="<s:property value='#application.url' />leave_report.action"> Departmental Leave Report </a>' </li>
 	    </ul>
 	</fieldset>
 			    
