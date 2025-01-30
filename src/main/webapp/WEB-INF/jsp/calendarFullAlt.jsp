@@ -1,12 +1,12 @@
 <div class="calendar">
     <div class="daily-header">
-    <div>Sat</div>
     <div>Sun</div>	
     <div>Mon</div>
     <div>Tues</div>
     <div>Wed</div>
     <div>Thu</div>
     <div>Fri</div>
+    <div>Sat</div>    
   </div>
 
   <div class="week">
@@ -21,7 +21,7 @@
 	  </s:if>
 	  <s:iterator value="#blockList" status="row" >
 	      <s:if test="#row.first">
-		  <s:if test="#blockKey==0 || #blockKey==1 || #blockKey==7 || #blockKey==8">
+		  <s:if test="#blockKey==0 || #blockKey==6 || #blockKey==7 || #blockKey==13">
 		      <!-- this is for the weekend -->
 		      <s:if test="isToday()">
 			  <div class="day today"
