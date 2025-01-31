@@ -1,13 +1,13 @@
 <table class="pay-period-summary-total width-full">
     <tr>
 	<th>Week</th>
+	<th width="10%">Sat</th>
+	<th width="10%">Sun</th>
 	<th width="10%">Mon</th>
 	<th width="10%">Tue</th>
 	<th width="10%">Wed</th>
 	<th width="10%">Thu</th>
 	<th width="10%">Fri</th>
-	<th width="10%">Sat</th>
-	<th width="10%">Sun</th>
 	<s:if test="#unionned">
 	    <th width="10%">Total</th>
 	    <th>FLSA Total</th>

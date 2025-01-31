@@ -108,7 +108,10 @@ public class JobTaskList{
 	    effective_date = val;
 	    active_only = true;
 	}
-    }		
+    }
+    public void setCurrentOnly(){
+	current_only = true;
+    }
     public void setSalary_group_id(String val){
 	if(val != null && !val.equals("-1"))
 	    salary_group_id = val;
@@ -131,9 +134,6 @@ public class JobTaskList{
 	    else if(val.equals("n"))
 		clock_time_not_required = true;
 	}
-    }
-    public void setCurrentOnly(){
-	active_only = true;
     }
     public void setAvoidRecentJobs(){
 	avoid_recent_jobs = true;
@@ -331,9 +331,9 @@ public class JobTaskList{
 	}
 	if(current_only){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw += " j.effective_date <= curdate() and (j.expire_date >= curdate() or j.exire_date is null) ";
+	    qw += " j.effective_date <= curdate() and (j.expire_date >= curdate() or j.expire_date is null) ";
 	    if(!qw2.isEmpty())	qw2 += " and ";
-	    qw2 += " j.effective_date <= curdate() and (j.expire_date >= curdate() or j.exire_date is null) ";	    
+	    qw2 += " j.effective_date <= curdate() and (j.expire_date >= curdate() or j.expire_date is null) ";	    
 	}
 	if(avoid_recent_jobs){
 	    if(!qw.isEmpty()) qw += " and ";

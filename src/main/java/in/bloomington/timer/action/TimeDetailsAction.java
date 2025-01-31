@@ -35,14 +35,10 @@ public class TimeDetailsAction extends TopAction{
     List<Type> jobTypes = null;
     List<PayPeriod> payPeriods = null;
     Annuancement annuance = null;
+    boolean inPoliceShiftGroup = false;
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("timeDetails.action");
-	/**
-	if(!back.isEmpty()){
-	    return LOGIN;
-	}
-	*/
 	getDocument_id();
 	if(!hasEmployee()){
 	    addError(" No employee found ");
@@ -81,17 +77,19 @@ public class TimeDetailsAction extends TopAction{
 	    if(employee_id.isEmpty()){
 		getEmployee_id();
 	    }
-	    dl.setEmployee_id(employee_id);
-	    if(pay_period_id.isEmpty()){
-		getPayPeriod();
-	    }
 	    getEmployee();
 	    if(hasEmployee()){
+		job = employee.getJob();
+		if(job != null){
+		    job_id = job.getId();
+		    inPoliceShiftGroup = job.isInPoliceShiftGroup();
+		}
+		if(pay_period_id.isEmpty()){
+		    getPayPeriod();
+		}
+		dl.setEmployee_id(employee_id);		
 		employee.setPay_period_id(pay_period_id);
 		dl.setPay_period_id(pay_period_id);
-		if(job_id.isEmpty()){
-		    getJob();
-		}
 		if(!job_id.equals("all")){
 		    dl.setJob_id(job_id);
 		}
@@ -119,9 +117,17 @@ public class TimeDetailsAction extends TopAction{
 	//
 	if(document_id.isEmpty()){
 	    if(employee_id.isEmpty()){
+		getEmployee();
 		getEmployee_id();
 		if(employee_id.isEmpty()){
 		    addError(" Employee not set ");
+		}
+		else{
+		    job = employee.getJob();
+		    if(job != null){
+			job_id = job.getId();
+			inPoliceShiftGroup = job.isInPoliceShiftGroup();
+		    }		    
 		}
 	    }
 	    if(pay_period_id.isEmpty()){
@@ -130,7 +136,6 @@ public class TimeDetailsAction extends TopAction{
 		    addError(" Pay period not set ");
 		}
 	    }
-	    getEmployee();
 	    if(hasEmployee()){
 		employee.setPay_period_id(pay_period_id);
 		if(job_id.isEmpty()){
@@ -148,6 +153,11 @@ public class TimeDetailsAction extends TopAction{
 		    }
 		}
 	    }
+	}
+	if(document != null){
+	    inPoliceShiftGroup = document.isInPoliceShiftGroup();
+	    // to overide the old one
+	    payPeriod = document.getPayPeriod();
 	}
 	return document_id;
     }
@@ -220,6 +230,7 @@ public class TimeDetailsAction extends TopAction{
 		    getEmployee();
 		}
 		employee.setPay_period_id(pay_period_id);
+		inPoliceShiftGroup = document.isInPoliceShiftGroup();
 	    }
 	}
 	return document;
@@ -228,6 +239,9 @@ public class TimeDetailsAction extends TopAction{
 	if(payPeriods == null){
 	    getPayPeriod(); // so that we can initialize the list
 	    PayPeriodList tl = new PayPeriodList();
+	    if(inPoliceShiftGroup){
+		tl.setInPoliceShiftGroup();
+	    }
 	    tl.setTwoPeriodsAheadOnly();
 	    tl.setEmployee_id(employee_id);
 	    String back = tl.find();
@@ -252,6 +266,9 @@ public class TimeDetailsAction extends TopAction{
 	    ret = document.canEdit(user);
 	}
 	return ret;
+    }
+    public boolean isInPoliceShiftGroup(){
+	return inPoliceShiftGroup;
     }
     public boolean isNotEditable(){
 	boolean ret = false;
@@ -291,6 +308,9 @@ public class TimeDetailsAction extends TopAction{
 		if(document_id.isEmpty()){
 		    PayPeriodList ppl = new PayPeriodList();
 		    ppl.currentOnly();
+		    if(inPoliceShiftGroup){
+			ppl.setInPoliceShiftGroup();
+		    }
 		    String back = ppl.find();
 		    if(back.isEmpty()){
 			List<PayPeriod> ones = ppl.getPeriods();
@@ -310,6 +330,9 @@ public class TimeDetailsAction extends TopAction{
 	    }
 	    else{
 		PayPeriod one = new PayPeriod(pay_period_id);
+		if(inPoliceShiftGroup){
+		    one.setInPoliceShiftGroup();
+		}
 		String back = one.doSelect();
 		if(back.isEmpty()){
 		    payPeriod = one;
@@ -323,6 +346,9 @@ public class TimeDetailsAction extends TopAction{
 	if(currentPayPeriod == null){
 	    PayPeriodList ppl = new PayPeriodList();
 	    ppl.currentOnly();
+	    if(inPoliceShiftGroup){
+		ppl.setInPoliceShiftGroup();
+	    }	    
 	    String back = ppl.find();
 	    if(back.isEmpty()){
 		List<PayPeriod> ones = ppl.getPeriods();
@@ -344,6 +370,9 @@ public class TimeDetailsAction extends TopAction{
 		getPayPeriod();
 	    PayPeriodList ppl = new PayPeriodList();
 	    ppl.setPreviousTo(pay_period_id); // relative to currently used
+	    if(inPoliceShiftGroup){
+		ppl.setInPoliceShiftGroup();
+	    }
 	    String back = ppl.find();
 	    if(back.isEmpty()){
 		List<PayPeriod> ones = ppl.getPeriods();
@@ -360,7 +389,10 @@ public class TimeDetailsAction extends TopAction{
 	    if(pay_period_id.isEmpty())
 		getPayPeriod();
 	    PayPeriodList ppl = new PayPeriodList();
-	    ppl.setNextTo(pay_period_id); // relative to this currently used 
+	    ppl.setNextTo(pay_period_id); // relative to this currently used
+	    if(inPoliceShiftGroup){
+		ppl.setInPoliceShiftGroup();
+	    }
 	    String back = ppl.find();
 	    if(back.isEmpty()){
 		List<PayPeriod> ones = ppl.getPeriods();

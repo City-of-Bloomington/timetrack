@@ -37,7 +37,8 @@ public class TimeBlockList{
     String accrual_as_of_date = "";
     String salary_group_id = "";
     boolean active_only = false, for_today = false, dailyOnly=false,
-	clockInOnly = false, hasClockInAndOut = false, hasBlockNotes = false;
+	clockInOnly = false, hasClockInAndOut = false, hasBlockNotes = false,
+	inPoliceShiftGroup = false;
     double total_hours = 0.0, week1_flsa=0.0, week2_flsa=0.0;
     //
     //the following are needed for clocked-In search
@@ -136,7 +137,10 @@ public class TimeBlockList{
     public void setDuration(String val){
 	if(val != null)
 	    duration = val;
-    }		
+    }
+    public void isInPoliceShiftGroup(){
+	inPoliceShiftGroup = true;
+    }
     public String getEmployee_id(){
 	return employee_id;
     }
@@ -308,6 +312,7 @@ public class TimeBlockList{
 	    String back = one.doSelect();
 	    if(back.isEmpty()){
 		document = one;
+		inPoliceShiftGroup = document.isInPoliceShiftGroup();
 	    }
 	}
 	return document;
@@ -427,8 +432,13 @@ public class TimeBlockList{
 	    "v.pay_period_id,"+
 	    "v.employee_id, "+ //30
 	    
-	    "v.reason "+ //31
-	    "from time_blocks_view v ";
+	    "v.reason "; //31
+	if(inPoliceShiftGroup){
+	    qq += "from time_blocks_view_alt v ";
+	}
+	else{
+	    qq += "from time_blocks_view v ";
+	}
 	String qw = "";
 
 	if(!document_id.isEmpty()){
@@ -839,7 +849,13 @@ public class TimeBlockList{
 	    "t.clock_in,"+
 	    "t.clock_out,"+
 	    "t.notes"+
-	    " from time_blocks t,time_documents d,pay_periods p ";
+	    " from time_blocks t,time_documents d,";
+	if(inPoliceShiftGroup){
+	    qq += "pay_periods_alt p ";
+	}
+	else{
+	    qq += "pay_periods p ";
+	}
 	String qw = " t.document_id=d.id and d.pay_period_id=p.id ";
 	if(!pay_period_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";						
@@ -882,7 +898,6 @@ public class TimeBlockList{
 	if(!qw.isEmpty()){
 	    qq += " where "+qw;
 	}
-	// qq += " order by t.date, t.begin_hour ";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = " Could not connect to DB ";
@@ -1117,7 +1132,14 @@ public class TimeBlockList{
 	// before that (if any) when added are set to last day of
 	// the pay period
 	//
-	String qq = "select p2.id from employee_accruals a, pay_periods p,pay_periods p2 where a.date >= p.start_date and a.date <= p.end_date and (p.id+1)=p2.id and p2.id <= ? and a.employee_id = ? order by p.id desc limit 1 ";
+	String qq = "select p2.id from employee_accruals a,";
+	if(inPoliceShiftGroup){
+	    qq += "pay_periods_alt p,pay_periods_alt p2 ";
+	}
+	else{
+	    qq += "pay_periods p,pay_periods p2 ";
+	}
+	qq += "where a.date >= p.start_date and a.date <= p.end_date and (p.id+1)=p2.id and p2.id <= ? and a.employee_id = ? order by p.id desc limit 1 ";
 	//
 	// modified to handle multiple jobs
 	//
@@ -1128,7 +1150,14 @@ public class TimeBlockList{
 	// becuase it may include earn accruals from daily or weekly
 	// overall totals
 	//
-	String qq2 = "select c.accrual_id, c.earn_factor, sum(b.hours)                   from tmwrp_blocks b,tmwrp_runs t, time_documents d,hour_codes c,                 pay_periods p                                                                   where t.document_id=d.id and b.run_id=t.id                                      and c.id=b.hour_code_id and c.inactive is null                                  and c.accrual_id is not null and c.earn_factor > 0                              and c.type='Earned' and d.pay_period_id = p.id                                  and d.employee_id=? and p.id >= ? and p.id <=?                                  group by c.accrual_id,c.earn_factor ";				
+	String qq2 = "select c.accrual_id, c.earn_factor, sum(b.hours)                   from tmwrp_blocks b,tmwrp_runs t, time_documents d,hour_codes c,";
+	if(inPoliceShiftGroup){
+	    qq2 += "pay_periods_alt p ";
+	}
+	else{
+	    qq2 += "pay_periods p ";
+	}
+	qq2 += " where t.document_id=d.id and b.run_id=t.id                                      and c.id=b.hour_code_id and c.inactive is null                                  and c.accrual_id is not null and c.earn_factor > 0                              and c.type='Earned' and d.pay_period_id = p.id                                  and d.employee_id=? and p.id >= ? and p.id <=?                                  group by c.accrual_id,c.earn_factor ";				
 	//
 	// we are looking for accrual used in this pap period only
 	//
@@ -1202,7 +1231,10 @@ public class TimeBlockList{
     void prepareHolidays(){
 	HolidayList hl = new HolidayList(debug);
 	if(!pay_period_id.isEmpty()){
-	    hl.setPay_period_id(pay_period_id);
+	    hl.setPay_period_id(pay_period_id);	    
+	    if(inPoliceShiftGroup){
+		hl.isInPoliceShiftGroup();
+	    }
 	}
 	else{
 	    if(!date_from.isEmpty())
@@ -1421,6 +1453,48 @@ public class TimeBlockList{
      into outfile '/var/lib/mysql-files/time_data2.csv'
      fields terminated by ','                                                        lines terminated by '\n';	          
      
+
+ CREATE or replace VIEW  time_blocks_view_alt  AS
+ select  t.id  AS  time_block_id ,
+  t.document_id AS  document_id ,
+  t.hour_code_id  AS  hour_code_id ,
+  r.id  AS  earn_code_reason_id ,
+  t.date  AS  date ,
+  t.begin_hour  AS  begin_hour ,
+  t.begin_minute  AS  begin_minute ,
+  t.end_hour  AS  end_hour ,
+  t.end_minute  AS  end_minute ,
+  t.hours  AS  hours ,
+  t.minutes  AS  minutes ,
+  t.amount  AS  amount ,
+  t.clock_in  AS  clock_in ,
+  t.clock_out  AS  clock_out ,
+  t.notes  AS  notes ,
+  t.inactive  AS  inactive ,
+  (to_days( t.date ) - to_days( p.start_date )) AS  order_id,
+  c.name  AS  code_name ,
+  c.description  AS  code_description ,
+  c.record_method  AS  record_method ,
+  c.accrual_id  AS  accrual_id ,
+  c.type  AS  code_type ,
+  c.default_monetary_amount  AS  default_monetary_amount ,
+  c.earn_factor  AS  earn_factor ,
+  c.holiday_related  AS  holiday_related ,
+  cf.nw_code  AS  nw_code_name ,
+  ps.name AS job_name,
+  j.id AS job_id,
+ d.pay_period_id AS pay_period_id,
+ d.employee_id AS employee_id,
+ r.description AS reason
+ from (((((((time_blocks t join time_documents d on((d.id = t.document_id)))
+ join pay_periods_alt p on((p.id = d.pay_period_id)))
+ join jobs j on((d.job_id = j.id)))
+ join positions ps on((j.position_id = ps.id)))
+ join hour_codes c on((t.hour_code_id = c.id)))
+ left join code_cross_ref cf on((c.id = cf.code_id)))
+ left join earn_code_reasons r on((r.id = t.earn_code_reason_id)));
+
+ 
      
 
      

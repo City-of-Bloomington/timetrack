@@ -44,7 +44,8 @@ public class Employee implements Serializable, Comparable<Employee>{
     PayPeriod payPeriod  = null;
     List<JobTask> jobs = null;
     List<JobTask> allJobs = null;
-    List<JobTask> allJobs2 = null;		
+    List<JobTask> allJobs2 = null;
+    // List<JobTask> activeJobs = null;
     List<Group> groups = null;
     List<GroupManager> groupManagers = null; // for any type
     List<GroupManager> approvers = null;
@@ -914,6 +915,9 @@ public class Employee implements Serializable, Comparable<Employee>{
 	    if(!pay_period_id.isEmpty()){
 		jtl.setPay_period_id(pay_period_id);
 	    }
+	    else{
+		jtl.setCurrentOnly();
+	    }
 	    String back = jtl.find();
 	    if(back.isEmpty()){
 		List<JobTask> ones = jtl.getJobs();
@@ -973,12 +977,15 @@ public class Employee implements Serializable, Comparable<Employee>{
 	return jobs != null && jobs.size() > 1;
     }
     public boolean hasOneJobOnly(){
-	getJobs();
 	return jobs != null && jobs.size() == 1;
     }
     public JobTask getJob(){
-	if(hasOneJobOnly())
+	if(jobs == null)
+	    getJobs();
+	if(hasOneJobOnly()){
 	    return jobs.get(0);
+
+	}
 	return null;
     }
     public String getJob_id(){
