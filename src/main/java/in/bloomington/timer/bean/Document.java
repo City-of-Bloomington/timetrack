@@ -195,9 +195,11 @@ public class Document implements Serializable{
 	if(job == null)
 	    getJob();
 	if(!pay_period_id.isEmpty() && payPeriod == null){
-	    PayPeriod one = new PayPeriod(pay_period_id);	    
-	    if(inPoliceShiftGroup){
-		one.setInPoliceShiftGroup();
+	    PayPeriod one = new PayPeriod(pay_period_id);
+	    if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
+		if(inPoliceShiftGroup){
+		    one.setInPoliceShiftGroup();
+		}
 	    }
 	    String back = one.doSelect();
 	    if(back.isEmpty()){
@@ -431,7 +433,10 @@ public class Document implements Serializable{
 	    if(back.isEmpty()){
 		job = one;
 		group = job.getGroup();
-		inPoliceShiftGroup = job.isInPoliceShiftGroup();
+		getPayPeriod();
+		if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
+		    inPoliceShiftGroup = job.isInPoliceShiftGroup();
+		}
 	    }
 	    else{
 		System.err.println(" job "+back);

@@ -85,6 +85,9 @@ public class CommonInc{
     // the following two array are used in reports month/day in mm/dd format
     public final static String[] quarter_starts = {"","01/01/","04/01/","07/01/","10/01/"};
     public final static String[] quarter_ends = {"","03/31/","06/30/","09/30/","12/31/"};
+    // pay period id where dispatch swtiched to Sunday Schedule
+    public static final String pay_period_cut_id = "705"; // 1/6 - 1/19    
+    
     //
     // list of reserved usernames that can not be used to login in timetrack,
     // add any username if needed to the list below
