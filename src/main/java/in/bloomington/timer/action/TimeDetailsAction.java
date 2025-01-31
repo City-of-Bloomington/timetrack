@@ -13,6 +13,7 @@ import org.apache.struts2.ServletActionContext;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.util.Helper;
+import in.bloomington.timer.util.CommonInc;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -80,12 +81,14 @@ public class TimeDetailsAction extends TopAction{
 	    getEmployee();
 	    if(hasEmployee()){
 		job = employee.getJob();
-		if(job != null){
-		    job_id = job.getId();
-		    inPoliceShiftGroup = job.isInPoliceShiftGroup();
-		}
 		if(pay_period_id.isEmpty()){
 		    getPayPeriod();
+		}
+		if(job != null){
+		    job_id = job.getId();
+		    if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
+			inPoliceShiftGroup = job.isInPoliceShiftGroup();
+		    }
 		}
 		dl.setEmployee_id(employee_id);		
 		employee.setPay_period_id(pay_period_id);
@@ -116,6 +119,12 @@ public class TimeDetailsAction extends TopAction{
 	// if we could not find, then we create a new one
 	//
 	if(document_id.isEmpty()){
+	    if(pay_period_id.isEmpty()){
+		getPayPeriod();
+		if(pay_period_id.isEmpty()){
+		    addError(" Pay period not set ");
+		}
+	    }
 	    if(employee_id.isEmpty()){
 		getEmployee();
 		getEmployee_id();
@@ -126,14 +135,10 @@ public class TimeDetailsAction extends TopAction{
 		    job = employee.getJob();
 		    if(job != null){
 			job_id = job.getId();
-			inPoliceShiftGroup = job.isInPoliceShiftGroup();
+			if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
+			    inPoliceShiftGroup = job.isInPoliceShiftGroup();
+			}
 		    }		    
-		}
-	    }
-	    if(pay_period_id.isEmpty()){
-		getPayPeriod();
-		if(pay_period_id.isEmpty()){
-		    addError(" Pay period not set ");
 		}
 	    }
 	    if(hasEmployee()){
