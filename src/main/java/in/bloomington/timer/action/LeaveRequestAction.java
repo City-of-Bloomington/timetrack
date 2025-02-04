@@ -158,6 +158,16 @@ public class LeaveRequestAction extends TopAction{
 		ret = "view";
 	    }
 	    else{
+		if(employee != null){
+		    job_id = employee.getJob_id();
+		    if(job_id == null || job_id.isEmpty()){
+			List<JobTask> jobs = employee.getJobs();
+			if(jobs != null && jobs.size() > 0){
+			    JobTask one = jobs.get(0);
+			    job_id = one.getId();
+			}
+		    }
+		}
 		findHistory();
 	    }
 	}
@@ -289,6 +299,9 @@ public class LeaveRequestAction extends TopAction{
 	return requests;
     }
     void findHistory(){
+	if(job_id.isEmpty()){
+	    return;
+	}
 	if(history_leaves == null){
 	    if(pay_period_id.isEmpty())
 		findCurrentPayPeriod();

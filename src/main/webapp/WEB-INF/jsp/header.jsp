@@ -21,7 +21,11 @@
 
   <title>Time Track</title>
   <script type="text/javascript">
-    var APPLICATION_URL = '<s:property value='#application.url' />';
+   var APPLICATION_URL = '<s:property value='#application.url' />';
+   //prevent resubmit on refresh
+   if ( window.history.replaceState ) {
+       window.history.replaceState( null, null, window.location.href );
+   }
   </script>
 </head>
 <body class="fn1 timetrack">
