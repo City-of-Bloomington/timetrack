@@ -1765,6 +1765,8 @@ insert into pay_periods_alt select id,start_date,end_date from pay_periods;
 insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 2 DAY),date_sub(end_date,INTERVAL 2 DAY) from pay_periods;
 ;;
 ;;
+;; not used right now
+;;
      create table group_pay_period_alt(
      id int unsigned auto_increment primary key,
      group_id int unsigned not null,
@@ -1816,4 +1818,16 @@ insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 2 DAY),date_s
  left join code_cross_ref cf on((c.id = cf.code_id)))
  left join earn_code_reasons r on((r.id = t.earn_code_reason_id)));
 ;;
+;;
+;; approved leave cc email receivers
+;;
+create table leave_receivers(
+id int unsigned auto_increment,
+group_id int unsigned not null,
+employee_id int unsigned not null,
+primary key(id),
+foreign key(group_id) references `groups`(id),
+foreign key(employee_id) references employees(id),
+unique(group_id,employee_id)
+)engine=InnoDB;
 

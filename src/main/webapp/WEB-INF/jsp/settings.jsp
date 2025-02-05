@@ -23,7 +23,8 @@
 		<li><a href="<s:property value='#application.url'/>terminate.action">Employee Termination</a></li>				
 		<li><a href="<s:property value='#application.url'/>empAccrual.action">Employee Accruals</a></li>
 		<li><a href="<s:property value='#application.url'/>groupLocation.action">Group Locations</a></li>
-		<li><a href="<s:property value='#application.url'/>group_leave.action">Group Leave Setting</a></li>		
+		<li><a href="<s:property value='#application.url'/>group_leave.action">Group Leave Setting</a></li>
+		<li><a href="<s:property value='#application.url'/>leave_receiver.action">Approved Leave Receiver</a></li>		
 		<li><a href="<s:property value='#application.url'/>hourcode.action">Earn Codes</a></li>
 		
 		<li><a href="<s:property value='#application.url'/>hourcodeCondition.action">Earn Code Restrictions</a></li>

@@ -81,6 +81,13 @@
       <result name="error">/WEB-INF/jsp/leave_review.jsp</result>
       <result name="success">/WEB-INF/jsp/leave_review.jsp</result>
     </action>
+    <action name="leave_receiver" 
+	    class="in.bloomington.timer.action.LeaveReceiverAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/leave_receiver.jsp</result>		
+      <result name="error">/WEB-INF/jsp/leave_receiver.jsp</result>
+      <result name="success">/WEB-INF/jsp/leave_receiver.jsp</result>
+    </action>    
     <action name="leave_report" 
 	    class="in.bloomington.timer.action.LeaveReportAction" 
 	    method="execute">

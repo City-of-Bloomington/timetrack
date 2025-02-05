@@ -135,6 +135,7 @@ public class TimeDetailsAction extends TopAction{
 		    job = employee.getJob();
 		    if(job != null){
 			job_id = job.getId();
+			int int_c = pay_period_id.compareTo(CommonInc.pay_period_cut_id);
 			if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
 			    inPoliceShiftGroup = job.isInPoliceShiftGroup();
 			}
@@ -156,6 +157,9 @@ public class TimeDetailsAction extends TopAction{
 			document_id = one.getId();
 			document = one;
 		    }
+		    if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
+			inPoliceShiftGroup = job.isInPoliceShiftGroup();
+		    }		    
 		}
 	    }
 	}
