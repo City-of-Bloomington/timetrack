@@ -119,6 +119,7 @@ public class Document implements Serializable{
 	fillWarningMap();
     }
     public Document(){
+
     }		
     //
     // getters
@@ -1669,6 +1670,8 @@ public class Document implements Serializable{
 	    Helper.databaseDisconnect(pstmt, rs);
 	    UnoConnect.databaseDisconnect(con);
 	}
+	isInPoliceShiftGroup();
+	System.err.println(" in select "+isInPoliceShiftGroup());
 	return msg;
     }
     //

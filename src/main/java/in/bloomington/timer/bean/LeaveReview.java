@@ -688,16 +688,20 @@ public class LeaveReview implements java.io.Serializable{
 		}
 		else{
 		    email_cc +=","+one.getEmail();
+		    
 		}
 	    }
-	    email_msg = "Leave has been approved for  "+emp.getFull_name();
+	    email_msg = "Leave for  "+emp.getFull_name();
 	    if(leave.isSameDayLeave()){
 		email_msg += " on "+leave.getDate_range();
+		email_msg +=" has been approved.\n\n";		    
 	    }
 	    else{
-		email_msg += " between "+leave.getDate_range();
+		
+		email_msg += " has been approved for "+leave.getDate_range()+
+		    ". Leave begins "+leave.getStartDateFF()+" and the last day on leave is "+leave.getLastDateFF()+"\n\n.";
 	    }
-	    email_msg +=".\n\n";
+
 	    ///
 	    mailer = new
 		MailHandle(mail_host,

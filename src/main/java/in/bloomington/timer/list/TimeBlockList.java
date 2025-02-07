@@ -382,13 +382,12 @@ public class TimeBlockList{
 			 
     */
     //
-    /**
-     // 
-		 
-		 
-     */
-    public String find(){
 
+    public String find(){
+	if(!document_id.isEmpty()){
+	    getDocument();
+	    inPoliceShiftGroup = document.isInPoliceShiftGroup();
+	}
 	prepareBlocks();
 	prepareHolidays();
 	Connection con = null;
