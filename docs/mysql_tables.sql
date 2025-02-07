@@ -1761,11 +1761,8 @@ insert into grade_comp_hours values(0,'Grade 04',40),
       PRIMARY KEY (id)
          ) ENGINE=InnoDB  ;
 	 
-insert into pay_periods_alt select id,start_date,end_date from pay_periods;
 insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 1 DAY),date_sub(end_date,INTERVAL 1 DAY) from pay_periods;
 ;;
-;;
-;; not used right now
 ;;
      create table group_pay_period_alt(
      id int unsigned auto_increment primary key,
@@ -1818,6 +1815,7 @@ insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 1 DAY),date_s
  left join code_cross_ref cf on((c.id = cf.code_id)))
  left join earn_code_reasons r on((r.id = t.earn_code_reason_id)));
 ;;
+
 ;;
 ;; approved leave cc email receivers
 ;;
@@ -1834,3 +1832,6 @@ unique(group_id,employee_id)
 ;;
 ;; 
 alter table leave_email_logs modify email_type enum('Request','Review','Cancelled Request','Receive');
+=======
+
+
