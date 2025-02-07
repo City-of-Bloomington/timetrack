@@ -1671,7 +1671,7 @@ email_to varchar(80),
 email_from varchar(80),
 email_msg varchar(1024),
 sent_date date not null,
-email_type enum('Request','Review'),
+email_type enum('Request','Review','Cancelled Request','Receive'),
 error_msg varchar(2048)
 )engine=InnoDB;
 ;;
@@ -1762,7 +1762,7 @@ insert into grade_comp_hours values(0,'Grade 04',40),
          ) ENGINE=InnoDB  ;
 	 
 insert into pay_periods_alt select id,start_date,end_date from pay_periods;
-insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 2 DAY),date_sub(end_date,INTERVAL 2 DAY) from pay_periods;
+insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 1 DAY),date_sub(end_date,INTERVAL 1 DAY) from pay_periods;
 ;;
 ;;
 ;; not used right now
@@ -1831,3 +1831,6 @@ foreign key(employee_id) references employees(id),
 unique(group_id,employee_id)
 )engine=InnoDB;
 
+;;
+;; 
+alter table leave_email_logs modify email_type enum('Request','Review','Cancelled Request','Receive');

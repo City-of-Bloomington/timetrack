@@ -53,8 +53,8 @@ public class LeaveReviewAction extends TopAction{
 	String back = doPrepare("leaveReview.action");
 	if(action.equals("Submit")){
 	    review.setReviewed_by(user.getId());
-	    if(activeMail){ 
-		//if(true){
+	    //if(activeMail){ 
+	      if(true){
 		review.setActiveMail();
 		review.setMail_host(mail_host);
 		review.setUser(user); // current manager
@@ -197,7 +197,6 @@ public class LeaveReviewAction extends TopAction{
 	    GroupManagerList gml = new GroupManagerList(user.getId());
 	    getPay_period_id();
 	    gml.setPay_period_id(pay_period_id);
-	    // gml.setApproversOnly();
 	    gml.setLeaveReviewOnly();
 	    String back = gml.find();
 	    if(back.isEmpty()){
