@@ -197,10 +197,8 @@ public class Document implements Serializable{
 	    getJob();
 	if(!pay_period_id.isEmpty() && payPeriod == null){
 	    PayPeriod one = new PayPeriod(pay_period_id);
-	    if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
-		if(inPoliceShiftGroup){
-		    one.setInPoliceShiftGroup();
-		}
+	    if(inPoliceShiftGroup){
+		one.setInPoliceShiftGroup();
 	    }
 	    String back = one.doSelect();
 	    if(back.isEmpty()){
@@ -434,10 +432,10 @@ public class Document implements Serializable{
 	    if(back.isEmpty()){
 		job = one;
 		group = job.getGroup();
-		getPayPeriod();
 		if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
 		    inPoliceShiftGroup = job.isInPoliceShiftGroup();
 		}
+		getPayPeriod();
 	    }
 	    else{
 		System.err.println(" job "+back);
@@ -1671,7 +1669,6 @@ public class Document implements Serializable{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	isInPoliceShiftGroup();
-	System.err.println(" in select "+isInPoliceShiftGroup());
 	return msg;
     }
     //

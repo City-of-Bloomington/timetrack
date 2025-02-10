@@ -53,8 +53,8 @@ public class LeaveReviewAction extends TopAction{
 	String back = doPrepare("leaveReview.action");
 	if(action.equals("Submit")){
 	    review.setReviewed_by(user.getId());
-	    //if(activeMail){ 
-	      if(true){
+	    if(activeMail){ 
+		// if(true){
 		review.setActiveMail();
 		review.setMail_host(mail_host);
 		review.setUser(user); // current manager
