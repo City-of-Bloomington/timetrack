@@ -150,7 +150,7 @@
             <s:set var="payPeriodTotal" value="payPeriodTotal" />
 	    <s:set var="payPeriodAmount" value="payPeriodAmount" />
 	    <div class="m-b-40">
-		<s:if test="isInPoliceShiftGroup()">
+		<s:if test="isInAltPayPeriodSet()">
 		    <%@ include file="dailySummaryAlt.jsp" %>
 		</s:if>
 		<s:else>

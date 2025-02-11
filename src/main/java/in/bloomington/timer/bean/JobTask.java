@@ -23,16 +23,17 @@ public class JobTask implements Serializable{
     static Logger logger = LogManager.getLogger(JobTask.class);
     static final long serialVersionUID = 2400L;
     static Set<String> deptSet = new HashSet<>();
-    static Set<String> policeShiftGroupSet = new HashSet<>();
+    static Set<String> altPayPeriodGroupSet = new HashSet<>();
     static {
 	deptSet.add("6"); // clerk
 	deptSet.add("36"); // council
     }
     static {
-	policeShiftGroupSet.add("32"); //police dispatch
+	altPayPeriodGroupSet.add("32"); //dispatch
+	altPayPeriodGroupSet.add("350"); //dispatch admin	
     }
-    static boolean isInPoliceShiftGroup(String str){
-	return policeShiftGroupSet.contains(str);
+    static boolean isInAltPayPeriodSet(String str){
+	return altPayPeriodGroupSet.contains(str);
     }
     private String id="",
 	employee_id="", group_id="",
@@ -369,12 +370,12 @@ public class JobTask implements Serializable{
     public boolean hasEffective_date(){
 	return !effective_date.isEmpty();
     }
-    public boolean isInPoliceShiftGroup(){
+    public boolean isInAltPayPeriodSet(){
 	if(group_id.isEmpty()){
 	    getGroup_id();
 	}
 	if(!group_id.isEmpty()){
-	    return policeShiftGroupSet.contains(group_id);
+	    return altPayPeriodGroupSet.contains(group_id);
 	}
 	return false;
     }

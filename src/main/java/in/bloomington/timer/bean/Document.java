@@ -86,7 +86,7 @@ public class Document implements Serializable{
     TmwrpRun tmwrpRun = null;
     boolean accrualAdjusted = false, warning_flag_set=false,
 	need_warning = true, prepare_called=false;
-    boolean inPoliceShiftGroup = false;
+    boolean inAltPayPeriodSet = false;
     public Document(String val,
 		    String val2,
 		    String val3,
@@ -197,8 +197,8 @@ public class Document implements Serializable{
 	    getJob();
 	if(!pay_period_id.isEmpty() && payPeriod == null){
 	    PayPeriod one = new PayPeriod(pay_period_id);
-	    if(inPoliceShiftGroup){
-		one.setInPoliceShiftGroup();
+	    if(inAltPayPeriodSet){
+		one.setInAltPayPeriodSet();
 	    }
 	    String back = one.doSelect();
 	    if(back.isEmpty()){
@@ -433,7 +433,7 @@ public class Document implements Serializable{
 		job = one;
 		group = job.getGroup();
 		if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
-		    inPoliceShiftGroup = job.isInPoliceShiftGroup();
+		    inAltPayPeriodSet = job.isInAltPayPeriodSet();
 		}
 		getPayPeriod();
 	    }
@@ -587,8 +587,8 @@ public class Document implements Serializable{
 	    TimeBlockList tl = new TimeBlockList();
 	    tl.setDocument_id(id);
 	    tl.setActiveOnly();
-	    if(inPoliceShiftGroup){
-		tl.isInPoliceShiftGroup();
+	    if(inAltPayPeriodSet){
+		tl.setInAltPayPeriodSet();
 	    }
 	    String back = tl.find();
 	    if(back.isEmpty()){
@@ -775,7 +775,7 @@ public class Document implements Serializable{
 	}
 	if(job != null){
 	    group = job.getGroup();
-	    inPoliceShiftGroup = job.isInPoliceShiftGroup();
+	    inAltPayPeriodSet = job.isInAltPayPeriodSet();
 	}
 	return job;
     }
@@ -806,10 +806,10 @@ public class Document implements Serializable{
 	}
 	return salaryGroup;
     }
-    public boolean isInPoliceShiftGroup(){
+    public boolean isInAltPayPeriodSet(){
 	if(job == null)
 	    getJob();
-	return inPoliceShiftGroup;
+	return inAltPayPeriodSet;
     }
     public boolean isExempt(){
 	if(salaryGroup == null)
@@ -1668,7 +1668,7 @@ public class Document implements Serializable{
 	    Helper.databaseDisconnect(pstmt, rs);
 	    UnoConnect.databaseDisconnect(con);
 	}
-	isInPoliceShiftGroup();
+	isInAltPayPeriodSet();
 	return msg;
     }
     //

@@ -29,7 +29,7 @@ public class HolidayList{
     // this contains only dates
     Set<String> allSet = null;
     Map<String, String> holidayMap = null;
-    boolean inPoliceShiftGroup = false;
+    boolean inAltPayPeriodSet = false;
     //
     // basic constructor
     public HolidayList(boolean deb){
@@ -70,8 +70,8 @@ public class HolidayList{
 	if(val != null)
 	    pay_period_id = val;
     }
-    public void isInPoliceShiftGroup(){
-	inPoliceShiftGroup = true;
+    public void isInAltPayPeriodSet(){
+	inAltPayPeriodSet = true;
     }
     public List<Holiday> getHolidays(){
 	return holidays;
@@ -108,7 +108,7 @@ public class HolidayList{
 	}
 	else{
 	    if(!pay_period_id.isEmpty()){
-		if(inPoliceShiftGroup){
+		if(inAltPayPeriodSet){
 		    qq += ", pay_periods_alt p ";
 		}
 		else{

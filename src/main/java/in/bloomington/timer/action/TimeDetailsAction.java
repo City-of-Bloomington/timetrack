@@ -36,7 +36,7 @@ public class TimeDetailsAction extends TopAction{
     List<Type> jobTypes = null;
     List<PayPeriod> payPeriods = null;
     Annuancement annuance = null;
-    boolean inPoliceShiftGroup = false;
+    boolean inAltPayPeriodSet = false;
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("timeDetails.action");
@@ -87,7 +87,7 @@ public class TimeDetailsAction extends TopAction{
 		if(job != null){
 		    job_id = job.getId();
 		    if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
-			inPoliceShiftGroup = job.isInPoliceShiftGroup();
+			inAltPayPeriodSet = job.isInAltPayPeriodSet();
 		    }
 		}
 		dl.setEmployee_id(employee_id);		
@@ -136,7 +136,7 @@ public class TimeDetailsAction extends TopAction{
 		    if(job != null){
 			job_id = job.getId();
 			if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
-			    inPoliceShiftGroup = job.isInPoliceShiftGroup();
+			    inAltPayPeriodSet = job.isInAltPayPeriodSet();
 			}
 		    }		    
 		}
@@ -157,13 +157,13 @@ public class TimeDetailsAction extends TopAction{
 			document = one;
 		    }
 		    if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
-			inPoliceShiftGroup = job.isInPoliceShiftGroup();
+			inAltPayPeriodSet = job.isInAltPayPeriodSet();
 		    }		    
 		}
 	    }
 	}
 	if(document != null){
-	    inPoliceShiftGroup = document.isInPoliceShiftGroup();
+	    inAltPayPeriodSet = document.isInAltPayPeriodSet();
 	    // to overide the old one
 	    payPeriod = document.getPayPeriod();
 	}
@@ -238,7 +238,7 @@ public class TimeDetailsAction extends TopAction{
 		    getEmployee();
 		}
 		employee.setPay_period_id(pay_period_id);
-		inPoliceShiftGroup = document.isInPoliceShiftGroup();
+		inAltPayPeriodSet = document.isInAltPayPeriodSet();
 	    }
 	}
 	return document;
@@ -247,8 +247,8 @@ public class TimeDetailsAction extends TopAction{
 	if(payPeriods == null){
 	    getPayPeriod(); // so that we can initialize the list
 	    PayPeriodList tl = new PayPeriodList();
-	    if(inPoliceShiftGroup){
-		tl.setInPoliceShiftGroup();
+	    if(inAltPayPeriodSet){
+		tl.setInAltPayPeriodSet();
 	    }
 	    tl.setTwoPeriodsAheadOnly();
 	    tl.setEmployee_id(employee_id);
@@ -275,8 +275,8 @@ public class TimeDetailsAction extends TopAction{
 	}
 	return ret;
     }
-    public boolean isInPoliceShiftGroup(){
-	return inPoliceShiftGroup;
+    public boolean isInAltPayPeriodSet(){
+	return inAltPayPeriodSet;
     }
     public boolean isNotEditable(){
 	boolean ret = false;
@@ -316,8 +316,8 @@ public class TimeDetailsAction extends TopAction{
 		if(document_id.isEmpty()){
 		    PayPeriodList ppl = new PayPeriodList();
 		    ppl.currentOnly();
-		    if(inPoliceShiftGroup){
-			ppl.setInPoliceShiftGroup();
+		    if(inAltPayPeriodSet){
+			ppl.setInAltPayPeriodSet();
 		    }
 		    String back = ppl.find();
 		    if(back.isEmpty()){
@@ -338,8 +338,8 @@ public class TimeDetailsAction extends TopAction{
 	    }
 	    else{
 		PayPeriod one = new PayPeriod(pay_period_id);
-		if(inPoliceShiftGroup){
-		    one.setInPoliceShiftGroup();
+		if(inAltPayPeriodSet){
+		    one.setInAltPayPeriodSet();
 		}
 		String back = one.doSelect();
 		if(back.isEmpty()){
@@ -354,8 +354,8 @@ public class TimeDetailsAction extends TopAction{
 	if(currentPayPeriod == null){
 	    PayPeriodList ppl = new PayPeriodList();
 	    ppl.currentOnly();
-	    if(inPoliceShiftGroup){
-		ppl.setInPoliceShiftGroup();
+	    if(inAltPayPeriodSet){
+		ppl.setInAltPayPeriodSet();
 	    }	    
 	    String back = ppl.find();
 	    if(back.isEmpty()){
@@ -378,8 +378,8 @@ public class TimeDetailsAction extends TopAction{
 		getPayPeriod();
 	    PayPeriodList ppl = new PayPeriodList();
 	    ppl.setPreviousTo(pay_period_id); // relative to currently used
-	    if(inPoliceShiftGroup){
-		ppl.setInPoliceShiftGroup();
+	    if(inAltPayPeriodSet){
+		ppl.setInAltPayPeriodSet();
 	    }
 	    String back = ppl.find();
 	    if(back.isEmpty()){
@@ -398,8 +398,8 @@ public class TimeDetailsAction extends TopAction{
 		getPayPeriod();
 	    PayPeriodList ppl = new PayPeriodList();
 	    ppl.setNextTo(pay_period_id); // relative to this currently used
-	    if(inPoliceShiftGroup){
-		ppl.setInPoliceShiftGroup();
+	    if(inAltPayPeriodSet){
+		ppl.setInAltPayPeriodSet();
 	    }
 	    String back = ppl.find();
 	    if(back.isEmpty()){

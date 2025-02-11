@@ -38,7 +38,7 @@ public class TimeBlockList{
     String salary_group_id = "";
     boolean active_only = false, for_today = false, dailyOnly=false,
 	clockInOnly = false, hasClockInAndOut = false, hasBlockNotes = false,
-	inPoliceShiftGroup = false;
+	inAltPayPeriodSet = false;
     double total_hours = 0.0, week1_flsa=0.0, week2_flsa=0.0;
     //
     //the following are needed for clocked-In search
@@ -138,9 +138,9 @@ public class TimeBlockList{
 	if(val != null)
 	    duration = val;
     }
-    public void isInPoliceShiftGroup(){
-	inPoliceShiftGroup = true;
-    }
+    public void setInAltPayPeriodSet(){
+	inAltPayPeriodSet = true;
+    }    
     public String getEmployee_id(){
 	return employee_id;
     }
@@ -312,7 +312,7 @@ public class TimeBlockList{
 	    String back = one.doSelect();
 	    if(back.isEmpty()){
 		document = one;
-		inPoliceShiftGroup = document.isInPoliceShiftGroup();
+		inAltPayPeriodSet = document.isInAltPayPeriodSet();
 	    }
 	}
 	return document;
@@ -386,7 +386,7 @@ public class TimeBlockList{
     public String find(){
 	if(!document_id.isEmpty()){
 	    getDocument();
-	    inPoliceShiftGroup = document.isInPoliceShiftGroup();
+	    inAltPayPeriodSet = document.isInAltPayPeriodSet();
 	}
 	prepareBlocks();
 	prepareHolidays();
@@ -432,7 +432,7 @@ public class TimeBlockList{
 	    "v.employee_id, "+ //30
 	    
 	    "v.reason "; //31
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	    qq += "from time_blocks_view_alt v ";
 	}
 	else{
@@ -849,7 +849,7 @@ public class TimeBlockList{
 	    "t.clock_out,"+
 	    "t.notes"+
 	    " from time_blocks t,time_documents d,";
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	    qq += "pay_periods_alt p ";
 	}
 	else{
@@ -1068,7 +1068,8 @@ public class TimeBlockList{
 	Calendar cal = Calendar.getInstance();
 	String msg = "", emp_id="";
 	String qq = "select d.employee_id,p.end_date from time_documents d, pay_periods p where d.pay_period_id=p.id and d.id=? ";
-	String qq2 = "select date_format(t.date,'%m/%d/%Y') date, c.name code, sum(t.hours)                                                                               from time_blocks t,time_documents d,hour_codes c                                where t.document_id=d.id and t.inactive is null                                 and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                and d.employee_id=?  and  t.date >= ?  and t.date <= ?                          group by date, code ";
+	String qq2 = "select date_format(t.date,'%m/%d/%Y') date, c.name code, sum(t.hours)                                                                               from time_blocks t,time_documents d,hour_codes c                                where t.document_id=d.id and t.inactive is null and                            year(t.date) = year(curdate()) "+
+	  "and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                and d.employee_id=?  and  t.date >= ?  and t.date <= ?                          group by date, code ";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = " Could not connect to DB ";
@@ -1132,7 +1133,7 @@ public class TimeBlockList{
 	// the pay period
 	//
 	String qq = "select p2.id from employee_accruals a,";
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	    qq += "pay_periods_alt p,pay_periods_alt p2 ";
 	}
 	else{
@@ -1150,7 +1151,7 @@ public class TimeBlockList{
 	// overall totals
 	//
 	String qq2 = "select c.accrual_id, c.earn_factor, sum(b.hours)                   from tmwrp_blocks b,tmwrp_runs t, time_documents d,hour_codes c,";
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	    qq2 += "pay_periods_alt p ";
 	}
 	else{
@@ -1231,8 +1232,8 @@ public class TimeBlockList{
 	HolidayList hl = new HolidayList(debug);
 	if(!pay_period_id.isEmpty()){
 	    hl.setPay_period_id(pay_period_id);	    
-	    if(inPoliceShiftGroup){
-		hl.isInPoliceShiftGroup();
+	    if(inAltPayPeriodSet){
+		hl.isInAltPayPeriodSet();
 	    }
 	}
 	else{

@@ -35,7 +35,7 @@ public class PayPeriod implements Serializable{
     {"Jan","Feb","Mar","Apr","May","Jun",
      "Jul","Aug","Sep","Oct","Nov","Dec"};		
     static SimpleDateFormat dateFormat = Helper.dateFormat;
-    boolean inPoliceShiftGroup = false;
+    boolean inAltPayPeriodSet = false;
     public PayPeriod(){
     }
     public PayPeriod(String val){
@@ -186,8 +186,8 @@ public class PayPeriod implements Serializable{
 	}
 	return allMonths[startMonth-1]+"/"+allMonths[endMonth-1];
     }
-    public void setInPoliceShiftGroup(){
-	inPoliceShiftGroup = true;
+    public void setInAltPayPeriodSet(){
+	inAltPayPeriodSet = true;
     }
     //
     // Note: to test end of year timewarp, data input must be done first
@@ -290,7 +290,7 @@ public class PayPeriod implements Serializable{
 	int days = 0;
 	String qq = "select  "+
 	    "datediff(p.start_date,?) ";
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	    qq += "from pay_periods_alt p where id=?";
 	}
 	else{
@@ -336,7 +336,7 @@ public class PayPeriod implements Serializable{
 	    "year(p.start_date),month(p.start_date),day(p.start_date),"+
 	    "year(p.end_date),month(p.end_date),day(p.end_date), "+
 	    "datediff(p.end_date,p.start_date) ";
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	    qq += "from pay_periods_alt p where ";
 
 	}
@@ -402,7 +402,7 @@ public class PayPeriod implements Serializable{
 	    "year(p.start_date),month(p.start_date),day(p.start_date),"+
 	    "year(p.end_date),month(p.end_date),day(p.end_date), "+
 	    "datediff(p.end_date,p.start_date) ";
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	  qq += "from pay_periods_alt p ";
 	}
 	else{
@@ -460,7 +460,7 @@ public class PayPeriod implements Serializable{
 	    "year(p.start_date),month(p.start_date),day(p.start_date),"+
 	    "year(p.end_date),month(p.end_date),day(p.end_date), "+
 	    "p.start_date,p.end_date ";
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	    qq +=" from pay_periods_alt p ";
 	}
 	else{

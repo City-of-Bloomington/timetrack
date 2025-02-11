@@ -30,7 +30,7 @@ public class PayPeriodList{
     int aheadPeriods = 0; // each period is 14 (pay period cycle)
     boolean avoidFuturePeriods = false;
     boolean approveSuitable = false;
-    boolean inPoliceShiftGroup = false;    
+    boolean inAltPayPeriodSet = false;    
     List<PayPeriod> periods = null;
     List<Integer> years = null;
     public PayPeriodList(){
@@ -93,8 +93,8 @@ public class PayPeriodList{
     public void setApproveSuitable(){
 	approveSuitable = true;
     }
-    public void setInPoliceShiftGroup(){
-	inPoliceShiftGroup = true;
+    public void setInAltPayPeriodSet(){
+	inAltPayPeriodSet = true;
     }    
     public void setLimit(String val){
 	if(val != null)
@@ -121,7 +121,7 @@ public class PayPeriodList{
 	    "year(p.start_date),month(p.start_date),day(p.start_date),"+
 	    "year(p.end_date),month(p.end_date),day(p.end_date),"+
 	    "datediff(p.end_date,p.start_date),p.start_date,p.end_date ";
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	    qq += "from pay_periods_alt p ";
 	}
 	else{
@@ -134,7 +134,7 @@ public class PayPeriodList{
 	    "year(p2.end_date),month(p2.end_date),day(p2.end_date),"+
 	    "datediff(p2.end_date,p2.start_date), "+
 	    "p2.start_date,p2.end_date ";
-	if(inPoliceShiftGroup){
+	if(inAltPayPeriodSet){
 	    qq2 += "from pay_periods_alt p2 ";
 	}
 	else{

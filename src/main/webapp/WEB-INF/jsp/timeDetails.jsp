@@ -37,7 +37,7 @@ function loginTimer() {
 	    <s:if test="isNotEditable()">
 		<div class="alert"><p><b>Note:</b> Time Details (View Only)</p></div>
 		<%@ include file="calendarTopDetails.jsp" %>
-		<s:if test="isInPoliceShiftGroup()">		
+		<s:if test="isInAltPayPeriodSet()">		
 		    <%@ include file="calendarFullViewAlt.jsp" %>
 		</s:if>
 		<s:else>
@@ -46,7 +46,7 @@ function loginTimer() {
 	    </s:if>
 	    <s:else>
 		<%@ include file="calendarTopDetails.jsp" %>
-		<s:if test="isInPoliceShiftGroup()">
+		<s:if test="isInAltPayPeriodSet()">
 		    <%@ include file="calendarFullAlt.jsp" %>
 		</s:if>
 		<s:else>
@@ -140,7 +140,7 @@ function loginTimer() {
 			<%@ include file="warnings.jsp" %>
 		    </s:if>
 		</s:else>
-		<s:if test="isInPoliceShiftGroup()">		
+		<s:if test="isInAltPayPeriodSet()">		
 		    <%@ include file="dailySummaryAlt.jsp" %>
 		</s:if>
 		<s:else>
