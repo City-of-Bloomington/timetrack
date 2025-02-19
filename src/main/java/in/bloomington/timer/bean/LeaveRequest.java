@@ -18,7 +18,7 @@ public class LeaveRequest implements java.io.Serializable{
     static final long serialVersionUID = 3700L;
     static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd"); 
     static Logger logger = LogManager.getLogger(LeaveRequest.class);
-    String id="", start_date="", end_date="",
+    String id="", start_date="", end_date="", group_id="",
 	job_id="", initiated_by="", request_date="", request_details="";
     String start_date_ff="", end_date_ff="";
     float total_hours = 0.0f;
@@ -44,7 +44,7 @@ public class LeaveRequest implements java.io.Serializable{
 	//
 	setId(val);
     }		
-    public LeaveRequest(String val, String val2, String val3, String val4, String[] val5, Float val6, String val7, String val8, String val9, String val10, String val11, String val12, String val13, String val14, String val15, String val16){
+    public LeaveRequest(String val, String val2, String val3, String val4, String[] val5, Float val6, String val7, String val8, String val9, String val10, String val11, String val12, String val13, String val14, String val15, String val16, String val17){
 	setId(val);
 	setJob_id(val2);	
 	setStartDate(val3);
@@ -61,6 +61,7 @@ public class LeaveRequest implements java.io.Serializable{
 	setReviewNotes(val14);
 	setReview_id(val15);
 	setReviewDate(val16);
+	setGroup_id(val17);
     }		
     public boolean equals(Object obj){
 	if(obj instanceof LeaveRequest){
@@ -109,6 +110,9 @@ public class LeaveRequest implements java.io.Serializable{
     public String getJob_id(){
 	return job_id;
     }
+    public String getGroup_id(){
+	return group_id;
+    }    
     public String[] getEarn_code_ids(){
 	return earn_code_ids;
     }    
@@ -165,6 +169,11 @@ public class LeaveRequest implements java.io.Serializable{
 	if(val != null)
 	    job_id=val;
     }
+
+    public void setGroup_id(String val){
+	if(val != null)
+	    group_id=val;
+    }    
     public void setEarn_code_ids(String[] vals){
 	if(vals != null)
 	    earn_code_ids = vals;
@@ -239,16 +248,26 @@ public class LeaveRequest implements java.io.Serializable{
 	}
 	return job;
     }
+
     public Group getGroup(){
 	if(group == null){
-	    getJob();
-	    if(job != null){
-		group = job.getGroup();
+	    if(!group_id.isEmpty()){
+		Group one = new Group(group_id);
+		String back = one.doSelect();
+		if(back.isEmpty()){
+		    group = one;
+		}
+	    }
+	    else{
+		getJob();
+		if(job != null){
+		    group = job.getGroup();
+		    group_id = job.getGroup_id();
+		}
 	    }
 	}
 	return group;
     }
-
     public String getEarnCodes(){
 	String ret = "";
 	if(earn_code_ids != null){
@@ -392,8 +411,10 @@ public class LeaveRequest implements java.io.Serializable{
     void findGroupManager(){
 	if(manager == null){
 	    GroupManagerList gml = new GroupManagerList();
-	    getGroup();
-	    gml.setGroup_id(group.getId());
+	    if(group_id.isEmpty()){
+		getGroup();
+	    }
+	    gml.setGroup_id(group_id);
 	    gml.setLeaveReviewOnly();
 	    gml.setActiveOnly();
 	    gml.setNotExpired();
@@ -412,9 +433,10 @@ public class LeaveRequest implements java.io.Serializable{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), date_format(t.start_date,'%m/%d/%Y'), date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date "+
+	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), date_format(t.start_date,'%m/%d/%Y'), date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date,j.group_id "+
 	    "from leave_requests t "+
-	    " left join leave_reviews r on r.leave_id=t.id "+
+	    "join jobs j on j.id=t.job_id "+
+	    "left join leave_reviews r on r.leave_id=t.id "+
 	    "where t.id=?";
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -460,6 +482,7 @@ public class LeaveRequest implements java.io.Serializable{
 		setReviewNotes(rs.getString(14));
 		setReview_id(rs.getString(15));
 		setReviewDate(rs.getString(16));
+		setGroup_id(rs.getString(17));
 	    }
 	    else{
 		back ="Record "+id+" Not found";

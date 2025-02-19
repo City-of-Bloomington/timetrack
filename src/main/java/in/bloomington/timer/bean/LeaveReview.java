@@ -606,13 +606,33 @@ public class LeaveReview implements java.io.Serializable{
 	String subject = "";
 	String email_msg = "";
 	String email_from = "";
+	String email_cc = "";
 	String email_to = "";
+	String group_id = "";
 	Employee manager = null;
+	List<LeaveReceiver> receivers = null;
 	LeaveRequest leave = new LeaveRequest(leave_one);
 	back = leave.doSelect();
 	if(!back.isEmpty()){
 	    back += " could not get leave record "+back;
 	    return back;
+	}
+	if(rev_status_one.equals("Approved")){
+	    group_id = leave.getGroup_id();
+	    if(!group_id.isEmpty()){
+		LeaveReceiverList lrr = new LeaveReceiverList();
+		lrr.setGroup_id(group_id);
+		back = lrr.find();
+		if(back.isEmpty()){
+		    List<LeaveReceiver> ones = lrr.getReceivers();
+		    if(ones != null && ones.size() > 0){
+			receivers = ones;
+		    }
+		}
+	    }
+	    else{
+		logger.error("Group id not set ");
+	    }
 	}
 	Employee emp = leave.getEmployee();
 	subject = "[Time Track] Leave request for "+emp.getFull_name();
@@ -620,6 +640,7 @@ public class LeaveReview implements java.io.Serializable{
 	    email_to = emp.getEmail();
 	}
 	email_from = user.getEmail();
+	email_cc = email_from; // user to himself
 	email_msg += "Your leave request for "+leave.getTotalHours()+" hours of '"+leave.getEarnCodes()+"' for your "+leave.getJobTitle()+" position ";
 	if(leave.isSameDayLeave()){
 	    email_msg += " on "+leave.getDate_range();
@@ -654,8 +675,56 @@ public class LeaveReview implements java.io.Serializable{
 					      "Review",
 					      back);
 	back += lel.doSave();
+
+	if(receivers != null){
+	    email_to = "";
+	    email_cc = "";
+	    email_msg = "";
+	    for(LeaveReceiver one: receivers){
+		if(email_to.isEmpty()){
+		    email_to = one.getEmail();
+		}
+		else if(email_cc.isEmpty()){
+		    email_cc = one.getEmail();
+		}
+		else{
+		    email_cc +=","+one.getEmail();
+		    
+		}
+	    }
+	    email_msg = "Leave for  "+emp.getFull_name();
+	    if(leave.isSameDayLeave()){
+		email_msg += " on "+leave.getDate_range();
+		email_msg +=" has been approved.\n\n";		    
+	    }
+	    else{
+		email_msg += " has been approved for "+leave.getDate_range()+
+		    ". Leave begins "+leave.getStartDateFF()+" and the last day on leave is "+leave.getLastDateFF()+"\n\n.";
+	    }
+
+	    ///
+	    mailer = new
+		MailHandle(mail_host,
+			   email_to,
+			   email_from,
+			   email_cc, // cc
+			   null,
+			   subject,
+			   email_msg
+			   );
+	    back += mailer.send();
+	    lel = new LeaveEmailLog(
+				    email_to,
+				    email_from,
+				    email_msg,
+				    "Receive",
+				    back);
+	    
+	}
+	
 	return back;
     }    
+
 }
 /*
 

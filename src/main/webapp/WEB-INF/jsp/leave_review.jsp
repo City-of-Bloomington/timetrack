@@ -104,6 +104,7 @@
 		<li>If you Deny a request, please provide the reason in the 'Review Notes' field.</li>
 		<li>If you take No Action, then the request will remain in your queue for later consideration.</li>
 		<li>The employee will be notified by Time Track of your decision.</li>
+		<li>If you want to add another person to receive the approved leave notification email, use <a href="https://help.bloomington.in.gov"> ITS Helpdesk app </a> to create a request. </li>
 		<li>To check for leave conflicts, review the '<a href="<s:property value='#application.url' />leave_report.action"> Departmental Leave Report </a>' </li>
 	    </ul>
 	</fieldset>

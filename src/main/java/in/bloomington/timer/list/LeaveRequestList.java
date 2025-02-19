@@ -122,7 +122,7 @@ public class LeaveRequestList{
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
 	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), "+
-	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date "+
+	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date,j.group_id "+
 	    " from leave_requests t "+
 	    " join jobs j on j.id=t.job_id "+
 	    " left join leave_reviews r on r.leave_id=t.id ";
@@ -290,7 +290,8 @@ public class LeaveRequestList{
 				     rs.getString(13),
 				     rs.getString(14),
 				     rs.getString(15),
-				     rs.getString(16)
+				     rs.getString(16),
+				     rs.getString(17)
 				     );
 		if(!requests.contains(one))
 		    requests.add(one);
@@ -313,7 +314,7 @@ public class LeaveRequestList{
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
 	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), "+
-	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date "+
+	    "date_format(t.start_date,'%m/%d/%Y'),date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date,j.group_id "+
 	    "from leave_requests t "+
 	    "join jobs j on j.id=t.job_id "+
 	    "left join leave_reviews r on r.leave_id=t.id ";
@@ -399,7 +400,8 @@ public class LeaveRequestList{
 				     rs.getString(13),
 				     rs.getString(14),
 				     rs.getString(15),
-				     rs.getString(16)
+				     rs.getString(16),
+				     rs.getString(17)
 				     );
 		if(!requests.contains(one))
 		    requests.add(one);

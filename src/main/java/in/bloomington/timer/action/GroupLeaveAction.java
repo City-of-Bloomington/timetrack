@@ -55,6 +55,16 @@ public class GroupLeaveAction extends TopAction{
 		addMessage("Saved Successfully");
 	    }
 	}
+	else if(action.startsWith("Delete")){
+	    getGroupLeave();
+	    back = groupLeave.doDelete();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Deleted Successfully");
+	    }
+	}	
 	else{		
 	    getGroupLeave();
 	    if(!id.isEmpty()){

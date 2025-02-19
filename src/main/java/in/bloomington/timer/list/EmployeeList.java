@@ -41,6 +41,7 @@ public class EmployeeList extends CommonInc{
     boolean includeAllDirectors = false, include_future = false;
     boolean used_time_track = false; // since last two weeks
     boolean not_terminated = false;
+    boolean hasEmail = false;
     List<Employee> employees = null;
     List<Group> groups = null;
     //
@@ -191,7 +192,11 @@ public class EmployeeList extends CommonInc{
     }
     public void setHasAdSid(){
 	hasAdSid = true;
-    }		
+    }
+
+    public void setHasEmail(){
+	hasEmail = true;
+    }
     public void setHasNoEmployeeNumber(){
 	hasNoEmployeeNumber = true;
     }
@@ -313,10 +318,14 @@ public class EmployeeList extends CommonInc{
 		if(!qw.isEmpty()) qw += " and ";								
 		qw += " e.employee_number is null";
 	    }
+	    if(hasEmail){ 
+		if(!qw.isEmpty()) qw += " and ";								
+		qw += " e.email is not null";
+	    }
 	    if(hasAdSid){ 
 		if(!qw.isEmpty()) qw += " and ";								
 		qw += " e.ad_sid is not null";
-	    }						
+	    }					    
 	    if(!group_ids.isEmpty()){
 		if(!job_table){
 		    qq += " join jobs j on j.employee_id=e.id ";
