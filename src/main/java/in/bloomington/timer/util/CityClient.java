@@ -151,7 +151,7 @@ public class CityClient {
 	    String back = user2.doSelect();
 	    if(!back.equals("")){
 		message += back; // an error or no user found
-		logger.error(back);
+		logger.error(back+" "+username2);
 	    }
 	    else{
 		user = user2;

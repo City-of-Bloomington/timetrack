@@ -70,8 +70,8 @@ public class CallBackServlet extends TopServlet {
 	    if(session == null ||
 	       original_state == null ||
 	       !state.equals(original_state)){
-		System.err.println(" invalid state "+state);
-		System.err.println(" org state "+original_state);	
+	       logger.debug(" invalid state "+state);
+	       logger.debug(" org state "+original_state);	
 		if(session != null)
 		    session.invalidate();
 		String str = url+"/Login";
@@ -94,8 +94,8 @@ public class CallBackServlet extends TopServlet {
 	    }
 	    */
 	    if(!state.equals(original_state)){
-		System.err.println(" invalid state "+state);
-		System.err.println(" org state "+original_state);		
+		logger.debug(" invalid state "+state);
+		logger.debug(" org state "+original_state);		
 		error_flag = true;
 		// 
 	    }

@@ -40,10 +40,10 @@ public class LeaveReceiverAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	getUser();
+	getEmployee();	
 	resetEmployee();
-	String back = doPrepare("leaveReceivers.action");
-	getEmployee();
-	if(employee.isAdmin()){
+	String back = doPrepare("leaveReceiver.action");
+	if(employee != null && employee.isAdmin()){
 	    allDepts = true;
 	}
 	if(!action.isEmpty()){

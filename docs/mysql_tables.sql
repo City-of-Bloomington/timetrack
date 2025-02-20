@@ -1752,6 +1752,7 @@ insert into grade_comp_hours values(0,'Grade 04',40),
 (0,'Grade 14',50)
 ;;
 ;;
+;; The following are not active yet
       create table pay_periods_alt(
       id int(10) unsigned NOT NULL AUTO_INCREMENT,
       start_date date DEFAULT NULL,
@@ -1832,7 +1833,7 @@ unique(group_id,employee_id)
 alter table leave_email_logs modify email_type enum('Request','Review','Cancelled Request','Receive');
 ;;
 
-	CREATE TABLE leave_logs (
+CREATE TABLE leave_logs (
   id int(10) unsigned NOT NULL AUTO_INCREMENT,
   leave_id int(10) unsigned NOT NULL,
   job_id int(10) unsigned NOT NULL,

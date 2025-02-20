@@ -103,8 +103,6 @@
 		</s:else>	
 		<td>&nbsp;</td>
 		<td> <a href="<s:property value='#application.url' />leave_receiver.action?id=<s:property value='id' />">Edit</a>&nbsp;</td>
-		
-		<td>Edit <s:property value="id" /></td>
 		<td><s:property value="groupName" /></td>		
 		<td><s:property value="employeeName" /></td>
 		<td><s:property value="email" /></td>		
