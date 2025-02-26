@@ -158,43 +158,44 @@
 		<h1>Approved Leave in this Pay Period </h1>
 		<s:set var="leave_requests" value="leaveRequests" />
 		<%@ include file="leaves_approved.jsp" %>
+		<br />
 	    </s:if>	    
             <s:if test="hasTimeIssues()">
               <s:set var="timeIssuesTitle" value="'Outstanding Issues'" />
               <s:set var="timeIssues" value="timeIssues" />
               <%@ include file="timeIssues.jsp" %>
             </s:if>
-						<div class="monetary-hours-tables">							
-							<s:if test="hasTmwrpRun()">
-								<s:if test="tmwrpRun.hasWeek1Rows()">
-									<s:set var="rows" value="tmwrpRun.week1Rows" />
-									<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
-									<s:set var="whichWeek" value="'week-one'" />
-									<%@ include file="weeklyTmwrp.jsp" %>
-								</s:if>
-								<s:if test="tmwrpRun.hasWeek2Rows()">
-									<s:set var="rows" value="tmwrpRun.week2Rows" />
-									<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
-									<s:set var="whichWeek" value="'week-two'" />
-									<%@ include file="weeklyTmwrp.jsp" %>
-								</s:if>
-							</s:if>
+	    <div class="monetary-hours-tables">
+		<s:if test="hasTmwrpRun()">
+		    <s:if test="tmwrpRun.hasWeek1Rows()">
+			<s:set var="rows" value="tmwrpRun.week1Rows" />
+			<s:set var="weeklyTitle" value="'Week 1 (Earn Codes)'" />
+			<s:set var="whichWeek" value="'week-one'" />
+			<%@ include file="weeklyTmwrp.jsp" %>
+		    </s:if>
+		    <s:if test="tmwrpRun.hasWeek2Rows()">
+			<s:set var="rows" value="tmwrpRun.week2Rows" />
+			<s:set var="weeklyTitle" value="'Week 2 (Earn Codes)'" />
+			<s:set var="whichWeek" value="'week-two'" />
+			<%@ include file="weeklyTmwrp.jsp" %>
+		    </s:if>
+		</s:if>
             </div>
-						<s:if test="hasUnscheduleds()">
-							<s:set var="unscheduledTitle" value="'Unscheduled Times'" />
-							<s:set var="unscheduleds" value="unscheduleds" />
-							<%@ include file="unscheduledTimes.jsp" %>				
-						</s:if>								
+	    <s:if test="hasUnscheduleds()">
+		<s:set var="unscheduledTitle" value="'Unscheduled Times'" />
+		<s:set var="unscheduleds" value="unscheduleds" />
+		<%@ include file="unscheduledTimes.jsp" %>				
+	    </s:if>								
           </div>
         </s:if>
       </s:iterator>
     </s:if>
-
+    
     <div class="approval-button-row">
       <s:if test="isUserCurrentEmployee()">
-				<s:if test="hasNotApprovedEmps()">
-					<s:submit name="action" type="button" value="Approve" class="button"/>
-				</s:if>
+	  <s:if test="hasNotApprovedEmps()">
+	      <s:submit name="action" type="button" value="Approve" class="button"/>
+	  </s:if>
       </s:if>
     </div>
   </s:if>

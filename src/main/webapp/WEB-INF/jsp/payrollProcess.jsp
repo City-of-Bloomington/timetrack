@@ -163,6 +163,7 @@
 				<h1>Approved Leave in this Pay Period </h1>
 				<s:set var="leave_requests" value="leaveRequests" />
 				<%@ include file="leaves_approved.jsp" %>
+				<br />
 			    </s:if>						
 			    <s:if test="hasTimeIssues()">
 				<s:set var="timeIssuesTitle" value="'Outstanding Issues'" />
