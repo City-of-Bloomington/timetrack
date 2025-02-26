@@ -26,7 +26,7 @@ public class JobTask implements Serializable{
     static Set<String> altPayPeriodGroupSet = new HashSet<>();
     static {
 	deptSet.add("6"); // clerk
-	deptSet.add("36"); // council
+	deptSet.add("23"); // council
     }
     static {
 	altPayPeriodGroupSet.add("32"); //dispatch

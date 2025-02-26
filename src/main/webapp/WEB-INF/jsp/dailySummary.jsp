@@ -49,11 +49,12 @@
 		</s:if>
 		</tr>
 	    </s:if>
-		</s:iterator>
+	</s:iterator>
     </s:iterator>
-    <tr class="totals-row">
+    <tr>
 	<td><strong>Pay Period Hours</strong></td>
-	<td colspan="7">&nbsp;</td>
+	<td>&nbsp;</td>
+	<td colspan="6">&nbsp;</td>
 	<td>
 	    <strong><s:property value="#payPeriodTotal" /></strong>
 	</td>
@@ -62,9 +63,10 @@
 	</s:if>
     </tr>
     <s:if test="#payPeriodAmount > 0.0">
-	<tr class="totals-row">
+	<tr>
 	    <td><strong>Pay Period Amount</strong></td>
-	    <td colspan="7">&nbsp;</td>
+	    <td>&nbsp;</td>
+	    <td colspan="6">&nbsp;</td>
 	    <td>
 		<strong>$<s:property value="#payPeriodAmount" /></strong>
 	    </td>
