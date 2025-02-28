@@ -187,5 +187,16 @@ public class TimeBlockLogList{
        select (dayofyear(action_time)+1)%14+1 day, hour(action_time) hour,count(*) cnt from time_block_logs where action_time >= str_to_date('01/01/2022','%m/%d/%Y') group by day, hour                
 				
 
+       select concat_ws(' ', e.first_name,e.last_name) Employee,h.name HourCode,date_format(l.date,'%m/%d/%Y') Date,l.begin_hour,l.begin_minute,l.end_hour,l.end_minute,l.hours,l.minutes,l.action_type,date_format(l.action_time,'%m/%d/%y %H:%i') ActionTime from time_block_logs l
+       	join time_documents d on d.id=l.document_id
+	join hour_codes h on l.hour_code_id=h.id
+       join jobs j on d.job_id=j.id
+       join employees e on j.employee_id=e.id 
+       where action_time >= str_to_date('01/01/2024','%m/%d/%Y')
+       and action_time <= str_to_date('12/31/2024','%m/%d/%Y')
+       and j.group_id in (112,316)
+       and l.action_type = 'ClockIn' 
+       into outfile '/var/lib/mysql-files/time_util_logs.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
+       
     */
 }
