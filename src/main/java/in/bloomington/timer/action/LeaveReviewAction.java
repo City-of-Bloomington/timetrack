@@ -44,12 +44,27 @@ public class LeaveReviewAction extends TopAction{
     Employee reviewer = null;
     List<LeaveReview> reviews = null;
     List<Employee> employees = null;//for filter
-    List<Employee> rev_employees = null;//for history filter    
+    List<Employee> rev_employees = null;//for history filter
     int leaves_total_number = 0;
     public String execute(){
 	String ret = SUCCESS;
+	doPrepare();
+	if(!has_session){
+	    ret = LOGIN;
+	    return ret;
+	}
 	getUser();
 	resetEmployee();
+	if(employee == null || !employee.canLeaveReview()){
+	    try{
+		String str = "timeDetails.action";
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.sendRedirect(str);
+		return super.execute();
+	    }catch(Exception ex){
+		System.err.println(ex);
+	    }	
+	}	
 	String back = doPrepare("leaveReview.action");
 	if(action.equals("Submit")){
 	    review.setReviewed_by(user.getId());
@@ -72,7 +87,6 @@ public class LeaveReviewAction extends TopAction{
 		addMessage("There are no leave requests"); 
 	    }
 	}
-	
 	else if(!leave_id.isEmpty()){
 	    getReview();
 	    review.setLeave_id(leave_id);
@@ -189,33 +203,39 @@ public class LeaveReviewAction extends TopAction{
 	return leaves_total_number;
 	
     }
-	
     public List<GroupManager> getManagers(){
-	getUser();
-	if(user != null){
-	    GroupManagerList gml = new GroupManagerList(user.getId());
-	    getPay_period_id();
-	    gml.setPay_period_id(pay_period_id);
-	    // gml.setApproversOnly();
-	    gml.setLeaveReviewOnly();
-	    String back = gml.find();
-	    if(back.isEmpty()){
-		List<GroupManager> ones = gml.getManagers();
-		if(ones != null && ones.size() > 0){
-		    managers = ones;
-		    for(GroupManager one:managers){
-			Group one2 = one.getGroup();
-			if(one2 != null){
-			    if(groups == null)
-				groups = new ArrayList<>();
-			    if(!groups.contains(one2))
-				groups.add(one2);
+	if(managers == null)
+	    findManagers();
+	return managers;
+    }
+	
+    private void findManagers(){
+	if(managers == null){
+	    getUser();
+	    if(user != null){
+		GroupManagerList gml = new GroupManagerList(user.getId());
+		getPay_period_id();
+		gml.setPay_period_id(pay_period_id);
+		// gml.setApproversOnly();
+		gml.setLeaveReviewOnly();
+		String back = gml.find();
+		if(back.isEmpty()){
+		    List<GroupManager> ones = gml.getManagers();
+		    if(ones != null && ones.size() > 0){
+			managers = ones;
+			for(GroupManager one:managers){
+			    Group one2 = one.getGroup();
+			    if(one2 != null){
+				if(groups == null)
+				    groups = new ArrayList<>();
+				if(!groups.contains(one2))
+				    groups.add(one2);
+			    }
 			}
 		    }
 		}
 	    }
 	}
-	return managers;
     }
     public PayPeriod getPayPeriod(){
 	//

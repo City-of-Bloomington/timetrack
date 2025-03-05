@@ -55,6 +55,7 @@ public class LeaveRequestAction extends TopAction{
 	    }
 	    else{
 		if(activeMail){
+		    //if(true){
 		    back = informManager();
 		    if(!back.isEmpty()){ // saved even if manger not informed
 			addMessage(back);
@@ -324,29 +325,7 @@ public class LeaveRequestAction extends TopAction{
 	findHistory();
 	return history_leaves != null && history_leaves.size() > 0;
     }
-    /**
-    public boolean hasPendingLeaves(){
-	getPendingLeaves();
-	return pending_leaves != null && pending_leaves.size() > 0;
-    }
-    public List<LeaveRequest> getPendingLeaves(){
-	if(pending_leaves == null){
-	    findCurrentPayPeriod();
-	    LeaveRequestList tl = new LeaveRequestList();
-	    tl.setJob_id(job_id);
-	    tl.setPay_period_id(pay_period_id);
-	    tl.setNotReviewed();
-	    String back = tl.find();
-	    if(back.isEmpty()){
-		List<LeaveRequest> ones = tl.getRequests();
-		if(ones != null && ones.size() > 0){
-		    pending_leaves = ones;
-		}
-	    }
-	}
-	return pending_leaves;
-    }
-    */
+
     public boolean hasCurrentRequests(){
 	getRequests();
 	return requests != null && requests.size() > 0;
@@ -492,24 +471,38 @@ public class LeaveRequestAction extends TopAction{
 	else{
 	    email_msg += "\n\n";
 	}
+	// to requester we don not include the following text
+	String email_msg2 = email_msg;
+	//
 	email_msg += "Go to Time Track Leave Review (https://bloomington.in.gov/timetrack/leave_review.action) to review this request.\n\n";
 	
 	MailHandle mailer = new
 	    MailHandle(mail_host,
 		       email_to,
 		       email_from,
-		       email_from, // cc
+		       null, // cc
 		       null,
 		       subject,
 		       email_msg
 		       );
 	back += mailer.send();
-	LeaveEmailLog lel = new LeaveEmailLog(
-					      email_to,
-					      email_from,
-					      email_msg,
-					      "Request",
-					      back);
+	mailer = new
+	    MailHandle(mail_host,
+		       email_from, // to
+		       email_from,
+		       null,
+		       null,
+		       subject,
+		       email_msg2
+		       );
+	back += mailer.send();	
+	LeaveEmailLog lel =
+	    new LeaveEmailLog(
+			      email_to,
+			      email_from,
+			      email_msg,
+			      "Request",
+			      back);
 	back += lel.doSave();
 	return back;
     }

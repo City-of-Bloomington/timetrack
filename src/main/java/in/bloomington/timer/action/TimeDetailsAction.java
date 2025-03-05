@@ -38,11 +38,6 @@ public class TimeDetailsAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("timeDetails.action");
-	/**
-	if(!back.isEmpty()){
-	    return LOGIN;
-	}
-	*/
 	getDocument_id();
 	if(!hasEmployee()){
 	    addError(" No employee found ");

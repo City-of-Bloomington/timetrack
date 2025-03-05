@@ -45,6 +45,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 	messages = new ArrayList<>();
     Employee user = null;
     Employee employee = null;
+    boolean has_session = false;
     ServletContext ctx;
     Map<String, Object> sessionMap;
 
@@ -72,6 +73,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		//
 		// timeClock we do not need login
 		//
+		
 	    }
 	    else{
 		user = (Employee)sessionMap.get("user");
@@ -140,6 +142,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
 		return back;
 	    }
 	    else{
+		has_session = true;
 		user = (Employee)sessionMap.get("user");
 		if(sessionMap != null && sessionMap.containsKey("employee_id")){
 		    Object obj = sessionMap.get("employee_id");
