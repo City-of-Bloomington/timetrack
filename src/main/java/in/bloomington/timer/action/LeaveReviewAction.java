@@ -48,8 +48,23 @@ public class LeaveReviewAction extends TopAction{
     int leaves_total_number = 0;
     public String execute(){
 	String ret = SUCCESS;
+	doPrepare();
+	if(!has_session){
+	    ret = LOGIN;
+	    return ret;
+	}	
 	getUser();
 	resetEmployee();
+	if(employee == null || !employee.canLeaveReview()){
+	    try{
+		String str = "timeDetails.action";
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.sendRedirect(str);
+		return super.execute();
+	    }catch(Exception ex){
+		System.err.println(ex);
+	    }	
+	}	
 	String back = doPrepare("leaveReview.action");
 	if(action.equals("Submit")){
 	    review.setReviewed_by(user.getId());
@@ -73,7 +88,6 @@ public class LeaveReviewAction extends TopAction{
 		addMessage("There are no leave requests"); 
 	    }
 	}
-	
 	else if(!leave_id.isEmpty()){
 	    getReview();
 	    review.setLeave_id(leave_id);

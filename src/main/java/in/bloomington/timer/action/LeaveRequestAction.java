@@ -492,18 +492,31 @@ public class LeaveRequestAction extends TopAction{
 	else{
 	    email_msg += "\n\n";
 	}
+	// to requester we don not include the following text
+	String email_msg2 = email_msg;
+	//	
 	email_msg += "Go to Time Track Leave Review (https://bloomington.in.gov/timetrack/leave_review.action) to review this request.\n\n";
 	
 	MailHandle mailer = new
 	    MailHandle(mail_host,
 		       email_to,
 		       email_from,
-		       email_from, // cc
+		       null, // cc
 		       null,
 		       subject,
 		       email_msg
 		       );
 	back += mailer.send();
+	mailer = new
+	    MailHandle(mail_host,
+		       email_from, // to
+		       email_from,
+		       null,
+		       null,
+		       subject,
+		       email_msg2
+		       );
+	back += mailer.send();		
 	LeaveEmailLog lel = new LeaveEmailLog(
 					      email_to,
 					      email_from,
