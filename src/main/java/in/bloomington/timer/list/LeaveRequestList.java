@@ -342,6 +342,8 @@ public class LeaveRequestList{
 		qw += " (p.start_date > t.start_date or r.review_status='Cancelled')";
 		qw += " and p.id = ? ";		
 	    }
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += " (YEAR(t.start_date) = YEAR(CURRENT_DATE()) or YEAR(t.end_date) = YEAR(CURRENT_DATE()))";	 	    
 	    // reviewed only
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " t.id in (select leave_id from leave_reviews)";

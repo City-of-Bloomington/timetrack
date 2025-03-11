@@ -105,7 +105,9 @@
 		    <li>Once you Submit a Leave Request, Time Track will notify your Supervisor.</li>
 		    <li>Your Supervisor may then Approve or Deny the request.  TimeTrack will email you a notification of your supervisor's decision.</li>
 		    <li>Once a leave request is approved, you may add your anticipated Time Off to your timesheet in Time Track.  You will still need to ensure your Timesheet reflects the actual Leave Hours taken when your timesheet is submitted.</li>
-		    <li>All fields on this form are required, including a description of your proposed Leave.</li>
+		    <li>
+			All fields on this form are required, including providing a description of your proposed Leave.  If you are requesting partial days in your leave request, note the times in the Proposed Leave Description area.
+		    </li>
 		    <li>To check for leave conflicts, review the '<a href="<s:property value='#application.url' />leave_report.action"> Departmental Leave Report </a>' </li>
 		</ul>
 	    </fieldset>
