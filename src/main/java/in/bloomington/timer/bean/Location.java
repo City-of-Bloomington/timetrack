@@ -21,6 +21,7 @@ public class Location{
     String id="", ip_address="", name="",
 	street_address="";
     Double latitude=0.,longitude=0., radius=0.;
+    Integer used_count = 0;
     //
     public Location(){
     }
@@ -41,7 +42,17 @@ public class Location{
 	setLatitude(val5);
 	setLongitude(val6);
 	setRadius(val7);
-    }		
+    }
+    public Location(String val, String val2, String val3, String val4, Double val5, Double val6, Double val7, Integer val8){
+	setId(val);
+	setIp_address(val2);
+	setName(val3);
+	setStreet_address(val4);
+	setLatitude(val5);
+	setLongitude(val6);
+	setRadius(val7);
+	setUsedCount(val8);
+    }		    
     public int hashCode(){
 	int seed = 29;
 	if(!id.isEmpty()){
@@ -76,6 +87,9 @@ public class Location{
     public Double getRadius(){
 	return radius;
     }
+    public Integer getUsedCount(){
+	return used_count;
+    }    
     //
     // setters
     //
@@ -107,6 +121,10 @@ public class Location{
 	if(val != null)
 	    radius = val;
     }
+    public void setUsedCount(Integer val){
+	if(val != null)
+	    used_count = val;
+    }    
     public boolean hasLatLng(){
 	return latitude > 0 && longitude < 0;
     }

@@ -466,7 +466,7 @@ public class TimeBlock extends Block{
 	// if just start hours 8, 11 am, 12 p
 	String pattern = "[0123]?[\\d][\\W]?[\\s]?[ap]?[m]?";								
 	// accepted entries 0930, 12:30, 11;30am, 10,30p, 11.30pm
-	String pattern2 = "[0123]?[\\d][\\W]?[\\d]{2}[\\s]?[ap]?[m]?";
+	String pattern2 = "[0123]?[\\d][\\W]?[\\d]{1,2}[\\s]?[ap]?[m]?";
 	// for am/pm 				
 	String pattern3 = ".*[ap][m]?$";	// ends with am/pm				
 	// for \\W or :;,

@@ -9,6 +9,7 @@
 	    <th>Latitude</th>
 	    <th>Longitude</th>
 	    <th>Radius</th>
+	    <th>Used Count(14 days)</th>
 	</tr>
     </thead>
     <tbody>
@@ -21,6 +22,7 @@
 		<td><s:property value="latitude" /></td>
 		<td><s:property value="longitude" /></td>
 		<td><s:property value="radius" /></td>
+		<td><s:property value="usedCount" /></td>		
 	    </tr>
 	</s:iterator>
     </tbody>

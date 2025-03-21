@@ -540,6 +540,9 @@ public class TimeClock{
 	    }
 	}
 	getDocument();
+	if(employee_id.isEmpty()){
+	    getEmployee();
+	}
 	//
 	// find if there is a clock-in, if not this a clock-in
 	// else it is a clock-out

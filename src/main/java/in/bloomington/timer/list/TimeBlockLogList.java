@@ -192,11 +192,38 @@ public class TimeBlockLogList{
 	join hour_codes h on l.hour_code_id=h.id
        join jobs j on d.job_id=j.id
        join employees e on j.employee_id=e.id 
-       where action_time >= str_to_date('01/01/2024','%m/%d/%Y')
-       and action_time <= str_to_date('12/31/2024','%m/%d/%Y')
-       and j.group_id in (112,316)
-       and l.action_type = 'ClockIn' 
+       where action_time >= str_to_date('02/01/2025','%m/%d/%Y')
+       and action_time <= str_to_date('03/01/2025','%m/%d/%Y')
+       and l.location_id in (8)
+       and l.location_id is not null
+
+       
        into outfile '/var/lib/mysql-files/time_util_logs.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
+;;
+;;
+       
+
+              select date_format(t.action_time,'%m/%d/%y %H:%i') ActionTime,
+	      l.id,l.ip_address,l.name location_name, l.street_address 
+	      from time_block_logs t join locations l on t.location_id=l.id 
+	      where t.action_time >= str_to_date('02/01/2025','%m/%d/%Y')
+	      and action_time <= str_to_date('03/01/2025','%m/%d/%Y')
+	      and l.ip_address is not null
+	      order by l.ip_address
+	      
+	      into outfile '/var/lib/mysql-files/time_location_logs.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
+
+              select l.id, l.ip_address ip_address, l.name location_name, date_format(t.action_time,'%m/%d/%y') ActionDate, count(*)
+	      from time_block_logs t join locations l on t.location_id=l.id 
+	      where t.action_time >= str_to_date('02/01/2025','%m/%d/%Y')
+	      and action_time <= str_to_date('03/01/2025','%m/%d/%Y')
+	      and l.ip_address is not null
+	      group by l.id,ip_address,location_name, ActionDate
+	      order by ip_address
+       	      into outfile '/var/lib/mysql-files/time_location_logs.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
+
+
+
        
     */
 }

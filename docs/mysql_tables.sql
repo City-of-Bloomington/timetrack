@@ -1856,3 +1856,11 @@ CREATE TABLE leave_logs (
   CONSTRAINT leave_logs_ibfk_2 FOREIGN KEY (reviewed_by) REFERENCES employees (id)
 ) ENGINE=InnoDB;
 
+;;
+;; table needed to provide stats for location uses
+;;
+  create table location_uses (
+  location_id int unsigned,
+  time_used int ,
+  last_update date
+ )engine=InnoDB;
