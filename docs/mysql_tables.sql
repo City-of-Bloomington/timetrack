@@ -1864,3 +1864,36 @@ CREATE TABLE leave_logs (
   time_used int ,
   last_update date
  )engine=InnoDB;
+
+alter table  benefit_salary_ref  rename to benefit_group_refs;
+delete from benefit_group_refs;
+//
+// add the following to the table
+//
+insert into benefit_group_refs values
+(1, 'FIRE SWORN - Firefighter Sworn : Fire Union Non-Exempt',9),
+(2, 'FIRE SWORN - Firefighter Sworn : Regular Exempt', 9),
+(3, 'FIRE SWORN 5X8 - Firefighter Sworn 5x8 : Fire Union Exempt',10),
+(4, 'FIRE SWORN 5X8 - Firefighter Sworn 5x8 : Regular Exempt',10),
+(5, 'POLICE SWORN  - Sworn Police Officers : Police Union Non-Exempt',6),
+(6, 'POLICE SWORN  - Sworn Police Officers : Regular Non-Exempt',6),
+(7, 'POLICE SWORN DET - Police Sworn Detective : Police Union Non-Exempt',7),
+(8, 'POLICE SWORN MGT - Police Sworn Management : Police Union Exempt',8),
+(9, 'CEDC4/2 - Central Dispatch 4 on 2 off : Regular Non-Exempt',2),
+(10, 'CEDC 5/2 - Central Dispatch 5 on 2 off : Regular Non-Exempt',2),
+(11, 'CEDC 5/2 - Central Dispatch 5 on 2 off : Regular Exempt',1),
+(12, 'NON-U RPARTnx - Non-Union Regular PT Non-Exempt : Regular Non-Exempt',11),
+(13, 'uNON-U RFTx - Utilities Non-Union Reg FT Ex : Regular Exempt',1),
+(14, 'uNON-U RPARTnx - Utilities Non-Union Reg PT NonEx : Regular Non-Exempt',11),
+(15, 'uNON-U RFTnx - Utilities Non-Union Reg FT NonEx : Regular Non-Exempt',2),
+(16, 'TEMP W/BEN - Temporary Employee With Benefits : Regular Non-Exempt',12),
+(17, 'TEMP  - Temporary Employees : Regular Non-Exempt', 3),
+(18, 'uTEMP - Utilities Temporary Employee : Regular Non-Exempt',3),
+(19, 'NON-U RFULLnx - Non-Union Regular FT Non-Exempt : Regular Non-Exempt',2),
+(20, 'NON-U RFULLx - Non-Union Regular FT Exempt : Regular Exempt',1),
+(21, 'AFSCME RFT - AFSCME-80 Hours : AFSCME Non-Exempt',4),
+(22, 'uAFSCME RFT - Utilities AFSCME RFT 80 Hours : AFSCME Non-Exempt',4),
+(23, 'COUNCIL MEM - Council Members : Regular Exempt',1),
+(24, 'BOARD - Board pd members (USB, BPW, BPS) : Regular Exempt',1),
+(25, 'ELECTED  - Elected Employees : Regular Exempt',1);
+

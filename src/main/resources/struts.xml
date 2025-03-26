@@ -372,6 +372,13 @@
       <result name="error">/WEB-INF/jsp/benefitGroup.jsp</result>
       <result name="success">/WEB-INF/jsp/benefitGroup.jsp</result>
     </action>
+    <action name="benefitGroupRef" 
+	    class="in.bloomington.timer.action.BenefitGroupRefAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/benefit_group_ref.jsp</result>		
+      <result name="error">/WEB-INF/jsp/benefit_group_ref.jsp</result>
+      <result name="success">/WEB-INF/jsp/benefit_group_ref.jsp</result>
+    </action>    
     <action name="shift" 
 	    class="in.bloomington.timer.action.ShiftAction" 
 	    method="execute">

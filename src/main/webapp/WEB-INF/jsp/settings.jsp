@@ -18,6 +18,7 @@
 		<li><a href="<s:property value='#application.url'/>annuance.action">Annuancements </a></li>		
 		<li><a href="<s:property value='#application.url'/>location.action">Locations</a></li>				
 		<li><a href="<s:property value='#application.url'/>benefitGroup.action">Benefit Groups</a></li>
+		<li><a href="<s:property value='#application.url'/>benefitGroupRef.action">Benefit Group Reference</a></li>		
 		<li><a href="<s:property value='#application.url'/>department.action">Departments</a></li>				
 		<li><a href="<s:property value='#application.url'/>employee.action">New Employee</a></li>
 		<li><a href="<s:property value='#application.url'/>terminate.action">Employee Termination</a></li>				

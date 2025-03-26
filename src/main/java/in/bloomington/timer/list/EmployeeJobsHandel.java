@@ -62,13 +62,13 @@ public class EmployeeJobsHandel{
     }
     private String prepareTables(){
 	String back = "";
-	BenefitSalaryRefList bsrl = new BenefitSalaryRefList();
+	BenefitGroupRefList bsrl = new BenefitGroupRefList();
 	back = bsrl.find();
 	if(back.isEmpty()){
-	    List<BenefitSalaryRef> refList = bsrl.getRefs();
+	    List<BenefitGroupRef> refList = bsrl.getRefs();
 	    if(refList != null && refList.size() > 0){
 		benSalTbl = new HashMap<>();
-		for(BenefitSalaryRef one:refList){
+		for(BenefitGroupRef one:refList){
 		    String str = one.getBenefitName();
 		    String str2 = one.getSalaryGroup_id();
 		    if(str2 == null || str2.isEmpty()){
@@ -236,6 +236,7 @@ Emp Num, Name,Start Date,Hr Rate,Job Title,Grade, Step, Annual Pay, Pay Type
 19 FTE
 20 Project
 21 PositionEntryDate
+22 EmploymentClass
 
 PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 	
@@ -255,6 +256,35 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 	    "@IncludeCertification=1,"+
 	    "@UserID=3,"+
 	    "@PrimaryOnly=0;";
+
+//
+	    // modified benefit groups
+//
+FIRE SWORN - Firefighter Sworn : Fire Union Non-Exempt
+FIRE SWORN - Firefighter Sworn : Regular Exempt
+FIRE SWORN 5X8 - Firefighter Sworn 5x8 : Fire Union Exempt
+FIRE SWORN 5X8 - Firefighter Sworn 5x8 : Regular Exempt
+POLICE SWORN  - Sworn Police Officers : Police Union Non-Exempt
+POLICE SWORN  - Sworn Police Officers : Regular Non-Exempt
+POLICE SWORN DET - Police Sworn Detective : Police Union Non-Exempt
+POLICE SWORN MGT - Police Sworn Management : Police Union Exempt
+CEDC4/2 - Central Dispatch 4 on 2 off : Regular Non-Exempt
+CEDC 5/2 - Central Dispatch 5 on 2 off : Regular Non-Exempt
+CEDC 5/2 - Central Dispatch 5 on 2 off : Regular Exempt
+NON-U RPARTnx - Non-Union Regular PT Non-Exempt : Regular Non-Exempt
+uNON-U RFTx - Utilities Non-Union Reg FT Ex : Regular Exempt
+uNON-U RPARTnx - Utilities Non-Union Reg PT NonEx : Regular Non-Exempt
+uNON-U RFTnx - Utilities Non-Union Reg FT NonEx : Regular Non-Exempt
+TEMP W/BEN - Temporary Employee With Benefits : Regular Non-Exempt
+TEMP  - Temporary Employees : Regular Non-Exempt
+uTEMP - Utilities Temporary Employee : Regular Non-Exempt
+NON-U RFULLnx - Non-Union Regular FT Non-Exempt : Regular Non-Exempt
+NON-U RFULLx - Non-Union Regular FT Exempt : Regular Exempt
+AFSCME RFT - AFSCME-80 Hours : AFSCME Non-Exempt
+uAFSCME RFT - Utilities AFSCME RFT 80 Hours : AFSCME Non-Exempt
+COUNCIL MEM - Council Members : Regular Exempt
+BOARD - Board pd members (USB, BPW, BPS) : Regular Exempt
+ELECTED  - Elected Employees : Regular Exempt
 
 	    
 	*/
@@ -291,6 +321,8 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		System.err.println(i+" "+name);
 	    }
 	    */
+	    Set<String> benSet = new HashSet<>();
+	    Set<String> nBenSet = new HashSet<>();
 	    boolean needStep = false;
 	    int jj = 1, jj2=1;
 	    while(rs.next()){
@@ -298,7 +330,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		String rate = "";
 		String week_hrs = "20";
 		String emp_name = rs.getString(3);
-		String ben_group = rs.getString(5);
+		String ben_group = rs.getString(5) != null ? rs.getString(5).trim():"";
 		String jobTitle = "";
 		String jTitle = rs.getString(9); // position
 		// System.err.println("NW job before "+jTitle);
@@ -324,6 +356,7 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		String annual_rate = rs.getString(18);
 		String p_type = rs.getString(15);
 		String p_date = rs.getString(21);
+		String emp_class = rs.getString(22);
 		if(p_type != null && p_type.equals("Annual")){
 		    rate = annual_rate;
 		    // week_hrs = "40";
@@ -333,26 +366,33 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 			rate = hr_rate.substring(0,hr_rate.lastIndexOf(".")+3);
 		    }
 		}
+		// new benefit group from combine ben and class
+		String ben_group2 = ben_group+" : "+emp_class;		
 		/**
+		   // this set was for testing purpose only
+		if(ben_group2 != null){
+		    if(!benSet.contains(ben_group2)){
+			benSet.add(ben_group2);
+		    }
+		}
+		//
 		if(grade != null && grade.indexOf("- City") > 0){
 		    grade = grade.substring(0, grade.indexOf("- City"));
 		}
-		*/
-		/*
 		System.err.println("Emp "+emp_name);
 		// System.err.println("Emp "+emp_num);		
 		// System.err.println("NW job "+jobTitle);
 		System.err.println("grade "+grade);
 		System.err.println("b group "+ben_group);
-		*/
-		String empInfo = emp_name+", nw_grade:"+nw_grade+", grade:"+grade+", b_group:"+ben_group;		
-		/**
 		System.err.println("date "+effect_date);
 		System.err.println("step code "+step_code);
 		// System.err.println("Weekly hrs "+week_hrs);
 		System.err.println(" rate "+rate);
 		System.err.println(" position date "+p_date);
 		*/
+		String empInfo = emp_name+", nw_grade:"+nw_grade+", grade:"+grade+", ben_group:"+ben_group2;
+		// System.err.println(empInfo);		
+		//
 		String salary_group_id = null;
 		Integer comp_hours = null;
 		JobTask job = null;
@@ -360,8 +400,12 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		boolean need_update = false;
 		String changes = "";
 		String change_title = "";
-		if(benSalTbl.containsKey(ben_group)){
-		    salary_group_id = benSalTbl.get(ben_group);
+		if(benSalTbl.containsKey(ben_group2)){
+		    salary_group_id = benSalTbl.get(ben_group2);
+		}
+		else{
+		    if(!nBenSet.contains(ben_group2))
+			nBenSet.add(ben_group2);
 		}
 		if(gradeCompTbl.containsKey(grade)){
 		    comp_hours = gradeCompTbl.get(grade);
@@ -471,13 +515,6 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 		    }
 		    if(need_update){
 			back += job.doUpdate();
-			/**
-			if(!change_title.isEmpty()){
-			    System.err.println(empInfo);
-			    System.err.println(" changes "+jj+": "+emp_num+", "+change_title);
-			    jj++;
-			}
-			*/
 			if(!changes.isEmpty()){
 			    System.err.println(empInfo);
 			    System.err.println(" changes "+jj2+": "+emp_num+", "+changes);
@@ -486,6 +523,15 @@ PayType Annual:exempt/non-exempt, Hourly:temp, Hourly:union, Annual:Police
 			System.err.println(" ");			
 		    }
 		}
+	    }
+	    /**
+	    for(String bb:benSet){
+		System.err.println(bb);
+	    }
+	    */
+	    System.err.println(" not in ben");
+	    for(String bb:nBenSet){
+		System.err.println(bb);
 	    }
 	}
 	catch(Exception ex){
@@ -515,20 +561,20 @@ insert into benefit_salary_ref values
 (0,'NON-U RFULLnx - Non-Union Regular FT Non-Exempt',2),
 (0,'AFSCME RFT - AFSCME-80 Hours',4),
 (0,'NON-U RFULLx - Non-Union Regular FT Exempt',1),
-(0,'BOARD - Board pd members (USB, BPW, BPS)',null),
 (0,'CEDC 5/2 - Central Dispatch 5 on 2 off',1),
 (0,'POLICE SWORN  - Sworn Police Officers',6),
 (0,'CEDC4/2 - Central Dispatch 4 on 2 off',2),
 (0,'POLICE SWORN MGT - Police Sworn Management',8),
 (0,'NON-U RPARTnx - Non-Union Regular PT Non-Exempt',11),
-(0,'ELECTED  - Elected Employees',null),
 (0,'uNON-U RPARTnx - Utilities Non-Union Reg PT NonEx',11),
 (0,'POLICE SWORN DET - Police Sworn Detective',7),
 (0,'uTEMP - Utilities Temporary Employee',3),
-(0,'COUNCIL MEM - Council Members',null),
 (0,'FIRE SWORN 5X8 - Firefighter Sworn 5x8',10),
-(0,'TEMP W/BEN - Temporary Employee With Benefits',12)
-    
+(0,'TEMP W/BEN - Temporary Employee With Benefits',12),
+(0,'BOARD - Board pd members (USB, BPW, BPS)',null),
+(0,'ELECTED  - Elected Employees',null),
+(0,'COUNCIL MEM - Council Members',null)
+
 
 create table grade_comp_hours(
     id int unsigned not null auto_increment,

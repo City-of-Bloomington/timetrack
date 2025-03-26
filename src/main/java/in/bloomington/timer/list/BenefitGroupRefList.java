@@ -13,15 +13,15 @@ import org.apache.logging.log4j.Logger;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 
-public class BenefitSalaryRefList{
+public class BenefitGroupRefList{
 
-    static Logger logger = LogManager.getLogger(BenefitSalaryRefList.class);
+    static Logger logger = LogManager.getLogger(BenefitGroupRefList.class);
     static final long serialVersionUID = 3800L;
-    List<BenefitSalaryRef> refs = null;
+    List<BenefitGroupRef> refs = null;
 	
-    public BenefitSalaryRefList(){
+    public BenefitGroupRefList(){
     }
-    public List<BenefitSalaryRef> getRefs(){
+    public List<BenefitGroupRef> getRefs(){
 	return refs;
     }
     /**		
@@ -36,7 +36,7 @@ public class BenefitSalaryRefList{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	Connection con = UnoConnect.getConnection();
-	String qq = "select t.id,t.benefit_name,t.salary_group_id from benefit_salary_ref t ";
+	String qq = "select t.id,t.benefit_name,t.salary_group_id,s.name from benefit_group_refs t left join salary_groups s on s.id=t.salary_group_id ";
 				
 	if(con == null){
 	    back = "Could not connect to DB";
@@ -59,10 +59,11 @@ public class BenefitSalaryRefList{
 	    if(refs == null)
 		refs = new ArrayList<>();
 	    while(rs.next()){
-		BenefitSalaryRef one =
-		    new BenefitSalaryRef(rs.getString(1),
-					 rs.getString(2),
-					 rs.getString(3));
+		BenefitGroupRef one =
+		    new BenefitGroupRef(rs.getString(1),
+					rs.getString(2),
+					rs.getString(3),
+					rs.getString(4));
 		if(!refs.contains(one))
 		    refs.add(one);
 	    }

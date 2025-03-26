@@ -24,7 +24,7 @@ public class LoginFilter implements Filter {
     static Logger logger = LogManager.getLogger(LoginFilter.class);
     // public static String POLICY = "frame-src 'self'; sandbox allow-forms allow-scripts allow-popups allow-same-origin allow-top-navigation allow-popups-to-escape-sandbox; img-src 'self' data:; object-src 'none';frame-ancestors 'self'";
 
-    public static String POLICY = "frame-src 'none'; img-src 'self' data:; object-src 'none';frame-ancestors 'self';)";    
+    public static String POLICY = "frame-src 'none'; img-src 'self' data:; object-src 'none';frame-ancestors 'self'; script-src 'self' 'unsafe-inline';)";    
     private ServletContext ctx = null;
     public void init(FilterConfig config) throws ServletException {
 	ctx = config.getServletContext();
@@ -39,8 +39,9 @@ public class LoginFilter implements Filter {
 	HttpServletResponse res = (HttpServletResponse) response;
 	res.addHeader("Content-Security-Policy", LoginFilter.POLICY);	
 	res.addHeader("X-Frame-Options", "DENY");
-	res.addHeader("script-src","https://apps.bloomington.in.gov/timetrack/js/");
-	// res.addHeader("script-src","https://bloomington.in.gov/");		
+	// res.addHeader("script-src","https://apps.bloomington.in.gov/timetrack/js/");
+	// res.addHeader("script-src","https://bloomington.in.gov/");
+	// res.addHeader("script-src","self");			
     
 	String uri = req.getRequestURI();
 	HttpSession session = req.getSession(false);
