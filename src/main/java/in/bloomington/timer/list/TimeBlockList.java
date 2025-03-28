@@ -1420,7 +1420,18 @@ public class TimeBlockList{
      order by dp.name,full_name,hour_code
      into outfile '/var/lib/mysql-files/time_data2.csv'
      fields terminated by ','                                                        lines terminated by '\n';	          
-     
+
+
+     select concat_ws(' ',e.first_name,e.last_name) full_name, sum(t.hours),p.name job_title from time_blocks t,time_documents d, employees e, jobs j,positions p
+     where d.id=t.document_id and d.employee_id=e.id
+     and d.job_id=j.id  and j.position_id=p.id
+     and t.inactive is null and p.name like '%LABI%'
+     and t.date > '2024-01-01' and t.date <='2024-12-31' and t.hours > 0
+     group by full_name,job_title
+     order by full_name,job_title
+     into outfile '/var/lib/mysql-files/parks_time_data.csv'
+     fields terminated by ','                                                        lines terminated by '\n';	          
+          
      
 
      
