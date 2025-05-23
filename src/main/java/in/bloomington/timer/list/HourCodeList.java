@@ -502,6 +502,4 @@ public class HourCodeList{
 	return msg;
     }    
     
-
-    
 }

@@ -775,7 +775,8 @@ public class TimewarpProcess{
 	    else { // add week1 plus part one of week2
 		ret = week1.getNetRegular();
 		double w2one = week2.splitOne.getNetRegular();
-		double w2net = week2.getNetRegular();						
+		double w2net = week2.getNetRegular();
+		
 		if(w2one < w2net)
 		    ret += w2one;
 		else
