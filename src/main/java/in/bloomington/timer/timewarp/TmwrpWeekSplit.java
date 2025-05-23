@@ -76,19 +76,10 @@ public class TmwrpWeekSplit{
 	if(val != null){
 	    job = val;
 	    salaryGroup = job.getSalaryGroup();
-	    if(salaryGroup != null){
-		if(salaryGroup.isFireSworn()){
-		    st_weekly_hrs = 48;
-		    comp_weekly_hrs = 53;
-		}
-		else{
-		    st_weekly_hrs = job.getWeekly_regular_hours();
-		    comp_weekly_hrs = job.getComp_time_weekly_hours();
-		}
-		comp_factor = job.getComp_time_factor();
-		holiday_factor = job.getHoliday_comp_factor();
-								
-	    }
+	    st_weekly_hrs = job.getWeekly_regular_hours();
+	    comp_weekly_hrs = job.getComp_time_weekly_hours();
+	    comp_factor = job.getComp_time_factor();
+	    holiday_factor = job.getHoliday_comp_factor();
 	    regDailyArr = new ArrayList<Hashtable<String, Double>>(7);
 	    dailyArr = new ArrayList<Hashtable<String, Double>>(7);						
 	    for(int j=0;j<7;j++){

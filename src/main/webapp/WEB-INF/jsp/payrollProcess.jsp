@@ -47,9 +47,9 @@
 		      <hr />
 		      
 		      <div class="form-group">
-			  <label for="check_all"><strong>Select all approve eligible individuals.</strong></label>
+			  <label for="check_all"><strong>Check the box to approve all eligible individuals </strong></label>
 			  <small class="status-tag approval-ready select-all">
-			      <input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
+			      <input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All
 			  </small>
 		      </div>
 		  </s:if>

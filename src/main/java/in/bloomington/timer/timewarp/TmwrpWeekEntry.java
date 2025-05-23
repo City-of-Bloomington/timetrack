@@ -128,18 +128,10 @@ public class TmwrpWeekEntry{
 	    job = val;
 	    isIrregularWorkDayEmployee = job.isIrregularWorkDayEmployee();
 	    salaryGroup = job.getSalaryGroup();
-	    if(salaryGroup != null){
-		if(salaryGroup.isFireSworn()){
-		    st_weekly_hrs = 48;
-		    comp_weekly_hrs = 53;
-		}
-		else{
-		    st_weekly_hrs = job.getWeekly_regular_hours();
-		    comp_weekly_hrs = job.getComp_time_weekly_hours();
-		}
-		comp_factor = job.getComp_time_factor();
-		holiday_factor = job.getHoliday_comp_factor();
-	    }
+	    st_weekly_hrs = job.getWeekly_regular_hours();
+	    comp_weekly_hrs = job.getComp_time_weekly_hours();
+	    comp_factor = job.getComp_time_factor();
+	    holiday_factor = job.getHoliday_comp_factor();
 	    group  = job.getGroup();
 	    if(group != null){
 		if(group.hasShift()){
@@ -397,7 +389,7 @@ public class TmwrpWeekEntry{
 	
 	prof_hrs = 0;
 	if(salaryGroup != null){
-	    if(!salaryGroup.isExempt()){ // only exempt get prof hrs
+	    if(!salaryGroup.isExempt() && !salaryGroup.isFireSworn5x8()){ // only exempt get prof hrs
 		return;
 	    }
 	    // exempt only
@@ -501,11 +493,6 @@ public class TmwrpWeekEntry{
 		}
 		else if(salaryGroup.isFireSworn()){
 		    // fire excess is handled by NW
-		}
-		else if(salaryGroup.isFireSworn5x8()){
-		    // fire excess is handled by NW
-		    //
-		    excess_hrs = 0;
 		}
 		else if(salaryGroup.isPoliceSworn()){
 		    // fire excess is handled by NW
