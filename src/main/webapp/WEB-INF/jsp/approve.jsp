@@ -42,15 +42,15 @@
       <s:if test="hasNoDocNorSubmitEmps()">
         <a href="<s:property value='#application.url' />inform.action?employee_ids=<s:property value='employee_ids' />&type=noSubmit&source=approve&pay_period_id=<s:property value='pay_period_id' />" class="button">Remind Employees</a>				
       </s:if>
-			<s:if test="hasNotApprovedEmps()">
-				<hr />
-				<div class="form-group">
-					<label for="check_all"><strong>Select all approve eligible individuals.</strong></label>
-					<small class="status-tag approval-ready select-all">
-						<input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All (Approvals)
-					</small>
-				</div>
-			</s:if>
+      <s:if test="hasNotApprovedEmps()">
+	  <hr />
+	  <div class="form-group">
+	      <label for="check_all"><strong>Check the box to approve all eligible individuals </strong></label>
+	      <small class="status-tag approval-ready select-all">
+		  <input type="checkbox" name="check_all" value="y" id="approve_select_all"/>Select All
+	      </small>
+	  </div>
+      </s:if>
     </div>
 
     <hr />

@@ -865,6 +865,20 @@ JobTask one =
       order by dept_name,full_name,job_name
       into outfile '/var/lib/mysql-files/employee_jobs.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
 
+      // current fire department employees
+       select
+       g.name group_name,
+       s.name salary_group,
+       concat_ws(' ',e.last_name,e.first_name) full_name,
+       p.name job_name
+       from jobs j                                                                     join positions p on j.position_id=p.id                                          join employees e on j.employee_id=e.id
+       join groups g on g.id = j.group_id
+       join salary_groups s on s.id=j.salary_group_id
+       where g.department_id=16 and j.expire_date is null
+      order by group_name,salary_group, full_name
+      into outfile '/var/lib/mysql-files/fire_employees.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
+      
+      
     */
 		
 }

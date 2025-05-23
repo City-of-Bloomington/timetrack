@@ -132,4 +132,658 @@ public class HourCodeConditionList{
 	return msg;
     }
 
+    /**
+       // for fire sworn (Black, Gold, Red)(38)
+       //
+	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=9 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (268,267,269)) and
+	c.inactive is null and h.inactive is null order by h.name
+Acting Pay     
+ ADLVPAY-BFD    
+ BR             
+ CA             
+ COMMUTE        
+ COMMUTE_EXR    
+ CU             
+ EL_VAX         
+ Fire BRV       
+ FIRE FLSA      
+ FIRE HLDVR     
+ FIRE LONG      
+ FMLAFS         
+ FMLAU          
+ FMLAV          
+ FMLAWC         
+ FRP            
+ H1.0           
+ HF             
+ JD             
+ KELLYU         
+ MAN UNS DUTY   
+ MP             
+ MU             
+ OJI            
+ PENSEC         
+ PFMLU          
+ REG FIRE       
+ REG UNSCH FIRE 
+ SBUF           
+ SF             
+ SF-WC          
+ TWB            
+ UA             
+ UBF            
+ UU             
+ VU             
+ WCA             
+
+
+//
+// group BC (Fire Sworn 5x8 only) (35)
+//
+	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=10 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (340)) and
+	c.inactive is null and h.inactive is null order by h.name
+ADLVPAY-BFD    
+ BR             
+ CA             
+ CE1.0          
+ COMMUTE        
+ COMMUTE_EXR    
+ CU             
+ EL_VAX         
+ Fire BRV       
+ FMLAFS         
+ FMLAU          
+ FMLAV          
+ FMLAVADMIN     
+ FMLAWC         
+ H1.0           
+ HCU            
+ HF             
+ JD             
+ KUADMIN        
+ MP             
+ OJI            
+ ONCALL FIRE    
+ PENSEC         
+ PFMLU          
+ PTO            
+ Reg            
+ REG FIRE BC    
+ REG UNSCH FIRE 
+ RETROPAY       
+ SBU            
+ UA             
+ UBF            
+ UU             
+ VU             
+ WCA            
+
+
+
+       //
+// group BC (Fire Sworn only) (38)
+//
+	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=9 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (340)) and
+	c.inactive is null and h.inactive is null order by h.name
+
+ Acting Pay     
+ ADLVPAY-BFD    
+ BR             
+ CA             
+ CE1.0          
+ COMMUTE        
+ COMMUTE_EXR    
+ CU             
+ EL_VAX         
+ Fire BRV       
+ FIRE FLSA      
+ FIRE HLDVR     
+ FIRE LONG      
+ FMLAFS         
+ FMLAU          
+ FMLAV          
+ FMLAWC         
+ FRP            
+ H1.0           
+ HF             
+ JD             
+ KELLYU         
+ MP             
+ MU             
+ OJI            
+ PENSEC         
+ PFMLU          
+ REG FIRE       
+ REG UNSCH FIRE 
+ SBUF           
+ SF             
+ SF-WC          
+ TWB            
+ UA             
+ UBF            
+ UU             
+ VU             
+ WCA            
+
+
+// Admin group (exempt) (47)
+	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=1 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (270)) and
+	c.inactive is null and h.inactive is null order by h.name
+
+ Acting Pay       
+ ADLVPAY-BFD      
+ BR               
+ BWP              
+ COMMUTE          
+ COMMUTE_EXR      
+ CU               
+ EL_VAX           
+ Fire BRVADMIN    
+ FMCU             
+ FMLAFS           
+ FMLAFSADMIN      
+ FMLAH            
+ FMLAU            
+ FMLAV            
+ FMLAWC           
+ FMPTO            
+ FMSCK            
+ H1.0             
+ HCU              
+ HF               
+ JD               
+ KUADMIN          
+ MU               
+ OJI              
+ ONCALL FIRE      
+ OT1.5 FIRE ADMIN 
+ PFMLU            
+ PTO              
+ PTOUN            
+ Reg              
+ SBU              
+ SBUF             
+ SBUUN            
+ SF               
+ SF-WC            
+ SF-WC-ADMIN      
+ SFADMIN          
+ TWB              
+ UA               
+ UBADMIN          
+ UBF              
+ UU               
+ VU               
+ VUADMIN          
+ WC               
+ WCA               
+
+
+	
+// Admin group (non-exempt) (42)
+	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=2 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (270)) and
+	c.inactive is null and h.inactive is null order by h.name
+	
+ Acting Pay       
+ ADLVPAY-BFD      
+ BR               
+ BWP              
+ COMMUTE          
+ COMMUTE_EXR      
+ CU               
+ EL_VAX           
+ FMCU             
+ FMLAFS           
+ FMLAH            
+ FMLAU            
+ FMLAV            
+ FMLAWC           
+ FMPTO            
+ FMSCK            
+ H1.0             
+ HCU              
+ HF               
+ JD               
+ MP               
+ MU               
+ OJI              
+ ONCALL FIRE      
+ OT1.5 FIRE ADMIN 
+ PFMLU            
+ PTO              
+ PTOUN            
+ Reg              
+ SBU              
+ SBUUN            
+ SF               
+ TWB              
+ UA               
+ UBF              
+ UU               
+ VU               
+ WC               
+ WCA              
+
+
+ // group Community Engagement (Sworn 5x8) (34)
+	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=10 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (332)) and
+	c.inactive is null and h.inactive is null order by h.name	
+ ADLVPAY-BFD      
+ BR               
+ CA               
+ COMMUTE          
+ COMMUTE_EXR      
+ CU               
+ EL_VAX           
+ Fire BRV         
+ FMLAFS           
+ FMLAU            
+ FMLAV            
+ FMLAVADMIN       
+ FMLAWC           
+ H1.0             
+ HCU              
+ JD               
+ KUADMIN          
+ MP               
+ OJI              
+ ONCALL FIRE      
+ OT1.5 STORM 6.25 
+ PENSEC           
+ PFMLU            
+ PTO              
+ Reg              
+ REG UNSCH FIRE   
+ RETROPAY         
+ SBU              
+ STORM 6.25.24    
+ UA               
+ UBF              
+ UU               
+ VU               
+ WCA              
+
+ // Group Deputy Chief (Sworn 5x8)(32)
+ 	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=10 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (339)) and
+	c.inactive is null and h.inactive is null order by h.name
+
+	ADLVPAY-BFD         
+ BR               
+ CA               
+ COMMUTE          
+ COMMUTE_EXR      
+ CU               
+ EL_VAX           
+ Fire BRV         
+ FMLAFS           
+ FMLAU            
+ FMLAV            
+ FMLAVADMIN       
+ FMLAWC           
+ H1.0             
+ HCU              
+ JD               
+ KUADMIN          
+ MP               
+ OJI              
+ ONCALL FIRE      
+ PENSEC           
+ PFMLU            
+ PTO              
+ Reg              
+ REG UNSCH FIRE   
+ RETROPAY         
+ SBU              
+ UA               
+ UBF              
+ UU               
+ VU               
+ WCA
+
+ // Group Director(Exempt) (47)
+  	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=1 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (302)) and
+	c.inactive is null and h.inactive is null order by h.name
+  Acting Pay       
+ ADLVPAY-BFD      
+ BR               
+ BWP              
+ COMMUTE          
+ COMMUTE_EXR      
+ CU               
+ EL_VAX           
+ Fire BRVADMIN    
+ FMCU             
+ FMLAFS           
+ FMLAFSADMIN      
+ FMLAH            
+ FMLAU            
+ FMLAV            
+ FMLAWC           
+ FMPTO            
+ FMSCK            
+ H1.0             
+ HCU              
+ HF               
+ JD               
+ KUADMIN          
+ MU               
+ OJI              
+ ONCALL FIRE      
+ OT1.5 FIRE ADMIN 
+ PFMLU            
+ PTO              
+ PTOUN            
+ Reg              
+ SBU              
+ SBUF             
+ SBUUN            
+ SF               
+ SF-WC            
+ SF-WC-ADMIN      
+ SFADMIN          
+ TWB              
+ UA               
+ UBADMIN          
+ UBF              
+ UU               
+ VU               
+ VUADMIN          
+ WC               
+ WCA
+
+ // Group Logistics (Sworn) (38)
+   	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=9 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (265)) and
+	c.inactive is null and h.inactive is null order by h.name
+
+	 Acting Pay     
+ ADLVPAY-BFD    
+ BCSI           
+ BR             
+ CA             
+ COMMUTE        
+ COMMUTE_EXR    
+ CU             
+ EL_VAX         
+ Fire BRV       
+ FIRE FLSA      
+ FIRE HLDVR     
+ FIRE LONG      
+ FMLAFS         
+ FMLAU          
+ FMLAV          
+ FMLAWC         
+ FRP            
+ H1.0           
+ HF             
+ JD             
+ KELLYU         
+ MP             
+ MU             
+ OJI            
+ PENSEC         
+ PFMLU          
+ REG FIRE       
+ REG UNSCH FIRE 
+ SBUF           
+ SF             
+ SF-WC          
+ TWB            
+ UA             
+ UBF            
+ UU             
+ VU             
+ WCA            
+
+ Group: MIH (non-exempt)(39)
+   	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=2 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (266)) and
+	c.inactive is null and h.inactive is null order by h.name
+
+ Acting Pay       
+ ADLVPAY-BFD      
+ BR               
+ BWP              
+ COMMUTE          
+ COMMUTE_EXR      
+ CU               
+ EL_VAX           
+ FMCU             
+ FMLAFS           
+ FMLAH            
+ FMLAU            
+ FMLAV            
+ FMLAWC           
+ FMPTO            
+ FMSCK            
+ H1.0             
+ HCU              
+ HF               
+ JD               
+ MP               
+ MU               
+ OJI              
+ ONCALL FIRE      
+ OT1.5 FIRE ADMIN 
+ PFMLU            
+ PTO              
+ PTOUN            
+ Reg              
+ SBU              
+ SBUUN            
+ SF               
+ TWB              
+ UA               
+ UBF              
+ UU               
+ VU               
+ WC               
+ WCA               
+	
+// Group: MIH Supervisor (Exempt)(47)
+   	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=1 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (342)) and
+	c.inactive is null and h.inactive is null order by h.name
+
+	 Acting Pay       
+ ADLVPAY-BFD      
+ BR               
+ BWP              
+ COMMUTE          
+ COMMUTE_EXR      
+ CU               
+ EL_VAX           
+ Fire BRVADMIN    
+ FMCU             
+ FMLAFS           
+ FMLAFSADMIN      
+ FMLAH            
+ FMLAU            
+ FMLAV            
+ FMLAWC           
+ FMPTO            
+ FMSCK            
+ H1.0             
+ HCU              
+ HF               
+ JD               
+ KUADMIN          
+ MU               
+ OJI              
+ ONCALL FIRE      
+ OT1.5 FIRE ADMIN 
+ PFMLU            
+ PTO              
+ PTOUN            
+ Reg              
+ SBU              
+ SBUF             
+ SBUUN            
+ SF               
+ SF-WC            
+ SF-WC-ADMIN      
+ SFADMIN          
+ TWB              
+ UA               
+ UBADMIN          
+ UBF              
+ UU               
+ VU               
+ VUADMIN          
+ WC               
+ WCA
+
+ // Group: Prevention (Non-exempt)(38)
+    	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=2 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (385)) and
+	c.inactive is null and h.inactive is null order by h.name
+Acting Pay  
+ ADLVPAY-BFD 
+ BR          
+ BWP         
+ COMMUTE     
+ COMMUTE_EXR 
+ CU          
+ EL_VAX      
+ FMCU        
+ FMLAFS      
+ FMLAH       
+ FMLAU       
+ FMLAV       
+ FMLAWC      
+ FMPTO       
+ FMSCK       
+ H1.0        
+ HCU         
+ HF          
+ JD          
+ MP          
+ MU          
+ OJI         
+ ONCALL FIRE 
+ PFMLU       
+ PTO         
+ PTOUN       
+ Reg         
+ SBU         
+ SBUUN       
+ SF          
+ TWB         
+ UA          
+ UBF         
+ UU          
+ VU          
+ WC          
+ WCA         
+
+// Group; Preventive Manager(non-exempt)(38)
+    	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=2 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (344)) and
+	c.inactive is null and h.inactive is null order by h.name
+ 
+ Acting Pay  
+ ADLVPAY-BFD 
+ BR          
+ BWP         
+ COMMUTE     
+ COMMUTE_EXR 
+ CU          
+ EL_VAX      
+ FMCU        
+ FMLAFS      
+ FMLAH       
+ FMLAU       
+ FMLAV       
+ FMLAWC      
+ FMPTO       
+ FMSCK       
+ H1.0        
+ HCU         
+ HF          
+ JD          
+ MP          
+ MU          
+ OJI         
+ ONCALL FIRE 
+ PFMLU       
+ PTO         
+ PTOUN       
+ Reg         
+ SBU         
+ SBUUN       
+ SF          
+ TWB         
+ UA          
+ UBF         
+ UU          
+ VU          
+ WC          
+ WCA         
+
+ Group: Training (Sworn)  ( )
+    	select distinct h.name
+	from hour_code_conditions c left join hour_codes h on h.id=c.hour_code_id  where c.salary_group_id=9 and (c.department_id is null or c.department_id=16)
+	and (c.group_id is null or group_id in (274)) and
+	c.inactive is null and h.inactive is null order by h.name
+
+  Acting Pay     
+ ADLVPAY-BFD    
+ BR             
+ CA             
+ COMMUTE        
+ COMMUTE_EXR    
+ CU             
+ EL_VAX         
+ Fire BRV       
+ FIRE FLSA      
+ FIRE HLDVR     
+ FIRE LONG      
+ FMLAFS         
+ FMLAU          
+ FMLAV          
+ FMLAWC         
+ FRP            
+ H1.0           
+ HF             
+ JD             
+ KELLYU         
+ MP             
+ MU             
+ OJI            
+ PENSEC         
+ PFMLU          
+ REG FIRE       
+ REG UNSCH FIRE 
+ SBUF           
+ SF             
+ SF-WC          
+ TWB            
+ UA             
+ UBF            
+ UU             
+ VU             
+ WCA             
+
+     */
 }
