@@ -522,9 +522,13 @@ public class PayPeriod implements Serializable{
 insert into pay_periods_alt select id,start_date,end_date from pay_periods;
 insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 1 DAY),date_sub(end_date,INTERVAL 1 DAY) from pay_periods;
 ;;
+;; transition date on test server 05/25/2025
 ;;
-update pay_periods_alt set start_date=date_sub(start_date,INTERVAL 1 DAY);
-update pay_periods_alt set end_date=date_sub(end_date,INTERVAL 1 DAY);
+update pay_periods_alt set end_date=date_sub(end_date,INTERVAL 1 DAY)
+where start_date >= '2025-05-25';
+update pay_periods_alt set start_date=date_sub(start_date,INTERVAL 1 DAY)
+where start_date >= '2025-05-25';
+
 
 
      */
