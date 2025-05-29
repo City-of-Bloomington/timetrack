@@ -38,9 +38,11 @@ public class PayrollProcessAction extends TopAction{
     List<PayPeriod> payPeriods = null;
     List<Employee> nonDocEmps = null;
     List<Employee> notApprovedEmps = null;
+    List<Document> notApprovedDocs = null;
     List<Employee> noDocNorSubmitEmps = null;
     List<Employee> notProcessedEmps = null;		
-    boolean notSubmitAndApproveFlag = true;		
+    boolean notSubmitAndApproveFlag = true;
+    Map<String, List<Document>> notApprovedMap = null;    
     String[] document_ids = null;
 
     public String execute(){
@@ -83,7 +85,8 @@ public class PayrollProcessAction extends TopAction{
 		}
 	    }
 	}
-	selected_group_id = obtainGroupIdFromSession();				
+	selected_group_id = obtainGroupIdFromSession();
+	hasNotApprovedMap();
 	return ret;
     }
 
@@ -167,6 +170,23 @@ public class PayrollProcessAction extends TopAction{
 	    }
 	}
 	return managers;
+    }
+    // find the primary approver for a given group
+    public GroupManager findGroupApprover(String gid){
+	GroupManager gmanager = null;
+	GroupManagerList gml = new GroupManagerList();
+	getPay_period_id();
+	gml.setPay_period_id(pay_period_id);
+	gml.setGroup_id(gid);
+	gml.setApproversOnly();
+	String back = gml.find();
+	if(back.isEmpty()){
+	    List<GroupManager> ones = gml.getManagers();
+	    if(ones != null && ones.size() > 0){
+		gmanager = ones.get(0); // first
+	    }
+	}
+	return gmanager;
     }
     public PayPeriod getCurrentPayPeriod(){
 	//
@@ -268,14 +288,21 @@ public class PayrollProcessAction extends TopAction{
 	return documents;
     }
     public List<Employee> getNonDocEmps(){
+	
 	if(nonDocEmps == null){
+	    
 	    EmployeeList empl = new EmployeeList();
 	    if(!group_id.isEmpty() && !group_id.equals("all")){
 		empl.setGroup_id(group_id);
 	    }
-	    else if(groups != null && groups.size() > 0){
-		for(Group one:groups){
-		    empl.setGroup_id(one.getId());										
+	    else if(hasGroups()){
+		if(groups != null && groups.size() > 0){
+		    for(Group one:groups){
+			empl.setGroup_id(one.getId());
+		    }
+		}
+		else{
+		    return null;
 		}
 	    }
 	    if(pay_period_id.isEmpty()){
@@ -339,31 +366,59 @@ public class PayrollProcessAction extends TopAction{
 	}
 	return nextPayPeriod;
     }
-    public boolean hasNotApprovedEmps(){
-	findNotSubmittedAndNotApprovedEmps();				
-	return notApprovedEmps != null && notApprovedEmps.size() > 0;
+    public boolean hasNotApprovedMap(){
+	findNotSubmittedAndNotApprovedEmps();
+	if(notApprovedDocs != null && notApprovedDocs.size() > 0){
+	    if(notApprovedMap == null){
+		notApprovedMap = new HashMap<>();
+	    }
+	    for(Document one:notApprovedDocs){
+		GroupManager gmanager = findGroupApprover(one.getGroup().getId());
+		if(gmanager != null){
+		    Employee ee = gmanager.getEmployee();
+		    String full_name = ee.getFull_name();
+		    if(!notApprovedMap.containsKey(full_name)){
+			List<Document> docls = new ArrayList<>();
+			docls.add(one);
+			notApprovedMap.put(full_name,docls);
+		    }
+		    else{
+			List<Document> docLs = notApprovedMap.get(full_name);
+			if(!docLs.contains(one)){
+			    docLs.add(one);
+			    notApprovedMap.put(full_name,docLs);
+			}
+		    }
+		}
+	    }
+	}
+	return notApprovedDocs != null && notApprovedDocs.size() > 0;
+    }
+    public Map<String, List<Document>> getNotApproved(){
+	return notApprovedMap;
     }
     public boolean hasNotProcessedEmps(){
 	findNotSubmittedAndNotApprovedEmps();				
 	return notProcessedEmps != null && notProcessedEmps.size() > 0;
     }		
     public boolean needAction(){
-	return hasNotApprovedEmps() || hasNotSubmittedDocs() || hasNonDocEmps();
-    }
-    public List<Employee> getNotApprovedEmps(){
-	return notApprovedEmps;
+	return hasNotApprovedMap() || hasNotSubmittedDocs() || hasNonDocEmps();
     }
     void findNotSubmittedAndNotApprovedEmps(){
-	// if(notSubmitAndApproveFlag){
-	//	notSubmitAndApproveFlag = false; // to turn off
+	if(notApprovedMap != null) return;
 	getNonDocEmps();
 	if(hasDocuments()){
 	    for(Document one:documents){
 		if(one.canBeApproved()){
 		    if(notApprovedEmps == null)
 			notApprovedEmps = new ArrayList<>();
+		    if(notApprovedDocs == null){
+			notApprovedDocs = new ArrayList<>();
+		    }
 		    if(!notApprovedEmps.contains(one.getEmployee()))
 			notApprovedEmps.add(one.getEmployee());
+		    if(!notApprovedDocs.contains(one))
+			notApprovedDocs.add(one);
 		}
 		else if(one.canBeProcessed()){
 		    if(notProcessedEmps == null)
@@ -386,7 +441,6 @@ public class PayrollProcessAction extends TopAction{
 			    notSubmittedDocs = new ArrayList<>();
 			if(!notSubmittedDocs.contains(one))
 			    notSubmittedDocs.add(one);
-												
 		    }
 		}
 	    }

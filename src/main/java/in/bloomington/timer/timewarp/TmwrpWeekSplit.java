@@ -340,20 +340,6 @@ public class TmwrpWeekSplit{
 		}
 		return;
 	    }
-	    else if(salaryGroup.isFireSworn()){
-		net_reg_hrs = regular_hrs - earned_time;
-		if(net_reg_hrs < CommonInc.critical_small){
-		    net_reg_hrs = 0;
-		}
-		return;								
-	    }
-	    else if(salaryGroup.isFireSworn5x8()){
-		net_reg_hrs = regular_hrs - earned_time;
-		if(net_reg_hrs < CommonInc.critical_small){
-		    net_reg_hrs = 0;
-		}
-		return;								
-	    }						
 	}
 	net_reg_hrs = regular_hrs - earned_time;
 	if(net_reg_hrs > Math.max(st_weekly_hrs, CommonInc.cityStandardWeeklyHrs)){

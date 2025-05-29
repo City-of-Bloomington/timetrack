@@ -249,8 +249,9 @@ public class Document implements Serializable{
 	    if(back.isEmpty()){
 		List<TimeAction> ones = tal.getTimeActions();
 		if(ones != null && ones.size() > 0){
-		    validTimeActions = ones;
+		    lastTimeAcion = ones.get(0);
 		}
+		
 	    }
 	}
 	return validTimeActions;
@@ -482,10 +483,9 @@ public class Document implements Serializable{
 	return leaveRequests;
     }
     public boolean canBeApproved(){
-	getLastTimeAction();
+	getValidTimeActions();
 	if(lastTimeAcion != null){
-	    Workflow lastWorkFlow = lastTimeAcion.getWorkflow();
-	    return lastWorkFlow != null && lastWorkFlow.canApprove();
+	    return lastTimeAcion.isSubmitAction();
 	}
 	return false;
     }

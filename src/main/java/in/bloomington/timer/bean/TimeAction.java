@@ -167,6 +167,9 @@ public class TimeAction implements Serializable{
 	}
 	return actioner;
     }
+    public boolean isSubmitAction(){
+	return workflow_id.equals("2");
+    }
     public boolean isApproveAction(){
 	return workflow_id.equals("3");
     }

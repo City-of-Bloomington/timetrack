@@ -61,7 +61,7 @@
 	    <s:set var="week1DateRange" value="payPeriod.week1DateRange" />
 	    <s:set var="week2DateRange" value="payPeriod.week2DateRange" />
 	    
-	    <s:if test="hasNonDocEmps() || hasNotSubmittedEmps() || hasNotApprovedEmps()">
+	    <s:if test="hasNonDocEmps() || hasNotSubmittedEmps() || hasNotApprovedMap()">
 		<div class="approve-process-header-lists">
 		    <s:if test="hasNonDocEmps()">
 			<div class="emp-no-time-wrapper">
@@ -83,13 +83,16 @@
 			    </s:iterator>
 			</ul>
 		    </s:if>
-		    <s:if test="hasNotApprovedEmps()">
-			<small class="status-tag not-approved">Time Not Approved</small>
-			<ul>
-			    <s:iterator value="notApprovedEmps" status="row">
-				<li><s:property value="full_name" /><s:if test="!#row.last">,</li></s:if></li>
+		    <s:if test="hasNotApprovedMap()">
+			<small class="status-tag not-approved">Time Not Approved</small><br /><br />
+			    <s:iterator value="notApproved" var="one2" >
+			    <s:set var="fname" value="#one2.key" />
+			    <s:set var="docs" value="#one2.value" />
+			    <li><b><s:property value="#fname" /></b> needs to approve hours for
+				<s:iterator value="#docs" status="row">
+				    <a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" /><s:property value="employee" /></a><s:if test="!#row.last">, </s:if>
+				</s:iterator></li>
 			    </s:iterator>
-			</ul>
 		    </s:if>
 		</div>
 	    </s:if>
