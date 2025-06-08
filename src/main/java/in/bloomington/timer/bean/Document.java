@@ -251,7 +251,7 @@ public class Document implements Serializable{
 		if(ones != null && ones.size() > 0){
 		    lastTimeAcion = ones.get(0);
 		}
-		
+		validTimeActions = ones;
 	    }
 	}
 	return validTimeActions;
