@@ -394,7 +394,7 @@ public class TmwrpWeekEntry{
 	       !salaryGroup.isFireSworn5x8()){ // prof hrs, exempt and firesworn
 		return;
 	    }
-	    // exempt only
+	    // 
 	    if(comp_weekly_hrs == 40){
 		return;
 	    }
@@ -488,7 +488,6 @@ public class TmwrpWeekEntry{
 		    excess_hrs = netHours < 40 ? 0: netHours - 40;
 		}
 		else if(salaryGroup.isPoliceSworn()){
-		    // fire excess is handled by NW
 		    excess_hrs = 0;
 		}						
 		else{
