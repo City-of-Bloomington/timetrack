@@ -435,7 +435,7 @@ public class LeaveRequest implements java.io.Serializable{
 	String qq = "select t.id,t.job_id,t.start_date,t.end_date,t.hour_code_ids,t.total_hours,t.request_details,t.initiated_by,date_format(t.request_date,'%m/%d/%Y'), date_format(t.start_date,'%m/%d/%Y'), date_format(t.end_date,'%m/%d/%Y'),r.review_status,r.reviewed_by,r.review_notes,r.id,r.review_date,j.group_id "+
 	    "from leave_requests t "+
 	    "join jobs j on j.id=t.job_id "+
-	    " left join leave_reviews r on r.leave_id=t.id "+
+	    "left join leave_reviews r on r.leave_id=t.id "+
 	    "where t.id=?";
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -524,9 +524,9 @@ public class LeaveRequest implements java.io.Serializable{
 	    }
 	}
 	// we can use start_date > end_date 
-	if(start_date.compareTo(end_date) > 0){
-	    msg = "Start date can not be more than end date "; 
-	}
+	// if(start_date.compareTo(end_date) > 0){
+	//   msg = "Start date can not be more than end date "; 
+	//}
 	String today = Helper.getToday();
 	
 	if(earn_code_ids == null){
@@ -619,6 +619,18 @@ public class LeaveRequest implements java.io.Serializable{
 	    msg = "Job is required";
 	    return msg;
 	}
+	if(start_date.compareTo(end_date) > 0){
+	    msg ="Start date must be less or equal End Date";
+	    return msg;
+	}
+	if(payPeriod == null)
+	    findCurrentPayPeriod();
+	if(payPeriod != null){
+	    if(start_date.compareTo(payPeriod.getStartDateYmd()) < 0){
+		msg = "Start date can not be before the current pay period";
+		return msg;
+	    }
+	}		
 	String earn_codes_str = "";
 	for(String str:earn_code_ids){
 	    if(!earn_codes_str.isEmpty()) earn_codes_str +=",";

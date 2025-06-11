@@ -506,6 +506,21 @@ public class Helper{
 	GregorianCalendar cal = new GregorianCalendar(tzone, local);
 	return getToday(cal);
     }
+
+    public final static String getTodayYmd(){
+
+	GregorianCalendar cal = new GregorianCalendar(tzone, local);
+	String day="",month="",year="";
+	int mm =  (cal.get(Calendar.MONTH)+1);
+	int dd =   cal.get(Calendar.DATE);
+	year = ""+ cal.get(Calendar.YEAR);
+	if(mm < 10) month = "0";
+	month += mm;
+	if(dd < 10) day = "0";
+	day += dd;
+	return year+"-"+month+"-"+day;
+    }    
+    
     public final static String getYesterday(){
 
 	String day="",month="",year="";

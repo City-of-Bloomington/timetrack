@@ -324,29 +324,6 @@ public class LeaveRequestAction extends TopAction{
 	findHistory();
 	return history_leaves != null && history_leaves.size() > 0;
     }
-    /**
-    public boolean hasPendingLeaves(){
-	getPendingLeaves();
-	return pending_leaves != null && pending_leaves.size() > 0;
-    }
-    public List<LeaveRequest> getPendingLeaves(){
-	if(pending_leaves == null){
-	    findCurrentPayPeriod();
-	    LeaveRequestList tl = new LeaveRequestList();
-	    tl.setJob_id(job_id);
-	    tl.setPay_period_id(pay_period_id);
-	    tl.setNotReviewed();
-	    String back = tl.find();
-	    if(back.isEmpty()){
-		List<LeaveRequest> ones = tl.getRequests();
-		if(ones != null && ones.size() > 0){
-		    pending_leaves = ones;
-		}
-	    }
-	}
-	return pending_leaves;
-    }
-    */
     public boolean hasCurrentRequests(){
 	getRequests();
 	return requests != null && requests.size() > 0;

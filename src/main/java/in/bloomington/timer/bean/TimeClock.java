@@ -229,9 +229,22 @@ public class TimeClock{
     }
 
     public PayPeriod getCurrentPayPeriod() {
+	boolean alt_pay = false;
+	getJob();
+	if(job != null){
+	    if(job.isInAltPayPeriodSet()){
+		String today = Helper.getTodayYmd();
+		if(today.compareTo(CommonInc.pay_period_switched_date) >= 0){
+		    alt_pay = true;
+		}
+	    }
+	}
 	if (currentPayPeriod == null) {
 	    PayPeriodList ppl = new PayPeriodList();
 	    ppl.currentOnly();
+	    if(alt_pay){
+		ppl.setInAltPayPeriodSet();
+	    }	    
 	    String back = ppl.find();
 	    if (back.isEmpty()) {
 		List<PayPeriod> ones = ppl.getPeriods();
@@ -274,8 +287,8 @@ public class TimeClock{
 	    if(employee_id.isEmpty())
 		getEmployee();
 	    dl.setEmployee_id(employee_id);
+	    dl.setJob_id(job_id);	    
 	    dl.setPay_period_id(currentPayPeriod.getId());
-	    dl.setJob_id(job_id);
 	    String back = dl.find();
 	    if (back.isEmpty()) {
 		List<Document> ones = dl.getDocuments();
@@ -459,8 +472,11 @@ public class TimeClock{
 		if(!location_id.isEmpty()){
 		    jl.setLocation_id(location_id);
 		}
-		getCurrentPayPeriod();
-		jl.setPay_period_id(currentPayPeriod.getId());
+		if(currentPayPeriod != null)
+		    jl.setPay_period_id(currentPayPeriod.getId());
+		else{
+		    jl.setCurrentOnly();
+		}
 		String back = jl.find();
 		if (back.isEmpty()) {
 		    List<JobTask> ones = jl.getJobTasks();
@@ -520,7 +536,7 @@ public class TimeClock{
 	// find document, if non create
 	// we need the employee job
 	if (job_id.isEmpty()) {
-	    if (jobs.size() > 1 && job_id.isEmpty()) {
+	    if (jobs.size() > 1) {
 		msg = "you need to select a job ";
 		return msg;
 	    }
@@ -540,6 +556,9 @@ public class TimeClock{
 	    }
 	}
 	getDocument();
+	if(employee_id.isEmpty()){
+	    getEmployee();
+	}	
 	//
 	// find if there is a clock-in, if not this a clock-in
 	// else it is a clock-out

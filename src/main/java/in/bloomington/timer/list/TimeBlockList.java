@@ -762,7 +762,7 @@ public class TimeBlockList{
 	ResultSet rs = null;
 	String msg="", str="";
 	double dd_time = time_hr+(time_min/60.);
-	Double dd_time2 = dd_time+24;
+	Double dd_time2 = dd_time+24; // for day before
 	String qq = "select "+
 	    " t.document_id, "+
 	    " t.begin_hour,t.begin_minute "+
@@ -1494,7 +1494,47 @@ public class TimeBlockList{
  left join code_cross_ref cf on((c.id = cf.code_id)))
  left join earn_code_reasons r on((r.id = t.earn_code_reason_id)));
 
- 
+
+     select concat_ws(' ',e.first_name,e.last_name) full_name, sum(t.hours),p.name job_title from time_blocks t,time_documents d, employees e, jobs j,positions p
+     where d.id=t.document_id and d.employee_id=e.id
+     and d.job_id=j.id  and j.position_id=p.id
+     and t.inactive is null and p.name like '%LABI%'
+     and t.date > '2024-01-01' and t.date <='2024-12-31' and t.hours > 0
+     group by full_name,job_title
+     order by full_name,job_title
+     into outfile '/var/lib/mysql-files/parks_time_data.csv'
+     fields terminated by ','                                                        lines terminated by '\n';	          
+
+     // Alan request script
+     // department, employee, approver
+      select distinct dp.name dept,
+      concat_ws(' ',e.first_name,e.last_name) full_name,      
+      e.employee_number employee_num,
+      concat_ws(' ',ae.first_name,ae.last_name) approver_name,      
+      ae.employee_number approver_employee_num
+      from employees e, employees ae, time_documents dt, jobs j, `groups` g, departments dp,time_actions ta
+      where dt.employee_id=e.id
+      and dt.job_id=j.id
+      and j.group_id=g.id
+      and g.department_id=dp.id
+      and ta.document_id=dt.id
+      and ta.workflow_id=3
+      and ta.action_by=ae.id 
+      and dt.pay_period_id=709
+      order by dept,full_name
+     into outfile '/var/lib/mysql-files/emps_amd_approves.csv'
+     fields terminated by ','
+     lines terminated by '\n';	     
+      
+      
+      sum(t.hours),c.name hour_code from time_blocks t,time_documents d, employees e, jobs j, hour_codes c, groups g, departments dp 
+     where d.id=t.document_id  and d.employee_id=e.id
+     and d.job_id=j.id  and t.hour_code_id=c.id                                      and t.inactive is null and t.hour_code_id <> 1 and t.hour_code_id <> 14
+     and not c.name like '%REG%' 
+     and t.date in ('2024-12-30','2024-12-31') and t.hours > 0
+     and j.group_id=g.id and dp.id =g.department_id    
+=======
+      
      
 
      

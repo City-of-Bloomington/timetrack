@@ -69,7 +69,7 @@ public class LeaveReviewAction extends TopAction{
 	if(action.equals("Submit")){
 	    review.setReviewed_by(user.getId());
 	    if(activeMail){ 
-		// if(true){
+
 		review.setActiveMail();
 		review.setMail_host(mail_host);
 		review.setUser(user); // current manager
@@ -206,6 +206,12 @@ public class LeaveReviewAction extends TopAction{
     }
 	
     public List<GroupManager> getManagers(){
+	if(managers == null)
+	    findManagers();
+	return managers;
+    }
+    private void findManagers(){
+	if(managers == null){	
 	getUser();
 	if(user != null){
 	    GroupManagerList gml = new GroupManagerList(user.getId());
@@ -229,7 +235,7 @@ public class LeaveReviewAction extends TopAction{
 		}
 	    }
 	}
-	return managers;
+	}
     }
     public PayPeriod getPayPeriod(){
 	//

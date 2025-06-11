@@ -389,7 +389,9 @@ public class TmwrpWeekEntry{
 	
 	prof_hrs = 0;
 	if(salaryGroup != null){
-	    if(!salaryGroup.isExempt() && !salaryGroup.isFireSworn5x8()){ // only exempt get prof hrs
+	    if(!salaryGroup.isExempt() &&
+	       !salaryGroup.isFireSworn() && 
+	       !salaryGroup.isFireSworn5x8()){ // only exempt get prof hrs
 		return;
 	    }
 	    // exempt only
@@ -491,11 +493,7 @@ public class TmwrpWeekEntry{
 			excess_hrs = netHours - comp_weekly_hrs;
 		    }
 		}
-		else if(salaryGroup.isFireSworn()){
-		    // fire excess is handled by NW
-		}
 		else if(salaryGroup.isPoliceSworn()){
-		    // fire excess is handled by NW
 		    excess_hrs = 0;
 		}						
 		else{
@@ -534,10 +532,6 @@ public class TmwrpWeekEntry{
 		addToEarnedHash(code_id, excess_hrs);								
 		return;
 	    }
-	    if(salaryGroup.isFireSworn()){ // NW takes care of this
-		// code = "FIRE FLSA";	 pay period not weekly
-		return;
-	    }						
 	    else if(salaryGroup.isExcessCulculationPayPeriod()){
 		// we are interested in weekly only for now
 		// anything else we ignore here
