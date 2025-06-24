@@ -21,10 +21,10 @@ public class TmwrpWeekEntry{
     static final long serialVersionUID = 160L;		
     static Logger logger = LogManager.getLogger(TmwrpWeekEntry.class);		
     // Profile profile = null;
-    // BenefitGroup bGroup = null;
-    static DecimalFormat ndf = new DecimalFormat("#0.00");		
+    // BenefitGroup bGroup = null;    static DecimalFormat ndf = new DecimalFormat("#0.00");		
     static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-    //     static final double critical_small = 0.01;
+    static DecimalFormat ndf = new DecimalFormat("#0.00");
+
     String week_title = ""; 
     double total_hrs = 0, regular_hrs = 0,
 	non_reg_hrs = 0, earn_time_used = 0,
@@ -424,12 +424,15 @@ public class TmwrpWeekEntry{
 	net_reg_hrs = 0;
 	if(salaryGroup != null){
 	    if(salaryGroup.isTemporary()){
+		/**
 		if(regular_hrs > CommonInc.cityStandardWeeklyHrs){
 		    net_reg_hrs = CommonInc.cityStandardWeeklyHrs;
 		}
 		else{
 		    net_reg_hrs = regular_hrs;
 		}
+		*/
+		net_reg_hrs = regular_hrs;		
 		return;
 	    }
 	    else if(salaryGroup.isUnionned()){
@@ -485,7 +488,7 @@ public class TmwrpWeekEntry{
 	else{
 	    if(salaryGroup != null){
 		if(salaryGroup.isTemporary()){
-		    excess_hrs = netHours < 40 ? 0: netHours - 40;
+		    // excess_hrs = netHours < 40 ? 0: netHours - 40;
 		}
 		else if(salaryGroup.isPoliceSworn()){
 		    excess_hrs = 0;
@@ -519,11 +522,13 @@ public class TmwrpWeekEntry{
 	if(excess_hrs <= CommonInc.critical_small) return;
 	if(salaryGroup != null){
 	    if(salaryGroup.isTemporary()){
+		/**
 		if(comp_factor > 1.0)
 		    code_id = CommonInc.overTime15EarnCodeID; // "OT1.5";	// no CE1.5 for temp
 		else
 		    code_id = CommonInc.overTime10EarnCodeID; // "OT1.0";
 		addToEarnedHash(code_id, excess_hrs);
+		*/
 		return;
 	    }
 	    if(salaryGroup.isExcessCulculationPayPeriod()){
@@ -618,7 +623,7 @@ public class TmwrpWeekEntry{
 	//
 	if(salaryGroup != null){
 	    if(salaryGroup.isTemporary()){
-		extra_hrs = netHours < 40 ? 0: netHours - 40;
+		// extra_hrs = netHours < 40 ? 0: netHours - 40;
 	    }
 	    else if(salaryGroup.isExcessCulculationDaily()){
 		// union, police,
