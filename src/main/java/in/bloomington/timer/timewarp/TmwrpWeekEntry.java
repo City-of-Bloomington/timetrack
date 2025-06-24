@@ -424,12 +424,16 @@ public class TmwrpWeekEntry{
 	net_reg_hrs = 0;
 	if(salaryGroup != null){
 	    if(salaryGroup.isTemporary()){
+		/**
+		 * modified
 		if(regular_hrs > CommonInc.cityStandardWeeklyHrs){
 		    net_reg_hrs = CommonInc.cityStandardWeeklyHrs;
 		}
 		else{
 		    net_reg_hrs = regular_hrs;
 		}
+		*/
+		net_reg_hrs = regular_hrs;
 		return;
 	    }
 	    else if(salaryGroup.isUnionned()){
@@ -485,7 +489,8 @@ public class TmwrpWeekEntry{
 	else{
 	    if(salaryGroup != null){
 		if(salaryGroup.isTemporary()){
-		    excess_hrs = netHours < 40 ? 0: netHours - 40;
+		    // ignore
+		    // excess_hrs = netHours < 40 ? 0: netHours - 40;
 		}
 		else if(salaryGroup.isUnionned()){ // union AFCSME employee
 		    //
@@ -525,11 +530,13 @@ public class TmwrpWeekEntry{
 	if(excess_hrs <= CommonInc.critical_small) return;
 	if(salaryGroup != null){
 	    if(salaryGroup.isTemporary()){
+		/**
 		if(comp_factor > 1.0)
 		    code_id = CommonInc.overTime15EarnCodeID; // "OT1.5";	// no CE1.5 for temp
 		else
 		    code_id = CommonInc.overTime10EarnCodeID; // "OT1.0";
-		addToEarnedHash(code_id, excess_hrs);								
+		addToEarnedHash(code_id, excess_hrs);
+		*/
 		return;
 	    }
 	    else if(salaryGroup.isExcessCulculationPayPeriod()){
@@ -624,7 +631,7 @@ public class TmwrpWeekEntry{
 	//
 	if(salaryGroup != null){
 	    if(salaryGroup.isTemporary()){
-		extra_hrs = netHours < 40 ? 0: netHours - 40;
+		// extra_hrs = netHours < 40 ? 0: netHours - 40;
 	    }
 	    else if(salaryGroup.isExcessCulculationDaily()){
 		// union, police,
