@@ -14,6 +14,7 @@ import in.bloomington.timer.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// not used anymore
 public class HourCodeExtraCondition implements Serializable{
 
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");

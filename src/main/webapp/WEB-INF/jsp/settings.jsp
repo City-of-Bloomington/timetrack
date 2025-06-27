@@ -29,11 +29,10 @@
 		<li><a href="<s:property value='#application.url'/>hourcode.action">Earn Codes</a></li>
 		<li><a href="<s:property value='#application.url'/>hourcodeCondition.action">Earn Code Restrictions</a></li>
 		<li><a href="<s:property value='#application.url'/>hourcodeExtraCondition.action">Earn Code Extra Restrictions</a></li>
-		<li><a href="<s:property value='#application.url'/>hourcode_extra.action">Earn Code Additional Restrictions</a></li>		
-		<li><a href="<s:property value='#application.url'/>codeRef.action">Earn Code Cross Reference</a></li>
-		<li><a href="<s:property value='#application.url'/>reasonCategory.action">Code Reason Categories</a></li>				
+		<li><a href="<s:property value='#application.url'/>codeRef.action">Earn Code Cross Reference with NW</a></li>
+		<li><a href="<s:property value='#application.url'/>reasonCategory.action">Earn Code Reason Categories</a></li>				
 		<li><a href="<s:property value='#application.url'/>codeReason.action">Earn Code Reasons</a></li>
-		<li><a href="<s:property value='#application.url'/>codeReasonCondition.action">Code Reason Restrictions </a></li>				
+		<li><a href="<s:property value='#application.url'/>codeReasonCondition.action">Earn Code Reason Restrictions </a></li>				
 		<li><a href="<s:property value='#application.url'/>contribute.action"">Earn Code Accraul Contributers</a></li>				
 		<li><a href="<s:property value='#application.url'/>holiday.action">Holidays</a></li>				
 		<li><a href="<s:property value='#application.url'/>group.action">Groups</a></li>

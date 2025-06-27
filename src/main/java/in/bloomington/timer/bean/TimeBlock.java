@@ -825,16 +825,11 @@ public class TimeBlock extends Block{
 	}
 	if(!hour_code_id.isEmpty()){
 	    if(hourCode.isRecordMethodMonetary()){
-		/**
-		List<HourCodeExtraCondition> conditions = null;
-		HourCodeExtraConditionList ecel = new HourCodeExtraConditionList();
-		*/
 		List<HourCodeExtra> conditions = null;
 		HourCodeExtraList ecel = new HourCodeExtraList();		
 		ecel.setHour_code_id(hour_code_id);
 		str = ecel.find();
 		if(str.isEmpty()){
-		    // List<HourCodeExtraCondition> ones = ecel.getConditions();
 		    List<HourCodeExtra> ones = ecel.getExtras();
 		    if(ones != null && ones.size() > 0){
 			conditions = ones;
