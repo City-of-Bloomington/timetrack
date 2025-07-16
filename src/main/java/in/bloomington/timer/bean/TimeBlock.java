@@ -1104,7 +1104,8 @@ public class TimeBlock extends Block{
      select t.id from time_blocks t where t.document_id=2 and t.date = '2017-08-03' and ((13.0 > t.begin_hour+t.begin_minute/60. and 13.0 < t.end_hour+t.end_minute/60.) or (16.0 > t.begin_hour+t.begin_minute/60. and 16.0 < t.end_hour+t.end_minute/60.)) and t.inactive is null;
 		 
     */
-    public String checkForConflicts(){
+    /** old code
+    public String checkForConflicts2(){
 	//
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -1231,6 +1232,144 @@ public class TimeBlock extends Block{
 	}						
 	return msg;	
     }
+    */
+    public String checkForConflicts(){
+	//
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String msg = "";
+	//
+	String emp_id="";
+	// findAllDocumentsForPayPeriod();
+	if(document == null){
+	    getDocument();
+	}
+	if(document != null){
+	    emp_id = document.getEmployee_id();
+	}
+	double timeIn = begin_hour+begin_minute/60.;
+	double timeOut = end_hour+end_minute/60.;
+	String qq = " select t.id,t.hour_code_id from time_blocks t join time_documents d on t.document_id=d.id "+
+	    " where d.employee_id=? and t.date = ? and "+
+	    "t.inactive is null and "+
+	    " ((t.clock_in is null and t.clock_out is null) or "+
+	    " (t.clock_in is not null and t.clock_out is not null)) ";
+	if(!id.isEmpty()){
+	    qq += " and t.id <> ? "; // 5
+	}
+	String qq2 = " select t.id,t.hour_code_id from time_blocks t join time_documents d on t.document_id=d.id "+
+	    " where d.employee_id=? and t.date = ? and "+
+	    "t.inactive is null and "+
+	    " t.clock_in is not null and t.clock_out is null ";
+	if(!id.isEmpty()){
+	    qq2 += " and t.id <> ? ";
+	}								
+	qq2 += " and ? <= t.begin_hour+t.begin_minute/60. "+ 
+	    " and ? >= t.begin_hour+t.begin_minute/60. ";
+	//
+	//either non or both
+	//
+	if(hasNoClockInOut() || hasClockInOut()){
+	    qq +=" and (((? > t.begin_hour+t.begin_minute/60. "+ // start in between
+		" and ? < t.end_hour+t.end_minute/60. "+
+		" ) or "+
+		" (? > t.begin_hour+t.begin_minute/60. "+ // end in between
+		" and ? < t.end_hour+t.end_minute/60. "+
+		" ) or ";
+	    // remove =
+	    qq +=" (? >= t.begin_hour+t.begin_minute/60. "+ // start in between
+		" and ? <= t.end_hour+t.end_minute/60. "+
+		" )) or ";
+	    // start and end in between
+	    qq +=" (? <= t.begin_hour+t.begin_minute/60. "+ 
+		" and ? >= t.end_hour+t.end_minute/60.)) ";
+	    //
+	    // for updates we would have an id to exclude
+	    //
+						
+	    if(timeOut < timeIn){
+		msg = "Time IN is greater than time OUT";
+		return msg;
+	    }
+	    // final
+	    qq = " select count(*) from ("+qq+" union all "+qq2+") t2 where t2.hour_code_id in (select id from hour_codes c where c.record_method='Time' )";
+						
+	}
+	else if(isClockIn()){	// remove =
+	    qq +=" and (? > t.begin_hour+t.begin_minute/60. "+ // start in between
+		" and ? < t.end_hour+t.end_minute/60.) ";
+	    // final
+	    qq = " select count(*) from ("+qq+") t2 where t2.hour_code_id in (select id from hour_codes c where c.record_method='Time' )";						
+						
+	}
+	logger.debug(qq);
+	con = UnoConnect.getConnection();				
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    return msg;
+	}
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    if(date.isEmpty())
+		date = today;
+	    java.util.Date date_tmp = df.parse(date);						
+	    // for(String doc_id: document_ids){
+	    if(!emp_id.isEmpty()){
+		int jj=1;						
+		pstmt.setString(jj++, emp_id); // 1
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); // 2
+		//
+		if(!id.isEmpty()){
+		    pstmt.setString(jj++, id); // 3
+		}														
+		pstmt.setDouble(jj++, timeIn); // time in between
+		pstmt.setDouble(jj++, timeIn); // 5
+		if((clock_in.isEmpty() && clock_out.isEmpty())
+		   || (!clock_in.isEmpty() && !clock_out.isEmpty())){
+										
+		    pstmt.setDouble(jj++, timeOut); //6 time out between
+		    pstmt.setDouble(jj++, timeOut);
+										
+		    pstmt.setDouble(jj++, timeIn);
+		    pstmt.setDouble(jj++, timeOut); // 9
+		    //
+		    // between start and end between two
+		    pstmt.setDouble(jj++, timeIn);
+		    pstmt.setDouble(jj++, timeOut); // 11
+										
+		    //
+		    // for qq2
+		    pstmt.setString(jj++, emp_id); // 12
+		    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime())); //13
+		    if(!id.isEmpty()){
+			pstmt.setString(jj++, id); //14
+		    }
+		    pstmt.setDouble(jj++, timeIn); //15
+		    pstmt.setDouble(jj++, timeOut);//16
+		}
+		rs = pstmt.executeQuery();
+		if(rs.next()){
+		    int cnt = rs.getInt(1);
+		    if(cnt > 0){
+			msg = "Data entry conflict on "+date+" times";
+			errors += msg;
+		    }
+		}
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}						
+	return msg;	
+    }    
+
+    
     public String doSelect(){
 	//
 	Connection con = null;

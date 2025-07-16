@@ -1763,7 +1763,7 @@ insert into grade_comp_hours values(0,'Grade 04',40),
 	 
 insert into pay_periods_alt select id,date_sub(start_date,INTERVAL 1 DAY),date_sub(end_date,INTERVAL 1 DAY) from pay_periods;
 ;;
-;;
+;; // not used
      create table group_pay_period_alt(
      id int unsigned auto_increment primary key,
      group_id int unsigned not null,
