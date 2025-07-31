@@ -220,7 +220,6 @@ public class TermNotification{
 	    // text += "Terminated job title(s): "+term.getJobTitles()+"\n";
 	    List<JobTerminate> jobTerms = term.getJobTerms();
 	    if(jobTerms != null){
-		text += " -- -- -- -- \n";
 		for(JobTerminate one:jobTerms){
 		    text += "Job: "+one.getJobTitleAny()+"\n";
 		    text += "Weekly Hrs: "+one.getWeeklyHours()+"\n";
@@ -233,7 +232,6 @@ public class TermNotification{
 		    text += "Supervisor Phone: "+one.getSupervisor_phone()+"\n";		    text += "Badge Code: "+one.getBadge_code()+"\n";
 		    text += "Badge Code Returned: "+one.getBadge_returned()+"\n"
 ;
-		    text += " -- -- -- -- \n";
 		}
 	    }
 	    if(term.getSuspension()){

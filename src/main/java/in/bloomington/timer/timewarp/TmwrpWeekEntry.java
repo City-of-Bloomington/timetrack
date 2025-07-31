@@ -28,7 +28,9 @@ public class TmwrpWeekEntry{
     String week_title = ""; 
     double total_hrs = 0, regular_hrs = 0,
 	non_reg_hrs = 0, earn_time_used = 0,
-	earned_time = 0, earned_time_daily=0,
+	earned_time = 0,
+	earned_time_sys = 0,
+	earned_time_daily=0,
 	unpaid_hrs = 0,
 	over_time15 = 0, over_time20=0, over_time25 = 0;
     double st_weekly_hrs = 40,
@@ -276,7 +278,12 @@ public class TmwrpWeekEntry{
 	    //
 	    // the following earned_time are the overtime for certain employees
 	    // from daily earns (union)
-	    earned_time_daily = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
+	    if(salaryGroup != null && salaryGroup.isUnionned()){
+		earned_time_daily = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
+	    }
+	    else{
+		earned_time = splitOne.getEarnedTime()+splitTwo.getEarnedTime();
+	    }
 	    earn_time_used = splitOne.getEarnedTimeUsed()+splitTwo.getEarnedTimeUsed();
 	    unpaid_hrs = splitOne.getUnpaidHrs()+splitTwo.getUnpaidHrs();
 	}
@@ -292,9 +299,15 @@ public class TmwrpWeekEntry{
 	    //
 	    // the following earned_time are the overtime for certain employees
 	    // from daily earns (union)
-	    earned_time_daily = splitOne.getEarnedTime();
+	    if(salaryGroup != null && salaryGroup.isUnionned()){	    
+		earned_time_daily = splitOne.getEarnedTime();
+	    }
+	    else{
+		earned_time = splitOne.getEarnedTime();
+	    }
 	    earn_time_used = splitOne.getEarnedTimeUsed();
-	    unpaid_hrs = splitOne.getUnpaidHrs();						
+	    unpaid_hrs = splitOne.getUnpaidHrs();
+	    
 	}
 	//
 	mergeMonetaryHashtablesFromSplits(); // monetary if any
@@ -402,7 +415,7 @@ public class TmwrpWeekEntry{
 	//
 	// everybody else
 	//
-	prof_hrs = total_hrs - st_weekly_hrs - earned_time - holy_earn_hrs;
+	prof_hrs = total_hrs - st_weekly_hrs - earned_time_sys - holy_earn_hrs;
 	if(prof_hrs < CommonInc.critical_small){
 	    prof_hrs = 0;
 	}
@@ -444,7 +457,7 @@ public class TmwrpWeekEntry{
 		return;
 	    }
 	}
-	net_reg_hrs = regular_hrs - earned_time - prof_hrs - holy_earn_hrs;
+	net_reg_hrs = regular_hrs - prof_hrs - holy_earn_hrs - earned_time_sys;
 				
     }
     //
@@ -469,7 +482,7 @@ public class TmwrpWeekEntry{
 	
 	excess_hrs = 0;
 	total_hrs = total_mints/60.;
-	double netHours = total_hrs - earned_time - holy_earn_hrs;
+	double netHours = total_hrs - holy_earn_hrs;
 	//
 	// for full time working less than 40 hrs
 	//
@@ -482,7 +495,7 @@ public class TmwrpWeekEntry{
 		holy_earn_hrs -
 		earned_time_daily;
 	    if(excess_hrs > CommonInc.critical_small){
-		earned_time = excess_hrs;
+		earned_time_sys = excess_hrs;
 	    }
 	    return;
 	}
@@ -510,15 +523,16 @@ public class TmwrpWeekEntry{
 	    }
 	}
 	// we may have carry over from daily such as union
-	if(excess_hrs >= earned_time_daily){
+	if(excess_hrs >= earned_time_daily && earned_time_daily > 0){
 	    excess_hrs = excess_hrs - earned_time_daily;
 	}
-	else if(excess_hrs < earned_time_daily){
+	else if(excess_hrs < earned_time_daily && earned_time_daily > 0){
 	    excess_hrs = 0;
 	}
 	if(excess_hrs > CommonInc.critical_small){
-	    earned_time = excess_hrs;
+	    earned_time_sys = excess_hrs;
 	}
+	// we may have carry over from daily such as union	
     }
     /**
      * if the employee has excess hours, then depending on type of employement,
@@ -530,13 +544,6 @@ public class TmwrpWeekEntry{
 	if(excess_hrs <= CommonInc.critical_small) return;
 	if(salaryGroup != null){
 	    if(salaryGroup.isTemporary()){
-		/**
-		if(comp_factor > 1.0)
-		    code_id = CommonInc.overTime15EarnCodeID; // "OT1.5";	// no CE1.5 for temp
-		else
-		    code_id = CommonInc.overTime10EarnCodeID; // "OT1.0";
-		addToEarnedHash(code_id, excess_hrs);
-		*/
 		return;
 	    }
 	    else if(salaryGroup.isExcessCulculationPayPeriod()){
@@ -559,7 +566,7 @@ public class TmwrpWeekEntry{
 	// but they may total more than 40 if they work 48 hrs for example
 	//
 	// double excess_hrs2 = excess_hrs;
-	double excess_hrs2 = earned_time;
+	double excess_hrs2 = earned_time_sys;
 	/**
 	 * part time employee, they should get regular hours even when
 	 * they work more than weekly hours that is less than 40

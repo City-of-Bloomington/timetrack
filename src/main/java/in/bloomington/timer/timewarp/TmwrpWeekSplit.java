@@ -29,6 +29,7 @@ public class TmwrpWeekSplit{
 	over_time15 = 0, over_time20 = 0,
 	unpaid_hrs = 0,
 	over_time25 = 0;
+    double earn_time_sys = 0; // added by system
     double st_weekly_hrs = 40,
 	comp_weekly_hrs = 0,
 	comp_factor = 1,
@@ -364,8 +365,8 @@ public class TmwrpWeekSplit{
 	}
     }
     /**
-     * we try to find earned time for union employee if they choose
-     * not to pick themselves,
+     * we try to find earned time for UNION employee if they choose
+     * not to add themselves,
      */
     void consolidateDaily(){
 				
