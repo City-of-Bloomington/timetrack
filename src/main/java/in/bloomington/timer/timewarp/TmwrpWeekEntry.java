@@ -450,7 +450,7 @@ public class TmwrpWeekEntry{
 		return;
 	    }
 	    else if(salaryGroup.isUnionned()){
-		net_reg_hrs = regular_hrs - earned_time - earned_time_daily;
+		net_reg_hrs = regular_hrs - earned_time - earned_time_daily - earned_time_sys;
 		if(net_reg_hrs < CommonInc.critical_small){
 		    net_reg_hrs = 0;
 		}
@@ -458,7 +458,6 @@ public class TmwrpWeekEntry{
 	    }
 	}
 	net_reg_hrs = regular_hrs - prof_hrs - holy_earn_hrs - earned_time_sys;
-				
     }
     //
     public double getNonRegularHrs(){
@@ -482,7 +481,8 @@ public class TmwrpWeekEntry{
 	
 	excess_hrs = 0;
 	total_hrs = total_mints/60.;
-	double netHours = total_hrs - holy_earn_hrs;
+	// double netHours = total_hrs - holy_earn_hrs;
+	double netHours = total_hrs - holy_earn_hrs - earned_time_daily;
 	//
 	// for full time working less than 40 hrs
 	//
@@ -508,8 +508,10 @@ public class TmwrpWeekEntry{
 		else if(salaryGroup.isUnionned()){ // union AFCSME employee
 		    //
 		    if(netHours > comp_weekly_hrs){
-			excess_hrs = netHours - comp_weekly_hrs;
+			earned_time_sys = netHours - comp_weekly_hrs;
+			netHours = netHours - earned_time_sys;
 		    }
+		    excess_hrs = earned_time_sys;
 		}
 		else if(salaryGroup.isPoliceSworn()){
 		    excess_hrs = 0;
@@ -518,11 +520,13 @@ public class TmwrpWeekEntry{
 		    //
 		    if(netHours > comp_weekly_hrs){
 			excess_hrs = netHours - comp_weekly_hrs;
+		        earned_time_sys = excess_hrs;
 		    }
 		}
 	    }
 	}
 	// we may have carry over from daily such as union
+	/**
 	if(excess_hrs >= earned_time_daily && earned_time_daily > 0){
 	    excess_hrs = excess_hrs - earned_time_daily;
 	}
@@ -532,6 +536,15 @@ public class TmwrpWeekEntry{
 	if(excess_hrs > CommonInc.critical_small){
 	    earned_time_sys = excess_hrs;
 	}
+	*/
+	if(earned_time_sys > CommonInc.critical_small){
+	    excess_hrs = earned_time_sys;
+	    // createEarnRecord();
+	}
+	if(excess_hrs > CommonInc.critical_small){
+	    earned_time_sys = excess_hrs;
+	}
+    
 	// we may have carry over from daily such as union	
     }
     /**
@@ -541,7 +554,7 @@ public class TmwrpWeekEntry{
     public void createEarnRecord(){
 	//
 	String code_id = "";
-	if(excess_hrs <= CommonInc.critical_small) return;
+	if(excess_hrs <= CommonInc.critical_small && earned_time_sys <= CommonInc.critical_small) return;
 	if(salaryGroup != null){
 	    if(salaryGroup.isTemporary()){
 		return;
