@@ -157,16 +157,14 @@ public class TimeDetailsAction extends TopAction{
 			document_id = one.getId();
 			document = one;
 		    }
-		    if(pay_period_id.compareTo(CommonInc.pay_period_cut_id) > 0){
-			inAltPayPeriodSet = job.isInAltPayPeriodSet();
-		    }		    
 		}
 	    }
 	}
 	if(document != null){
 	    inAltPayPeriodSet = document.isInAltPayPeriodSet();
 	    // to overide the old one
-	    payPeriod = document.getPayPeriod();
+	    if(inAltPayPeriodSet)
+		payPeriod = document.getPayPeriod();
 	}
 	return document_id;
     }

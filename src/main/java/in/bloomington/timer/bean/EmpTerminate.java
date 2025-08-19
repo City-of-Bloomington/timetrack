@@ -868,19 +868,21 @@ public class EmpTerminate{
 	if(job_ids != null){
 	    one_job_id = job_ids[0]; // the first
 	}
-	else if(jobTerms != null){
+	else if(jobTerms != null && jobTerms.size() > 0){
 	    one_job_id = jobTerms.get(0).getJob_id();
 	}
-	JobTask jj = new JobTask(one_job_id);
-	back = jj.doSelect();
-	if(back.isEmpty()){
-	    job = jj;
-	}
-	if(job != null){
-	    Group gg = job.getGroup();
-	    if(gg != null) {
-		oneGroup = gg;
+	if(!one_job_id.isEmpty()){
+	    JobTask jj = new JobTask(one_job_id);
+	    back = jj.doSelect();
+	    if(back.isEmpty()){
+		job = jj;
+	    }
+	    if(job != null){
+		Group gg = job.getGroup();
+		if(gg != null) {
+		    oneGroup = gg;
 		department = oneGroup.getDepartment();
+		}
 	    }
 	}
 	return back;
