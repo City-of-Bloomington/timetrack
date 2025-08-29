@@ -127,7 +127,6 @@ function loginTimer() {
 		    <s:set var="leave_requests" value="document.leaveRequests" />
 		    <%@ include file="leaves_approved.jsp" %>
 		</s:if>
-		<h1>Pay Period Summary</h1>
 		<s:if test="hasMultipleJobs()">
 		    <s:if test="mjdoc.hasWarnings()">
 			<s:set var="warnings" value="mjdoc.warnings" />

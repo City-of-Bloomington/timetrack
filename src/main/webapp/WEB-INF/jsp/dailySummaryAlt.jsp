@@ -1,6 +1,7 @@
 <table class="pay-period-summary-total width-full">
     <tr>
 	<th>Week</th>
+	<th>&nbsp;</th>
 	<th width="10%">Sun</th>
 	<th width="10%">Mon</th>
 	<th width="10%">Tue</th>
@@ -26,9 +27,10 @@
 		<!-- to-do: output the correct JobID into `data-job-id` below -->
 		<tr data-job-id="<s:property value='#jobKey.job_id' />">
 		    <td>
-			Week 1 - <small>(<s:property value="#week1DateRange" />)</small><br>
+			Week 1 - <small>(<s:property value="#week1DateRange" />)</small><br />
 			<small><s:property value="#jobKey" /></small>
 		    </td>
+		    <td>&nbsp;</td>
 	    </s:if>
 	    <s:if test="#dayKey == 8">
 		<s:if test="#unionned">
@@ -41,6 +43,7 @@
 			Week 2 - <small>(<s:property value="#week2DateRange" />)</small><br>
 			<small><s:property value="#jobKey" /></small>
 		    </td>
+		    <td>&nbsp;</td>
 	    </s:if>
 	    <td><s:property value="dayVal" /></td>
 	    <s:if test="#dayKey == 15">
@@ -53,7 +56,7 @@
     </s:iterator>
     <tr class="totals-row">
 	<td><strong>Pay Period Hours</strong></td>
-	<td colspan="7">&nbsp;</td>
+	<td colspan="8">&nbsp;</td>
 	<td>
 	    <strong><s:property value="#payPeriodTotal" /></strong>
 	</td>
@@ -64,7 +67,7 @@
     <s:if test="#payPeriodAmount > 0.0">
 	<tr class="totals-row">
 	    <td><strong>Pay Period Amount</strong></td>
-	    <td colspan="7">&nbsp;</td>
+	    <td colspan="8">&nbsp;</td>
 	    <td>
 		<strong>$<s:property value="#payPeriodAmount" /></strong>
 	    </td>
