@@ -101,9 +101,8 @@
 		<s:iterator var="one" value="documents">
 		    <s:if test="hasDaily()">
 			<div class="approval-wrapper">
-			    <h1>
-				<a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" />
-				<s:property value="employee" />
+			    <h1><a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" />
+			    <s:property value="employee" />
 		    </a>
 		    
 		    <s:if test="canBeProcessed()">
@@ -170,7 +169,7 @@
 				</s:else>	
 			    </div>
 			    <s:if test="hasLeaveRequests()">
-				<h1>Approved Leave in this Pay Period </h1>
+				<s:set var="leaves_title" value="'Approved Leave in this Pay Period'" />
 				<s:set var="leave_requests" value="leaveRequests" />
 				<%@ include file="leaves_approved.jsp" %>
 				<br />

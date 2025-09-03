@@ -24,7 +24,7 @@
 		<s:iterator value="#list" status="row">
 		    <td><s:property /></td>
 		</s:iterator>
-		    </tr>
+	    </tr>
 	</s:iterator>
     </table>
 </s:if>

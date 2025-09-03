@@ -125,6 +125,7 @@ function loginTimer() {
 		<s:if test="document.hasLeaveRequests()">
 		    <h1>Approved Leave in this Pay Period </h1>
 		    <s:set var="leave_requests" value="document.leaveRequests" />
+		    <s:set var="leaves_title" value="'Approved Leave in this Pay Period'" />
 		    <%@ include file="leaves_approved.jsp" %>
 		</s:if>
 		<s:if test="hasMultipleJobs()">

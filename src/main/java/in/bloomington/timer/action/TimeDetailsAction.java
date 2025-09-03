@@ -40,12 +40,18 @@ public class TimeDetailsAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("timeDetails.action");
-	getDocument_id();
+	document_id = getDocument_id();
+	if(document_id == null){
+	    addError(" No job found for employee ");
+	    return ret;
+	}
 	if(!hasEmployee()){
 	    addError(" No employee found ");
+	    return ret;
 	}
 	if(hasNoJob()){
 	    addError(" No job found for employee ");
+	    return ret;
 	}
 	if(action.equals("View")){
 	    ret = "view";
@@ -147,6 +153,7 @@ public class TimeDetailsAction extends TopAction{
 		    getJob();
 		    if(job_id.isEmpty()){
 			addError(" Job not set ");
+			return null;
 		    }
 		}
 		if(!job_id.equals("all")){

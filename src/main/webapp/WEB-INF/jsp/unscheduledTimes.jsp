@@ -1,26 +1,28 @@
-<h1><s:property value="#unscheduledTitle" /></h1>
 <table class="groups width-full">
-	<thead>
-		<tr>				
-			<s:if test="#hasHeaderTitles">		
-				<s:iterator var="one" value="#headerTitles">				
-					<th><s:property /></th>
-				</s:iterator>					
-			</s:if>
-			<s:else>
-				<th>Date</th>
-				<th>Earn Code</th>
-				<th>Hours</th>
-			</s:else>
-		</tr>
-	</thead>
-	<tbody>
-		<s:iterator var="trplt" value="#unscheduleds">
-			<tr>
-				<s:iterator var="one" value="#trplt">				
-					<td><s:property /></td>
-				</s:iterator>					
-			</tr>
-		</s:iterator>
-	</tbody>
+    <caption style="text-align:left;font-weight:bold">	
+	<s:property value="#unscheduledTitle" />
+    </caption>
+    <tr>
+	<s:if test="#hasHeaderTitles">		
+	    <s:iterator var="one" value="#headerTitles">
+		<td><s:property /></td>
+	    </s:iterator>					
+	</s:if>
+	<s:else>
+	    <td>Date</td>
+	    <td>&nbsp;</td>
+	    <td>Earn Code</td>
+	    <td>Hours</td>
+	</s:else>
+    </tr>
+    <s:iterator var="trplt" value="#unscheduleds">
+	<tr>
+	    <s:iterator var="one" value="#trplt" status="row">
+		<s:if test="#row.index == 1">
+		    <td>&nbsp;</td>		    
+		</s:if>
+		<td><s:property /></td>
+	    </s:iterator>					
+	</tr>
+    </s:iterator>
 </table>
