@@ -3,13 +3,13 @@
 	<s:property value="#leaves_title" />
     </caption>
     <tr>
-	<td>&nbsp;</td>
-	<td>Request Date</td>
-	<td>Date Range</td>
-	<td>Hour Code(s)</td>	    
-	<td>Total Hours</td>
-	<td>Review Status</td>
-	<td>Reviewer</td>
+	<th>&nbsp;</th>
+	<th>Request Date</th>
+	<th>Date Range</th>
+	<th>Hour Code(s)</th>	    
+	<th>Total Hours</th>
+	<th>Review Status</th>
+	<th>Reviewer</th>
     </tr>
     <s:iterator var="one" value="#leave_requests">
 	<tr>
