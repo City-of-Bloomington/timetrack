@@ -20,7 +20,7 @@ public class LeaveRequestList{
     static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     static SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");    
     static final long serialVersionUID = 3800L;
-    String job_id="", date_from="", date_to="", sortBy="t.id desc";
+    String job_id="", date_from="", date_to="", sortBy="Id";
     String date_from_ff="", date_to_ff="";
     String pay_period_id = "", initiated_by="";
     String limit="";
@@ -210,9 +210,15 @@ public class LeaveRequestList{
 	    if(!qw.isEmpty()){
 		qq += " where "+qw;
 	    }
-	    if(!sortBy.isEmpty()){
-		qq += " order by "+sortBy;
+	    if(sortBy.startsWith("Id")){
+		qq += " order by t.id desc ";		
 	    }
+	    else if(sortBy.startsWith("Request")){ // request date
+		qq += " order by t.request_date ";		
+	    }
+	    else if(sortBy.startsWith("Start")){ // request date
+		qq += " order by t.start_date ";		
+	    }	    
 	    if(!limit.isEmpty()){
 		qq += " limit "+limit;
 	    }
@@ -350,9 +356,15 @@ public class LeaveRequestList{
 	    if(!qw.isEmpty()){
 		qq += " where "+qw;
 	    }
-	    if(!sortBy.isEmpty()){
-		qq += " order by "+sortBy;
+	    if(sortBy.startsWith("Id")){
+		qq += " order by t.id desc ";		
 	    }
+	    else if(sortBy.startsWith("Request")){ // request date
+		qq += " order by t.request_date ";		
+	    }
+	    else if(sortBy.startsWith("Start")){ // request date
+		qq += " order by t.start_date ";		
+	    }	   	    
 	    if(!limit.isEmpty()){
 		qq += " limit "+limit;
 	    }

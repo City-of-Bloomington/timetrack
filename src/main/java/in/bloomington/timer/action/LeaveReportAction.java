@@ -30,6 +30,15 @@ public class LeaveReportAction extends TopAction{
 	dept_id=""; 
     // leave filter
     String emp_id="", date_from="", date_to="";
+    static String[] sort_option_keys = {"Id","Request date","Start date"};
+    String sortBy = "Id";
+    final static List<Type> sort_options = new ArrayList<>();
+    static {
+	for(String str:sort_option_keys){
+	    sort_options.add(new Type(str,str));
+	}
+    }
+
     //
     // String[] statusVals = {"Approved","Denied"};
     PayPeriod payPeriod = null, currentPayPeriod = null;
@@ -77,6 +86,16 @@ public class LeaveReportAction extends TopAction{
 	}
 	return ret;
     }
+    public String getSortBy(){
+	return sortBy;
+    }
+    public void setSortBy(String val){
+	if(val != null && !val.equals("-1"))
+	    sortBy = val;
+    }
+    public List<Type> getSort_options(){
+	return sort_options;
+    }    
     public void setAction2(String val){
 	if(val != null && !val.isEmpty())		
 	    action = val;
@@ -321,6 +340,7 @@ public class LeaveReportAction extends TopAction{
 	if(!pay_period_id.isEmpty()){
 	    rrl.setPay_period_id(pay_period_id);
 	}
+	rrl.setSortBy(sortBy);
 	// rrl.setLimit("100");
 	String back = rrl.find();
 	if(back.isEmpty()){
@@ -335,16 +355,8 @@ public class LeaveReportAction extends TopAction{
 		    }
 		}
 		leaves_total_number = ones.size();
-		// if(leaves_total_number <= max_requests){
 		leaves = ones;
-		/**
-		}
-		else{
-		    leaves = new ArrayList<>();
-		    for(int jj=0;jj<max_requests;jj++){
-			leaves.add(ones.get(jj));
-		    }
-		*/
+
 	    }
 	}
     }

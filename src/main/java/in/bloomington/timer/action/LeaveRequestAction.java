@@ -24,6 +24,7 @@ public class LeaveRequestAction extends TopAction{
     //
     String pay_period_id = "", job_id = "", cancel_reason="";
     String leavesTitle = "Previous Leave Requests";
+	
     LeaveRequest leave = null;
     List<LeaveRequest> requests = null;
     List<LeaveRequest> pending_leaves = null;
@@ -193,6 +194,7 @@ public class LeaveRequestAction extends TopAction{
 				
 	return leavesTitle;
     }
+
     public Document getDocument(){
 	if(leave != null)
 	    document = leave.getDocument();
