@@ -24,6 +24,7 @@
 			</s:if>
 			<td style="border:none"><label>Date from</label></td>
 			<td style="border:none"><label>Date to</label></td>
+			<td style="border:none"><label>Sort By</label></td>
 			<td style="border:none"><label>&nbsp;&nbsp;</label></td>
 		    </tr>
 		    <tr style="background-color:gainsboro;border:none;spacing:none;">
@@ -33,6 +34,7 @@
 			</s:if>
 			<td style="border:none;padding-bottom:none;"><s:textfield name="date_from" value="%{date_from}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" id="date_from" /></td>
 			<td style="border:none;padding-bottom:none;"><s:textfield name="date_to" value="%{date_to}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" /></td>
+			
 			<td style="border:none;padding-bottom:none;"><s:submit name="action" type="button" value="Refresh List" class="button" style="height:26px;width:150px" /></td>
 		    </tr>
 		</table>
