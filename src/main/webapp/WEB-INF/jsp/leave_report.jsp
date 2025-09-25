@@ -50,6 +50,7 @@
 		    <td style="border:0px"><b>Pay Period</b></td>
 		    <td style="border:none"><b>Date from</b></td>
 		    <td style="border:none"><b>Date to</b></td>
+		    <td style="border:none"><b>Sort by</b></td>		    
 		</tr>
 		<tr style="background-color:gainsboro;border:none">
 		    <td style="border:none;padding-bottom:none;">
@@ -60,6 +61,9 @@
 		    <td style="border:none;padding-bottom:none;"><s:textfield name="date_to" value="%{date_to}" type="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="MM/DD/YYYY" />
 			
 		    </td>
+		    <td style="border:none;padding-bottom:none;"><s:select name="sortBy" value="%{sortBy}" list="sort_options" listKey="id" listValue="name" headerKey="Sort By" headerValue="-1" />
+			
+		    </td>		    
 		</tr>
 	    </table>
 	     <div class="button-group">

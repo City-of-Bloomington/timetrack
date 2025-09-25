@@ -35,6 +35,14 @@ public class LeaveReviewAction extends TopAction{
     // review filter
     String rev_filter_emp_id="", rev_date_from="", rev_date_to="";    
     String[] statusVals = {"Approved","Denied"};
+    static String[] sort_option_keys = {"Id","Request date","Start date"};
+    String sortBy = "Id";
+    final static List<Type> sort_options = new ArrayList<>();
+    static {
+	for(String str:sort_option_keys){
+	    sort_options.add(new Type(str,str));
+	}
+    }    
     PayPeriod payPeriod = null;
     Group group = null;
     Department department = null;
@@ -142,7 +150,17 @@ public class LeaveReviewAction extends TopAction{
     }
     public String getDate_to(){
 	return date_to;
-    }    
+    }
+    public String getSortBy(){
+	return sortBy;
+    }
+    public void setSortBy(String val){
+	if(val != null && !val.equals("-1"))
+	    sortBy = val;
+    }
+    public List<Type> getSort_options(){
+	return sort_options;
+    }        
     public void setRev_date_to(String val){
 	if(val != null && !val.isEmpty()){		
 	   rev_date_to = val;
@@ -418,6 +436,7 @@ public class LeaveReviewAction extends TopAction{
 	else if(!group_id.isEmpty()){
 	    rrl.setGroup_id(group_id);
 	}
+	rrl.setSortBy(sortBy);	
 	String back = rrl.find();
 	if(back.isEmpty()){
 	    List<LeaveRequest> ones = rrl.getRequests();
