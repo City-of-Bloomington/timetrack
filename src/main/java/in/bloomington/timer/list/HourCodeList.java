@@ -27,7 +27,7 @@ public class HourCodeList{
     boolean active_only = false , default_regular_only = false;
     boolean include_holidays = false, include_monetary=false;
     boolean current_only = false, related_to_accruals_only=false;
-    String type="", name="", record_method="";
+    String type="", altType="", name="", record_method="";
     boolean allEarnTypes = false;
     public HourCodeList(){
     }
@@ -63,6 +63,10 @@ public class HourCodeList{
 	if(val != null && !val.equals("-1"))
 	    type = val;
     }
+    public void setAltType(String val){
+	if(val != null && !val.equals("-1"))
+	    altType = val;
+    }    
     public void setName(String val){
 	if(val != null)
 	    name = val;
@@ -169,7 +173,11 @@ public class HourCodeList{
 		    qw += " (c.group_id = ? or c.group_id is null)";
 		}								
 	    }
-	    if(!type.isEmpty()){
+	    if(!altType.isEmpty() && !type.isEmpty()){
+		if(!qw.isEmpty()) qw += " and "; 
+		qw += " (e.type = ? or e.type = ?) ";
+	    }
+	    else if(!type.isEmpty()){
 		if(!qw.isEmpty()) qw += " and "; 
 		qw += " e.type = ? ";
 	    }
@@ -206,7 +214,11 @@ public class HourCodeList{
 		    pstmt.setString(jj++, group_id);
 		}								
 	    }
-	    if(!type.isEmpty()){
+	    if(!altType.isEmpty() && !type.isEmpty()){
+		pstmt.setString(jj++, type);
+		pstmt.setString(jj++, altType);
+	    }
+	    else if(!type.isEmpty()){
 		pstmt.setString(jj++, type);
 	    }
 	    rs = pstmt.executeQuery();

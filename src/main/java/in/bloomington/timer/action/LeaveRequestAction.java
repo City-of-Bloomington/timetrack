@@ -414,6 +414,7 @@ public class LeaveRequestAction extends TopAction{
 		}
 		ecl.setGroup_id(group_id);
 		ecl.setType("Used"); //
+		ecl.setAltType("Unpaid");
 		ecl.setActiveOnly();
 		String back = ecl.lookFor();
 		if(back.isEmpty()){
@@ -438,13 +439,15 @@ public class LeaveRequestAction extends TopAction{
 	String email_msg = "";
 	String email_from = "";
 	String email_to = "";
+	boolean user_has_no_email = false;
 	Employee manager = null;	
 	Employee emp = leave.getEmployee();
 	subject = "[Time Track] Leave request for "+emp.getFull_name();
 	if(emp != null){
 	    email_from = emp.getEmail();
-	}		// we need only one
-
+	    if(email_from == null || email_from.isEmpty())
+		user_has_no_email=true;
+	}	
 	GroupManager groupManager = leave.getManager();
 	if(groupManager != null){
 	    Employee one = groupManager.getEmployee();
@@ -470,6 +473,10 @@ public class LeaveRequestAction extends TopAction{
 	}
 	else{
 	    email_msg += "\n\n";
+	}
+	if(user_has_no_email){
+	    email_from = email_to;
+	    email_msg = "Notes: employee has no valid email ";
 	}
 	// to requester we don not include the following text
 	String email_msg2 = email_msg;
