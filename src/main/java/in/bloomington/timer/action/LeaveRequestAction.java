@@ -476,7 +476,7 @@ public class LeaveRequestAction extends TopAction{
 	}
 	if(user_has_no_email){
 	    email_from = email_to;
-	    email_msg = "Notes: employee has no valid email ";
+	    email_msg = "Note: employee has no valid email in timetrack ";
 	}
 	// to requester we don not include the following text
 	String email_msg2 = email_msg;

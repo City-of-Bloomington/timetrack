@@ -609,6 +609,7 @@ public class LeaveReview implements java.io.Serializable{
 	String email_cc = "";
 	String email_to = "";
 	String group_id = "";
+	boolean emp_has_email = true;
 	Employee manager = null;
 	List<LeaveReceiver> receivers = null;
 	LeaveRequest leave = new LeaveRequest(leave_one);
@@ -638,6 +639,9 @@ public class LeaveReview implements java.io.Serializable{
 	subject = "[Time Track] Leave request for "+emp.getFull_name();
 	if(emp != null){
 	    email_to = emp.getEmail();
+	    if(email_to == null || email_to.isEmpty()){
+		emp_has_email = false;
+	    }
 	}
 	email_from = user.getEmail();
 	email_cc = email_from; // user to himself
@@ -652,7 +656,10 @@ public class LeaveReview implements java.io.Serializable{
 	email_msg += "Leave Description: "+leave.getRequestDetails()+"\n\n";
 	if(!rev_notes_one.isEmpty()){
 	    email_msg += "Review notes: "+rev_notes_one+"\n\n";
-	    
+	    if(!emp_has_email){
+		email_msg = "Note: employee has no valid email in timetrack \n\n";
+		email_to = email_from;
+	    }
 	}	    
 	if(rev_status_one.equals("Approved")){
 	    email_msg += "Please update your availability in your personal calendar, department time off calendar, and any out of office notifications.\n\n";
