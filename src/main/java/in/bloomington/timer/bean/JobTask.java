@@ -30,7 +30,8 @@ public class JobTask implements Serializable{
     }
     static {
 	altPayPeriodGroupSet.add("32"); //dispatch
-	altPayPeriodGroupSet.add("350"); //dispatch admin	
+	altPayPeriodGroupSet.add("350"); //dispatch supervisors
+	altPayPeriodGroupSet.add("360"); //dispatch admin	
     }
     static boolean isInAltPayPeriodSet(String str){
 	return altPayPeriodGroupSet.contains(str);
