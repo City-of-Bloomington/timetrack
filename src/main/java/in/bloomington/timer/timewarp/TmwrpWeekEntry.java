@@ -490,7 +490,7 @@ public class TmwrpWeekEntry{
 	    //
 	    // we use only regular hours to find if more than 40
 	    //
-	    excess_hrs = regular_hrs -
+	    excess_hrs = total_hrs - 
 		comp_weekly_hrs -
 		holy_earn_hrs -
 		earned_time_daily;
