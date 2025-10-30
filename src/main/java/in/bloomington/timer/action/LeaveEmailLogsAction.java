@@ -23,30 +23,55 @@ public class LeaveEmailLogsAction extends TopAction{
     //
     String logsTitle = "Most recent leave email logs";
     List<LeaveEmailLog> logs = null;
-
+    LeaveEmailLogList lel = new LeaveEmailLogList();
     public String execute(){
 	String ret = SUCCESS;
 	String back = canProceed("leaveEmailLogs.action");
 	if(!back.isEmpty()){
 	    return back;
 	}
+	if(!action.isEmpty()){
+	    lel.setNoLimit();
+	    back = lel.find();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		List<LeaveEmailLog> ones = lel.getLogs();
+		if(ones != null && ones.size() > 0){
+		    logs = ones;
+		    logsTitle = " Found "+logs.size()+" emails";
+		    addMessage("Found "+logs.size()+" emails");
+		}
+		else{
+		    addMessage("No match found");
+		    logsTitle = "No match found";
+		}
+	    }
+	}
+	else{
+
+	}
+	getLel();
 	return ret;
     }
+    public LeaveEmailLogList getLel(){
+	return lel;
+    }
     public String getLogsTitle(){
-				
 	return logsTitle;
     }
-
     public void setAction2(String val){
 	if(val != null && !val.isEmpty())		
 	    action =val;
     }
     public boolean hasLogs(){
-	getLogs();
+	if(action.isEmpty())
+	    getLogs();
 	return logs != null && logs.size() > 0;
     }
     public List<LeaveEmailLog> getLogs(){
-	if(logs == null){
+	if(action.isEmpty()){
 	    LeaveEmailLogList tl = new LeaveEmailLogList();
 	    String back = tl.find();
 	    if(back.isEmpty()){

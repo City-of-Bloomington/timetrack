@@ -72,7 +72,6 @@
 		<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Entry History</a></li>
 		<li><a href="<s:property value='#application.url'/>termNotificationLogs.action">Employee Termination notification Logs</a></li>
 		<li><a href="<s:property value='#application.url'/>timeBlockLog.action">Time Active Users (Email list)</a></li>
-		<li><a href="<s:property value='#application.url'/>leave_email_logs.action">Leave Email Logs</a></li>		
 	    </ul>
 	</div>
 	<div class="width-one-half float-right">
@@ -90,6 +89,8 @@
 		<li><a href="<s:property value='#application.url'/>search_terminations.action">Terminations</a></li>		
 		<li><a href="<s:property value='#application.url'/>searchConditions.action">Earn Code Restrictions</a></li>
 		<li><a href="<s:property value='#application.url'/>searchReasonConditions.action">Code Reason Restrictions</a></li>
+		<li><a href="<s:property value='#application.url'/>leave_email_logs.action">Leave Email Logs</a></li>		
+		
 	    </ul>
 	    <h2>Target Employee</h2>
 	    <ul>
