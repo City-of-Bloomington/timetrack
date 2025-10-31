@@ -193,6 +193,13 @@
       <result name="error">/WEB-INF/jsp/accrual.jsp</result>
       <result name="success">/WEB-INF/jsp/accrual.jsp</result>
     </action>
+    <action name="altPayPeriodGroup" 
+	    class="in.bloomington.timer.action.AltPayPeriodGroupAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/alt_pay_period_group.jsp</result>		
+      <result name="error">/WEB-INF/jsp/alt_pay_period_group.jsp</result>
+      <result name="success">/WEB-INF/jsp/alt_pay_period_group.jsp</result>
+    </action>    
     <action name="excess_accruals" 
 	    class="in.bloomington.timer.action.ExcessAccrualAction" 
 	    method="execute">

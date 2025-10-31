@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
+import java.time.Instant;
+import java.time.Duration;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
@@ -22,17 +24,21 @@ public class JobTask implements Serializable{
 
     static Logger logger = LogManager.getLogger(JobTask.class);
     static final long serialVersionUID = 2400L;
+    static Instant startTime = null;
+    static final long alt_group_update_period = 60L; // minutes
     static Set<String> deptSet = new HashSet<>();
-    static Set<String> altPayPeriodGroupSet = new HashSet<>();
+    static Set<String> altPayPeriodGroupSet = null;
     static {
 	deptSet.add("6"); // clerk
 	deptSet.add("23"); // council
     }
+    /**
     static {
 	altPayPeriodGroupSet.add("32"); //dispatch
 	altPayPeriodGroupSet.add("350"); //dispatch supervisors
 	altPayPeriodGroupSet.add("360"); //dispatch admin	
     }
+    */
     static boolean isInAltPayPeriodSet(String str){
 	return altPayPeriodGroupSet.contains(str);
     }
@@ -72,9 +78,11 @@ public class JobTask implements Serializable{
     Shift shift = null;
     List<Group> allGroups = null; // all employee groups
     public JobTask(){
+	prepareAltGroups();
     }		    
     public JobTask(String val){
 	setId(val);
+	prepareAltGroups();
     }
     public JobTask(String val,
 		   String val2,
@@ -336,7 +344,7 @@ public class JobTask implements Serializable{
 	if(val24 != null && !position_id.isEmpty()){
 	    position = new Position(position_id, val24);
 	}				
-
+	prepareAltGroups();
     }
     //
     // getters
@@ -874,6 +882,31 @@ public class JobTask implements Serializable{
 		System.err.println(back);
 	}
     }
+    private void prepareAltGroups(){
+	boolean needUpdate = false;
+	if(startTime == null){
+	    startTime =  Instant.now();
+	}
+	else {
+	    Instant now = Instant.now();
+	    long minutes = Duration.between(startTime, now).toMinutes();
+	    if(minutes > alt_group_update_period){
+		needUpdate = true;
+		startTime = now;
+	    }
+	}
+	if(altPayPeriodGroupSet == null || needUpdate){
+	    needUpdate = false;
+	    AltPayPeriodGroupList apgl = new AltPayPeriodGroupList();
+	    String back = apgl.find();
+	    if(back.isEmpty()){
+		Set<String> set = apgl.getGroupIdSet();
+		if(set != null && set.size() > 0){
+		    altPayPeriodGroupSet = set;
+		}
+	    }		
+	}
+    }    
     /**
      * for job that is expired, can be reactivate by deleting the
      * expire date

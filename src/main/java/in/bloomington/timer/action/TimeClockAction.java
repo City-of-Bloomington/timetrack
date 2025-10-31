@@ -63,11 +63,6 @@ public class TimeClockAction extends TopAction{
 	    if(ip.isEmpty()){
 		ip = req.getRemoteAddr();
 	    }
-	    if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
-		InetAddress inetAddress = InetAddress.getLocalHost();
-		String ipAddress = inetAddress.getHostAddress();
-		ip = ipAddress;
-	    }
 	    if(ipSet != null){
 		if(ipSet.contains(ip)){
 		    if(locationHash.containsKey(ip)){
