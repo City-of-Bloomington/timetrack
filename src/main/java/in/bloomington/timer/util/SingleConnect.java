@@ -59,7 +59,7 @@ public class SingleConnect implements ServletContextListener{
 	    System.err.println("MS sql database: no database specified");
 	    return null;
 	}
-	String dbSql = dbUrl+";database="+dbName+";user="+dbUser+";password="+dbPass;
+	String dbSql = dbUrl+";database="+dbName+";user="+dbUser+";password="+dbPass+";trustServerCertificate=true";
 	for(int i=0;i<3;i++){
 	    try{
 		if(con == null || con.isClosed()){
