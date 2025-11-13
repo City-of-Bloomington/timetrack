@@ -89,7 +89,7 @@ public class DocumentList{
     //
     public String find(){
 	Connection con = null;
-	PreparedStatement pstmt = null;
+	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
 	String msg="", str="";
 	String qc = "select count(*) from time_documents d, employees e,pay_periods pp,jobs j ";				
@@ -159,7 +159,7 @@ public class DocumentList{
 	    if(rs.next()){
 		total_records = rs.getInt(1);
 	    }
-	    Helper.databaseDisconnect(pstmt, rs);
+	    //Helper.databaseDisconnect(pstmt, rs);
 	    if(total_records > 0){
 		if(page_size > 0){
 		    int offset = (page_number - 1) * page_size;
@@ -167,26 +167,26 @@ public class DocumentList{
 			qq += " limit "+offset+", "+page_size;
 		    }
 		}
-		pstmt = con.prepareStatement(qq);
+		pstmt2 = con.prepareStatement(qq);
 		jj=1;
 		if(!employee_id.isEmpty()){
-		    pstmt.setString(jj++, employee_id);
+		    pstmt2.setString(jj++, employee_id);
 		}
 		if(!pay_period_id.isEmpty()){
-		    pstmt.setString(jj++, pay_period_id);
+		    pstmt2.setString(jj++, pay_period_id);
 		}
 		if(!job_id.isEmpty()){
-		    pstmt.setString(jj++, job_id);
+		    pstmt2.setString(jj++, job_id);
 		}						
 		if(!date.isEmpty()){
 		    java.util.Date date_tmp = df.parse(date);
-		    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
-		    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		    pstmt2.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		    pstmt2.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 		}
 		if(!department_id.isEmpty()){
-		    pstmt.setString(jj++, department_id);
+		    pstmt2.setString(jj++, department_id);
 		}
-		rs = pstmt.executeQuery();						
+		rs = pstmt2.executeQuery();						
 		while(rs.next()){
 		    if(documents == null)
 			documents = new ArrayList<>();
@@ -207,11 +207,274 @@ public class DocumentList{
 	    logger.error(msg+":"+qq);
 	}
 	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;
     }
+    /**
+     * NOT used yet
+     * find approved document so that they can be processed
+     * these are approved but not processed yet
+     */
+    public String findToProcess(){
+	Connection con = null;
+	PreparedStatement pstmt = null, pstmt2=null;
+	ResultSet rs = null;
+	String msg="", str="";
+	String qc = "select count(*) from time_documents d, employees e,pay_periods pp,jobs j,time_actions a ";				
+	String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e,pay_periods pp,jobs j ";
+	String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id,and a.workflow_id=3 and a.cancelled_time is null "+
+	    " and a.id=(select max(a2.id) from time_actions a2 where a2.document_id=d.id) ";
+	boolean periodTbl = false;
+	if(!employee_id.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += "d.employee_id=? ";
+	}
+	if(!pay_period_id.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += "d.pay_period_id=? ";
+	}
+	if(!job_id.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";						
+	    qw += "d.job_id=? ";
+	}				
+	if(!date.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += "pp.start_date <= ? and pp.end_date >= ?";
+	}
+	if(!department_id.isEmpty()){
+	    qq += ", `groups` g  ";
+	    qc += ", `groups` g  ";
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += " g.department_id=? and g.id=j.group_id ";
+						
+	}
+	if(!group_ids.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += "j.group_id in ("+group_ids+")";
+	}
+	if(!qw.isEmpty()){
+	    qc += " where "+qw;
+	    qq += " where "+qw;
+	}
+	qq += " order by e.last_name,e.first_name ";
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    logger.error(msg);
+	    return msg;
+	}
+	logger.debug(qq);
+	try{
+	    pstmt = con.prepareStatement(qc);
+	    int jj=1;
+	    if(!employee_id.isEmpty()){
+		pstmt.setString(jj++, employee_id);
+	    }
+	    if(!pay_period_id.isEmpty()){
+		pstmt.setString(jj++, pay_period_id);
+	    }
+	    if(!job_id.isEmpty()){
+		pstmt.setString(jj++, job_id);
+	    }						
+	    if(!date.isEmpty()){
+		java.util.Date date_tmp = df.parse(date);
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    }
+	    if(!department_id.isEmpty()){
+		pstmt.setString(jj++, department_id);
+	    }
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		total_records = rs.getInt(1);
+	    }
+	    //Helper.databaseDisconnect(pstmt, rs);
+	    if(total_records > 0){
+		if(page_size > 0){
+		    int offset = (page_number - 1) * page_size;
+		    if(total_records > page_size){
+			qq += " limit "+offset+", "+page_size;
+		    }
+		}
+		pstmt2 = con.prepareStatement(qq);
+		jj=1;
+		if(!employee_id.isEmpty()){
+		    pstmt2.setString(jj++, employee_id);
+		}
+		if(!pay_period_id.isEmpty()){
+		    pstmt2.setString(jj++, pay_period_id);
+		}
+		if(!job_id.isEmpty()){
+		    pstmt2.setString(jj++, job_id);
+		}						
+		if(!date.isEmpty()){
+		    java.util.Date date_tmp = df.parse(date);
+		    pstmt2.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		    pstmt2.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		}
+		if(!department_id.isEmpty()){
+		    pstmt2.setString(jj++, department_id);
+		}
+		rs = pstmt2.executeQuery();						
+		while(rs.next()){
+		    if(documents == null)
+			documents = new ArrayList<>();
+		    Document one = new Document(
+						rs.getString(1),
+						rs.getString(2),
+						rs.getString(3),
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6));
+		    if(!documents.contains(one))
+			documents.add(one);
+		}
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+    }
+    /**
+     * NOT used yet
+     * not approved are the ones submitted but not approved yet
+     */
+    public String findForApproval(){
+	Connection con = null;
+	PreparedStatement pstmt = null, pstmt2=null;
+	ResultSet rs = null;
+	String msg="", str="";
+	String qc = "select count(*) from time_documents d, employees e,pay_periods pp,jobs j,time_actions a ";				
+	String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e,pay_periods pp,jobs j ";
+	String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id,and a.workflow_id=2 and a.cancelled_time is null "+
+	    " and a.id=(select max(a2.id) from time_actions a2 where a2.document_id=d.id) ";
+	boolean periodTbl = false;
+	if(!employee_id.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += "d.employee_id=? ";
+	}
+	if(!pay_period_id.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += "d.pay_period_id=? ";
+	}
+	if(!job_id.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";						
+	    qw += "d.job_id=? ";
+	}				
+	if(!date.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += "pp.start_date <= ? and pp.end_date >= ?";
+	}
+	if(!department_id.isEmpty()){
+	    qq += ", `groups` g  ";
+	    qc += ", `groups` g  ";
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += " g.department_id=? and g.id=j.group_id ";
+						
+	}
+	if(!group_ids.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += "j.group_id in ("+group_ids+")";
+	}
+	if(!qw.isEmpty()){
+	    qc += " where "+qw;
+	    qq += " where "+qw;
+	}
+	qq += " order by e.last_name,e.first_name ";
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    logger.error(msg);
+	    return msg;
+	}
+	logger.debug(qq);
+	try{
+	    pstmt = con.prepareStatement(qc);
+	    int jj=1;
+	    if(!employee_id.isEmpty()){
+		pstmt.setString(jj++, employee_id);
+	    }
+	    if(!pay_period_id.isEmpty()){
+		pstmt.setString(jj++, pay_period_id);
+	    }
+	    if(!job_id.isEmpty()){
+		pstmt.setString(jj++, job_id);
+	    }						
+	    if(!date.isEmpty()){
+		java.util.Date date_tmp = df.parse(date);
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    }
+	    if(!department_id.isEmpty()){
+		pstmt.setString(jj++, department_id);
+	    }
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		total_records = rs.getInt(1);
+	    }
+	    //Helper.databaseDisconnect(pstmt, rs);
+	    if(total_records > 0){
+		if(page_size > 0){
+		    int offset = (page_number - 1) * page_size;
+		    if(total_records > page_size){
+			qq += " limit "+offset+", "+page_size;
+		    }
+		}
+		pstmt2 = con.prepareStatement(qq);
+		jj=1;
+		if(!employee_id.isEmpty()){
+		    pstmt2.setString(jj++, employee_id);
+		}
+		if(!pay_period_id.isEmpty()){
+		    pstmt2.setString(jj++, pay_period_id);
+		}
+		if(!job_id.isEmpty()){
+		    pstmt2.setString(jj++, job_id);
+		}						
+		if(!date.isEmpty()){
+		    java.util.Date date_tmp = df.parse(date);
+		    pstmt2.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		    pstmt2.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+		}
+		if(!department_id.isEmpty()){
+		    pstmt2.setString(jj++, department_id);
+		}
+		rs = pstmt2.executeQuery();						
+		while(rs.next()){
+		    if(documents == null)
+			documents = new ArrayList<>();
+		    Document one = new Document(
+						rs.getString(1),
+						rs.getString(2),
+						rs.getString(3),
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6));
+		    if(!documents.contains(one))
+			documents.add(one);
+		}
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+    }
+
+    
     /**
      * needed for cleanup class
      * pay_period_id is not really needed
@@ -360,5 +623,23 @@ public class DocumentList{
 	}
 	return msg;
     }
+
+    // approved ones only
+    //
+	select d.id,a.id,a.workflow_id from time_documents d, employees e,jobs j
+	,time_actions a, groups g 
+	where d.id=a.document_id                                                        and a.workflow_id=3
+	and a.cancelled_time is null
+	and d.employee_id=e.id                                                          and d.pay_period_id=726                                                       and j.id=d.job_id                                                               and j.group_id=g.id                                                             and g.department_id=5
+	and a.id=(select max(a2.id) from time_actions a2 where a2.document_id=d.id)
+
+	// not approved yet
+	select d.id,a.id,a.workflow_id from time_documents d, employees e,jobs j
+	,time_actions a, groups g 
+	where d.id=a.document_id                                                        and a.workflow_id=2
+	and a.cancelled_time is null
+	and d.employee_id=e.id                                                          and d.pay_period_id=726                                                       and j.id=d.job_id                                                               and j.group_id=g.id                                                             and g.department_id=5
+	and a.id=(select max(a2.id) from time_actions a2 where a2.document_id=d.id)
+	    
     */
 }
