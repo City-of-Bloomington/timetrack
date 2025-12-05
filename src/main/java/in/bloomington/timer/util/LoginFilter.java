@@ -40,22 +40,35 @@ public class LoginFilter implements Filter {
 	res.addHeader("Content-Security-Policy", LoginFilter.POLICY);	
 	res.addHeader("X-Frame-Options", "DENY");
 	String uri = req.getRequestURI();
-	HttpSession session = req.getSession(false);
+	HttpSession session = req.getSession();
 	if(session == null || session.getAttribute("user") == null){
 	    // these are our exludes
 	    if(uri.matches(".*(timeClock|PickJob|mobileClock|callback).*") ||
 	       uri.matches(".*(Service|Login|css|jpg|png|gif|js)$")){
-
 		chain.doFilter(request, response);
+		
 	    }
 	    else{
+		String originalURL = uri;
+		if (req.getQueryString() != null) {
+		    originalURL += "?" + req.getQueryString();
+		}
+		System.err.println(" url "+originalURL);
+		req.getSession().setAttribute("originalURL", originalURL);
 		// everything else we need login
 		res.sendRedirect("Login");
 	    }
 	}
 	else{
-	    // process the rest of the chain
-	    chain.doFilter(request, response);
+	    String originalURL = (String) session.getAttribute("originalURL");
+	    if (originalURL != null && !originalURL.isEmpty()) {
+		res.sendRedirect(originalURL);
+		session.removeAttribute("originalURL"); 
+	    }
+	    else {
+		// process the rest of the chain
+		chain.doFilter(request, response);
+	    }
 	}
     }
 

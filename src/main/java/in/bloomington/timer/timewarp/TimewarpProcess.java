@@ -355,7 +355,6 @@ public class TimewarpProcess{
 	//
 	Hashtable<String, Double> nreg  = new Hashtable<>();
 	// when two weeks are completely separated
-	System.err.println("w1 noWeekSplit "+noWeekSplit);
 	if(noWeekSplit){
 	    nreg  =  getWeek1All();
 	}

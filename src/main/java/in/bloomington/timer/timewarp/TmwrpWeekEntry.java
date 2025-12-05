@@ -541,7 +541,7 @@ public class TmwrpWeekEntry{
 	    excess_hrs = earned_time_sys;
 	    // createEarnRecord();
 	}
-	if(excess_hrs > CommonInc.critical_small){
+	else if(excess_hrs > CommonInc.critical_small){
 	    earned_time_sys = excess_hrs;
 	}
     
@@ -615,8 +615,9 @@ public class TmwrpWeekEntry{
 	    }
 	    String dstr = ndf.format(excess_hrs2);
 	    excess_hrs2 = (double) (new Double(dstr));
-	    addToEarnedHash(code_id, excess_hrs2);								
+	    addToEarnedHash(code_id, excess_hrs2);
 	}
+
     }		
     public boolean hasExessHours(){
 	return excess_hrs > CommonInc.critical_small;
@@ -685,7 +686,6 @@ public class TmwrpWeekEntry{
 	    if(holy_earn_hrs > CommonInc.critical_small){
 		// 
 		//
-		// create earn codes
 		if(salaryGroup != null && salaryGroup.isUnionned()){
 		    code_id = CommonInc.holyCompTime20EarnCodeID; // "HCE2.0";
 		}

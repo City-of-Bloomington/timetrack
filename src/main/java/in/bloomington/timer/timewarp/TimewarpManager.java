@@ -219,7 +219,6 @@ public class TimewarpManager{
 		    }
 		}
 		else {
-		    // System.err.println(" week one split "+weekOneHasSplit);
 		    if(weekOneHasSplit){
 			// first pay period
 			// week 1 split 1 only
@@ -276,10 +275,9 @@ public class TimewarpManager{
 			}										
 		    }
 		    else{
-			System.err.println(" week two split true ");
 			// hours
 			hash  =  process.getWeek1All();
-			if(!hash.isEmpty()){										
+			if(!hash.isEmpty()){
 			    back += block.doSaveBolk(hash, "Week 1",1, "Hours");
 			}
 			// week 2 split 1
@@ -308,16 +306,17 @@ public class TimewarpManager{
 			//
 			// second pay
 			// hours
-			hash = process.getWeek1().getEarnedHours();
-			if(!hash.isEmpty()){
-			    back += block.doSaveBolk(hash, "Week 1",2, "Hours");
-			}
 			//
 			hash = process.getWeekSplitNonRegularHours(2, 2);
 			hash2 =  process.getWeek2().getEarnedHours();
 			if(!hash2.isEmpty()){
 			    mergeTwoHashes(hash2, hash);
 			}
+			if(process.isHand){
+			    hash2  = process.getWeekSplitRegularHours(2, 2);
+			    if(!hash2.isEmpty()){								mergeTwoHashes(hash2, hash);
+			    }
+			}			
 			if(process.hasProfHours()){
 			    double dd = process.getProfHours();
 			    hash.put(prof_hrs_id, dd);

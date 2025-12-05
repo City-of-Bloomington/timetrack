@@ -13,7 +13,7 @@
 	<div class="width-one-half float-left">
 	    <h2>Settings</h2>
 	    <ul>
-		<li><a href="<s:property value='#application.url'/>accrual.action"">Accrual Types</a></li>
+		<li><a href="<s:property value='#application.url'/>accrual.action">Accrual Types</a></li>
 		<li><a href="<s:property value='#application.url'/>accrualWarning.action">Accrual Warnings </a></li>
 		<li><a href="<s:property value='#application.url'/>annuance.action">Annuancements </a></li>		
 		<li><a href="<s:property value='#application.url'/>location.action">Locations</a></li>				
