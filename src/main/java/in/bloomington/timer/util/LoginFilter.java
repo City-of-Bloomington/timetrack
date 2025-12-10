@@ -53,7 +53,6 @@ public class LoginFilter implements Filter {
 		if (req.getQueryString() != null) {
 		    originalURL += "?" + req.getQueryString();
 		}
-		System.err.println(" url "+originalURL);
 		req.getSession().setAttribute("originalURL", originalURL);
 		// everything else we need login
 		res.sendRedirect("Login");

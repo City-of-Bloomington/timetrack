@@ -32,6 +32,8 @@ public class ReportAction extends TopAction{
     List<TimeBlock> timeBlocks = null;
     List<WarpEntry> entries = null;
     List<Department> depts = null;
+    //
+    String new_employee_id="", group_id = "";
     Report report = null;
     List<Integer> years = null;
     List<WarpEntry> dailyEntries = null;
@@ -48,6 +50,9 @@ public class ReportAction extends TopAction{
 	else if(action.startsWith("Remove")){
 	    // we ignore we just remove from the list
 	}
+	else if(action.startsWith("Next")){
+	    // we ignore we just remove from the list
+	}	
 	else if(!action.isEmpty()){
 	    getCodeSet();
 	    report.setCodeSet(codeSet);
@@ -303,8 +308,19 @@ public class ReportAction extends TopAction{
     public boolean hasDepts(){
 	getDepts();
 	return depts != null && depts.size() > 0;
-    }		
-				
+    }
+    public void setNew_employee_id(String val){
+	if(val != null && !val.isEmpty())		
+	    new_employee_id = val;
+    }
+		
+    public void setEmployee_name(String val){
+	// for auto complete
+    }
+    public String getEmployee_name(){
+	return "";
+    }        
+					
 }
 
 

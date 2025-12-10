@@ -35,7 +35,7 @@ public class TimeBlockList{
     String code = "", code2 = ""; // needed for HAND and planning
     String codeSet = null; //needed for reports, comma separated values
     String accrual_as_of_date = "";
-    String salary_group_id = "";
+    String salary_group_id = "", group_id="";
     boolean active_only = false, for_today = false, dailyOnly=false,
 	clockInOnly = false, hasClockInAndOut = false, hasBlockNotes = false,
 	inAltPayPeriodSet = false;
@@ -132,6 +132,10 @@ public class TimeBlockList{
     public void setCodeSet(String val){
 	if(val != null)
 	    codeSet = val;
+    }
+    public void setGroup_id(String val){
+	if(val != null)
+	    group_id = val;
     }    
     // hours duration for clock-in, clock-out 
     public void setDuration(String val){
@@ -445,7 +449,12 @@ public class TimeBlockList{
 	    qw += "v.document_id=? ";
 	}
 	else{
-	    if(!department_id.isEmpty()){
+	    if(!group_id.isEmpty()){
+		qq += " join jobs j on j.id=v.job_id ";
+		if(!qw.isEmpty()) qw += " and ";
+		qw += "  j.group_id=? ";
+	    }
+	    else if(!department_id.isEmpty()){
 		qq += " join jobs j on j.id=v.job_id ";
 		qq += " join `groups` g on g.id=j.group_id ";
 		if(!qw.isEmpty()) qw += " and ";								
@@ -531,10 +540,12 @@ public class TimeBlockList{
 		pstmt.setString(jj++, document_id);
 	    }
 	    else{
-		if(!department_id.isEmpty()){
+		if(!group_id.isEmpty()){
+		    pstmt.setString(jj++, group_id);
+		}
+		else if(!department_id.isEmpty()){
 		    pstmt.setString(jj++, department_id);
-		}										
-		if(!pay_period_id.isEmpty()){
+		}										if(!pay_period_id.isEmpty()){
 		    pstmt.setString(jj++, pay_period_id);
 		}
 		if(!employee_id.isEmpty()){

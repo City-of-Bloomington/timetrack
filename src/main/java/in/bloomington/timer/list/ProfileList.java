@@ -936,7 +936,23 @@ public class ProfileList{
        10-@IncludeSP=1,
        11-@IncludeCertification=1,
        12-@UserID=3
+       13-@PrimaryOnly=0 //newly added
 
+HR.HRReport_EmployeePayRateReport 
+@EffectiveDate='2025-12-10 00:00:00',
+@ProjectedIncrease=N'0',
+@EmployeeID=NULL,
+@strOrgStructureID=N'16',
+@strxGroupHeaderID=NULL,
+@strPayTypeID=N'3,1,2',
+@RoundDecimals=2,
+@ProposedRate=0,
+@IncludeLongevity=0,
+@IncludeSP=0,
+@IncludeCertification=0,
+@UserID=3,
+@PrimaryOnly=0
+       
        // output
        1 OrgStructureID
        2 DepartmentCode
@@ -981,7 +997,7 @@ public class ProfileList{
 	CallableStatement cs;
 	// input effective date=current date, default is today
 	// input dept ref
-	String qq = "{CALL HR.HRReport_EmployeePayRateReport(null,'0',null,?,null,'3,1,2',2,0,1,1,1,3)}";
+	String qq = "{CALL HR.HRReport_EmployeePayRateReport(null,'0',null,?,null,'3,1,2',2,0,1,0,0,3,0)}";
 	System.err.println(qq);
 	con = SingleConnect.getNwConnection();
 	if(con == null){
@@ -1020,6 +1036,7 @@ public class ProfileList{
 		if(!employeeRates.containsKey(str)){
 		    employeeRates.put(str, str3);
 		}
+		System.err.println(str+", "+str2+", "+str3);
 		// System.err.println(str+", "+str2+", "+str3+","+str4+","+str5+","+str6+","+str7+","+str8);
 	    }
 	}

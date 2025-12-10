@@ -30,11 +30,15 @@ public class Report{
     String dept="", department_id="", type="html"; 
     String dept_ref_id="";
     String salary_group_id="";
+    // added 12/09/2025
+    String group_id = ""; 
+    String employee_id="", employee_name=""; // for auto complete
     //String code="";
     // String code2="";
     String[] codes = null;
     String codeSet = null;
     Department department = null;
+    List<Group> groups = null;
     Hashtable<String, Profile> profiles = null;
     List<BenefitGroup> benefitGroups = null;
     Map<String, List<WarpEntry>> mapEntries = null;
@@ -98,16 +102,72 @@ public class Report{
 	    return "-1";
 	return department_id;
     }
+    public String getGroup_id(){
+	if(group_id.isEmpty())
+	    return "-1";
+	return group_id;
+    }
+    public String getName(){ // employee_name
+	return employee_name;
+    }
+    public void setName(String val){ // employee_name
+	if(val != null)
+	    employee_name = val;
+	// 
+    }
+    public String getEmployee_id(){
+	if(employee_id.isEmpty())
+	    return "";
+	return employee_id;
+    }    
     public Department getDepartment(){
-	if(department == null && !department_id.isEmpty()){
-	    Department one = new Department(department_id);
-	    String back = one.doSelect();
-	    if(back.isEmpty()){
-		department = one;
-		dept_ref_id = one.getRef_id();
+	if(department == null){
+	    if(department_id.isEmpty()){
+		if(!group_id.isEmpty()){
+		    Group one = new Group(group_id);
+		    String back = one.doSelect();
+		    if(back.isEmpty()){
+			department_id = one.getDepartment_id();
+		    }
+		}
+		else if(!employee_id.isEmpty()){
+		    Employee one = new Employee(employee_id);
+		    String back = one.doSelect();
+		    if(back.isEmpty()){
+			department_id = one.getDepartment_id();
+		    }
+		}
+	    }
+	    if(!department_id.isEmpty()){
+		Department one = new Department(department_id);
+		String back = one.doSelect();
+		if(back.isEmpty()){
+		    department = one;
+		    dept_ref_id = one.getRef_id();
+		}
 	    }
 	}
 	return department;
+    }
+    public List<Group> getGroups(){
+	if(groups == null){
+	    if(!department_id.isEmpty()){
+		GroupList gl = new GroupList();
+		gl.setDepartment_id(department_id);
+		String back = gl.find();
+		if(back.isEmpty()){
+		    List<Group> ones = gl.getGroups();
+		    if(ones != null){
+			groups = ones;
+		    }
+		}
+	    }
+	}
+	return groups;
+    }
+    public boolean hasGroups(){
+	getGroups();
+	return groups != null && groups.size() > 0;
     }
     public boolean hasDepartment(){
 	getDepartment();
@@ -184,6 +244,16 @@ public class Report{
 	if(val != null && !val.equals("-1")){
 	    department_id = val;
 	}
+    }
+    public void setGroup_id(String val){
+	if(val != null && !val.equals("-1")){
+	    group_id = val;
+	}
+    }
+    public void setEmployee_id(String val){
+	if(val != null && !val.equals("-1")){
+	    employee_id = val;
+	}
     }    
     public void setType(String val){
 	if(val != null){
@@ -244,6 +314,9 @@ public class Report{
     }				
     String setProfiles(){
 	String msg="";
+	if(dept_ref_id.isEmpty()){
+	    getDepartment();
+	}
 	if(profiles == null){
 	    getBenefitGroups();
 	    ProfileList pl = new ProfileList(end_date,
@@ -281,7 +354,13 @@ public class Report{
 	else if(codes != null){
 	    findCodeSet();
 	}
-	if(!department_id.isEmpty()){
+	if(!employee_id.isEmpty()){
+	    tbl.setEmployee_id(employee_id);
+	}
+	else if(!group_id.isEmpty()){
+	    tbl.setGroup_id(group_id);
+	}
+	else if(!department_id.isEmpty()){
 	    tbl.setDepartment_id(department_id);
 	}
 	if(!salary_group_id.isEmpty()){
@@ -342,9 +421,17 @@ public class Report{
 	if(codeSet != null && !codeSet.isEmpty()){
 	    qw += " and c.id in ("+codeSet+") ";
 	}
-	if(!department_id.isEmpty()){
+	if(!employee_id.isEmpty()){
+	    qw += " and e.id = ? ";
+	}
+	else if(!group_id.isEmpty()){
+	    if(salary_group_id.isEmpty()){
+		qq += " join jobs j on d.job_id=j.id ";
+	    }
+	    qw += " and j.group_id = ? ";
+	}
+	else if(!department_id.isEmpty()){
 	    qq += " join department_employees de on de.employee_id=d.employee_id ";
-
 	    qw += " and de.department_id = ? ";
 	}
 	qq += qw +") tt ";
@@ -367,7 +454,13 @@ public class Report{
 	    if(!salary_group_id.isEmpty()){
 		pstmt.setString(jj++, salary_group_id);
 	    }
-	    if(!department_id.isEmpty()){
+	    if(!employee_id.isEmpty()){
+		pstmt.setString(jj++, employee_id);
+	    }
+	    else if(!group_id.isEmpty()){
+		pstmt.setString(jj++, group_id);
+	    }	    
+	    else if(!department_id.isEmpty()){
 		pstmt.setString(jj++, department_id);
 	    }
 	    rs = pstmt.executeQuery();
@@ -452,9 +545,17 @@ public class Report{
 	if(codeSet != null && !codeSet.isEmpty()){	    
 	    qw += " and c.id in ("+codeSet+") ";
 	}
-	if(!department_id.isEmpty()){
+	if(!employee_id.isEmpty()){
+	    qw += " and e.id = ? ";
+	}
+	else if(!group_id.isEmpty()){
+	    if(salary_group_id.isEmpty()){
+		qq += " join jobs j on d.job_id=j.id ";
+	    }
+	    qw += " and j.group_id = ? ";
+	}
+	else if(!department_id.isEmpty()){
 	    qq += " join department_employees de on de.employee_id=d.employee_id ";
-						
 	    qw += " and de.department_id = ? ";
 	}
 	qq += qw;
@@ -479,9 +580,15 @@ public class Report{
 	    if(!salary_group_id.isEmpty()){
 		pstmt.setString(jj++, salary_group_id);
 	    }
-	    if(!department_id.isEmpty()){
-		pstmt.setString(jj++, department_id);
+	    if(!employee_id.isEmpty()){
+		pstmt.setString(jj++, employee_id);
 	    }
+	    else if(!group_id.isEmpty()){
+		pstmt.setString(jj++, group_id);
+	    }	    
+	    else if(!department_id.isEmpty()){
+		pstmt.setString(jj++, department_id);
+	    }	    
 	    rs = pstmt.executeQuery();
 	    jj=0;
 	    while(rs.next()){

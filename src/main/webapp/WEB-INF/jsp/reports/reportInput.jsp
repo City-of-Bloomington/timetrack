@@ -24,6 +24,9 @@
 	    <li>You can query time details by choosing either the year and quarter or by entering date range.</li>
 	    <li>Pick from the available 'Earn Codes' in the left pane and click 'Add', continue adding one by one</li>
 	    <li>If you chose an earn code by mistake, click on it in the right pange and click on 'Remove'</li>
+	    <li> You can run the report by Department, Group or Employee</li>
+	    <li> To run the report for certain group, pick the Department first and then pick from the group list</li>
+	    <li> To run the report for an Employee, start typing employee name in the Employee Name field then pick from the list </li>
 	    <li>For output type, we suggest that you run the 'Web page HTML' type first so that you get an idea about the numbers. If you are OK with these numbers then you choose the 'CSV' type.</li>
 	</ul>
 	<div class="width-one-half float-left">
@@ -36,9 +39,27 @@
 	    <s:if test="hasDepts()">
 		<div class="form-group">
 		    <label>Department</label>
-		    <s:select name="report.department_id" value="%{report.department_id}" list="depts" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
+		    <s:select name="report.department_id" value="%{report.department_id}" list="depts" listKey="id" listValue="name" headerKey="-1" headerValue="All" id="department_id_change" />
+		</div>
+		<div class="button-group">
+		    <input type='submit' name='action' value='Next (pick a group)' />
 		</div>
 	    </s:if>
+	    <s:if test="report.hasGroups()">
+		<div class="form-group">
+		    <label>Group</label>
+		    <s:select name="report.group_id" value="%{report.group_id}" id="group_id_set"  list="%{report.groups}" listKey="id" listValue="name" headerKey="-1" headerValue="All" />
+		</div>
+	    </s:if>	    
+	    <div class="form-group">
+		<label>Employee ID</label>
+		<s:textfield name="report.employee_id" value="%{report.employee_id}" size="10" id="employee_id" />
+	    </div>
+	    <div class="form-group">
+		<label>Full Name</label>
+		<s:textfield name="report.name" value="%{report.name}" size="30" id="employee_name2" /><br />
+		(start typing to pick from list)
+	    </div>	    
 	    <div class="form-group">
 		<label>Quarter Selection: </label>
 		<s:select name="report.quarter" value="%{report.quarter}" list="#{'-1':'Pick quarter','1':'First','2':'Second','3':'Third','4':'Forth'}" /> Year:<s:select name="report.year" value="%{report.year}" list="years" headerKey="-1" headerValue="Pick Year" />

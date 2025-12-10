@@ -86,6 +86,9 @@ public class SwitchAction extends TopAction{
     public void setEmployee_name(String val){
 	// for auto complete
     }
+    public String getEmployee_name(){
+	return "";
+    }    
     public void setDocument_id(String val){
 	if(val != null && !val.isEmpty())		
 	    document_id = val;
@@ -98,9 +101,7 @@ public class SwitchAction extends TopAction{
 	if(val != null && !val.isEmpty())		
 	    source = val;
     }		
-    public String getEmployee_name(){
-	return "";
-    }
+
 
 }
 
