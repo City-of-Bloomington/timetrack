@@ -82,16 +82,17 @@
 			</ul>
 		    </s:if>
 		    <s:if test="hasNotApprovedMap()">
-			<small class="status-tag not-approved">Time Not Approved</small><br /><br />
+			<small class="status-tag not-approved">Time Not Approved</small> <br /><br />
+			<ul>			    			
 			<s:iterator value="notApproved" var="one2" >
 			    <s:set var="fname" value="#one2.key" />
 			    <s:set var="docs" value="#one2.value" />
-			    <li style="list-style-type:none;"><b><s:property value="#fname" /></b> needs to approve hours for
-				<s:iterator value="#docs" status="row">
-				    <a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" /><s:property value="employee" /></a><s:if test="!#row.last">, </s:if>
-				</s:iterator></li>
+				<li style="list-style-type:none;"><b><s:property value="#fname" /></b> needs to approve hours for
+				    <s:iterator value="#docs" status="row">
+					<a href="<s:property value='#application.url' />switch.action?document_id=<s:property value='id' />&new_employee_id=<s:property value='employee_id' />&action=Change" /><s:property value="employee" /></a><s:if test="!#row.last">, </s:if>
+				    </s:iterator></li>
 			</s:iterator>
-			<br />
+			</ul>
 		    </s:if>
 		</div>
 	    </s:if>
