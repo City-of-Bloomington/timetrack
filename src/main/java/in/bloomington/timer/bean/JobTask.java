@@ -778,13 +778,14 @@ public class JobTask implements Serializable{
 	else if(bGroup.isTemporary()){
 	    new_salary_group_id = "3";
 	}
-	else if(bGroup.isPartTime()){
-	    if(bGroup.isExempt()){
-		new_salary_group_id = "5";
-	    }
-	    else{
+	else if(bGroup.isPartTimeExempt()){
+	    new_salary_group_id = "5";
+	}
+	else if(bGroup.isPartTimeNonExempt()){
 		new_salary_group_id = "11";
-	    }
+	}
+	else if(bGroup.isPartTime()){
+	    new_salary_group_id = "14";
 	}
 	else if(bGroup.isPoliceSworn()){
 	    new_salary_group_id = "6";
@@ -810,6 +811,9 @@ public class JobTask implements Serializable{
 	else if(bGroup.isUnioned()){
 	    new_salary_group_id = "4";
 	}
+	else if(bGroup.isSeasonal()){
+	    new_salary_group_id = "13";
+	}	
 	if(!new_salary_group_id.isEmpty()){
 	    if(!salary_group_id.equals(new_salary_group_id)){
 		salary_group_id = new_salary_group_id;

@@ -1897,5 +1897,34 @@ insert into benefit_group_refs values
 (25, 'ELECTED  - Elected Employees : Regular Exempt',1);
 
 =======
+;;
+;; add new category to salary groups
+;;
+insert into salary_groups values(13,'Seasonal','Seasonal Employee',14,'Other',null);
+insert into salary_groups values(14,'Part Time','Part Time No Benefit',1,'Other',null);
+;;
+;; add the following to benefit groups
+;;
+insert into benefit_groups values(55,'SEASONAL',null,null,null);
+insert into benefit_groups values(56,'uSEASONAL',null,null,null);       
+insert into benefit_groups values(57,'NON-U PTnx',null,null,null);
+insert into benefit_groups values(58,'uNON-U PTnx',null,null,null);
+;;
+;; add TEMP as earn code to Seasonal salary groups in earn code restriction
+;; add Reg as earn code to Part Time salary groups in earn code restriction
+;;
+;; modify  the function in document class checkForWarningsAfter()
+;; to include the following
+;;
+;;	    if(job.getSalaryGroup().isPartTime()){
+;;		if(week1Total > job.getWeekly_regular_hours()){
+;;		    String str = "Week 1 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
+;;		    if(!warnings.contains(str))
+;;			warnings.add(str);
+;;		}
+;;	    }
+;;
+;; any part time employee set their weekly hours to 29
+;;
 
 

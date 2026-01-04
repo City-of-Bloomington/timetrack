@@ -49,25 +49,31 @@ public class LoginFilter implements Filter {
 		
 	    }
 	    else{
+		/**
+		   // we need to do cleanup the url may contain WEB-INF/jsp
+		   // and jsp extension
 		String originalURL = uri;
 		if (req.getQueryString() != null) {
 		    originalURL += "?" + req.getQueryString();
 		}
 		req.getSession().setAttribute("originalURL", originalURL);
+		*/
 		// everything else we need login
 		res.sendRedirect("Login");
 	    }
 	}
 	else{
+	    /**
 	    String originalURL = (String) session.getAttribute("originalURL");
 	    if (originalURL != null && !originalURL.isEmpty()) {
 		res.sendRedirect(originalURL);
 		session.removeAttribute("originalURL"); 
 	    }
 	    else {
+	    */
 		// process the rest of the chain
-		chain.doFilter(request, response);
-	    }
+	    chain.doFilter(request, response);
+	    // }
 	}
     }
 

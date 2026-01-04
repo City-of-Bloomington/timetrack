@@ -100,7 +100,7 @@
 		</div>
 		<div class="form-group">
 		    <label>Comp Time Weekly Hours </label>
-		    <s:textfield name="jobTask.comp_time_weekly_hours" value="%{jobTask.comp_time_weekly_hours}" size="3" maxlength="3" required="true" />(normally 40 for non-exempt)
+		    <s:textfield name="jobTask.comp_time_weekly_hours" value="%{jobTask.comp_time_weekly_hours}" size="3" maxlength="3" required="true" id="comp_hrs_id" />(normally 40 for non-exempt)
 		</div>
 		<div class="form-group">
 		    <label>Comp Time Multiple Factor (1 for exempt, 1.5 for non-exempt)</label>

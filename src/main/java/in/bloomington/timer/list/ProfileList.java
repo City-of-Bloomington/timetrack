@@ -551,7 +551,7 @@ public class ProfileList{
 	    while(rs.next()){
 		String str = rs.getString(4); // nw employeeId 
 		String str2 = rs.getString(25); // benefit group id
-		String str3 = ""; // rs.getString(3); //full time/part time, exempt/non-exempt
+		String str3 = rs.getString(26); // benefit group desc
 		String str4 = rs.getString(20); // grade info
 		String grade_str = str4;
 		String grade_str2 = rs.getString(6);
@@ -580,7 +580,7 @@ public class ProfileList{
 		    jj++;
 		}
 		else{
-		    System.err.println(str10+" bg not found "+str2);
+		    System.err.println(str10+" bg not found "+str2+": "+str3);
 		}
 		if(str.equals(prev_id)){
 		    if(factorId == 36){

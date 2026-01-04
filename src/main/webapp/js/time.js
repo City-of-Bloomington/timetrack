@@ -168,13 +168,71 @@ function handleShowCodeReason(val){
 //
 $('#job_salary_group_change').change(function() {
     var $option = $(this).find('option:selected');
-    var sel_name = $option.text();
+    var sel_name = $option.text().trim();
+    var sel_val = $option.val();
+    // console.log(sel_name);
+    // alert(sel_name);
     if(sel_name == 'Temp'){
 	$("#weekly_hrs_id").val("20");
-	$("#comp_factor_id").val("1.5");
-	$("#holiday_factor_id").val("1.5");
-	$("#clock_required_id").attr('checked', true);				
+	$("#comp_hrs_id").val("40");	
+	$("#comp_factor_id").val("1");
+	$("#holiday_factor_id").val("1");
     }
+    else if(sel_name == 'Seasonal'){
+	$("#weekly_hrs_id").val("20");
+	$("#comp_hrs_id").val("40");	
+	$("#comp_factor_id").val("1");
+	$("#holiday_factor_id").val("1");
+    }    
+    else if(sel_name == 'Part Time'){
+	$("#weekly_hrs_id").val("29");
+	$("#comp_hrs_id").val("40");	
+	$("#comp_factor_id").val("1");
+	$("#holiday_factor_id").val("1");
+    }    
+    else if(sel_name == 'Exempt'){
+	$("#weekly_hrs_id").val("40");
+	$("#comp_hrs_id").val("45");	
+	$("#comp_factor_id").val("1");
+	$("#holiday_factor_id").val("1");
+    }        
+    else if(sel_name == 'Non-Exempt'){
+	$("#weekly_hrs_id").val("40");
+	$("#comp_hrs_id").val("40");		
+	$("#comp_factor_id").val("1.5");
+	$("#holiday_factor_id").val("2");
+    }
+    else if(sel_name == 'Union'){
+	$("#weekly_hrs_id").val("40");
+	$("#comp_hrs_id").val("40");	
+	$("#comp_factor_id").val("1.5");
+	$("#holiday_factor_id").val("2");
+    }
+    else if(sel_val == '11'){ // Part Time Non-Exempt
+	$("#weekly_hrs_id").val("30");
+	$("#comp_hrs_id").val("40");	
+	$("#comp_factor_id").val("1.5");
+	$("#holiday_factor_id").val("2");
+    }
+    else if(sel_val == '5'){ // Part Time Exempt
+	$("#weekly_hrs_id").val("30");
+	$("#comp_hrs_id").val("40");	
+	$("#comp_factor_id").val("1");
+	$("#holiday_factor_id").val("1");
+    }
+    else if(sel_val == '9'){ // Fire Sworn
+	$("#weekly_hrs_id").val("120");
+	$("#comp_hrs_id").val("120");	
+	$("#comp_factor_id").val("1");
+	$("#holiday_factor_id").val("1");
+    }
+    else if(sel_val == '10'){ // Fire Sworn 5x8
+	$("#weekly_hrs_id").val("40");
+	$("#comp_hrs_id").val("45");	
+	$("#comp_factor_id").val("1");
+	$("#holiday_factor_id").val("1");
+    }
+        
 })
 $('#start_date_id').change(function() {
     var val = $(this).val();

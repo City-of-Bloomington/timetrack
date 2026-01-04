@@ -99,9 +99,21 @@ public class SalaryGroup implements Serializable{
     public boolean isTemporary(){
 	return name.indexOf("Temp") > -1; // for Temp and Temp W/Ben
     }
-    public boolean isPartTime(){
-	return name.startsWith("Part");
-    }		
+    public boolean isSeasonal(){
+	return name.indexOf("Seasonal") > -1; // for Temp and Temp W/Ben
+    }    
+    public boolean isPartTime(){ // Part time no benefit
+	return name.equals("Part Time");
+    }
+    public boolean isPartTimeWithBen(){
+	return isPartTimeExcempt() || isPartTimeNonExcempt();
+    }
+    public boolean isPartTimeNonExcempt(){
+	return name.indexOf("Part Time Non") > -1;
+    }
+    public boolean isPartTimeExcempt(){
+	return name.equals("Part Time Exempt");
+    }    
     public boolean isUnionned(){
 	return name.equals("Union") || name.equals("AFSCME");
     }
@@ -323,5 +335,11 @@ public class SalaryGroup implements Serializable{
 	}
 	return msg;
     }		
+    /**
+       insert into salary_groups values(13,'Seasonal','Seasonal Employee',14,'Other',null);
+       insert into salary_groups values(14,'Part Time','Part Time No Benefit',1,'Other',null);
+       
 
+
+     */
 }

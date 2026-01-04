@@ -135,7 +135,7 @@ public class TimewarpProcess{
 	    job = val;
 	    SalaryGroup salaryGroup = job.getSalaryGroup();
 	    if(salaryGroup != null){
-		if(salaryGroup.isTemporary()){
+		if(salaryGroup.isTemporary() || salaryGroup.isSeasonal()){
 		    regCode = CommonInc.tempEarnCodeStr; // TEMP
 		}
 		else if(salaryGroup.isFireSworn()){
@@ -277,6 +277,13 @@ public class TimewarpProcess{
     public boolean hasProfHours(){
 	return week1.getProfHours() + week2.getProfHours() > 0;
     }
+    public boolean hasProfHoursWeek1(){
+	return week1.getProfHours() > 0;
+    }
+    public boolean hasProfHoursWeek2(){
+	return week2.getProfHours() > 0;
+    }    
+    
     boolean hasTwoDifferentYears(){
 	return twoDifferentYears;
     }
@@ -461,11 +468,12 @@ public class TimewarpProcess{
 	    }
 	}
 	// prof hrs always goes in second pay period
-	if(hasProfHours()){
-	    String dstr = getProfHoursStr();
-	    Double dd = new Double(dstr);
+	if(hasProfHoursWeek2()){
+	    Double dd = week2.getProfHours(); 
+	    // String dstr = getProfHoursStr();
+	    // Double dd = new Double(dstr);
 	    nreg.put(profHrsCode, dd);
-	}
+	}	
 	if(!nreg.isEmpty()){				
 	    nregSecondPay = nreg; // considerOnCall(nreg);				
 	}
@@ -638,7 +646,7 @@ public class TimewarpProcess{
 	    msg = "No time entry found";
 	    return msg;
 	}
-	if(document.isTemporary()){
+	if(document.isTemporary() || document.isSeasonal()){
 	    regCode =  CommonInc.tempEarnCodeStr; //TEMP
 	}
 	try{

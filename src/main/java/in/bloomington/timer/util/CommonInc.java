@@ -49,10 +49,15 @@ public class CommonInc{
     // default regualar (Reg) earn code and related ID used by many 
     // for full time employees (match the database earn codes)
     public final static String regEarnCodeStr = "Reg";
-    public final static String regEarnCodeID = "1";		
+    public final static String regEarnCodeID = "1";
+    public final static String partTimeEarnCodeStr = "Reg";
+    public final static String partTimeEarnCodeID = "1";
+        
     // for temp employees
     public final static String tempEarnCodeStr = "TEMP";
     public final static String tempEarnCodeID = "14";
+    public final static String seasonalEarnCodeStr = "TEMP";
+    public final static String seasonalEarnCodeID = "14";    
     //
     // Fire depart special reg code for BC group only
     public final static String regEarnCodeFireBCGroupStr = "REG FIRE BC";		

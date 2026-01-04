@@ -542,5 +542,9 @@ delete from group_managers where wf_node_id=7;
 
 select * from groups g where g.id not in (select group_id from group_managers where wf_node_id=7) and g.department_id not in (8,16,20,36);
 
+// adding consultant as reviewer
+insert into group_managers select 0,g.id,2962,6,'2025-12-01',null,null,null from groups g;
+
+
 
  */

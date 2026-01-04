@@ -277,10 +277,12 @@ public class Document implements Serializable{
     public boolean hasAccruals(){
 	getSalaryGroup();
 	if(salaryGroup != null &&
-	   !salaryGroup.isTemporary()){
-	    return true;
+	   salaryGroup.isTemporary() ||
+	   salaryGroup.isSeasonal() ||
+	   salaryGroup.isPartTime()){
+	    return false;
 	}
-	return false;
+	return true;
     }		
     public boolean hasLastTimeAction(){
 	getLastTimeAction();
@@ -828,6 +830,14 @@ public class Document implements Serializable{
 	}
 	return false;
     }
+    public boolean isSeasonal(){
+	if(salaryGroup == null)
+	    getSalaryGroup();
+	if(salaryGroup != null){
+	    return salaryGroup.isSeasonal();
+	}
+	return false;
+    }    
     public boolean isPartTime(){
 	if(salaryGroup == null)
 	    getSalaryGroup();
@@ -1402,6 +1412,13 @@ public class Document implements Serializable{
 		String str = "Week 1 total hours are less than "+job.getWeekly_regular_hours()+" hrs";
 		if(!warnings.contains(str))
 		    warnings.add(str);
+	    }
+	    if(job.getSalaryGroup().isPartTime()){
+		if(week1Total > job.getWeekly_regular_hours()){
+		    String str = "Week 1 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
+		    if(!warnings.contains(str))
+			warnings.add(str);
+		}
 	    }
 	}
 	if(week2Total > 0){

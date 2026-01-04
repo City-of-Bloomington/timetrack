@@ -316,11 +316,13 @@ public class TimewarpManager{
 			    hash2  = process.getWeekSplitRegularHours(2, 2);
 			    if(!hash2.isEmpty()){								mergeTwoHashes(hash2, hash);
 			    }
-			}			
+			}
+			/**
 			if(process.hasProfHours()){
 			    double dd = process.getProfHours();
 			    hash.put(prof_hrs_id, dd);
 			}
+			*/
 			if(!hash.isEmpty()){
 			    back += block.doSaveBolk(hash, "Week 2",2, "Hours");
 			}
