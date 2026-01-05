@@ -57,6 +57,8 @@ public class EmpTerminate{
     String remarks="",submitted_by_id ="", submitted_date="";
     String other_job_titles = "";
     String recipients_informed="";
+    String termination_type = "";// Resignation, Retirement,Syspension, Partial Termiantion, Termination
+    String cdl_status = "";// NA, No, Yes
     List<DepartmentEmployee> departmentEmployees = null;
     List<GroupManager> groupManagers = null;
     List<JobTask> jobs = null;
@@ -98,16 +100,18 @@ public class EmpTerminate{
 		String str22, String str23, String str24,
 		
 		double str25, double str26, double str27,
-		String str28, boolean str29, String str30,
-		String str31,
-		String str32, boolean str33){
+		String str28, String str29,
+		String str30,
+		String str31, boolean str32, String str33,
+		String str34){
 	setVals(str, str2, str3, str4, str5,
 		str6, str7, str8, str9, str10,
 		str11, str12, str13, str14, str15,
 		str16, str17, str18, str19, str20,
 		str21, str22, str23, str24, str25,
 		str26, str27, str28, str29, str30,
-		str31, str32, str33);
+		str31, str32, str33,
+		str34);
 		
     }
 			
@@ -125,12 +129,14 @@ public class EmpTerminate{
 		double str25, double str26, double str27,
 
 		String str28,
-		boolean str29,
+		// boolean str29,
+		String str29,
 		String str30,
-		String str31,
 		
-		String str32,
-		boolean str33){
+		String str31,
+		boolean str32,
+		String str33,
+		String str34){
 	setId(str);
 	setEmployee_id(str2);
 	setFull_name(str3);
@@ -164,13 +170,14 @@ public class EmpTerminate{
 	setVac_time(str26);
 	setPto(str27);
 	setRemarks(str28);
-	setSuspension(str29);
-	setSubmitted_by_id(str30);
-	setSubmitted_date(str31);
+	// setSuspension(str29);
+	setSubmitted_by_id(str29);
+	setSubmitted_date(str30);
 
-	setProcess_status(str32);	
-	setRecipients_informed(str33);
-
+	setProcess_status(str31);	
+	setRecipients_informed(str32);
+	setTerminate_type(str33);
+	setCdl_status(str34);
     }
     public boolean equals(Object obj){
 	if(obj instanceof EmpTerminate){
@@ -282,7 +289,13 @@ public class EmpTerminate{
     }
     public String getProcess_status(){
 	return process_status;
-    }    
+    }
+    public String getTermination_type(){
+	return termination_type;
+    }
+    public String getCdl_status(){
+	return cdl_status;
+    }
     //
     // ITS
     public String getEmail(){
@@ -299,10 +312,11 @@ public class EmpTerminate{
     public String getForward_days_cnt(){
 	return forward_days_cnt;
     }
+    /**
     public boolean getSuspension(){
 	return !suspension.isEmpty();
     }
-
+    */
     public String getDrive_action(){
 	return drive_action;
     }
@@ -540,7 +554,14 @@ public class EmpTerminate{
 	if(val != null)
 	    full_name = val;
     }    
-
+    public void setTerminate_type(String val){
+	if(val != null && !val.equals("-1"))
+	    termination_type = val;
+    }
+    public void setCdl_status(String val){
+	if(val != null)
+	    cdl_status = val;
+    }    
     public void setEmployment_type(String val){
 	if(val != null)
 	    employment_type=val;
@@ -686,10 +707,12 @@ public class EmpTerminate{
 	if(val != null)
 	    emp_phone = val;
     }
+    /**
     public void setSuspension(boolean val){
 	if(val)
 	    suspension = "y";
-    }    
+    }
+    */
     public void setEmp_alt_phone(String val){
 	if(val != null)
 	    emp_alt_phone = val;
@@ -1117,8 +1140,8 @@ public class EmpTerminate{
 	ResultSet rs = null;	
 	String qq = "insert into emp_terminations values(0,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "?,'Started', null)";
+	    "?,?,?,?,?, ?,?,?,?,?"+
+	    "'Started', null,?,?)";
 	process_status="Started";
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -1272,20 +1295,38 @@ public class EmpTerminate{
 		pstmt.setNull(27, Types.VARCHAR);
 	    else	    
 		pstmt.setString(27, remarks);
+	    /**
 	    if(suspension.isEmpty())
 		pstmt.setNull(28, Types.CHAR);
 	    else	    
-		pstmt.setString(28, "y");	    
+		pstmt.setString(28, "y");
+	    */
 	    if(submitted_by_id.isEmpty())
-		pstmt.setNull(29, Types.VARCHAR);
+		pstmt.setNull(28, Types.VARCHAR);
 	    else
-		pstmt.setString(29, submitted_by_id);
+		pstmt.setString(28, submitted_by_id);
 	    if(submitted_date.isEmpty())
 		submitted_date = Helper.getToday();
-	    pstmt.setDate(30, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
+	    pstmt.setDate(29, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
+	    jj=30;
 	    if(!id.isEmpty()){
-		pstmt.setString(31,process_status);		
+		pstmt.setString(jj,process_status);
+		jj++;
 	    }
+	    if(termination_type.isEmpty()){
+		pstmt.setNull(jj, Types.VARCHAR);
+	    }
+	    else{
+		pstmt.setString(jj,termination_type);
+	    }
+	    jj++;
+	    if(cdl_status.isEmpty()){
+		pstmt.setNull(jj, Types.VARCHAR);
+	    }
+	    else{
+		pstmt.setString(jj, cdl_status);
+	    }
+	    
 	}catch(Exception ex){
 	    back += ex;
 	}
@@ -1328,11 +1369,12 @@ public class EmpTerminate{
 	    
 	    "pto=?,"+
 	    "remarks=?,"+
-	    "suspension=?,"+
+	    // "suspension=?,"+
 	    "submitted_by_id=?,"+
 	    "submitted_date=?, "+ // date
-	    "process_status=? "+
-	    
+	    "process_status=?, "+
+	    "termination_type=?,"+
+	    "cdl_status=? "+
 	    " where id = ? ";
 	String qq2 = "update job_terminations set badge_returned=? where id=?";
 	String qq3 = "update job_terminations set start_date=? where id=?";	
@@ -1355,7 +1397,7 @@ public class EmpTerminate{
 	    pstmt = con.prepareStatement(qq);
 	    back = setParams(pstmt);
 	    if(back.isEmpty()){
-		pstmt.setString(32, id);
+		pstmt.setString(34, id);
 		pstmt.executeUpdate();
 	    }
 	    if(badge_returned != null){
@@ -1459,11 +1501,13 @@ public class EmpTerminate{
 	    "vac_time,"+
 	    "pto,"+
 	    "remarks,"+
-	    "suspension,"+
+	    // "suspension,"+
 	    "submitted_by_id,"+
 	    "date_format(submitted_date,'%m/%d/%Y'), "+ // date
 	    "process_status, "+
-	    "recipients_informed "+	    
+	    "recipients_informed, "+
+	    "termination_type,"+
+	    "cdl_status "+
 	    " from emp_terminations where id =? "; 
 	String back = "";
 	logger.debug(qq);
@@ -1510,11 +1554,15 @@ public class EmpTerminate{
 			rs.getDouble(26),
 			rs.getDouble(27),
 			rs.getString(28),
-			rs.getString(29) != null,
+			// rs.getString(29) != null,
+			rs.getString(29),
 			rs.getString(30),
-			rs.getString(31),
-			rs.getString(32),			
-			rs.getString(33) != null);
+			rs.getString(31),			
+			rs.getString(32) != null,
+			rs.getString(33),
+			rs.getString(34)
+			);
+		
 
 	    }
 	}
@@ -1593,6 +1641,14 @@ public class EmpTerminate{
     alter table term_notifications add foreign key(termination_id) references emp_terminations (id);
 
     alter table emp_terminations add suspension char(1) after remarks;
+
+    // added 1/5/2026
+    alter table emp_terminations add termination_type enum('Resignation','Retirement','Termination','Suspenion (Seasonal only)','Partial Termination (Seasonal Only)');
+    alter table emp_terminations add cdl_status enum('NA','No','Yes');
+
+    alter table emp_terminations drop column suspension;
+    
+    
      */
 
 }

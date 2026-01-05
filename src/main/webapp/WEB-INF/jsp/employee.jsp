@@ -37,41 +37,40 @@
 		  <div class="form-group">
 		      <label>ID</label>
 		      <s:property value="%{emp.id}" />
-		      
 		  </div>
 	      </s:if>
 	      <s:if test="emp.id == ''">
 		  <div class="form-group">
-		      <label>Search by Full Name or ID Code</label>
+		      <label for="emp_name">Search by Full Name or ID Code</label>
 		      <s:textfield name="emp.full_name" value="" size="30" maxlength="70" id="emp_name" /><br /> Start typing employee last name or ID code then pick from the list
 		  </div>
 	      </s:if>
 	      <div class="form-group">
-		  <label>Username</label>
+		  <label for="username_id">Username</label>
 		  <s:textfield name="emp.username" size="10" value="%{emp.username}" required="true" id="username_id" />
 	      </div>
 	      
 	      <div class="form-group">
-		  <label>First Name </label>
+		  <label for="first_name_id">First Name </label>
 		  <s:textfield name="emp.first_name" value="%{emp.first_name}" size="30" maxlength="70" required="true" id="first_name_id" />
 	      </div>
 	      
 	      <div class="form-group">
-		  <label>Last Name </label>
+		  <label for="last_name_id">Last Name </label>
 		  <s:textfield name="emp.last_name" value="%{emp.last_name}" size="30" maxlength="70" required="true" id="last_name_id" />
 	      </div>
 	      
 	      <div class="form-group">
-		  <label>ID Code # </label>
+		  <label for="id_code_id">ID Code # </label>
 		  <s:textfield name="emp.id_code" value="%{emp.id_code}" size="10" maxlength="10" id="id_code_id" /><br />(The number on City ID)
 	      </div>
 
 	      <div class="form-group">
-		  <label>Employee # </label>
+		  <label for="employee_number_id">Employee # </label>
 		  <s:textfield name="emp.employee_number" value="%{emp.employee_number}" size="15" maxlength="15" id="employee_number_id" /><br />(from New World)
 	      </div>
 	      <div class="form-group">
-		  <label>AD Sid </label>
+		  <label for="ad_sid_id">AD Sid </label>
 		  <s:if test="emp.hasNoAdSid()">
 		      <s:textfield name="emp.ad_sid" value="%{emp.ad_sid}" size="8" maxlength="8" id="ad_sid_id" /><br />(AD Object SID)
 		  </s:if>
@@ -80,29 +79,29 @@
 		  </s:else>
 	      </div>
 	      <div class="form-group">
-		  <label>Email</label>
+		  <label for="email_id'>Email</label>
 		  <s:textfield name="emp.email" size="30" value="%{emp.email}" id="email_id" />
 	      </div>
 	      <s:if test="emp.id == ''">			
 		  <div class="form-group">
-		      <label>Effective Date</label>
+		      <label for="eff_date">Effective Date</label>
 		      <div class="date-range-picker">
 			  <div>
-			      <s:select name="emp.effective_date" value="%{effective_date}" list="payPeriods" listKey="startDate" listValue="startDate" headerKey="-1" headerValue="Pick Start Date" /> (Start pay period date)	
+			      <s:select name="emp.effective_date" value="%{effective_date}" list="payPeriods" listKey="startDate" listValue="startDate" headerKey="-1" headerValue="Pick Start Date" id="eff_date" /> (Start pay period date)	
 			  </div>
 		      </div>
 		  </div>
 		  <s:if test="canAssignRoles()">
 		      <div class="form-group">
-			  <label>Department</label>
+			  <label for="department_id_change">Department</label>
 			  <s:select name="emp.department_id" value="" list="departments" listKey="id" listValue="name" headerKey="-1" headerValue="Pick Department" id="department_id_change" />
 		      </div>
 		  </s:if>
 	      </s:if>				
 	      <s:if test="canAssignRoles()">			
 		  <div class="form-group">
-		      <label>Roles</label>
-		      <s:checkboxlist key="emp.roles" list="roles" />
+		      <label for="roles">Roles</label>
+		      <s:checkboxlist key="emp.roles" list="roles" id="roles"/>
 		  </div>
 	      </s:if>
 	      <s:if test="emp.id == ''">
@@ -114,8 +113,8 @@
 		      <s:property value="emp.added_date" />
 		  </div>				
 		  <div class="form-group">
-		      <label>Inactive ?</label>
-		      <s:checkbox name="emp.inactive" value="%{emp.inactive}" /> Yes (check to disable)
+		      <label for="inactive"> Inactive ?</label>
+		      <s:checkbox name="emp.inactive" value="%{emp.inactive}" id="inactive" /> Yes (check to disable)
 		  </div>
 		  <div class="button-group">
 		      <s:submit name="action" type="button" value="Save Changes" class="button"/>					

@@ -1898,6 +1898,8 @@ insert into benefit_group_refs values
 
 =======
 ;;
+;; 1/5/2026 updates starts here
+;;
 ;; add new category to salary groups
 ;;
 insert into salary_groups values(13,'Seasonal','Seasonal Employee',14,'Other',null);
@@ -1926,5 +1928,8 @@ insert into benefit_groups values(58,'uNON-U PTnx',null,null,null);
 ;;
 ;; any part time employee set their weekly hours to 29
 ;;
+;; added on 1/5/2026
+ alter table emp_terminations add termination_type enum('Resignation','Retirement','Termination','Suspenion (Seasonal only)','Partial Termination (Seasonal Only)');
+ alter table emp_terminations add cdl_status enum('NA','No','Yes');
 
 

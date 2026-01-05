@@ -135,9 +135,9 @@
 	    </tr>	    
 	</table>
 	<table border="1"><caption>ITS Information </caption>
-	    <tr><td>Is this a suspension? </td>
+	    <tr><td>Termination Type </td>
 		<td colspan="2">
-		    <s:checkbox name="term.suspension" value="%{term.suspension}" />Yes (the employee may return back)
+		    <s:select name="term.termination_type" value="%{term.termination_type}" list="#{'Resignation':'Resignation','Retirement':'Retirement','Termination':'Termination','Suspension (Seasonal Only)':'Suspension (Seasonal Only)','Partial Termination (Seasonal Only)'}" headerKey="-1" headerValue="Pick Termination Type" />
 		</td>
 	    </tr>	    
 	    <tr><td>Employee Email Address</td>

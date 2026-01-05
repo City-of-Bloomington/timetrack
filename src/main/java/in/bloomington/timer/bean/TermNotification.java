@@ -202,7 +202,10 @@ public class TermNotification{
 	    employee = term.getEmployee();
 	    
 	    text = "Employee Job(s) Termination \n\n";
-	    if(term.isPartialTermination()){
+	    if(!term.getTermination_type().isEmpty()){
+		text += "Termination Type: "+term.getTermination_type()+"\n\n";
+	    }
+	    else if(term.isPartialTermination()){
 		text += "Note: Partial Termination \n\n";
 	    }
 	    text += "Employee: "+term.getFull_name()+"\n";	    
@@ -234,9 +237,11 @@ public class TermNotification{
 ;
 		}
 	    }
+	    /**
 	    if(term.getSuspension()){
 		text += "This is a Suspension (the employee may return back)\n";		
 	    }
+	    */
 	    if(term.hasEmpAddress()){
 		text += "Address: "+term.getEmp_address()+"\n";
 		text += "City, State Zipcode: "+term.getEmpCityStateZip()+"\n";
@@ -298,9 +303,12 @@ public class TermNotification{
 		if(term.getPto() > 0){
 		    text += "PTO: "+term.getPto()+"\n";
 		}
+		if(!term.getCdl_status().isEmpty()){
+		    text += "CDL Status: "+term.getCdl_status()+"\n\n"; 
+		}
 	    }
 	    if(!term.getRemarks().isEmpty()){
-		    text += "Remarks: "+term.getRemarks()+"\n\n";
+		text += "Remarks: "+term.getRemarks()+"\n\n";
 	    }
 	    text += "Thank You \n";
 	    text += "Submitted by "+term.getSubmitted_by()+"\n\n";

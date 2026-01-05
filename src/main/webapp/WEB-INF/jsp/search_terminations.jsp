@@ -23,7 +23,7 @@
 		    <label>Group</label>
 		    <select name="group_id" value="%{group_id}" id="group_id_set"  disabled="disabled"/>
 		    <option value="-1">Pick a group</option>
-				   </select>(To pick a group you need to pick a department first)
+		  				   </select>(To pick a group you need to pick a department first)
 		</div>
 	    </s:if>
 	    <div class="form-group">

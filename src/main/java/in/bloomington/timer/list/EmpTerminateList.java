@@ -120,12 +120,13 @@ public class EmpTerminateList{
 	    "vac_time,"+
 	    "pto,"+
 	    "remarks,"+
-	    "suspension,"+
 	    "submitted_by_id,"+
 	    "date_format(submitted_date,'%m/%d/%Y'), "+ // date
 
 	    "process_status, "+	    
-	    "recipients_informed "+
+	    "recipients_informed, "+
+	    "termination_type,"+
+	    "cdl_status "+
 
 	    " from emp_terminations "; 				
 	if(con == null){
@@ -216,12 +217,14 @@ public class EmpTerminateList{
 				     rs.getDouble(26),
 				     rs.getDouble(27),
 				     rs.getString(28),
-				     rs.getString(29) != null,
-				     rs.getString(30),
+				     // rs.getString(29) != null,
+				     rs.getString(29),
 				     
-				     rs.getString(31),
-				     rs.getString(32),	     
-				     rs.getString(33) != null);
+				     rs.getString(30),
+				     rs.getString(31),	     
+				     rs.getString(32) != null,
+				     rs.getString(33),
+				     rs.getString(34));
 
 		if(!terms.contains(one))
 		    terms.add(one);
