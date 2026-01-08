@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.TreeMap;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
@@ -48,6 +50,7 @@ public class Document implements Serializable{
     List<TimeBlock> timeBlocks = null;
     List<TimeBlock> timeBlockWithNotes = null;
     List<String> warnings = new ArrayList<>();
+    List<String> partTimeWarnings = new ArrayList<>();
     JobTask job = null;
     Group group = null;
     List<JobTask> jobs = null;
@@ -1399,7 +1402,59 @@ public class Document implements Serializable{
 	    }
 	}
     }
-    // after submission
+    // part time warnings
+    private void checkForPartTimeWarnings(){
+	if(job != null){
+	    // part time warning
+	    if(job.getSalaryGroup().isPartTime()){
+		if(week1Total > job.getWeekly_regular_hours()){
+
+		    String str = "Week 1 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
+		    
+		    if(!warnings.contains(str))
+			warnings.add(str);
+		    if(!partTimeWarnings.contains(str)){
+			partTimeWarnings.add(str);
+		    }
+		}
+		else {
+		    checkPartTimeWednesdayHours(1);
+		}
+		if(week2Total > job.getWeekly_regular_hours()){
+		    String str = "Week 2 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
+		    if(!warnings.contains(str))
+			warnings.add(str);
+		    if(!partTimeWarnings.contains(str)){
+			partTimeWarnings.add(str);
+		    }
+		}
+		else{
+		    checkPartTimeWednesdayHours(1);
+		}
+	    }
+	}
+    }
+    private void checkPartTimeWednesdayHours(int week_num){
+	double week_total = week1Total;
+	if(week_num == 2){
+	    week_total = week2Total;
+	}
+	if(week_total > CommonInc.wednesday_threshold){
+	    // chek if today is Wednesday
+	    LocalDate today = LocalDate.now();
+	    DayOfWeek dayOfWeek = today.getDayOfWeek();
+	    int dayOfWeekNumber = dayOfWeek.getValue();
+	    //Moday:1 Wednesday:3, Sunday 7 
+	    if(dayOfWeekNumber == 3){
+		String str = "Week "+week_num+" total hours are more than "+CommonInc.wednesday_threshold+" hrs";
+		if(!warnings.contains(str))
+		    warnings.add(str);
+		if(!partTimeWarnings.contains(str)){
+		    partTimeWarnings.add(str);
+		}
+	    }
+	}
+    }
     private void checkForWarningsAfter(){
 	if(job == null){
 	    getJob();
@@ -1412,13 +1467,6 @@ public class Document implements Serializable{
 		String str = "Week 1 total hours are less than "+job.getWeekly_regular_hours()+" hrs";
 		if(!warnings.contains(str))
 		    warnings.add(str);
-	    }
-	    if(job.getSalaryGroup().isPartTime()){
-		if(week1Total > job.getWeekly_regular_hours()){
-		    String str = "Week 1 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
-		    if(!warnings.contains(str))
-			warnings.add(str);
-		}
 	    }
 	}
 	if(week2Total > 0){
@@ -1433,6 +1481,7 @@ public class Document implements Serializable{
 	}
 	checkForUnauthorizedHoliday();
 	checkForHolidayOmission();
+	checkForPartTimeWarnings();
     }
     /**
      * check if the employee is eligible for holiday
@@ -1600,14 +1649,15 @@ public class Document implements Serializable{
 		group = job.getGroup();
 	    }
 	    if(salaryGroup != null){
-		if(salaryGroup.isFireSworn() || salaryGroup.isTemporary()){
+		if(salaryGroup.isFireSworn() ||
+		   salaryGroup.isSeasonal() ||
+		   salaryGroup.isTemporary() ||
+		   salaryGroup.isPoliceSworn()
+		   ){
 		    need_warning = false;
 		}
 		else if(salaryGroup.isFireSworn5x8() &&
-			(group.getName().indexOf("Admin BC") > -1)){
-		    need_warning = false;
-		}
-		else if(salaryGroup.isPoliceSworn()){
+			(group.getName().indexOf("Chiefs") > -1)){ //BC
 		    need_warning = false;
 		}
 	    }
@@ -1619,6 +1669,14 @@ public class Document implements Serializable{
     }
     public List<String> getWarnings(){
 	return warnings;
+    }
+    public boolean hasPartTimeWarnings(){
+	if(partTimeWarnings.size() == 0)
+	    checkForPartTimeWarnings();
+	return partTimeWarnings.size() > 0;
+    }    
+    public List<String> getPartTimeWarnings(){
+	return partTimeWarnings;
     }
     public boolean hasTimeNotes(){
 	getTimeNotes();

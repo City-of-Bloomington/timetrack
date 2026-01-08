@@ -1931,5 +1931,8 @@ insert into benefit_groups values(58,'uNON-U PTnx',null,null,null);
 ;; added on 1/5/2026
  alter table emp_terminations add termination_type enum('Resignation','Retirement','Termination','Suspenion (Seasonal only)','Partial Termination (Seasonal Only)');
  alter table emp_terminations add cdl_status enum('NA','No','Yes');
-
+;;
+;; make sure to add earn codes to salary group in earn code restrictions
+;; for Part Time add Reg, for Seasonal add Temp
+;;
 

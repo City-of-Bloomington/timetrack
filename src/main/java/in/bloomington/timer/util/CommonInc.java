@@ -92,8 +92,9 @@ public class CommonInc{
     public final static String[] quarter_ends = {"","03/31/","06/30/","09/30/","12/31/"};
     // pay period id where dispatch swtiched to Sunday Schedule
     public static final String pay_period_cut_id = "718"; 
-    public static final String pay_period_switched_date = "2025-07-19"; 
-    
+    public static final String pay_period_switched_date = "2025-07-19";
+    // Part Time employee total hours on Wednesday to check for notification
+    public static final int wednesday_threshold = 20;
     //
     // list of reserved usernames that can not be used to login in timetrack,
     // add any username if needed to the list below

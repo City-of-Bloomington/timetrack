@@ -28,6 +28,7 @@ public class TimeClock{
     JobTask job = null;
     Shift shift = null;
     List<Group> groups = null;
+    List<String> warnings = null;
     HourCode defaultRegularCode = null;
     boolean new_docuemnt = false;
     boolean location_used = false;
@@ -106,7 +107,21 @@ public class TimeClock{
     public boolean hasTime_in_out() {
 	return !(time_in.isEmpty() || time_out.isEmpty());
     }
-
+    // we need fix
+    public boolean hasWarnings(){
+	getJob();
+	if(job != null && job.getSalaryGroup().isPartTime()){
+	    getDocument();
+	    if(document != null && document.hasPartTimeWarnings()){
+		warnings = document.getPartTimeWarnings();
+		return true;
+	    }
+	}
+	return false;
+    }
+    public List<String> getWarnings(){
+	return warnings;
+    }
     //
     // setters
     //
@@ -294,7 +309,9 @@ public class TimeClock{
 		List<Document> ones = dl.getDocuments();
 		if (ones != null && ones.size() > 0) {
 		    document = ones.get(0);
+		    document.hasDailyBlocks(); // to start calculations
 		    document_id = document.getId();
+		    System.err.println(" doc prepared ");
 		}
 	    }
 	}
@@ -434,6 +451,7 @@ public class TimeClock{
 		    job_id = document.getJob_id();
 		    document_id = document.getId();
 		    hasClockIn = true;
+		    document.prepareDaily();
 		}
 		else{
 		    // System.err.println(" no doc for clock in found ");

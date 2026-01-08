@@ -236,8 +236,10 @@ public class EmpTerminate{
 		populateOneJob();
 	    }
 	    if(job != null){
-		employment_type = job.getSalaryGroup().getName();
-		if(!employment_type.equals("Temp")){
+		employment_type = job.getSalaryGroup().getName();		
+		if(!(job.getSalaryGroup().isTemporary() ||
+		     job.getSalaryGroup().isSeasonal() ||
+		     job.getSalaryGroup().isPartTime())){
 		    employment_type = "Full Time "+employment_type;
 		}
 	    }

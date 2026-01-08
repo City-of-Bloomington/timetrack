@@ -148,7 +148,7 @@ public class TmwrpWeekSplit{
 		    }
 		    else if(hrCode.isCallOut()){
 			non_reg_hrs += hours;
-		    }										
+		    }
 		    else if(hrCode.isUnpaid()){
 			unpaid_hrs += hours;
 		    }
@@ -156,7 +156,8 @@ public class TmwrpWeekSplit{
 			earned_time += hours; // added
 			unpaid_hrs += hours;
 		    }
-		    else if(hrCode.isOvertime()){												
+		    else if(hrCode.isOvertime()){
+			
 			unpaid_hrs += hours;
 		    }
 		    else{ // other
@@ -325,13 +326,18 @@ public class TmwrpWeekSplit{
 	net_reg_hrs = 0;
 	regular_hrs = regular_mints/60.;
 	if(salaryGroup != null){
-	    if(salaryGroup.isTemporary()){
+	    if(salaryGroup.isTemporary() ||
+	       salaryGroup.isSeasonal() ||
+	       salaryGroup.isPartTime()){
+		/**
 		if(regular_hrs > CommonInc.cityStandardWeeklyHrs){
 		    net_reg_hrs = CommonInc.cityStandardWeeklyHrs; // 40
 		}
 		else{
 		    net_reg_hrs = regular_hrs;
 		}
+		*/
+		net_reg_hrs = regular_hrs;
 		return;
 	    }
 	    else if(salaryGroup.isUnionned()){
@@ -356,7 +362,9 @@ public class TmwrpWeekSplit{
 		return;								
 	    }						
 	}
-	net_reg_hrs = regular_hrs - earned_time;
+	// 
+	// net_reg_hrs = regular_hrs - earned_time;
+	net_reg_hrs = regular_hrs;	
 	if(net_reg_hrs > Math.max(st_weekly_hrs, CommonInc.cityStandardWeeklyHrs)){
 	    net_reg_hrs = Math.max(st_weekly_hrs, CommonInc.cityStandardWeeklyHrs);
 	}

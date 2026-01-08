@@ -54,13 +54,10 @@ public class Employee implements Serializable, Comparable<Employee>{
     List<GroupManager> enterors = null;
     List<GroupManager> leaveReviewers = null;    
     List<DepartmentEmployee> departmentEmployees = null;
-    // List<GroupEmployee> groupEmployees = null;
-    // List<GroupEmployee> allGroupEmployees = null; // include expired ones too
     List<GroupShift> groupShifts = null;
     Shift shift = null;
     DepartmentEmployee departmentEmployee = null;
     Department department = null;
-    // GroupEmployee groupEmployee = null;
     boolean receive_email = true;
     Address address = null;
     String dob = ""; //needed for term
@@ -360,13 +357,6 @@ public class Employee implements Serializable, Comparable<Employee>{
 		departmentEmployee = new DepartmentEmployee();
 	    }
 	    departmentEmployee.setEffective_date(val);
-	    /**
-	       // to delete
-	    if(groupEmployee == null){
-		groupEmployee = new GroupEmployee();
-	    }
-	    groupEmployee.setEffective_date(val);
-	    */
 	}
     }
     public String getEffective_date(){// needed for wizard
@@ -377,22 +367,10 @@ public class Employee implements Serializable, Comparable<Employee>{
 	if(val != null)
 	    departmentEmployee = val;
     }
-    /**
-    public void setGroupEmployee(GroupEmployee val){
-	if(val != null)
-	    groupEmployee = val;
-    }
-    */
     // needed for new employee
     public void setGroup_id(String val){
 	if(val != null && !val.equals("-1")){
 	    group_id = val;
-	    /**
-	    if(groupEmployee == null){
-		groupEmployee = new GroupEmployee();
-	    }
-	    groupEmployee.setGroup_id(val);
-	    */
 	}
     }
     public void addGroup_id(String val){
@@ -1444,6 +1422,65 @@ public class Employee implements Serializable, Comparable<Employee>{
     //
     // find employee current address from NW
     //
+    /** employee_info table
+1 EmployeeID
+2 EmployeeNumber
+3 EmployeeName
+4 EmployeeSSN
+5 DateOfBirth
+6 EmployeeStatus
+7 EmployeeStatusEvent
+8 EmployeeStatusEventReason
+9 PrimaryAddressLineOne
+10 PrimaryAddressLineTwo
+11 PrimaryAddressLineThree
+12 PrimaryCity
+13 PrimaryState
+14 PrimaryZip
+
+       employee benef
+1 EmployeeContactId
+2 EmployeeId
+3 IsPrimary
+4 LastName
+5 FirstName
+6 MiddleName
+7 vsNameSuffix
+8 IsDependent
+9 IsBeneficiary
+10 IsEmergencyContact
+11 Comment
+12 ChangedUserId
+13 ChangedDate
+14 vsTitle
+15 IsSameAddress
+16 AddressLine1
+17 AddressLine2
+18 AddressLine3
+19 Zip
+20 ZipExt
+21 City
+22 vsState
+23 EmailAddress
+24 vsRelationship
+25 vsGender
+26 DateOfBirth
+27 SSN
+28 IsStudent
+29 Status
+30 StatusDate
+31 vsReasonInactivated
+32 EmployeeDependentId
+33 EmployeeBenefitPlanOptionBeneficiaryID
+
+SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'EmailAddress';
+
+SELECT s.name AS SchemaName, t.name AS TableName, c.name AS ColumnName
+FROM sys.columns c
+JOIN sys.tables t ON c.object_id = t.object_id
+JOIN sys.schemas s ON t.schema_id = s.schema_id
+WHERE c.name = 'EmailAddress';
+    */    
     public String findAddress(){
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -1453,7 +1490,13 @@ public class Employee implements Serializable, Comparable<Employee>{
 	    back = "Employee number not set ";
 	    return back;
 	}
-	String qq = "select * from HR.vwEmployeeCurrentInfo eci where eci.EmployeeStatus = ? and eci.EmployeeNumber = ?";
+	String qq = "select * from HR.vwEmployeeCurrentInfo eci where eci.EmployeeStatus = 'A' and eci.EmployeeNumber = ?";
+	/**
+	String qq = "select ec.* from HR.CM_EmployeeContact_EmployeeBeneficiary ec,HR.vwEmployeeCurrentInfo eci where eci.employeeNumber = ? and eci.EmployeeId=ec.EmployeeId and eci.EmployeeStatus='A'";
+	*/
+	// String qq = "select * from HR.CM_EmployeeContact_EmployeeBeneficiary ec where ec.EmployeeId=79";
+
+	
 	con = SingleConnect.getNwConnection();
 	if(con == null){
 	    back = " Could not connect to DB ";
@@ -1463,12 +1506,21 @@ public class Employee implements Serializable, Comparable<Employee>{
 	logger.debug(qq);
 	try{
 	    pstmt = con.prepareStatement(qq);
-	    pstmt.setString(1,"A");
-	    pstmt.setString(2, employee_number);
+	    pstmt.setString(1, employee_number);
 	    rs = pstmt.executeQuery();
-	    if(rs.next()){
+	    /**
+	    ResultSetMetaData rsmd = rs.getMetaData();
+	    int columnCount = rsmd.getColumnCount();							 
+	    for (int i = 1; i <= columnCount; i++ ) {
+		String name = rsmd.getColumnName(i);
+		System.err.println(i+" "+name);
+	    }
+	    */
+	    while(rs.next()){
 		String line_1="", line_2="", city="", state="", zip="";
-		String str = rs.getString(5); //dob
+		String str = rs.getString(3); //name
+		System.err.println(" name "+str);
+		str = rs.getString(5); // dob
 		if(str != null)
 		    setDob(str);
 		str = rs.getString(9);

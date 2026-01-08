@@ -100,7 +100,7 @@ public class SalaryGroup implements Serializable{
 	return name.indexOf("Temp") > -1; // for Temp and Temp W/Ben
     }
     public boolean isSeasonal(){
-	return name.indexOf("Seasonal") > -1; // for Temp and Temp W/Ben
+	return name.indexOf("Seasonal") > -1; 
     }    
     public boolean isPartTime(){ // Part time no benefit
 	return name.equals("Part Time");
@@ -336,6 +336,9 @@ public class SalaryGroup implements Serializable{
 	return msg;
     }		
     /**
+       Part Time (no benefit 29 hrs a week
+       Issue warning if week total exceeds 29
+       
        insert into salary_groups values(13,'Seasonal','Seasonal Employee',14,'Other',null);
        insert into salary_groups values(14,'Part Time','Part Time No Benefit',1,'Other',null);
        

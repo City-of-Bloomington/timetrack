@@ -36,6 +36,7 @@ public class Block{
     JobTask jobTask = null;
     Document document = null;
     Department department = null;
+    SalaryGroup salaryGroup = null;
     boolean hourCodeSet = false, isHoliday=false;
     boolean time_in_set = false, time_out_set=false, hours_set=false,
 	amount_set=false;
@@ -490,6 +491,11 @@ public class Block{
     }
     public HourCode getHourCode(){
 	if(!hourCodeSet){
+	    if(salary_group_id.isEmpty()){
+		getSalaryGroup();
+		if(salaryGroup != null)
+		    hour_code_id = salaryGroup.getDefault_regular_id();
+	    }
 	    if(!hour_code_id.isEmpty()){
 		HourCode one = new HourCode(hour_code_id);
 		String back = one.doSelect();
@@ -499,6 +505,8 @@ public class Block{
 		}
 	    }
 	    else{
+
+
 		hourCode = new HourCode();
 	    }
 	}
@@ -551,6 +559,18 @@ public class Block{
 	    }
 	}
 	return document;
+    }
+    public SalaryGroup getSalaryGroup(){
+	if(salaryGroup == null)
+	    getSalary_group_id();
+	if(!salary_group_id.isEmpty()){
+	    SalaryGroup one = new SalaryGroup(salary_group_id);
+	    String back = one.doSelect();
+	    if(back.isEmpty()){
+		salaryGroup = one;
+	    }
+	}
+	return salaryGroup;
     }
     public String getSalary_group_id(){
 	if(salary_group_id.isEmpty()){

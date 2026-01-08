@@ -523,12 +523,10 @@ public class TmwrpWeekEntry{
 	}
 	if(earned_time_sys > CommonInc.critical_small){
 	    excess_hrs = earned_time_sys;
-	    // createEarnRecord();
 	}
 	else if(excess_hrs > CommonInc.critical_small){
 	    earned_time_sys = excess_hrs;
 	}
-    
 	// we may have carry over from daily such as union	
     }
     /**
@@ -567,23 +565,6 @@ public class TmwrpWeekEntry{
 	//
 	// double excess_hrs2 = excess_hrs;
 	double excess_hrs2 = earned_time_sys;
-	/**
-	 * part time employee, they should get regular hours even when
-	 * they work more than weekly hours that is less than 40
-	 * commented out on 1/4/2021 according to HR 
-	 *
-	 if(st_weekly_hrs < 40){ // for those who have starndard hours < 40
-	 double dif = 40 - st_weekly_hrs;								
-	 if(excess_hrs2 > dif && dif > 0){
-	 addToEarnedHash(code_id, dif);
-	 excess_hrs2 -= dif;
-	 }
-	 else{
-	 addToEarnedHash(code_id, excess_hrs2);
-	 excess_hrs2 = 0;
-	 }
-	 }
-	*/
 	//
 	// second level for those in if above 40
 	// for hours after 40
@@ -612,7 +593,9 @@ public class TmwrpWeekEntry{
     public boolean hasInsufficientTotalHours(){
 	boolean ret = false;
 				
-	if(salaryGroup != null && !salaryGroup.isTemporary()){
+	if(salaryGroup != null &&
+	   (!(salaryGroup.isTemporary() || salaryGroup.isSeasonal() ||
+	      salaryGroup.isPartTime()))){
 	    if(total_hrs + CommonInc.critical_small < st_weekly_hrs){
 		ret = true;
 	    }
