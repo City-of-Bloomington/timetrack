@@ -98,7 +98,7 @@ public class EmployeeAction extends TopAction{
 		    addError(back);
 		}
 		else{
-		    emp.findAddress();
+		    // emp.findAddress();
 		    ret="view";
 		}
 	    }

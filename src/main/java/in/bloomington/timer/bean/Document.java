@@ -1429,7 +1429,7 @@ public class Document implements Serializable{
 		    }
 		}
 		else{
-		    checkPartTimeWednesdayHours(1);
+		    checkPartTimeWednesdayHours(2);
 		}
 	    }
 	}

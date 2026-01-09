@@ -1473,13 +1473,13 @@ public class Employee implements Serializable, Comparable<Employee>{
 32 EmployeeDependentId
 33 EmployeeBenefitPlanOptionBeneficiaryID
 
-SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'EmailAddress';
+SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME like '%Email%';
 
 SELECT s.name AS SchemaName, t.name AS TableName, c.name AS ColumnName
 FROM sys.columns c
 JOIN sys.tables t ON c.object_id = t.object_id
 JOIN sys.schemas s ON t.schema_id = s.schema_id
-WHERE c.name = 'EmailAddress';
+WHERE c.name like '%Email%';
     */    
     public String findAddress(){
 	Connection con = null;
@@ -1519,7 +1519,7 @@ WHERE c.name = 'EmailAddress';
 	    while(rs.next()){
 		String line_1="", line_2="", city="", state="", zip="";
 		String str = rs.getString(3); //name
-		System.err.println(" name "+str);
+		// System.err.println(" name "+str);
 		str = rs.getString(5); // dob
 		if(str != null)
 		    setDob(str);
