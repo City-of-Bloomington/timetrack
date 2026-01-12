@@ -448,7 +448,6 @@ public class JobTaskList{
 	}
 	qq += qo;
 	logger.debug(qq);
-	// System.err.println(" jobs "+qq);
 	try{
 						
 	    pstmt = con.prepareStatement(qq);
@@ -625,7 +624,7 @@ JobTask one =
 					);
 			if(!jobTasks.contains(one))
 			    jobTasks.add(one);
-		    }		    
+		    }
 		}
 	    }
 	}
@@ -877,8 +876,13 @@ JobTask one =
    where g.department_id=16 and j.expire_date is null
   order by group_name,salary_group, full_name
   into outfile '/var/lib/mysql-files/fire_employees.csv'                           FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n'
-      
-      
+
+
+  select j.id,j.position_id,j.salary_group_id,j.employee_id,j.group_id,date_format(j.effective_date,'%m/%d/%Y'),date_format(j.expire_date,'%m/%d/%Y'),j.primary_flag,j.weekly_regular_hours,j.comp_time_weekly_hours,j.comp_time_factor,j.holiday_comp_factor,j.hourly_rate,date_format(j.added_date,'%m/%d/%Y'),j.irregular_work_days,j.inactive,  sg.name,sg.description,sg.default_regular_id,sg.excess_culculation,sg.inactive, p.name, g.id,g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.clock_time_required,g.include_in_auto_batch,g.inactive,d.name,d.description,d.ref_id,d.ldap_name,d.allow_pending_accrual,d.inactive  from jobs j  join salary_groups sg on sg.id=j.salary_group_id  join positions p on j.position_id=p.id  join `groups` g on j.group_id=g.id  join departments d on d.id=g.department_id , pay_periods pp  where  j.inactive is null  and  j.employee_id = 2278  and  j.effective_date <= pp.start_date and (j.expire_date >= pp.end_date or j.expire_date is null) and pp.id = 731 order by j.expire_date, p.name
+
+
+ jobs select j.id,j.position_id,j.salary_group_id,j.employee_id,j.group_id,date_format(j.effective_date,'%m/%d/%Y'),date_format(j.expire_date,'%m/%d/%Y'),j.primary_flag,j.weekly_regular_hours,j.comp_time_weekly_hours,j.comp_time_factor,j.holiday_comp_factor,j.hourly_rate,date_format(j.added_date,'%m/%d/%Y'),j.irregular_work_days,j.inactive,  sg.name,sg.description,sg.default_regular_id,sg.excess_culculation,sg.inactive, p.name, g.id,g.name,g.description,g.department_id,g.excess_hours_earn_type,g.allow_pending_accrual,g.clock_time_required,g.include_in_auto_batch,g.inactive,d.name,d.description,d.ref_id,d.ldap_name,d.allow_pending_accrual,d.inactive  from jobs j  join salary_groups sg on sg.id=j.salary_group_id  join positions p on j.position_id=p.id  join `groups` g on j.group_id=g.id  join departments d on d.id=g.department_id  where  j.employee_id = ?  order by j.expire_date, p.name
+  
     */
 		
 }

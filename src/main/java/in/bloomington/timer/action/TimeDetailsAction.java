@@ -486,9 +486,11 @@ public class TimeDetailsAction extends TopAction{
     public List<JobTask> getJobs(){
 	if(jobs == null){
 	    JobTaskList jl = new JobTaskList(getEmployee_id());
-	    getPayPeriod();
-	    if(payPeriod != null){
-		jl.setPay_period_id(payPeriod.getId());
+	    if(pay_period_id.isEmpty()){
+		getPayPeriod();
+	    }
+	    if(!pay_period_id.isEmpty()){
+		jl.setPay_period_id(pay_period_id);
 	    }
 	    String back = jl.find();
 	    if(back.isEmpty()){

@@ -94,7 +94,7 @@ public class DocumentList{
 	String msg="", str="";
 	String qc = "select count(*) from time_documents d, employees e,pay_periods pp,jobs j ";				
 	String qq = "select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e,pay_periods pp,jobs j ";
-	String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id ";				
+	String qw = "d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id and j.effective_date <= pp.start_date and (j.expire_date >= pp.end_date or j.expire_date is null) ";				
 	boolean periodTbl = false;
 	if(!employee_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
@@ -640,6 +640,9 @@ public class DocumentList{
 	and a.cancelled_time is null
 	and d.employee_id=e.id                                                          and d.pay_period_id=726                                                       and j.id=d.job_id                                                               and j.group_id=g.id                                                             and g.department_id=5
 	and a.id=(select max(a2.id) from time_actions a2 where a2.document_id=d.id)
+
+	select d.id,d.employee_id,d.pay_period_id,d.job_id,date_format(d.initiated,'%m/%d/%Y %H:%i'),d.initiated_by from time_documents d, employees e,pay_periods pp,jobs j  where d.employee_id=e.id and pp.id=d.pay_period_id and j.id=d.job_id and j.effective_date <= pp.start_date and (j.expire_date >= pp.end_date or j.expire_date is null)  and d.employee_id=2278  and d.pay_period_id=730  order by e.last_name,e.first_name
+
 	    
     */
 }
