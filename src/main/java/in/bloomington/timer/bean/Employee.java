@@ -1485,16 +1485,20 @@ WHERE c.name like '%Email%';
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String back = "";
+	String back = "", personal_email="";
 	if(employee_number.isEmpty()){
 	    back = "Employee number not set ";
 	    return back;
 	}
-	String qq = "select * from HR.vwEmployeeCurrentInfo eci where eci.EmployeeStatus = 'A' and eci.EmployeeNumber = ?";
 	/**
-	String qq = "select ec.* from HR.CM_EmployeeContact_EmployeeBeneficiary ec,HR.vwEmployeeCurrentInfo eci where eci.employeeNumber = ? and eci.EmployeeId=ec.EmployeeId and eci.EmployeeStatus='A'";
+	String qq = "select * from HR.vwEmployeeCurrentInfo eci where eci.EmployeeStatus = 'A' and eci.EmployeeNumber = ?";
+	" left join HR.EmployeeEmail email
 	*/
-	// String qq = "select * from HR.CM_EmployeeContact_EmployeeBeneficiary ec where ec.EmployeeId=79";
+	String qq = "select eci.*,em.EmailAddress from HR.vwEmployeeCurrentInfo eci "+
+	    " left join HR.EmployeeEmail em on eci.EmployeeId = em.EmployeeId "+
+	    " where eci.EmployeeStatus = 'A'and em.isPrimary=1 "+
+	    " and eci.EmployeeNumber = ? ";
+
 
 	
 	con = SingleConnect.getNwConnection();
@@ -1538,6 +1542,10 @@ WHERE c.name like '%Email%';
 		str = rs.getString(14);
 		if(str != null)
 		    zip = str;
+		str = rs.getString(15);
+		if(str != null)
+		    personal_email = str;
+		System.err.println(" email "+personal_email);
 		address = new Address(null,id, line_1, line_2, city, state,zip,false);
 	    }
 	}

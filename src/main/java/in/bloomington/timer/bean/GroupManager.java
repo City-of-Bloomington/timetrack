@@ -542,8 +542,33 @@ delete from group_managers where wf_node_id=7;
 
 select * from groups g where g.id not in (select group_id from group_managers where wf_node_id=7) and g.department_id not in (8,16,20,36);
 
-// adding consultant as reviewer
-insert into group_managers select 0,g.id,2962,6,'2025-12-01',null,null,null from groups g;
+// adding new controller
+// adding controller as Payroll approver
+insert into group_managers select 0,g.id,2966,4,'2026-01-01',null,null,null from groups g where g.department_id not in (15,18);
+
+// for employee
+
+Hi (employee name)
+
+We want to let you know that your total hours (xx) for this week exceeded 29 hours week limit.
+
+// for supservisor
+//
+Hi (supervisor name)
+
+We wantt to let you know that your employee (emp name) total hours of (xx) for this week exceeded 29 hours week limit.
+
+// Wednesday Email
+//
+We want to let you know that today (Wednesday) your total hours (xx) exceeded 20 hours, please make the effort to not exceed the 29 hours limit for the week.
+
+// supervisor
+We want to let you know that today (Wednesday) that your employee (xx) accomulated (xx) hours that exceeded 20 hours, please make the arrangment so that he/she does not exceed 29 hours for the week.
+
+
+
+
+
 
 
 
