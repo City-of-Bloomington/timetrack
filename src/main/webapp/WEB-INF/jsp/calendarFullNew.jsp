@@ -23,8 +23,8 @@
 	      <s:if test="#row.first">
 		  <s:if test="#blockKey==5 || #blockKey==6 || #blockKey==12 || #blockKey==13">
 		      <!-- this is for the weekend -->
-		      <s:if test="isToday()">
-			  <div class="day today"
+		      <s:if test="isHoliday() && isToday()">
+			  <div class="day holiday today"
 			       tabindex="1"
 			       data-block-id="<s:property value='id' />"
 			       data-doc-id="<s:property value='document_id' />"
@@ -38,7 +38,15 @@
 			       data-doc-id="<s:property value='document_id' />"
 			       data-date="<s:property value='date' />"
 			       data-order-index="<s:property value='#blockKey' />">
-		      </s:elseif>					  
+		      </s:elseif>
+		      <s:elseif test="isToday()">
+			  <div class="day today"
+			       tabindex="1"
+			       data-block-id="<s:property value='id' />"
+			       data-doc-id="<s:property value='document_id' />"
+			       data-date="<s:property value='date' />"
+			       data-order-index="<s:property value='#blockKey' />">
+		      </s:elseif>
 		      <s:else>
 			  <div class="day weekend"
 			       tabindex="1"
@@ -50,15 +58,23 @@
 		  </s:if>
 		  <s:else>
 		      <!-- this is for each day -->
-		      <s:if test="isToday()">
+		      <s:if test="isHoliday() && isToday()">
+			  <div class="day holiday today"
+			       tabindex="1"
+			       data-block-id="<s:property value='id' />"
+			       data-doc-id="<s:property value='document_id' />"
+			       data-date="<s:property value='date' />"
+			       data-order-index="<s:property value='#blockKey' />">
+
+		      </s:if>		      
+		      <s:elseif test="isToday()">
 			  <div class="day today"
 			       tabindex="1"
 			       data-block-id="<s:property value='id' />"
 			       data-doc-id="<s:property value='document_id' />"
 			       data-date="<s:property value='date' />"
 			       data-order-index="<s:property value='#blockKey' />">
-		      </s:if>
-
+		      </s:elseif>
 		      <s:elseif test="isHoliday()">
 			  <div class="day holiday"
 			       tabindex="1"

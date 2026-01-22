@@ -371,6 +371,17 @@ public class TimeBlock extends Block{
 	}
 	return Helper.getDayInt(date);
     }
+    public boolean hasWarnings(){
+	getDocument();	
+	jobTask = document.getJob();
+	if(jobTask != null && jobTask.getSalaryGroup().isPartTime()){
+
+	    if(document != null && document.hasPartTimeWarnings()){
+		return true;
+	    }
+	}
+	return false;
+    }
     public void setTime_in(String val2){
 	if(val2 != null && !val2.trim().isEmpty()){
 	    String val = val2.trim().toLowerCase();

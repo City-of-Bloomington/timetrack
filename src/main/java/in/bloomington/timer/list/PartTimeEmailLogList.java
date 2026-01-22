@@ -75,14 +75,35 @@ public class PartTimeEmailLogList extends CommonInc{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String qw = "", qq="";
-	qq = " select l.id,l.employee_id,l.supervisor_id,l.job_id,l.week_num,l.warn_type,date_format(l.sent_time,'%m/%d/%Y %H:%i'),l.email_to,l.supervisor_cc,l.email_subject,l.text_message,l.send_error,concat_ws(' ',e.first_name,e.last_name) employee_name, concat_ws(' ',e2.first_name,"+
-	    "e2.last_name) supervisor_name, "+
+	qq = " select l.id,"+
+	    "l.warn_id,"+	    
+	    "l.employee_id,"+
+	    "l.supervisor_id,"+
+	    "date_format(l.sent_time,'%m/%d/%Y %H:%i'),"+
+	    
+	    "l.email_to,"+
+	    "l.supervisor_cc,"+
+	    "l.email_subject,"+
+	    "l.text_message,"+
+	    "l.send_error,"+
+	    
+	    "w.id,"+
+	    "w.job_id,"+
+	    "w.pay_week_num,"+
+	    "w.warn_type,"+
+	    "w.week_of_year,"+
+	    "w.week_total,"+
+	    "w.critical_value,"+
+	    
+	    "concat_ws(' ',e.first_name,e.last_name) employee_name,"+
+	    "concat_ws(' ',e2.first_name,e2.last_name) supervisor_name, "+
 	    "p.name job_title "+
 	    "from part_time_email_logs l "+
+	    "join part_time_warns w on w.id=l.warn_id "+
 	    "join employees e on l.employee_id = e.id "+
 	    "join employees e2 on l.supervisor_id=e2.id "+
-	    "left join jobs j on j.id=l.job_id "+
-	    " left join positions p on p.id=j.position_id  ";
+	    "left join jobs j on j.id=w.job_id "+
+	    "left join positions p on p.id=j.position_id  ";
 	if(!date_from.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " l.date_time >= ? ";
@@ -97,15 +118,15 @@ public class PartTimeEmailLogList extends CommonInc{
 	}
 	if(!job_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw += " l.job_id = ? ";
+	    qw += " w.job_id = ? ";
 	}	
 	if(week_num != null){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw += " l.week_num = ? ";
+	    qw += " w.week_num = ? ";
 	}
 	if(warn_type != null){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw += " l.warn_type = ? ";
+	    qw += " w.warn_type = ? ";
 	}	
 	if(!qw.isEmpty()){
 	    qq += " where "+qw;
@@ -152,17 +173,23 @@ public class PartTimeEmailLogList extends CommonInc{
 				 rs.getString(2),
 				 rs.getString(3),
 				 rs.getString(4),
-				 rs.getInt(5),
-				 rs.getInt(6),
+				 rs.getString(5),
+				 rs.getString(6),
 				 rs.getString(7),
 				 rs.getString(8),
 				 rs.getString(9),
 				 rs.getString(10),
 				 rs.getString(11),
 				 rs.getString(12),
-				 rs.getString(13),
-				 rs.getString(14),
-				 rs.getString(15)
+				 rs.getInt(13),
+				 rs.getInt(14),
+				 rs.getInt(15),
+				 rs.getDouble(16),
+				 rs.getInt(17),
+				 rs.getString(18),
+				 rs.getString(19),
+				 rs.getString(20) 
+				 
 					 );
 		if(emailLogs == null)
 		    emailLogs = new ArrayList<>();

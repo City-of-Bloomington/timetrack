@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import in.bloomington.timer.util.MailHandle;
 import in.bloomington.timer.timewarp.TimewarpManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,6 +65,21 @@ public class TimeBlockAction extends TopAction{
 		    timewarpManager.setDocument_id(timeBlock.getDocument_id());
 		    back = timewarpManager.doProcess();
 		    addMessage("Added Successfully");
+		    if(activeMail){
+			// if(true){
+			document = timeBlock.getDocument();
+			if(document.isPartTime()){
+			    document.prepareDaily();
+			    if(document.hasPartTimeWarns()){
+				// we need to compose and send email
+				List<PartTimeWarn> warns = document.getPartTimeWarns();
+				back = composePartTimeWarningEmail(warns, document);
+				if(!back.isEmpty()){
+				    addError(back);
+				}
+			    }
+			}
+		    }
 		}
 	    }
 	    else{
@@ -83,7 +99,22 @@ public class TimeBlockAction extends TopAction{
 		else{
 		    timewarpManager.setDocument_id(timeBlock.getDocument_id());
 		    back = timewarpManager.doProcess();
-		    addMessage("Updated Successfully");								
+		    addMessage("Updated Successfully");
+		    if(activeMail){
+			//if(true){
+			document = timeBlock.getDocument();
+			if(document.isPartTime()){
+			    document.prepareDaily();
+			    if(document.hasPartTimeWarns()){
+				// we need to compose and send email
+				List<PartTimeWarn> warns = document.getPartTimeWarns();
+				back = composePartTimeWarningEmail(warns, document);
+				if(!back.isEmpty()){
+				    addError(back);
+				}
+			    }
+			}
+		    }
 		}
 	    }
 	    else{
@@ -182,6 +213,22 @@ public class TimeBlockAction extends TopAction{
 	}
 	return document_id;
     }
+    private GroupManager findGroupManager(String g_id){
+	GroupManager manager = null;
+	GroupManagerList gml = new GroupManagerList();
+	gml.setGroup_id(g_id);
+	gml.setActiveOnly();
+	gml.setNotExpired();
+	String back = gml.find();
+	if(back.isEmpty()){
+	    List<GroupManager> managers = gml.getManagers();
+	    if(managers != null && managers.size() > 0){
+		manager = managers.get(0);
+	    }
+	}
+	return manager;
+	    
+    }    
     public Document getDocument(){
 	if(document == null){
 	    if(document_id.isEmpty()){
@@ -319,7 +366,76 @@ public class TimeBlockAction extends TopAction{
 	boolean ret = employeeAccruals != null && employeeAccruals.size() > 0;
 	return ret;
     }
-
+    private String composePartTimeWarningEmail(List<PartTimeWarn> warns,
+					       Document document){
+	String back = "";
+	String emp_email = "";
+	String manager_email = "";
+	
+	if(document == null){
+	    back = "no document found ";
+	    return back;
+	}
+	else if(warns == null || warns.size () == 0){
+	    back = "No warnings to email ";
+	    return back;
+	}
+	JobTask job = document.getJob();
+	Employee emp = document.getEmployee();
+	if(!emp.canReceiveEmail()){
+	    emp.findAddress(); // include email
+	}
+	if(!emp.canReceiveEmail()){
+	    back = "Employee has no valid email ";
+	    return back;
+	}
+	else{
+	    emp_email = emp.getEmail();
+	}
+	String group_id = job.getGroup_id();
+	GroupManager gm = findGroupManager(group_id);
+	Employee manager = null;
+	if(gm != null){
+	    manager = gm.getEmployee();
+	    manager_email = manager.getEmail();
+	}
+	String subject = "[Time Track] Part time weekly hours warning for "+emp.getFull_name();
+	String email_msg = "";
+	String email_from = "NoReply@bloomington.in.gov";
+	String email_to = emp_email;	
+	String email_cc = manager_email;
+	for(PartTimeWarn one:warns){
+	    if(one.getWarnType() == 1 ){ // week total
+		email_msg = "Your total of ("+one.getWeekTotal()+") hours for the week "+one.getPayWeekNum()+" of current pay period exceeds "+one.getCriticalValue()+" maximum weekly hours ";
+	    }
+	    else{ // Wednesday
+		email_msg = "Your total of ("+one.getWeekTotal()+") hours on this Wednesday of the week "+one.getPayWeekNum()+" of current pay period exceeds "+one.getCriticalValue()+" hours. ";		
+	    }
+	    MailHandle mailer = new
+		MailHandle(mail_host,
+			   email_to,
+			   email_from,
+			   email_cc, // cc
+			   null,
+			   subject,
+			   email_msg
+			   );
+	    back += mailer.send();
+	    PartTimeEmailLog lel =
+		new PartTimeEmailLog(
+				     one.getId(),
+				     emp.getId(),
+				     manager.getId(),
+				     email_to,
+				     email_cc,
+				     subject,
+				     email_msg
+				     );
+	    back += lel.doSave();
+	    return back; // one only
+	}
+	return back;
+    }
 }
 
 
