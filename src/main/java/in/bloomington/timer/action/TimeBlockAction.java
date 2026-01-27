@@ -13,6 +13,7 @@ import org.apache.struts2.ServletActionContext;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.util.MailHandle;
+import in.bloomington.timer.util.Helper;
 import in.bloomington.timer.timewarp.TimewarpManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -380,6 +381,7 @@ public class TimeBlockAction extends TopAction{
 	    back = "No warnings to email ";
 	    return back;
 	}
+	PayPeriod pp = document.getPayPeriod();  
 	JobTask job = document.getJob();
 	Employee emp = document.getEmployee();
 	if(!emp.canReceiveEmail()){
@@ -406,10 +408,10 @@ public class TimeBlockAction extends TopAction{
 	String email_cc = manager_email;
 	for(PartTimeWarn one:warns){
 	    if(one.getWarnType() == 1 ){ // week total
-		email_msg = "Your total of ("+one.getWeekTotal()+") hours for the week "+one.getPayWeekNum()+" of current pay period exceeds "+one.getCriticalValue()+" maximum weekly hours ";
+		email_msg = "For this week of this pay period ("+pp.getDateRange()+"), "+emp.getFull_name()+"'s reported total hours of ("+one.getWeekTotal()+") for this week exceeded the 29 hours per week limit for part-time employees.";
 	    }
 	    else{ // Wednesday
-		email_msg = "Your total of ("+one.getWeekTotal()+") hours on this Wednesday of the week "+one.getPayWeekNum()+" of current pay period exceeds "+one.getCriticalValue()+" hours. ";		
+		email_msg = "As of (Wednesday, ("+Helper.getToday()+"), "+emp.getFull_name()+"'s reported "+one.getWeekTotal()+" hours exceeded 20 hours, please make make any adjustments needed so their total hours do not exceed 29 hours for the week.";
 	    }
 	    MailHandle mailer = new
 		MailHandle(mail_host,
@@ -436,6 +438,12 @@ public class TimeBlockAction extends TopAction{
 	}
 	return back;
     }
+    /**
+       For the week ending on (last date of pay period), (emp name)'s reported total hours of (xx) for this week exceeded the 29 hours per week limit for part-time employees.
+       For this week of this pay period (last date of pay period), (emp name)'s reported total hours of (xx) for this week exceeded the 29 hours per week limit for part-time employees.
+       
+
+     */
 }
 
 

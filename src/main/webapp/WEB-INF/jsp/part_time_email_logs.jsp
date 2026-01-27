@@ -37,7 +37,7 @@
 		    <th>Supervisor</th>
 		    <th>Job Title</th>
 		    <th>Week Number</th>
-		    <th>Type </th>
+		    <th>Warning Type Type </th>
 		    <th>Subject</th>
 		    <th>Message</th>
 		    <th>Status</th>

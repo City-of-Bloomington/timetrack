@@ -22,12 +22,12 @@
 	<ul>
 	    <li>You can specify salary group</li>	    
 	    <li>You can query time details by choosing either the year and quarter or by entering date range.</li>
-	    <li>Pick from the available 'Earn Codes' in the left pane and click 'Add', continue adding one by one</li>
+	    <li>Pick from the available 'Earn Codes' in the left pane and click 'Add', continue adding one by one, if no code is selected all earn codes will show up</li>
 	    <li>If you chose an earn code by mistake, click on it in the right pange and click on 'Remove'</li>
 	    <li> You can run the report by Department, Group or Employee</li>
 	    <li> To run the report for certain group, pick the Department first and then pick from the group list</li>
 	    <li> To run the report for an Employee, start typing employee name in the Employee Name field then pick from the list </li>
-	    <li>For output type, we suggest that you run the 'Web page HTML' type first so that you get an idea about the numbers. If you are OK with these numbers then you choose the 'CSV' type.</li>
+	    <li> For output type, we suggest that you run the 'Web page HTML' type first so that you get an idea about the numbers. If you are OK with these numbers then you choose the 'CSV' type.</li>
 	</ul>
 	<div class="width-one-half float-left">
 	    <s:if test="hasSalaryGroups()">

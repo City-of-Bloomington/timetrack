@@ -390,33 +390,35 @@ public class Report{
 	    return msg;
 	}				
 	if(!ignoreProfiles){
-	    msg = setProfiles();
+	    //msg = setProfiles();
 	    if(!msg.isEmpty()){
 		return msg;
 	    }
 	}
+	if(codes != null){
+	    findCodeSet();
+	}
 	//
 	// using subquery
 	//
-	String qq = "select tt.name,tt.empnum,tt.date,tt.code,sum(hours) "+
+	String qq = "select tt.name,tt.empnum,tt.date,tt.code,sum(hours),sum(amount) "+
 	    "from (select "+
 	    " concat_ws(' ',e.first_name,e.last_name) AS name,"+
 	    " e.employee_number as empnum,"+
 	    " t.date AS date,"+
 	    " concat_ws(': ',c.name, c.description) AS code, "+
-	    " t.hours AS hours "+
+	    " t.hours AS hours, "+
+	    " t.amount AS amount "+
 	    " from time_blocks t "+
-	    " join hour_codes c on t.hour_code_id=c.id "+						
+	    " join hour_codes c on t.hour_code_id=c.id "+
 	    " join time_documents d on d.id=t.document_id "+
 	    " join pay_periods p on p.id=d.pay_period_id "+
 	    " join employees e on d.employee_id=e.id ";
-	String qw ="where t.inactive is null and t.date >= ? and t.date <= ? ";
+	String qw ="where t.inactive is null and (t.hours > 0 or t.amount > 0) and "+
+	    " t.date >= ? and t.date <= ? ";
 	if(!salary_group_id.isEmpty()){
 	    qq += " join jobs j on d.job_id=j.id ";
 	    qw += " and j.salary_group_id = ? ";
-	}
-	if(codes != null){
-	    findCodeSet();
 	}
 	if(codeSet != null && !codeSet.isEmpty()){
 	    qw += " and c.id in ("+codeSet+") ";
@@ -434,7 +436,44 @@ public class Report{
 	    qq += " join department_employees de on de.employee_id=d.employee_id ";
 	    qw += " and de.department_id = ? ";
 	}
-	qq += qw +") tt ";
+	qq += qw;
+	// second
+	qq += "UNION All "+
+	    "select "+
+	    "concat_ws(' ',e.first_name,e.last_name) AS name, "+
+	    "e.employee_number as empnum,"+
+	    "p.end_date AS date,"+
+	    "concat_ws(': ',c.name, c.description) AS code,"+ 
+	    "t.hours AS hours,t.amount as amount "+ 
+	     "from tmwrp_blocks t "+
+	     "join tmwrp_runs r on t.run_id=r.id "+
+	     "join time_documents d on d.id=r.document_id "+
+	     "join hour_codes c on t.hour_code_id=c.id "+
+	     "join pay_periods p on p.id=d.pay_period_id "+
+	    "join employees e on d.employee_id=e.id ";
+	qw =  "where p.end_date >= ? and p.end_date <= ? ";
+	if(!salary_group_id.isEmpty()){
+	    qq += " join jobs j on d.job_id=j.id ";
+	    qw += " and j.salary_group_id = ? ";
+	}
+	if(codeSet != null && !codeSet.isEmpty()){
+	    qw += " and c.id in ("+codeSet+") ";
+	}
+	if(!employee_id.isEmpty()){
+	    qw += " and e.id = ? ";
+	}
+	else if(!group_id.isEmpty()){
+	    if(salary_group_id.isEmpty()){
+		qq += " join jobs j on d.job_id=j.id ";
+	    }
+	    qw += " and j.group_id = ? ";
+	}
+	else if(!department_id.isEmpty()){
+	    qq += " join department_employees de on de.employee_id=d.employee_id ";
+	    qw += " and de.department_id = ? ";
+	}
+	qq += qw;
+	qq += ") tt ";
 	qq += " group by tt.name,tt.empnum,tt.code,tt.date ";
 	con = Helper.getConnection();
 	if(con == null){
@@ -463,6 +502,22 @@ public class Report{
 	    else if(!department_id.isEmpty()){
 		pstmt.setString(jj++, department_id);
 	    }
+	    date_tmp = dateFormat.parse(start_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    date_tmp = dateFormat.parse(end_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    if(!salary_group_id.isEmpty()){
+		pstmt.setString(jj++, salary_group_id);
+	    }
+	    if(!employee_id.isEmpty()){
+		pstmt.setString(jj++, employee_id);
+	    }
+	    else if(!group_id.isEmpty()){
+		pstmt.setString(jj++, group_id);
+	    }	    
+	    else if(!department_id.isEmpty()){
+		pstmt.setString(jj++, department_id);
+	    }	    
 	    rs = pstmt.executeQuery();
 	    jj=0;
 	    while(rs.next()){
@@ -486,7 +541,9 @@ public class Report{
 				  rs.getString(4), // code
 				  rs.getString(3), // date
 				  rs.getDouble(5), // hours
+				  rs.getDouble(6), // amount
 				  hourly_rate); // hourly rate
+
 		dailyEntries.add(one);
 	    }
 	}
@@ -519,28 +576,64 @@ public class Report{
 		return msg;
 	    }
 	}
+	if(codes != null){
+	    findCodeSet();
+	}
 	//
 	// using subquery
 	//
-	String qq = "select tt.name,tt.empnum,tt.code,sum(hours) "+
+	String qq = "select tt.name,tt.empnum,tt.code,sum(hours),sum(amount) "+
 	    "from ( select "+
 	    " concat_ws(' ',e.first_name,e.last_name) AS name,"+
 	    " e.employee_number AS empnum,"+
 	    " concat_ws(': ',c.name,c.description) AS code, "+
-	    " t.hours AS hours "+
+	    " t.hours AS hours, "+
+	    " t.amount AS amount "+
 	    " from time_blocks t "+
-	    " join hour_codes c on t.hour_code_id=c.id "+						
+	    " join hour_codes c on t.hour_code_id=c.id "+
 	    " join time_documents d on d.id=t.document_id "+
 	    " join pay_periods p on p.id=d.pay_period_id "+
 	    " join employees e on d.employee_id=e.id ";
-	String qw = " where t.inactive is null and "+
+	String qw = " where t.inactive is null and (t.hours > 0 or t.amount > 0) and "+
 	    " t.date >= ? and t.date <= ? ";
 	if(!salary_group_id.isEmpty()){
 	    qq += " join jobs j on d.job_id=j.id ";
 	    qw += " and j.salary_group_id = ? ";
 	}
-	if(codes != null){
-	    findCodeSet();
+	if(codeSet != null && !codeSet.isEmpty()){	    
+	    qw += " and c.id in ("+codeSet+") ";
+	}
+	if(!employee_id.isEmpty()){
+	    qw += " and e.id = ? ";
+	}
+	else if(!group_id.isEmpty()){
+	    if(salary_group_id.isEmpty()){
+		qq += " join jobs j on d.job_id=j.id ";
+	    }
+	    qw += " and j.group_id = ? ";
+	}
+	else if(!department_id.isEmpty()){
+	    qq += " join department_employees de on de.employee_id=d.employee_id ";
+	    qw += " and de.department_id = ? ";
+	}
+	qq += qw;
+	qq +="UNION All "+
+	    " select "+
+	    " concat_ws(' ',e.first_name,e.last_name) AS name,"+
+	    " e.employee_number AS empnum,"+
+	    " concat_ws(': ',c.name,c.description) AS code, "+
+	    " t.hours AS hours, "+
+	    " t.amount AS amount "+
+	    " from tmwrp_blocks t "+
+	    "join tmwrp_runs r on t.run_id=r.id "+
+	    "join time_documents d on d.id=r.document_id "+
+	    "join hour_codes c on t.hour_code_id=c.id "+
+	    "join pay_periods p on p.id=d.pay_period_id "+
+	    "join employees e on d.employee_id=e.id ";
+	qw =  "where p.end_date >= ? and p.end_date <= ? ";
+	if(!salary_group_id.isEmpty()){
+	    qq += " join jobs j on d.job_id=j.id ";
+	    qw += " and j.salary_group_id = ? ";
 	}
 	if(codeSet != null && !codeSet.isEmpty()){	    
 	    qw += " and c.id in ("+codeSet+") ";
@@ -588,7 +681,23 @@ public class Report{
 	    }	    
 	    else if(!department_id.isEmpty()){
 		pstmt.setString(jj++, department_id);
+	    }
+	    date_tmp = dateFormat.parse(start_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    date_tmp = dateFormat.parse(end_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    if(!salary_group_id.isEmpty()){
+		pstmt.setString(jj++, salary_group_id);
+	    }
+	    if(!employee_id.isEmpty()){
+		pstmt.setString(jj++, employee_id);
+	    }
+	    else if(!group_id.isEmpty()){
+		pstmt.setString(jj++, group_id);
 	    }	    
+	    else if(!department_id.isEmpty()){
+		pstmt.setString(jj++, department_id);
+	    }	    	    
 	    rs = pstmt.executeQuery();
 	    jj=0;
 	    while(rs.next()){
@@ -609,6 +718,7 @@ public class Report{
 				  rs.getString(2), // emp num
 				  rs.getString(3), // code
 				  rs.getDouble(4), // hours
+				  rs.getDouble(5), // amount
 				  hourly_rate); // hourly rate
 		addToHash(one);
 		entries.add(one);
@@ -670,6 +780,39 @@ public class Report{
 	HAND report all codes
 	
 				select tt.name,tt.empnum,tt.date,tt.code,sum(hours)                                  from (select                                                                    concat_ws(' ',e.first_name,e.last_name) AS name,                                e.employee_number as empnum,                                                    t.date AS date,                                                                 c.name AS code, 								                                                 t.hours AS hours                                                                from time_blocks t                                                              join hour_codes c on t.hour_code_id=c.id 						                           join time_documents d on d.id=t.document_id                                     join pay_periods p on p.id=d.pay_period_id                                      join department_employees de on de.employee_id=d.employee_id                    join employees e on d.employee_id=e.id                                          where t.inactive is null                                                        and de.department_id = 3                                                        and p.start_date >= str_to_date('01/01/2019','%m/%d/%Y')                        and p.end_date <= str_to_date('12/31/2019','%m/%d/%Y')                          ) tt                                                                           group by tt.code,tt.name,tt.empnum,tt.date                                      INTO OUTFILE '/var/lib/mysql-files/hand_report.csv'                             FIELDS TERMINATED BY ','                                                        ENCLOSED BY '"'                                                                 LINES TERMINATED BY '\n';
+
+	String qq = "select tt.name,tt.empnum,tt.date,tt.code,sum(hours) "+
+	    "from (
+	    
+	    select 
+	    concat_ws(' ',e.first_name,e.last_name) AS name,
+	    e.employee_number as empnum,
+	    t.date AS date,
+	    concat_ws(': ',c.name, c.description) AS code, 
+	    t.hours AS hours, 
+	    t.amount AS amount 
+	    from time_blocks t 
+	    join hour_codes c on t.hour_code_id=c.id 
+	    join time_documents d on d.id=t.document_id 
+	    join pay_periods p on p.id=d.pay_period_id 
+	    join employees e on d.employee_id=e.id 
+	    where t.inactive is null and t.date >= '2026-01-01' and t.date <= '2026-01-31' and e.id=1
+	    union
+	    select
+	     concat_ws(' ',e.first_name,e.last_name) AS name,
+	     e.employee_number as empnum,
+	     p.end_date AS date,
+	     concat_ws(': ',c.name, c.description) AS code, 
+	     t.hours AS hours,t.amount as amount 
+	     from tmwrp_blocks t 
+	     join tmwrp_runs r on t.run_id=r.id 
+	     join time_documents d on d.id=r.document_id 
+	     join hour_codes c on t.hour_code_id=c.id 
+	     join pay_periods p on p.id=d.pay_period_id 
+	     join employees e on d.employee_id=e.id
+	     where p.end_date >= '2026-01-01' and p.end_date <= '2026-01-30'
+	     and e.id=1;
+
 				
 */
 

@@ -21,7 +21,7 @@ public class PartTimeEmailLogsAction extends TopAction{
     static final long serialVersionUID = 3800L;	
     static Logger logger = LogManager.getLogger(PartTimeEmailLogsAction.class);
     //
-    String logsTitle = "Most recent leave email logs";
+    String logsTitle = "Most recent Part Time email logs";
     List<PartTimeEmailLog> logs = null;
     PartTimeEmailLogList lel = new PartTimeEmailLogList();
     String dateFrom = "", dateTo = "";
@@ -32,7 +32,9 @@ public class PartTimeEmailLogsAction extends TopAction{
 	    return back;
 	}
 	if(!action.isEmpty()){
-	    // lel.setNoLimit();
+	    lel.setDateFrom(dateFrom);
+	    lel.setDateTo(dateTo);
+	    lel.setNoLimit();
 	    back = lel.find();
 	    if(!back.isEmpty()){
 		addError(back);
@@ -85,14 +87,12 @@ public class PartTimeEmailLogsAction extends TopAction{
 	    getLogs();
 	return logs != null && logs.size() > 0;
     }
+    // default
     public List<PartTimeEmailLog> getLogs(){
-	if(action.isEmpty()){
-	    PartTimeEmailLogList tl = new PartTimeEmailLogList();
-	    tl.setDateFrom(dateFrom);
-	    tl.setDateTo(dateTo);
-	    String back = tl.find();
+	if(action.isEmpty() && logs == null){
+	    String back = lel.find();
 	    if(back.isEmpty()){
-		List<PartTimeEmailLog> ones = tl.getEmailLogs();
+		List<PartTimeEmailLog> ones = lel.getEmailLogs();
 		if(ones != null && ones.size() > 0){
 		    logs = ones;
 		}

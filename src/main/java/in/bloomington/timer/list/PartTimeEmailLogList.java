@@ -69,6 +69,9 @@ public class PartTimeEmailLogList extends CommonInc{
     public String getPageSize(){
 	return limit;
     }
+    public void setNoLimit(){
+	limit = "";
+    }
     public String find(){
 	String back = "";
 	Connection con = null;
@@ -132,7 +135,7 @@ public class PartTimeEmailLogList extends CommonInc{
 	    qq += " where "+qw;
 	}
 	qq += " order by l.id desc ";
-	if(limit.isEmpty()){
+	if(!limit.isEmpty()){
 	    qq += " limit "+limit;
 	}
 	if(debug)

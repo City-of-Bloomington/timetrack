@@ -34,6 +34,7 @@
 	    <td>Employee Number</td>
 	    <td>Earn Code</td>
 	    <td>Hours</td>
+	    <td>Amount</td>
 	</tr>
 	<s:iterator var="row" value="#hoursSums">
 	    <s:set var="code" value="#row.key" />
@@ -48,6 +49,7 @@
 			    <td><s:property value="#entry.empNum" /></td>
 			    <td><s:property value="#entry.code" /></td>
 			    <td align="right"><s:property value="#entry.hoursStr" /></td>
+			    <td align="right"><s:property value="#entry.amountPayStr" /></td>			    
 			</tr>
 		    </s:iterator>
 		</s:if>
@@ -57,6 +59,7 @@
 		<td>&nbsp;</td>				
 		<td><b>Sub Total</b></td>
 		<td align="right"><s:property value="#hours" /></td>
+		<td>&nbsp;</td>
 	    </tr>
 	    <tr>
 		<td colspan="4">&nbsp;</td>
@@ -77,6 +80,7 @@
 	    <td align="center"><b>Date</b></td>		
 	    <td align="center"><b>Earn Code</b></td>
 	    <td align="center"><b>Hours</b></td>
+	    <td align="center"><b>Amount</b></td>	    
 	</tr>
 	<s:iterator var="row" value="#dailyEntries">
 	    <tr>
@@ -85,6 +89,7 @@
 		<td><s:property value="#row.date" /></td>
 		<td><s:property value="#row.code" /></td>
 		<td align="right"><s:property value="#row.hoursStr" /></td>
+		<td align="right"><s:property value="#row.amountPayStr" /></td>		
 	    </tr>
 	</s:iterator>
     </table>

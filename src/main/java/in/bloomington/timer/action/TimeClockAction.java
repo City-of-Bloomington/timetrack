@@ -245,6 +245,7 @@ public class TimeClockAction extends TopAction{
 	}
 	JobTask job = document.getJob();
 	Employee emp = document.getEmployee();
+	PayPeriod pp = document.getPayPeriod();
 	if(!emp.canReceiveEmail()){
 	    emp.findAddress(); // include email
 	}
@@ -270,7 +271,8 @@ public class TimeClockAction extends TopAction{
 	String email_cc = manager_email;
 	for(PartTimeWarn one:warns){
 	    if(one.getWarnType() == 1 ){ // week total
-		email_msg = "Your total of ("+one.getWeekTotal()+") hours for the week "+one.getPayWeekNum()+" of current pay period exceeds "+one.getCriticalValue()+" maximum weekly hours ";
+		email_msg = "For this week of this pay period ("+pp.getDateRange()+"), "+emp.getFull_name()+"'s reported total hours of ("+one.getWeekTotal()+") for this week exceeded the 29 hours per week limit for part-time employees.";
+		
 	    }
 	    else{ // Wednesday
 		email_msg = "Your total of ("+one.getWeekTotal()+") hours on this Wednesday of the week "+one.getPayWeekNum()+" of current pay period exceeds "+one.getCriticalValue()+" hours. ";		
