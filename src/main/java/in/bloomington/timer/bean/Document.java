@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import java.util.Locale;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.sql.*;
 import javax.sql.*;
@@ -1458,11 +1459,27 @@ public class Document implements Serializable{
 	if(week_total > CommonInc.wednesday_threshold){
 	    // chek if today is Wednesday
 	    LocalDate today = LocalDate.now();
+	    
 	    DayOfWeek dayOfWeek = today.getDayOfWeek();
 	    int dayOfWeekNumber = dayOfWeek.getValue();
-	    String dayName = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()); 
+	    String dayName = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault());
+	    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+	    String todayff = today.format(inputFormatter);
 	    //Monday:1 Wednesday:3, Sunday 7 
 	    if(dayOfWeekNumber == 3){
+		if(payPeriod == null){
+		    getPayPeriod();
+		}
+		if(payPeriod.isDateInWeekOne(todayff)){
+		    if(week_num == 2){
+			return;
+		    }
+		}
+		else{
+		    if(week_num == 1){
+			return;
+		    }
+		}
 		String str = "Week "+week_num+" up to "+dayName+" total hours are more than "+CommonInc.wednesday_threshold+" hrs";
 		if(!warnings.contains(str))
 		    warnings.add(str);

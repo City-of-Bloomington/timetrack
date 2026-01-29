@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.*;
 import java.sql.*;
 import java.text.*;
+import java.time.format.DateTimeFormatter;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Period;
 import javax.naming.*;
 import javax.naming.directory.*;
 import in.bloomington.timer.*;
@@ -240,7 +244,8 @@ public class PayPeriod implements Serializable{
     // date is in yyy-mm-dd format
     // any date to be in between the comparison
     // must be start_date <= date <= end_date
-    public boolean isDateWithin(String date){
+    /**
+    public boolean isDateWithin2(String date){
 	if(date == null) return false;
 	String date2 = date.trim();
 	int date_int = 0;
@@ -255,6 +260,12 @@ public class PayPeriod implements Serializable{
 	}
 	return date_int >= start_date_int && date_int <= end_date_int;
     }
+    */
+    public boolean isDateWithin(String date){
+	if(date == null) return false;
+	int daysBetween = findDateDiffWithDate(date);
+	return daysBetween >= 0 && daysBetween < 14;
+    }    
     // something like 08/02 - 08/09
     public String getWeek1DateRange(){
 	String endWeek1 = Helper.getDateAfter(start_date, 6);
@@ -281,8 +292,22 @@ public class PayPeriod implements Serializable{
 	String today = Helper.getToday();
 	return start_date.equals(today);
     }
-
+    public boolean isDateInWeekOne(String date){
+	int daysFromStart = findDateDiffWithDate(date);
+	if(daysFromStart < 7) return true;
+	return false;
+    }
     public int findDateDiffWithDate(String date){
+	int days = 0;
+	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+	LocalDate pp_start = LocalDate.parse(start_date, dateFormatter);
+	LocalDate in_date = LocalDate.parse(date, dateFormatter);	
+	Period period = Period.between(pp_start, in_date);
+	days = period.getDays();
+	return days;
+    }
+    /**
+    public int findDateDiffWithDate2(String date){
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
@@ -325,6 +350,7 @@ public class PayPeriod implements Serializable{
 	}				
 	return days;
     }
+    */
     public String find(){
 	Connection con = null;
 	PreparedStatement pstmt = null;

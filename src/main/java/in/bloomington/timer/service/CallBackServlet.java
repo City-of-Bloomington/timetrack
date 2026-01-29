@@ -74,7 +74,7 @@ public class CallBackServlet extends TopServlet {
 		// System.err.println(" org state "+original_state);	
 		if(session != null)
 		    session.invalidate();
-		String str = url+"/Login";
+		String str = url+"/login";
 		response.sendRedirect(str);
 		return;
 	     }

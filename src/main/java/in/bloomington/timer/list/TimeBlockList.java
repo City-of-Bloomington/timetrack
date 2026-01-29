@@ -1078,9 +1078,9 @@ public class TimeBlockList{
 	Date end_date=null, prev_date = null;
 	Calendar cal = Calendar.getInstance();
 	String msg = "", emp_id="";
-	String qq = "select d.employee_id,p.end_date from time_documents d, pay_periods p where d.pay_period_id=p.id and d.id=? ";
-	String qq2 = "select date_format(t.date,'%m/%d/%Y') date, c.name code, sum(t.hours)                                                                               from time_blocks t,time_documents d,hour_codes c                                where t.document_id=d.id and t.inactive is null and                            year(t.date) = year(curdate()) "+
-	  "and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                and d.employee_id=?  and  t.date >= ?  and t.date <= ?                          group by date, code ";
+	String qq = "select date_format(t.date,'%m/%d/%Y') date_added, c.name code, sum(t.hours)                                                                               from time_blocks t,time_documents d,hour_codes c, time_documents d2             where t.document_id=d.id and t.inactive is null and                             t.date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) "+
+	  " and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                 and d.employee_id=d2.employee_id and d2.id=? "+
+	    	    "group by date_added, code ";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = " Could not connect to DB ";
@@ -1092,18 +1092,6 @@ public class TimeBlockList{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, doc_id);
 	    rs = pstmt.executeQuery();
-	    if(rs.next()){
-		emp_id = rs.getString(1);
-		end_date = rs.getDate(2);
-	    }
-	    cal.setTime(end_date);
-	    cal.add(Calendar.YEAR, -1);
-	    prev_date = cal.getTime();
-	    pstmt2 = con.prepareStatement(qq2);
-	    pstmt2.setString(1, emp_id);
-	    pstmt2.setDate(2, new java.sql.Date(prev_date.getTime()));
-	    pstmt2.setDate(3, new java.sql.Date(end_date.getTime()));						
-	    rs = pstmt2.executeQuery();
 	    while(rs.next()){
 		String str = rs.getString(1);
 		String str2 = rs.getString(2);
@@ -1546,8 +1534,13 @@ public class TimeBlockList{
      and j.group_id=g.id and dp.id =g.department_id    
 =======
       
-     
+	select date_format(t.date,'%m/%d/%Y') date_added, c.name code, sum(t.hours)                                                                                           from time_blocks t,time_documents d,hour_codes c                                     where t.document_id=d.id and t.inactive is null and                             t.date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)                                   and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                and d.employee_id in (select d2.employee_id from time_documents d2 where d2.id=169304)
+   	group by date_added, code
 
+	select date_format(t.date,'%m/%d/%Y') date_added, c.name code, sum(t.hours)                                                                                           from time_blocks t,time_documents d,hour_codes c                                     where t.document_id=d.id and t.inactive is null and                             t.date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)                                   and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                and d.employee_id in (1)
+   	group by date_added, code	
+	
+d2.id=1928109
      
     */
 			

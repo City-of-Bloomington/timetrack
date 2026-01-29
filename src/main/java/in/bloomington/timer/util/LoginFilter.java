@@ -5,7 +5,7 @@ package in.bloomington.timer.util;
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
 import java.io.IOException;
-
+import java.util.Enumeration;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -39,7 +39,8 @@ public class LoginFilter implements Filter {
 	HttpServletResponse res = (HttpServletResponse) response;
 	res.addHeader("Content-Security-Policy", LoginFilter.POLICY);	
 	res.addHeader("X-Frame-Options", "DENY");
-	String uri = req.getRequestURI();
+	String uri = req.getRequestURI();		
+	StringBuffer url = req.getRequestURL();
 	HttpSession session = req.getSession();
 	if(session == null || session.getAttribute("user") == null){
 	    // these are our exludes
@@ -50,30 +51,46 @@ public class LoginFilter implements Filter {
 	    }
 	    else{
 		/**
-		   // we need to do cleanup the url may contain WEB-INF/jsp
-		   // and jsp extension
-		String originalURL = uri;
-		if (req.getQueryString() != null) {
-		    originalURL += "?" + req.getQueryString();
+		Enumeration<String> headerNames = req.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+		    String headerName = headerNames.nextElement();
+		    System.err.println("Header Name:" + headerName);
+		    String headerValue = req.getHeader(headerName);
+		    System.err.println(headerValue);
 		}
-		req.getSession().setAttribute("originalURL", originalURL);
 		*/
+		// String default_link = "/timetrack/timeDetails.action";
+		String referer_host = req.getHeader("referer");
+		// String host_forward = req.getHeader("X-Forwarded-Host");
+		// String host = req.getHeader("host");
+		System.err.println(" referer "+referer_host);
+		//System.err.println(" host forward "+host_forward);
+		// System.err.println(" host "+host);		
+		//System.err.println(" url "+url);		
+		String originalURL = null;
+		if(referer_host != null){
+		    originalURL = referer_host;
+		}
+		// System.err.println("origin:"+originalURL);
+		if(originalURL != null){
+		    req.getSession().setAttribute("originalURL", originalURL);
+		}
+		// we need to do cleanup the url may contain WEB-INF/jsp
+		// and jsp extension
 		// everything else we need login
-		res.sendRedirect("Login");
+		res.sendRedirect("login");
 	    }
 	}
 	else{
-	    /**
 	    String originalURL = (String) session.getAttribute("originalURL");
 	    if (originalURL != null && !originalURL.isEmpty()) {
+		session.removeAttribute("originalURL"); 		
 		res.sendRedirect(originalURL);
-		session.removeAttribute("originalURL"); 
 	    }
 	    else {
-	    */
 		// process the rest of the chain
-	    chain.doFilter(request, response);
-	    // }
+		chain.doFilter(request, response);
+	    }
 	}
     }
 

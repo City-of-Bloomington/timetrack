@@ -311,7 +311,6 @@ public class TimeClock{
 		    document = ones.get(0);
 		    document.hasDailyBlocks(); // to start calculations
 		    document_id = document.getId();
-		    System.err.println(" doc prepared ");
 		}
 	    }
 	}

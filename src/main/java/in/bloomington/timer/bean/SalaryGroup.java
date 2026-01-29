@@ -106,12 +106,12 @@ public class SalaryGroup implements Serializable{
 	return name.equals("Part Time");
     }
     public boolean isPartTimeWithBen(){
-	return isPartTimeExcempt() || isPartTimeNonExcempt();
+	return isPartTimeExempt() || isPartTimeNonExempt();
     }
-    public boolean isPartTimeNonExcempt(){
+    public boolean isPartTimeNonExempt(){
 	return name.indexOf("Part Time Non") > -1;
     }
-    public boolean isPartTimeExcempt(){
+    public boolean isPartTimeExempt(){
 	return name.equals("Part Time Exempt");
     }    
     public boolean isUnionned(){
@@ -148,7 +148,8 @@ public class SalaryGroup implements Serializable{
     // all groups are leave elegible except temp workers
     //
     public boolean isLeaveEligible(){
-	return isExempt() || isNonExempt() || isPartTime();
+	return isExempt() || isNonExempt() || isPartTimeNonExempt() ||
+	    isPartTimeExempt();
     }
     //
     // setters
