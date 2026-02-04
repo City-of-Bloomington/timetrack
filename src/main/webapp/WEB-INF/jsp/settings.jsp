@@ -102,7 +102,8 @@
 	    </ul>
 	    <h2>Timewarp</h2>
 	    <ul>
-		<li><a href="<s:property value='#application.url'/>tmwrpWrap.action">Timewarp </a></li>								
+		<li><a href="<s:property value='#application.url'/>tmwrpWrap.action">Timewarp </a></li>
+		<li><a href="<s:property value='#application.url'/>tmwrpDaily.action">Timewarp Daily </a></li>		
 		<li><a href="<s:property value='#application.url'/>tmwrpInitiate.action">Timewarp Initiation Process</a></li>				
 	    </ul>
 

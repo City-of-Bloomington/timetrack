@@ -448,7 +448,8 @@ public class TmwrpWrapAction extends TopAction{
 				csvLine +=",";
 			    }
 			    csvLine += line2;
-			    if(sgrp != null && sgrp.isTemporary()){
+			    if(sgrp != null && (sgrp.isTemporary() ||
+						sgrp.isSeasonal())){
 				csvLine += job.getName();
 			    }
 			    allCsvLines.add(csvLine);														
@@ -463,7 +464,8 @@ public class TmwrpWrapAction extends TopAction{
 			    csvLine += df.format(dd)+",";
 			    csvLine += line; // gl_value not needed here
 			    csvLine += line2;
-			    if(sgrp != null && sgrp.isTemporary()){
+			    if(sgrp != null && (sgrp.isTemporary() ||
+						sgrp.isSeasonal())){
 				csvLine += job.getName();
 			    }														
 			    allCsvLines.add(csvLine);														

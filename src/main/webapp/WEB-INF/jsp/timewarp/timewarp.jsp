@@ -46,7 +46,7 @@
 	</s:form>
 </div>
 <s:if test="action != ''">
-	<%@  include file="timewarpDetails.jsp" %>	
+    <%@  include file="timewarpDetails.jsp" %>	
 </s:if>
 <%@ include file="../footer.jsp" %>
 
