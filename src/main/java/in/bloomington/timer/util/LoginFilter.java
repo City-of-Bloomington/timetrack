@@ -61,22 +61,34 @@ public class LoginFilter implements Filter {
 		*/
 		// String default_link = "/timetrack/timeDetails.action";
 		String referer_host = req.getHeader("referer");
-		// String host_forward = req.getHeader("X-Forwarded-Host");
-		// String host = req.getHeader("host");
+		String host_forward = req.getHeader("X-Forwarded-Host");
+		String qstr = req.getQueryString();
+		/**
+		System.err.println(" qstr "+qstr);
 		System.err.println(" referer "+referer_host);
-		//System.err.println(" host forward "+host_forward);
+		System.err.println(" host forward "+host_forward);
 		// System.err.println(" host "+host);		
-		//System.err.println(" url "+url);		
+		System.err.println(" url "+url);
+		*/
 		String originalURL = null;
-		if(referer_host != null){
-		    originalURL = referer_host;
+		if(url != null){
+		    if(url.indexOf("leave_request") > -1){
+			originalURL = "https://"+host_forward;
+			originalURL += "/timetrack/leave_request.action";
+			if(qstr != null)
+			    originalURL +="?"+qstr;
+		    }
+		    else if(url.indexOf("leave_review") > -1){
+			originalURL = "https://"+host_forward;
+			originalURL += "/timetrack/leave_review.action";
+			if(qstr != null)
+			    originalURL +="?"+qstr;
+		    }
 		}
-		// System.err.println("origin:"+originalURL);
 		if(originalURL != null){
+		    System.err.println("origin:"+originalURL);		    
 		    req.getSession().setAttribute("originalURL", originalURL);
 		}
-		// we need to do cleanup the url may contain WEB-INF/jsp
-		// and jsp extension
 		// everything else we need login
 		res.sendRedirect("login");
 	    }

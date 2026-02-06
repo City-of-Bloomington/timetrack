@@ -185,7 +185,26 @@ public class TimeBlockLogList{
        // starting pay period 12/31/2018 so we added one day
        //
        select (dayofyear(action_time)+1)%14+1 day, hour(action_time) hour,count(*) cnt from time_block_logs where action_time >= str_to_date('01/01/2022','%m/%d/%Y') group by day, hour                
-				
 
+       // craig 347
+       // renate 2372
+       // justin 1850
+       
+       select 'block_id','Earn Code','Date','Start Time','End Time','Hours','Amount','Clocked In','Clocked Out','Action Type','Action Time','Action By'
+       UNION ALL
+       select l2.* from 
+       (select l.time_block_id,c.name earn_code,date_format(l.date,'%m/%d/%Y') as date,concat_ws(':',l.begin_hour,l.begin_minute) as start_time,concat_ws(':',l.end_hour,l.end_minute) as end_time,l.hours as hours,l.amount as amount,l.clock_in as clocked_in,l.clock_out as clocked_out,l.action_type as action_type,date_format(l.action_time,'%m/%d/%y %H:%i') as action_time,concat_ws(' ',e.first_name,e.last_name) as action_by from time_block_logs l
+       join time_documents d on l.document_id=d.id
+       join employees e on e.id = l.action_by_id
+       join hour_codes c on c.id=l.hour_code_id 
+       where l.action_time >= str_to_date('02/01/2023','%m/%d/%Y')
+       and d.employee_id=2372
+       order by l.time_block_id) l2
+       into outfile '/var/lib/mysql-files/renate_logs.csv'                          fields terminated by ','                                                        lines terminated by '\n';
+
+ encloded by '"'
+       
+
+       
     */
 }

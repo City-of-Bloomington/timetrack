@@ -42,10 +42,13 @@ public class LeaveRequestAction extends TopAction{
 	getUser();
 	resetEmployee();
 	String ret = SUCCESS;
+	String back = "";
+	/**
 	String back = doPrepare("leaveRequest.action");
 	if(!back.isEmpty()){
 	    return back;
 	}
+	*/
 	if(action.startsWith("Submit Request")){
 	    leave.setInitiated_by(user.getId());
 	    leave.setJob_id(job_id);
@@ -178,7 +181,9 @@ public class LeaveRequestAction extends TopAction{
 	if(leave == null){
 	    leave = new LeaveRequest();
 	    leave.setId(id);
-	    leave.setInitiated_by(user.getId());
+	    getUser();
+	    if(user != null)
+		leave.setInitiated_by(user.getId());
 	    leave.setJob_id(job_id);
 	}
 	return leave;
