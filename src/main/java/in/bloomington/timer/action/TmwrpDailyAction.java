@@ -398,7 +398,7 @@ public class TmwrpDailyAction extends TopAction{
     // 
     void prepareCsvs(){
 	allCsvLines = new ArrayList<>();
-	String line =",,,,", line2 =",,,,,,";
+	String line =",,,,", line2 =",,,,,,,";
 	String utilChar = "";
 	if(isUtil){
 	    utilChar ="u"; // append to all earn codes for Utility depart
@@ -409,12 +409,10 @@ public class TmwrpDailyAction extends TopAction{
 		if(one.getAmount() > 0){
 		    csvLine += one.getAmount();
 		}
-		csvLine += ",";
 		csvLine += line;
 		if(isHand){
 		    csvLine += one.getGlString();
 		}
-		csvLine +=",";
 		csvLine += line2;
 		if(one.isSeasonal()){
 		    csvLine += one.getJobTitle();
