@@ -274,6 +274,7 @@ public class PayPeriod implements Serializable{
 	String ret = startWeek1+" - "+endWeek1;
 	return ret;
     }
+    
     public String getWeek2DateRange(){
 	String startWeek2 = Helper.getDateAfter(start_date, 7);
 	startWeek2 = startWeek2.substring(0, startWeek2.lastIndexOf("/"));
@@ -281,6 +282,11 @@ public class PayPeriod implements Serializable{
 	String ret = startWeek2+" - "+endWeek2;
 	return ret;				
     }
+    //need this for reports
+    public String getWeek1EndDate(){
+	String ret = Helper.getDateAfter(start_date, 6);
+	return ret;
+    }    
     // we compate start_date with today and find if is more than two weeks
     // in the future
     public boolean isTwoWeekOrMoreInFuture(){

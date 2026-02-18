@@ -195,6 +195,23 @@ public class TmwrpDailyAction extends TopAction{
 		noDataEmployees.add(emp);
 	    }
 	}
+	// earn code records
+	//
+	DailyBlockList dbl2 = new DailyBlockList();
+	dbl2.setPay_period_id(pay_period_id);
+	if(!department_id.isEmpty()){
+	    dbl2.setDepartment_id(department.getId());
+	}
+	if(!group_id.isEmpty()){
+	    dbl2.setGroup_id(group_id);
+	}
+	back = dbl2.find2();
+	if(!back.isEmpty()){
+	    addError(back);
+	    return back;
+	}
+	List<DailyBlock> blocks = dbl2.getDailyBlocks();
+	dailyBlocks.addAll(blocks);
 	return back;
     }
     public boolean hasDailyBlocks(){

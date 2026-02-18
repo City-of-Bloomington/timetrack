@@ -1078,9 +1078,17 @@ public class TimeBlockList{
 	Date end_date=null, prev_date = null;
 	Calendar cal = Calendar.getInstance();
 	String msg = "", emp_id="";
+	int current_year = Helper.getCurrentYear();
+	/**
+	   // one year from today
 	String qq = "select date_format(t.date,'%m/%d/%Y') date_added, c.name code, sum(t.hours)                                                                               from time_blocks t,time_documents d,hour_codes c, time_documents d2             where t.document_id=d.id and t.inactive is null and                             t.date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) "+
 	  " and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                 and d.employee_id=d2.employee_id and d2.id=? "+
 	    	    "group by date_added, code ";
+	*/
+	String qq = "select date_format(t.date,'%m/%d/%Y') date_added, c.name code, sum(t.hours)                                                                               from time_blocks t,time_documents d,hour_codes c, time_documents d2             where t.document_id=d.id and t.inactive is null and                             year(t.date) = year(now()) "+
+	  " and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                 and d.employee_id=d2.employee_id and d2.id=? "+
+	    	    "group by date_added, code ";
+	
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = " Could not connect to DB ";
