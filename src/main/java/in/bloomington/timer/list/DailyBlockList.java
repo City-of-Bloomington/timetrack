@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.TreeMap;
+import java.util.Map;
 import java.text.*;
 import java.util.Date;
 import java.sql.*;
@@ -25,6 +27,25 @@ public class DailyBlockList{
     PayPeriod payPeriod = null;
     List<DailyBlock> dailyBlocks = null;
     Set<String> empNumbers = null;
+    Map<String, Map<String, Double>> week1EmpCodes = new TreeMap<>();
+    Map<String, Map<String, Double>> week2EmpCodes = new TreeMap<>();    
+    //
+    // earn codes that timewarp adds
+    // CE1.0, CE1.5, CE2.0, HCE1.0, HCE1.5, HCE2.0, OT1.0 OT1.5, OT2.0
+    // 71, 34, 45, 50, 79, 46, 78, 43, 44
+    final static Set<String> earnCodes;
+    static {
+	earnCodes = new HashSet<>();
+	earnCodes.add("34");
+	earnCodes.add("43");
+	earnCodes.add("44");
+	earnCodes.add("45");
+	earnCodes.add("46");
+	earnCodes.add("50");
+	earnCodes.add("71");
+	earnCodes.add("78");
+	earnCodes.add("79");
+    }	
     public DailyBlockList(){
     }
     public DailyBlockList(String val,
@@ -55,6 +76,12 @@ public class DailyBlockList{
     public Set<String> getEmpNumbers(){
 	return empNumbers;
     }
+    public Map<String,Map<String, Double>> getWeek1EmpCodes(){
+	return week1EmpCodes;
+    }
+    public Map<String,Map<String, Double>> getWeek2EmpCodes(){
+	return week2EmpCodes;
+    }    
     void getPayPeriod(){
 	if(payPeriod == null){
 	    if(!pay_period_id.isEmpty()){
@@ -86,7 +113,7 @@ public class DailyBlockList{
 	    " j.salary_group_id AS salary_group_id,"+
 	    " p2.name AS job_title,"+
 	    " c.name AS earn_code, "+
-	    " r.name AS earn_code_reason,"+
+	    " c.id AS code_id,"+
 	    " concat_ws(' ',e.first_name,e.last_name) AS full_name,"+
 	    " e.id AS employee_id,"+
 	    " e.employee_number AS empnum,"+	    	    
@@ -98,7 +125,7 @@ public class DailyBlockList{
 	    " n.gl_string AS gl_string, "+
 	    " t.hours AS hours, "+
 	    " t.amount AS amount, "+
-	    " s.name "+
+	    " datediff(t.date, p.start_date) AS days "+ 
 	    " from time_blocks t "+
 	    " join hour_codes c on t.hour_code_id=c.id "+
 	    " join time_documents d on d.id=t.document_id "+
@@ -109,8 +136,7 @@ public class DailyBlockList{
 	    " join salary_groups s on j.salary_group_id=s.id "+
 	    " join groups g on j.group_id=g.id "+
 	    " join departments d2 on g.department_id=d2.id "+
-	    " join code_cross_ref n on n.code_id=c.id "+
-	    " left join earn_code_reasons r on t.earn_code_reason_id=r.id ";
+	    " join code_cross_ref n on n.code_id=c.id ";
 	String qw = " where t.inactive is null and (t.hours > 0 or t.amount > 0) and "+
 	    " d.pay_period_id= ? ";
 	if(!salary_group_id.isEmpty()){
@@ -166,6 +192,8 @@ public class DailyBlockList{
 		   salaryGroupName.indexOf("Season") >-1){
 		    isSeasonal = true;
 		}
+		String code_id = rs.getString(9);
+		int days = rs.getInt(21);
 		DailyBlock one = new DailyBlock(
 						rs.getString(1),
 						rs.getString(2), // emp num
@@ -187,13 +215,23 @@ public class DailyBlockList{
 						rs.getString(18),
 						rs.getDouble(19),
 						rs.getDouble(20),
+						rs.getInt(21),
 						isSeasonal
 						);
 		empNo = rs.getString(12);
 		if(!empNumbers.contains(empNo))
 		    empNumbers.add(empNo);
-		if(!dailyBlocks.contains(one))
+		if(!dailyBlocks.contains(one)){
 		    dailyBlocks.add(one);
+		    if(earnCodes.contains(code_id)){
+			if(days < 7){
+			    addToHash(week1EmpCodes, one);
+			}
+			else{
+			    addToHash(week2EmpCodes, one);
+			}
+		    }
+		}
 	    }
 	}
 	catch(Exception ex){
@@ -205,6 +243,29 @@ public class DailyBlockList{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;
+    }
+    private void addToHash(Map<String, Map<String, Double>> hash, DailyBlock block){
+	String empNum = block.getEmpNumber();
+	String code_id = block.getCode_id();
+	double hours = block.getHours();
+	if(hash.containsKey(empNum)){
+	    Map<String, Double> map = hash.get(empNum);
+	    if(map.containsKey(code_id)){
+		double dd = map.get(code_id);
+		dd = dd + hours;
+		map.put(code_id, dd);
+		hash.put(empNum, map);
+	    }
+	    else{
+		map.put(code_id, hours);
+		hash.put(empNum, map);
+	    }
+	}
+	else{
+	    Map<String, Double> map = new TreeMap<>();
+	    map.put(code_id, hours);
+	    hash.put(empNum, map);
+	}
     }
     /**
      * find comp and prof calculated hours
@@ -236,7 +297,7 @@ public class DailyBlockList{
 	    " j.salary_group_id AS salary_group_id,"+
 	    " p2.name AS job_title,"+
 	    " c.name AS earn_code, "+
-	    " ' ' AS earn_code_reason,"+
+	    " c.id AS code_id,"+
 	    " concat_ws(' ',e.first_name,e.last_name) AS full_name,"+
 	    " e.id AS employee_id,"+
 	    " e.employee_number AS empnum,"+	    	    
@@ -248,7 +309,7 @@ public class DailyBlockList{
 	    " n.gl_string AS gl_string, "+
 	    " t.hours AS hours, "+
 	    " t.amount AS amount, "+
-	    " s.name "+
+	    " if(t.term_type = 'Week 1',1,2) AS days  "+
 	    " from tmwrp_blocks t join tmwrp_runs r on r.id=t.run_id "+
 	    " join hour_codes c on t.hour_code_id=c.id "+
 	    " join time_documents d on d.id=r.document_id "+
@@ -261,7 +322,7 @@ public class DailyBlockList{
 	    " join departments d2 on g.department_id=d2.id "+
 	    " join code_cross_ref n on n.code_id=c.id ";
 	String qw = " where (t.hours > 0 or t.amount > 0) and "+
-	    " c.id in (71,34,45,109,50,79,46) and "+
+	    " c.id in (34,43,45,46,50,71,78,79,109) and "+
 	    " d.pay_period_id=? ";
 	if(!salary_group_id.isEmpty()){
 	    qw += " and j.salary_group_id = ? ";
@@ -337,6 +398,7 @@ public class DailyBlockList{
 						rs.getString(18),
 						rs.getDouble(19),
 						rs.getDouble(20),
+						rs.getInt(21),
 						isSeasonal
 						);
 		empNo = rs.getString(12);

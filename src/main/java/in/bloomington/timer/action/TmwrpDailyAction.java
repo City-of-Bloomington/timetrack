@@ -41,6 +41,8 @@ public class TmwrpDailyAction extends TopAction{
     List<Employee> empsWithNoEmpNum = null;
     List<DailyBlock> dailyBlocks = null;
     Set<String> empNumbers = null;
+    Map<String, Map<String, Double>> week1EmpCodes = null;
+    Map<String, Map<String, Double>> week2EmpCodes = null;    
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("tmwrpDaily.action");
@@ -195,6 +197,10 @@ public class TmwrpDailyAction extends TopAction{
 		noDataEmployees.add(emp);
 	    }
 	}
+	week1EmpCodes = dbl.getWeek1EmpCodes();
+	week2EmpCodes = dbl.getWeek2EmpCodes();
+	System.err.println(" wwek1 "+week1EmpCodes);
+	System.err.println(" wwek2 "+week2EmpCodes);	
 	// earn code records
 	//
 	DailyBlockList dbl2 = new DailyBlockList();
@@ -211,8 +217,47 @@ public class TmwrpDailyAction extends TopAction{
 	    return back;
 	}
 	List<DailyBlock> blocks = dbl2.getDailyBlocks();
-	dailyBlocks.addAll(blocks);
+	adjustBlocks(blocks);	
+	for(DailyBlock block:blocks){
+	    if(block.isValid()) // avoid 0 values
+		dailyBlocks.add(block);
+	}
 	return back;
+    }
+    void adjustBlocks(List<DailyBlock> blocks){
+	for(DailyBlock one:blocks){
+	    String empNum = one.getEmpNumber();
+	    String code_id = one.getCode_id();
+	    double hours = one.getHours();
+	    int week_no = one.getDays();
+	    if(week_no == 1){
+		if(week1EmpCodes.containsKey(empNum)){
+		    System.err.println(" found "+empNum);
+		    Map<String, Double> map = week1EmpCodes.get(empNum);
+		    if(map.containsKey(code_id)){
+			System.err.println(" found code "+code_id);
+			double dd = map.get(code_id);
+			System.err.println(" hours "+dd);			
+			hours = hours - dd;
+			System.err.println(" hours "+hours);
+			one.setHours(hours);
+		    }
+		}
+	    }
+	    else{
+		if(week2EmpCodes.containsKey(empNum)){
+		    System.err.println(" found "+empNum);		    
+		    Map<String, Double> map = week2EmpCodes.get(empNum);
+		    if(map.containsKey(code_id)){
+			double dd = map.get(code_id);
+			System.err.println(" hours "+dd);			
+			hours = hours - dd;
+			System.err.println(" hours "+hours);
+			one.setHours(hours);
+		    }
+		}		
+	    }
+	}
     }
     public boolean hasDailyBlocks(){
 	return dailyBlocks != null && dailyBlocks.size() > 0;

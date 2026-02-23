@@ -32,7 +32,7 @@ public class DailyBlock{
 	salary_group_id="",
 	job_title="",
 	earnCode="",
-	earnCodeReason="",
+	code_id="",
 	empFullName="",
 	
 	employee_id="",
@@ -43,7 +43,7 @@ public class DailyBlock{
 	notes="",	
 	nw_code="",
 	gl_string="";
-
+    int days = 0; // could be week 1, week 2 number
     double hours = 0.0, amount = 0.0; // for dollar value
     boolean seasonal = false;
     public DailyBlock( // for save
@@ -70,7 +70,9 @@ public class DailyBlock{
 		 String val18,
 		 double val19,
 		 double val20,
-		 boolean val21
+		 
+		 Integer val21,
+		 boolean val22
 		  ){
 	setVals(val,
 		val2,
@@ -95,7 +97,9 @@ public class DailyBlock{
 		val18,
 		val19,
 		val20,
-		val21
+		
+		val21,
+		val22
 
 		);
     }		
@@ -124,7 +128,8 @@ public class DailyBlock{
 		 String val18,
 		 Double val19,
 		 Double val20,
-		 boolean val21
+		 Integer val21,
+		 boolean val22
 		 ){
 	setBlock_id(val);
 	setDocument_id(val2);
@@ -135,7 +140,7 @@ public class DailyBlock{
 	setSalary_group_id(val6);
 	setJobTitle(val7);
 	setEarnCode(val8);
-	setEarnCodeReason(val9);
+	setCode_id(val9);
 	setEmpFullName(val10);
 	
 	setEmployee_id(val11);
@@ -149,7 +154,8 @@ public class DailyBlock{
 	setGlString(val18);
 	setHours(val19);
 	setAmount(val20);
-	setSeasonal(val21);
+	setDays(val21);
+	setSeasonal(val22);
     }
     public void setBlock_id(String val){
 	if(val != null)
@@ -183,9 +189,9 @@ public class DailyBlock{
 	if(val != null)
 	    earnCode = val;
 	    }
-    public void setEarnCodeReason(String val){
+    public void setCode_id(String val){
 	if(val != null)
-	    earnCodeReason = val;
+	    code_id = val;
 	    }
     public void setEmpFullName(String val){
 	if(val != null)
@@ -232,6 +238,11 @@ public class DailyBlock{
 	if(val != null)
 	    amount=val;
 	    }
+    public void setDays(Integer val){
+	if(val != null)
+	    days = val;
+
+    }
     public void setSeasonal(boolean val){
 	seasonal = val;
     }
@@ -264,8 +275,8 @@ public class DailyBlock{
     public String getEarnCode(){
 	return earnCode;
     }
-    public String getEarnCodeReason(){
-	return earnCodeReason;
+    public String getCode_id(){
+	return code_id;
     }		
     public String getDate(){
 	return date;
@@ -300,8 +311,14 @@ public class DailyBlock{
     public Double getAmount(){
 	return amount;
     }
+    public Integer getDays(){
+	return days;
+    }
     public boolean isSeasonal(){
 	return seasonal;
+    }
+    public boolean isValid(){
+	return hours + amount > 0;
     }
     public boolean equals(Object o) {
 	if (o instanceof DailyBlock) {
