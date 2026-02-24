@@ -199,8 +199,6 @@ public class TmwrpDailyAction extends TopAction{
 	}
 	week1EmpCodes = dbl.getWeek1EmpCodes();
 	week2EmpCodes = dbl.getWeek2EmpCodes();
-	System.err.println(" wwek1 "+week1EmpCodes);
-	System.err.println(" wwek2 "+week2EmpCodes);	
 	// earn code records
 	//
 	DailyBlockList dbl2 = new DailyBlockList();
@@ -217,14 +215,18 @@ public class TmwrpDailyAction extends TopAction{
 	    return back;
 	}
 	List<DailyBlock> blocks = dbl2.getDailyBlocks();
-	adjustBlocks(blocks);	
-	for(DailyBlock block:blocks){
-	    if(block.isValid()) // avoid 0 values
-		dailyBlocks.add(block);
+	if(blocks != null){
+	    adjustBlocks(blocks);
+	    for(DailyBlock block:blocks){
+		if(block.isValid()){ // avoid 0 values
+		    dailyBlocks.add(block);
+		}
+	    }
 	}
 	return back;
     }
     void adjustBlocks(List<DailyBlock> blocks){
+
 	for(DailyBlock one:blocks){
 	    String empNum = one.getEmpNumber();
 	    String code_id = one.getCode_id();
@@ -232,27 +234,20 @@ public class TmwrpDailyAction extends TopAction{
 	    int week_no = one.getDays();
 	    if(week_no == 1){
 		if(week1EmpCodes.containsKey(empNum)){
-		    System.err.println(" found "+empNum);
 		    Map<String, Double> map = week1EmpCodes.get(empNum);
 		    if(map.containsKey(code_id)){
-			System.err.println(" found code "+code_id);
 			double dd = map.get(code_id);
-			System.err.println(" hours "+dd);			
 			hours = hours - dd;
-			System.err.println(" hours "+hours);
 			one.setHours(hours);
 		    }
 		}
 	    }
 	    else{
 		if(week2EmpCodes.containsKey(empNum)){
-		    System.err.println(" found "+empNum);		    
 		    Map<String, Double> map = week2EmpCodes.get(empNum);
 		    if(map.containsKey(code_id)){
 			double dd = map.get(code_id);
-			System.err.println(" hours "+dd);			
 			hours = hours - dd;
-			System.err.println(" hours "+hours);
 			one.setHours(hours);
 		    }
 		}		

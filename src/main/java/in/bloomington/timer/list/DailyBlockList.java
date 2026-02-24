@@ -289,7 +289,7 @@ public class DailyBlockList{
 	    week2_end_date = payPeriod.getEndDate();
 	}
 	String qq = " select "+
-	    " t.id AS block_id, "+
+	    " concat_ws('-',r.id,t.id) AS block_id, "+
 	    " r.document_id AS document_id, "+
 	    " j.group_id AS group_id,"+
 	    " g.department_id AS department_id,"+
@@ -301,7 +301,7 @@ public class DailyBlockList{
 	    " concat_ws(' ',e.first_name,e.last_name) AS full_name,"+
 	    " e.id AS employee_id,"+
 	    " e.employee_number AS empnum,"+	    	    
-	    " if(t.term_type = 'Week 1','"+week1_end_date+"','"+week1_end_date+"') AS time_date, "+ 
+	    " if(t.term_type = 'Week 1','"+week1_end_date+"','"+week2_end_date+"') AS time_date, "+ 
 	    " d2.name AS department_name,"+
 	    " g.name AS group_name, "+
 	    " ' ' AS notes,"+
@@ -322,7 +322,7 @@ public class DailyBlockList{
 	    " join departments d2 on g.department_id=d2.id "+
 	    " join code_cross_ref n on n.code_id=c.id ";
 	String qw = " where (t.hours > 0 or t.amount > 0) and "+
-	    " c.id in (34,43,45,46,50,71,78,79,109) and "+
+	    " c.id in (34,43,44,45,46,50,71,78,79,109) and "+
 	    " d.pay_period_id=? ";
 	if(!salary_group_id.isEmpty()){
 	    qw += " and j.salary_group_id = ? ";
@@ -435,15 +435,15 @@ public class DailyBlockList{
 	     concat_ws(' ',e.first_name,e.last_name) AS full_name,
 	     e.id AS employee_id,
 	     e.employee_number AS empnum,	    	    
-	     if(t.term_type = 'Week 1','01/11/2026','01/18/2026') AS time_date, 
+	     if(t.term_type = 'Week 1','02/08/2026','02/15/2026') AS time_date, 
 	     d2.name AS department_name,
 	     g.name AS group_name, 
 	     ' ' AS notes,
 	     n.nw_code AS nw_code,
 	     n.gl_string AS gl_string, 
 	     t.hours AS hours, 
-	     t.amount AS amount, 
-	     s.name 
+	     t.amount AS amount,
+	     if(t.term_type = 'Week 1',1,2) AS days 
 	     from tmwrp_blocks t join tmwrp_runs r on r.id=t.run_id 
 	     join hour_codes c on t.hour_code_id=c.id 
 	     join time_documents d on d.id=r.document_id 
@@ -455,9 +455,9 @@ public class DailyBlockList{
 	     join groups g on j.group_id=g.id 
 	     join departments d2 on g.department_id=d2.id 
 	     join code_cross_ref n on n.code_id=c.id 
-	where (t.hours > 0 or t.amount > 0) and 
-	     c.id in (71,34,45,109,50,79,46) and
-	     d.pay_period_id=731 and d2.id=1
+	where (t.hours > 0 or t.amount > 0) and
+	c.id in (34,43,44,45,46,50,71,78,79,109) and  
+	     d.pay_period_id=733 and d2.id=1
 
 */
 	    
