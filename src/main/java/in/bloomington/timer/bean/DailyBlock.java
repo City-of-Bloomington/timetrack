@@ -27,20 +27,19 @@ public class DailyBlock{
     String block_id="",
 	document_id="",
 	group_id="",
-	pay_period_id="",
 	department_id="",
 	salary_group_id="",
+	salary_group_name="",
 	job_title="",
 	earnCode="",
 	code_id="",
 	empFullName="",
-	
+	pay_period_id="", //not needed
 	employee_id="",
 	empNumber="",
 	date="",
 	deptName="",
 	groupName="",
-	notes="",	
 	nw_code="",
 	gl_string="";
     int days = 0; // could be week 1, week 2 number
@@ -67,12 +66,11 @@ public class DailyBlock{
 
 		 String val16,
 		 String val17,
-		 String val18,
+		 Integer val18,		 
 		 double val19,
 		 double val20,
 		 
-		 Integer val21,
-		 boolean val22
+		 boolean val21
 		  ){
 	setVals(val,
 		val2,
@@ -98,8 +96,7 @@ public class DailyBlock{
 		val19,
 		val20,
 		
-		val21,
-		val22
+		val21
 
 		);
     }		
@@ -125,37 +122,37 @@ public class DailyBlock{
 
 		 String val16,
 		 String val17,
-		 String val18,
+		 Integer val18,		 
 		 Double val19,
 		 Double val20,
-		 Integer val21,
-		 boolean val22
+		 
+		 boolean val21
 		 ){
 	setBlock_id(val);
 	setDocument_id(val2);
 	setGroup_id(val3);
 	setDepartment_id(val4);
-	setPay_period_id(val5);
+	setSalary_group_id(val5);
 	
-	setSalary_group_id(val6);
-	setJobTitle(val7);
-	setEarnCode(val8);
-	setCode_id(val9);
-	setEmpFullName(val10);
+	setJobTitle(val6);
+	setEarnCode(val7);
+	setCode_id(val8);
+	setEmpFullName(val9);
+	setEmployee_id(val10);
 	
-	setEmployee_id(val11);
-	setEmpNumber(val12);
-	setDate(val13);
-	setDeptName(val14);
-	setGroupName(val15);  
+	setEmpNumber(val11);
+	setDate(val12);
+	setDeptName(val13);
+	setGroupName(val14);  
+	setNwCode(val15);
 	
-	setNotes(val16);
-	setNwCode(val17);
-	setGlString(val18);
+	setGlString(val16);
+	setSalaryGroupName(val17);
+	setDays(val18);
 	setHours(val19);
 	setAmount(val20);
-	setDays(val21);
-	setSeasonal(val22);
+
+	setSeasonal(val21);
     }
     public void setBlock_id(String val){
 	if(val != null)
@@ -181,6 +178,10 @@ public class DailyBlock{
 	if(val != null)
 	    salary_group_id=val;
 	    }
+    public void setSalaryGroupName(String val){
+	if(val != null)
+	    salary_group_name=val;
+    }
     public void setJobTitle(String val){
 	if(val != null)
 	    job_title=val;
@@ -226,10 +227,6 @@ public class DailyBlock{
 	if(val != null)
 	    groupName = val;
 	    }
-    public void setNotes(String val){
-	if(val != null)
-	    notes=val;
-	    }
     public void setHours(Double val){
 	if(val != null)
 	    hours = val;
@@ -268,7 +265,9 @@ public class DailyBlock{
     public String getSalary_group_id(){
 	return salary_group_id;
     }
-    
+    public String getSalaryGroupName(){
+	return salary_group_name;
+    }    
     public String getPay_period_id(){
 	return pay_period_id;
     }
@@ -280,9 +279,6 @@ public class DailyBlock{
     }		
     public String getDate(){
 	return date;
-    }
-    public String getNotes(){
-	return notes;
     }
     public String getNwCode(){
 	return nw_code;

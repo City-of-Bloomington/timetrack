@@ -183,12 +183,12 @@ public class TmwrpDailyAction extends TopAction{
 	if(!group_id.isEmpty()){
 	    dbl.setGroup_id(group_id);
 	}
-	back = dbl.find();
+	// 
+	back = dbl.doProcess();
 	if(!back.isEmpty()){
 	    addError(back);
 	    return back;
-	}
-	dailyBlocks = dbl.getDailyBlocks();
+	}	
 	empNumbers = dbl.getEmpNumbers();
 	for(Employee emp:employees){
 	    if(!empNumbers.contains(emp.getEmployee_number())){
@@ -196,7 +196,9 @@ public class TmwrpDailyAction extends TopAction{
 		    noDataEmployees = new ArrayList<>();
 		noDataEmployees.add(emp);
 	    }
-	}
+	}	
+	dailyBlocks = dbl.getDailyBlocks();
+	/**
 	week1EmpCodes = dbl.getWeek1EmpCodes();
 	week2EmpCodes = dbl.getWeek2EmpCodes();
 	// earn code records
@@ -214,15 +216,34 @@ public class TmwrpDailyAction extends TopAction{
 	    addError(back);
 	    return back;
 	}
+	List<DailyBlock> week1ValidBlocks = new ArrayList<>();
+	List<DailyBlock> week2ValidBlocks = new ArrayList<>();	
 	List<DailyBlock> blocks = dbl2.getDailyBlocks();
+
 	if(blocks != null){
 	    adjustBlocks(blocks);
 	    for(DailyBlock block:blocks){
 		if(block.isValid()){ // avoid 0 values
-		    dailyBlocks.add(block);
+		    // dailyBlocks.add(block);
+		    if(block.getDays() < 7){
+			week1ValidBlocks.add(block);
+		    }
+		    else{
+			week2ValidBlocks.add(block);
+		    }
 		}
 	    }
 	}
+	// we need to adjust dailyBlocks by removing access hours
+	// from Reg earn code hours
+	// go through each validBlock  and find the suitable list
+	// from dailyblocks and adjust accordingly
+	//
+	
+	// add valid blocks to dailyBlooks
+	dailyBlocks.addAll(week1ValidBlocks);
+	dailyBlocks.addAll(week2ValidBlocks);
+	*/
 	return back;
     }
     void adjustBlocks(List<DailyBlock> blocks){
