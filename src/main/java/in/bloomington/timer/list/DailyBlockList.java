@@ -72,6 +72,13 @@ public class DailyBlockList{
 	regCodes.add("23");
 	regCodes.add("18");
 	
+    }
+    // bpd disp. groups
+    final static Set<String> bpdDispGroups;
+    static {
+	bpdDispGroups = new HashSet<>();
+	bpdDispGroups.add("32"); //disp
+	bpdDispGroups.add("360");//disp admin
     }    
     public DailyBlockList(){
     }
@@ -175,10 +182,11 @@ public class DailyBlockList{
 		double hours = week2EmpSum.get(empNo);
 		adjustDialyBocks(2, empNo, hours);
 	    }
-	}	
-	if(week1ValidBlocks.size() > 0)
+	}
+	
+	if(week1ValidBlocks != null && week1ValidBlocks.size() > 0)
 	    dailyBlocks.addAll(week1ValidBlocks);
-	if(week2ValidBlocks.size() > 0)
+	if(week2ValidBlocks != null && week2ValidBlocks.size() > 0)
 	    dailyBlocks.addAll(week2ValidBlocks);		
 	return back;
     }
@@ -199,12 +207,13 @@ public class DailyBlockList{
 	int cnt = 0;
 	if(list != null){
 	    for(DailyBlock block:list){
+		int daily_hours = block.getDailyHours();
 		if(block.getHours() > 2){
 		    cnt++;
 		}
-		if(block.getHours() > 8.0){
+		if(block.getHours() > daily_hours){
 		    double hrs = block.getHours();
-		    double dif = hrs - 8;
+		    double dif = hrs - daily_hours;
 		    if(earn_hrs >= dif ){
 			earn_hrs = earn_hrs - dif;
 			hrs = 8;
@@ -288,6 +297,7 @@ public class DailyBlockList{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String msg="";
+	String qq2 = "", qw2=""; // used for union
 	String qq = " select "+
 	    " concat_ws('-',t.date,j.id,c.id) AS block_id,"+
 	    " t.document_id AS document_id, "+
@@ -309,39 +319,52 @@ public class DailyBlockList{
 	    
 	    " n.gl_string AS gl_string, "+
 	    " s.name AS salaryGroupName, "+
-	    " datediff(t.date, p.start_date) AS days, "+	    
+	    " datediff(t.date, p.start_date) AS days, "+
+	    " if(ss.duration is null,8,ss.duration/60) daily_hours, "+ 	    
 	    " sum(t.hours) AS hours, "+
 	    " sum(t.amount) AS amount "+
-	    
 	    " from time_blocks t "+
 	    " join hour_codes c on t.hour_code_id=c.id "+
 	    " join time_documents d on d.id=t.document_id "+
-	    " join pay_periods p on p.id=d.pay_period_id "+
 	    " join jobs j on d.job_id=j.id "+
 	    " join positions p2 on j.position_id=p2.id "+
 	    " join employees e on j.employee_id=e.id "+
 	    " join salary_groups s on j.salary_group_id=s.id "+
 	    " join groups g on j.group_id=g.id "+
 	    " join departments d2 on g.department_id=d2.id "+
-	    " join code_cross_ref n on n.code_id=c.id ";
+	    " join code_cross_ref n on n.code_id=c.id "+
+	    " left join group_shifts gs on g.id=gs.group_id "+
+	    " left join shifts ss on ss.id=gs.shift_id ";
+	qq2 = qq;
+	if(group_id.isEmpty() || !(bpdDispGroups.contains(group_id))){
+	    qq += " join pay_periods p on p.id=d.pay_period_id ";
+	}
+	qq2 += " join pay_periods_alt p on p.id=d.pay_period_id ";
 	String qw = " where t.inactive is null and (t.hours > 0 or t.amount > 0) and "+
 	    " d.pay_period_id= ? ";
 	if(!salary_group_id.isEmpty()){
 	    qw += " and j.salary_group_id = ? ";
 	}
+	qw2 = qw;
 	if(!group_id.isEmpty()){
+	    if(bpdDispGroups.contains(group_id)){
+		qq += " join pay_periods_alt p on p.id=d.pay_period_id ";
+	    }
 	    qw += " and j.group_id = ? ";
 	}
 	else if(!department_id.isEmpty()){
 	    qw += " and g.department_id = ? ";
-	}	    
+	    qw2 += " and g.id in (32,360) "; // dispatch only
+	    if(department_id.equals("20")){ // police
+		qw += " and g.id not in (32,360) "; // exclude dispatch
+	    }
+	}
 	if(!qw.isEmpty()){
 	    qq += qw;
+	    qq2 += qw2;
 	}
-	qq += " group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 ";
-	if(!sortBy.isEmpty()){
-	    qq += " order by "+sortBy;
-	}
+	qq += " group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 ";
+	qq2 += " group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 ";
 	if(pay_period_id.isEmpty()){
 	    msg = " pay period not set ";
 	    logger.error(msg);
@@ -353,7 +376,13 @@ public class DailyBlockList{
 	    logger.error(msg);
 	    return msg;
 	}
-	logger.debug(qq);
+	if(department_id.equals("20")){
+	    qq = qq+" UNION ALL "+qq2;
+	}
+	if(!sortBy.isEmpty()){
+	    qq += " order by "+sortBy;
+	}
+	logger.debug(qq);	
 	try{
 	    pstmt = con.prepareStatement(qq);
 	    String empNo = "";
@@ -366,6 +395,13 @@ public class DailyBlockList{
 		pstmt.setString(jj++, group_id);
 	    }
 	    else if(!department_id.isEmpty()){
+		pstmt.setString(jj++, department_id);
+	    }
+	    // for qq2
+	    if(department_id.equals("20")){
+		if(!salary_group_id.isEmpty()){
+		    pstmt.setString(jj++, salary_group_id);
+		}
 		pstmt.setString(jj++, department_id);
 	    }
 	    rs = pstmt.executeQuery();
@@ -404,8 +440,9 @@ public class DailyBlockList{
 						rs.getString(16),
 						rs.getString(17),
 						rs.getInt(18),
-						rs.getDouble(19),
+						rs.getInt(19), // daily
 						rs.getDouble(20),
+						rs.getDouble(21),
 						isSeasonal
 						);
 		empNo = rs.getString(11);
@@ -508,12 +545,21 @@ public class DailyBlockList{
 	String msg="";
 	String week1_end_date = "";
 	String week2_end_date = "";
+	String week1_end_date_alt = "";
+	String week2_end_date_alt = "";	
+	String qq2="", qw2="", qs="";
 	if(payPeriod == null){
 	    getPayPeriod();
 	}
 	if(payPeriod != null){
 	    week1_end_date = payPeriod.getWeek1EndDate();
 	    week2_end_date = payPeriod.getEndDate();
+	}
+	week1_end_date_alt = Helper.getDateAfter(payPeriod.getWeek1EndDate(),-1);
+	week2_end_date_alt = Helper.getDateAfter(payPeriod.getEndDate(),-1);	
+	if(!group_id.isEmpty() && bpdDispGroups.contains(group_id)){
+	    week1_end_date = Helper.getDateAfter(payPeriod.getWeek1EndDate(),-1);
+	    week2_end_date = Helper.getDateAfter(payPeriod.getEndDate(),-1);
 	}
 	String qq = " select "+
 	    " concat_ws('-',r.id,t.id) AS block_id, "+
@@ -528,44 +574,70 @@ public class DailyBlockList{
 	    " concat_ws(' ',e.first_name,e.last_name) AS full_name,"+
 	    " e.id AS employee_id,"+
 	    
-	    " e.employee_number AS empnum,"+	    	    
-	    " if(t.term_type = 'Week 1','"+week1_end_date+"','"+week2_end_date+"') AS time_date, "+ 
-	    " d2.name AS department_name,"+
+	    " e.employee_number AS empnum,";
+	qq2 = qq;
+	qq +=" if(t.term_type = 'Week 1','"+week1_end_date+"','"+week2_end_date+"') AS time_date, ";
+	qq2 +=" if(t.term_type = 'Week 1','"+week1_end_date_alt+"','"+week2_end_date_alt+"') AS time_date, ";	
+	qs = " d2.name AS department_name,"+
 	    " g.name AS group_name, "+
 	    " n.nw_code AS nw_code,"+
 	    
 	    " n.gl_string AS gl_string, "+
 	    " s.name AS salaryGroupName, "+
-	    " if(t.term_type = 'Week 1',1,2) AS days,  "+	    	    
+	    " if(t.term_type = 'Week 1',1,2) AS days,  "+
+	    " if(ss.duration is null,8,ss.duration/60) daily_hours, "+ 	
 	    " sum(t.hours) AS hours, "+
 	    " sum(t.amount) AS amount "+
 	    " from tmwrp_blocks t join tmwrp_runs r on r.id=t.run_id "+
 	    " join hour_codes c on t.hour_code_id=c.id "+
 	    " join time_documents d on d.id=r.document_id "+
-	    " join pay_periods p on p.id=d.pay_period_id "+
+
 	    " join jobs j on d.job_id=j.id "+
 	    " join positions p2 on j.position_id=p2.id "+
 	    " join employees e on j.employee_id=e.id "+
 	    " join salary_groups s on j.salary_group_id=s.id "+
 	    " join groups g on j.group_id=g.id "+
 	    " join departments d2 on g.department_id=d2.id "+
-	    " join code_cross_ref n on n.code_id=c.id ";
+	    " join code_cross_ref n on n.code_id=c.id "+
+	    " left join group_shifts gs on gs.group_id = g.id "+
+	    " left join shifts ss on ss.id=gs.shift_id ";
+	qq += qs;
+	qq2 += qs;
+	
+	if(group_id.isEmpty() || !(bpdDispGroups.contains(group_id))){
+	    qq += " join pay_periods p on p.id=d.pay_period_id ";
+	}
+	qq2 += " join pay_periods_alt p on p.id=d.pay_period_id ";
 	String qw = " where (t.hours > 0 or t.amount > 0) and "+
 	    " c.id in (34,43,44,45,46,50,71,78,79,109) and "+
 	    " d.pay_period_id=? ";
 	if(!salary_group_id.isEmpty()){
 	    qw += " and j.salary_group_id = ? ";
 	}
+	qw2 = qw;
 	if(!group_id.isEmpty()){
 	    qw += " and j.group_id = ? ";
+	    if(bpdDispGroups.contains(group_id)){
+		qq += "join pay_periods_alt p on p.id=d.pay_period_id ";
+	    }
 	}
 	else if(!department_id.isEmpty()){
 	    qw += " and g.department_id = ? ";
-	}	    
+	    if(department_id.equals("20")){
+		qw += " and g.id not in (32,360) "; // exclude dispatch
+		qw2 += " and g.id in (32,360) "; // dispatch only		
+	    }
+	    
+	}
 	if(!qw.isEmpty()){
 	    qq += qw;
+	    qq2 += qw2;
 	}
-	qq += " group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 ";
+	qq += " group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 ";
+	qq2 += " group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 ";
+	if(department_id.equals("20")){
+	    qq = qq+" UNION ALL "+qq2;
+	}
 	if(!sortBy.isEmpty()){
 	    qq += " order by "+sortBy;
 	}
@@ -596,6 +668,9 @@ public class DailyBlockList{
 	    else if(!department_id.isEmpty()){
 		pstmt.setString(jj++, department_id);
 	    }
+	    if(department_id.equals("20")){
+		pstmt.setString(jj++, salary_group_id);
+	    }
 	    rs = pstmt.executeQuery();
 	    while(rs.next()){
 		if(earnBlocks == null)
@@ -625,8 +700,9 @@ public class DailyBlockList{
 						rs.getString(16),
 						rs.getString(17),
 						rs.getInt(18),
-						rs.getDouble(19),
+						rs.getInt(19),
 						rs.getDouble(20),
+						rs.getDouble(21),
 						isSeasonal
 						);
 		if(!earnBlocks.contains(one))
@@ -708,9 +784,10 @@ public class DailyBlockList{
 	     n.gl_string AS gl_string,
 	     s.name AS salaryGroupName,
 	     datediff(t.date, p.start_date) AS days, 	    
-	     
+	     if(ss.duration is null,8,ss.duration/60) daily_hours,	     
 	     sum(t.hours) AS hours, 
-	     sum(t.amount) AS amount 
+	     sum(t.amount) AS amount
+
 	     from time_blocks t 
 	     join hour_codes c on t.hour_code_id=c.id 
 	     join time_documents d on d.id=t.document_id 
@@ -721,10 +798,12 @@ public class DailyBlockList{
 	     join salary_groups s on j.salary_group_id=s.id 
 	     join groups g on j.group_id=g.id 
 	     join departments d2 on g.department_id=d2.id 
-	     join code_cross_ref n on n.code_id=c.id 
+	     join code_cross_ref n on n.code_id=c.id
+	     left join group_shifts gs on gs.group_id=g.id
+	     left join shifts ss on ss.id=gs.shift_id 
 	    where t.inactive is null and (t.hours > 0 or t.amount > 0) and 
 	     d.pay_period_id=733 and d2.id=1
-	     group by 1,2,3,4,5,6,7,8,9.10,11,12,13,14,15,16,17,18
+	     group by 1,2,3,4,5,6,7,8,9.10,11,12,13,14,15,16,17,18,19
 
 	     
 	    

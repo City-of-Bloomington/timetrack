@@ -43,6 +43,7 @@ public class DailyBlock{
 	nw_code="",
 	gl_string="";
     int days = 0; // could be week 1, week 2 number
+    int daily_hours = 8;
     double hours = 0.0, amount = 0.0; // for dollar value
     boolean seasonal = false;
     public DailyBlock( // for save
@@ -66,11 +67,12 @@ public class DailyBlock{
 
 		 String val16,
 		 String val17,
-		 Integer val18,		 
-		 double val19,
+		 Integer val18,
+		 Integer val19,
 		 double val20,
 		 
-		 boolean val21
+		 double val21,
+		 boolean val22
 		  ){
 	setVals(val,
 		val2,
@@ -96,7 +98,8 @@ public class DailyBlock{
 		val19,
 		val20,
 		
-		val21
+		val21,
+		val22
 
 		);
     }		
@@ -122,11 +125,12 @@ public class DailyBlock{
 
 		 String val16,
 		 String val17,
-		 Integer val18,		 
-		 Double val19,
+		 Integer val18,
+		 Integer val19,
 		 Double val20,
 		 
-		 boolean val21
+		 Double val21,
+		 boolean val22
 		 ){
 	setBlock_id(val);
 	setDocument_id(val2);
@@ -149,10 +153,11 @@ public class DailyBlock{
 	setGlString(val16);
 	setSalaryGroupName(val17);
 	setDays(val18);
-	setHours(val19);
-	setAmount(val20);
+	setDailyHours(val19);
+	setHours(val20);
+	setAmount(val21);
 
-	setSeasonal(val21);
+	setSeasonal(val22);
     }
     public void setBlock_id(String val){
 	if(val != null)
@@ -240,6 +245,11 @@ public class DailyBlock{
 	    days = val;
 
     }
+    public void setDailyHours(Integer val){
+	if(val != null)
+	    daily_hours = val;
+
+    }    
     public void setSeasonal(boolean val){
 	seasonal = val;
     }
@@ -310,6 +320,9 @@ public class DailyBlock{
     public Integer getDays(){
 	return days;
     }
+    public Integer getDailyHours(){
+	return daily_hours;
+    }    
     public boolean isSeasonal(){
 	return seasonal;
     }
