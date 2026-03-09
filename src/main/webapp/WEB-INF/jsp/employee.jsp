@@ -79,8 +79,8 @@
 		  </s:else>
 	      </div>
 	      <div class="form-group">
-		  <label for="email_id'>Email</label>
-		  <s:textfield name="emp.email" size="30" value="%{emp.email}" id="email_id" />
+		  <label for="email_id">Email</label>
+		  <s:textfield name="emp.email" size="70" value="%{emp.email}" id="email_id" />
 	      </div>
 	      <s:if test="emp.id == ''">			
 		  <div class="form-group">
