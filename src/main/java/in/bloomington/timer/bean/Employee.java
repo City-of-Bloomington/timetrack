@@ -984,6 +984,9 @@ public class Employee implements Serializable, Comparable<Employee>{
 	return job != null && job.isLeaveEligible();
     }
     public boolean isSameEntity(Employee one){
+	if(!one.getEmail().isEmpty() && email.isEmpty()){
+	    return false;
+	}
 	boolean ret = one.getUsername().equals(username) && 
 	    one.getLast_name().equals(last_name) &&
 	    one.getFirst_name().equals(first_name) &&
