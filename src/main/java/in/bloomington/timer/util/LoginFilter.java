@@ -59,17 +59,9 @@ public class LoginFilter implements Filter {
 		    System.err.println(headerValue);
 		}
 		*/
-		// String default_link = "/timetrack/timeDetails.action";
 		String referer_host = req.getHeader("referer");
 		String host_forward = req.getHeader("X-Forwarded-Host");
 		String qstr = req.getQueryString();
-		/**
-		System.err.println(" qstr "+qstr);
-		System.err.println(" referer "+referer_host);
-		System.err.println(" host forward "+host_forward);
-		// System.err.println(" host "+host);		
-		System.err.println(" url "+url);
-		*/
 		String originalURL = null;
 		if(url != null){
 		    if(url.indexOf("leave_request") > -1){
@@ -86,7 +78,6 @@ public class LoginFilter implements Filter {
 		    }
 		}
 		if(originalURL != null){
-		    System.err.println("origin:"+originalURL);		    
 		    req.getSession().setAttribute("originalURL", originalURL);
 		}
 		// everything else we need login
