@@ -207,18 +207,18 @@ public class DailyBlockList{
 	int cnt = 0;
 	if(list != null){
 	    for(DailyBlock block:list){
-		int daily_hours = block.getDailyHours();
 		if(block.getHours() > 2){
 		    cnt++;
 		}
+		int daily_hours = block.getDailyHours(); // 8 or 10
 		if(block.getHours() > daily_hours){
 		    double hrs = block.getHours();
 		    double dif = hrs - daily_hours;
-		    if(earn_hrs >= dif ){
+		    if(earn_hrs >= dif && dif > 0.){
 			earn_hrs = earn_hrs - dif;
 			hrs = 8;
 		    }
-		    else{
+		    else if(hrs > earn_hrs){
 			hrs = hrs - earn_hrs;
 			earn_hrs = 0;
 		    }
@@ -226,24 +226,39 @@ public class DailyBlockList{
 		    bd = bd.setScale(2, RoundingMode.HALF_UP); 
 		    hrs = bd.doubleValue();	
 		    block.setHours(hrs);
+		    if(earn_hrs <= 0.) return;
 		}
-		if(earn_hrs <= 0.001){
-		    return;
-		}	    	    
 	    }
-	    if(earn_hrs > 0.001 && cnt > 0){
-		double dd = earn_hrs/(cnt+0.);
-		BigDecimal bd = new BigDecimal(Double.toString(dd)); 
-		// Set the scale to 2 decimal places using the desired RoundingMode
-		bd = bd.setScale(2, RoundingMode.HALF_UP); 
-		dd = bd.doubleValue();		
+	    if(earn_hrs > 0.0001 && cnt > 0){
+		// System.err.println("earn_hrs, cnt "+earn_hrs+","+cnt);
+		int factor = (int)(earn_hrs/(0.25*cnt))+1;
+		// System.err.println(" factor "+factor);
+		double dd = factor*(0.25);
+		// System.err.println(" sub_hrs "+dd);
+		DailyBlock lastBlock = null;
+		// double dd = earn_hrs/(cnt+0.);
 		// split the diff between multiple days
 		for(DailyBlock block:list){
-		    if(block.getHours() > dd ){
-			double hrs = block.getHours() - dd;
-			earn_hrs = earn_hrs - dd;
-			block.setHours(hrs);		    
+		    if(block.getHours() > 2 && block.getHours() > dd ){
+			lastBlock = block;
+			if(earn_hrs >= dd){
+			    double hrs = block.getHours() - dd;
+			    earn_hrs = earn_hrs - dd;
+			    block.setHours(hrs);
+			}
+			else { // what is left earn_hrs < dd
+			    double hrs = block.getHours() - earn_hrs;
+			    earn_hrs = 0.0;
+			    block.setHours(hrs);
+			    return;
+			}
 		    }
+		} // this should not happen 
+		if(earn_hrs > 0.001){
+		    System.err.println(" using the last block "+earn_hrs);
+		    double hrs = lastBlock.getHours() - earn_hrs;
+		    lastBlock.setHours(hrs);
+		    earn_hrs = 0;
 		}
 	    }
 	}
