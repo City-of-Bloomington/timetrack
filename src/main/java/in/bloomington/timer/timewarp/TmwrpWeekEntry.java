@@ -621,7 +621,7 @@ public class TmwrpWeekEntry{
 	// for full time working less than 40 hrs
 	//
 	if(salaryGroup != null){
-	    if(salaryGroup.isTemporary()){
+	    if(salaryGroup.isTemporary() || salaryGroup.isSeasonal()){
 		// extra_hrs = netHours < 40 ? 0: netHours - 40;
 	    }
 	    else if(salaryGroup.isExcessCulculationDaily()){

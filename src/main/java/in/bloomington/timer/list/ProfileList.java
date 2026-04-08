@@ -952,35 +952,53 @@ HR.HRReport_EmployeePayRateReport
 @IncludeCertification=0,
 @UserID=3,
 @PrimaryOnly=0
-       
-       // output
-       1 OrgStructureID
-       2 DepartmentCode
-       3 DepartmentDescription
-       4 EmployeeID
-       5 EmployeeNumber
-       6 EmployeeName
-       7 PrimaryFlag
-       8 GradeType
-       9 CurrentRate
-       10 GradeCode
-       11 StepCode
-       12 GradeStepDesc
-       13 AnnualSalary
-       14 ProjectedRate
-       15 ProjectedAnnualSalary
-       16 LongevityHourly
-       17 CertificationHourly
-       18 SpecialAssignmentHourly
-       19 BaseAnnual
-       20 LongevityAnnual
-       21 CertificationAnnual
-       22 SpecialAssignmentAnnual
-       23 AnnualHours
-       24 NumberofPayment
-       25 CycleHours
+
+// output
+1 OrgStructureID
+2 DepartmentCode
+3 DepartmentDescription
+4 EmployeeID
+5 EmployeeNumber
+6 EmployeeName
+7 PrimaryFlag
+8 GradeType
+9 GradeTypeDesc
+10 GradeCode
+11 StepCode
+12 GradeStepDesc
+13 CurrentRate
+14 LongevityHourly
+15 CertificationHourly
+16 SpecialAssignmentHourly
+17 TotalCurrentRate
+18 CycleHours
+19 ProjectedRate
+20 CurrentAnnual
+21 LongevityAnnual
+22 CertificationAnnual
+23 SpecialAssignmentAnnual
+24 TotalCurrentAnnual
+25 AnnualHours
+26 ProjectedAnnualSalary
+27 NumberofPayments
 
 
+
+
+@EffectiveDate    DATETIME,
+  @ProjectedIncrease    VARCHAR(10) = '0',
+  @EmployeeID    INT = NULL,
+  @strOrgStructureID    VARCHAR(MAX) = NULL,
+  @strxGroupHeaderID    VARCHAR(MAX) = NULL,
+  @strPayTypeID VARCHAR(MAX) = NULL,
+  @RoundDecimals    INT = 4,
+  @ProposedRate BIT,
+  @IncludeLongevity    BIT,
+  @IncludeSP    BIT,
+  @IncludeCertification BIT,
+  @UserID    INT,
+  @PrimaryOnly BIT
+  
     */
     public String findEmployeeRates(){
 	Connection con = null;
@@ -998,6 +1016,10 @@ HR.HRReport_EmployeePayRateReport
 	// input effective date=current date, default is today
 	// input dept ref
 	String qq = "{CALL HR.HRReport_EmployeePayRateReport(null,'0',null,?,null,'3,1,2',2,0,1,0,0,3,0)}";
+	/**
+	String qq = "SELECT DISTINCT EJ.EmployeeID,                                                 EJ.EmployeeJobId,                                                               PR.BaseHourlyRate,                                                              PR.AnnualBase                                                                   from HR.EmployeeJob EJ                                                          JOIN HR.fn_GetEmployee_All_PayRates_ByDate2 PR                                  ON EJ.EmployeeJobId = PR.EmployeeJobID                                          where EJ.IsPrimaryJob = 1;
+	    ";
+	*/
 	System.err.println(qq);
 	con = SingleConnect.getNwConnection();
 	if(con == null){
@@ -1012,33 +1034,28 @@ HR.HRReport_EmployeePayRateReport
 	    rs = cs.getResultSet();
 	    // The column count starts from 1
 	    /**
-	       ResultSetMetaData rsmd = rs.getMetaData();
-	       int columnCount = rsmd.getColumnCount();							 
-	       for (int i = 1; i <= columnCount; i++ ) {
-	       String name = rsmd.getColumnName(i);
-	       System.err.println(i+" "+name);
-	       }
+	    ResultSetMetaData rsmd = rs.getMetaData();
+	    int columnCount = rsmd.getColumnCount();							 
+	    for (int i = 1; i <= columnCount; i++ ) {
+		String name = rsmd.getColumnName(i);
+		System.err.println(i+" "+name);
+	    }
 	    */
 	    while(rs.next()){
 		if(employeeRates == null)
 		    employeeRates = new Hashtable<>();
 								
-		String str = rs.getString(5); // employee number
-		String str2 = rs.getString(6); // name
-		double str3 = rs.getDouble(9);// current rate
-		/*
-		  String str4 = rs.getString(13);
-		  String str5 = rs.getString(15);
-		  String str6 = rs.getString(19);
-		  String str7 = rs.getString(21);
-		  String str8 = rs.getString(22);
-		*/
+		String str = rs.getString(5); // 5 employee number
+		String str2 = rs.getString(6); // 6 name
+		double str3 = rs.getDouble(13);// 9 current rate
+		String str4 = rs.getString(20); // current annula
 		if(!employeeRates.containsKey(str)){
 		    employeeRates.put(str, str3);
 		}
-		System.err.println(str+", "+str2+", "+str3);
-		// System.err.println(str+", "+str2+", "+str3+","+str4+","+str5+","+str6+","+str7+","+str8);
+		// System.err.println(str+", "+str2+", "+str3+" "+str4);
+
 	    }
+
 	}
 	catch(Exception ex){
 	    back += ex;

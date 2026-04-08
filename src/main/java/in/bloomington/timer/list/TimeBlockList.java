@@ -397,7 +397,7 @@ public class TimeBlockList{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String msg="", str="";
+	String msg="", str="", doc_id=""; // doc_id for exceptions
 	String qq = "select "+
 	    "v.time_block_id,"+
 	    "v.document_id,"+
@@ -443,7 +443,6 @@ public class TimeBlockList{
 	    qq += "from time_blocks_view v ";
 	}
 	String qw = "";
-
 	if(!document_id.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";						
 	    qw += "v.document_id=? ";
@@ -479,7 +478,7 @@ public class TimeBlockList{
 		qw += "j.salary_group_id=? ";		
 	    }
 	}
-	
+	//System.err.println(" tbl 9 ");
 	if(!date_from.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += "v.date >= ? ";
@@ -576,7 +575,7 @@ public class TimeBlockList{
 	    }
 	    else if(!code.isEmpty()){
 		pstmt.setString(jj++, code);
-	    }						
+	    }
 	    rs = pstmt.executeQuery();
 	    while(rs.next()){
 		int code_id = rs.getInt(3);
@@ -607,6 +606,7 @@ public class TimeBlockList{
 		//
 		boolean isHoliday = isHoliday(date);
 		String holidayName = "";
+		doc_id = rs.getString(2); // for errors only see exception
 		if(isHoliday){
 		    holidayName = getHolidayName(date);
 		}
@@ -682,6 +682,7 @@ public class TimeBlockList{
 		    else
 			week2_flsa += hrs;
 		}
+		//System.err.println(" tbl 29 ");
 		if(!reason.isEmpty()){
 		    reason = code_name+" - "+reason;
 		    addToReasons(order_id, reason, hrs, amnt);
@@ -698,16 +699,19 @@ public class TimeBlockList{
 		    }
 		}
 		else{
+		    // System.err.println(" tbl 31 ");
 		    addToHourCodeTotals(order_id, code_id, code_name, hrs);
 		    addToDaily(jtype, order_id, mints, code_name);
 		    total_hours += hrs;
 		    total_minutes += mints;
 		}
 	    }
+	    // System.err.println(" tbl 32 ");
 	}
 	catch(Exception ex){
 	    msg += " "+ex;
 	    logger.error(msg+":"+qq);
+	    System.err.println(" error in tbl: doc id "+doc_id);
 	}
 	finally{
 	    Helper.databaseDisconnect(pstmt, rs);

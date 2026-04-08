@@ -1142,7 +1142,7 @@ public class EmpTerminate{
 	ResultSet rs = null;	
 	String qq = "insert into emp_terminations values(0,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "?,?,?,?,?, ?,?,?,?,?"+
+	    "?,?,?,?,?, ?,?,?,?,?,"+
 	    "'Started', null,?,?)";
 	process_status="Started";
 	con = UnoConnect.getConnection();
@@ -1297,12 +1297,6 @@ public class EmpTerminate{
 		pstmt.setNull(27, Types.VARCHAR);
 	    else	    
 		pstmt.setString(27, remarks);
-	    /**
-	    if(suspension.isEmpty())
-		pstmt.setNull(28, Types.CHAR);
-	    else	    
-		pstmt.setString(28, "y");
-	    */
 	    if(submitted_by_id.isEmpty())
 		pstmt.setNull(28, Types.VARCHAR);
 	    else
@@ -1312,7 +1306,7 @@ public class EmpTerminate{
 	    pstmt.setDate(29, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
 	    jj=30;
 	    if(!id.isEmpty()){
-		pstmt.setString(jj,process_status);
+		pstmt.setString(jj, process_status);
 		jj++;
 	    }
 	    if(termination_type.isEmpty()){
@@ -1334,6 +1328,58 @@ public class EmpTerminate{
 	}
 	return back;
     }
+    /**
+       values(0,?,?,?,?,?, // 5
+                ?,?,?,?,?, //10
+		?,?,?,?,?, //15
+		?,?,?,?,?, //20
+		?,?,?,?,?, //25
+		?,?,?,?,'Started',
+		null,?,?)
+
+update emp_terminations set
+employee_id=?,
+full_name=?,
+employment_type=?,
+last_pay_period_date=?,
+emp_address=?,
+
+emp_city=?,
+emp_state=?,
+emp_zip=?,
+emp_phone=?,
+emp_alt_phone=?,
+
+date_of_birth=?,
+personal_email=?,
+email=?,
+email_account_action=?,
+forward_emails=?,
+
+forward_days_cnt=?,
+drive_action=?,
+drive_to_person_email=?,
+drive_to_shared_emails=?,
+calendar_action=?,
+
+calendar_to_email=?,
+zoom_action=?,
+zoom_to_email=?,
+comp_time=?,
+vac_time=?,
+
+pto=?,
+remarks=?,
+submitted_by_id=?,
+submitted_date=?,
+process_status=?,
+
+termination_type=?,
+cdl_status=?
+where id = ?
+
+
+     */
     public String doUpdate(){
 	Connection con = null;
 	PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
@@ -1349,35 +1395,35 @@ public class EmpTerminate{
 	    "emp_state=?,"+
 	    "emp_zip=?,"+
 	    "emp_phone=?,"+
-	    "emp_alt_phone=?,"+
+	    "emp_alt_phone=?,"+ //10
 
 	    "date_of_birth=?,"+
 	    "personal_email=?,"+
 	    "email=?,"+
 	    "email_account_action=?,"+
-	    "forward_emails=?,"+
+	    "forward_emails=?,"+ //15
 	    
 	    "forward_days_cnt=?,"+
 	    "drive_action=?,"+
 	    "drive_to_person_email=?,"+
 	    "drive_to_shared_emails=?,"+
-	    "calendar_action=?,"+
+	    "calendar_action=?,"+ //20
 	    
 	    "calendar_to_email=?,"+
 	    "zoom_action=?,"+
 	    "zoom_to_email=?,"+
 	    "comp_time=?,"+
-	    "vac_time=?,"+
+	    "vac_time=?,"+ //25
 	    
 	    "pto=?,"+
 	    "remarks=?,"+
-	    // "suspension=?,"+
 	    "submitted_by_id=?,"+
 	    "submitted_date=?, "+ // date
-	    "process_status=?, "+
+	    "process_status=?, "+ //30
+	    
 	    "termination_type=?,"+
 	    "cdl_status=? "+
-	    " where id = ? ";
+	    " where id = ? "; // 33
 	String qq2 = "update job_terminations set badge_returned=? where id=?";
 	String qq3 = "update job_terminations set start_date=? where id=?";	
 	String back = "";
@@ -1399,7 +1445,7 @@ public class EmpTerminate{
 	    pstmt = con.prepareStatement(qq);
 	    back = setParams(pstmt);
 	    if(back.isEmpty()){
-		pstmt.setString(34, id);
+		pstmt.setString(33, id);
 		pstmt.executeUpdate();
 	    }
 	    if(badge_returned != null){
