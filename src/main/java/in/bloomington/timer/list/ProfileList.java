@@ -1063,6 +1063,7 @@ HR.HRReport_EmployeePayRateReport
 	}
 	finally{
 	    Helper.databaseDisconnect(pstmt, rs);
+	    SingleConnect.disconnect();
 	}
 	return back;
     }

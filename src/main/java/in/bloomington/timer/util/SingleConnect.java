@@ -5,6 +5,7 @@ package in.bloomington.timer.util;
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.sql.*;
 import java.text.*;
 import javax.servlet.ServletContext;
@@ -73,11 +74,17 @@ public class SingleConnect implements ServletContextListener{
 		logger.error(ex);
 	    }
 	    if(pass) break;
+	    else{
+		try {
+		    TimeUnit.SECONDS.sleep(3); // 3 seconds
+		} catch (InterruptedException e) {
+		    Thread.currentThread().interrupt(); // Restore 
+		}
+	    }
 	}
 	return con;
     }		
-    public void disconnect(){
-	System.err.println("closing connection");
+    public static void disconnect(){
 	Helper.databaseDisconnect(con);
     }
 		

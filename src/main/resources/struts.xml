@@ -212,6 +212,13 @@
       <result name="input">/WEB-INF/jsp/excessAccrualSchedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/excessAccrualSchedular.jsp</result>
       <result name="success">/WEB-INF/jsp/excessAccrualSchedular.jsp</result>
+    </action>
+    <action name="payRateSchedule" 
+	    class="in.bloomington.timer.action.EmpPayRateScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/pay_rate_schedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/pay_rate_schedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/pay_rate_schedular.jsp</result>
     </action>    
     <action name="annuance" 
 	    class="in.bloomington.timer.action.AnnuancementAction" 

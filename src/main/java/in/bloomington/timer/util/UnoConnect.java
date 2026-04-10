@@ -122,7 +122,22 @@ public class UnoConnect implements ServletRequestListener{
 	}
 	return false;
     }
+    /**
+     * if want to go back for pooling we are going to need this
+     */
+    public static void sureDisconnect(Connection myCon){
+	try{
 
+	    myCon.close();
+	}
+	catch(Exception ex){
+	    logger.error(ex);
+	}
+	finally{
+	    myCon = null;
+	}
+	    
+    }
     /**
      * if want to go back for pooling we are going to need this
      */
