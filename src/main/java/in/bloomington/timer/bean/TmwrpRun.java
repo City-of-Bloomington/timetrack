@@ -863,10 +863,11 @@ public class TmwrpRun{
      */
     public String doCleanUp(){
 	Connection con = null;
-	PreparedStatement pstmt = null;
+	PreparedStatement pstmt = null, pstmt2 = null;
 	ResultSet rs = null;
 	String msg="", str="";
 	String qq = "delete from tmwrp_blocks where run_id=? ";
+	String qq2 = "delete from tmwrp_primes where run_id=? ";
 	if(id.isEmpty()){
 	    msg = " run id not set ";
 	    return msg;
@@ -881,13 +882,17 @@ public class TmwrpRun{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, id);						
 	    pstmt.executeUpdate();
+	    qq = qq2;
+	    pstmt2 = con.prepareStatement(qq2);
+	    pstmt2.setString(1, id);						
+	    pstmt2.executeUpdate();
 	}
 	catch(Exception ex){
 	    msg += " "+ex;
 	    logger.error(msg+":"+qq);
 	}
 	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;

@@ -65,7 +65,7 @@ public class EmpPayRateJob implements Job{
 	String msg = "";
 	String week_no = "", pay_period_id="";
 	PayPeriodList ppl = new PayPeriodList();
-	ppl.currentOnly();
+	ppl.setOnePeriodAheadOnly();
 	msg = ppl.find();
 	if(!msg.isEmpty()){
 	    logger.error(msg);
@@ -75,9 +75,17 @@ public class EmpPayRateJob implements Job{
 	    String today = Helper.getToday();
 	    List<PayPeriod> ones = ppl.getPeriods();
 	    if(ones != null && ones.size() > 0){
-		PayPeriod period = ones.get(0);// last pay period
-		pay_period_id = period.getId();
-		week_no = period.isDateInWeekOne(today)?"1":"2"; // 1,2
+		PayPeriod nextPayPeriod = ones.get(0);// next period
+		PayPeriod currentPay = ones.get(1); // current
+		week_no = currentPay.isDateInWeekOne(today)?"1":"2";
+		if(week_no.equals("2")){
+		    pay_period_id = nextPayPeriod.getId();
+		    week_no = "1";
+		}
+		else{
+		    pay_period_id = currentPay.getId();
+		    week_no = "2";
+		}
 	    }
 	}
 	if(depts != null){

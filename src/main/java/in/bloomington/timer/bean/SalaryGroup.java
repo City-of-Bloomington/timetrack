@@ -117,6 +117,9 @@ public class SalaryGroup implements Serializable{
     public boolean isUnionned(){
 	return name.equals("Union") || name.equals("AFSCME");
     }
+    public boolean isUnion(){
+	return name.equals("Union") || name.equals("AFSCME");
+    }    
     public boolean isAfscme(){
 	return name.equals("Union") || name.equals("AFSCME");
     }		

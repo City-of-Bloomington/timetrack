@@ -57,7 +57,7 @@ public class TmwrpWeekSplit{
     SalaryGroup salaryGroup = null;
     Group group = null;
     Shift shift = null;		
-
+    double earned_overtime_user_added = 0;
     public TmwrpWeekSplit(boolean deb,
 			  Department val2,
 			  JobTask val3){
@@ -153,11 +153,12 @@ public class TmwrpWeekSplit{
 			unpaid_hrs += hours;
 		    }
 		    else if(hrCode.isEarned()){
+			earned_overtime_user_added += hours;
 			earned_time += hours; // added
 			unpaid_hrs += hours;
 		    }
 		    else if(hrCode.isOvertime()){
-			
+			earned_overtime_user_added += hours;			
 			unpaid_hrs += hours;
 		    }
 		    else{ // other
@@ -172,7 +173,10 @@ public class TmwrpWeekSplit{
     // added 1/7
     public Hashtable<String, Double> getHash(){
 	return hash;
-    }    
+    }
+    public double getEarnedOvertimeAdded(){
+	return earned_overtime_user_added;
+    }
     //
     // for union or similar, regular only
     //

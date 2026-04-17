@@ -561,6 +561,18 @@ public class TimewarpProcess{
     public Hashtable<String, Double> getWeek2All(){
 	return week2.getAll();
     }
+    public boolean hasWeek1Prime(){
+	return (week1.getTotalHours() + week1.getEarnedOvertimeAdded() - week1.getEarnedTimeUsed() - week1.getProfHours()) > 40.;
+    }
+    public boolean hasWeek2Prime(){
+	return (week2.getTotalHours() + week2.getEarnedOvertimeAdded() - week2.getEarnedTimeUsed() - week2.getProfHours()) > 40.;
+    }    
+    public Hashtable<String, Double> getWeek1PrimeHash(){
+	return week1.getPrimeHash();
+    }
+    public Hashtable<String, Double> getWeek2PrimeHash(){
+	return week2.getPrimeHash();
+    }							 
     // two weeks all
     public Hashtable<String, Double> getAll(){
 	Hashtable<String, Double> all = new Hashtable<String, Double>();

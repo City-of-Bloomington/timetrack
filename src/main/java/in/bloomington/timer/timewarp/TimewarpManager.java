@@ -309,12 +309,6 @@ public class TimewarpManager{
 			    if(!hash2.isEmpty()){								mergeTwoHashes(hash2, hash);
 			    }
 			}
-			/**
-			if(process.hasProfHours()){
-			    double dd = process.getProfHours();
-			    hash.put(prof_hrs_id, dd);
-			}
-			*/
 			if(!hash.isEmpty()){
 			    back += block.doSaveBolk(hash, "Week 2",2, "Hours");
 			}
@@ -325,6 +319,20 @@ public class TimewarpManager{
 			}
 		    }
 		}
+	    }
+	}
+	//
+	// for tmwrp_prime there is no split, it should apply to all
+	//
+	if(salaryGroup.isExempt() || salaryGroup.isNonExempt() ||
+	   salaryGroup.isUnion()){
+	    TmwrpPrime prime = new TmwrpPrime(run_id);
+	    if(process.hasWeek1Prime()){
+		back = prime.doSaveBolk(process.getWeek1PrimeHash(), "1");
+	    }
+	    if(process.hasWeek2Prime()){
+		back = prime.doSaveBolk(process.getWeek2PrimeHash(), "2");
+		
 	    }
 	}
 	return back;

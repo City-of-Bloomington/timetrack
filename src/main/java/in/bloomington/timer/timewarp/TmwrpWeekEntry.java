@@ -20,8 +20,37 @@ public class TmwrpWeekEntry{
     boolean debug = false;
     static final long serialVersionUID = 160L;		
     static Logger logger = LogManager.getLogger(TmwrpWeekEntry.class);		
-    // Profile profile = null;
-    // BenefitGroup bGroup = null;
+    static final Set<String> ot10Set = new HashSet<>();
+    static final Set<String> ot15Set = new HashSet<>();
+    static final Set<String> ot20Set = new HashSet<>();
+    static final Set<String> ct10Set = new HashSet<>();
+    static final Set<String> ct15Set = new HashSet<>();
+    static final Set<String> ct20Set = new HashSet<>();
+    static {
+        ct10Set.add("71");
+	ct10Set.add("114");
+	ct10Set.add("50");
+	
+        ct15Set.add("34");
+	ct15Set.add("115");
+	ct15Set.add("79");
+	
+	ct20Set.add("45");
+	ct20Set.add("46");
+	
+        ot10Set.add("78");
+	ot10Set.add("112");
+	
+        ot15Set.add("43");
+	ot15Set.add("113");
+	ot15Set.add("127");
+	ot15Set.add("172");
+	
+	ot20Set.add("44");
+	ot20Set.add("128");
+	ot20Set.add("173");	
+    }
+    
     static DecimalFormat ndf = new DecimalFormat("#0.00");		
     static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     //     static final double critical_small = 0.01;
@@ -32,7 +61,7 @@ public class TmwrpWeekEntry{
 	earned_time_sys = 0,
 	earned_time_daily=0,
 	unpaid_hrs = 0,
-	over_time15 = 0, over_time20=0, over_time25 = 0;
+	over_time15 = 0, over_time20=0;
     double st_weekly_hrs = 40,
 	daily_hrs = 8,
 	comp_weekly_hrs = 0,
@@ -72,8 +101,14 @@ public class TmwrpWeekEntry{
     Hashtable<String, Double> regHash = new Hashtable<String, Double>();
     //
     //  monetary hash
-    Hashtable<String, Double> monetaryHash = new Hashtable<String, Double>();		
-    
+    Hashtable<String, Double> monetaryHash = new Hashtable<String, Double>();
+    //
+    //
+    // added on 4/15 for overime tax deduction
+    double prim_cp_earn_10=0, prim_cp_earn_15=0,prim_cp_earn_20=0;
+    double prim_ot_earn_10=0, prim_ot_earn_15=0,prim_ot_earn_20=0;    
+    Hashtable<String, Double> primeHash = new Hashtable<String, Double>();
+    double earned_overtime_user_added = 0;
     public TmwrpWeekEntry(boolean deb,
 			  Department val,
 			  JobTask val2,
@@ -184,6 +219,32 @@ public class TmwrpWeekEntry{
 		    splitTwo.add(te);
 		    // System.err.println("two "+te.getHours());
 		}
+		// find if any added times are comp earned or overtime
+		if(salaryGroup != null){
+		    if(salaryGroup.isExempt() ||
+		       salaryGroup.isNonExempt() ||
+		       salaryGroup.isUnion()){
+			HourCode hc = te.getHourCode();
+			if(hc != null && hc.isRegular() ||
+			   hc.isOther() || hc.isUnpaid()){
+			    return;
+			}
+			String e_code_id = te.getHour_code_id();
+			if(ct15Set.contains(e_code_id)){ 
+			    prim_cp_earn_15 += te.getHours();
+			}else if(ct10Set.contains(e_code_id)){ 
+			    prim_cp_earn_10 += te.getHours();
+			}else if(ct20Set.contains(e_code_id)){ 
+			    prim_cp_earn_20 += te.getHours();
+			}else if(ot15Set.contains(e_code_id)){ 
+			    prim_ot_earn_15 += te.getHours();
+			}else if(ot10Set.contains(e_code_id)){ 
+			    prim_ot_earn_10 += te.getHours();
+			}else if(ot20Set.contains(e_code_id)){ 
+			    prim_ot_earn_20 += te.getHours();
+			}
+		    }
+		}
 	    }
 	}catch(Exception ex){
 	    logger.error(ex);
@@ -218,7 +279,17 @@ public class TmwrpWeekEntry{
 		}
 	    }
 	}
-    }		
+    }
+    public double getTotalEarnedHours(){
+	double dd = 0.;
+	if(earnedHash != null && earnedHash.size() > 0){
+	    Set<String> keys = earnedHash.keySet();
+	    for(String key:keys){
+		dd += (double)earnedHash.get(key);
+	    }
+	}
+	return dd;
+    }
     //		
     // this is for holiday earned and other non CE codes
     //
@@ -243,6 +314,31 @@ public class TmwrpWeekEntry{
     public Hashtable<String, Double> getMonetaryHash(){
 	return monetaryHash;
     }
+    public boolean hasPrimeHash(){
+	return prim_cp_earn_10+prim_cp_earn_15+prim_cp_earn_20+
+	    prim_ot_earn_10+prim_ot_earn_15+prim_ot_earn_20 > 0;
+    }
+    public Hashtable<String, Double> getPrimeHash(){
+	if(prim_cp_earn_10 > 0){
+	    primeHash.put("cp_earn_10",prim_cp_earn_10);
+	}
+	if(prim_cp_earn_15 > 0){
+	    primeHash.put("cp_earn_15",prim_cp_earn_15);
+	}
+	if(prim_cp_earn_20 > 0){
+	    primeHash.put("cp_earn_20",prim_cp_earn_20);
+	}
+	if(prim_ot_earn_10 > 0){
+	    primeHash.put("ot_earn_10",prim_ot_earn_10);
+	}
+	if(prim_ot_earn_15 > 0){
+	    primeHash.put("ot_earn_15",prim_ot_earn_15);
+	}
+	if(prim_ot_earn_20 > 0){
+	    primeHash.put("ot_earn_10",prim_ot_earn_20);
+	}	
+	return primeHash;
+    }    
     public boolean hasMonetary(){
 	return monetaryHash != null && !monetaryHash.isEmpty();
     }
@@ -286,6 +382,7 @@ public class TmwrpWeekEntry{
 	    }
 	    earn_time_used = splitOne.getEarnedTimeUsed()+splitTwo.getEarnedTimeUsed();
 	    unpaid_hrs = splitOne.getUnpaidHrs()+splitTwo.getUnpaidHrs();
+	    earned_overtime_user_added = splitOne.getEarnedOvertimeAdded()+splitTwo.getEarnedOvertimeAdded();
 	}
 	else{
 	    /*
@@ -307,6 +404,7 @@ public class TmwrpWeekEntry{
 	    }
 	    earn_time_used = splitOne.getEarnedTimeUsed();
 	    unpaid_hrs = splitOne.getUnpaidHrs();
+	    earned_overtime_user_added = splitOne.getEarnedOvertimeAdded();
 	    
 	}
 	//
@@ -336,6 +434,9 @@ public class TmwrpWeekEntry{
 	}
     }
     //
+    public double getEarnedOvertimeAdded(){
+	return earned_overtime_user_added;
+    }
     void mergeHashtablesFromSplits(){
 	//
 	// non regular hours
@@ -397,6 +498,9 @@ public class TmwrpWeekEntry{
     }
     public double getExessHours(){
 	return excess_hrs;
+    }
+    public double getEarnedTimeDaily(){
+	return earned_time_daily;
     }
     public void findProfHours(){
 	
@@ -574,18 +678,25 @@ public class TmwrpWeekEntry{
 		code_id =CommonInc.overTime10EarnCodeID ; // "OT1.0";
 		if(comp_factor > 1.0){
 		    code_id = CommonInc.overTime15EarnCodeID; // "OT1.5";
+		    prim_ot_earn_15 += excess_hrs;
+		}
+		else{
+		    prim_ot_earn_10 += excess_hrs;
 		}
 	    }
 	    else{ // Earn time
 		if(comp_factor > 1.0){
 		    code_id = CommonInc.compTime15EarnCodeID; // "CE1.5";
+		    prim_cp_earn_15 += excess_hrs;
+		}
+		else{ 
+		    prim_cp_earn_10 += excess_hrs;
 		}
 	    }
 	    String dstr = ndf.format(excess_hrs2);
 	    excess_hrs2 = (double) (new Double(dstr));
 	    addToEarnedHash(code_id, excess_hrs2);
 	}
-
     }		
     public boolean hasExessHours(){
 	return excess_hrs > CommonInc.critical_small;
@@ -658,16 +769,20 @@ public class TmwrpWeekEntry{
 		//
 		if(salaryGroup != null && salaryGroup.isUnionned()){
 		    code_id = CommonInc.holyCompTime20EarnCodeID; // "HCE2.0";
+		    prim_cp_earn_20 += holy_earn_hrs;
 		}
 		else{
 		    if(holiday_factor > 1.5){
 			code_id = CommonInc.holyCompTime20EarnCodeID;// "HCE2.0";
+			prim_cp_earn_20 += holy_earn_hrs;
 		    }
 		    else if(holiday_factor > 1.0){
 			code_id = CommonInc.holyCompTime15EarnCodeID; // "HCE1.5";
+			prim_cp_earn_15 += holy_earn_hrs;
 		    }
 		    else{
 			code_id = CommonInc.holyCompTime10EarnCodeID; // "HCE1.0";
+			prim_cp_earn_10 += holy_earn_hrs;
 		    }
 		}
 		addToEarnedHash(code_id, holy_earn_hrs);

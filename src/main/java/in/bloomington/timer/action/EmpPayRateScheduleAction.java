@@ -68,7 +68,7 @@ public class EmpPayRateScheduleAction extends TopAction{
 	return ret;
     }
     private void prepareSchedular(){
-	String date = "04/05/2026"; // Saturday 
+	String date = "04/05/2026"; // Sunday 
 	schedular = new EmpPayRateScheduler(date);
 
     }
