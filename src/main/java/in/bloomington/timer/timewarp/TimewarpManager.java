@@ -324,14 +324,14 @@ public class TimewarpManager{
 	//
 	// for tmwrp_prime there is no split, it should apply to all
 	//
-	if(salaryGroup.isExempt() || salaryGroup.isNonExempt() ||
+	if(salaryGroup.isNonExempt() ||
 	   salaryGroup.isUnion()){
 	    TmwrpPrime prime = new TmwrpPrime(run_id);
 	    if(process.hasWeek1Prime()){
-		back = prime.doSaveBolk(process.getWeek1PrimeHash(), "1");
+		back = prime.doSaveBolk(process.getWeek1PrimeHash(),process.getWeek1EarnedTimeUsed() ,"1");
 	    }
 	    if(process.hasWeek2Prime()){
-		back = prime.doSaveBolk(process.getWeek2PrimeHash(), "2");
+		back = prime.doSaveBolk(process.getWeek2PrimeHash(),process.getWeek2EarnedTimeUsed(), "2");
 		
 	    }
 	}

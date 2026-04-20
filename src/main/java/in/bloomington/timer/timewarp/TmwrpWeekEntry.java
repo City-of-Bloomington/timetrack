@@ -221,27 +221,25 @@ public class TmwrpWeekEntry{
 		}
 		// find if any added times are comp earned or overtime
 		if(salaryGroup != null){
-		    if(salaryGroup.isExempt() ||
-		       salaryGroup.isNonExempt() ||
+		    if(salaryGroup.isNonExempt() ||
 		       salaryGroup.isUnion()){
 			HourCode hc = te.getHourCode();
-			if(hc != null && hc.isRegular() ||
-			   hc.isOther() || hc.isUnpaid()){
-			    return;
-			}
-			String e_code_id = te.getHour_code_id();
-			if(ct15Set.contains(e_code_id)){ 
-			    prim_cp_earn_15 += te.getHours();
-			}else if(ct10Set.contains(e_code_id)){ 
-			    prim_cp_earn_10 += te.getHours();
-			}else if(ct20Set.contains(e_code_id)){ 
-			    prim_cp_earn_20 += te.getHours();
-			}else if(ot15Set.contains(e_code_id)){ 
-			    prim_ot_earn_15 += te.getHours();
-			}else if(ot10Set.contains(e_code_id)){ 
-			    prim_ot_earn_10 += te.getHours();
-			}else if(ot20Set.contains(e_code_id)){ 
-			    prim_ot_earn_20 += te.getHours();
+			if(hc != null && hc.isEarned() ||
+			   hc.isOvertime()){
+			    String e_code_id = te.getHour_code_id();
+			    if(ct15Set.contains(e_code_id)){ 
+				prim_cp_earn_15 += te.getHours();
+			    }else if(ct10Set.contains(e_code_id)){ 
+				prim_cp_earn_10 += te.getHours();
+			    }else if(ct20Set.contains(e_code_id)){ 
+				prim_cp_earn_20 += te.getHours();
+			    }else if(ot15Set.contains(e_code_id)){ 
+				prim_ot_earn_15 += te.getHours();
+			    }else if(ot10Set.contains(e_code_id)){ 
+				prim_ot_earn_10 += te.getHours();
+			    }else if(ot20Set.contains(e_code_id)){ 
+				prim_ot_earn_20 += te.getHours();
+			    }
 			}
 		    }
 		}

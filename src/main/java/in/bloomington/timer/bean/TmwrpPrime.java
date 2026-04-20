@@ -22,13 +22,20 @@ public class TmwrpPrime{
     static Logger logger = LogManager.getLogger(TmwrpPrime.class);
     static final long serialVersionUID = 1500L;
     static Hashtable<String, Double> primeFactors = new Hashtable<>();
+    static Hashtable<String, String> primeCodes = new Hashtable<>();    
     static {
 	primeFactors.put("cp_earn_10",0.5);
 	primeFactors.put("cp_earn_15",0.33);
 	primeFactors.put("cp_earn_20",0.25);
 	primeFactors.put("ot_earn_10",0.5);
 	primeFactors.put("ot_earn_15",0.33);
-	primeFactors.put("ot_earn_20",0.25);	
+	primeFactors.put("ot_earn_20",0.25);
+	primeCodes.put("cp_earn_10","Comp time 1.0");
+	primeCodes.put("cp_earn_15","Comp time 1.5");
+	primeCodes.put("cp_earn_20","Comp time 2.0");
+	primeCodes.put("ot_earn_10","Overtime 1.0");
+	primeCodes.put("ot_earn_15","Overtime 1.5");
+	primeCodes.put("ot_earn_20","Overtime 2.0");
     }
     
     String run_id="",
@@ -79,7 +86,13 @@ public class TmwrpPrime{
     public String getPrimeCode(){
 	return prime_code;
     }
-
+    public String getPrimeCodeText(){
+	String str = "";
+	if(primeCodes.containsKey(prime_code)){
+	    str = primeCodes.get(prime_code);
+	}
+	return str;
+    }
     public double getHours(){
 	return hours;
     }
@@ -190,6 +203,7 @@ public class TmwrpPrime{
     }
     /// need revist TODO
     public String doSaveBolk(Hashtable<String, Double> hash,
+			     Double weeklyEarnTimeUsed,
 			     String week_no){ 
 	//
 	Connection con = null;
@@ -208,6 +222,10 @@ public class TmwrpPrime{
 	if(hash == null || hash.isEmpty()){
 	    return msg;
 	}
+	double earned_time_used = weeklyEarnTimeUsed;
+	if(earned_time_used > 0){
+	    System.err.println("weekly earned time used deduced "+earned_time_used); 
+	}
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -221,6 +239,17 @@ public class TmwrpPrime{
 		double dd = hash.get(key);
 		double factor = 0;
 		if(dd > 0){
+		    if(earned_time_used > 0){
+			if(dd <= earned_time_used){
+			    earned_time_used = earned_time_used - dd;
+			    dd = 0;
+			    continue;
+			}
+			else if(dd > earned_time_used){
+			    dd = dd - earned_time_used;
+			    earned_time_used = 0;
+			}
+		    }
 		    if(primeFactors.containsKey(key)){
 			factor = primeFactors.get(key);
 		    }
