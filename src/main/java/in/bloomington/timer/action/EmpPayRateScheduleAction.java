@@ -27,9 +27,7 @@ public class EmpPayRateScheduleAction extends TopAction{
     String rateSchedulesTitle = "Employee Pay Rate Schedules";
     QuartzMisc quartzMisc = null;
     EmpPayRateScheduler schedular = null;
-    List<PayPeriod> payPeriods = null;
-    String week_no = "1", //1,2
-	pay_period_id="", dept_ref_id="";
+    String dept_ref_id="", rate_date="";
     public String execute(){
 	String ret = SUCCESS;
 	String back = canProceed("Schedule.action");
@@ -51,18 +49,13 @@ public class EmpPayRateScheduleAction extends TopAction{
 	    }
 	}
 	else if(action.startsWith("Import")){ // import now given the date
-	    if(pay_period_id.isEmpty() || week_no.isEmpty()){
-		addError("Pay period not or week number not set");
+	    HandleEmpPayRate handle = new HandleEmpPayRate(dept_ref_id, rate_date);
+	    back = handle.process();
+	    if(!back.isEmpty()){
+		addError(back);
 	    }
 	    else{
-		HandleEmpPayRate handle = new HandleEmpPayRate(dept_ref_id, pay_period_id, week_no);
-		back = handle.process();
-		if(!back.isEmpty()){
-		    addError(back);
-		}
-		else{
-		    addMessage("Imported Successfully");
-		}
+		addMessage("Imported Successfully");
 	    }
 	}
 	return ret;
@@ -91,26 +84,25 @@ public class EmpPayRateScheduleAction extends TopAction{
 	if(val != null && !val.isEmpty())		
 	    action = val;
     }
-    public void setPayPeriod_id(String val){
+    public void setRate_date(String val){
 	if(val != null && !val.isEmpty())		
-	    pay_period_id = val;
+	    rate_date = val;
     }
-    public void setWeekNo(String val){
-	if(val != null && !val.equals("-1"))		
-	    week_no = val;
-    }		
     public void setDept_ref_id(String val){
 	if(val != null && !val.equals("-1"))		
 	    dept_ref_id = val;
     }		
-    // read only 
-    public String getWeekNo(){
-	return week_no;
-    }
-    public String getPayPeriod_id(){
-	return pay_period_id;
+    // 
+    public String getRate_date(){
+	if(rate_date.isEmpty()){
+	    rate_date = Helper.getToday();
+	}
+	return rate_date;
     }
     public String getDept_ref_id(){
+	if(dept_ref_id.isEmpty()){
+	    return "-1";
+	}
 	return dept_ref_id;
     }	    
     public List<Department> getDepts(){
@@ -135,21 +127,7 @@ public class EmpPayRateScheduleAction extends TopAction{
 	getDepts();
 	return depts != null && depts.size() > 0;
     }
-    public List<PayPeriod> getPayPeriods(){
-	if(payPeriods == null){
-	    PayPeriodList tl = new PayPeriodList();
-	    tl.setOnePeriodAheadOnly();
-	    tl.setLimit("4");
-	    String back = tl.find();
-	    if(back.isEmpty()){
-		List<PayPeriod> ones = tl.getPeriods();
-		if(ones != null && ones.size() > 0){
-		    payPeriods = ones;
-		}
-	    }
-	}
-	return payPeriods;
-    }			
+
 }
 
 

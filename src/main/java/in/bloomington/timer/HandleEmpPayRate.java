@@ -24,22 +24,28 @@ public class HandleEmpPayRate{
     static Logger logger = LogManager.getLogger(HandleEmpPayRate.class);
     static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     static DecimalFormat df = new DecimalFormat("#0.00");
+    // old
     String week_no="", pay_period_id="", // date of last pay period
 	dept_ref_id=""; // dept referance in NW app, one or more values
+    // new
+    String rate_date = "";
     Hashtable<String, String> empHash = null;
-    Hashtable<String, Double> empHash2 = null;
+    Hashtable<String, Double> empOldRates = null;        
+    Hashtable<String, Double> empNewRates = null;
     //
     // accrual values from New World (Carry Over)
     //
     public HandleEmpPayRate(){
     }
-    public HandleEmpPayRate(String val,
-			   String val2,
-			   String val3){
-	setDept_ref_id(val);
-	setPayPeriod_id(val2);
-	setWeekNo(val3);
+    // new
+    public HandleEmpPayRate(String val){
+	setRateDate(val);
     }
+    public HandleEmpPayRate(String val,
+			   String val2){
+	setDept_ref_id(val);
+	setRateDate(val2);
+    }    
     //
     // setters
     //
@@ -57,23 +63,40 @@ public class HandleEmpPayRate{
 	if(val != null){		
 	    week_no = val;
 	}
-    }		
+    }
+    public void setRateDate(String val){
+	if(val != null){		
+	    rate_date = val;
+	}
+    }
+        
     private String prepareEmployee(){
 	String msg = "";
 	EmployeeList empl = new EmployeeList();
-	empl.setDept_ref_id(dept_ref_id);
+	if(!dept_ref_id.isEmpty()){
+	    empl.setDept_ref_id(dept_ref_id);
+	}
 	empl.setHasEmployeeNumber();
 	msg = empl.find();
 	if(msg.isEmpty()){
 	    List<Employee> emps = empl.getEmployees();
 	    if(emps != null && emps.size() > 0){
 		empHash = new Hashtable<>();
-		empHash2 = new Hashtable<>();		
+		empNewRates = new Hashtable<>();		
 		for(Employee one:emps){
 		    // System.err.println(" emp "+one.getId()+","+one.getEmployee_number());
 		    empHash.put(one.getEmployee_number(), one.getId());
 		}
 	    }
+	}
+	EmpPayRateList epl = new EmpPayRateList();
+	msg = epl.findLatest();
+	if(msg.isEmpty()){
+	    empOldRates = epl.getRateHash();
+	}
+	else{
+	    logger.error(msg);
+	    System.err.println(msg);
 	}
 	return msg;
     }
@@ -84,21 +107,34 @@ public class HandleEmpPayRate{
 	PreparedStatement pstmt = null;
 	CallableStatement ps = null;
 	ResultSet rs = null;
-	String msg="";
+	String msg="", date="";
 	double rate = 0;
 	//
 	//
 	String qq = "{CALL HR.HRReport_EmployeePayRateReport(null,'0',null,?,null,'3,1,2',2,0,1,0,0,3,0)}";
+	if(dept_ref_id.isEmpty()){
+	    qq = "{CALL HR.HRReport_EmployeePayRateReport(null,'0',null,null,null,'3,1,2',2,0,1,0,0,3,0)}";
+	}
+	// if rate_date is given
+	if(!rate_date.isEmpty()){
+	    date = Helper.getYymmddDate2(rate_date);
+	    System.err.println(" date "+date);
+	    qq = "{CALL HR.HRReport_EmployeePayRateReport('"+date+"','0',null,?,null,'3,1,2',2,0,1,0,0,3,0)}";
+	    if(dept_ref_id.isEmpty()){
+	    qq = "{CALL HR.HRReport_EmployeePayRateReport('"+date+"','0',null,null,null,'3,1,2',2,0,1,0,0,3,0)}";
+	    }
+	}
 	msg = prepareEmployee();
 	if(!msg.isEmpty()){
 	    return msg;
 	}
 	logger.debug(qq);
+	/**
 	if(dept_ref_id.isEmpty()){
 	    msg = "Dept or date not set ";
 	    return msg;
 	}
-
+	*/
 	if(!msg.isEmpty() || empHash == null){
 	    msg += " could not find related employees ";
 	    return msg;
@@ -111,22 +147,29 @@ public class HandleEmpPayRate{
 		logger.error(msg);
 		return msg;
 	    }
-	    
 	    ps = con.prepareCall(qq);
-	    ps.setString(1, dept_ref_id);   // "16,17, 24" for two hr depts
+	    if(!dept_ref_id.isEmpty()){
+		ps.setString(1, dept_ref_id);
+	    }
 	    rs = ps.executeQuery();
 	    while(rs.next()){
 		String str = rs.getString(5); // 5 employee number
 		String str2 = rs.getString(6); // 6 name
-		Double str3 = rs.getDouble(13);// 9 current rate
-		String str4 = rs.getString(20); // current annula
-		if(empHash.containsKey(str)){
+		double str3 = rs.getDouble(13);// 9 current rate
+		// String str4 = rs.getString(20); // current annula
+		if(empHash != null && empHash.containsKey(str)){
+		    double old_rate = 0;
 		    String emp_id = empHash.get(str);
-		    empHash2.put(emp_id, str3);
+		    if(empOldRates != null && empOldRates.containsKey(emp_id)){
+		       old_rate = empOldRates.get(emp_id);
+		    }
+		    if(str3 != old_rate){
+			empNewRates.put(emp_id, str3);
+		    }
 		}
 	    }
-	    WeeklyEmployeeRate weeklyEmpRate = new WeeklyEmployeeRate(pay_period_id, week_no);
-	    msg = weeklyEmpRate.doSaveBatch(empHash2);
+	    EmployeePayRate empPayRate = new EmployeePayRate(rate_date);
+	    msg = empPayRate.doSaveBatch(empNewRates);
 	    //
 	}
 	catch (Exception ex) {
@@ -135,9 +178,29 @@ public class HandleEmpPayRate{
 	}
 	finally{
 	    Helper.databaseDisconnect(ps, rs);
-	    SingleConnect.disconnect();
+	    // SingleConnect.disconnect();
 	}
 	return msg;
     }
 
+    /**
+       finding the latest date and related dates in a table
+       
+
+
+/////////////////////
+// this worked
+
+SELECT t1.*
+FROM employee_pay_rates t1
+INNER JOIN (
+    SELECT employee_id, MAX(rate_date) as max_date
+    FROM employee_pay_rates
+    GROUP BY employee_id
+) t2 ON t1.employee_id = t2.employee_id 
+     AND t1.rate_date = t2.max_date;
+
+
+
+     */
 }

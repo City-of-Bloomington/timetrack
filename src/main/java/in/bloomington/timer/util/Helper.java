@@ -661,6 +661,30 @@ public class Helper{
 	}
 	return ret;
     }
+    public final static String getYymmddDate2(final String dt){
+	if(dt == null || dt.isEmpty()) return dt;
+	String ret = "", yy="", mm="", dd="";
+	String separator="/";
+	if(dt.indexOf("-") > 0){
+	    separator="-";
+	}
+	try{
+	    yy = dt.substring(dt.lastIndexOf(separator)+1); // last 4 digits
+	    mm = dt.substring(0,dt.indexOf(separator));
+	    dd = dt.substring(dt.indexOf(separator)+1,dt.lastIndexOf(separator));
+	    if(mm.length() == 1){
+		mm = "0"+mm;
+	    }
+	    if(dd.length() == 1){
+		dd = "0"+dd;
+	    }
+	    ret = yy+mm+dd; // yyyymmdd
+						
+	}catch(Exception ex){
+	    System.err.println(ex);
+	}
+	return ret;
+    }    
     
     public final static boolean isOldDate(final String date){
 	if(date == null || date.isEmpty()) return false;

@@ -419,7 +419,14 @@
       <result name="input">/WEB-INF/jsp/empImport.jsp</result>		
       <result name="error">/WEB-INF/jsp/empImport.jsp</result>
       <result name="success">/WEB-INF/jsp/empImport.jsp</result>
-    </action>		
+    </action>
+    <action name="primeReport" 
+	    class="in.bloomington.timer.action.ReportPrimeAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/reports/primeReport.jsp</result>
+      <result name="error">/WEB-INF/jsp/reports/primeReport.jsp</result>
+      <result name="success">/WEB-INF/jsp/reports/primeReport.jsp</result>
+    </action>	    
     <action name="payperiod" 
 	    class="in.bloomington.timer.action.PayPeriodAction" 
 	    method="execute">

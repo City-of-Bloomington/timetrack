@@ -333,7 +333,6 @@ public class MpoReport{
 	}
 	logger.debug(qq);
 	try{
-	    pstmt = con.prepareStatement(qq);
 	    int jj=1;
 	    pstmt = con.prepareStatement(qq);
 	    java.util.Date date_tmp = dateFormat.parse(start_date);

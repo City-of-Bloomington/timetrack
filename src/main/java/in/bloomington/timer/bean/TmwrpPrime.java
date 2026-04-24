@@ -22,7 +22,7 @@ public class TmwrpPrime{
     static Logger logger = LogManager.getLogger(TmwrpPrime.class);
     static final long serialVersionUID = 1500L;
     static Hashtable<String, Double> primeFactors = new Hashtable<>();
-    static Hashtable<String, String> primeCodes = new Hashtable<>();    
+    static Hashtable<String, String> hourCodes = new Hashtable<>();    
     static {
 	primeFactors.put("cp_earn_10",0.5);
 	primeFactors.put("cp_earn_15",0.33);
@@ -30,15 +30,16 @@ public class TmwrpPrime{
 	primeFactors.put("ot_earn_10",0.5);
 	primeFactors.put("ot_earn_15",0.33);
 	primeFactors.put("ot_earn_20",0.25);
-	primeCodes.put("cp_earn_10","Comp time 1.0");
-	primeCodes.put("cp_earn_15","Comp time 1.5");
-	primeCodes.put("cp_earn_20","Comp time 2.0");
-	primeCodes.put("ot_earn_10","Overtime 1.0");
-	primeCodes.put("ot_earn_15","Overtime 1.5");
-	primeCodes.put("ot_earn_20","Overtime 2.0");
+	// hour code id's
+	hourCodes.put("cp_earn_10","71");// Comp time 1.0
+	hourCodes.put("cp_earn_15","34");// Comp time 1.5
+	hourCodes.put("cp_earn_20","45");// Comp time 2.0
+	hourCodes.put("ot_earn_10","78");// Overtime 1.0
+	hourCodes.put("ot_earn_15","43");// Overtime 1.5
+	hourCodes.put("ot_earn_20","44");// Overtime 2.0
     }
     
-    String run_id="",
+    String run_id="", hour_code_id="",
 	week_no="", // 1, 2	
 	prime_code="";
 
@@ -72,7 +73,7 @@ public class TmwrpPrime{
 		      ){
 	setRun_id(val);
 	setWeekNo(val2);
-	setPrimeCode(val3);
+	setHourCode_id(val3);
 	setHours(val4);
 	setPrimeFactor(val5);
     }		
@@ -83,15 +84,8 @@ public class TmwrpPrime{
     public String getRun_id(){
 	return run_id;
     }		
-    public String getPrimeCode(){
-	return prime_code;
-    }
-    public String getPrimeCodeText(){
-	String str = "";
-	if(primeCodes.containsKey(prime_code)){
-	    str = primeCodes.get(prime_code);
-	}
-	return str;
+    public String getHourCode_id(){
+	return hour_code_id;
     }
     public double getHours(){
 	return hours;
@@ -114,7 +108,11 @@ public class TmwrpPrime{
 	if(val != null)
 	    week_no = val;
     }				
-		
+    public void setHourCode_id(String val){
+	if(val != null){
+	    hour_code_id = val;
+	}
+    }		
     public void setPrimeCode(String val){
 	if(val != null){
 	    prime_code = val;
@@ -133,7 +131,7 @@ public class TmwrpPrime{
     public boolean equals(Object o) {
 	if (o instanceof TmwrpPrime) {
 	    TmwrpPrime c = (TmwrpPrime) o;
-	    if ( this.run_id.equals(c.getRun_id()) && this.week_no.equals(c.getWeekNo()) && this.prime_code.equals(c.getPrimeCode()))
+	    if ( this.run_id.equals(c.getRun_id()) && this.week_no.equals(c.getWeekNo()) && this.hour_code_id.equals(c.getHourCode_id()))
 		return true;
 	}
 	return false;
@@ -141,14 +139,14 @@ public class TmwrpPrime{
     public int hashCode(){
 	int seed = 37;
 	try{
-	    seed += run_id.hashCode()+week_no.hashCode()+prime_code.hashCode();
+	    seed += run_id.hashCode()+week_no.hashCode()+hour_code_id.hashCode();
 	}catch(Exception ex){
 	    // we ignore
 	}
 	return seed;
     }
     public String toString(){
-	return run_id+" "+week_no+" "+prime_code;
+	return run_id+" "+week_no+" "+hour_code_id;
     }
 		
     // ToDo start here
@@ -173,8 +171,17 @@ public class TmwrpPrime{
 	    return msg;
 	}
 	double factor = 0;
+	String code_id = "";
 	if(primeFactors.containsKey(prime_code)){
 	    factor = primeFactors.get(prime_code);
+	}
+	if(hourCodes.containsKey(prime_code)){
+	    code_id = hourCodes.get(prime_code);
+	}
+	if(factor == 0 || code_id.isEmpty()){
+	    msg ="factor "+factor+" Earn Code id "+code_id;
+	    logger.error(msg);
+	    return msg;
 	}
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
@@ -186,7 +193,7 @@ public class TmwrpPrime{
 	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, run_id);						
 	    pstmt.setString(2, week_no);
-	    pstmt.setString(3, prime_code);
+	    pstmt.setString(3, code_id);
 	    pstmt.setDouble(4, hours);
 	    pstmt.setDouble(5, factor);
 	    pstmt.executeUpdate();
@@ -238,6 +245,7 @@ public class TmwrpPrime{
 	    for(String key:keys){
 		double dd = hash.get(key);
 		double factor = 0;
+		String code_id = "";
 		if(dd > 0){
 		    if(earned_time_used > 0){
 			if(dd <= earned_time_used){
@@ -253,9 +261,17 @@ public class TmwrpPrime{
 		    if(primeFactors.containsKey(key)){
 			factor = primeFactors.get(key);
 		    }
+		    if(hourCodes.containsKey(key)){
+			code_id = hourCodes.get(key);
+		    }
+		    if(factor == 0 || code_id.isEmpty()){
+			msg ="factor "+factor+" Earn Code id "+code_id;
+			logger.error(msg);
+			continue;
+		    }
 		    pstmt.setString(1, run_id);
 		    pstmt.setString(2, week_no);
-		    pstmt.setString(3, key);
+		    pstmt.setString(3, code_id);
 		    pstmt.setDouble(4, dd); // hours
 		    pstmt.setDouble(5, factor); // multiplier
 		    pstmt.executeUpdate();
@@ -307,11 +323,12 @@ public class TmwrpPrime{
        create table tmwrp_primes(
        run_id int unsigned not null,
        week_no int unsigned not null,
-       prime_code varchar(20) not null,
+       hour_code_id int unsigned not null,
        hours double(5,2),
        prime_factor double(5,2),
        foreign key(run_id) references tmwrp_runs(id),
-       unique(run_id,week_no,prime_code)
+       foreign key(hour_code_id) references hour_codes(id),
+       unique(run_id,week_no,hour_code_id)
        )engine=InnoDB;    
     */
 }

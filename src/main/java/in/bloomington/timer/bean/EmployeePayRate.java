@@ -7,58 +7,47 @@ package in.bloomington.timer.bean;
 import java.sql.*;
 import java.util.Hashtable;
 import java.util.Set;
-import javax.naming.*;
-import javax.naming.directory.*;
+import java.text.SimpleDateFormat;
 import in.bloomington.timer.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.list.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WeeklyEmployeeRate{
+public class EmployeePayRate{
 
-    static final long serialVersionUID = 3700L;	
-    static Logger logger = LogManager.getLogger(WeeklyEmployeeRate.class);
+    static final long serialVersionUID = 3700L;
+    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");    
+    static Logger logger = LogManager.getLogger(EmployeePayRate.class);
     String id="", 
-	pay_period_id="",
-	week_no="", // 1, 2
 	employee_id="";
+    String rate_date = null;
     double pay_rate = 0;
     //
-    public WeeklyEmployeeRate(){
+    public EmployeePayRate(){
 	super();
     }
-    public WeeklyEmployeeRate(String val){
+    public EmployeePayRate(String val){
 	//
-	setId(val);
+	setRateDate(val);
     }
-    public WeeklyEmployeeRate(String val, String val2){
-	//
-	setPayPeriod_id(val);
-	setWeekNo(val2);
-    }    
-    public WeeklyEmployeeRate(String val, String val2, String val3, Double val4){
-	// // new record
+    public EmployeePayRate(String val, String val2, Double val3){
+	// new record
 
-	setPayPeriod_id(val);
-	setWeekNo(val2);	
+	setRateDate(val);	
+	setEmployee_id(val2);
+	setPayRate(val3);
+    }    
+    public EmployeePayRate(String val, String val2, String val3, Double val4){
+	setId(val);
+	setRateDate(val2);
 	setEmployee_id(val3);
 	setPayRate(val4);
-    }    
-    public WeeklyEmployeeRate(String val, String val2, String val3, String val4, Double val5){
-	//
-	// initialize
-	//
-	setId(val);
-	setPayPeriod_id(val2);
-	setWeekNo(val3);	
-	setEmployee_id(val4);
-	setPayRate(val5);
     }
 
     public boolean equals(Object obj){
-	if(obj instanceof WeeklyEmployeeRate){
-	    WeeklyEmployeeRate one =(WeeklyEmployeeRate)obj;
+	if(obj instanceof EmployeePayRate){
+	    EmployeePayRate one =(EmployeePayRate)obj;
 	    return id.equals(one.getId());
 	}
 	return false;				
@@ -79,14 +68,11 @@ public class WeeklyEmployeeRate{
     public String getId(){
 	return id;
     }
-    public String getWeekNo(){
-	return week_no;
+    public String getRateDate(){
+	return rate_date;
     }
     public String getEmployee_id(){
 	return employee_id;
-    }
-    public String getPayPeriod_id(){
-	return pay_period_id;
     }
     public Double getPayRate(){
 	return pay_rate;
@@ -98,24 +84,20 @@ public class WeeklyEmployeeRate{
 	if(val != null)
 	    id = val;
     }
-    public void setWeekNo(String val){
+    public void setRateDate(String val){
 	if(val != null)
-	    week_no = val;
+	    rate_date = val;
     }
     public void setEmployee_id(String val){
 	if(val != null)
 	    employee_id = val;
     }
-    public void setPayPeriod_id(String val){
-	if(val != null)
-	   pay_period_id = val;
-    }		
     public void setPayRate(Double val){
 	if(val != null)
 	   pay_rate = val;
     }	
     public String toString(){
-	return employee_id+": "+pay_period_id+": "+week_no+" "+pay_rate;
+	return employee_id+": "+rate_date+" "+pay_rate;
     }
     //
     public String doSelect(){
@@ -123,8 +105,8 @@ public class WeeklyEmployeeRate{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq = "select id,pay_period_id,week_no,employee_id,pay_rate "+
-	    "from weekly_employee_rates where id=?";
+	String qq = "select id,date_format(rate_date,'%m/%d/%Y'),employee_id,pay_rate "+
+	    "from employee_pay_rates where id=?";
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    back = "Could not connect to DB";
@@ -136,10 +118,9 @@ public class WeeklyEmployeeRate{
 	    pstmt.setString(1,id);
 	    rs = pstmt.executeQuery();
 	    if(rs.next()){
-		setPayPeriod_id(rs.getString(2));
-		setWeekNo(rs.getString(3));
-		setEmployee_id(rs.getString(4));
-		setPayRate(rs.getDouble(5));
+		setRateDate(rs.getString(2));
+		setEmployee_id(rs.getString(3));
+		setPayRate(rs.getDouble(4));
 	    }
 	    else{
 		back ="Record "+id+" Not found";
@@ -160,17 +141,13 @@ public class WeeklyEmployeeRate{
 	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = " insert into weekly_employee_rates values(0,?,?,?,?)";
+	String qq = " insert into employee_pay_rates values(0,?,?,?)";
 	if(employee_id.equals("")){
 	    msg = "Employee id is required";
 	    return msg;
 	}
-	if(pay_period_id.equals("")){
-	    msg = "pay_period id is required";
-	    return msg;
-	}
-	if(week_no.equals("")){
-	    msg = "week number is required";
+	if(rate_date.equals("")){
+	    msg = "rate date is required";
 	    return msg;
 	}
 	if(pay_rate == 0){
@@ -184,10 +161,10 @@ public class WeeklyEmployeeRate{
 		return msg;
 	    }
 	    pstmt = con.prepareStatement(qq);
-	    pstmt.setString(1, pay_period_id);
-	    pstmt.setString(2, week_no);
-	    pstmt.setString(3, employee_id);
-	    pstmt.setDouble(4, pay_rate);
+	    java.util.Date date_tmp = df.parse(rate_date);
+	    pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
+	    pstmt.setString(2, employee_id);
+	    pstmt.setDouble(3, pay_rate);
 	    pstmt.executeUpdate();
 	    //
 	    qq = "select LAST_INSERT_ID()";
@@ -212,18 +189,18 @@ public class WeeklyEmployeeRate{
 	PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = " select id from weekly_employee_rates where pay_period_id=? and employee_id=? and week_no=? ";
-	String qq2 = " update weekly_employee_rates set pay_rate = ? where id=? ";
-	String qq3 = " insert into weekly_employee_rates values(0,?,?,?,?)";
-	if(pay_period_id.equals("")){
-	    msg = "pay_period id is required";
-	    return msg;
-	}
-	if(week_no.equals("")){
-	    msg = "week number is required";
+	int this_year = Helper.getCurrentYear();
+	String end_year_date = ""+this_year+"-12-31";
+	String qq = "select id from employee_pay_rates where employee_id=? and rate_date ='"+end_year_date+"'"; 
+	String qq2 = " update employee_pay_rates set pay_rate = ? where id = ? ";
+	String qq3 = " insert into employee_pay_rates values(0,?,?,?)";
+	
+	if(rate_date.equals("")){
+	    msg = "date is required";
 	    return msg;
 	}
 	try{
+	    java.util.Date date_tmp = df.parse(rate_date);		    
 	    con = UnoConnect.getConnection();
 	    if(con == null){
 		msg = "Could not connect to DB ";
@@ -234,27 +211,24 @@ public class WeeklyEmployeeRate{
 	    pstmt3 = con.prepareStatement(qq3);
 	    Set<String> keys = empHash.keySet();
 	    for(String emp_id:keys){
-		double pay_rate = empHash.get(emp_id);
-		String rec_id="";
-		pstmt.setString(1, pay_period_id);
-		pstmt.setString(2, emp_id);		    
-		pstmt.setString(3, week_no);
+		pstmt.setString(1, emp_id);
 		rs = pstmt.executeQuery();
 		if(rs.next()){
-		    qq = qq2;
-		    rec_id=rs.getString(1);
-		    pstmt2.setDouble(1,pay_rate);
-		    pstmt2.setString(2, rec_id);
+		    String rec_id = rs.getString(1);
+		    pstmt2.setString(1, rec_id);
+		    pstmt2.setDouble(2, empHash.get(emp_id));
 		    pstmt2.executeUpdate();
 		}
 		else{
-		    qq = qq3;
-		    pstmt3.setString(1, pay_period_id);
-		    pstmt3.setString(2, week_no);
-		    pstmt3.setString(3, emp_id);
-		    pstmt3.setDouble(4, pay_rate);
+		    pstmt3.setString(1, end_year_date);
+		    pstmt3.setString(2, emp_id);
+		    pstmt3.setDouble(3, empHash.get(emp_id));
 		    pstmt3.executeUpdate();
 		}
+		pstmt3.setDate(1, new java.sql.Date(date_tmp.getTime()));
+		pstmt3.setString(2, emp_id);
+		pstmt3.setDouble(3, empHash.get(emp_id));
+		pstmt3.executeUpdate();
 	    }
 	}
 	catch(Exception ex){
@@ -267,23 +241,22 @@ public class WeeklyEmployeeRate{
 	}
 	return msg;
     }    
-
     public String doUpdate(){
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = " update weekly_employee_rates set pay_period_id=?, week_no=?,employee_id=?,pay_rate=? where id=?";
+	String qq = " update employee_pay_rates set rate_date=?, employee_id=?,pay_rate=? where id=?";
 	if(employee_id.equals("")){
 	    msg = "Employee id is required";
 	    return msg;
 	}
-	if(pay_period_id.equals("")){
-	    msg = "pay_period id is required";
+	if(rate_date.equals("")){
+	    msg = "rate_date is required";
 	    return msg;
 	}
-	if(week_no.equals("")){
-	    msg = "week number is required";
+	if(pay_rate == 0){
+	    msg = "pay_rate is required";
 	    return msg;
 	}
 	try{
@@ -293,11 +266,11 @@ public class WeeklyEmployeeRate{
 		return msg;
 	    }
 	    pstmt = con.prepareStatement(qq);
-	    pstmt.setString(1, pay_period_id);
-	    pstmt.setString(2, week_no);
-	    pstmt.setString(3, employee_id);
-	    pstmt.setDouble(4, pay_rate);
-	    pstmt.setString(5, id);
+	    java.util.Date date_tmp = df.parse(rate_date);
+	    pstmt.setDate(1, new java.sql.Date(date_tmp.getTime()));
+	    pstmt.setString(2, employee_id);
+	    pstmt.setDouble(3, pay_rate);
+	    pstmt.setString(4, id);
 	    pstmt.executeUpdate();
 	}
 	catch(Exception ex){
@@ -312,17 +285,16 @@ public class WeeklyEmployeeRate{
     }		
 
     /**
-       create table weekly_employee_rates(
+
+       create table employee_pay_rates(
        id int unsigned not null auto_increment,
-       pay_period_id int unsigned,
-       week_no int,
+       rate_date date,
        employee_id int unsigned not null,
        pay_rate double (7,2),
        primary key(id),
        foreign key(employee_id) references employees(id),
-       foreign key(pay_period_id) references pay_periods(id)
+       index(rate_date)
        )engine=InnoDB;
-
-
+       alter table employee_pay_rates add index(rate_date);
      */
 }
