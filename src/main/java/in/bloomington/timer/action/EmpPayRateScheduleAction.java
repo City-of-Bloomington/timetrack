@@ -58,6 +58,16 @@ public class EmpPayRateScheduleAction extends TopAction{
 		addMessage("Imported Successfully");
 	    }
 	}
+	else if(action.startsWith("Initial")){ 
+	    HandleEmpPayRate handle = new HandleEmpPayRate();
+	    back = handle.initialStartProcess();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Imported Successfully");
+	    }
+	}	
 	return ret;
     }
     private void prepareSchedular(){

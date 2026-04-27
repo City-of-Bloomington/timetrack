@@ -24,10 +24,8 @@ public class HandleEmpPayRate{
     static Logger logger = LogManager.getLogger(HandleEmpPayRate.class);
     static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     static DecimalFormat df = new DecimalFormat("#0.00");
-    // old
-    String week_no="", pay_period_id="", // date of last pay period
-	dept_ref_id=""; // dept referance in NW app, one or more values
-    // new
+    //
+    String dept_ref_id=""; // dept referance in NW app, one or more values
     String rate_date = "";
     Hashtable<String, String> empHash = null;
     Hashtable<String, Double> empOldRates = null;        
@@ -52,16 +50,6 @@ public class HandleEmpPayRate{
     public void setDept_ref_id(String val){
 	if(val != null){		
 	    dept_ref_id = val;
-	}
-    }
-    public void setPayPeriod_id(String val){
-	if(val != null){		
-	    pay_period_id = val;
-	}
-    }
-    public void setWeekNo(String val){
-	if(val != null){		
-	    week_no = val;
 	}
     }
     public void setRateDate(String val){
@@ -182,6 +170,101 @@ public class HandleEmpPayRate{
 	}
 	return msg;
     }
+    public String initialStartProcess(){
+	String curDate = Helper.getToday();	
+	String star_year = "01/01/2026";
+	String init_date = "01/04/2026";
+	curDate = Helper.getYymmddDate2(curDate);
+	String msg = prepareEmployee();
+	// run this first
+	// msg = initailStart(start_year);
+	// run this next
+	// msg = initailStart(init_date);
+	String next_date = "04/19/2026";//init_date;
+	String date_ff = Helper.getYymmddDate2(next_date);
+	int jj = 1;
+	while(date_ff.compareTo(curDate) < 0){ // 4/26
+	    next_date = Helper.getDateFrom(next_date, 7);
+	    date_ff = Helper.getYymmddDate2(next_date);
+	    System.err.println(" date "+date_ff);
+	    msg = initailStart(next_date, date_ff);
+	    if(!msg.isEmpty()){
+		System.err.println(" Error "+msg);
+	    }
+	    msg = prepareEmployee();
+	    jj++;
+	    if(jj > 3) break;
+	}
+	return msg;
+    }
+    String initailStart(String init_date, String date_ff){
+		
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	CallableStatement ps = null;
+	ResultSet rs = null;
+	String msg="", date="";
+	double rate = 0;
+	//
+	// all dept
+	
+	String qq = "";
+	date = date_ff;
+	if(!date.isEmpty()){
+	    // date = Helper.getYymmddDate2(init_date);
+	    // System.err.println(" date "+date);
+	    qq = "{CALL HR.HRReport_EmployeePayRateReport('"+date+"','0',null,null,null,'3,1,2',2,0,1,0,0,3,0)}";
+	}
+	logger.debug(qq);
+	if(!msg.isEmpty() || empHash == null){
+	    msg += " could not find related employees ";
+	    return msg;
+	}
+	try{
+	    con = SingleConnect.getNwConnection();
+	    if(con == null){
+		msg = " Could not connect to DB ";
+		System.err.println(msg);
+		logger.error(msg);
+		return msg;
+	    }
+	    ps = con.prepareCall(qq);
+	    if(!dept_ref_id.isEmpty()){
+		ps.setString(1, dept_ref_id);
+	    }
+	    rs = ps.executeQuery();
+	    while(rs.next()){
+		String str = rs.getString(5); // 5 employee number
+		String str2 = rs.getString(6); // 6 name
+		double str3 = rs.getDouble(13);// 9 current rate
+		// String str4 = rs.getString(20); // current annula
+		if(empHash != null && empHash.containsKey(str)){
+		    double old_rate = 0;
+		    String emp_id = empHash.get(str);
+		    if(empOldRates != null && empOldRates.containsKey(emp_id)){
+		       old_rate = empOldRates.get(emp_id);
+		    }
+		    if(str3 != old_rate){
+			empNewRates.put(emp_id, str3);
+		    }
+		}
+	    }
+	    EmployeePayRate empPayRate = new EmployeePayRate(init_date);
+	    msg = empPayRate.doSaveBatch(empNewRates);
+	    //
+	}
+	catch (Exception ex) {
+	    logger.error(ex+":"+qq);
+	    msg += ex;
+	}
+	finally{
+	    Helper.databaseDisconnect(ps, rs);
+	    // SingleConnect.disconnect();
+	}
+	return msg;
+    }    
+
+    
 
     /**
        finding the latest date and related dates in a table

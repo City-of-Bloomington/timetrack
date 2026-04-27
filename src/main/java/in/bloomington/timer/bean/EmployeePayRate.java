@@ -188,11 +188,11 @@ public class EmployeePayRate{
 	Connection con = null;
 	PreparedStatement pstmt = null, pstmt2=null, pstmt3=null;
 	ResultSet rs = null;
-	String msg="", str="";
+	String msg="", str="", qq="";
 	int this_year = Helper.getCurrentYear();
-	String end_year_date = ""+this_year+"-12-31";
-	String qq = "select id from employee_pay_rates where employee_id=? and rate_date ='"+end_year_date+"'"; 
-	String qq2 = " update employee_pay_rates set pay_rate = ? where id = ? ";
+	// String end_year_date = ""+this_year+"-12-31";
+	// String qq = "select id from employee_pay_rates where employee_id=? and rate_date ='"+end_year_date+"'"; 
+	// String qq2 = " update employee_pay_rates set pay_rate = ? where id = ? ";
 	String qq3 = " insert into employee_pay_rates values(0,?,?,?)";
 	
 	if(rate_date.equals("")){
@@ -206,11 +206,13 @@ public class EmployeePayRate{
 		msg = "Could not connect to DB ";
 		return msg;
 	    }
-	    pstmt  = con.prepareStatement(qq);
-	    pstmt2 = con.prepareStatement(qq2);
+	    // pstmt  = con.prepareStatement(qq);
+	    // pstmt2 = con.prepareStatement(qq2);
+	    qq = qq3;
 	    pstmt3 = con.prepareStatement(qq3);
 	    Set<String> keys = empHash.keySet();
 	    for(String emp_id:keys){
+		/**
 		pstmt.setString(1, emp_id);
 		rs = pstmt.executeQuery();
 		if(rs.next()){
@@ -225,6 +227,7 @@ public class EmployeePayRate{
 		    pstmt3.setDouble(3, empHash.get(emp_id));
 		    pstmt3.executeUpdate();
 		}
+		*/
 		pstmt3.setDate(1, new java.sql.Date(date_tmp.getTime()));
 		pstmt3.setString(2, emp_id);
 		pstmt3.setDouble(3, empHash.get(emp_id));

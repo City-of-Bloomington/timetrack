@@ -34,7 +34,11 @@
 			    <s:textfield name="rate_date" value="%{rate_date}" size="10" id="date_id" />
 			</div>
 			<div class="button-group">
-				<s:submit name="action" accrual="button" value="Import Now" class="button"/>
+				<s:submit name="action" value="Initial Start" class="button"/>
+
+			</div>
+			<div class="button-group">
+				<s:submit name="action" value="Import Now" class="button"/>
 
 			</div>
 		</div>
