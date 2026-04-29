@@ -24,9 +24,11 @@ public class ReportPrimeAction extends TopAction{
     static Logger logger = LogManager.getLogger(ReportPrimeAction.class);
     static final int startYear = CommonInc.reportStartYear; 
     //
-    List<List<String>> allEntries = null;		
+    List<List<String>> allEntries = null;
+    List<List<String>> aggregates = null;    
     PrimeReport report = null;
     List<Integer> years = null;
+    String outputType = "";
     String reportTitle = "Prime Report ";
     public String execute(){
 	String ret = SUCCESS;
@@ -35,13 +37,15 @@ public class ReportPrimeAction extends TopAction{
 	    return back;
 	}
 	if(!action.isEmpty()){
-	    back = report.find();
+	    back = report.findAggregates();
+	    back += report.find();
 	    if(!back.isEmpty()){
 		addError(back);
 	    }
 	    else{
-		if(true){
-		    List<List<String>> ones = report.getAllEntries();
+		List<List<String>> ones = null;		
+		if(outputType.equals("html")){
+		    ones = report.getAllEntries();
 		    if(ones != null && ones.size() > 0){
 			allEntries = ones;
 			addMessage("Found "+ones.size()+" entries");
@@ -50,12 +54,20 @@ public class ReportPrimeAction extends TopAction{
 			addMessage("No records found");
 		    }
 		}
+		ones = report.getAggregates();
+		if(ones != null && ones.size() > 0){
+		    aggregates = ones;
+		    addMessage("Found "+ones.size()+" aggregates");
+		}
+		else{
+		    addMessage("No records found");
+		}
 	    }
 	}
 	else{
 	    getReport();
 	}
-	if(report.getType().equals("csv")){
+	if(outputType.equals("csv")){
 	    return "csv";
 	}
 	return ret;
@@ -66,7 +78,13 @@ public class ReportPrimeAction extends TopAction{
 	}		
 	return report;
     }
-
+    public String getOutputType(){
+	return outputType;
+    }
+    public void setOutputType(String val){
+	if(val != null)
+	    outputType = val;
+    }
     public void setReport(PrimeReport val){
 	if(val != null){
 	    report = val;
@@ -78,6 +96,12 @@ public class ReportPrimeAction extends TopAction{
     public List<List<String>> getAllEntries(){
 	return allEntries;
     }
+    public boolean hasAggregates(){
+	return aggregates != null && aggregates.size() > 0;
+    }
+    public List<List<String>> getAggregates(){
+	return aggregates;
+    }    
     public String getReportTitle(){
 	if(report != null){
 	    reportTitle = " Prime Report "+report.getStart_date()+" - "+report.getEnd_date();

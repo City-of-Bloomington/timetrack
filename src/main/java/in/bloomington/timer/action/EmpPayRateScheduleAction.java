@@ -67,6 +67,18 @@ public class EmpPayRateScheduleAction extends TopAction{
 	    else{
 		addMessage("Imported Successfully");
 	    }
+	}
+	else if(action.startsWith("Fill Previous")){ 
+	    String start_date = "01/01/2026";
+	    String end_date = Helper.getToday();
+	    TmwrpPrime prime = new TmwrpPrime();
+	    back = prime.fillPreviousPeriods(start_date, end_date);
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Fill Successfully");
+	    }
 	}	
 	return ret;
     }

@@ -37,6 +37,7 @@ public class PrimeReport{
     List<BenefitGroup> benefitGroups = null;
     double totalHours = 0, totalAmount=0;
     List<List<String>> allEntries = null;
+    List<List<String>> aggregates = null;
     String errors = "";
     public PrimeReport(){
 				
@@ -101,6 +102,9 @@ public class PrimeReport{
     public List<List<String>> getAllEntries(){
 	return allEntries;
     }
+    public List<List<String>> getAggregates(){
+	return aggregates;
+    }
     public String getTotalHours(){
 	return df.format(totalHours);
     }
@@ -109,6 +113,9 @@ public class PrimeReport{
     }
     public boolean hasEntries(){
 	return allEntries != null && allEntries.size() > 0;
+    }
+    public boolean hasAggregates(){
+	return aggregates != null && aggregates.size() > 0;
     }
     //
     // setters
@@ -254,7 +261,84 @@ public class PrimeReport{
 	}						
 	return msg;	
     }
-		
+    public String findAggregates(){
+	String msg = "";
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	List<String> headers = new ArrayList<>();
+	headers.add("Employee");	
+	headers.add("Employee Number");
+	headers.add("Earn Code");
+	headers.add("Total Hours");
+	headers.add("Total Pay");
+	String qq = "select gg.employee_name,gg.employee_number,gg.earn_code, sum(total_hours),sum(gg.total_prime) "+
+	    "from ( "+
+	    "select e.employee_number employee_number,concat_ws(' ',e.first_name,e.last_name) AS employee_name, "+ 
+	    "c.name earn_code,t.hours total_hours,t.prime_factor,t.week_no, "+
+	    "if(week_no = 1,concat_ws('-',date_format(p.start_date,'%m/%d/%Y'),date_format(date_add(p.start_date,INTERVAL 6 DAY),'%m/%d/%Y')),concat_ws('-',date_format(date_add(p.start_date,INTERVAL 7 DAY),'%m/%d/%Y'),date_format(p.end_date,'%m/%d/%Y'))) date_range,w.pay_rate,w.pay_rate*t.hours*t.prime_factor as total_prime, "+
+	    " date_format(w.rate_date,'%m/%d/%Y'), "+
+	    " date_format(if(t.week_no = 1, date_add(p.start_date, INTERVAL 6 DAY), p.end_date),'%m/%d/%Y') AS week_end_date "+ 
+	    " from tmwrp_primes t "+
+	    " join tmwrp_runs r on r.id=t.run_id "+ 
+	    " join time_documents d on d.id=r.document_id "+ 
+	    " join pay_periods p on p.id=d.pay_period_id "+ 
+	    " join employees e on e.id=d.employee_id "+ 
+	    " join hour_codes c on c.id=t.hour_code_id "+
+	    " join employee_pay_rates w on w.employee_id=e.id ";
+	String qw = " where w.rate_date = (select max(w2.rate_date) from employee_pay_rates w2 where "+
+	    " w2.rate_date < if(t.week_no = 1,date_add(p.start_date, INTERVAL 6 DAY),p.end_date) and w2.employee_id=e.id) ";
+	if(!start_date.isEmpty()){
+	    qw += " and p.start_date >= ? ";
+	}
+	if(!end_date.isEmpty()){
+	    qw += " and p.start_date <= ? ";
+	}	
+	String qg = " ) gg group by gg.employee_name,gg.employee_number,gg.earn_code; ";
+	qq = qq + qw +qg;
+	con = Helper.getConnection();
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    logger.error(msg);
+	    return msg;
+	}
+	logger.debug(qq);
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    int j=1;
+	    if(!start_date.isEmpty()){
+		java.util.Date date_tmp = dateFormat.parse(start_date);
+		pstmt.setDate(j++, new java.sql.Date(date_tmp.getTime()));
+	    }
+	    if(!end_date.isEmpty()){
+		java.util.Date date_tmp = dateFormat.parse(end_date);
+		pstmt.setDate(j++, new java.sql.Date(date_tmp.getTime()));
+	    }
+	    rs = pstmt.executeQuery();
+	    if(aggregates == null)
+		aggregates = new ArrayList<>();
+	    aggregates.add(headers);
+	    while(rs.next()){
+		List<String> ll = new ArrayList<>();
+		for(int jj=1;jj <= headers.size();jj++){
+		    String str = rs.getString(jj);
+		    ll.add(str);
+		}
+		aggregates.add(ll);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}						
+	return msg;
+
+    }
+	
 }
 /*
 
@@ -276,7 +360,7 @@ where w.rate_date = (select max(w2.rate_date) from employee_pay_rates w2 where
 w2.rate_date < if(t.week_no = 1,date_add(p.start_date, INTERVAL 6 DAY),p.end_date) and w2.employee_id=e.id)
 
 
-date_add(date, INTERVAL 6 DAY)
+///
 
 
 	select e.employee_number,concat_ws(' ',e.first_name,e.last_name) AS name, 
@@ -293,6 +377,38 @@ date_add(date, INTERVAL 6 DAY)
 	    join employee_pay_rates w on w.employee_id=e.id 
 	    where w.rate_date = (select max(w2.rate_date) from employee_pay_rates w2 where 
 	    w2.rate_date < if(t.week_no = 1,date_add(p.start_date, INTERVAL 6 DAY),p.end_date) and w2.employee_id=e.id);
+
+
+// aggregates
+//
+select  gg.employee_name,gg.employee_number,gg.earn_code,sum(total_hours), sum(gg.total_prime)
+from (
+	select e.employee_number employee_number,concat_ws(' ',e.first_name,e.last_name) AS employee_name, 
+ c.name earn_code,t.hours total_hours,t.prime_factor,t.week_no,
+	    if(week_no = 1,concat_ws('-',date_format(p.start_date,'%m/%d/%Y'),date_format(date_add(p.start_date,INTERVAL 6 DAY),'%m/%d/%Y')),concat_ws('-',date_format(date_add(p.start_date,INTERVAL 7 DAY),'%m/%d/%Y'),date_format(p.end_date,'%m/%d/%Y'))) date_range,w.pay_rate,w.pay_rate*t.hours*t.prime_factor as total_prime,
+	    date_format(w.rate_date,'%m/%d/%Y'),
+	    date_format(if(t.week_no = 1, date_add(p.start_date, INTERVAL 6 DAY), p.end_date),'%m/%d/%Y') AS week_end_date 
+	    from tmwrp_primes t 
+	    join tmwrp_runs r on r.id=t.run_id 
+	    join time_documents d on d.id=r.document_id 
+	    join pay_periods p on p.id=d.pay_period_id 
+	    join employees e on e.id=d.employee_id 
+	    join hour_codes c on c.id=t.hour_code_id 
+	    join employee_pay_rates w on w.employee_id=e.id 
+	    where w.rate_date = (select max(w2.rate_date) from employee_pay_rates w2 where 
+	    w2.rate_date < if(t.week_no = 1,date_add(p.start_date, INTERVAL 6 DAY),p.end_date) and w2.employee_id=e.id)
+	    ) gg group by gg.employee_name,gg.employee_number,gg.earn_code;
+
+	    
+	    
+
+	    
+
+
+	    
+
+
+	    
 
 
 

@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.Hashtable;
+import java.util.TreeMap;
+import java.util.Map;
 import java.sql.*;
 import javax.sql.*;
 import java.text.SimpleDateFormat;
@@ -20,7 +22,9 @@ import org.apache.logging.log4j.Logger;
 public class TmwrpPrime{
 
     static Logger logger = LogManager.getLogger(TmwrpPrime.class);
+    static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     static final long serialVersionUID = 1500L;
+    Map<Integer, Map<Integer, Double>> usedMap = null;
     static Hashtable<String, Double> primeFactors = new Hashtable<>();
     static Hashtable<String, String> hourCodes = new Hashtable<>();    
     static {
@@ -287,7 +291,179 @@ public class TmwrpPrime{
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;
-    }		
+    }
+    
+    // needed when new changes were added for overtime prime
+    // to include data from previous periods before this feature was
+    // added
+    public String fillPreviousPeriods(String start_date, String end_date){
+	Connection con = null;
+	PreparedStatement pstmt = null, pstmt2=null;
+	ResultSet rs = null;
+	String msg="", str="";
+	// find all the earned hours
+	// for Non-exempt and union employees
+	//
+	String qq2 = "replace into tmwrp_primes values(?,?,?,?,?) ";
+	String qq = "select b.run_id run_id,if(b.term_type = 'Week 1',1,2) week_no, ht.alt_hour_code_id hour_code,ht.prime_factor factor, sum(b.hours) hours "+
+	    "from tmwrp_blocks b "+
+	    "join tmwrp_runs r on r.id=b.run_id "+
+	    "join time_documents d on d.id=r.document_id "+
+	    "join jobs j on d.job_id=j.id "+
+	    "join pay_periods p on p.id = d.pay_period_id "+
+	    "join hour_code_translates ht on ht.hour_code_id=b.hour_code_id "+
+	    "where b.hour_code_id in (34,43,44,45,46,50,71,78,79,112,113,114,115,127,128,172,173) "+
+	    "and j.salary_group_id in (2,4) ";
+	if(!start_date.isEmpty()){
+	    qq += " and  p.start_date >= ? ";
+	}
+	if(!end_date.isEmpty()){
+	    qq += " and  p.start_date <= ? ";
+	}
+	qq += " group by run_id,week_no,hour_code,factor ";
+	msg = findUsedCodes(start_date, end_date);
+	if(!msg.isEmpty()){
+	    return msg;
+	}
+	logger.debug(qq);
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = "Could not connect to DB ";
+	    return msg;
+	}							
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt2 = con.prepareStatement(qq2);
+	    int jj=1;
+	    if(!start_date.isEmpty()){
+		java.util.Date date_tmp = df.parse(start_date);
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    }
+	    if(!end_date.isEmpty()){
+		java.util.Date date_tmp = df.parse(end_date);
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    }	
+	    rs = pstmt.executeQuery();
+	    while(rs.next()){
+		int run_id = rs.getInt(1); 
+		int week_no = rs.getInt(2);
+		String code_id = rs.getString(3);
+		double factor = rs.getDouble(4);
+		double hours = rs.getDouble(5);
+		if(usedMap.containsKey(run_id)){
+		    Map<Integer,Double> map = usedMap.get(run_id);
+		    if(map.containsKey(week_no)){
+			double dd = map.get(week_no);
+			if(hours > dd){
+			    hours = hours - dd;
+			    dd = 0;
+			    map.remove(week_no);
+			    // if there is no other week
+			    // we will remove all together
+			    if(map.isEmpty()){ //
+				usedMap.remove(run_id);
+			    }
+			}
+			else if(hours < dd){
+			    dd = dd - hours;
+			}
+			map.put(week_no, dd);
+		    }
+		}
+		if(hours > 0){
+		    // save 
+		    pstmt2.setInt(1,run_id);
+		    pstmt2.setInt(2,week_no);
+		    pstmt2.setString(3,code_id);
+		    pstmt2.setDouble(4,hours);
+		    pstmt2.setDouble(5,factor);
+		    pstmt2.executeUpdate();
+		}
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
+	
+    }
+    // needed to fill the previous pay periods
+    // before the new feature is added
+    public String findUsedCodes(String start_date, String end_date){
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String msg="", str="";
+	
+	
+	String qq = "select b.run_id run_id,if(b.term_type = 'Week 1',1,2) week_no, sum(b.hours) "+
+	    "from tmwrp_blocks b "+
+	    "join tmwrp_runs r on r.id=b.run_id "+
+	    "join hour_codes c on c.id=b.hour_code_id "+
+	    "join time_documents d on d.id=r.document_id "+
+	    "join jobs j on d.job_id=j.id "+
+	    "join pay_periods p on p.id = d.pay_period_id "+
+	    "where c.type='Used' "+
+	    "and j.salary_group_id in (2,4) ";
+	if(!start_date.isEmpty()){
+	    qq += " and  p.start_date >= ? ";
+	}
+	if(!end_date.isEmpty()){
+	    qq += " and  p.start_date <= ? ";
+	}
+	qq += " group by run_id,week_no ";
+	//
+	usedMap = new TreeMap<>();
+	logger.debug(qq);
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = "Could not connect to DB ";
+	    return msg;
+	}							
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    int jj=1;
+	    if(!start_date.isEmpty()){
+		java.util.Date date_tmp = df.parse(start_date);
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    }
+	    if(!end_date.isEmpty()){
+		java.util.Date date_tmp = df.parse(end_date);
+		pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    }	
+	    rs = pstmt.executeQuery();
+	    int prev_run = 0, prev_week = 0;
+	    while(rs.next()){
+		int run_id = rs.getInt(1);
+		int week_no = rs.getInt(2);
+		double hrs = rs.getDouble(3);
+		if(usedMap.containsKey(run_id)){
+		    Map<Integer, Double> map = usedMap.get(run_id);
+		    map.put(week_no, hrs);
+		}
+		else{
+		    Map<Integer, Double> map = new TreeMap<>();
+		    map.put(week_no, hrs);
+		    usedMap.put(run_id, map);
+		}
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;	    
+
+    }
     //
     // for two weeks 
     //
@@ -329,6 +505,82 @@ public class TmwrpPrime{
        foreign key(run_id) references tmwrp_runs(id),
        foreign key(hour_code_id) references hour_codes(id),
        unique(run_id,week_no,hour_code_id)
-       )engine=InnoDB;    
+       )engine=InnoDB;
+
+       create table hour_code_translates(
+       hour_code_id int unsigned not null,
+       alt_hour_code_id int unsigned not null,
+       prime_factor double(5,2),
+       foreign key(hour_code_id) references hour_codes(id),
+       foreign key(alt_hour_code_id) references hour_codes(id)
+       )engine=InnoDB;
+
+       (34,34,'0.33'), // CE1.5
+       (43,43,0.33), //  OT1.5
+       (44,44,0.25), // OT2.0
+       (45,45,0.25),  // CE2.0
+       (46,46,0.25), // HCE2.0
+       (50,50,0.50), // HCE1.0
+       (71,71,0.50), // CE1.0
+       (78,78,0.50), // OT1.0
+       (79,79,0.33), // HCE1.5
+       
+       insert into hour_code_translates values
+       (34,34,'0.33'), 
+       (43,43,0.33), 
+       (44,44,0.25), 
+       (45,45,0.25), 
+       (46,46,0.25), 
+       (50,50,0.50), 
+       (71,71,0.50), 
+       (78,78,0.50), 
+       (79,79,0.33), 
+       (112,78,0.50),
+       (113,43,0.33),
+       (114,71,0.50),
+       (115,34,0.33),
+       (127,43,0.33),
+       (128,44,0.25),
+       (172,43,0.33),
+       (173,44,0.25)
+
+	ct10Set.add("114");
+	ct15Set.add("115");
+	ot15Set.add("127");	
+	ot20Set.add("128");
+	ot15Set.add("172");
+	ot20Set.add("173");	
+
+	// Earned
+       select b.run_id run_id,if(b.term_type = 'Week 1',1,2) week_no, ht.alt_hour_code_id hour_code,ht.prime_factor factor, sum(b.hours)
+       from tmwrp_blocks b
+       join tmwrp_runs r on r.id=b.run_id
+       join time_documents d on d.id=r.document_id
+       join jobs j on d.job_id=j.id
+       join pay_periods p on p.id = d.pay_period_id
+       join hour_code_translates ht on ht.hour_code_id=b.hour_code_id
+       where b.hour_code_id in (34,43,44,45,46,50,71,78,79,112,113,114,115,127,128,172,173)
+       and j.salary_group_id in (2,4)
+       and p.start_date > '2026-03-01'
+       group by run_id,week_no,hour_code,factor;
+       
+       // used
+       // b.hour_code_id in (2,4,6,8)
+       //
+       select b.run_id run_id,if(b.term_type = 'Week 1',1,2) week_no, sum(b.hours)
+       from tmwrp_blocks b
+       join tmwrp_runs r on r.id=b.run_id
+       join hour_codes c on c.id=b.hour_code_id
+       join time_documents d on d.id=r.document_id
+       join jobs j on d.job_id=j.id
+       join pay_periods p on p.id = d.pay_period_id
+       where c.type='Used'
+       and j.salary_group_id in (2,4)
+       and p.start_date > '2026-03-01'       
+       group by run_id,week_no;
+       
+       
+       
+       
     */
 }

@@ -24,7 +24,7 @@
 	    <li> You can run the report by Department</li>
 	    <li> For output type, we suggest that you run the 'Web page HTML' type first so that you get an idea about the numbers. If you are OK with these numbers then you choose the 'CSV' type.</li>
 	</ul>
-	<div class="width-one-half float-left">
+	<div>
 	    <s:if test="hasDepts()">
 		<div class="form-group">
 		    <label>Department</label>
@@ -54,7 +54,7 @@
 	    <div>
 	    <div class="form-group">
 		<label>Output Type:</label>
-		<s:radio name="report.type" value="%{report.type}" list="#{'html':'Web page HTML','csv':'CSV format'}" />
+		<s:radio name="outputType" value="%{outputType}" list="#{'html':'Web page HTML','csv':'CSV format'}" />
 	    </div>
 	    <div class="button-group">
 		<s:submit name="action" type="button" value="Submit" class="fn1-btn"/>
@@ -63,6 +63,19 @@
     </s:form>
 </div>
 <s:if test="action != ''">
+    <div>
+    <br />
+    <s:if test="hasAggregates()">
+	<table><caption>Prime Rates Report (Totals) </caption>
+	    <s:iterator var="row" value="aggregates">
+		<tr>
+		    <s:iterator var="one" value="#row">
+			<td><s:property /></td>
+		    </s:iterator>
+		</tr>
+	    </s:iterator>
+	</table>
+    </s:if>    
     <s:if test="hasAllEntries()">
 	<table><caption>Prime Rates Report</caption>
 	    <s:iterator var="row" value="allEntries">
@@ -74,6 +87,7 @@
 	    </s:iterator>
 	</table>
     </s:if>
+    </div>
 </s:if>
 <%@ include file="../footer.jsp" %>
 

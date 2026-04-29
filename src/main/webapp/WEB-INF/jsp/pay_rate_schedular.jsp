@@ -38,6 +38,10 @@
 
 			</div>
 			<div class="button-group">
+			    <s:submit name="action" value="Fill Previous Records" class="button"/>
+
+			</div>			
+			<div class="button-group">
 				<s:submit name="action" value="Import Now" class="button"/>
 
 			</div>
