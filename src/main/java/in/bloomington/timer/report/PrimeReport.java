@@ -185,9 +185,9 @@ public class PrimeReport{
 	headers.add("Employee");
 	headers.add("Earn Code");
 	headers.add("Hours");
-	headers.add("factor");
-	headers.add("week #");
-	headers.add("date ragne");
+	headers.add("Multiply Factor");
+	headers.add("Week #");
+	headers.add("Date Range");
 	headers.add("Pay Rate");
 	headers.add("Total Pay");
 	headers.add("Rate Date");

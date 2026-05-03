@@ -276,6 +276,5 @@ public class EmployeePayRate{
        foreign key(employee_id) references employees(id),
        index(rate_date)
        )engine=InnoDB;
-       alter table employee_pay_rates add index(rate_date);
      */
 }

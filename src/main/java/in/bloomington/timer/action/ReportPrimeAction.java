@@ -28,7 +28,7 @@ public class ReportPrimeAction extends TopAction{
     List<List<String>> aggregates = null;    
     PrimeReport report = null;
     List<Integer> years = null;
-    String outputType = "";
+    String outputType = "html";
     String reportTitle = "Prime Report ";
     public String execute(){
 	String ret = SUCCESS;
