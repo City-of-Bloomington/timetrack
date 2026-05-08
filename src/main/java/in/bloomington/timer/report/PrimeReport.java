@@ -185,8 +185,8 @@ public class PrimeReport{
 	headers.add("Employee");
 	headers.add("Earn Code");
 	headers.add("Hours");
+	headers.add("Week #");	
 	headers.add("Multiply Factor");
-	headers.add("Week #");
 	headers.add("Date Range");
 	headers.add("Pay Rate");
 	headers.add("Total Pay");
@@ -200,8 +200,8 @@ public class PrimeReport{
 	    return msg;
 	}
 	String qq = "select e.employee_number,concat_ws(' ',e.first_name,e.last_name) AS name, "+
-	    "c.name,t.hours,t.prime_factor,t.week_no, "+
-	    "if(week_no = 1,concat_ws('-',date_format(p.start_date,'%m/%d/%Y'),date_format(date_add(p.start_date,INTERVAL 6 DAY),'%m/%d/%Y')),concat_ws('-',date_format(date_add(p.start_date,INTERVAL 7 DAY),'%m/%d/%Y'),date_format(p.end_date,'%m/%d/%Y'))) date_range,w.pay_rate,w.pay_rate*t.hours*t.prime_factor as total_prime,"+
+	    "c.name,t.hours,t.week_no,t.prime_factor, "+
+	    "if(week_no = 1,concat_ws('-',date_format(p.start_date,'%m/%d/%Y'),date_format(date_add(p.start_date,INTERVAL 6 DAY),'%m/%d/%Y')),concat_ws('-',date_format(date_add(p.start_date,INTERVAL 7 DAY),'%m/%d/%Y'),date_format(p.end_date,'%m/%d/%Y'))) date_range,w.pay_rate,t.prime_factor*w.pay_rate*t.hours as total_prime,"+
 	    "date_format(w.rate_date,'%m/%d/%Y') "+
 	    "from tmwrp_primes t "+ 
 	    "join tmwrp_runs r on r.id=t.run_id "+ 

@@ -37,14 +37,17 @@ public class TmwrpWeekEntry{
 	
 	ct20Set.add("45");
 	ct20Set.add("46");
-	
+	//
+	// overtime	
         ot10Set.add("78");
 	ot10Set.add("112");
 	
         ot15Set.add("43");
 	ot15Set.add("113");
 	ot15Set.add("127");
+	ot15Set.add("170");
 	ot15Set.add("172");
+	ot15Set.add("177");	
 	
 	ot20Set.add("44");
 	ot20Set.add("128");
@@ -333,7 +336,7 @@ public class TmwrpWeekEntry{
 	    primeHash.put("ot_earn_15",prim_ot_earn_15);
 	}
 	if(prim_ot_earn_20 > 0){
-	    primeHash.put("ot_earn_10",prim_ot_earn_20);
+	  primeHash.put("ot_earn_10",prim_ot_earn_20);
 	}	
 	return primeHash;
     }    

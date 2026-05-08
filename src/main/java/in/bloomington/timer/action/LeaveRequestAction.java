@@ -50,6 +50,8 @@ public class LeaveRequestAction extends TopAction{
 	}
 	*/
 	if(action.startsWith("Submit Request")){
+	    if(leave == null)
+		getLeave();
 	    leave.setInitiated_by(user.getId());
 	    leave.setJob_id(job_id);
 	    leave.setEarn_code_ids(earn_code_ids);
