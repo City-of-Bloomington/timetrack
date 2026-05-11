@@ -49,6 +49,8 @@ public class TmwrpPrime{
 	hourCodes.put("ot_earn_15","43");// Overtime 1.5
 	hourCodes.put("ot_earn_20","44");// Overtime 2.0
     }
+    // earn codes to exlude from type = Other
+    // H1.0 5, BMP 3, JD 13, MP = 62, MVH HP 132, OJI 72,USCC Holiday 182,  
     
     String run_id="", hour_code_id="",
 	week_no="", // 1, 2	
@@ -374,9 +376,10 @@ public class TmwrpPrime{
 	    "join pay_periods p on p.id = d.pay_period_id "+
 	    "join jobs j on d.job_id=j.id and j.salary_group_id in (2,4) "+		    "join tmwrp_blocks b on b.run_id=r.id and b.term_type='Week 2' "+	
 	    "join hour_codes c on b.hour_code_id=c.id and c.type = 'Other' ";
-
-	String qw = "";
+	
+	String qw = " where c.id not in (3,5,13,62,72,132,182) ";
 	if(!start_date.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
 	    qw = " p.start_date >= ? ";
 	}
 	if(!end_date.isEmpty()){

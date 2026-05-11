@@ -7,6 +7,8 @@ package in.bloomington.timer.action;
 import java.io.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +39,7 @@ public class LocationAction extends TopAction{
 		addError(back);
 	    }
 	    else{
+		refreshIps();
 		addMessage("Saved Successfully");
 	    }
 	}				
@@ -46,6 +49,7 @@ public class LocationAction extends TopAction{
 		addError(back);
 	    }
 	    else{
+		refreshIps();		
 		addMessage("Saved Successfully");
 	    }
 	}
@@ -58,8 +62,18 @@ public class LocationAction extends TopAction{
 		id="";
 		location = new Location();
 		addMessage("Deleted Successfully");
+		refreshIps();
 	    }
-	}				
+	}
+	else if(action.startsWith("Refresh")){
+	    back = refreshIps();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		addMessage("Refreshed Successfully");
+	    }
+	}	
 	else{		
 	    getLocation();
 	    if(!id.isEmpty()){
@@ -70,6 +84,26 @@ public class LocationAction extends TopAction{
 	    }
 	}
 	return ret;
+    }
+    private String refreshIps(){
+	LocationList ial = new LocationList();
+	ial.hasIpAddress();
+	String back = ial.find();
+	if(back.isEmpty()){
+	    List<Location> ones = ial.getLocations();
+	    if(ones != null && ones.size() > 0){
+		ipSet = new HashSet<>();
+		locationHash = new Hashtable<>();
+		for(Location one:ones){
+		    String str = one.getIp_address();
+		    if(str != null){
+			ipSet.add(str);
+			locationHash.put(str, one.getId());
+		    }
+		}
+	    }
+	}
+	return back;
     }
     public Location getLocation(){
 	if(location == null){

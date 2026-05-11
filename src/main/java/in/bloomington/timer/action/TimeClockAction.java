@@ -26,10 +26,12 @@ public class TimeClockAction extends TopAction{
     static final long serialVersionUID = 4320L;	
     static Logger logger = LogManager.getLogger(TimeClockAction.class);
     DecimalFormat dFormat = new DecimalFormat("###.00");
+    /**
     static final long period_length = 5L; // minutes
     static Instant startTime = null;		
     static Set<String> ipSet = null;
     static Hashtable<String, String> locationHash = null;
+    */
     //
     TimeClock timeClock = null;
     String timeClocksTitle = "Time Clock Data";

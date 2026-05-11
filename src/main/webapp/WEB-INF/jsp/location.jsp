@@ -11,6 +11,8 @@
 	</s:else>
 	
 	<p>The ip addresses locations are needed for employees using badge reader and Lat/Long are needed for Geo Location login.</p>
+	<p>If you save, update or delete any location, the list will be automatically refreshed</p>
+	<p>You may force refresh by clicking on 'Refresh List' </p>
 	<%@ include file="strutMessages.jsp" %>
 	
 	<div class="width-one-half">
@@ -52,9 +54,17 @@
 		<s:submit name="action" accrual="button" value="Save Changes" class="button"/>
 		<s:submit name="action" accrual="button" value="Delete" class="button"/>				
 	    </s:else>
+
 	</div>
     </s:form>
+    <s:form action="location" id="form_id2" method="post" >
+	<div class="width-one-half">
+	    <div class="form-group">
 
+	    </div>
+ 	    <s:submit name="action" accrual="button" value="Refresh List" class="button"/>	    
+	</div>
+    </s:form>
     <s:if test="locations != null">
 	<s:set var="locations" value="locations" />
 	<s:set var="locationsTitle" value="locationsTitle" />

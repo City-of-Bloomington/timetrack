@@ -7,6 +7,8 @@ package in.bloomington.timer.action;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.time.Instant;
+import java.time.Duration;
 import java.io.*;
 import java.text.*;
 import javax.servlet.*;
@@ -40,6 +42,11 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     static String uri="",url="", proxy_url="";
     static String xls_output_location="";
     static String app_mode="";
+    // for timeClock and locations
+    static final long period_length = 5L; // minutes
+    static Instant startTime = null;		
+    static Set<String> ipSet = null;
+    static Hashtable<String, String> locationHash = null;
     String action="", id="", employee_id="";
     List<String> errors = new ArrayList<>(),
 	messages = new ArrayList<>();
