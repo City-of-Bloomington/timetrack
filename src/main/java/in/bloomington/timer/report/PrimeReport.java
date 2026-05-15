@@ -211,7 +211,7 @@ public class PrimeReport{
 	    "join hour_codes c on c.id=t.hour_code_id "+
 	    "join employee_pay_rates w on w.employee_id=e.id ";
 	String qw = "where w.rate_date = (select max(w2.rate_date) from employee_pay_rates w2 where "+
-	    "w2.rate_date < if(t.week_no = 1,date_add(p.start_date, INTERVAL 6 DAY),p.end_date) and w2.employee_id=e.id)";
+	    "w2.rate_date < if(t.week_no = 1,date_add(p.start_date, INTERVAL 6 DAY),p.end_date) and w2.employee_id=e.id) ";
 	if(!start_date.isEmpty()){
 	    qw += " and p.start_date >= ? ";
 	}

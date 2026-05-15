@@ -562,10 +562,10 @@ public class TimewarpProcess{
 	return week2.getAll();
     }
     public boolean hasWeek1Prime(){
-	return (week1.getTotalHours() + week1.getEarnedOvertimeAdded() - week1.getEarnedTimeUsed()) > 40.;
+	return week1.hasPrime(); 
     }
     public boolean hasWeek2Prime(){
-	return (week2.getTotalHours() + week2.getEarnedOvertimeAdded() - week2.getEarnedTimeUsed()) > 40.;
+	return week2.hasPrime();
     }    
     public Hashtable<String, Double> getWeek1PrimeHash(){
 	return week1.getPrimeHash();

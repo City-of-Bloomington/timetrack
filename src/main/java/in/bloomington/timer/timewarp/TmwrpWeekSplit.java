@@ -27,7 +27,7 @@ public class TmwrpWeekSplit{
 	earned_time = 0,
 	earned_time15 = 0f, earned_time20 =0, // for union
 	over_time15 = 0, over_time20 = 0,
-	unpaid_hrs = 0,
+    // unpaid_hrs = 0,
 	over_time25 = 0;
     double earn_time_sys = 0; // added by system
     double st_weekly_hrs = 40,
@@ -150,16 +150,16 @@ public class TmwrpWeekSplit{
 			non_reg_hrs += hours;
 		    }
 		    else if(hrCode.isUnpaid()){
-			unpaid_hrs += hours;
+			// unpaid_hrs += hours;
 		    }
 		    else if(hrCode.isEarned()){
 			earned_overtime_user_added += hours;
 			earned_time += hours; // added
-			unpaid_hrs += hours;
+			// unpaid_hrs += hours;
 		    }
 		    else if(hrCode.isOvertime()){
 			earned_overtime_user_added += hours;			
-			unpaid_hrs += hours;
+			// unpaid_hrs += hours;
 		    }
 		    else{ // other
 			non_reg_hrs += hours;
@@ -230,19 +230,19 @@ public class TmwrpWeekSplit{
 	    }											
 	}
 	else if(hrCode.isEarned()){
-	    unpaid_hrs += hours;
+	    // unpaid_hrs += hours;
 	    if(daily.containsKey(code_id)){
 		hours +=  daily.get(code_id);
 	    }											
 	}
 	else if(hrCode.isUnpaid()){
-	    unpaid_hrs += hours;
+	    // unpaid_hrs += hours;
 	    if(daily.containsKey(code_id)){
 		hours +=  daily.get(code_id);
 	    }											
 	}				
 	else if(hrCode.isOvertime()){
-	    unpaid_hrs += hours;
+	    // unpaid_hrs += hours;
 	    if(daily.containsKey(code_id)){
 		hours +=  daily.get(code_id);
 	    }											
@@ -462,9 +462,11 @@ public class TmwrpWeekSplit{
     public double getEarnedTime(){
 	return earned_time;
     }
+    /**
     public double getUnpaidHrs(){
 	return unpaid_hrs;
-    }		
+    }
+    */
     public double getEarnedTimeUsed(){
 	return earn_time_used;
     }

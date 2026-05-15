@@ -36,7 +36,11 @@ let clearInput = () => {
   }
 }
 clearInput();
-
+window.onload = function() {
+    if(document.getElementById("emp_id") !== undefined){
+	document.getElementById("emp_id").focus();
+    }
+};
 if(pickJobForm){
   let submitButton   = document.getElementById('form_id_action');
   let radios         = document.querySelectorAll('input[type=radio]');

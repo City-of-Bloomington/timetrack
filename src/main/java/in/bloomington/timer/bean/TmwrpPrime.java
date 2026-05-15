@@ -222,9 +222,10 @@ public class TmwrpPrime{
 	return msg;
     }
     /// need revist TODO
-    public String doSaveBolk(Hashtable<String, Double> hash,
+    public String doSaveBolk(Double grs_reg_total,
+			     Hashtable<String, Double> hash,
 			     Double weeklyEarnTimeUsed,
-			     String week_no){ 
+			     Integer week_no){ 
 	//
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -235,17 +236,22 @@ public class TmwrpPrime{
 	    msg = " timewarp run id not set ";
 	    return msg;
 	}
-	if(week_no.isEmpty()){
+	if(week_no == null){
 	    msg = " week nubmer not set ";
 	    return msg;
 	}	
 	if(hash == null || hash.isEmpty()){
 	    return msg;
 	}
+
+	double reg_total = grs_reg_total;
 	double earned_time_used = weeklyEarnTimeUsed;
+	System.err.println(" week  "+week_no+" reg "+reg_total+ " used "+earned_time_used);
 	if(earned_time_used > 0){
-	    System.err.println("weekly earned time used deduced "+earned_time_used); 
+	    System.err.println("weekly earned time used reduced "+earned_time_used);
+	    reg_total = reg_total - earned_time_used; 
 	}
+	System.err.println(" week  "+week_no+" reg "+reg_total);	
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
 	if(con == null){
@@ -257,37 +263,44 @@ public class TmwrpPrime{
 	    pstmt = con.prepareStatement(qq);
 	    for(String key:keys){
 		double dd = hash.get(key);
-		double factor = 0;
+		double factor = 0.5; // for everybody
 		String code_id = "";
+		System.err.println(" key "+key+" "+dd);
 		if(dd > 0){
-		    if(earned_time_used > 0){
-			if(dd <= earned_time_used){
-			    earned_time_used = earned_time_used - dd;
-			    dd = 0;
-			    continue;
-			}
-			else if(dd > earned_time_used){
-			    dd = dd - earned_time_used;
-			    earned_time_used = 0;
-			}
-		    }
-		    if(primeFactors.containsKey(key)){
-			factor = primeFactors.get(key);
-		    }
 		    if(hourCodes.containsKey(key)){
 			code_id = hourCodes.get(key);
 		    }
-		    if(factor == 0 || code_id.isEmpty()){
-			msg ="factor "+factor+" Earn Code id "+code_id;
+		    if(code_id.isEmpty()){
+			msg =" Earn Code id not found" ;
 			logger.error(msg);
 			continue;
+		    }		    
+		    if(reg_total >= 40.){
+			pstmt.setString(1, run_id);
+			pstmt.setInt(2, week_no);
+			pstmt.setString(3, code_id);
+			pstmt.setDouble(4, dd); // hours
+			pstmt.setDouble(5, factor); 
+			pstmt.executeUpdate();
 		    }
-		    pstmt.setString(1, run_id);
-		    pstmt.setString(2, week_no);
-		    pstmt.setString(3, code_id);
-		    pstmt.setDouble(4, dd); // hours
-		    pstmt.setDouble(5, factor); // multiplier
-		    pstmt.executeUpdate();
+		    else { // < or = 
+			if(reg_total+dd <= 40.){
+			    reg_total += dd;
+			}
+			else{
+			    dd = dd - (40 - reg_total);
+			    reg_total = 40;
+			    System.err.println(" dd "+dd);
+			    if(dd > 0){
+				pstmt.setString(1, run_id);
+				pstmt.setInt(2, week_no);
+				pstmt.setString(3, code_id);
+				pstmt.setDouble(4, dd); // hours
+				pstmt.setDouble(5, factor); 
+				pstmt.executeUpdate();
+			    }
+			}
+		    }
 		}
 	    }
 	}
@@ -359,6 +372,12 @@ public class TmwrpPrime{
 	}
 	return msg;	    
     }
+    /**
+       all hour codes of type Other that are excluded from
+       the se (3,5,13,62,72,109,132,162,164,182);
+       select id,name,description from hour_codes c where c.type='Other' and c.id not in
+        (3,5,13,62,72,109,132,162,164,182);
+     */
     public String findTotalNonReg(String start_date, String end_date){
 	Connection con = null;
 	PreparedStatement pstmt = null, pstmt2=null;
@@ -377,19 +396,17 @@ public class TmwrpPrime{
 	    "join jobs j on d.job_id=j.id and j.salary_group_id in (2,4) "+		    "join tmwrp_blocks b on b.run_id=r.id and b.term_type='Week 2' "+	
 	    "join hour_codes c on b.hour_code_id=c.id and c.type = 'Other' ";
 	
-	String qw = " where c.id not in (3,5,13,62,72,132,182) ";
+	String qw = " where c.id not in (3,5,13,62,72,132,162,164,182) ";
 	if(!start_date.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
-	    qw = " p.start_date >= ? ";
+	    qw += " p.start_date >= ? ";
 	}
 	if(!end_date.isEmpty()){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " p.start_date <= ? ";
 	}
-	if(!qw.isEmpty()){
-	    qq = qq + " where "+qw;
-	    qq2 = qq2+" where "+qw;
-	}
+	qq = qq + " "+qw;
+	qq2 = qq2+" "+qw;
 	qq += " group by run_id ";
 	qq2 += " group by run_id ";
 	logger.debug(qq);
@@ -603,9 +620,23 @@ public class TmwrpPrime{
 		    */
 		    if(total_reg + hours > 40){
 			hours = total_reg + hours - 40;
+			total_reg = 40.;
+			if(week_no == 1){
+			    week1_reg.put(run_id, total_reg);
+			}
+			else{
+			    week2_reg.put(run_id, total_reg);
+			}			
 		    }
-		    else {
+		    else { // <= 40 fill reg till 40
+			total_reg = total_reg + hours;
 			hours = 0;
+			if(week_no == 1){
+			    week1_reg.put(run_id, total_reg);
+			}
+			else{
+			    week2_reg.put(run_id, total_reg);
+			}
 		    }
 		    /**
 		    if(run_id == 162909){
