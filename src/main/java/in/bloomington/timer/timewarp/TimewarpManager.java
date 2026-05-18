@@ -328,12 +328,10 @@ public class TimewarpManager{
 	   salaryGroup.isUnion()){
 	    TmwrpPrime prime = new TmwrpPrime(run_id);
 	    if(process.hasWeek1Prime()){
-		System.err.println(" week1 has prime");
-		back = prime.doSaveBolk(week1_grs_reg_hrs, process.getWeek1PrimeHash(),process.getWeek1EarnedTimeUsed() ,1);
+		back = prime.doSaveBolk(week1_grs_reg_hrs, process.getWeek1EarnedTimeUsed() ,1);
 	    }
 	    if(process.hasWeek2Prime()){
-		System.err.println(" week2 has prime");
-		back = prime.doSaveBolk(week2_grs_reg_hrs, process.getWeek2PrimeHash(),process.getWeek2EarnedTimeUsed(), 2);
+		back = prime.doSaveBolk(week2_grs_reg_hrs, process.getWeek2EarnedTimeUsed(), 2);
 		
 	    }
 	}

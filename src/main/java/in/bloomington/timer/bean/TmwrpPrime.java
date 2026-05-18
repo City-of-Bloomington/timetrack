@@ -221,17 +221,24 @@ public class TmwrpPrime{
 	}
 	return msg;
     }
-    /// need revist TODO
+    /// 
     public String doSaveBolk(Double grs_reg_total,
-			     Hashtable<String, Double> hash,
 			     Double weeklyEarnTimeUsed,
 			     Integer week_no){ 
 	//
 	Connection con = null;
-	PreparedStatement pstmt = null;
+	PreparedStatement pstmt = null, pstmt2=null;
 	ResultSet rs = null;
 	String msg="", str="";
-	String qq = "replace into tmwrp_primes values(?,?,?,?,?) ";
+	Hashtable<String, Double> hash = null;
+	String qq = "select ht.alt_hour_code_id hour_code,ht.prime_factor factor, sum(b.hours) hours  "+
+	    "from tmwrp_blocks b "+
+	    "join hour_codes c on b.hour_code_id=c.id "+
+	    "join hour_code_translates ht on ht.hour_code_id=b.hour_code_id "+
+	    "where c.type in ('Earned','Overtime') "+
+	    "and b.run_id=? and b.term_type=? "+
+	    "group by hour_code,factor ";	
+	String qq2 = "replace into tmwrp_primes values(?,?,?,?,?) ";
 	if(run_id.isEmpty()){
 	    msg = " timewarp run id not set ";
 	    return msg;
@@ -240,64 +247,69 @@ public class TmwrpPrime{
 	    msg = " week nubmer not set ";
 	    return msg;
 	}	
-	if(hash == null || hash.isEmpty()){
-	    return msg;
-	}
-
 	double reg_total = grs_reg_total;
-	double earned_time_used = weeklyEarnTimeUsed;
-	System.err.println(" week  "+week_no+" reg "+reg_total+ " used "+earned_time_used);
+	double earned_time_used = weeklyEarnTimeUsed;	
 	if(earned_time_used > 0){
-	    System.err.println("weekly earned time used reduced "+earned_time_used);
 	    reg_total = reg_total - earned_time_used; 
 	}
-	System.err.println(" week  "+week_no+" reg "+reg_total);	
 	logger.debug(qq);
 	con = UnoConnect.getConnection();
 	if(con == null){
 	    msg = "Could not connect to DB ";
 	    return msg;
 	}
-	Set<String> keys = hash.keySet();
 	try{
 	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, run_id);
+	    if(week_no == 1){
+		pstmt.setString(2, "Week 1");
+	    }
+	    else{
+		pstmt.setString(2, "Week 2");
+	    }
+	    rs = pstmt.executeQuery();
+	    while(rs.next()){
+		if(hash == null) hash = new Hashtable<>();
+		str = rs.getString(1);
+		double dd = rs.getDouble(3);
+		if(str != null && dd > 0){
+		    hash.put(str, dd);
+		}
+	    }
+	    if(hash == null || hash.size() == 0){
+		return msg;
+	    }
+	    Set<String> keys = hash.keySet();
+	    pstmt2 = con.prepareStatement(qq2);
 	    for(String key:keys){
 		double dd = hash.get(key);
 		double factor = 0.5; // for everybody
 		String code_id = "";
-		System.err.println(" key "+key+" "+dd);
 		if(dd > 0){
-		    if(hourCodes.containsKey(key)){
-			code_id = hourCodes.get(key);
-		    }
-		    if(code_id.isEmpty()){
-			msg =" Earn Code id not found" ;
-			logger.error(msg);
-			continue;
-		    }		    
+		    code_id = key;
 		    if(reg_total >= 40.){
-			pstmt.setString(1, run_id);
-			pstmt.setInt(2, week_no);
-			pstmt.setString(3, code_id);
-			pstmt.setDouble(4, dd); // hours
-			pstmt.setDouble(5, factor); 
-			pstmt.executeUpdate();
+			pstmt2.setString(1, run_id);
+			pstmt2.setInt(2, week_no);
+			pstmt2.setString(3, code_id);
+			pstmt2.setDouble(4, dd); // hours
+			pstmt2.setDouble(5, factor); 
+			pstmt2.executeUpdate();
 		    }
 		    else { // < or = 
 			if(reg_total+dd <= 40.){
 			    reg_total += dd;
+			    dd = 0;
 			}
 			else{
-			    dd = dd - (40 - reg_total);
+			    dd = dd + reg_total - 40.;
 			    reg_total = 40;
-			    System.err.println(" dd "+dd);
 			    if(dd > 0){
-				pstmt.setString(1, run_id);
-				pstmt.setInt(2, week_no);
-				pstmt.setString(3, code_id);
-				pstmt.setDouble(4, dd); // hours
-				pstmt.setDouble(5, factor); 
-				pstmt.executeUpdate();
+				pstmt2.setString(1, run_id);
+				pstmt2.setInt(2, week_no);
+				pstmt2.setString(3, code_id);
+				pstmt2.setDouble(4, dd); // hours
+				pstmt2.setDouble(5, factor); 
+				pstmt2.executeUpdate();
 			    }
 			}
 		    }
@@ -309,7 +321,7 @@ public class TmwrpPrime{
 	    logger.error(msg+":"+qq);
 	}
 	finally{
-	    Helper.databaseDisconnect(pstmt, rs);
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
 	    UnoConnect.databaseDisconnect(con);
 	}
 	return msg;
