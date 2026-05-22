@@ -327,6 +327,7 @@ public class TimewarpManager{
 	if(salaryGroup.isNonExempt() ||
 	   salaryGroup.isUnion()){
 	    TmwrpPrime prime = new TmwrpPrime(run_id);
+	    back = prime.doDelete();	    
 	    if(process.hasWeek1Prime()){
 		back = prime.doSaveBolk(week1_grs_reg_hrs, process.getWeek1EarnedTimeUsed() ,1);
 	    }

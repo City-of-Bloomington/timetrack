@@ -1217,11 +1217,11 @@ insert into emp_terminations values(0,?,?,?,?,
 	}
 	if(employment_type.isEmpty())
 	    getEmployment_type();
+	if(full_name.isEmpty()){
+	    getFull_name();
+	}	
 	try{
 	    pstmt.setString(1, employee_id);
-	    if(full_name.isEmpty()){
-		getFull_name();
-	    }
 	    pstmt.setString(2, full_name);
 	    pstmt.setString(3, employment_type);
 	    pstmt.setDate(4, new java.sql.Date(dateFormat.parse(last_pay_period_date).getTime()));
@@ -1316,25 +1316,19 @@ insert into emp_terminations values(0,?,?,?,?,
 	    if(submitted_date.isEmpty())
 		submitted_date = Helper.getToday();
 	    pstmt.setDate(29, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
-	    jj=30;
-	    if(!id.isEmpty()){
-		pstmt.setString(jj, process_status);
-		jj++;
-	    }
+
 	    if(termination_type.isEmpty()){
-		pstmt.setNull(jj, Types.VARCHAR);
+		pstmt.setNull(30, Types.VARCHAR);
 	    }
 	    else{
-		pstmt.setString(jj,termination_type);
+		pstmt.setString(30,termination_type);
 	    }
-	    jj++;
 	    if(cdl_status.isEmpty()){
-		pstmt.setNull(jj, Types.VARCHAR);
+		pstmt.setNull(31, Types.VARCHAR);
 	    }
 	    else{
-		pstmt.setString(jj, cdl_status);
+		pstmt.setString(31, cdl_status);
 	    }
-	    
 	}catch(Exception ex){
 	    back += ex;
 	}
@@ -1389,6 +1383,47 @@ process_status=?,
 termination_type=?,
 cdl_status=?
 where id = ?
+
+ No value specified for parameter 32:update emp_terminations
+ set employee_id=?,
+ full_name=?,
+ employment_type=?,
+ last_pay_period_date=?,
+ emp_address=?,
+ 
+ emp_city=?,
+ emp_state=?,
+ emp_zip=?,
+ emp_phone=?,
+ emp_alt_phone=?,
+ 
+ date_of_birth=?,
+ personal_email=?,
+ email=?,
+ email_account_action=?,
+ forward_emails=?,
+ 
+ forward_days_cnt=?,
+ drive_action=?,
+ drive_to_person_email=?,
+ drive_to_shared_emails=?,
+ calendar_action=?,
+ 
+ calendar_to_email=?,
+ zoom_action=?,
+ zoom_to_email=?,
+ comp_time=?,
+ vac_time=?,
+ 
+ pto=?,
+ remarks=?,
+ submitted_by_id=?,
+ submitted_date=?,
+ process_status=?,
+ 
+ termination_type=?,
+ cdl_status=?
+ where id = ?
 
 
      */
@@ -1445,6 +1480,10 @@ where id = ?
 	    back = "Could not connect to DB ";
 	    return back;
 	}
+	if(id.isEmpty()){
+	    back = "record id not found ";
+	    return back;
+	}	
 	if(submitted_by_id.isEmpty()){
 	    back = "submitted by not set ";
 	    return back;
@@ -1452,14 +1491,127 @@ where id = ?
 	if(last_pay_period_date.isEmpty()){
 	    back = "last_pay_period_date not set";
 	    return back;
+	}
+	if(employee_id.isEmpty()){
+	    getEmployee();
+	}
+	if(full_name.isEmpty()){
+	    getFull_name();
 	}	
+	if(employment_type.isEmpty())
+	    getEmployment_type();
 	try{
 	    pstmt = con.prepareStatement(qq);
-	    back = setParams(pstmt);
-	    if(back.isEmpty()){
-		pstmt.setString(33, id);
-		pstmt.executeUpdate();
+	    pstmt.setString(1, employee_id);
+	    pstmt.setString(2, full_name);
+	    pstmt.setString(3, employment_type);
+	    pstmt.setDate(4, new java.sql.Date(dateFormat.parse(last_pay_period_date).getTime()));
+	    if(emp_address.isEmpty())
+		pstmt.setNull(5, Types.VARCHAR);
+	    else	    	    
+		pstmt.setString(5, emp_address);
+	    if(emp_city.isEmpty())
+		pstmt.setNull(6, Types.VARCHAR);
+	    else	    
+		pstmt.setString(6, emp_city);
+	    if(emp_state.isEmpty())
+		pstmt.setNull(7, Types.VARCHAR);
+	    else
+		pstmt.setString(7, emp_state);
+	    if(emp_zip.isEmpty())
+		pstmt.setNull(8, Types.VARCHAR);
+	    else	    
+		pstmt.setString(8, emp_zip);
+	    if(emp_phone.isEmpty())
+		pstmt.setNull(9, Types.VARCHAR);
+	    else
+		pstmt.setString(9, emp_phone);
+	    if(emp_alt_phone.isEmpty())
+		pstmt.setNull(10, Types.VARCHAR);
+	    else
+		pstmt.setString(10, emp_alt_phone);
+	    if(date_of_birth.isEmpty()){
+		pstmt.setNull(11, Types.DATE);
 	    }
+	    else
+		pstmt.setDate(11, new java.sql.Date(dateFormat.parse(date_of_birth).getTime()));	    
+	    if(personal_email.isEmpty())
+		pstmt.setNull(12, Types.VARCHAR);
+	    else	    
+		pstmt.setString(12, personal_email);
+	    if(email.isEmpty())
+		pstmt.setNull(13, Types.VARCHAR);
+	    else
+		pstmt.setString(13, email);
+	    if(email_account_action.isEmpty())
+		pstmt.setNull(14, Types.VARCHAR);
+	    else
+		pstmt.setString(14, email_account_action);
+	    if(forward_emails.isEmpty())
+		pstmt.setNull(15, Types.VARCHAR);
+	    else
+		pstmt.setString(15, forward_emails);
+	    if(forward_days_cnt.isEmpty())
+		pstmt.setNull(16, Types.INTEGER);
+	    else
+		pstmt.setString(16, forward_days_cnt);
+	    if(drive_action.isEmpty())
+		pstmt.setNull(17, Types.VARCHAR);
+	    else	    
+		pstmt.setString(17, drive_action);
+	    if(drive_to_person_email.isEmpty())
+		pstmt.setNull(18, Types.VARCHAR);
+	    else
+		pstmt.setString(18, drive_to_person_email);
+	    if(drive_to_shared_emails.isEmpty())
+		pstmt.setNull(19, Types.VARCHAR);
+	    else	    
+		pstmt.setString(19, drive_to_shared_emails);
+	    if(calendar_action.isEmpty())
+		pstmt.setNull(20, Types.VARCHAR);
+	    else	    
+		pstmt.setString(20, calendar_action);
+	    if(calendar_to_email.isEmpty())
+		pstmt.setNull(21, Types.VARCHAR);
+	    else
+		pstmt.setString(21, calendar_to_email);
+	    if(zoom_action.isEmpty())
+		pstmt.setNull(22, Types.VARCHAR);
+	    else
+		pstmt.setString(22, zoom_action);
+	    if(zoom_to_email.isEmpty())
+		pstmt.setNull(23, Types.VARCHAR);
+	    else	    
+		pstmt.setString(23, zoom_to_email);
+	    pstmt.setDouble(24, comp_time);
+	    pstmt.setDouble(25, vac_time);
+	    pstmt.setDouble(26, pto);
+	    if(remarks.isEmpty())
+		pstmt.setNull(27, Types.VARCHAR);
+	    else	    
+		pstmt.setString(27, remarks);
+	    if(submitted_by_id.isEmpty())
+		pstmt.setNull(28, Types.VARCHAR);
+	    else
+		pstmt.setString(28, submitted_by_id);
+	    if(submitted_date.isEmpty())
+		submitted_date = Helper.getToday();
+	    pstmt.setDate(29, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
+	    pstmt.setString(30, process_status);
+	    if(termination_type.isEmpty()){
+		pstmt.setNull(31, Types.VARCHAR);
+	    }
+	    else{
+		pstmt.setString(31,termination_type);
+	    }
+	    if(cdl_status.isEmpty()){
+		pstmt.setNull(32, Types.VARCHAR);
+	    }
+	    else{
+		pstmt.setString(32, cdl_status);
+	    }
+	    pstmt.setString(33, id);
+	    pstmt.executeUpdate();
 	    if(badge_returned != null){
 		pstmt2 = con.prepareStatement(qq2);
 		for(String str:badge_returned){

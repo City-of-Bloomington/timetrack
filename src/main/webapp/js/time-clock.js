@@ -23,7 +23,6 @@ function timeUpdate() {
 }
 setInterval(function() { timeUpdate(); }, 1000);
 timeUpdate();
-
 let clearInput = () => {
   let inputElement = document.getElementById("emp_id_code");
   if(inputElement != null || inputElement != undefined) {
@@ -37,8 +36,8 @@ let clearInput = () => {
 }
 clearInput();
 window.onload = function() {
-    if(document.getElementById("emp_id") !== undefined){
-	document.getElementById("emp_id").focus();
+    if(document.getElementById("emp_id_code") !== undefined){
+	document.getElementById("emp_id_code").focus();
     }
 };
 if(pickJobForm){
@@ -67,5 +66,5 @@ if(pickJobForm){
     } else {
       submitButton.click();
     }
-  }, 10000);
+  }, 5000);
 }

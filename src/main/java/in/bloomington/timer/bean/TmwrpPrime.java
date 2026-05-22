@@ -56,7 +56,7 @@ public class TmwrpPrime{
 	week_no="", // 1, 2	
 	prime_code="";
 
-    double hours=0, prime_factor=0; 
+    double hours=0, prime_factor=0.5; 
     //
 
 		
@@ -183,11 +183,8 @@ public class TmwrpPrime{
 	    msg = " prime_code not set ";
 	    return msg;
 	}
-	double factor = 0;
+	double factor = 0.5;
 	String code_id = "";
-	if(primeFactors.containsKey(prime_code)){
-	    factor = primeFactors.get(prime_code);
-	}
 	if(hourCodes.containsKey(prime_code)){
 	    code_id = hourCodes.get(prime_code);
 	}
@@ -231,11 +228,11 @@ public class TmwrpPrime{
 	ResultSet rs = null;
 	String msg="", str="";
 	Hashtable<String, Double> hash = null;
-	String qq = "select ht.alt_hour_code_id hour_code,ht.prime_factor factor, sum(b.hours) hours  "+
+	String qq = "select if(ht.alt_hour_code_id is NULL,b.hour_code_id,ht.alt_hour_code_id) hour_code,0.5 factor, sum(b.hours) hours  "+
 	    "from tmwrp_blocks b "+
 	    "join hour_codes c on b.hour_code_id=c.id "+
-	    "join hour_code_translates ht on ht.hour_code_id=b.hour_code_id "+
-	    "where c.type in ('Earned','Overtime') "+
+	    "left join hour_code_translates ht on ht.hour_code_id=b.hour_code_id "+
+	    "where c.type in ('Earned','Overtime','Call Out') "+
 	    "and b.run_id=? and b.term_type=? "+
 	    "group by hour_code,factor ";	
 	String qq2 = "replace into tmwrp_primes values(?,?,?,?,?) ";
@@ -283,7 +280,7 @@ public class TmwrpPrime{
 	    pstmt2 = con.prepareStatement(qq2);
 	    for(String key:keys){
 		double dd = hash.get(key);
-		double factor = 0.5; // for everybody
+		double factor = 0.5; // for every one
 		String code_id = "";
 		if(dd > 0){
 		    code_id = key;
@@ -486,15 +483,15 @@ public class TmwrpPrime{
 	//
 	// (34,43,44,45,46,50,71,78,79,112,113,114,115,127,128,170,172,173,177) "+
 	String qq2 = "replace into tmwrp_primes values(?,?,?,?,?) ";
-	String qq = "select b.run_id run_id,if(b.term_type = 'Week 1',1,2) week_no, ht.alt_hour_code_id hour_code,ht.prime_factor factor, sum(b.hours) hours  "+
+	String qq = "select b.run_id run_id,if(b.term_type = 'Week 1',1,2) week_no, if(ht.alt_hour_code_id IS NOT NULL,ht.alt_hour_code_id, b.hour_code_id) hour_code,0.5 factor, sum(b.hours) hours  "+
 	    "from tmwrp_blocks b "+
 	    "join hour_codes c on c.id=b.hour_code_id "+
 	    "join tmwrp_runs r on r.id=b.run_id "+
 	    "join time_documents d on d.id=r.document_id "+
 	    "join jobs j on d.job_id=j.id "+
 	    "join pay_periods p on p.id = d.pay_period_id "+
-	    "join hour_code_translates ht on ht.hour_code_id=b.hour_code_id "+
-	    "where c.type in ('Earned','Overtime') "+
+	    "left join hour_code_translates ht on ht.hour_code_id=b.hour_code_id "+
+	    "where c.type in ('Earned','Overtime','Call Out') "+
 	    "and j.salary_group_id in (2,4) ";
 	if(!start_date.isEmpty()){
 	    qq += " and  p.start_date >= ? ";
@@ -533,103 +530,42 @@ public class TmwrpPrime{
 		int run_id = rs.getInt(1); 
 		int week_no = rs.getInt(2);
 		String code_id = rs.getString(3);
-		double factor = rs.getDouble(4);
+		double factor = 0.5;// rs.getDouble(4);
 		double hours = rs.getDouble(5);
 		// String emp_id = rs.getString(6);
 		if(week_no == 1){
 		    if(week1_reg.containsKey(run_id)){
 			total_reg = week1_reg.get(run_id);
-			/**
-			if(run_id == 162909){
-			    System.err.println("w1 total reg "+total_reg+" "+hours);
-			}
-			*/
 		    }
 		    if(week1_non_reg.containsKey(run_id)){
 			total_reg += week1_non_reg.get(run_id);
-			/**
-			if(run_id == 162909){
-			    System.err.println("w1 non-reg "+week1_non_reg.get(run_id));
-			    System.err.println("w1 total reg "+total_reg+" "+hours);
-			}
-			*/
 		    }
 		    if(week1_used.containsKey(run_id)){
-			/**
-			if(run_id == 162909){
-			    System.err.println("w1 used "+week1_used.get(run_id));
-			    System.err.println("w1 total reg "+total_reg);
-			    System.err.println(" hrs "+hours);
-
-			}
-			*/
 			if(total_reg > week1_used.get(run_id)){
 			    total_reg = total_reg - week1_used.get(run_id);
 			}
 			else{
 			    total_reg = 0;
 			}
-			/**
-			if(run_id == 162909){
-			    System.err.println("w1 total reg "+total_reg);
-			    System.err.println(" hrs "+hours);
-			}
-			*/
 		    }
 		}
 		else {
 		    if(week2_reg.containsKey(run_id)){
 			total_reg = week2_reg.get(run_id);
-			/**
-			if(run_id == 162909){
-			    System.err.println("w2 total reg "+total_reg);
-			    System.err.println(" hrs "+hours);
-			}
-			*/
 		    }
 		    if(week2_non_reg.containsKey(run_id)){
 			total_reg += week2_non_reg.get(run_id);
-			/**
-			if(run_id == 162909){
-			    System.err.println("w2 non reg "+ week2_non_reg.get(run_id));
-			    System.err.println("w2 total reg "+total_reg);
-			    System.err.println(" hrs "+hours);
-			}
-			*/
 		    }
 		    if(week2_used.containsKey(run_id)){
-			/**
-			if(run_id == 162909){			
-			    System.err.println("w2 used "+ week2_used.get(run_id));
-			}
-			*/
 			if(total_reg > week2_used.get(run_id)){
 			    total_reg = total_reg - week2_used.get(run_id);
 			}
 			else{
 			    total_reg = 0;
 			}
-			/**
-			if(run_id == 162909){
-			    System.err.println("w2 total reg "+total_reg);
-			    System.err.println(" hrs "+hours);
-			}
-			*/
 		    }		    
 		}
-		/**
-		if(run_id == 162909){
-		    System.err.println("after 1,2 total reg "+total_reg);
-		    System.err.println(" hrs "+hours);
-		}
-		*/
 		if(total_reg < 40.){
-		    /**
-		    if(run_id == 162909){
-			System.err.println("after < 40 total reg "+total_reg);
-			System.err.println(" hrs "+hours);
-		    }
-		    */
 		    if(total_reg + hours > 40){
 			hours = total_reg + hours - 40;
 			total_reg = 40.;
@@ -650,11 +586,6 @@ public class TmwrpPrime{
 			    week2_reg.put(run_id, total_reg);
 			}
 		    }
-		    /**
-		    if(run_id == 162909){
-			System.err.println(" after change hrs "+hours);
-		    }
-		    */
 
 		}
 		else { // >= 40
@@ -801,12 +732,9 @@ public class TmwrpPrime{
        foreign key(hour_code_id) references hour_codes(id),
        foreign key(alt_hour_code_id) references hour_codes(id)
        )engine=InnoDB;
-
-
        
        insert into hour_code_translates select id,id,0.5 from hour_codes
-       where type in ('Earned','Overtime');
-
+       where type in ('Earned','Overtime','Call Out');
        update hour_code_translates set alt_hour_code_id=78 where hour_code_id=112;
        update hour_code_translates set alt_hour_code_id=43 where hour_code_id=113;
        update hour_code_translates set alt_hour_code_id=71 where hour_code_id=114;

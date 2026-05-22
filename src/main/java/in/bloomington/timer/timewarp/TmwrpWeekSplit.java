@@ -38,6 +38,7 @@ public class TmwrpWeekSplit{
     double daily_hrs = 8; // except Sanitaiton 10, delman 12
     double prof_hrs = 0, net_reg_hrs= 0;
     int regular_mints = 0, total_mints=0;
+    double call_out_hrs = 0; //needed for overtime prime
     boolean consolidated = false;
     Department department = null;
     // reg
@@ -148,6 +149,7 @@ public class TmwrpWeekSplit{
 		    }
 		    else if(hrCode.isCallOut()){
 			non_reg_hrs += hours;
+			call_out_hrs += hours;
 		    }
 		    else if(hrCode.isUnpaid()){
 			// unpaid_hrs += hours;
@@ -219,6 +221,7 @@ public class TmwrpWeekSplit{
 	//
 	if(hrCode.isCallOut()){ // call out (if < 3 ==> 3)
 	    non_reg_hrs += hours;// hours are taken care off in timeblock
+	    call_out_hrs += hours;
 	    if(daily.containsKey(code_id)){
 		hours +=  daily.get(code_id);
 	    }
@@ -293,7 +296,9 @@ public class TmwrpWeekSplit{
     public boolean hasMonetary(){
 	return monetaryHash != null && !monetaryHash.isEmpty();
     }
-		
+    public Double getCallOutHrs(){
+	return call_out_hrs;
+    }
     //
     // we need this function to adjust regular time used (in HAND)
     // based on difference between reg hrs and net reg hrs

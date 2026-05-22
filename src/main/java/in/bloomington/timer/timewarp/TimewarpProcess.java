@@ -566,12 +566,6 @@ public class TimewarpProcess{
     }
     public boolean hasWeek2Prime(){
 	return week2.hasPrime();
-    }    
-    public Hashtable<String, Double> getWeek1PrimeHash(){
-	return week1.getPrimeHash();
-    }
-    public Hashtable<String, Double> getWeek2PrimeHash(){
-	return week2.getPrimeHash();
     }
     public Double getWeek1EarnedTimeUsed(){
 	return week1.getEarnedTimeUsed();

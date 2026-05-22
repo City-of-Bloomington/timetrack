@@ -95,6 +95,7 @@ public class LeaveReviewAction extends TopAction{
 	    if(leaves == null || leaves.size() == 0){
 		addMessage("There are no leave requests"); 
 	    }
+	    findRevEmployees();
 	}
 	else if(!leave_id.isEmpty()){
 	    getReview();
@@ -105,6 +106,7 @@ public class LeaveReviewAction extends TopAction{
 	    if(leaves == null || leaves.size() == 0){
 		addMessage("There are no leave requests"); 
 	    }
+	    findRevEmployees();
 	}
 	return ret;
     }
@@ -385,7 +387,7 @@ public class LeaveReviewAction extends TopAction{
     }
     public List<Employee> getEmployees(){
 	if(employees == null)
-	    findLeaveRequests();
+	    // findLeaveRequests();
 	if(employees != null && employees.size() > 1){
 	    Collections.sort(employees);
 	}
@@ -443,6 +445,7 @@ public class LeaveReviewAction extends TopAction{
 	    if(ones != null){
 		if(employees == null)
 		    employees = new ArrayList<>();
+
 		for(LeaveRequest one:ones){
 		    Employee empp = one.getEmployee();
 		    if(!employees.contains(empp)){
@@ -476,8 +479,13 @@ public class LeaveReviewAction extends TopAction{
     // we need a filter if we have more than 3 reviews
     //
     public boolean isRevFilterNeeded(){
-	if(hasReviews()){
-	    return reviews != null && reviews.size() > 3;
+	if(hasRevEmployees()){
+	    return rev_employees != null && rev_employees.size() > 1;
+	    /**
+	    if(hasReviews()){
+		return reviews != null && reviews.size() > 3;
+	    }
+	    */
 	}
 	return false;
     }
@@ -519,6 +527,32 @@ public class LeaveReviewAction extends TopAction{
 	    }
 	}
     }
+    void findRevEmployees(){
+	LeaveReviewList lrl = new LeaveReviewList();
+	lrl.setReviewed_by(user.getId());
+	if(!rev_date_from.isEmpty()){
+	    lrl.setDate_from_ff(rev_date_from);
+	}
+	if(!rev_date_to.isEmpty()){
+	    lrl.setDate_to_ff(rev_date_to);
+	}
+	String back = lrl.find();
+	if(back.isEmpty()){
+	    List<LeaveReview> ones = lrl.getReviews();
+	    if(ones != null && ones.size() > 0){
+		for(LeaveReview one:ones){
+		    Employee emp = one.getLeave().getEmployee();
+		    if(emp != null){
+			if(rev_employees == null)
+			    rev_employees = new ArrayList<>();
+			if(!rev_employees.contains(emp))
+			    rev_employees.add(emp);
+		    }
+		}
+		
+	    }
+	}
+    }    
 
 }
 

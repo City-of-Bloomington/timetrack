@@ -70,6 +70,7 @@ public class LeaveReportAction extends TopAction{
 		}
 	    }
 	    findLeaveRequests();
+	    findEmployeeFromLeaves();
 	}
 	else{
 	    if(dept_id.isEmpty()){
@@ -77,6 +78,7 @@ public class LeaveReportAction extends TopAction{
 	    }
 	    getCurrentPayPeriod();
 	    findLeaveRequests();
+	    findEmployeeFromLeaves();
 	}
 	if(leaves != null && leaves.size() > 0){
 	    addMessage("Found "+leaves.size()+" approved leave requests");
@@ -346,6 +348,7 @@ public class LeaveReportAction extends TopAction{
 	if(back.isEmpty()){
 	    List<LeaveRequest> ones = rrl.getRequests();
 	    if(ones != null){
+		/**
 		if(employees == null)
 		    employees = new ArrayList<>();
 		for(LeaveRequest one:ones){
@@ -354,9 +357,50 @@ public class LeaveReportAction extends TopAction{
 			employees.add(empp);
 		    }
 		}
+		*/
 		leaves_total_number = ones.size();
 		leaves = ones;
 
+	    }
+	}
+    }
+    void findEmployeeFromLeaves(){
+	if(group_id.isEmpty()){
+	    getGroup();
+	}
+	LeaveRequestList rrl = new LeaveRequestList();
+	rrl.setApprovedOnly();
+	if(!dept_id.isEmpty()){
+	    rrl.setDepartment_id(dept_id);
+	}
+	if(!date_from.isEmpty()){
+	    rrl.setDate_from_ff(date_from);
+	    pay_period_id = "";
+	}
+	if(!date_to.isEmpty()){
+	    rrl.setDate_to_ff(date_to);
+	    pay_period_id = "";	    
+	}
+	if(!group_id.isEmpty()){
+	    rrl.setGroup_id(group_id);
+	}
+	if(!pay_period_id.isEmpty()){
+	    rrl.setPay_period_id(pay_period_id);
+	}
+	rrl.setSortBy(sortBy);
+	// rrl.setLimit("100");
+	String back = rrl.find();
+	if(back.isEmpty()){
+	    List<LeaveRequest> ones = rrl.getRequests();
+	    if(ones != null){
+		if(employees == null)
+		    employees = new ArrayList<>();
+		for(LeaveRequest one:ones){
+		    Employee empp = one.getEmployee();
+		    if(!employees.contains(empp)){
+			employees.add(empp);
+		    }
+		}
 	    }
 	}
     }

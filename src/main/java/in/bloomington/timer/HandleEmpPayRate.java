@@ -143,6 +143,11 @@ public class HandleEmpPayRate{
 	ResultSet rs = null;
 	String msg="", date="";
 	double rate = 0;
+	String today = Helper.getToday();
+	if(!rate_date.isEmpty()){
+	    today = rate_date;
+	}
+	String cur_date = Helper.getYymmddDate2(today);
 	//
 	//
 	String qq = "{CALL HR.HRReport_EmployeePayRateReport(null,'0',null,?,null,'3,1,2',2,0,1,0,1,3,0)}";
@@ -150,12 +155,11 @@ public class HandleEmpPayRate{
 	    qq = "{CALL HR.HRReport_EmployeePayRateReport(null,'0',null,null,null,'3,1,2',2,0,1,0,1,3,0)}";
 	}
 	// if rate_date is given
-	if(!rate_date.isEmpty()){
-	    date = Helper.getYymmddDate2(rate_date);
-	    System.err.println(" date "+date);
-	    qq = "{CALL HR.HRReport_EmployeePayRateReport('"+date+"','0',null,?,null,'3,1,2',2,0,1,0,1,3,0)}";
+	if(!cur_date.isEmpty()){
+	    System.err.println(" date "+cur_date);
+	    qq = "{CALL HR.HRReport_EmployeePayRateReport('"+cur_date+"','0',null,?,null,'3,1,2',2,0,1,0,1,3,0)}";
 	    if(dept_ref_id.isEmpty()){
-	    qq = "{CALL HR.HRReport_EmployeePayRateReport('"+date+"','0',null,null,null,'3,1,2',2,0,1,0,1,3,0)}";
+	    qq = "{CALL HR.HRReport_EmployeePayRateReport('"+cur_date+"','0',null,null,null,'3,1,2',2,0,1,0,1,3,0)}";
 	    }
 	}
 	msg = prepareEmployee();
@@ -205,7 +209,7 @@ public class HandleEmpPayRate{
 		    }
 		}
 	    }
-	    EmployeePayRate empPayRate = new EmployeePayRate(rate_date);
+	    EmployeePayRate empPayRate = new EmployeePayRate(today);
 	    msg = empPayRate.doSaveBatch(empNewRates);
 	    //
 	}
@@ -223,23 +227,16 @@ public class HandleEmpPayRate{
 	String curDate = Helper.getToday();
 	curDate = Helper.getYymmddDate2(curDate);
 	String msg = "", date_ff="";
-	/**
-	String start_year = "01/01/2026";
-	date_ff = Helper.getYymmddDate2(start_year);	
-	String init_date = "01/04/2026";
-	String date_ff2 = Helper.getYymmddDate2(init_date);	
-	msg = prepareEmployee();
-	*/
-	// run this first
-	//msg = initailStart(start_year, date_ff);
-	//msg = prepareEmployee();	
-	// run this next
-	//msg = initailStart(init_date, date_ff2);
-	msg = prepareEmployee();	
-	//String next_date = "01/04/2026";//init_date;
-	String next_date = "01/04/2026";//init_date;
+
+	String next_date = "01/01/2026";
 	date_ff = Helper.getYymmddDate2(next_date);
-	int jj = 1;
+	msg = prepareEmployee();
+	msg = initailStart(next_date, date_ff);
+	next_date = "01/04/2026";
+	date_ff = Helper.getYymmddDate2(next_date);	
+	msg = prepareEmployee();
+	msg = initailStart(next_date, date_ff);
+	msg = prepareEmployee();	
 	while(date_ff.compareTo(curDate) < 0){ // 4/26
 	    next_date = Helper.getDateFrom(next_date, 7);
 	    date_ff = Helper.getYymmddDate2(next_date);
@@ -249,10 +246,8 @@ public class HandleEmpPayRate{
 		System.err.println(" Error "+msg);
 	    }
 	    msg = prepareEmployee();
-	    jj++;
-	    // if(jj > 4) break;
 	}
-
+	
 	return msg;
     }
     String initailStart(String init_date, String date_ff){
