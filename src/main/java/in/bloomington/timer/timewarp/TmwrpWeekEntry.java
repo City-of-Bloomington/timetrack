@@ -632,7 +632,6 @@ public class TmwrpWeekEntry{
 		    prim_total += excess_hrs2;
 		}
 	    }
-	    System.err.println("after cp total "+prim_total);
 	    String dstr = ndf.format(excess_hrs2);
 	    excess_hrs2 = (double) (new Double(dstr));
 	    addToEarnedHash(code_id, excess_hrs2);

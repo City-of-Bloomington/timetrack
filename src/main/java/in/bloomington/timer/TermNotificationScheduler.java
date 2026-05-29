@@ -41,8 +41,8 @@ public class TermNotificationScheduler {
 	    year = Integer.parseInt(strArr[2]);
 	    Calendar cal = new GregorianCalendar();
 	    cal.set(year, (month-1), day);
-	    cal.set(Calendar.HOUR_OF_DAY, 6);//to run at 7am of the specified day
-	    cal.set(Calendar.MINUTE, 45);
+	    cal.set(Calendar.HOUR_OF_DAY, 5);
+	    cal.set(Calendar.MINUTE, 35);
 	    startDate = cal.getTime();
 	}
 	catch(Exception ex){

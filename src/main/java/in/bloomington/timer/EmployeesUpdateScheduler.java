@@ -50,8 +50,8 @@ public class EmployeesUpdateScheduler {
 		year = Integer.parseInt(strArr[2]);
 		Calendar cal = new GregorianCalendar();
 		cal.set(year, (month-1), day);
-		cal.set(Calendar.HOUR_OF_DAY, 6);//to run at 6am of the specified day
-		cal.set(Calendar.MINUTE, 45);
+		cal.set(Calendar.HOUR_OF_DAY, 4);//to run at 6am of the specified day
+		cal.set(Calendar.MINUTE, 30);
 		startDate = cal.getTime();
 	    }
 	}
@@ -121,7 +121,7 @@ public class EmployeesUpdateScheduler {
 	    // second minute hours day-of-month month day-of-week
 	    // start at 7:30 am, any day of month, any month, Monday-Friday
 	    
-	    String cronStr = "0 0 9,11,13,15,17 ? * 2-6";
+	    String cronStr = "0 0 9,13,16 ? * 2-6";
 	    CronTrigger trigger = TriggerBuilder.newTrigger()
 		.withIdentity(jobName	, groupName)
 		.withSchedule(CronScheduleBuilder.cronSchedule(cronStr)

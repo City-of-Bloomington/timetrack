@@ -39,8 +39,8 @@ public class ExcessAccrualScheduler {
 	    */
 	    Calendar cal = new GregorianCalendar();
 	    cal.set(year, (month-1), day);
-	    cal.set(Calendar.HOUR_OF_DAY, 7);//to run at 7:30am of the specified day
-	    cal.set(Calendar.MINUTE, 30);
+	    cal.set(Calendar.HOUR_OF_DAY, 4);//to run at 4:20am of the specified day
+	    cal.set(Calendar.MINUTE, 20);
 	    startDate = cal.getTime();
 	}
 	catch(Exception ex){

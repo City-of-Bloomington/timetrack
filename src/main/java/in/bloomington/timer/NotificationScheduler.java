@@ -41,8 +41,8 @@ public class NotificationScheduler {
 		year = Integer.parseInt(strArr[2]);
 		Calendar cal = new GregorianCalendar();
 		cal.set(year, (month-1), day);
-		cal.set(Calendar.HOUR_OF_DAY, 7);//to run at 7am of the specified day
-		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.HOUR_OF_DAY, 4);//to run at 4am of the specified day
+		cal.set(Calendar.MINUTE, 40);
 		startDate = cal.getTime();
 	    }
 	}
