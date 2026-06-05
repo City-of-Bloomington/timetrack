@@ -57,6 +57,9 @@ public class LeaveReportAction extends TopAction{
 	resetEmployee();
 	String back = doPrepare("leaveReport.action");
 	getEmployee();
+	if(employee == null){
+	    return ERROR;
+	}
 	if(employee.isAdmin()){
 	    allDepts = true;
 	}

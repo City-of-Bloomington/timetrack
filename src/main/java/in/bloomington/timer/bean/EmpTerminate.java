@@ -1145,6 +1145,17 @@ insert into emp_terminations values(0,?,?,?,?,
 'Started', null,
 ?,?) // 31
 
+(0,
+?,?,?,?, 4
+?,?,?,?,?,9
+?,?,?,?,?,14
+?,?,?,?,?,19
+?,?,?,?,?,24
+?,?,?,?,now(),29
+'Started', null,
+?,?)31
+
+
      */
     public String doSave(){
 	
@@ -1154,7 +1165,7 @@ insert into emp_terminations values(0,?,?,?,?,
 	ResultSet rs = null;	
 	String qq = "insert into emp_terminations values(0,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "?,?,?,?,?, ?,?,?,?,?,"+
+	    "?,?,?,?,?, ?,?,?,?,now(),"+
 	    "'Started', null,?,?)";
 	process_status="Started";
 	con = UnoConnect.getConnection();
@@ -1170,48 +1181,6 @@ insert into emp_terminations values(0,?,?,?,?,
 	    back = "last_pay_period_date not set";
 	    return back;
 	}
-	logger.debug(qq);				
-	try{
-	    pstmt = con.prepareStatement(qq);
-	    back = setParams(pstmt);
-	    if(back.isEmpty()){
-		pstmt.executeUpdate();
-		qq = "select LAST_INSERT_ID()";
-		pstmt2 = con.prepareStatement(qq);
-		rs = pstmt2.executeQuery();
-		if(rs.next()){
-		    id = rs.getString(1);
-		}
-	    }
-	}
-	catch(Exception ex){
-	    back += ex+":"+qq;
-	    logger.error(back);
-	}
-	finally{
-	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
-	    UnoConnect.databaseDisconnect(con);
-	}
-	return back;
-    }
-    /**
-    public String saveJobTerms(){
-	String back = "";
-	if(jobTerms != null && jobTerms.size() > 0){
-	    for(JobTerminate jj:jobTerms){
-		jj.setTerminate_id(id);
-		back += jj.doSave();
-	    }
-	}
-	else{
-	    back = "No job set to termiante ";
-	}
-	return back;
-    }
-    */
-    String setParams(PreparedStatement pstmt){
-	String back = "";
-	int jj=1;
 	if(employee_id.isEmpty()){
 	    getEmployee();
 	}
@@ -1220,7 +1189,9 @@ insert into emp_terminations values(0,?,?,?,?,
 	if(full_name.isEmpty()){
 	    getFull_name();
 	}	
+	logger.debug(qq);				
 	try{
+	    pstmt = con.prepareStatement(qq);
 	    pstmt.setString(1, employee_id);
 	    pstmt.setString(2, full_name);
 	    pstmt.setString(3, employment_type);
@@ -1313,10 +1284,6 @@ insert into emp_terminations values(0,?,?,?,?,
 		pstmt.setNull(28, Types.VARCHAR);
 	    else
 		pstmt.setString(28, submitted_by_id);
-	    if(submitted_date.isEmpty())
-		submitted_date = Helper.getToday();
-	    pstmt.setDate(29, new java.sql.Date(dateFormat.parse(submitted_date).getTime()));
-
 	    if(termination_type.isEmpty()){
 		pstmt.setNull(30, Types.VARCHAR);
 	    }
@@ -1328,12 +1295,41 @@ insert into emp_terminations values(0,?,?,?,?,
 	    }
 	    else{
 		pstmt.setString(31, cdl_status);
+	    }	    
+	    pstmt.executeUpdate();
+	    qq = "select LAST_INSERT_ID()";
+	    pstmt2 = con.prepareStatement(qq);
+	    rs = pstmt2.executeQuery();
+	    if(rs.next()){
+		id = rs.getString(1);
 	    }
-	}catch(Exception ex){
-	    back += ex;
+	}
+	catch(Exception ex){
+	    back += ex+":"+qq;
+	    logger.error(back);
+	}
+	finally{
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
+	    UnoConnect.databaseDisconnect(con);
 	}
 	return back;
     }
+    /**
+    public String saveJobTerms(){
+	String back = "";
+	if(jobTerms != null && jobTerms.size() > 0){
+	    for(JobTerminate jj:jobTerms){
+		jj.setTerminate_id(id);
+		back += jj.doSave();
+	    }
+	}
+	else{
+	    back = "No job set to termiante ";
+	}
+	return back;
+    }
+    */
+
     /**
        values(0,?,?,?,?,?, // 5
                 ?,?,?,?,?, //10

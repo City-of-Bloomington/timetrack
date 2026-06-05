@@ -177,7 +177,6 @@ public class JobTaskAction extends TopAction{
 	    if(emp.hasMultipleDepts()){
 		empDeptIds = emp.getAlEmpDeptIds();
 	    }
-	    System.err.println(" has multi dept "+( empDeptIds != null));
 	    if(id.isEmpty()){ 
 		fillJobInfo();
 	    }
