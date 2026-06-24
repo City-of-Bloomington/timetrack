@@ -133,3 +133,20 @@ public class HourCodeConditionList{
     }
 
 }
+/**
+
+	select c.name code_name,
+	if(s.name is null,'all',s.name) salary_group,	
+	if(d.name is null,'all',d.name) dept_name,
+	if(gg.name is null,'all',gg.name) group_name
+	from hour_code_conditions g
+	join hour_codes c on c.id=g.hour_code_id
+	left join departments d on d.id = g.department_id 
+	left join salary_groups s on s.id=g.salary_group_id
+	left join groups gg on gg.id=g.group_id 
+	where g.inactive is null
+	order by dept_name, code_name,group_name
+	into outfile '/var/lib/mysql-files/hour_codes.csv'                              fields terminated by ','                                                        lines terminated by '\n';
+	
+	
+ */

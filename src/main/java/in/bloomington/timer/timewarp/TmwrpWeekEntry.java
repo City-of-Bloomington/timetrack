@@ -681,9 +681,12 @@ public class TmwrpWeekEntry{
 	    else if(salaryGroup.isFireSworn()){
 		// ignore
 	    }
+	    /**
+	       // we include them now
 	    else if(salaryGroup.isFireSworn5x8()){
 		// ignore
-	    }						
+	    }
+	    */
 	    else{
 		if(netHours > st_weekly_hrs)
 		    extra_hrs = netHours - st_weekly_hrs;

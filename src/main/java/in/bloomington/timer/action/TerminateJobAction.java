@@ -44,7 +44,7 @@ public class TerminateJobAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("terminate.action");
-	if(action.isEmpty()){ // normally 'Submit'
+	if(action.equals("Submit")){ 
 	    if(!id.isEmpty()){
 		term = new EmpTerminate(id);
 		back = term.doSelect();
@@ -392,7 +392,9 @@ public class TerminateJobAction extends TopAction{
 	if(job != null){
 	   SalaryGroup sg = job.getSalaryGroup();
 	   if(sg != null){
-	       if(sg.isTemporary()) return false;
+	       if(sg.isTemporary() ||
+		  sg.isSeasonal() ||
+		  sg.isPartTime()) return false;
 	       else return true;
 	   }
 	}

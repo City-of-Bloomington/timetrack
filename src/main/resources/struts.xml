@@ -219,7 +219,14 @@
       <result name="input">/WEB-INF/jsp/pay_rate_schedular.jsp</result>		
       <result name="error">/WEB-INF/jsp/pay_rate_schedular.jsp</result>
       <result name="success">/WEB-INF/jsp/pay_rate_schedular.jsp</result>
-    </action>    
+    </action>
+    <action name="shiftDifferential" 
+	    class="in.bloomington.timer.action.ShiftDifferentialAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/shift_differential.jsp</result>		
+      <result name="error">/WEB-INF/jsp/shift_differential.jsp</result>
+      <result name="success">/WEB-INF/jsp/shift_differential.jsp</result>
+    </action>        
     <action name="annuance" 
 	    class="in.bloomington.timer.action.AnnuancementAction" 
 	    method="execute">

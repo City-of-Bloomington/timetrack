@@ -92,6 +92,9 @@ public class Department implements java.io.Serializable{
     public boolean isHand(){
 	return !name.isEmpty() && name.equals("HAND");
     }
+    public boolean isPolice(){
+	return !name.isEmpty() && name.equals("Police");
+    }    
     public boolean isSanitation(){
 	return !name.isEmpty() && name.equals("Sanitation");
     }
