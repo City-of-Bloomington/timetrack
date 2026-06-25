@@ -27,24 +27,17 @@ public class HandleShiftDifferential{
     //
     String dept_ref_id="36"; // Police Dept only
     String effective_date = "";
-    static Hashtable<String, String> accepted_hour_codes = new Hashtable<>();
-    static {
-	accepted_hour_codes.put("ASP","ASP OT");
-	accepted_hour_codes.put("ASCEDC","ASCEDC OT");
-	accepted_hour_codes.put("ASREC","ASREC OT");
-	accepted_hour_codes.put("NSP","NSP/HI OT");
-	accepted_hour_codes.put("ASP-SPO","ASP-SPO");
-    }
-    
-    // Hashtable<String, String> empHash = null;
+    Map<String, String> shiftCodeMap = null;
     Hashtable<String, String> empCodes = null;
     //
     // accrual values from New World (Carry Over)
     //
     public HandleShiftDifferential(){
+	prepareCodeMap();
     }
     // new
     public HandleShiftDifferential(String val){
+	prepareCodeMap();
 	setEffectiveDate(val);
     }
     //
@@ -58,27 +51,17 @@ public class HandleShiftDifferential{
     public Hashtable<String, String> getEmpCodes(){
 	return empCodes;
     }
-	
-    /**
-    private String prepareEmployee(){
-	String msg = "";
-	EmployeeList empl = new EmployeeList();
-	empl.setDept_ref_id(dept_ref_id);
-	empl.setHasEmployeeNumber();
-	msg = empl.find();
-	if(msg.isEmpty()){
-	    List<Employee> emps = empl.getEmployees();
-	    if(emps != null && emps.size() > 0){
-		empHash = new Hashtable<>();
-		empCodes = new Hashtable<>();		
-		for(Employee one:emps){
-		    empHash.put(one.getEmployee_number(), one.getId());
-		}
+    private String prepareCodeMap(){
+	ShiftDiffCodeList scl = new ShiftDiffCodeList();
+	String back = scl.find();
+	if(back.isEmpty()){
+	    Map<String, String> map = scl.getShiftCodeMap();
+	    if(map != null){
+		shiftCodeMap = map;
 	    }
 	}
-	return msg;
+	return back;
     }
-    */
         /**
 	   8 th column
     //Input
@@ -172,9 +155,11 @@ output
 		   !str6.startsWith("LTD")){
 		    String str8 = "";
 		    String str7 = str6.substring(0,str6.indexOf(" - "));
-		    if(accepted_hour_codes.containsKey(str7)){
-			str8 = accepted_hour_codes.get(str7);
-			empCodes.put(str, str8);
+		    if(str7 != null && !str7.isEmpty()){
+			if(shiftCodeMap != null && shiftCodeMap.containsKey(str7)){
+			    str8 = shiftCodeMap.get(str7);
+			    empCodes.put(str, str8);
+			}
 		    }
 		    System.err.println(str+" "+str2+" "+str7+" "+str8);
 		}
@@ -191,109 +176,7 @@ output
 	}
 	return msg;
     }
-    /**
-    public String initialStartProcess(){
-	String curDate = Helper.getToday();
-	curDate = Helper.getYymmddDate2(curDate);
-	String msg = "", date_ff="";
 
-	String next_date = "01/01/2026";
-	date_ff = Helper.getYymmddDate2(next_date);
-	msg = prepareEmployee();
-	msg = initailStart(next_date, date_ff);
-	next_date = "01/04/2026";
-	date_ff = Helper.getYymmddDate2(next_date);	
-	msg = prepareEmployee();
-	msg = initailStart(next_date, date_ff);
-	msg = prepareEmployee();	
-	while(date_ff.compareTo(curDate) < 0){ // 4/26
-	    next_date = Helper.getDateFrom(next_date, 7);
-	    date_ff = Helper.getYymmddDate2(next_date);
-	    System.err.println(" date "+date_ff);
-	    msg = initailStart(next_date, date_ff);
-	    if(!msg.isEmpty()){
-		System.err.println(" Error "+msg);
-	    }
-	    msg = prepareEmployee();
-	}
-	
-	return msg;
-    }
-    */
-    /**
-    String initailStart(String init_date, String date_ff){
-		
-	Connection con = null;
-	PreparedStatement pstmt = null;
-	CallableStatement ps = null;
-	ResultSet rs = null;
-	String msg="", date="";
-	double rate = 0;
-	//
-	// all dept
-	
-	String qq = "";
-	date = date_ff;
-	if(!date.isEmpty()){
-	    // date = Helper.getYymmddDate2(init_date);
-	    // System.err.println(" date "+date);
-	    // qq = "{CALL HR.HRReport_EmployeePayRateReport('"+date+"','0',null,null,null,'3,1,2',2,0,1,0,0,3,0)}";
-	    qq = "{CALL HR.HRReport_EmployeePayRateReport('"+date+"','0',null,null,null,'3,1,2',2,0,1,0,1,3,0)}";	    
-	}
-	logger.debug(qq);
-	if(!msg.isEmpty() || empHash == null){
-	    msg += " could not find related employees ";
-	    return msg;
-	}
-	try{
-	    con = SingleConnect.getNwConnection();
-	    if(con == null){
-		msg = " Could not connect to DB ";
-		System.err.println(msg);
-		logger.error(msg);
-		return msg;
-	    }
-	    ps = con.prepareCall(qq);
-	    if(!dept_ref_id.isEmpty()){
-		ps.setString(1, dept_ref_id);
-	    }
-	    rs = ps.executeQuery();
-	    while(rs.next()){
-		String str = rs.getString(5); // 5 employee number
-		String str2 = rs.getString(6); // 6 name
-		String str3 = rs.getString(13); // basic rate		
-		double str4 = rs.getDouble(17);// 9 current total rate
-		double str5 = rs.getDouble(15); // cert rate
-		if(str5 > 0){
-		    System.err.println(" has cert "+str2+" "+str5);
-		    // str3 = str3+str5;
-		}
-		System.err.println(str2+" "+str3+" "+str4+" "+str5);
-		if(empHash != null && empHash.containsKey(str)){
-		    double old_rate = 0;
-		    String emp_id = empHash.get(str);
-		    if(empOldRates != null && empOldRates.containsKey(emp_id)){
-		       old_rate = empOldRates.get(emp_id);
-		    }
-		    if(str4 != old_rate){
-			empNewRates.put(emp_id, str4);
-		    }
-		}
-	    }
-	    EmployeePayRate empPayRate = new EmployeePayRate(init_date);
-	    msg = empPayRate.doSaveBatch(empNewRates);
-	    //
-	}
-	catch (Exception ex) {
-	    logger.error(ex+":"+qq);
-	    msg += ex;
-	}
-	finally{
-	    Helper.databaseDisconnect(ps, rs);
-	    // SingleConnect.disconnect();
-	}
-	return msg;
-    */
 }
 
 

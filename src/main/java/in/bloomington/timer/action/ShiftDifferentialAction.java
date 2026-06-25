@@ -24,34 +24,54 @@ public class ShiftDifferentialAction extends TopAction{
     static Logger logger = LogManager.getLogger(ShiftDifferentialAction.class);
     //
     String shiftDifTitle = "Shift Differential";
-    List<Department> depts = null;
-    QuartzMisc quartzMisc = null;
-    // Scheduler schedular = null;
-    String dept_ref_id="36", effective_date="";
+    ShiftDiffCode code = null;
+    List<ShiftDiffCode> codes = null;
+    String dept_ref_id="36", effective_date="", id="";
     public String execute(){
 	String ret = SUCCESS;
 	String back = canProceed("ShiftDifferntial.action");
 	if(!back.isEmpty()){
 	    return back;
 	}
-	
-	// prepareSchedular();				
-	if(action.equals("Schedule")){
-	    /**
-	    try{
-		back = schedular.run();
-		if(!back.isEmpty()){
-		    addError(back);
-		}
-		else{
-		    addMessage("Scheduled Successfully");
-		}
-	    }catch(Exception ex){
-		addError(""+ex);
+	getCode();
+	if(action.equals("Save")){
+	    back = code.doSave();
+	    if(!back.isEmpty()){
+		addError(back);
 	    }
-	    */
+	    else{
+		addMessage("Save Successfully");
+	    }	    
 	}
-	else if(action.startsWith("Submit")){ // import now given the date
+	else if(action.equals("Save")){ //update
+	    back = code.doUpdate();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		id = code.getId();
+		addMessage("Update Successfully");
+	    }	    
+	}
+	else if(action.equals("Delete")){ //update
+	    back = code.doDelete();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	    else{
+		id = "";
+		addMessage("Delete Successfully");
+	    }
+	    
+	}	
+	else if(!id.isEmpty()){
+	    back = code.doSelect();
+	    if(!back.isEmpty()){
+		addError(back);
+	    }
+	}
+	// for testing only
+	else if(action.startsWith("Test")){ // import now given the date
 	    HandleShiftDifferential handle = new HandleShiftDifferential();
 	    back = handle.process();
 	    if(!back.isEmpty()){
@@ -63,16 +83,30 @@ public class ShiftDifferentialAction extends TopAction{
 	}
 	return ret;
     }
-    private String doClean(){
-	String msg = "";
-	/**
-	if(quartzMisc != null){
-	    msg = quartzMisc.doClean();
+    public void setId(String val){
+	if(val != null)
+	    id = val;
+    }    
+    public ShiftDiffCode getCode(){
+	if(code == null)
+	    code = new ShiftDiffCode();
+	if(!id.isEmpty()){
+	    code.setId(id);
 	}
-	*/
-	return msg;
+	return code;
     }
-
+    public void setCode(ShiftDiffCode val){
+	if(val != null)
+	    code = val;
+    }
+    public boolean hasCodes(){
+	if(codes == null)
+	    findCodes();
+	return codes != null && codes.size() > 0;
+    }
+    public List<ShiftDiffCode> getCodes(){
+	return codes;
+    }
     public void setAction2(String val){
 	if(val != null && !val.isEmpty())		
 	    action = val;
@@ -81,10 +115,6 @@ public class ShiftDifferentialAction extends TopAction{
 	if(val != null && !val.isEmpty())		
 	    effective_date = val;
     }
-    public void setDept_ref_id(String val){
-	if(val != null && !val.equals("-1"))		
-	    dept_ref_id = val;
-    }		
     // 
     public String getEffectiveDate(){
 	if(effective_date.isEmpty()){
@@ -92,35 +122,15 @@ public class ShiftDifferentialAction extends TopAction{
 	}
 	return effective_date;
     }
-    public String getDept_ref_id(){
-	if(dept_ref_id.isEmpty()){
-	    return "-1";
+    private void findCodes(){
+	ShiftDiffCodeList sdcl = new ShiftDiffCodeList();
+	String back = sdcl.find();
+	if(back.isEmpty()){
+	    codes = sdcl.getShiftCodes();
 	}
-	return dept_ref_id;
-    }	    
-    public List<Department> getDepts(){
-	if(depts == null){
-	    DepartmentList dl = new DepartmentList();
-	    dl.setActiveOnly();
-	    dl.hasRefIds();
-	    String msg = dl.find();
-	    if(!msg.isEmpty()){
-		logger.error(msg);
-	    }
-	    else{
-		List<Department> ones = dl.getDepartments();
-		if(ones != null && ones.size() > 0){
-		    depts = ones;
-		}
-	    }
-	}
-	return depts;
     }
-    public boolean hasDepts(){
-	getDepts();
-	return depts != null && depts.size() > 0;
-    }
-
+			     
+ 
 }
 
 

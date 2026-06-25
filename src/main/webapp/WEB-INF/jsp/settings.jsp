@@ -57,7 +57,7 @@
 	    <ul>
 		<li><a href="<s:property value='#application.url'/>termManager.action">Termination Managers </a></li>
 		<li><a href="<s:property value='#application.url'/>termRecipient.action">Termination Notification Recipients </a></li>
-		
+		<li><a href="<s:property value='#application.url'/>shiftDifferential.action">Shift Differentail (Police)</a></li>				
 	    </ul>
 	    <!-- 
 	    <h2>Employee Data Import</h2>
@@ -142,7 +142,7 @@
 		<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch Clock Batch Auto Submission </a></li>
 		<li><a href="<s:property value='#application.url'/>codeReasonSchedule.action">Police Code Reason xls File Output</a></li>
 		<li><a href="<s:property value='#application.url'/>payRateSchedule.action">Weekly Pay Rate</a></li>
-		<li><a href="<s:property value='#application.url'/>shiftDifferential.action">Shift Differentail (Police)</a></li>		
+
 	    </ul>
 	</div>
     </s:if>
