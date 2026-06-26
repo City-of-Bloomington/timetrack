@@ -515,6 +515,7 @@ public class TmwrpWrapAction extends TopAction{
 	if(employeeRuns != null && employeeRuns.size() > 0){
 	    Set<Employee> empSet = employeeRuns.keySet();
 	    for(Employee emp:empSet){
+		String emp_num = emp.getEmployee_number();
 		List<TmwrpRun> runs = employeeRuns.get(emp);
 		emp.setPay_period_id(pay_period_id);
 		// boolean multipleJobs = emp.hasMultipleJobs();
@@ -527,19 +528,31 @@ public class TmwrpWrapAction extends TopAction{
 			Set<CodeRef> refSet = map.keySet();
 			for(CodeRef refKey:refSet){
 			    double dd = map.get(refKey);
+			    String code = refKey.getNw_code();
 			    String csvLine = emp.getEmployee_number()+","+df.format(dd)+","+utilChar+refKey.getNw_code()+","+payPeriod.getFirstPayEndDate()+",";
-			    csvLine += line;
-			    if(isHand){
+			    csvLine += ",,,";
+			    String shift_code = "";
+			    if(isPolice){
+				if(code.equals("OT1.5") || code.equals("Reg HP")){
+
+				    if(emp_shift_codes != null && emp_shift_codes.containsKey(emp_num)){
+					shift_code = emp_shift_codes.get(emp_num);
+					System.err.println(emp_num+", "+code+","+shift_code);
+				    }
+				}
+			    }
+			    csvLine += shift_code+",";				    			    if(isHand){
 				csvLine += refKey.getGl_value()+",";
 			    }
 			    else{
 				csvLine +=",";
 			    }
 			    csvLine += line2;
-			    if(sgrp.isTemporary()){
+			    if(sgrp != null && (sgrp.isTemporary() ||
+						sgrp.isSeasonal())){
 				csvLine += job.getName();
 			    }
-			    allCsvLines.add(csvLine);														
+			    allCsvLines.add(csvLine);
 			}
 		    }
 		    if(run.hasCycle1AmountRows()){
@@ -563,8 +576,20 @@ public class TmwrpWrapAction extends TopAction{
 			Set<CodeRef> refSet = map.keySet();
 			for(CodeRef refKey:refSet){
 			    double dd = map.get(refKey);
+			    String code = refKey.getNw_code();
 			    String csvLine = emp.getEmployee_number()+","+df.format(dd)+","+utilChar+refKey.getNw_code()+","+payPeriod.getEnd_date()+",";
-			    csvLine += line;
+			    csvLine += ",,,";
+			    String shift_code = "";
+			    if(isPolice){
+				if(code.equals("OT1.5") || code.equals("Reg HP")){
+
+				    if(emp_shift_codes != null && emp_shift_codes.containsKey(emp_num)){
+					shift_code = emp_shift_codes.get(emp_num);
+					System.err.println(emp_num+", "+code+","+shift_code);
+				    }
+				}
+			    }
+			    csvLine += shift_code+",";
 			    if(isHand){
 				csvLine += refKey.getGl_value()+",";
 			    }

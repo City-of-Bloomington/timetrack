@@ -14,6 +14,7 @@ import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.timewarp.*;
+import in.bloomington.timer.HandleShiftDifferential;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +32,7 @@ public class TmwrpDailyAction extends TopAction{
     String department_id = "", group_id="";
     String type=""; // for custom
     String outputType="html";
-    boolean isHand = false, csvOutput = false, isUtil = false;
+    boolean isHand = false, csvOutput = false, isUtil = false, isPolice=false;
     PayPeriod payPeriod = null, currentPayPeriod=null;
     List<Group> groups = null;
     List<Department> departments = null;
@@ -42,7 +43,8 @@ public class TmwrpDailyAction extends TopAction{
     List<DailyBlock> dailyBlocks = null;
     Set<String> empNumbers = null;
     Map<String, Map<String, Double>> week1EmpCodes = null;
-    Map<String, Map<String, Double>> week2EmpCodes = null;    
+    Map<String, Map<String, Double>> week2EmpCodes = null;
+    Hashtable<String, String> emp_shift_codes = null;
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("tmwrpDaily.action");
@@ -53,6 +55,8 @@ public class TmwrpDailyAction extends TopAction{
 		isUtil = true;
 	    else if(department.isHand())
 		isHand = true;
+	    else if(department.isPolice())
+		isPolice = true;	    
 	    getEmployees();
 	    back = doProcess();
 	    if(!csvOutput){
@@ -435,13 +439,36 @@ public class TmwrpDailyAction extends TopAction{
 	if(isUtil){
 	    utilChar ="u"; // append to all earn codes for Utility depart
 	}
+	if(isPolice){
+	    HandleShiftDifferential handle = new HandleShiftDifferential();
+	    String back = handle.process();
+	    if(back.isEmpty()){
+		emp_shift_codes = handle.getEmpCodes();
+	    }
+	}	
 	if(dailyBlocks != null && dailyBlocks.size() > 0){
 	    for(DailyBlock one:dailyBlocks){
-		String csvLine = one.getEmpNumber()+","+one.getHours()+","+utilChar+one.getNwCode()+","+one.getDate()+",";
+		String emp_num = one.getEmpNumber();
+		String code = one.getNwCode();
+		String csvLine = emp_num+","+one.getHours()+","+utilChar+one.getNwCode()+","+one.getDate()+",";
 		if(one.getAmount() > 0){
 		    csvLine += one.getAmount();
 		}
-		csvLine += line;
+		else{
+		    csvLine += ",";
+		}
+		csvLine += ",,";		
+		String shift_code = "";
+		if(isPolice){
+		    if(code.equals("OT1.5") || code.equals("Reg HP")){
+			
+			if(emp_shift_codes != null && emp_shift_codes.containsKey(emp_num)){
+			    shift_code = emp_shift_codes.get(emp_num);
+			    System.err.println(emp_num+", "+code+","+shift_code);
+			}
+		    }
+		}
+		csvLine += shift_code+",";			
 		if(isHand){
 		    csvLine += one.getGlString();
 		}
