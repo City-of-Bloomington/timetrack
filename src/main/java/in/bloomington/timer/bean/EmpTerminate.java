@@ -1155,6 +1155,12 @@ insert into emp_terminations values(0,?,?,?,?,
 'Started', null,
 ?,?)31
 
+.:insert into emp_terminations values(0,?,?,?,?,
+?,?,?,?,?,?,?,?,?,?,
+?,?,?,?,?,?,?,?,?,?,
+?,?,?,?,now(),'Started',
+null,?,?)
+
 
      */
     public String doSave(){
@@ -1165,7 +1171,7 @@ insert into emp_terminations values(0,?,?,?,?,
 	ResultSet rs = null;	
 	String qq = "insert into emp_terminations values(0,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "?,?,?,?,?, ?,?,?,?,now(),"+
+	    "?,?,?,?,?, ?,?,?,?,?,now(),"+
 	    "'Started', null,?,?)";
 	process_status="Started";
 	con = UnoConnect.getConnection();
@@ -1280,6 +1286,7 @@ insert into emp_terminations values(0,?,?,?,?,
 		pstmt.setNull(27, Types.VARCHAR);
 	    else	    
 		pstmt.setString(27, remarks);
+	    // suspension
 	    if(submitted_by_id.isEmpty())
 		pstmt.setNull(28, Types.VARCHAR);
 	    else
