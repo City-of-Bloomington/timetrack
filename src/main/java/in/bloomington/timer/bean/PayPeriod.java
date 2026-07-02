@@ -13,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
+
 import javax.naming.*;
 import javax.naming.directory.*;
 import in.bloomington.timer.*;
@@ -39,6 +41,7 @@ public class PayPeriod implements Serializable{
     {"Jan","Feb","Mar","Apr","May","Jun",
      "Jul","Aug","Sep","Oct","Nov","Dec"};		
     static SimpleDateFormat dateFormat = Helper.dateFormat;
+    static SimpleDateFormat dateFormat2 = Helper.sdf2; // yyyy-mm-dd    
     boolean inAltPayPeriodSet = false;
     public PayPeriod(){
     }
@@ -241,26 +244,6 @@ public class PayPeriod implements Serializable{
 	start_date_int = startYear*10000+startMonth*100+startDay;
 	end_date_int = endYear*10000+endMonth*100+endDay;
     }
-    // date is in yyy-mm-dd format
-    // any date to be in between the comparison
-    // must be start_date <= date <= end_date
-    /**
-    public boolean isDateWithin2(String date){
-	if(date == null) return false;
-	String date2 = date.trim();
-	int date_int = 0;
-	if(date2.indexOf("-") > -1){
-	    date2 = date2.replace("-","");
-	    try{
-		date_int = Integer.parseInt(date2);
-	    }
-	    catch(Exception ex){
-		System.err.println(ex);
-	    }
-	}
-	return date_int >= start_date_int && date_int <= end_date_int;
-    }
-    */
     public boolean isDateWithin(String date){
 	if(date == null) return false;
 	int daysBetween = findDateDiffWithDate(date);
@@ -308,10 +291,90 @@ public class PayPeriod implements Serializable{
 	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 	LocalDate pp_start = LocalDate.parse(start_date, dateFormatter);
 	LocalDate in_date = LocalDate.parse(date, dateFormatter);	
-	Period period = Period.between(pp_start, in_date);
-	days = period.getDays();
+	//Period period = Period.between(pp_start, in_date);
+	//days = period.getDays();
+	days = (int)ChronoUnit.DAYS.between(pp_start, in_date);
+
 	return days;
     }
+    //
+    // days difference between any two dates
+    //
+    public long findDateDiffWithDate(String date, String date2){
+	long days = 0;
+	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	DateTimeFormatter dateFormatter2 = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+	LocalDate ldate = null;
+	LocalDate ldate2 = null;
+	if(date.indexOf("-") > 0){
+	    ldate = LocalDate.parse(date, dateFormatter);
+	}
+	else{
+	    ldate = LocalDate.parse(date, dateFormatter2);
+	}
+	if(date2.indexOf("-") > 0){
+	    ldate2 = LocalDate.parse(date2, dateFormatter);
+	}
+	else{
+	    ldate2 = LocalDate.parse(date2, dateFormatter2);
+	}	
+	// Period period = Period.between(ldate2, ldate);
+	// days = period.getDays();
+	days = ChronoUnit.DAYS.between(ldate, ldate2);
+	if(days < 0){
+	    days *= (-1);
+	}
+	return days;
+    }    
+    
+    // given a date in yyyy-mm-dd format
+    // find pay peirod id end_date
+    // next pay_period id and start_date
+    public String[] findPayPeriodInfo(String date){
+	Connection con = null;
+	PreparedStatement pstmt = null, pstmt2=null;
+	ResultSet rs = null;
+	int p_id=0, p2_id=0;
+	String p_start="", p2_end="", msg="", final_date="";
+	String qq = "select p.id,p.start_date,p2.id,p2.end_date "+
+	    " from pay_periods p "+
+	    " join pay_periods p2 on p2.id=p.id-1 "+
+	    " where "+
+	    " p.start_date <= ? and p.end_date >= ? ";
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = " could not connect to Database ";
+	    logger.error(msg);
+	}
+	logger.debug(qq);
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setDate(1, new java.sql.Date(dateFormat2.parse(date).getTime()));
+	    pstmt.setDate(2, new java.sql.Date(dateFormat2.parse(date).getTime()));
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		p_id = rs.getInt(1);
+		p_start = rs.getString(2);
+		p2_id = rs.getInt(3);
+		p2_end = rs.getString(4);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	String[] final_arr = new String[4];
+	final_arr[0] = ""+p2_id;
+	final_arr[1] = p2_end;
+	final_arr[2] = ""+p_id;
+	final_arr[3] = p_start;
+	return final_arr;
+    }
+	
     /**
     public int findDateDiffWithDate2(String date){
 	Connection con = null;

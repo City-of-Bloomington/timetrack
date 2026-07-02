@@ -63,17 +63,10 @@ public class EmpPayRateJob implements Job{
     public void doWork(){
     
 	String msg = "";
-	String today = Helper.getToday();
+	// String today = Helper.getToday();
 	// all depts 
-	HandleEmpPayRate handle = new HandleEmpPayRate(today);
-	/**
-	if(depts != null){
-	    for(Department dept:depts){
-		HandleEmpPayRate handle = new HandleEmpPayRate(dept.getRef_id(), today);
-		msg = handle.process();
-	    }
-	}
-	*/
+	HandleEmpPayRate handle = new HandleEmpPayRate();
+	msg = handle.process();
     }
 
     

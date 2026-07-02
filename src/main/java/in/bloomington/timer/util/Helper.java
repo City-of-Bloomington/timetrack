@@ -22,7 +22,7 @@ public class Helper{
     static final long serialVersionUID = 2300L;
     static Logger logger = LogManager.getLogger(Helper.class);
     final static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-    final static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+    public final static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
     
     static int c_con = 0;
     final static String bgcolor = "silver";// #bfbfbf gray
@@ -30,8 +30,8 @@ public class Helper{
     public final static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     public final static DateFormat timeFormat = new SimpleDateFormat("HH:mm");
     final static String fire_dept_ref = "35";// in New World
-    final static Locale local = new Locale("Latin","US");
-    final static TimeZone tzone = TimeZone.getTimeZone("America/Indiana/Indianapolis");
+    public final static Locale local = new Locale("Latin","US");
+    public final static TimeZone tzone = TimeZone.getTimeZone("America/Indiana/Indianapolis");
     // final static GregorianCalendar current_cal = new GregorianCalendar(tzone, local);
     //
     // basic constructor

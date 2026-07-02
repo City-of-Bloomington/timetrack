@@ -38,7 +38,10 @@ public class HandleJobTitleUpdate{
     Hashtable<Employee, Set<JobTask>> empNotInNW = null;
     Hashtable<Employee, Set<JobTask>> empJobCanDelete = null;
     Hashtable<Employee, Set<JobTask>> empJobNeedUpdate = null;
-
+    //
+    // added to fix park jobs
+    Map<String, List<List<String>>> nwEmpJobs = new TreeMap<>();
+    Hashtable<String, Hashtable<String, JobTask>> curEmpJobs = new Hashtable<>();    
     public HandleJobTitleUpdate(EnvBean val){
 	if(val != null)
 	    envBean = val;
@@ -80,7 +83,13 @@ public class HandleJobTitleUpdate{
     }		
     public boolean hasEmployeeNotInNW(){
 	return empNotInNW != null && !empNotInNW.isEmpty();
-    }		
+    }
+    public String specialProcess(){
+	String back = findNWJobs();
+	back = findEmployeeJobForFix();
+	doNextStep();
+	return back;
+    }
     public String process(){
 	findEmployeeJobs();
 	findNWJobs();
@@ -167,6 +176,7 @@ public class HandleJobTitleUpdate{
 	}
 	return msg;
     }
+    // old setting
     public String findEmployeeJobs(){
 	getPayPeriod();
 	DepartmentEmployeeList dempl = new DepartmentEmployeeList();
@@ -193,6 +203,60 @@ public class HandleJobTitleUpdate{
 	}
 	return back;
     }
+    // needed method to fix jobs
+    public String findEmployeeJobForFix(){
+	getPayPeriod();
+	DepartmentEmployeeList dempl = new DepartmentEmployeeList();
+	dempl.setDepartment_id("5"); // parks
+	dempl.setNoExpireDate();
+	dempl.setEmployeeActiveOnly();
+	String back = dempl.find();
+	if(back.isEmpty()){
+	    int jj=1;
+	    List<DepartmentEmployee> ones = dempl.getDepartmentEmployees();
+	    if(ones != null && ones.size() > 0){
+		for(DepartmentEmployee demp:ones){
+		    Employee emp = demp.getEmployee();
+		    emp.setPay_period_id(pay_period_id);
+		    boolean needIn = true;
+		    List<JobTask> jobs = emp.getJobs();
+		    if(jobs != null && jobs.size() > 0){
+			for(JobTask job:jobs){
+			    SalaryGroup sg = job.getSalaryGroup();
+			    if(sg != null && !(sg.isTemporary() ||
+				 sg.isPartTime() ||
+				 sg.isSeasonal())){
+				needIn = false;
+			    }
+			}
+		    }
+		    else{
+			needIn = false;
+		    }
+		    if(needIn){
+			String emp_num = emp.getEmployee_number();
+			Hashtable<String, JobTask> oneJobs = null;
+			if(curEmpJobs.containsKey(emp_num)){
+			    oneJobs = curEmpJobs.get(emp_num);
+			}
+			else{
+			    oneJobs = new Hashtable<>();
+			}
+			for(JobTask job:jobs){
+			    String jobTitle = job.getName();
+			    oneJobs.put(jobTitle, job);
+			    System.err.println(jj+" "+jobTitle);
+			    jj++;
+			}
+			curEmpJobs.put(emp_num, oneJobs);
+		    }
+		}
+	    }
+	}
+	//System.err.println(" emp jobs "+curEmpJobs);
+	return back;
+    }    
+    
     /**
        select           
        e.EmployeeNumber               as employeeNum,
@@ -248,8 +312,9 @@ public class HandleJobTitleUpdate{
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String msg="";
+	PayPeriod pp = new PayPeriod();
 	// using current date
-	String qq = "select e.EmployeeNumber,                                                e.EmployeeName,                                                                 e.LastName,                                                                     e.FirstName,                                                                    x.Title,                                                                      job.JobTitle,                                                                     e.xGroupCodeDesc,                                                             job.CycleHours/2,                                                               job.RateAmount                                                                  from HR.vwEmployeeInformation     e                                             join HR.vwEmployeeJobWithPosition job on e.EmployeeId=job.EmployeeId            and GETDATE() between job.EffectiveDate     and job.EffectiveEndDate            and GETDATE() between job.PositionDetailESD and job.PositionDetailEED           left join COB.jobTitleCrosswalk   x    on job.JobTitle=x.Code                   join HR.EmployeeName  n  on e.EmployeeId=n.EmployeeId                           and GETDATE() between  n.EffectiveDate  and   n.EffectiveEndDate                where e.vsEmploymentStatusId=258 ";
+	String qq = "select e.EmployeeNumber,                                                e.EmployeeName,                                                                 e.LastName,                                                                     e.FirstName,                                                                    x.Title,                                                                      job.JobTitle,                                                                     e.xGroupCodeDesc,                                                             job.CycleHours/2,                                                               job.RateAmount,                                                                 job.EffectiveDate                                                               from HR.vwEmployeeInformation     e                                             join HR.vwEmployeeJobWithPosition job on e.EmployeeId=job.EmployeeId            and GETDATE() between job.EffectiveDate     and job.EffectiveEndDate            and GETDATE() between job.PositionDetailESD and job.PositionDetailEED           left join COB.jobTitleCrosswalk   x    on job.JobTitle=x.Code                   join HR.EmployeeName  n  on e.EmployeeId=n.EmployeeId                           and GETDATE() between  n.EffectiveDate  and   n.EffectiveEndDate                where e.vsEmploymentStatusId=258 ";
 	qq += " and e.departmentID in ("+dept_ref+") "; 				
 	qq += "order by e.employeename, job.JobTitle ";
 				
@@ -263,12 +328,66 @@ public class HandleJobTitleUpdate{
 	    pstmt = con.prepareStatement(qq);
 	    empNwJobs = new Hashtable<>();
 	    rs = pstmt.executeQuery();
+	    int jj=1;
 	    while(rs.next()){
 		String str = rs.getString(1); // emp number
 		String str2 = rs.getString(6).trim(); //title
+		String str3 = rs.getString(4)+" "+rs.getString(3); //name
+		String str4 = rs.getString(7); // group
+		String str5 = rs.getString(9); // rate
+		String str6 = rs.getString(10); // date
+		String grp="";
+		if(str4.indexOf("Temporary") > -1) grp = "3";//"Temp";
+		    else if(str4.indexOf("Seasonal") > -1) grp="13";//Seasonal"; 
+		    else if(str4.indexOf("PT Non") > -1) grp="11";//"Part Time Non-Exempt"
+		    else if(str4.indexOf("PT NX") > -1) grp="14";//Part Time"		
+		else if(str4.indexOf("FT Exempt") > -1) grp="1";//Exempt
+		else if(str4.indexOf("FT Non-Exempt") > -1) grp="2";//Non-Exempt
+		else if(str4.indexOf("AFSCME") > -1) grp="4";//Union";
+		else grp="Unknown "+str4;
+		if(!(grp.equals("1") ||
+		     grp.equals("2") ||
+		     grp.equals("11") ||
+		     grp.equals("4"))){
+		    String dd2="", mm2="", dayBefore="";
+		    String[] ppInfo = pp.findPayPeriodInfo(str6); 
+
+		    System.err.println(str+" "+str3+" "+str2+" "+str6+" "+grp+" "+ppInfo[0]+" "+ppInfo[1]+" "+ppInfo[2]+" "+ppInfo[3]);
+		    // jj++;		    
+		    if(nwEmpJobs.containsKey(str)){
+			List<List<String>> all = nwEmpJobs.get(str);
+			List<String> njob = new ArrayList<>();
+			njob.add(str2);
+			njob.add(grp);
+			njob.add(str6);
+			njob.add(ppInfo[0]);
+			njob.add(ppInfo[1]);
+			njob.add(ppInfo[2]);
+			njob.add(ppInfo[3]);
+			all.add(njob);
+			nwEmpJobs.put(str, all);
+
+		    }
+		    else{
+			List<List<String>> all = new ArrayList<>();
+			List<String> njob = new ArrayList<>();
+			njob.add(str2);
+			njob.add(grp);
+			njob.add(str6);
+			njob.add(ppInfo[0]);
+			njob.add(ppInfo[1]);
+			njob.add(ppInfo[2]);
+			njob.add(ppInfo[3]);			
+			all.add(njob);
+			nwEmpJobs.put(str, all);			
+		    }
+		}
+		    /**
 		if(str2.indexOf("-") > -1){
 		    str2 = str2.replace('-',' ');
 		}
+		    */
+		    /**
 		if(str != null){
 		    if(empNwJobs.containsKey(str)){
 			Set<String> set = empNwJobs.get(str);
@@ -280,7 +399,10 @@ public class HandleJobTitleUpdate{
 			empNwJobs.put(str, set);
 		    }
 		}
+		    */
+		
 	    }
+		
 	}
 	catch(Exception ex){
 	    msg += ex+":"+qq;
@@ -290,6 +412,59 @@ public class HandleJobTitleUpdate{
 	    Helper.databaseDisconnect(pstmt, rs);
 	}
 	return msg;
+    }
+    public void doNextStep(){
+	if(nwEmpJobs != null && curEmpJobs != null){
+	    Set<String> curKeys = curEmpJobs.keySet();
+	    for(String key:curKeys){ // emp_num
+		if(nwEmpJobs.containsKey(key)){
+		    List<List<String>> allJobs = nwEmpJobs.get(key);
+		    Hashtable<String, JobTask> oneJobs = curEmpJobs.get(key);
+		    for(List<String> jobl:allJobs){
+			String jtitle = jobl.get(0);
+			String sg_id = jobl.get(1);
+			String nw_date = jobl.get(2);
+			// for new job
+			String p_id = jobl.get(3); // in pay period
+			String p_start = jobl.get(4);
+			// for old job termination
+			String p2_id = jobl.get(5); // one before
+			String p2_end = jobl.get(6); // one before end
+			if(oneJobs != null && oneJobs.containsKey(jtitle)){
+			    JobTask job = oneJobs.get(jtitle);
+			    doFix(job, sg_id, nw_date, p_id, p_start, p2_id,p2_end);
+			}
+		    }
+		}
+
+	    }
+
+	}
+	
+    }
+    // copy the old job to a new one
+    // in time_documents starting from p_id replace the old job with the new job
+    // expire the old job
+    //    
+    private String doFix(JobTask job,
+			 String sg_id,
+			 String nw_date,
+			 String p_id,
+			 String p_start,
+			 String p2_id,
+			 String p2_end){
+	String back = "";
+	String eff_date = job.getEffective_date();
+	PayPeriod pp = new PayPeriod();
+	System.err.println(eff_date+" "+p_start);
+	long days = pp.findDateDiffWithDate(eff_date, p_start);
+	//
+	// if more than 20 days we do change otherwise we skip
+	if(days > 20){
+	    System.err.println(" days "+days);
+
+	}
+	return back;
     }
     public PayPeriod getPayPeriod(){
 	//

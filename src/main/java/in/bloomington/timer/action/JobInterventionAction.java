@@ -40,6 +40,7 @@ public class JobInterventionAction extends TopAction{
 	if(!back.isEmpty()){
 	    return back;
 	}
+	/**
 	if(!action.isEmpty()){
 	    JobTask job = new JobTask();
 	    // do delete or update here
@@ -72,12 +73,6 @@ public class JobInterventionAction extends TopAction{
 			de.setExpire_date(date);
 			back = de.doUpdate();
 		    }
-		    /**
-		    for(GroupEmployee ge:grpEmps){
-			ge.setExpire_date(date);
-			back += ge.doUpdate();
-		    }
-		    */
 		    for(JobTask jj:jobs){
 			jj.setExpire_date(date);
 			back += jj.doUpdate();
@@ -86,12 +81,18 @@ public class JobInterventionAction extends TopAction{
 		System.err.println(" date "+date);
 
 	    }
-	}						
+	}
+	*/
 	HandleJobTitleUpdate hjtl = new HandleJobTitleUpdate();
+	back = hjtl.specialProcess();
+	/**
 	back = hjtl.process();
 	empJobCanDelete = hjtl.getEmpJobCanDelete();
 	empJobNeedUpdate = hjtl.getEmpJobNeedUpdate();
 	empNotInNW = hjtl.getEmpNotInNW();
+	*/
+	// hjtl.findEmployeeJobForFix();
+	//hjtl.findNWJobs();
 	// System.err.println(" emp not nw "+empNotInNW.size());
 	return ret;
     }
