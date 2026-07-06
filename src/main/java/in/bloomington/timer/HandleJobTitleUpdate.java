@@ -416,7 +416,10 @@ public class HandleJobTitleUpdate{
     public void doNextStep(){
 	if(nwEmpJobs != null && curEmpJobs != null){
 	    Set<String> curKeys = curEmpJobs.keySet();
+	    int jj=1;
 	    for(String key:curKeys){ // emp_num
+		System.err.println(" emp numbr "+key);
+		if(jj > 15) break;
 		if(nwEmpJobs.containsKey(key)){
 		    List<List<String>> allJobs = nwEmpJobs.get(key);
 		    Hashtable<String, JobTask> oneJobs = curEmpJobs.get(key);
@@ -433,6 +436,7 @@ public class HandleJobTitleUpdate{
 			if(oneJobs != null && oneJobs.containsKey(jtitle)){
 			    JobTask job = oneJobs.get(jtitle);
 			    doFix(job, sg_id, nw_date, p_id, p_start, p2_id,p2_end);
+			    jj++;
 			}
 		    }
 		}
@@ -462,9 +466,64 @@ public class HandleJobTitleUpdate{
 	// if more than 20 days we do change otherwise we skip
 	if(days > 20){
 	    System.err.println(" days "+days);
-
+	    //
+	    // terminate the job
+	    String old_job_id = job.getId();
+	    job.setExpire_date(p2_end);
+	    job.doUpdate();
+	    // create a new job from at with the new date p_start
+	    // and salary group sg_id
+	    job.removeExpireDate();
+	    job.setEffective_date(p_start);
+	    job.setSalary_group_id(sg_id);
+	    job.doSave();
+	    String new_job_id = job.getId();
+	    System.err.println(" old_job_id "+old_job_id+" "+new_job_id+" "+p2_id);
+	    // get the new job id
+	    // update time_documents wiht the new new_job_id replacing old_job id starting starting p_id2 and after
+	    //
+	    back = updateDocuments(old_job_id, new_job_id, p2_id);
+	    if(!back.isEmpty()){
+		System.err.println(back);
+	    }
+	}
+	else{ // we may need to check salary group
+	    if(!job.getSalary_group_id().equals(sg_id)){
+		job.setSalary_group_id(sg_id);
+		back = job.doUpdate();
+	    }
 	}
 	return back;
+    }
+    private String updateDocuments(String old_job_id, String new_job_id, String pay_period_id){
+	Connection con = null;
+	PreparedStatement pstmt = null, pstmt2=null;
+	ResultSet rs = null;
+	String msg="", str="";
+	String qq = "update time_documents set job_id=? where job_id=? and "+
+	    " pay_period_id >= ? ";
+	logger.debug(qq);
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = "Could not connect to DB";
+	    return msg;
+	}							
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, new_job_id);
+	    pstmt.setString(2, old_job_id);
+	    pstmt.setString(3, pay_period_id);
+	    pstmt.executeUpdate();
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;	    
     }
     public PayPeriod getPayPeriod(){
 	//

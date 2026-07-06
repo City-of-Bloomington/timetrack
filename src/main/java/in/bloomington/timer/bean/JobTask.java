@@ -577,6 +577,9 @@ public class JobTask implements Serializable{
 	if(val > 0)
 	    hourly_rate = val;
     }
+    public void removeExpireDate(){
+	expire_date = "";
+    }
     public void setHourlyRate(String val){
 	if(val  != null && !val.isEmpty()){
 	    try{
@@ -1202,10 +1205,21 @@ public class JobTask implements Serializable{
 						
 	    if(effective_date.isEmpty())
 		effective_date = Helper.getToday();
-	    java.util.Date date_tmp = df.parse(effective_date);
+	    java.util.Date date_tmp = null;
+	    if(effective_date.indexOf("-") > 0){
+		date_tmp = df2.parse(effective_date);
+	    }
+	    else{
+		date_tmp = df.parse(effective_date);
+	    }
 	    pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
 	    if(!expire_date.isEmpty()){
-		date_tmp = df.parse(expire_date);								
+		if(expire_date.indexOf("-") > 0){
+		    date_tmp = df2.parse(expire_date);
+		}
+		else{
+		    date_tmp = df.parse(expire_date);
+		}		
 		pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));
 	    }
 	    else
@@ -1355,7 +1369,12 @@ public class JobTask implements Serializable{
 	    pstmt.setDate(5, new java.sql.Date(date_tmp.getTime()));
 
 	    if(!expire_date.isEmpty()){
-		date_tmp = df.parse(expire_date);
+		if(expire_date.indexOf("-") > 0){
+		    date_tmp = df2.parse(expire_date);
+		}
+		else{
+		    date_tmp = df.parse(expire_date);
+		}		
 		pstmt.setDate(6, new java.sql.Date(date_tmp.getTime()));
 	    }
 	    else
