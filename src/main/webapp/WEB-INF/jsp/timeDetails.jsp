@@ -182,6 +182,10 @@ function loginTimer() {
 				<s:set var="whichWeek" value="'week-one'" />
 				<%@ include file="weeklyTmwrp.jsp" %>
 			    </s:if>
+			    <s:if test="document.tmwrpRun.hasCycleRows()">
+				<s:set var="rows" value="document.tmwrpRun.cycleRows" />
+				<%@ include file="cycleRowsTmwrp.jsp" %>
+			    </s:if>			    
 			</s:if>
 			<!-- 
 			<s:if test="document.hasReasonTotals()">

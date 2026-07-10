@@ -187,7 +187,7 @@
 	    <s:if test="hasUnscheduleds()">
 		<s:set var="unscheduledTitle" value="'Unscheduled Times'" />
 		<s:set var="unscheduleds" value="unscheduleds" />
-		<%@ include file="unscheduledTimes.jsp" %>				
+		<%@ include file="unscheduledTimes.jsp" %>
 	    </s:if>								
           </div>
         </s:if>
