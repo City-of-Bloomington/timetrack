@@ -364,6 +364,13 @@ public class MultiJobDoc{
 				}
 			    }
 			}
+			if(doc.hasWarnings()){
+			    List<String> warns = doc.getWarnings();
+			    for(String str: warns){
+				if(!warnings.contains(str))
+				    warnings.add(str);
+			    }
+			}
 		    }
 		    // hourCodeWeek1
 		    if(true){
@@ -560,7 +567,7 @@ public class MultiJobDoc{
 		usedAccrualTotals = document.getUsedAccrualTotals();
 		earnedAccrualTotals = document.getEarnedAccrualTotals();
 	    }
-	    checkForWarnings();
+	    // checkForWarnings();
 	}
     }
 		
@@ -820,12 +827,13 @@ public class MultiJobDoc{
 	}
 	return "";
     }		
-
+    /**
     private void checkForWarnings(){
 	checkForWarningsAfter();
 	checkForWarningsBefore();
 	checkWarningForCommute();
     }
+    */
     private void checkWarningForCommute(){
 	if(dailyBlocks != null){
 	    // all reg codes

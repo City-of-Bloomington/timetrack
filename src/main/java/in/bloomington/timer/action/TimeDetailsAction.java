@@ -111,15 +111,6 @@ public class TimeDetailsAction extends TopAction{
 		    }
 		}
 	    }
-	    else{
-		/**
-		 // no employee becuase the user is not login
-		 // and using this page as bookmark to get to
-		 // the app
-		 System.err.println(" no employee "+employee);
-		 System.err.println(" user? "+user);
-		*/
-	    }
 	}
 	// 
 	// if we could not find, then we create a new one

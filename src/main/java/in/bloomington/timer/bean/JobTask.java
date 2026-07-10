@@ -56,7 +56,8 @@ public class JobTask implements Serializable{
     private String jobTitle="", salary_group_name="";
     // 
     // if a new position is needed
-    private String alt_position_name=""; 
+    private String alt_position_name="";
+    private int days_since_start = 0;
     //
     // for job change
     String new_group_id = "", pay_period_id="";
@@ -242,8 +243,8 @@ public class JobTask implements Serializable{
 		   String valg12, // ref_id
 		   String valg13, // ldap_name
 		   boolean valg14,  // allow pending accrual
-		   boolean valg15 // inactive
-									 
+		   boolean valg15, // inactive
+		   Integer val38
 		   ){
 	setVals(val,
 		val2,
@@ -287,7 +288,8 @@ public class JobTask implements Serializable{
 			  valg13,
 			  valg14,
 			  valg15
-			  );				
+			  );
+	setDaysSinceStart(val38);
     }
 
 									 
@@ -372,6 +374,9 @@ public class JobTask implements Serializable{
 	    getSalaryGroup();
 	}
 	return salary_group_id;
+    }
+    public Integer getdaysSinceStart(){
+	return days_since_start;
     }
     public String getEffective_date(){
 	return effective_date;
@@ -594,6 +599,10 @@ public class JobTask implements Serializable{
     public void setPay_period_id(String val){
 	if(val != null && !val.equals("-1"))
 	    pay_period_id = val;
+    }
+    public void setDaysSinceStart(Integer val){
+	if(val != null)
+	   days_since_start = val;
     }
     public String getName(){
 	getPosition();
@@ -1019,7 +1028,8 @@ public class JobTask implements Serializable{
 	    "g.include_in_auto_batch,"+
 	    "g.inactive,"+
 	    "d.name,d.description,d.ref_id,d.ldap_name,"+
-	    "d.allow_pending_accrual,d.inactive "+						
+	    "d.allow_pending_accrual,d.inactive, "+
+	    "DATEDIFF(now(), j.effective_date) "+
 	    " from jobs j "+
 	    " join salary_groups sg on sg.id=j.salary_group_id "+
 	    " join positions p on j.position_id=p.id "+
@@ -1078,8 +1088,7 @@ public class JobTask implements Serializable{
 				  rs.getString(36) != null,
 				  rs.getString(37) != null
 				  );
-
-
+		setDaysSinceStart(rs.getInt(38));
 	    }
 	}
 	catch(Exception ex){

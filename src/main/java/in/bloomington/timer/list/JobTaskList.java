@@ -278,7 +278,8 @@ public class JobTaskList{
 	    "g.include_in_auto_batch,"+	    
 	    "g.inactive,"+
 	    "d.name,d.description,d.ref_id,d.ldap_name,"+
-	    "d.allow_pending_accrual,d.inactive "+		
+	    "d.allow_pending_accrual,d.inactive, "+
+	    "DATEDIFF(now(), j.effective_date) "+
 	    " from jobs j ";
 	qq += " join salary_groups sg on sg.id=j.salary_group_id "+
 	    " join positions p on j.position_id=p.id "+						
@@ -533,7 +534,8 @@ JobTask one =
 				rs.getString(34),
 				rs.getString(35),
 				rs.getString(36) != null,
-				rs.getString(37) != null
+				rs.getString(37) != null,
+				rs.getInt(38)
 				);
 		if(!jobTasks.contains(one))
 		    jobTasks.add(one);
@@ -620,7 +622,8 @@ JobTask one =
 					rs.getString(34),
 					rs.getString(35),
 					rs.getString(36) != null,
-					rs.getString(37) != null
+					rs.getString(37) != null,
+					rs.getInt(38)
 					);
 			if(!jobTasks.contains(one))
 			    jobTasks.add(one);

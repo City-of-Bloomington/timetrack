@@ -49,7 +49,10 @@ public class TmwrpRun{
     List<TmwrpBlock> blocks = null;
 
     List<List<String>> week1Rows = null, week2Rows = null;
-    List<String> cycleTotalRow = null; // pay period row 
+    List<String> cycleTotalRow = null; // pay period row
+    Map<String, Double> cycleHourMap = new TreeMap<>();
+    Map<String, Double> cycleAmountMap = new TreeMap<>();
+    List<List<String>> cycleRows = new ArrayList<>();   
     Map<CodeRef, Double> csvHourRows = null;
     Map<CodeRef, Double> csvAmountRows = null;		
 
@@ -366,7 +369,7 @@ public class TmwrpRun{
 	return cycleTotalRow;
     }
 
-		
+
     public void findRows(){
 	findBlocks();
 	if(hasWeek1Totals() || hasWeek2Totals()){
@@ -425,6 +428,11 @@ public class TmwrpRun{
 			    has_week2_rows = true;
 			    week2Rows.add(row);
 			}
+			double dd = one.getAmount();
+			if(cycleAmountMap.containsKey(key)){
+			    dd += cycleAmountMap.get(key);
+			}
+			cycleAmountMap.put(key, dd);
 		    }
 		    else{
 			row.add(key);
@@ -437,7 +445,12 @@ public class TmwrpRun{
 			else{
 			    week2Rows.add(row);
 			    has_week2_rows = true;
-			}										
+			}
+			double dd = one.getHours();
+			if(cycleHourMap.containsKey(key)){
+			    dd += cycleHourMap.get(key);
+			}
+			cycleHourMap.put(key, dd);			
 		    }
 		}
 	    }
@@ -490,6 +503,68 @@ public class TmwrpRun{
 	findCsvRows();
 	return csvHourRows != null && !csvHourRows.isEmpty();
     }
+    public boolean hasCycleRows(){
+	findCycleRows();
+	return cycleRows != null;
+    }
+    public List<List<String>> getCycleRows(){
+	return cycleRows;
+    }
+    private void findCycleRows(){
+	if(week1_grs_reg_hrs+week2_grs_reg_hrs > 0){
+	    String key = "";
+	    List<String> ll = new ArrayList<>();
+	    if(regCode != null){
+		key = "Gr "+regCode.getCodeInfo();
+	    }
+	    ll.add(key);
+	    ll.add(df.format(week1_grs_reg_hrs+week2_grs_reg_hrs));
+	    ll.add("");
+	    cycleRows.add(ll);
+	    if(regCode != null){
+		key = "Net "+regCode.getCodeInfo();
+	    }
+	    ll = new ArrayList<>();
+	    ll.add(key);
+	    ll.add(df.format(week1_net_reg_hrs+week2_net_reg_hrs));
+	    ll.add("");
+	    cycleRows.add(ll);
+	}
+	if(cycleHourMap != null){
+	    Set<String> set = cycleHourMap.keySet();	
+	    if(cycleRows == null){
+		cycleRows = new ArrayList<>();
+	    }
+	    for(String key:set){
+		List<String> ll = new ArrayList<>();
+		ll.add(key);
+		ll.add(df.format(cycleHourMap.get(key)));
+		ll.add("");
+		cycleRows.add(ll);
+	    }
+	}
+	if(cycleAmountMap != null){
+	    Set<String> set = cycleAmountMap.keySet();	
+	    if(cycleRows == null){
+		cycleRows = new ArrayList<>();
+	    }
+	    for(String key:set){
+		List<String> ll = new ArrayList<>();
+		ll.add(key);
+		ll.add("");		
+		ll.add(df.format(cycleAmountMap.get(key)));
+		cycleRows.add(ll);
+	    }
+	}	
+	if(getCycleTotalHours() > 0 || getCycleTotalAmount() > 0){
+	    List<String> ll = new ArrayList<>();
+	    ll.add("Pay Period Total");
+	    ll.add(df.format(getCycleTotalHours()));
+	    ll.add(df.format(getCycleTotalAmount()));
+	    cycleRows.add(ll);
+	}
+    }
+	
 		
     public boolean hasCsvAmountRows(){
 	return csvAmountRows != null && !csvAmountRows.isEmpty();

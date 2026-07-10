@@ -92,7 +92,7 @@ public class Document implements Serializable{
     HolidayList holidays = null;
     TmwrpRun tmwrpRun = null;
     boolean accrualAdjusted = false, warning_flag_set=false,
-	need_warning = true, prepare_called=false;
+	need_warning = true, prepare_called=false, temp_seasonal_warn=false;
     boolean inAltPayPeriodSet = false;
     public Document(String val,
 		    String val2,
@@ -310,7 +310,7 @@ public class Document implements Serializable{
     }
     public boolean hasUnscheduleds(){
 	return unscheduleds != null && unscheduleds.size() > 0;
-    }		
+    }
     /**
      * if the document is not processed, then the
      * approvers and payroll approvers can edit
@@ -455,16 +455,22 @@ public class Document implements Serializable{
 	return job;
     }		
     private void fillWarningMap(){
-	AccrualWarningList tl = new AccrualWarningList();
-	String back = tl.find();
-	if(back.isEmpty()){
-	    List<AccrualWarning> ones = tl.getAccrualWarnings();
-	    if(ones != null && ones.size() > 0){
-		for(AccrualWarning one:ones){
-		    List<HourCode> codes = one.getHourCodes();
-		    if(codes != null && codes.size() > 0){
-			for(HourCode cc:codes){		
-			    warningMap.put(cc.getCodeInfo(), one);
+	getSalaryGroup();
+	if(salaryGroup != null && !(
+				    salaryGroup.isTemporary() ||
+				    salaryGroup.isSeasonal() ||
+				    salaryGroup.isPartTime())){
+	    AccrualWarningList tl = new AccrualWarningList();
+	    String back = tl.find();
+	    if(back.isEmpty()){
+		List<AccrualWarning> ones = tl.getAccrualWarnings();
+		if(ones != null && ones.size() > 0){
+		    for(AccrualWarning one:ones){
+			List<HourCode> codes = one.getHourCodes();
+			if(codes != null && codes.size() > 0){
+			    for(HourCode cc:codes){		
+				warningMap.put(cc.getCodeInfo(), one);
+			    }
 			}
 		    }
 		}
@@ -1405,13 +1411,20 @@ public class Document implements Serializable{
 		System.err.println("check warn "+ex);
 	    }
 	}
+	if(temp_seasonal_warn){
+	    try{
+		checkForTempSeasonal();
+	    }catch(Exception ex){
+		System.err.println("check warn "+ex);
+	    }	    
+	}
     }
     // part time warnings
     private void checkForPartTimeWarnings(){
 	if(job != null){
 	    // part time warning
 	    if(job.getSalaryGroup().isPartTime()){
-		if(week1Total > job.getWeekly_regular_hours()){
+		if(week1Total > job.getWeekly_regular_hours()+0.5){
 
 		    String str = "Week 1 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
 		    if(!warnings.contains(str))
@@ -1431,7 +1444,7 @@ public class Document implements Serializable{
 		else {
 		    checkPartTimeWednesdayHours(1);
 		}
-		if(week2Total > job.getWeekly_regular_hours()){
+		if(week2Total > job.getWeekly_regular_hours()+0.5){
 		    String str = "Week 2 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
 		    if(!warnings.contains(str))
 			warnings.add(str);
@@ -1603,6 +1616,43 @@ public class Document implements Serializable{
 	    }
 	}
     }
+    private void checkForTempSeasonal(){
+	if(job == null){
+	    getJob();
+	    if(job != null){
+		salaryGroup = job.getSalaryGroup();
+	    }
+	}
+	if(salaryGroup != null){
+	    int days_since_start = 0;
+	    String str = "";
+	    if(salaryGroup.isTemporary()){
+		days_since_start = job.getdaysSinceStart();
+		if(days_since_start > 255){
+		    if(days_since_start <= 275){
+			str = " Your employment is approaching (9) months limit ";
+		    }
+		    else{
+			str = " Your employment exceeded the (9) months limit ";
+		    }
+		}
+	    }
+	    else if(salaryGroup.isSeasonal()){
+		days_since_start = job.getdaysSinceStart();		
+		if(days_since_start > 163){
+		    if(days_since_start <= 183){
+			str = " Your employment is approaching (6) months limit ";
+		    }
+		    else {
+			str = " Your employment exceeded the (6) months limit ";
+		    }
+		}
+	    }
+	    if(!str.isEmpty() && !warnings.contains(str)){
+		warnings.add(str);
+	    }
+	}
+    }    
     // check for holiday omission
     private void checkForHolidayOmission(){
 	if(week1Total+week2Total > 0){
@@ -1699,17 +1749,21 @@ public class Document implements Serializable{
     private void setWarningFlag(){
 	if(!warning_flag_set){
 	    warning_flag_set = true;
+	    temp_seasonal_warn = false;
 	    getSalaryGroup();
 	    getJob();
 	    if(job != null){
 		group = job.getGroup();
 	    }
 	    if(salaryGroup != null){
-		if(salaryGroup.isFireSworn() ||
-		   salaryGroup.isSeasonal() ||
-		   salaryGroup.isTemporary() ||
-		   salaryGroup.isPoliceSworn()
+		if(salaryGroup.isSeasonal() ||
+		   salaryGroup.isTemporary()
 		   ){
+		    temp_seasonal_warn = true;
+		}		
+		else if(salaryGroup.isFireSworn() ||
+			salaryGroup.isPoliceSworn()
+			){
 		    need_warning = false;
 		}
 		else if(salaryGroup.isFireSworn5x8() &&

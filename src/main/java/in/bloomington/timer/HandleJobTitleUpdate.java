@@ -34,14 +34,16 @@ public class HandleJobTitleUpdate{
     // NW employee jobs
     Hashtable<String, Set<String>> empNwJobs = new Hashtable<>();
     Hashtable<String, Set<String>> empJobNotInTT = null;
-    Hashtable<Employee, Set<JobTask>> empJobNotInNW = null;		
+    Hashtable<Employee, Set<JobTask>> empJobNotInNW = null;    
     Hashtable<Employee, Set<JobTask>> empNotInNW = null;
     Hashtable<Employee, Set<JobTask>> empJobCanDelete = null;
     Hashtable<Employee, Set<JobTask>> empJobNeedUpdate = null;
     //
     // added to fix park jobs
     Map<String, List<List<String>>> nwEmpJobs = new TreeMap<>();
-    Hashtable<String, Hashtable<String, JobTask>> curEmpJobs = new Hashtable<>();    
+    Hashtable<String, Hashtable<String, JobTask>> curEmpJobs = new Hashtable<>();
+    Hashtable<String, Set<String>> empJobNotInNw = new Hashtable<>();
+    Hashtable<String, String> empHash = new Hashtable<>();
     public HandleJobTitleUpdate(EnvBean val){
 	if(val != null)
 	    envBean = val;
@@ -88,6 +90,12 @@ public class HandleJobTitleUpdate{
 	String back = findNWJobs();
 	back = findEmployeeJobForFix();
 	doNextStep();
+	System.err.println(" Jobs not in NW "+empJobNotInNw.size());
+	Set<String> keys = empJobNotInNw.keySet();
+	for(String key:keys){
+	    Set<String> set = empJobNotInNw.get(key);
+	    System.err.println(key+" : "+set);
+	}
 	return back;
     }
     public String process(){
@@ -235,20 +243,23 @@ public class HandleJobTitleUpdate{
 		    }
 		    if(needIn){
 			String emp_num = emp.getEmployee_number();
-			Hashtable<String, JobTask> oneJobs = null;
-			if(curEmpJobs.containsKey(emp_num)){
-			    oneJobs = curEmpJobs.get(emp_num);
+			if(!emp_num.isEmpty()){
+			    empHash.put(emp_num, emp.getFull_name());
+			    Hashtable<String, JobTask> oneJobs = null;
+			    if(curEmpJobs.containsKey(emp_num)){
+				oneJobs = curEmpJobs.get(emp_num);
+			    }
+			    else{
+				oneJobs = new Hashtable<>();
+			    }
+			    for(JobTask job:jobs){
+				String jobTitle = job.getName();
+				oneJobs.put(jobTitle, job);
+				System.err.println(jj+" "+jobTitle);
+				jj++;
+			    }
+			    curEmpJobs.put(emp_num, oneJobs);
 			}
-			else{
-			    oneJobs = new Hashtable<>();
-			}
-			for(JobTask job:jobs){
-			    String jobTitle = job.getName();
-			    oneJobs.put(jobTitle, job);
-			    System.err.println(jj+" "+jobTitle);
-			    jj++;
-			}
-			curEmpJobs.put(emp_num, oneJobs);
 		    }
 		}
 	    }
@@ -331,7 +342,7 @@ public class HandleJobTitleUpdate{
 	    int jj=1;
 	    while(rs.next()){
 		String str = rs.getString(1); // emp number
-		String str2 = rs.getString(6).trim(); //title
+		String str2 = rs.getString(6).trim(); //job title
 		String str3 = rs.getString(4)+" "+rs.getString(3); //name
 		String str4 = rs.getString(7); // group
 		String str5 = rs.getString(9); // rate
@@ -419,7 +430,7 @@ public class HandleJobTitleUpdate{
 	    int jj=1;
 	    for(String key:curKeys){ // emp_num
 		System.err.println(" emp numbr "+key);
-		if(jj > 15) break;
+		// if(jj > 30) break;
 		if(nwEmpJobs.containsKey(key)){
 		    List<List<String>> allJobs = nwEmpJobs.get(key);
 		    Hashtable<String, JobTask> oneJobs = curEmpJobs.get(key);
@@ -434,9 +445,26 @@ public class HandleJobTitleUpdate{
 			String p2_id = jobl.get(5); // one before
 			String p2_end = jobl.get(6); // one before end
 			if(oneJobs != null && oneJobs.containsKey(jtitle)){
-			    JobTask job = oneJobs.get(jtitle);
+			    JobTask job = oneJobs.get(jtitle);			
 			    doFix(job, sg_id, nw_date, p_id, p_start, p2_id,p2_end);
 			    jj++;
+			}
+			else{
+			    String empName = "";
+			    if(empHash.containsKey(key)){
+				empName = empHash.get(key);
+			    }
+			    if(!empName.isEmpty()){
+				if(empJobNotInNw.containsKey(empName)){
+				    Set<String> set = empJobNotInNw.get(empName);
+				    set.add(jtitle);
+				}
+				else{
+				    Set<String> set = new HashSet<>();
+				    set.add(jtitle);
+				    empJobNotInNw.put(empName, set);
+				}
+			    }
 			}
 		    }
 		}
@@ -490,6 +518,7 @@ public class HandleJobTitleUpdate{
 	else{ // we may need to check salary group
 	    if(!job.getSalary_group_id().equals(sg_id)){
 		job.setSalary_group_id(sg_id);
+		System.err.println(" updating salary group "+sg_id);
 		back = job.doUpdate();
 	    }
 	}
@@ -553,3 +582,33 @@ public class HandleJobTitleUpdate{
     }		
 		
 }
+/**
+	select distinct (j.id),
+	concat_ws(' ',e.first_name,e.last_name) as full_name,
+	concat_ws(' ',e2.first_name,e2.last_name) as approver,
+	e2.email approver_email,
+	    p.name as job_title, 
+	    g.name as group_name,
+	    DATEDIFF(now(), j.effective_date) as days_since_start 
+	    from jobs j 
+	    join salary_groups sg on sg.id=j.salary_group_id 
+	    join positions p on j.position_id=p.id 
+	     join employees e on j.employee_id=e.id 
+	     join `groups` g on g.id=j.group_id 
+	     join departments d on g.department_id=d.id
+	     left join group_managers mg on mg.group_id=g.id
+	     and mg.employee_id = (select gm.employee_id from group_managers gm join workflow_nodes wn on wn.id=gm.wf_node_id
+	     join employees e3 on gm.employee_id=e3.id and e3.inactive is null 
+	     where gm.group_id = g.id and gm.expire_date is null and gm.wf_node_id=3 and gm.inactive is null order by gm.primary_flag desc limit 1)
+	     left join employees e2 on mg.employee_id=e2.id 
+	     where j.salary_group_id = 3 and
+	     j.inactive is null and 
+	     j.expire_date is null and
+	     DATEDIFF(now(), j.effective_date) > 275 and
+	     e.inactive is null 
+	     
+	     
+   
+
+
+ */
