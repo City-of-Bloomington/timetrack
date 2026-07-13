@@ -99,7 +99,7 @@
 		<script type="text/javascript">
 		 setTimeout(function(){
 		     window.top.location = "<s:property value='#application.url' />timeClock.action";
-		 }, 5000);
+		 }, 3000);
 		</script>
 		&nbsp;&nbsp;
 		<!-- 
