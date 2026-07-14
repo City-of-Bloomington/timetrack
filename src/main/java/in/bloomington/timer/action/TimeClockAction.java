@@ -26,12 +26,6 @@ public class TimeClockAction extends TopAction{
     static final long serialVersionUID = 4320L;	
     static Logger logger = LogManager.getLogger(TimeClockAction.class);
     DecimalFormat dFormat = new DecimalFormat("###.00");
-    /**
-    static final long period_length = 5L; // minutes
-    static Instant startTime = null;		
-    static Set<String> ipSet = null;
-    static Hashtable<String, String> locationHash = null;
-    */
     //
     TimeClock timeClock = null;
     String timeClocksTitle = "Time Clock Data";
@@ -172,6 +166,7 @@ public class TimeClockAction extends TopAction{
 	    action = val;
     }
     private void prepareIps(){
+	/**
 	boolean needUpdate = false;
 	if(startTime == null){
 	    startTime =  Instant.now();
@@ -184,8 +179,9 @@ public class TimeClockAction extends TopAction{
 		startTime = now;
 	    }
 	}
-	if(ipSet == null || needUpdate){
-	    needUpdate = false;
+	*/
+	if(ipSet == null){
+	    // needUpdate = false;
 	    LocationList ial = new LocationList();
 	    ial.hasIpAddress();
 	    String back = ial.find();

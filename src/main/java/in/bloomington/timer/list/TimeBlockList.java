@@ -41,8 +41,9 @@ public class TimeBlockList{
 	inAltPayPeriodSet = false;
     double total_hours = 0.0, week1_flsa=0.0, week2_flsa=0.0;
     //
-    //the following are needed for clocked-In search
+    //the following are needed for clocked-In and out search
     int clocked_in_hour = -1, clocked_in_minute=-1;
+    int clocked_out_hour = -1, clocked_out_minute=-1;
     //
     int total_minutes = 0;
     double week1Total = 0, week2Total = 0;
@@ -326,7 +327,13 @@ public class TimeBlockList{
     }
     public int getClockedInMinute(){
 	return clocked_in_minute;
-    }				
+    }
+    public int getClockedOutHour(){
+	return clocked_out_hour;
+    }
+    public int getClockedOutMinute(){
+	return clocked_out_minute;
+    }	    
     // find employee jobs in this pay period
     //
     // normally one job only per document
@@ -764,6 +771,78 @@ public class TimeBlockList{
 		reasonWeek2.put(reason, dl);
 	    }
 	}
+    }
+    /**
+	select 
+	    t.document_id, 
+	    t.end_hour,t.end_minute 
+	    from time_blocks t 
+	    join time_documents d on d.id=t.document_id 
+	    join pay_periods p on p.id=d.pay_period_id 
+	    where 
+	    ((t.clock_in is not null and t.clock_out is not null) or  
+	    (t.clock_in is null and t.clock_out is null)) 
+	    and t.inactive is null 
+	    and d.pay_period_id=744 
+	    and d.employee_id=1 
+	    and (630 - (t.end_hour*60+t.end_minute)) between 0 and 5 and t.date='2026-07-14';
+	    
+
+
+	     
+
+     */
+    //
+    public String findDocumentForClockOutOnly(int time_hr, int time_min){
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	String msg="", str="";
+	double dd_time = time_hr*60+time_min;
+	String qq = "select "+
+	    " t.document_id, "+
+	    " t.end_hour,t.end_minute "+
+	    " from time_blocks t "+
+	    " join time_documents d on d.id=t.document_id "+
+	    " join pay_periods p on p.id=d.pay_period_id "+
+	    " where "+
+	    " ((t.clock_in is not null and t.clock_out is not null) or  "+
+	    " (t.clock_in is null and t.clock_out is null)) "+
+	    " and t.inactive is null "+
+	    " and d.pay_period_id=? "+
+	    " and d.employee_id=? ";
+	qq += " and ";						
+	qq += " (("+dd_time+" - (t.end_hour*60+t.end_minute)) between 0 and 5 and t.date=?) ";
+	con = UnoConnect.getConnection();
+	if(con == null){
+	    msg = " Could not connect to DB ";
+	    logger.error(msg);
+	    return msg;
+	}
+	logger.debug(qq);
+	try{
+	    pstmt = con.prepareStatement(qq);
+	    pstmt.setString(1, pay_period_id);
+	    pstmt.setString(2, employee_id);
+	    String date = Helper.getToday();
+	    java.util.Date date_tmp = df.parse(date);
+	    pstmt.setDate(3, new java.sql.Date(date_tmp.getTime()));
+	    rs = pstmt.executeQuery();
+	    if(rs.next()){
+		// document_id = rs.getString(1);
+		clocked_out_hour = rs.getInt(2);
+		clocked_out_minute = rs.getInt(3);
+	    }
+	}
+	catch(Exception ex){
+	    msg += " "+ex;
+	    logger.error(msg+":"+qq);
+	}
+	finally{
+	    Helper.databaseDisconnect(pstmt, rs);
+	    UnoConnect.databaseDisconnect(con);
+	}
+	return msg;
     }
     /**
      * this method is needed for employee with multiple jobs and find out

@@ -44,7 +44,7 @@ public abstract class TopAction extends ActionSupport implements SessionAware, S
     static String app_mode="";
     // for timeClock and locations
     static final long period_length = 5L; // minutes
-    static Instant startTime = null;		
+    // static Instant startTime = null;		
     static Set<String> ipSet = null;
     static Hashtable<String, String> locationHash = null;
     String action="", id="", employee_id="";

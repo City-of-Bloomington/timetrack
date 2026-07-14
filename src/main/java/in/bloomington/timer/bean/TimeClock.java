@@ -34,6 +34,7 @@ public class TimeClock{
     boolean location_used = false;
     int time_hr = -1, time_min = -1; // hour, minute of clock
     int clocked_in_hour = -1, clocked_in_minute = -1;
+    int clocked_out_hour = -1, clocked_out_minute = -1;    
     String ip = ""; // for debug;
     TimeBlock timeBlock = new TimeBlock();
     boolean hasClockIn = false;
@@ -429,7 +430,36 @@ public class TimeClock{
 	if(val != null){
 	    employee_id = val;
 	}
-    }		
+    }
+    //
+    // check if the user already clock-out within the last 3 minutes
+    //
+    public boolean hasClockOut(){
+	/**
+	if(employee != null){
+	    getCurrentPayPeriod();
+	    TimeBlockList tbl = new TimeBlockList();
+	    tbl.setPay_period_id(currentPayPeriod.getId());
+	    tbl.setEmployee_id(employee.getId());
+	    String back = tbl.findDocumentForClockOutOnly(time_hr, time_min);
+	    if(back.isEmpty()){
+		int clocked_out_hour = tbl.getClockedOutHour();
+		int clocked_out_minute = tbl.getClockedOutMinute();
+		if(clocked_out_hour > -1 && clocked_out_minute > -1){
+		   int dif_min = (time_hr*60+time_min) -
+		       (clocked_out_hour*60+clocked_out_minute);
+		   if(dif_min < 3) return true;
+		}
+	    }
+	}
+	*/
+	if(clocked_out_hour > -1 && clocked_out_minute > -1){
+	    int dif_min = (time_hr*60+time_min) -
+		(clocked_out_hour*60+clocked_out_minute);
+	    if(dif_min < 3) return true;
+	}
+	return false;
+    }
     //
     // check if has ClockIn
     //
@@ -453,6 +483,11 @@ public class TimeClock{
 		    document.prepareDaily();
 		}
 		else{
+		   back = tbl.findDocumentForClockOutOnly(time_hr, time_min);
+		   if (back.isEmpty()) {
+		       clocked_out_hour = tbl.getClockedOutHour();
+		       clocked_out_minute = tbl.getClockedOutMinute();
+		   }
 		    // System.err.println(" no doc for clock in found ");
 		}
 	    }
@@ -479,6 +514,7 @@ public class TimeClock{
 		}
 	    }
 	}
+	
 	return hasClockIn;
     }
     void findJobs(){
@@ -628,6 +664,11 @@ public class TimeClock{
 			timeBlock.setLocation_id(location_id);
 			msg = timeBlock.doUpdate();
 		    } else { // it is a clock-in
+			// check if already clock-out less than 3 minutes
+			if(hasClockOut()){
+			    msg = "You already clock-out within the last 3 minutes";
+			    return msg;
+			}
 			timeBlock = new TimeBlock(null,
 						  document.getId(),
 						  hour_code_id,
