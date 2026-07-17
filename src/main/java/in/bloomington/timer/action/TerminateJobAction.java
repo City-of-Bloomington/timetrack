@@ -44,40 +44,29 @@ public class TerminateJobAction extends TopAction{
     public String execute(){
 	String ret = SUCCESS;
 	String back = doPrepare("terminate.action");
-	if(action.equals("Submit")){ 
-	    if(!id.isEmpty()){
-		term = new EmpTerminate(id);
-		back = term.doSelect();
+	if(action.isEmpty()){
+	    if(!job_id.isEmpty()){
+		hasTempJobs = !hasJobWithBenefits();
+	    }
+	    ret = "select_jobs";
+	}
+	else if(action.equals("Update")){
+	    if(term != null){
+		back = term.findJobTerms();
+		back += term.doTerminate(); 
 		if(!back.isEmpty()){
 		    addError(back);
 		}
-		else{
-		    if(!term.isStarted()){
-			System.err.println(" ret view ");
-			ret = "view";
-		    }
-		    else{
-			back += term.findEmployeeAddress();
-			if(!back.isEmpty()){
-			    addError(back);
-			}
-			if(hasJobWithBenefits()){
-			    back += term.findDocumentForInfo();
-			    if(!back.isEmpty()){
-				addError(back);
-			    }
-			    term.setAccrualValues();
-			}
-		    }
+		term.setSubmitted_by(user);
+		term.setProcess_status("Ready");
+		back += term.doUpdate();
+		if(!back.isEmpty()){
+		    addError(back);
 		}
-	    }
-	    else{
-		if(!job_id.isEmpty()){
-		    hasTempJobs = !hasJobWithBenefits();
+		else {
+		    addMessage("Terminated Successfully");
 		}
-		// if(hasTempJobs){
-		ret = "select_jobs";
-	    }
+	    }	    
 	}
 	else if(action.equals("Edit")){
 	    if(!id.isEmpty()){
@@ -145,7 +134,8 @@ public class TerminateJobAction extends TopAction{
 		return ret;
 	    }
 	}	    
-	else if(action.equals("Submit")){ 
+	else if(action.equals("Submit")){
+	    // need check
 	    if(term != null){
 		back = term.findJobTerms();
 		back += term.doTerminate(); 
@@ -187,6 +177,7 @@ public class TerminateJobAction extends TopAction{
 		    }
 		}
 		else{
+		    id = term.getId();
 		    addMessage("Inactivve Email");
 		    ret = "view";
 		}

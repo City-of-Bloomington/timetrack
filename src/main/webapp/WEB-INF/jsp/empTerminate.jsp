@@ -209,6 +209,9 @@
 	    </tr>
 	</table>
 	<div class="button-group">
+	    <s:if test="action =='Edit'">
+		<s:submit name="action" type="button" value="Update" class="button"/>
+	    </s:if>
 	    <s:if test="term.isStarted()">
 		<s:submit name="action" type="button" value="Submit" class="button"/>
 		<a href="<s:property value='#application.url' />terminateJobs.action?id=<s:property value='term.id' />" class="button"> Refresh </a>

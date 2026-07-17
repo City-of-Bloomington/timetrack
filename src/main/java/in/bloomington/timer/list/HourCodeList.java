@@ -146,7 +146,7 @@ public class HourCodeList{
 	    }
 	    if(current_only){
 		if(!qw.isEmpty()) qw += " and "; 
-		qw += " e.inactive is null ";
+		qw += " e.inactive is null and c.inactive is null ";
 	    }
 	    else if(!effective_date_before.isEmpty()){
 		if(!qw.isEmpty()) qw += " and "; 
@@ -182,8 +182,7 @@ public class HourCodeList{
 		qw += " e.type = ? ";
 	    }
 	    if(active_only){
-		if(!qw.isEmpty()) qw += " and "; 								
-		qw += " e.inactive is null "; 
+		if(!qw.isEmpty()) qw += " and "; 						qw += " e.inactive is null and c.inactive is null"; 
 	    }						
 	    if(!qw.isEmpty()){
 		qw = " where "+qw;

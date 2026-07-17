@@ -43,6 +43,7 @@
 		<li><a href="<s:property value='#application.url'/>serviceKey.action">Service Keys</a></li>				
 		<li><a href="<s:property value='#application.url'/>shift.action">Shift Time Rounding</a></li>				
 		<li><a href="<s:property value='#application.url'/>node.action">Workflow Actions</a></li>
+		<li><a href="<s:property value='#application.url'/>activeEmployees.action">Multi Job Emp Termination (Reguire Temination Manager)</a></li>
 	    </ul>
 	    <h2>Interventions</h2>
 	    <ul>
@@ -55,7 +56,7 @@
 	    </ul>
 	    <h2>Configurations</h2>
 	    <ul>
-		<li><a href="<s:property value='#application.url'/>termManager.action">Termination Managers </a></li>
+		<li><a href="<s:property value='#application.url'/>termManager.action">Department Termination Managers </a></li>
 		<li><a href="<s:property value='#application.url'/>termRecipient.action">Termination Notification Recipients </a></li>
 		<li><a href="<s:property value='#application.url'/>shiftDifferential.action">Shift Differentail (Police)</a></li>				
 	    </ul>

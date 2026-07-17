@@ -1171,7 +1171,7 @@ null,?,?)
 	ResultSet rs = null;	
 	String qq = "insert into emp_terminations values(0,?,?,?,?, ?,?,?,?,?,"+
 	    "?,?,?,?,?, ?,?,?,?,?,"+
-	    "?,?,?,?,?, ?,?,?,?,?,now(),"+
+	    "?,?,?,?,?, ?,?,?,?,now(),"+
 	    "'Started', null,?,?)";
 	process_status="Started";
 	con = UnoConnect.getConnection();
@@ -1292,16 +1292,16 @@ null,?,?)
 	    else
 		pstmt.setString(28, submitted_by_id);
 	    if(termination_type.isEmpty()){
+		pstmt.setNull(29, Types.VARCHAR);
+	    }
+	    else{
+		pstmt.setString(29,termination_type);
+	    }
+	    if(cdl_status.isEmpty()){
 		pstmt.setNull(30, Types.VARCHAR);
 	    }
 	    else{
-		pstmt.setString(30,termination_type);
-	    }
-	    if(cdl_status.isEmpty()){
-		pstmt.setNull(31, Types.VARCHAR);
-	    }
-	    else{
-		pstmt.setString(31, cdl_status);
+		pstmt.setString(30, cdl_status);
 	    }	    
 	    pstmt.executeUpdate();
 	    qq = "select LAST_INSERT_ID()";

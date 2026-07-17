@@ -168,6 +168,7 @@ public class EmpList extends CommonInc{
 		"businessCategory",
 		"employeeNumber",
 		"employeeId", // id_code
+		"pager", // public phone number 
 		"title"};
 	    //
 	    ctls.setReturningAttributes(attrIDs);
@@ -280,7 +281,14 @@ public class EmpList extends CommonInc{
 		if (phone != null){
 		    str = phone.get().toString();
 		    emp.setPhone(str);
-		}		
+		}
+		else{
+		    phone = (Attribute)(atts.get("pager"));
+		    if (phone != null){
+			str = phone.get().toString();
+			emp.setPhone(str);
+		    }
+		}
 		if(emps == null){
 		    emps = new ArrayList<>();
 		}
