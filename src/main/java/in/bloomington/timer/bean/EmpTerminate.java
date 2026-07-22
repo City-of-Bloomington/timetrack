@@ -237,11 +237,6 @@ public class EmpTerminate{
 	    }
 	    if(job != null){
 		employment_type = job.getSalaryGroup().getName();		
-		if(!(job.getSalaryGroup().isTemporary() ||
-		     job.getSalaryGroup().isSeasonal() ||
-		     job.getSalaryGroup().isPartTime())){
-		    employment_type = "Full Time "+employment_type;
-		}
 	    }
 	}
 	return employment_type;
@@ -403,7 +398,7 @@ public class EmpTerminate{
     }
     public boolean hasBenefits(){
 	getEmployment_type();
-	return !employment_type.equals("Temp");
+	return !(employment_type.equals("Temp") || employment_type.equals("Seasonal") || employment_type.equals("Part Time"));
     }
     public Employee getSubmitted_by(){
 	if(submitted_by == null && !submitted_by_id.isEmpty()){

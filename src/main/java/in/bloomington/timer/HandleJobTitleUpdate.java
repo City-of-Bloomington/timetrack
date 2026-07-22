@@ -33,9 +33,11 @@ public class HandleJobTitleUpdate{
     Hashtable<Employee, Set<JobTask>> empJobs = new Hashtable<>();
     // NW employee jobs
     Hashtable<String, Set<String>> empNwJobs = new Hashtable<>();
-    Hashtable<String, Set<String>> empJobNotInTT = null;
-    Hashtable<Employee, Set<JobTask>> empJobNotInNW = null;    
+    // Hashtable<String, Set<String>> empJobNotInTT = null;
+    Hashtable<Employee, Set<JobTask>> empJobNotInNW = null;
+    Hashtable<Employee, Set<JobTask>> empJobNotInTT = null;    
     Hashtable<Employee, Set<JobTask>> empNotInNW = null;
+    Hashtable<Employee, Set<JobTask>> empNotInTT = null;    
     Hashtable<Employee, Set<JobTask>> empJobCanDelete = null;
     Hashtable<Employee, Set<JobTask>> empJobNeedUpdate = null;
     //
@@ -43,6 +45,7 @@ public class HandleJobTitleUpdate{
     Map<String, List<List<String>>> nwEmpJobs = new TreeMap<>();
     Hashtable<String, Hashtable<String, JobTask>> curEmpJobs = new Hashtable<>();
     Hashtable<String, Set<String>> empJobNotInNw = new Hashtable<>();
+    Hashtable<String, Set<String>> empJobNotInTt = new Hashtable<>();    
     Hashtable<String, String> empHash = new Hashtable<>();
     public HandleJobTitleUpdate(EnvBean val){
 	if(val != null)
@@ -76,7 +79,10 @@ public class HandleJobTitleUpdate{
     }
     public Hashtable<Employee, Set<JobTask>> getEmpNotInNW(){
 	return empNotInNW;
-    }		
+    }
+    public Hashtable<Employee, Set<JobTask>> getEmpNotInTT(){
+	return empNotInTT;
+    }    
     public boolean hasEmpJobCanDelete(){
 	return empJobCanDelete != null && !empJobCanDelete.isEmpty();
     }
@@ -86,16 +92,30 @@ public class HandleJobTitleUpdate{
     public boolean hasEmployeeNotInNW(){
 	return empNotInNW != null && !empNotInNW.isEmpty();
     }
+    public boolean hasEmployeeNotInTT(){
+	return empNotInTT != null && !empNotInTT.isEmpty();
+    }    
     public String specialProcess(){
 	String back = findNWJobs();
 	back = findEmployeeJobForFix();
 	doNextStep();
-	System.err.println(" Jobs not in NW "+empJobNotInNw.size());
-	Set<String> keys = empJobNotInNw.keySet();
+	System.err.println(" Jobs not in TT "+empJobNotInTt.size());
+	Set<String> keys = empJobNotInTt.keySet();
 	for(String key:keys){
-	    Set<String> set = empJobNotInNw.get(key);
+	    Set<String> set = empJobNotInTt.get(key);
 	    System.err.println(key+" : "+set);
 	}
+	System.err.println(" Jobs not in Nw "+empJobNotInNw.size());
+	keys = empJobNotInNw.keySet();
+	for(String key:keys){
+	    Set<String> set = empJobNotInNw.get(key);
+	    String empName = "";
+	    if(empHash.containsKey(key)){
+		empName = empHash.get(key);
+	    }
+	    System.err.println(empName+" : "+set);
+	}
+		
 	return back;
     }
     public String process(){
@@ -145,7 +165,7 @@ public class HandleJobTitleUpdate{
 		empNotInNW.put(emp, jset);
 	    }
 	}
-	System.err.println(" Jobs in TT but not in NW ");			 
+	System.err.println(" Jobs in NW but not in TT ");			 
 	if(!empJobNotInNW.isEmpty()){
 	    Set<Employee> empSet = empJobNotInNW.keySet();
 	    jj=1;
@@ -230,11 +250,13 @@ public class HandleJobTitleUpdate{
 		    List<JobTask> jobs = emp.getJobs();
 		    if(jobs != null && jobs.size() > 0){
 			for(JobTask job:jobs){
-			    SalaryGroup sg = job.getSalaryGroup();
-			    if(sg != null && !(sg.isTemporary() ||
-				 sg.isPartTime() ||
-				 sg.isSeasonal())){
-				needIn = false;
+			    if(job.isActive()){
+				SalaryGroup sg = job.getSalaryGroup();
+				if(sg != null && !(sg.isTemporary() ||
+						   sg.isPartTime() ||
+						   sg.isSeasonal())){
+				    needIn = false;
+				}
 			    }
 			}
 		    }
@@ -393,25 +415,6 @@ public class HandleJobTitleUpdate{
 			nwEmpJobs.put(str, all);			
 		    }
 		}
-		    /**
-		if(str2.indexOf("-") > -1){
-		    str2 = str2.replace('-',' ');
-		}
-		    */
-		    /**
-		if(str != null){
-		    if(empNwJobs.containsKey(str)){
-			Set<String> set = empNwJobs.get(str);
-			set.add(str2);
-		    }
-		    else{
-			Set<String> set = new HashSet<>();
-			set.add(str2);
-			empNwJobs.put(str, set);
-		    }
-		}
-		    */
-		
 	    }
 		
 	}
@@ -450,19 +453,20 @@ public class HandleJobTitleUpdate{
 			    jj++;
 			}
 			else{
+			    // jobs not in Timetrack
 			    String empName = "";
 			    if(empHash.containsKey(key)){
 				empName = empHash.get(key);
 			    }
 			    if(!empName.isEmpty()){
-				if(empJobNotInNw.containsKey(empName)){
-				    Set<String> set = empJobNotInNw.get(empName);
+				if(empJobNotInTt.containsKey(empName)){
+				    Set<String> set = empJobNotInTt.get(empName);
 				    set.add(jtitle);
 				}
 				else{
 				    Set<String> set = new HashSet<>();
 				    set.add(jtitle);
-				    empJobNotInNw.put(empName, set);
+				    empJobNotInTt.put(empName, set);
 				}
 			    }
 			}
@@ -472,7 +476,41 @@ public class HandleJobTitleUpdate{
 	    }
 
 	}
-	
+	findJobsNotInNw();
+    }
+    private void findJobsNotInNw(){
+	if(nwEmpJobs != null && curEmpJobs != null){
+	    Set<String> curKeys = curEmpJobs.keySet();
+	    for(String key:curKeys){
+		if(nwEmpJobs.containsKey(key)){
+		    Hashtable<String, JobTask> oneJobs = curEmpJobs.get(key);
+		    Set<String> jobKeys = oneJobs.keySet();
+		    for(String keyJob:jobKeys){
+			boolean found = false;
+			List<List<String>> allJobs = nwEmpJobs.get(key);
+			for(List<String> ll:allJobs){
+			    String jtitle = ll.get(0);
+			    if(jtitle.equals(keyJob)){
+				found = true;
+				continue;
+			    }
+			}
+			if(!found){
+			    if(empJobNotInNw.containsKey(key)){
+				Set<String> set = empJobNotInNw.get(key);
+				set.add(keyJob);
+				empJobNotInNw.put(key, set);
+			    }
+			    else{
+				Set<String> set = new HashSet<>();
+				set.add(keyJob);
+				empJobNotInNw.put(key, set);
+			    }
+			}
+		    }
+		}
+	    }
+	}
     }
     // copy the old job to a new one
     // in time_documents starting from p_id replace the old job with the new job

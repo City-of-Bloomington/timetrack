@@ -1630,10 +1630,10 @@ public class Document implements Serializable{
 		days_since_start = job.getdaysSinceStart();
 		if(days_since_start > 255){
 		    if(days_since_start <= 275){
-			str = " Your employment is approaching (9) months limit ";
+			str = "Temporary employee is approaching the 9-month employment limit.";
 		    }
 		    else{
-			str = " Your employment exceeded the (9) months limit ";
+			str = "Temporary employee has exceeded 9 months of employment.";
 		    }
 		}
 	    }
@@ -1641,10 +1641,10 @@ public class Document implements Serializable{
 		days_since_start = job.getdaysSinceStart();		
 		if(days_since_start > 163){
 		    if(days_since_start <= 183){
-			str = " Your employment is approaching (6) months limit ";
+			str = "Seasonal employee is approaching the 6-month employment limit.";
 		    }
 		    else {
-			str = " Your employment exceeded the (6) months limit ";
+			str = "Seasonal employee has exceeded 6 months of employment ";
 		    }
 		}
 	    }
