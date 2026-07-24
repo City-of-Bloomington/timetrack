@@ -542,6 +542,10 @@ public class TimeBlock extends Block{
 		    hrs = Integer.parseInt(dd[0].trim());
 		    if(dd.length == 2){
 			mins = Integer.parseInt(dd[1].trim());
+			if(mins > 59){
+			    msg = "Invalid minutes "+mins;
+			    return msg;
+			}
 		    }
 		    if(hrs < 0){
 			msg = "hours can not be negative: "+hrs;
