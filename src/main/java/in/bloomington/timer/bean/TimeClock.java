@@ -20,7 +20,7 @@ public class TimeClock{
     String id = "", id_code = "", time = "", document_id = "",
 	time_in = "", time_out = "", job_id = "",
 	employee_id = "", location_id="";
-    final static String time_clock_duration = "20"; //13 hrs
+    final static String time_clock_duration = "14"; //20, 13 hrs
     Employee employee = null;
     PayPeriod currentPayPeriod = null, previousPayPeriod = null;
     Document document = null;
