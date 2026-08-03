@@ -541,12 +541,15 @@ public class TmwrpWeekEntry{
 		    // ignore
 		}
 		else if(salaryGroup.isUnionned()){ // union AFCSME employee
-		    //
+		    // caulculated daily so no need
+		    return;
+		    /**
 		    if(netHours > comp_weekly_hrs){
 			earned_time_sys = netHours - comp_weekly_hrs;
 			netHours = netHours - earned_time_sys;
 		    }
 		    excess_hrs = earned_time_sys;
+		    */
 		}
 		else if(salaryGroup.isPoliceSworn()){
 		    excess_hrs = 0;
