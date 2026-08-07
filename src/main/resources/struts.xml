@@ -350,6 +350,13 @@
       <result name="success">/WEB-INF/jsp/notificationSchedular.jsp</result>
       <result name="logs">/WEB-INF/jsp/notificationLogs.jsp</result>			
     </action>
+    <action name="notificationTempSchedule" 
+	    class="in.bloomington.timer.action.TempNotificationScheduleAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/notificationTempSchedular.jsp</result>		
+      <result name="error">/WEB-INF/jsp/notificationTempSchedular.jsp</result>
+      <result name="success">/WEB-INF/jsp/notificationTempSchedular.jsp</result>
+    </action>    
     <action name="termNotificationSchedule" 
 	    class="in.bloomington.timer.action.TermNotificationScheduleAction" 
 	    method="execute">

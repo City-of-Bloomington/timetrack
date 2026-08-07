@@ -20,16 +20,22 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EmpPayRateScheduler {
+public class NotificationTempScheduler {
 
-    static boolean debug = false;
-    static Logger logger = LogManager.getLogger(EmpPayRateScheduler.class);
-    int month = 4, day = 5, year=2026; // started on April 5 (Sunday)    
+    static boolean debug = false, activeMail = false;
+    static String mail_host = "";
+    static Logger logger = LogManager.getLogger(NotificationTempScheduler.class);
+    // Sunday last day of pay period
+    int month = 8, day = 16, year=2026;
     Date startDate, endDate = null;
-    public EmpPayRateScheduler(String date){
+    public NotificationTempScheduler(String date,
+				 String mail_host,
+				 boolean activeMailFlag){
+	if(activeMailFlag)
+	    activeMail = true;
+	this.mail_host = mail_host;
 	try{
-	    if(!date.isEmpty()){
-		// startDate = new Date(date);
+	    if(date != null && !date.isEmpty()){
 		String strArr[] = date.split("/");
 		month = Integer.parseInt(strArr[0]);
 		day = Integer.parseInt(strArr[1]);
@@ -37,8 +43,8 @@ public class EmpPayRateScheduler {
 	    }
 	    Calendar cal = new GregorianCalendar();
 	    cal.set(year, (month-1), day);
-	    cal.set(Calendar.HOUR_OF_DAY, 4);//to run at 4am of the specified day
-	    cal.set(Calendar.MINUTE, 10);
+	    cal.set(Calendar.HOUR_OF_DAY, 5);//to run at 5;15am every 2 weeks
+	    cal.set(Calendar.MINUTE, 15);
 	    startDate = cal.getTime();
 	}
 	catch(Exception ex){
@@ -66,11 +72,13 @@ public class EmpPayRateScheduler {
 
         // define the job and tie it to our Job class
 	try{
-	    String jobName = "emp_pay_rate_"+month+"_"+day+"_"+year;
-	    String groupName = "emp_pay_rate";
-	    JobDetail job = JobBuilder.newJob(EmpPayRateJob.class)
+	    String jobName = "notification_temp_"+month+"_"+day+"_"+year;
+	    String groupName = "notification_temp";
+	    JobDetail job = JobBuilder.newJob(NotificationTempJob.class)
 		.withIdentity(jobName, groupName)
 		.build();
+	    job.getJobDataMap().put("activeMail", ""+activeMail);
+	    job.getJobDataMap().put("mail_host", ""+mail_host);						
 	    // 
 	    // Trigger will run at 7am on the speciified date
 	    // cron date and time entries (year can be ignored)
@@ -82,7 +90,7 @@ public class EmpPayRateScheduler {
 		.startAt(startDate)
 		.withSchedule(simpleSchedule()
 			      // .withIntervalInMinutes(3)
-			      .withIntervalInHours(24*7) // 24*7 one week
+			      .withIntervalInHours(24*14) // 24*14 two weeks
 			      .repeatForever()
 			      // .withRepeatCount(2) 
 			      // .withMisfireHandlingInstructionFireNow())

@@ -203,8 +203,84 @@ public class TimeBlockLogList{
        into outfile '/var/lib/mysql-files/renate_logs.csv'                          fields terminated by ','                                                        lines terminated by '\n';
 
  encloded by '"'
-       
 
-       
+  select weekday(action_time) as day, CAST(TIME_TO_SEC(action_time) / 3600 AS DECIMAL(10, 2)) AS decimal_hours
+  from time_block_logs where action_time >= str_to_date('07/27/2026','%m/%d/%Y') and action_time < str_to_date('08/03/2026','%m/%d/%Y') order by id
+   into outfile '/var/lib/mysql-files/all_week_times.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
+
+     select weekday(action_time) as day, CAST(TIME_TO_SEC(action_time) / 3600 AS DECIMAL(10, 2)) AS decimal_hours
+  from time_block_logs where action_time >= str_to_date('07/27/2026','%m/%d/%Y') and action_time < str_to_date('08/03/2026','%m/%d/%Y') and (clock_in is not null or clock_out  is not null)
+  order by id
+     into outfile '/var/lib/mysql-files/clock_week_times.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
+
+
+   
+   select id,document_id,hour_code_id,earn_code_reason_id,date_format(date,'%m/%d/%Y'),begin_hour,begin_minute,end_hour,end_minute,hours,minutes,amount,clock_in,clock_out,time_block_id,action_type,action_by_id,date_format(action_time,'%m/%d/%y %H:%i') from time_block_logs where action_time >= str_to_date('01/01/2022','%m/%d/%Y') order by id desc                                                         into outfile '/var/lib/mysql-files/timetrack_logs.csv'                          fields terminated by ','                                                        enclosed by '"'                                                                 lines terminated by '\n';
+
+  
+  select hour(action_time) th_hour,count(*) 
+  from time_block_logs where action_time >= str_to_date('07/27/2026','%m/%d/%Y') and action_time < str_to_date('08/03/2026','%m/%d/%Y') group by th_hour
+  select hour(action_time) th_hour,count(*) 
+  from time_block_logs where action_time >= str_to_date('07/27/2026','%m/%d/%Y') and action_time < str_to_date('08/03/2026','%m/%d/%Y') and (clock_in is not null or clock_out  is not null)  group by th_hour
+
+all
+
+ th_hour | count(*) |
++---------+----------+
+|       0 |       18 |
+|       1 |       99 |
+|       2 |       88 |
+|       3 |       41 |
+|       4 |       98 |
+|       5 |      550 |
+|       6 |      741 |
+|       7 |      960 |
+|       8 |      886 |
+|       9 |      789 |
+|      10 |      535 |
+|      11 |      470 |
+|      12 |      603 |
+|      13 |      520 |
+|      14 |      873 |
+|      15 |      646 |
+|      16 |      797 |
+|      17 |      547 |
+|      18 |      287 |
+|      19 |      187 |
+|      20 |      139 |
+|      21 |      170 |
+|      22 |      162 |
+|      23 |       93 |
+
+Clock
+ th_hour | count(*) |
++---------+----------+
+|       0 |        5 |
+|       1 |       13 |
+|       2 |       12 |
+|       3 |        9 |
+|       4 |       82 |
+|       5 |      501 |
+|       6 |      395 |
+|       7 |      512 |
+|       8 |      311 |
+|       9 |      290 |
+|      10 |      153 |
+|      11 |      127 |
+|      12 |      192 |
+|      13 |      209 |
+|      14 |      461 |
+|      15 |      265 |
+|      16 |      363 |
+|      17 |      245 |
+|      18 |      105 |
+|      19 |       33 |
+|      20 |       23 |
+|      21 |       36 |
+|      22 |       22 |
+|      23 |       15 |
+
+
+  
     */
 }

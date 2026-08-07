@@ -42,7 +42,7 @@ public class CurrentEmployeesScheduler {
 		year = Integer.parseInt(strArr[2]);
 		Calendar cal = new GregorianCalendar();
 		cal.set(year, (month-1), day);
-		cal.set(Calendar.HOUR_OF_DAY, 4);//to run at 7am of the specified day
+		cal.set(Calendar.HOUR_OF_DAY, 4);//to run at 4am of the specified day
 		cal.set(Calendar.MINUTE, 30);
 		startDate = cal.getTime();
 	    }

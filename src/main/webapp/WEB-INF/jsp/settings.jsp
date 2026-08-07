@@ -143,7 +143,7 @@
 		<li><a href="<s:property value='#application.url'/>batchSchedule.action">Punch Clock Batch Auto Submission </a></li>
 		<li><a href="<s:property value='#application.url'/>codeReasonSchedule.action">Police Code Reason xls File Output</a></li>
 		<li><a href="<s:property value='#application.url'/>payRateSchedule.action">Weekly Pay Rate</a></li>
-
+		<li><a href="<s:property value='#application.url'/>notificationTempSchedule.action">Supervisor Temp notification</a></li>
 	    </ul>
 	</div>
     </s:if>
