@@ -60,7 +60,7 @@ public class TempNotificationScheduleAction extends TopAction{
 	}
 	else if(action.startsWith("Submit")){
 	    HandleTempNotification handle = new HandleTempNotification(mail_host, activeMail);
-	    handle.setActiveMail();
+	    // handle.setActiveMail();
 	    back = handle.process();
 	    if(!back.isEmpty()){
 		addActionError(back);

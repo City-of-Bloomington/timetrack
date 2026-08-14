@@ -28,7 +28,7 @@ public class HandleTempNotification{
     static int temp_max_days = 275; // 9 months
     static int seasonal_max_days = 183; // 6 months
     //
-    boolean activeMail = true;
+    boolean activeMail = false;
     String mail_host = "";
     String date = "";
     //
@@ -117,10 +117,8 @@ public class HandleTempNotification{
 	    if(!email.isEmpty()){
 		String msg = composeText(name, ll);
 		System.err.println(" super "+name+" "+email);
-		    
 		System.err.println(" msg "+msg);
-		    
-		//back = doSend(email, msg);
+		back = doSend(email, msg);
 	    }
 	}
 	return back;
