@@ -114,7 +114,14 @@
       <result name="input">/WEB-INF/jsp/part_time_email_logs.jsp</result>
       <result name="error">/WEB-INF/jsp/part_time_email_logs.jsp</result>
       <result name="success">/WEB-INF/jsp/part_time_email_logs.jsp</result>
-    </action>        
+    </action>
+    <action name="empNoNumReport" 
+	    class="in.bloomington.timer.action.ReportEmpNoNumAction" 
+	    method="execute">
+      <result name="input">/WEB-INF/jsp/reports/emp_no_num_report.jsp</result>
+      <result name="error">/WEB-INF/jsp/reports/emp_no_num_report.jsp</result>
+      <result name="success">/WEB-INF/jsp/reports/emp_no_num_report.jsp</result>
+    </action>    
     <action name="requestCancel" 
 	    class="in.bloomington.timer.action.RequestCancelAction" 
 	    method="execute">

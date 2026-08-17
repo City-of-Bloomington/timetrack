@@ -126,7 +126,8 @@
 		<li><a href="<s:property value='#application.url'/>reportPublicWorks.action">Asset Management (Public Works)</a></li>
 		<li><a href="<s:property value='#application.url'/>reportUnscheduled.action">Unscheduled Times</a></li>
 		<li><a href="<s:property value='#application.url'/>leave_report.action">Departmental Leave</a></li>
-		<li><a href="<s:property value='#application.url'/>primeReport.action">Overtime Prime Rates</a></li>			
+		<li><a href="<s:property value='#application.url'/>primeReport.action">Overtime Prime Rates</a></li>
+		<li><a href="<s:property value='#application.url'/>empNoNumReport.action">New Employee with no number</a></li>		
 		
 	    </ul>			
 	    <h2>Schedulers & Updates</h2>

@@ -559,7 +559,33 @@ update code_cross_ref set GL_String = '110115151000' where id = '33';
       order by group_name, full_name
       into outfile '/var/lib/mysql-files/utility_emails.csv'                         fields terminated by ','                                                        lines terminated by '\n';
 
-      
+
+      //
+      // find new employees who have no employee_number
+      //
+      select distinct e.id,e.username username,concat_ws(' ',e.first_name,e.last_name) full_name
+      from employees e
+      join jobs j on j.employee_id=e.id
+      join time_documents d on d.job_id=j.id
+      join pay_periods p on p.id = d.pay_period_id
+      join time_blocks b on b.document_id=d.id
+      where j.expire_date is null 
+      and e.employee_number is null
+      and p.start_date <= DATE_SUB(CURDATE(), INTERVAL 5 DAY) 
+      and p.end_date >= DATE_SUB(CURDATE(), INTERVAL 5 DAY)
+      order by full_name
+
+      select distinct e.id,e.username username,concat_ws(' ',e.first_name,e.last_name) full_name
+      from employees e
+      join jobs j on j.employee_id=e.id
+      join time_documents d on d.job_id=j.id
+      join pay_periods p on p.id = d.pay_period_id
+      join time_blocks b on b.document_id=d.id
+      where j.expire_date is null 
+      and e.employee_number is null
+      and p.start_date <= '2026-08-12' and p.end_date >= '2026-08-12'
+      order by full_name      
+
       
       
     */
