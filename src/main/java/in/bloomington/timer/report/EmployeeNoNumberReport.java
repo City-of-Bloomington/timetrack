@@ -41,9 +41,10 @@ public class EmployeeNoNumberReport{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq = "select distinct e.id,e.username username,concat_ws(' ',e.first_name,e.last_name) full_name "+
+	String qq = "select distinct e.id,e.username username,concat_ws(' ',e.first_name,e.last_name) full_name,g.name group_name "+
 	    " from employees e "+
 	    " join jobs j on j.employee_id=e.id "+
+	    " join groups g on g.id=j.group_id "+
 	    " join time_documents d on d.job_id=j.id "+
 	    " join pay_periods p on p.id = d.pay_period_id "+
 	    " join time_blocks b on b.document_id=d.id"+
@@ -68,10 +69,12 @@ public class EmployeeNoNumberReport{
 		String str = rs.getString(1);
 		String str2 = rs.getString(2);
 		String str3 = rs.getString(3);
+		String str4 = rs.getString(4);		
 		List<String> row = new ArrayList<>();
 		row.add(str);
 		row.add(str2);
 		row.add(str3);
+		row.add(str4);		
 		entries.add(row);
 	    }
 	}
@@ -89,9 +92,11 @@ public class EmployeeNoNumberReport{
       //
       // find new employees who have no employee_number
       //
-      select distinct e.id,e.username username,concat_ws(' ',e.first_name,e.last_name) full_name
+      select distinct e.id,e.username username,concat_ws(' ',e.first_name,e.last_name) full_name,g.name group_name,dd.name dept_name,dd.ref_id dept_ref
       from employees e
       join jobs j on j.employee_id=e.id
+      join groups g on j.group_id=g.id
+      join departments dd on dd.id=g.department_id
       join time_documents d on d.job_id=j.id
       join pay_periods p on p.id = d.pay_period_id
       join time_blocks b on b.document_id=d.id
