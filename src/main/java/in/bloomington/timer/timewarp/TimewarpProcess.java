@@ -135,7 +135,9 @@ public class TimewarpProcess{
 	    job = val;
 	    SalaryGroup salaryGroup = job.getSalaryGroup();
 	    if(salaryGroup != null){
-		if(salaryGroup.isTemporary() || salaryGroup.isSeasonal()){
+		if(salaryGroup.isTemporary() ||
+		   salaryGroup.isPartTime() ||
+		   salaryGroup.isSeasonal()){
 		    regCode = CommonInc.tempEarnCodeStr; // TEMP
 		}
 		else if(salaryGroup.isFireSworn()){

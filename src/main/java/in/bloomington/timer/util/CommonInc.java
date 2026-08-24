@@ -50,14 +50,22 @@ public class CommonInc{
     // for full time employees (match the database earn codes)
     public final static String regEarnCodeStr = "Reg";
     public final static String regEarnCodeID = "1";
-    public final static String partTimeEarnCodeStr = "Reg";
-    public final static String partTimeEarnCodeID = "1";
+    // part time exempt
+    public final static String partTimeXEarnCodeStr = "Reg";
+    public final static String partTimeXEarnCodeID = "1";
+    // part time non-exempt
+    public final static String partTimeNXEarnCodeStr = "Reg";
+    public final static String partTimeNXEarnCodeID = "1";      
         
     // for temp employees
     public final static String tempEarnCodeStr = "TEMP";
     public final static String tempEarnCodeID = "14";
     public final static String seasonalEarnCodeStr = "TEMP";
-    public final static String seasonalEarnCodeID = "14";    
+    public final static String seasonalEarnCodeID = "14";
+    // part time
+    public final static String partTimeEarnCodeStr = "TEMP";
+    public final static String partTimeEarnCodeID = "14";
+
     //
     // Fire depart special reg code for BC group only
     public final static String regEarnCodeFireBCGroupStr = "REG FIRE BC";		
