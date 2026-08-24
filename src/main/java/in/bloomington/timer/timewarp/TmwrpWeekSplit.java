@@ -219,7 +219,7 @@ public class TmwrpWeekSplit{
 	double prev_hours = 0, dif_hrs = 0;
 	Hashtable<String, Double> daily = dailyArr.get(jj);
 	//
-	if(hrCode.isCallOut()){ // call out (if < 3 ==> 3)
+	if(hrCode.isCallOut()){ // call out only CO 
 	    non_reg_hrs += hours;// hours are taken care off in timeblock
 	    call_out_hrs += hours;
 	    if(daily.containsKey(code_id)){

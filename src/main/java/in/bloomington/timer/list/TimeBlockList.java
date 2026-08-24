@@ -627,16 +627,17 @@ public class TimeBlockList{
 					       earn_factor,
 					       holiday_related != null);
 		if(code_desc == null) code_desc = "";
+		if(code_id == 16){ //CO Call out
+		    if(hrs < 3.) hrs = 3;
+		    amnt = 0;
+		}		
 		if(hrCode.isRecordMethodMonetary()){
 		    hrs = 0;
 		    if(amnt == 0.0){
 			amnt = hrCode.getDefaultMonetaryAmount();
 		    }
 		}
-		else if(hrCode.isCallOut()){
-		    if(hrs < 3.) hrs = 3;
-		    amnt = 0;
-		}
+
 		if(!dailyOnly){
 		    if(timeBlocks == null)
 			timeBlocks = new ArrayList<>();

@@ -1425,7 +1425,7 @@ public class TimeBlock extends Block{
 			hrs = 1.0;
 			mints = 60;
 		    }
-		    else if(hrCode.indexOf("CO") > -1){ // Call Out
+		    else if(hrCode.equals("CO")){ // Call Out
 			if(hrs < 3.){
 			    hrs = 3;
 			    mints = 180;
