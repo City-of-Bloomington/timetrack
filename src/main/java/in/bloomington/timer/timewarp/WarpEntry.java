@@ -140,7 +140,7 @@ public class WarpEntry{
 	setHours(val6);
 	setHourlyRate(val7);
 	setAmountPay(val8);
-    }						
+    }
     public String getHoursStr(){
 	return hoursStr;
     }
@@ -193,6 +193,7 @@ public class WarpEntry{
 	if(val != null)		
 	    code = val;
     }
+    
     public void setReason(String val){
 	if(val != null)		
 	    reason = val;

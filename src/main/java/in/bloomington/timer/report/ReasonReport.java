@@ -102,6 +102,30 @@ public class ReasonReport{
 	}				
 	return null;
     }
+    public Hashtable<String, String[]> getBothSums(){
+	Hashtable<String, String[]> hash = new Hashtable<>();
+	Set<String> set =hoursSums.keySet();
+	if(set != null){
+	    for (String str:set){
+		double val = hoursSums.get(str);
+		String[] strArr = new String[2];
+		strArr[0] = df.format(val);
+		strArr[1] = "0";
+		hash.put(str, strArr);
+	    }
+	}
+	set = amountsSums.keySet();
+	if(set != null){
+	    for (String str:set){
+		double val = amountsSums.get(str);
+		String[] strArr = new String[2];
+		strArr[0] = "0";		
+		strArr[1] = df.format(val);
+		hash.put(str, strArr);
+	    }
+	}
+	return hash;
+    }
     public String getTotalHours(){
 	return df.format(totalHours);
     }
@@ -243,7 +267,7 @@ public class ReasonReport{
 
      // union
      //
-     select concat_ws(' ',e.first_name,e.last_name) AS name,                         e.employee_number as empnum,                                                   date_format(r.run_time,'%m/%d/%Y') AS date,                                     c.name AS code,                                                                 null AS reason,                                                                 t.hours AS hours,t.amount AS amount                                             from tmwrp_blocks t                                                             join hour_codes c on c.id = t.hour_code_id                                      join tmwrp_runs r on t.run_id=r.id                                              join time_documents d on d.id=r.document_id                                     join jobs j on j.id = d.job_id                                                  join `groups` g on g.id = j.group_id                                              join employees e on e.id = j.employee_id                                        where t.hours > 0                                                               and d.employee_id=e.id                                                          and g.department_id = 20                                                        and j.effective_date <= r.run_time                                              and (j.expire_date is null or r.run_time <= j.expire_date)                      and c.id in (34,45,71,46,50,79,43,44,78,109)                                    and r.run_time >= '2021-01-01' and r.run_time <= '2021-02-31';
+     select concat_ws(' ',e.first_name,e.last_name) AS name,                         e.employee_number as empnum,                                                   date_format(r.run_time,'%m/%d/%Y') AS date,                                     c.name AS code,                                                                 null AS reason,                                                                 t.hours AS hours,t.amount AS amount                                             from tmwrp_blocks t                                                             join hour_codes c on c.id = t.hour_code_id                                      join tmwrp_runs r on t.run_id=r.id                                              join time_documents d on d.id=r.document_id                                     join jobs j on j.id = d.job_id                                                  join `groups` g on g.id = j.group_id                                              join employees e on e.id = j.employee_id                                        where (t.hours > 0 or t.amount > 0 )                                            and d.employee_id=e.id                                                          and g.department_id = 20                                                        and j.effective_date <= r.run_time                                              and (j.expire_date is null or r.run_time <= j.expire_date)                      and c.id in (81,34,45,71,46,50,79,43,44,78,109)                                    and r.run_time >= '2021-01-01' and r.run_time <= '2021-02-31';
 
 		 
 
@@ -282,13 +306,11 @@ public class ReasonReport{
 	    " join `groups` g on g.id = j.group_id "+
 	    " join employees e on e.id = j.employee_id "+
 	    " where t.inactive is null and (t.hours > 0 or t.amount > 0) "+
-	    // " and d.employee_id=e.id  "+
             " and g.department_id = 20 "+ // Police
 	    " and j.effective_date <= t.date and (j.expire_date is null or t.date <= j.expire_date) "+  
 	    " and t.date >= ? and t.date <= ? )"+
-	    //" group by concat_ws(' ',e.first_name,e.last_name),e.employee_number,c.name,r.description,date_format(t.date,'%Y-%m-%d')) "+
 	    "union "+
-	    "(select distinct t.id,concat_ws(' ',e.first_name,e.last_name) AS name,           e.employee_number as empnum,                                                   date_format(r.run_time,'%Y-%m-%d') AS date,                                     c.name AS code,                                                                 null AS reason,                                                                 t.hours AS hours,t.amount AS amount                                             from tmwrp_blocks t                                                             join hour_codes c on c.id = t.hour_code_id                                      join tmwrp_runs r on t.run_id=r.id                                              join time_documents d on d.id=r.document_id                                     join jobs j on j.id = d.job_id                                                  join `groups` g on g.id = j.group_id                                              join employees e on e.id = j.employee_id                                       where t.hours > 0                                                               and d.employee_id=e.id                                                          and g.department_id = 20                                                        and j.effective_date <= r.run_time                                              and (j.expire_date is null or r.run_time <= j.expire_date)                      and c.id in (34,43,44,45,46,50,71,78,79,109)                                    and r.run_time >= ? and r.run_time <= ?)";
+	    "(select distinct t.id,concat_ws(' ',e.first_name,e.last_name) AS name,           e.employee_number as empnum,                                                   date_format(r.run_time,'%Y-%m-%d') AS date,                                     c.name AS code,                                                                 null AS reason,                                                                 t.hours AS hours,t.amount AS amount                                             from tmwrp_blocks t                                                             join hour_codes c on c.id = t.hour_code_id                                      join tmwrp_runs r on t.run_id=r.id                                              join time_documents d on d.id=r.document_id                                     join jobs j on j.id = d.job_id                                                  join `groups` g on g.id = j.group_id                                             join employees e on e.id = j.employee_id                                       where (t.hours > 0 or t.amount > 0)                                             and d.employee_id=e.id                                                          and g.department_id = 20                                                        and j.effective_date <= r.run_time                                              and (j.expire_date is null or r.run_time <= j.expire_date)                      and c.id in (81,34,43,44,45,46,50,71,78,79,109)                                    and r.run_time >= ? and r.run_time <= ?)";
 	qq += " ) tt ";
 	qq += " group by tt.name,tt.empnum,tt.code,tt.reason,tt.date ";				
 
@@ -376,16 +398,17 @@ public class ReasonReport{
 	//
 	String qq = "select tt.name,tt.empnum,"+
 	    " tt.code,tt.reason,tt.date,"+
-	    " sum(hours) "+
-	    " from (select "+
+	    " sum(hours),sum(amount) "+
+	    " from ((select "+
 	    " concat_ws(' ',e.first_name,e.last_name) AS name,"+
 	    " e.employee_number as empnum,"+
 	    " date_format(t.date,'%m/%d/%Y') AS date,"+
 	    " c.name AS code, "+
 	    " r.description AS reason, "+
-	    " t.hours AS hours "+
+	    " t.hours AS hours, "+
+	    " t.amount AS amount "+
 	    " from time_blocks t "+
-	    " join hour_codes c on t.hour_code_id=c.id "+						
+	    " join hour_codes c on t.hour_code_id=c.id "+
 	    " join time_documents d on d.id=t.document_id "+
 	    " join pay_periods p on p.id=d.pay_period_id "+
 	    " join department_employees de on de.employee_id=d.employee_id "+
@@ -395,7 +418,27 @@ public class ReasonReport{
             " and t.earn_code_reason_id is not null "+
 	    " and de.department_id = 20 "+ // police
 	    " and t.date >= ? and t.date <= ? ";
-	qq += " ) tt ";
+	qq += " ) ";
+	qq += " union   ";
+	qq += " (select "+
+	    " concat_ws(' ',e.first_name,e.last_name) AS name,"+
+	    " e.employee_number as empnum,"+
+	    " date_format(t.date,'%m/%d/%Y') AS date,"+
+	    " c.name AS code, "+
+	    " 'Clothing allowance' AS reason, "+
+	    " 0 AS hours, "+
+	    " t.amount AS amount "+
+	    " from time_blocks t "+
+	    " join hour_codes c on t.hour_code_id=c.id "+
+	    " join time_documents d on d.id=t.document_id "+
+	    " join pay_periods p on p.id=d.pay_period_id "+
+	    " join department_employees de on de.employee_id=d.employee_id "+
+	    " join employees e on d.employee_id=e.id "+
+	    " where t.inactive is null "+
+            " and t.amount > 0 "+
+	    " and de.department_id = 20 "+ // police
+	       " and t.hour_code_id = 81 "+
+	    " and t.date >= ? and t.date <= ?)) tt ";
 	qq += " group by tt.name,tt.empnum,tt.code,tt.reason,tt.date ";
 	con = Helper.getConnection();
 	if(con == null){
@@ -412,6 +455,10 @@ public class ReasonReport{
 	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 	    date_tmp = dateFormat.parse(end_date);
 	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    date_tmp = dateFormat.parse(start_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    date_tmp = dateFormat.parse(end_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));	    
 	    rs = pstmt.executeQuery();
 	    jj=0;
 	    while(rs.next()){
@@ -422,12 +469,12 @@ public class ReasonReport{
 		    new WarpEntry(debug,
 				  rs.getString(1), // name
 				  rs.getString(2), // emp num
-				  // rs.getString(3)+" - "+rs.getString(4), // code
-				  rs.getString(3),
-				  rs.getString(4), // code
+				  rs.getString(3), // code
+				  rs.getString(4), // reason
 				  rs.getString(5), // date
-				  rs.getDouble(6), // hours 
-				  hourly_rate);
+				  rs.getDouble(6), // hours
+				  hourly_rate,
+				  rs.getDouble(7));
 		dailyEntries.add(one);
 	    }
 	}
@@ -458,15 +505,17 @@ public class ReasonReport{
 	// using subquery
 	//
 	String qq = "select tt.name,tt.empnum,tt.code,tt.reason,"+
-	    " sum(hours) "+
-	    "from ( select "+
+	    " sum(hours),sum(amount) "+
+	    "from ( "+
+	    "( select "+
 	    " concat_ws(' ',e.first_name,e.last_name) AS name,"+
 	    " e.employee_number AS empnum,"+
 	    " c.name AS code, "+
 	    " r.description AS reason, "+
-	    " t.hours AS hours "+
+	    " t.hours AS hours, "+
+	    " t.amount AS amount "+
 	    " from time_blocks t "+
-	    " join hour_codes c on t.hour_code_id=c.id "+						
+	    " join hour_codes c on t.hour_code_id=c.id "+
 	    " join time_documents d on d.id=t.document_id "+
 	    " join pay_periods p on p.id=d.pay_period_id "+
 	    " join department_employees de on de.employee_id=d.employee_id "+
@@ -475,7 +524,25 @@ public class ReasonReport{
 	    " where t.inactive is null "+
 	    " and t.earn_code_reason_id is not null "+
 	    " and de.department_id = 20 "+
-	    " and t.date >= ? and t.date <= ? ";
+	    " and t.date >= ? and t.date <= ? ) "+
+	    " union  "+
+	    "( select "+
+	    " concat_ws(' ',e.first_name,e.last_name) AS name,"+
+	    " e.employee_number AS empnum,"+
+	    " c.name AS code, "+
+	    " 'Clothing Allowance' AS reason, "+
+	    " 0 AS hours, "+
+	    " t.amount AS amount "+
+	    " from time_blocks t "+
+	    " join hour_codes c on t.hour_code_id=c.id "+
+	    " join time_documents d on d.id=t.document_id "+
+	    " join pay_periods p on p.id=d.pay_period_id "+
+	    " join department_employees de on de.employee_id=d.employee_id "+
+	    " join employees e on d.employee_id=e.id "+
+	    " where t.inactive is null "+
+	    " and t.hour_code_id = 81 "+ // CA
+	    " and de.department_id = 20 "+
+	    " and t.date >= ? and t.date <= ? ) ";    
 	qq += " ) tt ";
 	qq += " group by tt.code,tt.reason,tt.name,tt.empnum ";
 	con = Helper.getConnection();
@@ -494,6 +561,10 @@ public class ReasonReport{
 	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
 	    date_tmp = dateFormat.parse(end_date);
 	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    date_tmp = dateFormat.parse(start_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));
+	    date_tmp = dateFormat.parse(end_date);
+	    pstmt.setDate(jj++, new java.sql.Date(date_tmp.getTime()));	    
 	    rs = pstmt.executeQuery();
 	    jj=0;
 	    while(rs.next()){
@@ -504,7 +575,9 @@ public class ReasonReport{
 				  rs.getString(2), // emp num
 				  rs.getString(3)+" - "+rs.getString(4), // code
 				  rs.getDouble(5), // hours
-				  hourly_rate);
+				  rs.getDouble(6), // amount
+				  hourly_rate
+				  );
 		addToHash(one);
 		entries.add(one);
 	    }
@@ -526,10 +599,11 @@ public class ReasonReport{
 	    }
 	    String code = val.getCode();
 	    double hr = val.getHours();
-	    double amount = val.getAmount();
+	    double amount = val.getAmountPay();
+	    // System.err.println(code+" "+hr+" "+amount);
 	    totalHours += hr;
 	    totalAmount += amount;
-	    if(hr > 0){
+	    if(hr > 0 || amount > 0){
 		if(mapEntries.containsKey(code)){
 		    List<WarpEntry> list = mapEntries.get(code);
 		    list.add(val);
@@ -549,15 +623,131 @@ public class ReasonReport{
 		    double hr2 = hoursSums.get(code);
 		    hr += hr2;
 		}
-		hoursSums.put(code, hr);
+		if(hr > 0)
+		    hoursSums.put(code, hr);
 		//
 		if(amountsSums.containsKey(code)){
 		    double amt2 = amountsSums.get(code);
 		    amount += amt2;
 		}
-		amountsSums.put(code, amount);
+		if(amount > 0)
+		    amountsSums.put(code, amount);
 	    }
 	}
     }
 		
 }
+/**
+	select tt.name,tt.empnum,
+	     tt.code,tt.reason,tt.date,
+	     sum(hours),sum(amount) 
+	     from ((select 
+	     concat_ws(' ',e.first_name,e.last_name) AS name,
+	     e.employee_number as empnum,
+	     date_format(t.date,'%m/%d/%Y') AS date,
+	     c.name AS code, 
+	     r.description AS reason, 
+	     t.hours AS hours, 
+	     t.amount AS amount 
+	     from time_blocks t 
+	     join hour_codes c on t.hour_code_id=c.id 
+	     join time_documents d on d.id=t.document_id 
+	     join pay_periods p on p.id=d.pay_period_id 
+	     join department_employees de on de.employee_id=d.employee_id 
+	     join employees e on d.employee_id=e.id 
+	     join earn_code_reasons r on r.id=t.earn_code_reason_id 
+	     where t.inactive is null 
+             and t.earn_code_reason_id is not null 
+	     and de.department_id = 20 
+	     and t.date >= '2026-01-01' and t.date <= '2026-06-01' )
+	     union 
+	     (select 
+	     concat_ws(' ',e.first_name,e.last_name) AS name,
+	     e.employee_number as empnum,
+	     date_format(t.date,'%m/%d/%Y') AS date,
+	     c.name AS code, 
+	     'Clothing allowance' AS reason, 
+	     t.hours AS hours, 
+	     t.amount AS amount 
+	     from time_blocks t 
+	     join hour_codes c on t.hour_code_id=c.id 
+	     join time_documents d on d.id=t.document_id 
+	     join pay_periods p on p.id=d.pay_period_id 
+	     join department_employees de on de.employee_id=d.employee_id 
+	     join employees e on d.employee_id=e.id 
+	     where t.inactive is null 
+             and t.amount > 0 
+	     and de.department_id = 20 and t.hour_code_id = 81
+	     and t.date >= '2026-01-01' and t.date <= '2026-06-01')
+	     ) tt 
+	     group by tt.name,tt.empnum,tt.code,tt.reason,tt.date 
+	     //
+	     //
+	     select tt.name,tt.empnum,
+	     tt.code,tt.reason,tt.date,
+	     sum(hours),sum(amount)
+	     	 from    (select 
+	     concat_ws(' ',e.first_name,e.last_name) AS name,
+	     e.employee_number as empnum,
+	     date_format(t.date,'%m/%d/%Y') AS date,
+	     c.name AS code, 
+	     'Clothing allowance' AS reason, 
+	     t.hours AS hours, 
+	     t.amount AS amount 
+	     from time_blocks t 
+	     join hour_codes c on t.hour_code_id=c.id 
+	     join time_documents d on d.id=t.document_id 
+	     join pay_periods p on p.id=d.pay_period_id 
+	     join department_employees de on de.employee_id=d.employee_id 
+	     join employees e on d.employee_id=e.id 
+	     where t.inactive is null 
+             and t.amount > 0 
+	     and de.department_id = 20 and t.hour_code_id = 81
+	     and t.date >= '2026-01-01' and t.date <= '2026-06-01'
+	     ) tt
+	     
+	     group by tt.name,tt.empnum,tt.code,tt.reason,tt.date 
+
+	     select tt.name,tt.empnum,tt.code,tt.reason,
+	     sum(hours),sum(amount) 
+	     from ( 
+	     ( select 
+	     concat_ws(' ',e.first_name,e.last_name) AS name,
+	     e.employee_number AS empnum,
+	     c.name AS code, 
+	     r.description AS reason, 
+	     t.hours AS hours, 
+	     t.amount AS amount 
+	     from time_blocks t 
+	     join hour_codes c on t.hour_code_id=c.id 
+	     join time_documents d on d.id=t.document_id 
+	     join pay_periods p on p.id=d.pay_period_id 
+	     join department_employees de on de.employee_id=d.employee_id 
+	     join employees e on d.employee_id=e.id 
+	     join earn_code_reasons r on r.id=t.earn_code_reason_id 
+	     where t.inactive is null 
+	     and t.earn_code_reason_id is not null 
+	     and de.department_id = 20 
+	     and t.date >= '2026-05-01' and t.date <= '2026-05-31' ) 
+	     union  
+	     (select 
+	     concat_ws(' ',e.first_name,e.last_name) AS name,
+	     e.employee_number AS empnum,
+	     c.name AS code, 
+	     'Clothing Allowance' AS reason, 
+	     0 AS hours,
+	     t.amount AS amount 
+	     from time_blocks t 
+	     join hour_codes c on t.hour_code_id=c.id 
+	     join time_documents d on d.id=t.document_id 
+	     join pay_periods p on p.id=d.pay_period_id 
+	     join department_employees de on de.employee_id=d.employee_id 
+	     join employees e on d.employee_id=e.id 
+	     where t.inactive is null 
+	     and t.hour_code_id = 81 
+	     and de.department_id = 20 
+	     and t.date >= '2026-05-01' and t.date <= '2026-05-31')
+	     )tt
+	     group by tt.name,tt.empnum,tt.code,tt.reason	     
+
+ */
