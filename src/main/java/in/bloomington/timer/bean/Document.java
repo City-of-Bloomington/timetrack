@@ -1424,7 +1424,7 @@ public class Document implements Serializable{
 	if(job != null){
 	    // part time warning
 	    if(job.getSalaryGroup().isPartTime()){
-		if(week1Total > job.getWeekly_regular_hours()+0.5){
+		if(week1Total > job.getWeekly_regular_hours()+1){
 
 		    String str = "Week 1 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
 		    if(!warnings.contains(str))
@@ -1444,13 +1444,13 @@ public class Document implements Serializable{
 		else {
 		    checkPartTimeWednesdayHours(1);
 		}
-		if(week2Total > job.getWeekly_regular_hours()+0.5){
+		if(week2Total > job.getWeekly_regular_hours()+1){
 		    String str = "Week 2 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
 		    if(!warnings.contains(str))
 			warnings.add(str);
 		    if(!partTimeWarnings.contains(str))
 			partTimeWarnings.add(str);			    
-		    PartTimeWarn warn = new PartTimeWarn(job.getId(), 2, 1, week1Total, job.getWeekly_regular_hours());
+		    PartTimeWarn warn = new PartTimeWarn(job.getId(), 2, 1, week2Total, job.getWeekly_regular_hours());
 		    String back = warn.doSave();
 		    if(back.isEmpty()){
 			if(warn.needNewEmail()){
