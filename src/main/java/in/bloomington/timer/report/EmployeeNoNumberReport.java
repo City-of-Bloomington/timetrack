@@ -84,24 +84,26 @@ public class EmployeeNoNumberReport{
 		row.add(str5);
 		entries.add(row);
 		Set<Integer> deptSet = null;
-		if(str5.indexOf(",") > -1){
-		    deptSet = Arrays.stream(str5.split(","))
-			.map(Integer::parseInt)                           
-			.collect(Collectors.toSet());     			
-		}
-		else{
-		    int val = -1;
-		    try{
-			 val = Integer.parseInt(str5);
-		    }catch(Exception ee){
-			System.err.println(ee);
+		if(str5 != null){
+		    if(str5.indexOf(",") > -1){
+			deptSet = Arrays.stream(str5.split(","))
+			    .map(Integer::parseInt)                           
+			    .collect(Collectors.toSet());     			
 		    }
-		    if(val > -1){
-			deptSet = new HashSet<>();
-			deptSet.add(val);
+		    else{
+			int val = -1;
+			try{
+			    val = Integer.parseInt(str5);
+			}catch(Exception ee){
+			    System.err.println(ee);
+			}
+			if(val > -1){
+			    deptSet = new HashSet<>();
+			    deptSet.add(val);
+			}
 		    }
+		    empDepts.put(str, deptSet);		    
 		}
-		empDepts.put(str, deptSet);
 	    }
 	}
 	catch(Exception ex){
