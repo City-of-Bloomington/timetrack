@@ -1,45 +1,67 @@
-package in.bloomington.timer.report;
+package in.bloomington.timer;
 /**
  * @copyright Copyright (C) 2014-2016 City of Bloomington, Indiana. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
  * @author W. Sibo <sibow@bloomington.in.gov>
  */
-import java.util.ArrayList;
+
 import java.util.*;
 import java.sql.*;
+import java.io.*;
 import java.text.*;
-import java.util.Set;
+import javax.sql.*;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.JobDataMap;
 import in.bloomington.timer.util.*;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.list.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class EmployeeNoNumberReport{
+public class EmpNoNumJob implements Job{
 
-    //
-    // find all groups in a department and the groups current managers
-    //
-    static Logger logger = LogManager.getLogger(EmployeeNoNumberReport.class);
-    static final long serialVersionUID = 3820L;
+    boolean debug = true;
+    static final long serialVersionUID = 55L;		
+    static Logger logger = LogManager.getLogger(EmpNoNumJob.class);
     List<List<String>> entries= null;
-    Hashtable<String, Set<Integer>> empDepts = new Hashtable<>();
-    public EmployeeNoNumberReport(){
+    Hashtable<String, Set<Integer>> empDepts = null;
+    public EmpNoNumJob(){
 
     }
-    public boolean hasEntries(){
-	return entries != null && entries.size() > 0;
-	     
+    public void execute(JobExecutionContext context)
+        throws JobExecutionException {
+	try{
+	    doInit();
+	    doWork();
+	    doDestroy();
+	}
+	catch(Exception ex){
+	    logger.error(ex);
+	    System.err.println(ex);
+	}
     }
-    public List<List<String>> getEntries(){
-	return entries;
+    public void doInit(){
+	empDepts = new Hashtable<>();
+	String back = findEmployees();
+	if(!back.isEmpty()){
+	    System.err.println(back);
+	    logger.error(back);
+	}
     }
-	
-    //
-    // find new employees with no employee number
-    // needed for exporting to NW
-    public String find(){
+    public void doDestroy() {
+
+    }	    
+    public void doWork(){
+	String back = findNwEmployeeSet();
+	if(!back.isEmpty()){
+	    System.err.println(back);
+	    logger.error(back);
+	}
+    }
+    public String findEmployees(){
 	String msg = "";
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -112,19 +134,8 @@ public class EmployeeNoNumberReport{
 	    Helper.databaseDisconnect(pstmt, rs);
 	    UnoConnect.databaseDisconnect(con);
 	}
-	findNwEmployeeSet();
 	return msg;	    
     }
-    /**
-       NW output parameters
-       
-1 employeeNumber
-2 firstname
-3 lastname
-4 title
-5 departmentID
-
-     */
     public String findNwEmployeeSet(){
 	Connection con = null, con2 = null;
 	PreparedStatement pstmt = null, pstmt2=null;
@@ -181,14 +192,6 @@ public class EmployeeNoNumberReport{
 		    System.err.println("No match "+one);
 		}
 	    }
-	    /**
-	    ResultSetMetaData rsmd = rs.getMetaData();
-	    int columnCount = rsmd.getColumnCount();
-	    for (int i = 1; i <= columnCount; i++ ) {
-		String name = rsmd.getColumnName(i);
-		System.err.println(i+" "+name);
-	    }
-	    */
 	}
 	catch(Exception ex){
 	    back += ex;
@@ -200,26 +203,59 @@ public class EmployeeNoNumberReport{
 	    Helper.databaseDisconnect(rs, pstmt, pstmt2);
 	}
 	return back;
-    }
-    /**
-      //
-      // find new employees who have no employee_number
-      //
-      select distinct e.id,e.username username,concat_ws(' ',e.first_name,e.last_name) full_name,g.name group_name,dd.name dept_name,dd.ref_id dept_ref
-      from employees e
-      join jobs j on j.employee_id=e.id
-      join groups g on j.group_id=g.id
-      join departments dd on dd.id=g.department_id
-      join time_documents d on d.job_id=j.id
-      join pay_periods p on p.id = d.pay_period_id
-      join time_blocks b on b.document_id=d.id
-      where j.expire_date is null 
-      and e.employee_number is null
-      and p.start_date <= DATE_SUB(CURDATE(), INTERVAL 5 DAY) 
-      and p.end_date >= DATE_SUB(CURDATE(), INTERVAL 5 DAY)
-      order by full_name
-
-      
-     */
+    }    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

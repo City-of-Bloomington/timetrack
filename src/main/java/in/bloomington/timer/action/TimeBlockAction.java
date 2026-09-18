@@ -71,6 +71,7 @@ public class TimeBlockAction extends TopAction{
 			document = timeBlock.getDocument();
 			if(document.isPartTime()){
 			    document.prepareDaily();
+			    /**
 			    if(document.hasPartTimeWarns()){
 				// we need to compose and send email
 				List<PartTimeWarn> warns = document.getPartTimeWarns();
@@ -79,6 +80,7 @@ public class TimeBlockAction extends TopAction{
 				    addError(back);
 				}
 			    }
+			    */
 			}
 		    }
 		}
@@ -106,6 +108,7 @@ public class TimeBlockAction extends TopAction{
 			document = timeBlock.getDocument();
 			if(document.isPartTime()){
 			    document.prepareDaily();
+			    /**
 			    if(document.hasPartTimeWarns()){
 				// we need to compose and send email
 				List<PartTimeWarn> warns = document.getPartTimeWarns();
@@ -114,6 +117,7 @@ public class TimeBlockAction extends TopAction{
 				    addError(back);
 				}
 			    }
+			    */
 			}
 		    }
 		}
@@ -220,11 +224,20 @@ public class TimeBlockAction extends TopAction{
 	gml.setGroup_id(g_id);
 	gml.setActiveOnly();
 	gml.setNotExpired();
+	gml.setApproversOnly();
 	String back = gml.find();
 	if(back.isEmpty()){
 	    List<GroupManager> managers = gml.getManagers();
 	    if(managers != null && managers.size() > 0){
 		manager = managers.get(0);
+		if(!manager.isPrimary()){
+		    for(GroupManager gm:managers){
+			if(gm.isPrimary()){
+			    manager = gm;
+			    break;
+			}
+		    }
+		}
 	    }
 	}
 	return manager;
@@ -367,6 +380,9 @@ public class TimeBlockAction extends TopAction{
 	boolean ret = employeeAccruals != null && employeeAccruals.size() > 0;
 	return ret;
     }
+    //
+    // Not used for now, need rethinking
+    //
     private String composePartTimeWarningEmail(List<PartTimeWarn> warns,
 					       Document document){
 	String back = "";

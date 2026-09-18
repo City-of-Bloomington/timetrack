@@ -25,7 +25,7 @@ public class PartTimeEmailLogList extends CommonInc{
     final static long serialVersionUID = 302L;
     static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     String date_from="", date_to="", date_at="", limit="50";
-    String employee_id = "", job_id="";
+    String employee_id = "", job_id="", pay_period_id="";
     Integer week_num = null, warn_type=null;
     boolean debug = false;
     List<PartTimeEmailLog> emailLogs = null;
@@ -50,6 +50,10 @@ public class PartTimeEmailLogList extends CommonInc{
     public void setJob_id(String val){
 	if(val != null)
 	    job_id = val;
+    }
+    public void setPay_period_id(String val){
+	if(val != null)
+	    pay_period_id = val;
     }    
     public void setWeekNum(Integer val){
 	if(val != null)
@@ -97,7 +101,7 @@ public class PartTimeEmailLogList extends CommonInc{
 	    "w.week_of_year,"+
 	    "w.week_total,"+
 	    "w.critical_value,"+
-	    
+	    "w.pay_period_id,"+
 	    "concat_ws(' ',e.first_name,e.last_name) employee_name,"+
 	    "concat_ws(' ',e2.first_name,e2.last_name) supervisor_name, "+
 	    "p.name job_title "+
@@ -130,7 +134,11 @@ public class PartTimeEmailLogList extends CommonInc{
 	if(warn_type != null){
 	    if(!qw.isEmpty()) qw += " and ";
 	    qw += " w.warn_type = ? ";
-	}	
+	}
+	if(!pay_period_id.isEmpty()){
+	    if(!qw.isEmpty()) qw += " and ";
+	    qw += " w.pay_period_id = ? ";
+	}
 	if(!qw.isEmpty()){
 	    qq += " where "+qw;
 	}
@@ -166,7 +174,10 @@ public class PartTimeEmailLogList extends CommonInc{
 	    }
 	    if(warn_type != null){
 		pstmt.setInt(jj++, warn_type);
-	    }	    
+	    }
+	    if(!pay_period_id.isEmpty()){
+		pstmt.setString(jj++, pay_period_id);
+	    }	    	    
 	    
 	    rs = pstmt.executeQuery();
 	    while(rs.next()){
@@ -191,7 +202,8 @@ public class PartTimeEmailLogList extends CommonInc{
 				 rs.getInt(17),
 				 rs.getString(18),
 				 rs.getString(19),
-				 rs.getString(20) 
+				 rs.getString(20),
+				 rs.getString(21) 
 				 
 					 );
 		if(emailLogs == null)

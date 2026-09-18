@@ -145,6 +145,7 @@
 		<li><a href="<s:property value='#application.url'/>codeReasonSchedule.action">Police Code Reason xls File Output</a></li>
 		<li><a href="<s:property value='#application.url'/>payRateSchedule.action">Weekly Pay Rate</a></li>
 		<li><a href="<s:property value='#application.url'/>notificationTempSchedule.action">Supervisor Temp notification</a></li>
+		<li><a href="<s:property value='#application.url'/>emp_no_num_schedular.action">Employee w/No Number</a></li>		
 	    </ul>
 	</div>
     </s:if>

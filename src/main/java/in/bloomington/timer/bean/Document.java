@@ -1419,44 +1419,58 @@ public class Document implements Serializable{
 	    }	    
 	}
     }
+    private boolean checkIfWeHaveSimilarWarn(PartTimeWarn warn){
+	if(partTimeWarns != null && partTimeWarns.size() > 0){
+	    for(PartTimeWarn one:partTimeWarns){
+		if(warn.isSimilar(one)){
+		    return true;
+		}
+	    }
+	}
+	return false;
+    }
     // part time warnings
     private void checkForPartTimeWarnings(){
 	if(job != null){
 	    // part time warning
 	    if(job.getSalaryGroup().isPartTime()){
 		if(week1Total > job.getWeekly_regular_hours()+1){
-
+		    /**
+		    PartTimeWarn warn = new PartTimeWarn(job.getId(), 1, 1, week1Total, job.getWeekly_regular_hours(), pay_period_id);
+		    if(!checkIfWeHaveSimilarWarn(warn)){
+			String back = warn.doSave();
+			if(back.isEmpty()){
+			    if(warn.needNewEmail()){
+				partTimeWarns.add(warn);
+			    }
+			}
+		    */
 		    String str = "Week 1 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
 		    if(!warnings.contains(str))
 			warnings.add(str);
 		    // we need these for timeClock
 		    if(!partTimeWarnings.contains(str))
 			partTimeWarnings.add(str);			    
-		    PartTimeWarn warn = new PartTimeWarn(job.getId(), 1, 1, week1Total, job.getWeekly_regular_hours());
-		    
-		    String back = warn.doSave();
-		    if(back.isEmpty()){
-			if(warn.needNewEmail()){
-			    partTimeWarns.add(warn);
-			}
-		    }
 		}
 		else {
 		    checkPartTimeWednesdayHours(1);
 		}
 		if(week2Total > job.getWeekly_regular_hours()+1){
-		    String str = "Week 2 total hours are more than "+job.getWeekly_regular_hours()+" hrs";
+		    /**
+		    PartTimeWarn warn = new PartTimeWarn(job.getId(), 2, 1, week2Total, job.getWeekly_regular_hours(), pay_period_id);
+		    if(!checkIfWeHaveSimilarWarn(warn)){
+			String back = warn.doSave();
+			if(back.isEmpty()){
+			    if(warn.needNewEmail()){
+				partTimeWarns.add(warn);
+			    }
+			}
+		    */
+		    String str = "Week 2 total hours are more than "+job.getWeekly_regular_hours()+" hrs";			
 		    if(!warnings.contains(str))
 			warnings.add(str);
 		    if(!partTimeWarnings.contains(str))
 			partTimeWarnings.add(str);			    
-		    PartTimeWarn warn = new PartTimeWarn(job.getId(), 2, 1, week2Total, job.getWeekly_regular_hours());
-		    String back = warn.doSave();
-		    if(back.isEmpty()){
-			if(warn.needNewEmail()){
-			    partTimeWarns.add(warn);
-			}
-		    }
 		}
 		else{
 		    checkPartTimeWednesdayHours(2);
@@ -1464,6 +1478,9 @@ public class Document implements Serializable{
 	    }
 	}
     }
+    //
+    // need fix add pay period id to distinguish
+    //
     private void checkPartTimeWednesdayHours(int week_num){
 	double week_total = week1Total;
 	if(week_num == 2){
@@ -1493,18 +1510,21 @@ public class Document implements Serializable{
 			return;
 		    }
 		}
-		String str = "Week "+week_num+" up to "+dayName+" total hours are more than "+CommonInc.wednesday_threshold+" hrs";
-		if(!warnings.contains(str))
-		    warnings.add(str);
-		if(!partTimeWarnings.contains(str))
-		    partTimeWarnings.add(str);			
-		PartTimeWarn warn = new PartTimeWarn(job.getId(), week_num, 2, week1Total, CommonInc.wednesday_threshold);
+		/**
+		PartTimeWarn warn = new PartTimeWarn(job.getId(), week_num, 2, week1Total, CommonInc.wednesday_threshold, pay_period_id);
+		if(!checkIfWeHaveSimilarWarn(warn)){
 		    String back = warn.doSave();
 		    if(back.isEmpty()){
 			if(warn.needNewEmail()){
 			    partTimeWarns.add(warn);
 			}
 		    }
+		*/
+		String str = "Week "+week_num+" up to "+dayName+" total hours are more than "+CommonInc.wednesday_threshold+" hrs";
+		if(!warnings.contains(str))
+		    warnings.add(str);
+		if(!partTimeWarnings.contains(str))
+		    partTimeWarnings.add(str);			
 	    }
 	}
     }
@@ -1544,9 +1564,23 @@ public class Document implements Serializable{
 	    checkForHolidayOmission();
 	}
 	if(salaryGroup.isPartTime()){
+	    // findSavedPartTimeWarns();
 	    checkForPartTimeWarnings();
 	}
     }
+    /**
+    private void findSavedPartTimeWarns(){
+	PartTimeWarnList ptwl = new PartTimeWarnList();
+	ptwl.setJob_id(job_id);
+	ptwl.setPay_period_id(pay_period_id);
+	String back = ptwl.find();
+	if(back.isEmpty()){
+	    List<PartTimeWarn> ones = ptwl.getWarnings();
+	    if(ones != null)
+		partTimeWarns = ones;
+	}
+    }
+    */
     /**
      * check if the employee is eligible for holiday
      * if the day before holiday or day after is authorized unpaid leave

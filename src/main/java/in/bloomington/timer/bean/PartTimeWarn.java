@@ -24,11 +24,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-public class PartTimeWarn{
+public class PartTimeWarn implements Serializable, Comparable<PartTimeWarn>{
     static Logger logger = LogManager.getLogger(PartTimeWarn.class);
     final static long serialVersionUID = 292L;
     boolean debug = false;		
-    String id="",
+    String id="", pay_period_id="",
 	job_id="";
     Integer warn_type = 1; // 1:week total warning, 2:Wednesday
     Integer pay_week_num = 1; // 1, 2
@@ -50,7 +50,8 @@ public class PartTimeWarn{
 			Integer val5,
 			
 			Double val6,
-			Integer val7){
+			Integer val7,
+			String val8){
 	setId(val);
 	setJob_id(val2);
 	setPayWeekNum(val3);
@@ -58,6 +59,7 @@ public class PartTimeWarn{
 	setWeekOfYear(val5);
 	setWeekTotal(val6);
 	setCriticalValue(val7);
+	setPay_period_id(val8);
     }	
     // for new record
     public PartTimeWarn(
@@ -65,13 +67,15 @@ public class PartTimeWarn{
 			Integer val2,
 			Integer val3,
 			Double val4,
-			Integer val5
+			Integer val5,
+			String val6
 		    ){
 	setJob_id(val);
 	setPayWeekNum(val2);
 	setWarnType(val3);
 	setWeekTotal(val4);
 	setCriticalValue(val5);
+	setPay_period_id(val6);
     }	
     public String getId(){
 	return id;
@@ -93,13 +97,20 @@ public class PartTimeWarn{
     }
     public Integer getCriticalValue(){
 	return critical_value;
-    }    
+    }
+    public String getPay_period_id(){
+	return pay_period_id;
+	    
+    }
     //
     public void setId(String val){
 	if(val != null)
 	    id = val;
     }
-    
+    public void setPay_period_id(String val){
+	if(val != null)
+	    pay_period_id = val;
+    }    
     public void setPayWeekNum(Integer val){
 	if(val != null)
 	    pay_week_num = val;
@@ -134,6 +145,39 @@ public class PartTimeWarn{
 	}
 	return ret;
     }
+    public String toString(){
+	return job_id+" "+week_of_year+" "+pay_week_num+" "+critical_value+" "+warn_type;
+    }
+    public boolean isSimilar(PartTimeWarn other){
+	return compareTo(other) == 0; 
+    }
+	
+    @Override
+    public int compareTo(PartTimeWarn other){
+        int ret = this.toString().compareTo(other.toString());
+        return ret;
+    }    
+    @Override
+    public boolean equals(Object o) {
+	if (o instanceof Employee) {
+	    PartTimeWarn c = (PartTimeWarn) o;
+	    if ( this.id.equals(c.getId())) 
+		return true;
+	}
+	return false;
+    }
+    @Override
+    public int hashCode(){
+	int seed = 31;
+	if(!id.isEmpty()){
+	    try{
+		seed += Integer.parseInt(id)*47;
+	    }catch(Exception ex){
+		// we ignore
+	    }
+	}
+	return seed;
+    }    
     private int findCurrentWeekOfYear(){
 	// 
 	// current week number in this year
@@ -173,8 +217,8 @@ public class PartTimeWarn{
 	    " left join part_time_email_logs pl on pw.id=pl.warn_id "+
 	    " where pw.job_id=? "+
 	    " and pw.pay_week_num = ? and pw.warn_type = ? and "+
-	    " pw.week_of_year=? ";
-	String qq2 = " insert into part_time_warns values(0,?,?,?,?,?,?) ";
+	    " pw.week_of_year=? and pw.pay_period_id=? ";
+	String qq2 = " insert into part_time_warns values(0,?,?,?,?,?,?,?) ";
 	if(job_id.isEmpty()){
 	    back = "Job not set ";
 	    return back;
@@ -194,6 +238,7 @@ public class PartTimeWarn{
 	    pstmt.setInt(2, pay_week_num);
 	    pstmt.setInt(3, warn_type);
 	    pstmt.setInt(4, week_of_year);
+	    pstmt.setString(5, pay_period_id);
 	    rs = pstmt.executeQuery();
 	    if(rs.next()){
 		id = rs.getString(1);
@@ -211,6 +256,7 @@ public class PartTimeWarn{
 		pstmt2.setInt(4, week_of_year);
 		pstmt2.setDouble(5, week_total);
 		pstmt2.setInt(6, critical_value);
+		pstmt2.setString(7, pay_period_id);
 		pstmt2.executeUpdate();
 		qq = "select LAST_INSERT_ID()";
 		pstmt3 = con.prepareStatement(qq);
@@ -236,7 +282,7 @@ public class PartTimeWarn{
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String qq = " select id,job_id,pay_week_num,warn_type,week_of_year,week_total, critical_value from part_time_warns where id=? ";
+	String qq = " select id,job_id,pay_week_num,warn_type,week_of_year,week_total, critical_value,pay_period_id from part_time_warns where id=? ";
 	if(debug)
 	    logger.debug(qq);
 	con = UnoConnect.getConnection();
@@ -256,6 +302,7 @@ public class PartTimeWarn{
 		setWeekOfYear(rs.getInt(5));
 		setWeekTotal(rs.getDouble(6));					
 		setCriticalValue(rs.getInt(7));
+		setPay_period_id(rs.getString(8));
 	    }
 	    else{
 		back = "No match found";
@@ -281,10 +328,14 @@ public class PartTimeWarn{
     week_of_year int,
     week_total decimal(6,2),
     critical_value int,
+    pay_period_id int,
     primary key(id),
-    foreign key(job_id) references jobs(id)    
+    foreign key(job_id) references jobs(id),
+    foreign key(pay_period_id) refereces pay_periods(id)
     )engine=InnoDB;
 
+    alter table part_time_warns add pay_period_id int unsigned;
+    alter table part_time_warns add constraint fk_pay_period foreign key(pay_period_id) references pay_periods(id)
 	    
      */
 	

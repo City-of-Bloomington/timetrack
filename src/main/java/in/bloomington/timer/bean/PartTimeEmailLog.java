@@ -33,7 +33,7 @@ public class PartTimeEmailLog{
 	email_to="",
 	cc="", // supervisor
 	subject="",
-	text_message="",
+	text_message="", pay_period_id="",
 	send_errors="";
     String employee_name = "", supervisor_name="", job_title="";
     // Integer warn_type = 1; // 1:Wednesday warning, 2:week total warning
@@ -67,15 +67,17 @@ public class PartTimeEmailLog{
 			    Integer val15,
 			    Double val16,
 			    Integer val17,
-			    
-			    String val18, // additional
-			    String val19,
-			    String val20
+
+			    String val18,
+			    String val19, // additional
+			    String val20,
+			    String val21
 			    ){
 	setVals(val, val2, val3, val4, val5, 
 		val6, val7, val8, val9, val10,
 		val11, val12, val13, val14, val15, 
-		val16, val17, val18, val19, val20);
+		val16, val17, val18, val19, val20,
+		val21);
     }	
     // for new record
     public PartTimeEmailLog(
@@ -120,10 +122,11 @@ public class PartTimeEmailLog{
 			    Integer val15,
 			    Double val16,
 			    Integer val17,
-			    
-			    String val18, // additional
-			    String val19,
-			    String val20
+
+			    String val18,
+			    String val19, // additional
+			    String val20,
+			    String val21
 			    ){
 	setId(val);
 	setWarn_id(val2);
@@ -135,11 +138,12 @@ public class PartTimeEmailLog{
 	setSubject(val8);
 	setTextMessage(val9);
 	setSendErrors(val10);
-	setEmployeeName(val18);
-	setSupervisorName(val19);
-	setJobTitle(val20);
+	setPay_period_id(val18);
+	setEmployeeName(val19);
+	setSupervisorName(val20);
+	setJobTitle(val21);
 	warn =
-	    new PartTimeWarn(val11,val12,val13,val14,val15,val16,val17);
+	    new PartTimeWarn(val11,val12,val13,val14,val15,val16,val17,val8);
     }	    
     public String getId(){
 	return id;
@@ -147,23 +151,6 @@ public class PartTimeEmailLog{
     public String getWarn_id(){
 	return warn_id;
     }        
-    /**
-    public String getJob_id(){
-	return job_id;
-    }    
-    public String getEmployee_id(){
-	return employee_id;
-    }
-    public String getSupervisor_id(){
-	return supervisor_id;
-    }    
-    public Integer getWeekNum(){
-	return week_num;
-    }
-    public Integer getWarnType(){
-	return warn_type;
-    }
-    */
     public String getSentTime(){
 	return sent_time;
     }
@@ -218,24 +205,6 @@ public class PartTimeEmailLog{
 	if(val != null)
 	    warn_id = val;
     }    
-    /**
-    public void setWeekNum(Integer val){
-	if(val != null)
-	    week_num = val;
-    }
-    public void setWeekOfYear(Integer val){
-	if(val != null)
-	    week_of_year = val;
-    }    
-    public void setWarnType(Integer val){
-	if(val != null)
-	    warn_type = val;
-    }
-    public 	void setJob_id(String val){
-	if(val != null)
-	    job_id = val;
-    }        
-    */
     public 	void setEmployee_id(String val){
 	if(val != null)
 	    employee_id = val;
@@ -244,7 +213,10 @@ public class PartTimeEmailLog{
 	if(val != null)
 	    supervisor_id = val;
     }
-    
+    public 	void setPay_period_id(String val){
+	if(val != null)
+	    pay_period_id = val;
+    }    
 
     public 	void setSentTime(String val){
 	if(val != null)
@@ -299,20 +271,6 @@ public class PartTimeEmailLog{
         int localeWeekNumber = date.get(weekFields.weekOfWeekBasedYear());
         System.out.println("Locale Week Number: " + localeWeekNumber);
 	return localeWeekNumber;
-	/**
-	   for specific date
-	   LocalDate specificDate = LocalDate.of(2025, 1, 1);
-	   // Get the ISO week number
-	   int weekNumber = specificDate.get(WeekFields.ISO.weekOfWeekBasedYear());
-	   // M month
-	   // d day
-	   // uuuu year
-	   DateTimeFormatter f = DateTimeFormatter.ofPattern( "M/d/uuuu" , Locale.US ) ;
-	   LocalDate ld = LocalDate.parse( "1/23/2017" , f ) 
-
-
-	 */
-	
     }
 		
     public String doSave(){
@@ -416,7 +374,7 @@ public class PartTimeEmailLog{
 	    "w.week_of_year,"+
 	    "w.week_total,"+
 	    "w.critical_value,"+
-	    
+	    "w.pay_period_id,"+
 	    "concat_ws(' ',e.first_name,e.last_name) employee_name,"+
 	    "concat_ws(' ',e2.first_name,e2.last_name) supervisor_name, "+
 	    "p.name job_title "+
@@ -460,7 +418,8 @@ public class PartTimeEmailLog{
 			rs.getInt(17),
 			rs.getString(18),
 			rs.getString(19),
-			rs.getString(20));
+			rs.getString(20),
+			rs.getString(21));
 	    }
 	    else{
 		back = "No match found";
@@ -512,6 +471,7 @@ public class PartTimeEmailLog{
 	    w.week_of_year,
 	    w.week_total,
 	    w.critical_value,
+	    w.pay_period_id,
 	    concat_ws(' ',e.first_name,e.last_name) employee_name,
 	    concat_ws(' ',e2.first_name,e2.last_name) supervisor_name, 
 	    p.name job_title 
