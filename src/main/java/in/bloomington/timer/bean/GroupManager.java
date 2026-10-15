@@ -543,8 +543,9 @@ delete from group_managers where wf_node_id=7;
 select * from groups g where g.id not in (select group_id from group_managers where wf_node_id=7) and g.department_id not in (8,16,20,36);
 
 // adding new controller
-// adding controller as Payroll approver
-insert into group_managers select 0,g.id,2966,4,'2026-01-01',null,null,null from groups g where g.department_id not in (15,18);
+// adding controller Geoff as Payroll approver
+// adding Cheryl as Payroll approve
+insert into group_managers select 0,g.id,1584,3,'2026-01-01',null,null,null from groups g where g.department_id in (5);
 
 // for employee
 
@@ -565,6 +566,19 @@ We want to let you know that today (Wednesday) your total hours (xx) exceeded 20
 // supervisor
 We want to let you know that today (Wednesday) that your employee (xx) accomulated (xx) hours that exceeded 20 hours, please make the arrangment so that he/she does not exceed 29 hours for the week.
 
+
+select t.hour_code_id,t.hours,d.job_id from time_documents d
+join time_blocks t on t.document_id=d.id
+where d.job_id in (4404,4405)
+and d.pay_period_id=749
+and t.inactive is null and t.hours > 0;
+
+select r.reg_code_id,r.week1_grs_reg_hrs,r.week2_grs_reg_hrs,d.job_id
+from time_documents d
+join tmwrp_runs r on d.id=r.document_id
+where d.job_id in (4404,4405)
+and d.pay_period_id=749
+and (r.week1_grs_reg_hrs > 0 or r.week2_grs_reg_hrs > 0);
 
 
 

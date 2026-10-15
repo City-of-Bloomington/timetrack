@@ -1630,9 +1630,21 @@ public class TimeBlockList{
    	group by date_added, code
 
 	select date_format(t.date,'%m/%d/%Y') date_added, c.name code, sum(t.hours)                                                                                           from time_blocks t,time_documents d,hour_codes c                                     where t.document_id=d.id and t.inactive is null and                             t.date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)                                   and c.id=t.hour_code_id and c.inactive is null                                  and (c.name like 'PTOUN' or c.name like 'SBUUN')                                and d.employee_id in (1)
-   	group by date_added, code	
-	
-d2.id=1928109
+   	group by date_added, code
+
+
+	select count(*),date_format(t.date,'%m/%d/%Y') date_added,
+	c.name pay_code,r.description type                                              from time_blocks t
+	join time_documents d on d.id=t.document_id
+	join hour_codes c on c.id=t.hour_code_id
+	join earn_code_reasons r on r.id=t.earn_code_reason_id
+	where t.document_id=d.id and t.inactive is null and                             t.date >= '2026-01-01'
+	and t.hour_code_id in (158,157)
+	and t.amount > 0 
+   	group by 2,3,4		
+     into outfile '/var/lib/mysql-files/commute_data.csv'
+     fields terminated by ','
+     lines terminated by '\n';	 	
 
 
 

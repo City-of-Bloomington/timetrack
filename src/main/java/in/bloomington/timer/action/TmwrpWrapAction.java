@@ -473,6 +473,7 @@ public class TmwrpWrapAction extends TopAction{
 			    }
 			    csvLine += line2;
 			    if(sgrp != null && (sgrp.isTemporary() ||
+						sgrp.isPartTime() ||
 						sgrp.isSeasonal())){
 				csvLine += job.getName();
 			    }

@@ -457,8 +457,18 @@ public class TimeBlockAction extends TopAction{
     /**
        For the week ending on (last date of pay period), (emp name)'s reported total hours of (xx) for this week exceeded the 29 hours per week limit for part-time employees.
        For this week of this pay period (last date of pay period), (emp name)'s reported total hours of (xx) for this week exceeded the 29 hours per week limit for part-time employees.
-       
 
+       //
+       // find total commute for an employee for the year
+       //
+       select sum(t.amount) from time_blocks t
+       join time_documents d on d.id = t.document_id
+       join employees e on d.employee_id=e.id
+       where t.date >= '2026-01-01' and t.inactive is null
+       and t.hour_code_id in (157,158) and d.employee_id=78;
+       
+       
+       
      */
 }
 
