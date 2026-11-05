@@ -1222,12 +1222,15 @@ public class Document implements Serializable{
     public Map<String, List<String>> getAllAccruals(){
 	return allAccruals;
     }
-		
     public void adjustAccruals(){
 	if(!accrualAdjusted){
 	    accrualAdjusted = true;
 	    boolean pendingAccrualAllowed = isPendingAccrualAllowed();
-	    if(employeeAccruals != null && usedAccrualTotals != null){
+	    
+	    if(employeeAccruals != null){
+		// find if employee accruals has all earned accruals
+		// if not we need to add the missing ones
+		//
 		for(EmployeeAccrual one: employeeAccruals){
 		    if(!one.hasValue() && !one.isCompTimeRelated()) continue;
 		    String accrual_id = one.getAccrual_id();
@@ -1257,7 +1260,8 @@ public class Document implements Serializable{
 				    list.add("0.00"); // nothing earned
 				}
 			    }
-			    if(usedAccrualTotals.containsKey(cd_id)){
+			    if(usedAccrualTotals != null &&
+			       usedAccrualTotals.containsKey(cd_id)){
 				double hrs_used = usedAccrualTotals.get(cd_id);
 				list.add(""+dfn.format(hrs_used));
 				if(hrs_total > hrs_used){

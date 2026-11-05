@@ -116,11 +116,13 @@ public class EmployeeAccrual extends CommonInc{
 	// we want to show this even if it has 0 value
 	// needed for police when they earn comp time during the pay
 	// period and they want to use it
-	return accrual_id.equals("3");
+	return accrual_id.equals("3") || accrual_id.equals("4");
 	/**
 	 // we may want to do the following to avoid accrual ID change
 	 getAccrual();
-	 return accraul != null && accrual.getName().equals("CUA");
+	 return accraul != null && (accrual.getName().equals("CUA") ||
+	 accrual.getName().equals("HCUA"));
+	 
 	*/
     }
     public String getDate(){
