@@ -473,7 +473,7 @@ public class TmwrpDailyAction extends TopAction{
 		    csvLine += one.getGlString();
 		}
 		csvLine += line2;
-		if(one.isSeasonal()){
+		if(one.isSeasonal()){ // temp,part time and seasonal
 		    csvLine += one.getJobTitle();
 		}
 		allCsvLines.add(csvLine);

@@ -428,9 +428,11 @@ public class DailyBlockList{
 		String salaryGroupName = rs.getString(17);
 		boolean isSeasonal = false;
 		if(salaryGroupName.equals("Temp") ||
+		   salaryGroupName.equals("Part Time") ||
 		   salaryGroupName.indexOf("Season") >-1){
 		    isSeasonal = true;
 		}
+		
 		String code_id = rs.getString(8);
 		int days = rs.getInt(18);
 		DailyBlock one = new DailyBlock(

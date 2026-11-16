@@ -31,6 +31,11 @@
 		<label>ID</label>
 		<s:textfield name="new_employee_id" value="" id="employee_id" size="5" />
 	    </div>
+	     <div class="form-group">
+  		<label for="work_date">Work Date (for previous employees)</label>
+		<s:textfield name="workingDate" value="%{workingDate}" id="work_date" size="20" />
+  	    </div>	    
+	    
 
   	    <s:submit name="action" type="button" value="Change" class="button"/></dd>
     </div>
