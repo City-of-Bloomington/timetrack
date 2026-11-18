@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;  
 import in.bloomington.timer.list.*;
 import in.bloomington.timer.bean.*;
+import in.bloomington.timer.util.Helper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,50 +31,41 @@ public class SwitchAction extends TopAction{
 	String ret = SUCCESS;
 	String back = doPrepare("switch.action");
 	if(!action.isEmpty()){ // normally 'Change'
-	    if(!new_employee_id.isEmpty() &&
-	       working_date.isEmpty()
-	       && document_id.isEmpty()){
+	    if(!new_employee_id.isEmpty()){
 		setEmployee_id(new_employee_id);
 		getEmployee();
-		if(employee == null){
-		    back = "could not get employee info ";
-		    addError(back);
-		}
 	    }
-	    else{
-		if(!new_employee_id.isEmpty()){
-		    setEmployee_id(new_employee_id);
-		    getEmployee();
+	    try{
+		HttpServletResponse res = ServletActionContext.getResponse();
+		// we do not need the url here
+		String str = "timeDetails.action?";
+		boolean found = false;
+		if(!document_id.isEmpty()){
+		    str += "document_id="+document_id;
+		    found = true;
 		}
-		try{
-		    HttpServletResponse res = ServletActionContext.getResponse();
-		    // we do not need the url here
-		    String str = "timeDetails.action?";
-		    boolean found = false;
+		else{
+		    if(working_date.isEmpty()){
+			working_date = Helper.getToday();
+		    }
+		    document_id = findDocument(working_date, new_employee_id);
 		    if(!document_id.isEmpty()){
 			str += "document_id="+document_id;
 			found = true;
 		    }
-		    else if(!working_date.isEmpty()){
-			document_id = findDocument(working_date, new_employee_id);
-			if(!document_id.isEmpty()){
-			    str += "document_id="+document_id;
-			    found = true;
-			}
-		    }
-		    if(!source.isEmpty()){
-			str += "&source="+source;
-		    }
-		    if(found){
-			res.sendRedirect(str);
-		    }
-		    else{
-			back = "could not get employee info ";
-			addError(back);
-		    }
-		}catch(Exception ex){
-		    System.err.println(ex);
 		}
+		if(!source.isEmpty()){
+		    str += "&source="+source;
+		}
+		if(found){
+		    res.sendRedirect(str);
+		}
+		else{
+		    back = "could not get employee info ";
+		    addError(back);
+		}
+	    }catch(Exception ex){
+		System.err.println(ex);
 	    }
 	}
 	else {
@@ -85,7 +77,7 @@ public class SwitchAction extends TopAction{
 	}
 	return ret;
     }
-private String findDocument(String wdate, String emp_id){
+    private String findDocument(String wdate, String emp_id){
 	String doc_id = "";
 	DocumentList dl = new DocumentList();
 	dl.setDate(wdate);

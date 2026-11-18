@@ -14,10 +14,11 @@ import javax.sql.*;
 import java.net.URL;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jasig.cas.client.authentication.AttributePrincipal;
+// import org.jasig.cas.client.authentication.AttributePrincipal;
 import in.bloomington.timer.bean.*;
 import in.bloomington.timer.util.CommonInc;
 
+// not used anymore
 // comment this line if you want to use ADFS
 @WebServlet(urlPatterns = {"/CasLogin","/caslogin"}, loadOnStartup = 1)
 public class Login extends TopServlet{
@@ -41,12 +42,13 @@ public class Login extends TopServlet{
 	String message="", id="";
 	boolean found = false;
 	String name="", value="", username="", source="",location_id="";
+	/**
 	AttributePrincipal principal = null;				
 	if (req.getUserPrincipal() != null) {
 	    principal = (AttributePrincipal) req.getUserPrincipal();
 	    username = principal.getName();
 	}
-	/*
+
 	  Enumeration<String> headerNames = req.getHeaderNames();
 	  while (headerNames.hasMoreElements()) {
 	  String headerName = headerNames.nextElement();
@@ -92,6 +94,7 @@ public class Login extends TopServlet{
 	}
 	// else url from TopServlet
 	HttpSession session = null;
+	/**
 	if(principal != null){
 	    final Map attributes = principal.getAttributes();
 	    Iterator attributeNames = attributes.keySet().iterator();
@@ -163,6 +166,7 @@ public class Login extends TopServlet{
 	}
 	if(message.isEmpty())
 	    message += "<p> You can not access this system, check with IT or try again later</p>";
+	*/
 	out.println("<head><title>TimeTrack</title><body>");
 	out.println("<center>");
 	out.println(message);
